@@ -1,8 +1,11 @@
 # control-plane
 
+Contains roles for deploying the metal-control-plane.
+
 ## Requirements
 
 - [ansible-common](https://github.com/metal-stack/ansible-common)
+- an ingress-controller in your cluster ([nginx-ingress](https://github.com/kubernetes/ingress-nginx) is the default of this project, you need to parametrize the roles carefully if you want to use another ingress-controller. when you just use nginx-ingress, make sure to also deploy it to the default namespace `ingress-nginx`)
 
 ## Variables
 

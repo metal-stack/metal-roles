@@ -2,15 +2,15 @@
 
 This role contains a [helm chart](control-plane/metal/files/metal-control-plane) that contains all major components to run the Metal Stack. If you do not want to use Ansible for deployment, this chart can be the starting point for your deployment of Metal Stack.
 
-The helm chart uses [hooks](https://github.com/helm/helm/blob/master/docs/charts_hooks.md) to deploy the control plane. There is a post-install hook to initialize the rethinkdb tables (there would be race conditions when there are multiple metal-apis would initialize the database at the same timem). Then there are post-install and post-upgrade hooks to initialize and update the "masterdata" of the control plane (e.g. images, partitions, networks in this control plane).
+The helm chart uses [hooks](https://github.com/helm/helm/blob/master/docs/charts_hooks.md) to deploy the control plane. There is a post-install hook to initialize the rethinkdb tables (there would be race conditions if there are multiple metal-api replicas initializing the database at the same time). Then, there are post-install and post-upgrade hooks to initialize and update the "masterdata" of the control plane (e.g. images, partitions, networks in this control plane).
 
 As our control plane also requires non-HTTP ports to be exposed to the outside world, we currently use [tcp and udp service exposal of Kubernetes nginx-ingress](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/).
 
 ## Variables
 
-This role uses variables from [control-plane-defaults](control-plane). So, make sure you define them adequately as well.
+This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
 
-You can look up all the default values [here](defaults/main/main.yaml).
+You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 ### General
 
