@@ -10,6 +10,8 @@ As our control plane also requires non-HTTP ports to be exposed to the outside w
 
 This role uses variables from [control-plane-defaults](control-plane). So, make sure you define them adequately as well.
 
+You can look up all the default values [here](control-plane/metal/defaults/main/main.yaml).
+
 ### General
 
 | Name                               | Mandatory | Description                                                                                                                        |

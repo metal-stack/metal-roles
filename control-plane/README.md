@@ -8,6 +8,8 @@
 
 The `control-plane-defaults` folder contains defaults that are used by multiple roles in the control-plane directory.
 
+You can look up all the default values [here](control-plane/control-plane-defaults/main.yaml).
+
 | Name                                | Mandatory | Description                                                |
 | ----------------------------------- | --------- | ---------------------------------------------------------- |
 | metal_control_plane_provider_tenant | yes       | The name of the provider tenant, has extended privileges   |
