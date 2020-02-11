@@ -33,8 +33,6 @@
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
-    systemd_service_after: docker.service
-    systemd_service_requires: docker.service
     # metal-core needs to figure out the switch ports, this is only possible from host network
     systemd_docker_network: host
     systemd_docker_volumes:
