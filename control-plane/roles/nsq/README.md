@@ -16,7 +16,7 @@ As our control plane also requires non-HTTP ports to be exposed to the outside w
 
 This role uses variables from [control-plane-defaults](control-plane). So, make sure you define them adequately as well.
 
-You can look up all the default values [here](control-plane/nsq/defaults/main/main.yaml).
+You can look up all the default values [here](defaults/main/main.yaml).
 
 | Name                             | Mandatory | Description                                                                                                                        |
 | -------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |

@@ -6,7 +6,7 @@ Deploys a rethinkdb together with a [backup-restore-sidecar](https://github.com/
 
 This role uses variables from [control-plane-defaults](control-plane). So, make sure you define them adequately as well.
 
-You can look up all the default values [here](control-plane/rethinkdb-backup-restore/defaults/main/main.yaml).
+You can look up all the default values [here](defaults/main/main.yaml).
 
 | Name                                                     | Mandatory | Description                                                               |
 | -------------------------------------------------------- | --------- | ------------------------------------------------------------------------- |
