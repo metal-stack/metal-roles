@@ -6,7 +6,7 @@ Deploys a postgres database together with a [backup-restore-sidecar](https://git
 
 This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
 
-You can look up all the default values [here](defaults/main/main.yaml).
+You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 | Name                                                    | Mandatory | Description                                                              |
 | ------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
