@@ -22,14 +22,14 @@ You can look up all the default values [here](control-plane-defaults/main.yaml).
 
 | Role Name                                                                | Description                                                                                                                     |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| [ipam-db](control-plane/roles/ipam-db)                                   | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                      |
-| [masterdata-db](control-plane/roles/masterdata-db)                       | Deploys a database for the masterdata-api                                                                                       |
-| [metal](control-plane/roles/metal)                                       | Deploys all Metal Stack components of the metal-control-plane via Helm                                                          |
-| [metal-db](control-plane/roles/metal-db)                                 | Deploys a database for the metal-api                                                                                            |
-| [nsq](control-plane/roles/nsq)                                           | Deploys [nsq](https://nsq.io/)                                                                                                  |
-| [postgres-backup-restore](control-plane/roles/postgres-backup-restore)   | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |
-| [prepare](control-plane/roles/prepare)                                   | Contains tasks for preparing the deployment of the metal-control-plane                                                          |
-| [rethinkdb-backup-restore](control-plane/roles/rethinkdb-backup-restore) | A role for deploying a rethinkdb with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar)         |
+| [ipam-db](ipam-db)                                   | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                      |
+| [masterdata-db](masterdata-db)                       | Deploys a database for the masterdata-api                                                                                       |
+| [metal](metal)                                       | Deploys all Metal Stack components of the metal-control-plane via Helm                                                          |
+| [metal-db](metal-db)                                 | Deploys a database for the metal-api                                                                                            |
+| [nsq](nsq)                                           | Deploys [nsq](https://nsq.io/)                                                                                                  |
+| [postgres-backup-restore](postgres-backup-restore)   | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |
+| [prepare](prepare)                                   | Contains tasks for preparing the deployment of the metal-control-plane                                                          |
+| [rethinkdb-backup-restore](rethinkdb-backup-restore) | A role for deploying a rethinkdb with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar)         |
 
 ## Examples
 
