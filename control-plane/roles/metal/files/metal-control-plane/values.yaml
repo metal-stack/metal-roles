@@ -1,0 +1,109 @@
+---
+set_resource_limits: true
+
+zap_encoding: json
+
+images:
+  metal_api:
+    image: registry.fi-ts.io/metal/metal-api
+    tag: latest
+  masterdata_api:
+    image: registry.fi-ts.io/cloud-native/masterdata-api
+    tag: latest
+  metalctl:
+    image: registry.fi-ts.io/metal/metalctl
+    tag: latest
+  metal_console:
+    image: registry.fi-ts.io/metal/metal-console
+    tag: latest
+
+resources:
+  metal_api:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  masterdata_api:
+    requests:
+      memory: "32Mi"
+      cpu: "50m"
+    limits:
+      memory: "64Mi"
+      cpu: "200m"
+  metal_console:
+    requests:
+      memory: "64Mi"
+      cpu: "20m"
+    limits:
+      memory: "128Mi"
+      cpu: "30m"
+
+ports:
+  metal_api: 8080
+  metal_api_metrics: 2112
+  metal_console: 10001
+  bmc_reverse_proxy: 3333
+
+metal_api:
+  replicas: 3
+  base_path: "/"
+  db_address: ""
+  db_password: ""
+  ipam_db_address: ""
+  ipam_db_port: 5432
+  ipam_db_name: ""
+  ipam_db_user: ""
+  ipam_db_password: ""
+  dex_address: ""
+  view_key: ""
+  edit_key: ""
+  admin_key: ""
+  nsq:
+    tcp_address: ""
+    http_address: ""
+    tls:
+      enabled: false
+      secret_name: ""
+  partitions: "[]"
+  sizes: "[]"
+  images: "[]"
+  networks: "[]"
+  ips: "[]"
+  projects: "[]"
+
+masterdata_api:
+  provider_tenant: ""
+  db_address: ""
+  db_port: 5432
+  db_name: ""
+  db_user: ""
+  db_password: ""
+  size: 2Gi
+  tenants: "[]"
+  projects: |
+    ---
+    # this is the project that can be used for metal-api master data
+    # e.g. creating networks, reserve ips, ... with this project
+    meta:
+      id: 00000000-0000-0000-0000-000000000000
+      kind: Project
+      apiversion: v1
+      version: 0
+    name: metal-system
+    description: Metal Master Project
+    tenant_id: metal
+  server_key: ""
+  server_cert: ""
+  hmac: ""
+
+metal_console:
+  replicas: 3
+
+mgmtservices: []
+
+ingress:
+  tls:
+    enabled: false
+    annotations: {}

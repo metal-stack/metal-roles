@@ -1,0 +1,212 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "{{ metal_control_plane_namespace }}"
+  labels:
+    app: "metal-stack-control-plane"
+    name: "{{ metal_control_plane_namespace }}"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ postgres_name }}
+  name: {{ postgres_name }}
+spec:
+  serviceName: {{ postgres_name }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ postgres_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ postgres_name }}
+    spec:
+      containers:
+      - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
+        name: postgres
+        command:
+        - tini
+        - --
+        args:
+        - sh
+        - -c
+        - backup-restore-sidecar wait && docker-entrypoint.sh postgres
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_DB
+              name: {{ postgres_name }}
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_USER
+              name: {{ postgres_name }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_PASSWORD
+              name: {{ postgres_name }}
+        - name: PGDATA
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_DATA
+              name: {{ postgres_name }}
+        resources: {{ postgres_resources | to_json }}
+        volumeMounts:
+        - name: {{ postgres_name }}
+          mountPath: /var/lib/postgresql/data/pgdata
+        - name: bin-provision
+          subPath: backup-restore-sidecar
+          mountPath: /usr/local/bin/backup-restore-sidecar
+        - name: backup-restore-sidecar-config
+          mountPath: /etc/backup-restore-sidecar
+        - name: bin-provision
+          subPath: tini
+          mountPath: /usr/local/bin/tini
+      - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
+        name: backup-restore-sidecar
+        command:
+        - tini
+        - --
+        args:
+        - sh
+        - -c
+        - backup-restore-sidecar start
+        env:
+        - name: BACKUP_RESTORE_SIDECAR_POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_PASSWORD
+              name: {{ postgres_name }}
+        - name: BACKUP_RESTORE_SIDECAR_POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_USER
+              name: {{ postgres_name }}
+{% if postgres_backup_restore_sidecar_provider == "gcp" %}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
+          valueFrom:
+            secretKeyRef:
+              key: projectID
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              key: bucketName
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_BUCKET_LOCATION
+          valueFrom:
+            secretKeyRef:
+              key: bucketLocation
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /gcp/credentials/serviceaccount.json
+{% endif %}
+        volumeMounts:
+        - name: {{ postgres_name }}
+          mountPath: /data
+        - name: bin-provision
+          subPath: backup-restore-sidecar
+          mountPath: /usr/local/bin/backup-restore-sidecar
+        - name: backup-restore-sidecar-config
+          mountPath: /etc/backup-restore-sidecar
+        - name: bin-provision
+          subPath: tini
+          mountPath: /usr/local/bin/tini
+{% if postgres_backup_restore_sidecar_provider == "gcp" %}
+        - name: gcp-credentials
+          mountPath: /gcp/credentials
+          readOnly: true
+{% endif %}
+      initContainers:
+      - name: backup-restore-sidecar-provider
+        image: {{ postgres_backup_restore_sidecar_image_name }}:{{ postgres_backup_restore_sidecar_image_tag }}
+        imagePullPolicy: IfNotPresent
+        command:
+        - cp
+        - /backup-restore-sidecar
+        - /sbin/tini
+        - /bin-provision
+        volumeMounts:
+        - name: bin-provision
+          mountPath: /bin-provision
+      volumes:
+      - name: {{ postgres_name }}
+        persistentVolumeClaim:
+          claimName: {{ postgres_name }}
+      - name: backup-restore-sidecar-config
+        configMap:
+          name: backup-restore-sidecar-config-{{ postgres_name }}
+{% if postgres_backup_restore_sidecar_provider == "gcp" %}
+      - name: gcp-credentials
+        secret:
+          secretName: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+          items:
+          - key: serviceaccount.json
+            path: serviceaccount.json
+{% endif %}
+      - name: bin-provision
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ postgres_name }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ postgres_storage_size }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-restore-sidecar-config-{{ postgres_name }}
+data:
+  config.yaml: |
+    db: postgres
+    log-level: {{ postgres_backup_restore_sidecar_log_level }}
+    backup-provider: {{ postgres_backup_restore_sidecar_provider }}
+    backup-interval: {{ postgres_backup_restore_sidecar_backup_interval }}
+    object-prefix: {{ postgres_backup_restore_sidecar_object_prefix }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ postgres_name }}
+stringData:
+  POSTGRES_DB: {{ postgres_db }}
+  POSTGRES_USER: {{ postgres_user }}
+  POSTGRES_PASSWORD: {{ postgres_password }}
+  POSTGRES_DATA: /var/lib/postgresql/data/pgdata
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+type: Opaque
+data:
+{% if postgres_backup_restore_sidecar_provider == "gcp" %}
+  bucketLocation: {{ postgres_backup_restore_sidecar_gcp_backup_location | b64encode }}
+  projectID: {{ postgres_backup_restore_sidecar_gcp_project_id  | b64encode }}
+  serviceaccount.json: {{ postgres_backup_restore_sidecar_gcp_serviceaccount_json | b64encode }}
+{% endif %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ postgres_name }}
+  name: {{ postgres_name }}
+spec:
+  ports:
+  - name: "5432"
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: {{ postgres_name }}

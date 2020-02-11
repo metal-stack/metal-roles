@@ -1,0 +1,107 @@
+---
+ingress_public_dns: "{{ metal_api_ingress_dns }}"
+
+set_resource_limits: {{ metal_set_resource_limits }}
+
+provider_tenant: {{ metal_masterdata_api_provider_tenant }}
+
+images:
+  metal_api:
+    image: "{{ metal_api_image_name }}"
+    tag: "{{ metal_api_image_tag }}"
+  metalctl:
+    image: "{{ metalctl_image_name }}"
+    tag: "{{ metalctl_image_tag }}"
+  metal_console:
+    image: "{{ metal_console_image_name }}"
+    tag: "{{ metal_console_image_tag }}"
+  masterdata_api:
+    image: "{{ masterdata_api_image_name }}"
+    tag: "{{ masterdata_api_image_tag }}"
+
+metal_console:
+  replicas: "{{ metal_console_replicas }}"
+
+metal_api:
+  db_address: "{{ metal_api_db_address }}"
+  db_password: "{{ metal_api_db_password }}"
+  ipam_db_address: "{{ metal_api_ipam_db_address }}"
+  ipam_db_port: "{{ metal_api_ipam_db_port }}"
+  ipam_db_name: "{{ metal_api_ipam_db_name }}"
+  ipam_db_user: "{{ metal_api_ipam_db_user }}"
+  ipam_db_password: "{{ metal_api_ipam_db_password }}"
+  nsq:
+    tcp_address: "{{ metal_api_nsq_tcp_address }}"
+    http_address: "{{ metal_api_nsq_http_address }}"
+    tls:
+      enabled: "{{ metal_api_nsq_tls_enabled }}"
+      secret_name: "{{ metal_api_nsq_tls_secret_name }}"
+  replicas: "{{ metal_api_replicas }}"
+  base_path: "{{ metal_api_base_path }}"
+  dex_address: "{{ dex.address }}"
+  view_key: "{{ metal_api_view_key }}"
+  edit_key: "{{ metal_api_edit_key }}"
+  admin_key: "{{ metal_api_admin_key }}"
+  # let's create some multi-document YAMLs from our metal api masterdata def:
+  sizes: |
+{% for entity in metal_api_sizes %}
+    ---
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+{% endfor %}
+  images: |
+{% for entity in metal_api_images %}
+    ---
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+{% endfor %}
+  partitions: |
+{% for entity in metal_api_partitions %}
+    ---
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+{% endfor %}
+  networks: |
+{% for entity in metal_api_networks %}
+    ---
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+{% endfor %}
+  ips: |
+{% for entity in metal_api_ips %}
+    ---
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+{% endfor %}
+
+masterdata_api:
+  db_address: {{ metal_masterdata_api_db_address }}
+  db_port: {{ metal_masterdata_api_db_port }}
+  db_name: {{ metal_masterdata_api_db_name }}
+  db_user: {{ metal_masterdata_api_db_user }}
+  db_password: {{ metal_masterdata_api_db_password }}
+  tenants: |
+{% for entity in metal_masterdata_api_tenants %}
+    ---
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+{% endfor %}
+  server_key: "{{ metal_masterdata_api_tls_server_key | b64encode }}"
+  server_cert: "{{ metal_masterdata_api_tls_server_cert | b64encode }}"
+  hmac: "{{ metal_masterdata_api_hmac }}"
+  projects: |
+    ---
+    # this is the project that can be used for metal-api master data
+    # e.g. creating networks, reserve ips, ... with this project
+    meta:
+      id: 00000000-0000-0000-0000-000000000000
+      kind: Project
+      apiversion: v1
+      version: 0
+    name: metal-system
+    description: Metal Master Project
+    tenant_id: {{ metal_masterdata_api_provider_tenant }}
+{% for entity in metal_masterdata_api_projects %}
+    ---
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+
+    tenant_id: {{ metal_masterdata_api_provider_tenant }}
+{% endfor %}
+
+mgmtservices: {{ metal_mgmt_services | to_json }}
+
+ingress: {{ metal_api_ingress | to_json }}

@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: metal-console
+  name: metal-console
+spec:
+  replicas: {{ .Values.metal_console.replicas }}
+  selector:
+    matchLabels:
+      app: metal-console
+  template:
+    metadata:
+      labels:
+        app: metal-console
+    spec:
+      restartPolicy: Always
+      enableServiceLinks: False
+      containers:
+      - env:
+        - name: METAL_CONSOLE_PORT
+          value: "10001"
+        - name: METAL_CONSOLE_METAL_API_URL
+          value: http://metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+        - name: METAL_CONSOLE_HMAC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: metal-api
+              key: admin_key
+        - name: ZAP_ENCODING
+          value: {{ .Values.zap_encoding }}
+        - name: ZAP_LEVEL
+          value: debug
+        image: {{ .Values.images.metal_console.image }}:{{ .Values.images.metal_console.tag }}
+        name: metal-console
+        ports:
+        - containerPort: 10001
+{{- if .Values.set_resource_limits }}
+        resources:
+{{ toYaml .Values.resources.metal_console | indent 10 }}
+{{- end }}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: metal-console
+  name: metal-console
+spec:
+  ports:
+  - name: "{{ .Values.ports.metal_console }}"
+    port: {{ .Values.ports.metal_console }}
+    targetPort: 10001
+  selector:
+    app: metal-console

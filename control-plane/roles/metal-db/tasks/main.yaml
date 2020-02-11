@@ -1,0 +1,6 @@
+---
+- name: Deploy metal db
+  include_role:
+    name: metal-roles/control-plane/roles/rethinkdb-backup-restore
+  vars:
+    rethinkdb_name: metal-db

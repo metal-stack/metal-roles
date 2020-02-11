@@ -1,0 +1,5 @@
+---
+- name: Deploy rethinkdb (backup-restore)
+  k8s:
+    definition: "{{ lookup('template', 'rethinkdb.yaml') }}"
+    namespace: "{{ metal_control_plane_namespace }}"

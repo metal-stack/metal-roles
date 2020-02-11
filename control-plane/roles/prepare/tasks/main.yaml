@@ -1,0 +1,10 @@
+---
+- name: Create namespace for metal stack
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ metal_control_plane_namespace }}"
+        labels:
+          name: "{{ metal_control_plane_namespace }}"

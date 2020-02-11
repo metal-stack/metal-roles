@@ -1,0 +1,220 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ rethinkdb_name }}
+  name: {{ rethinkdb_name }}
+spec:
+  serviceName: {{ rethinkdb_name }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ rethinkdb_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ rethinkdb_name }}
+    spec:
+      containers:
+      - image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}
+        name: rethinkdb
+        command:
+        - tini
+        - --
+        args:
+        - sh
+        - -c
+        # IMPORTANT: the --directory needs to point to the exact sidecar data dir, otherwise the database will be restored to the wrong location
+        - backup-restore-sidecar wait && rethinkdb --bind all --directory /data --initial-password ${RETHINKDB_PASSWORD}
+        env:
+        - name: RETHINKDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ rethinkdb_name }}
+              key: rethinkdb-password
+        ports:
+        - containerPort: 8080
+        - containerPort: 28015
+        resources: {{ rethinkdb_resources | to_json }}
+        volumeMounts:
+        - name: {{ rethinkdb_name }}
+          mountPath: /data
+        - name: bin-provision
+          subPath: backup-restore-sidecar
+          mountPath: /usr/local/bin/backup-restore-sidecar
+        - name: backup-restore-sidecar-config
+          mountPath: /etc/backup-restore-sidecar
+        - name: bin-provision
+          subPath: tini
+          mountPath: /usr/local/bin/tini
+      - image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}
+        name: backup-restore-sidecar
+        command:
+        - tini
+        - --
+        args:
+        - sh
+        - -c
+        - backup-restore-sidecar start --log-level debug
+        env:
+{% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
+          valueFrom:
+            secretKeyRef:
+              key: projectID
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              key: bucketName
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_BUCKET_LOCATION
+          valueFrom:
+            secretKeyRef:
+              key: bucketLocation
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /gcp/credentials/serviceaccount.json
+{% endif %}
+        volumeMounts:
+        - mountPath: /data
+          name: {{ rethinkdb_name }}
+        - name: rethinkdb-credentials
+          mountPath: /rethinkdb-secret
+        - name: backup-restore-sidecar-config
+          mountPath: /etc/backup-restore-sidecar
+        - name: bin-provision
+          subPath: backup-restore-sidecar
+          mountPath: /usr/local/bin/backup-restore-sidecar
+        - name: bin-provision
+          subPath: tini
+          mountPath: /usr/local/bin/tini
+        - name: bin-provision
+          subPath: rethinkdb-dump
+          mountPath: /usr/local/bin/rethinkdb-dump
+        - name: bin-provision
+          subPath: rethinkdb-restore
+          mountPath: /usr/local/bin/rethinkdb-restore
+{% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
+        - name: gcp-credentials
+          mountPath: /gcp/credentials
+          readOnly: true
+{% endif %}
+      initContainers:
+      - name: backup-restore-sidecar-provider
+        image: {{ rethinkdb_backup_restore_sidecar_image_name }}:{{ rethinkdb_backup_restore_sidecar_image_tag }}
+        command:
+        - cp
+        - /backup-restore-sidecar
+        - /ubuntu/tini
+        - /rethinkdb/rethinkdb-dump
+        - /rethinkdb/rethinkdb-restore
+        - /bin-provision
+        volumeMounts:
+        - name: bin-provision
+          mountPath: /bin-provision
+      volumes:
+      - name: {{ rethinkdb_name }}
+        persistentVolumeClaim:
+          claimName: {{ rethinkdb_name }}
+      - name: rethinkdb-credentials
+        secret:
+          secretName: {{ rethinkdb_name }}
+          items:
+          - key: rethinkdb-password
+            path: rethinkdb-password.txt
+      - name: backup-restore-sidecar-config
+        configMap:
+          name: backup-restore-sidecar-config-rethinkdb-{{ rethinkdb_name }}
+{% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
+      - name: gcp-credentials
+        secret:
+          secretName: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+          items:
+          - key: serviceaccount.json
+            path: serviceaccount.json
+{% endif %}
+      - name: bin-provision
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ rethinkdb_name }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ rethinkdb_storage_size }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-restore-sidecar-config-rethinkdb-{{ rethinkdb_name }}
+data:
+  config.yaml: |
+    db: rethinkdb
+    log-level: {{ rethinkdb_backup_restore_sidecar_log_level }}
+    backup-provider: {{ rethinkdb_backup_restore_sidecar_provider }}
+    rethinkdb-passwordfile: /rethinkdb-secret/rethinkdb-password.txt
+    backup-interval: {{ rethinkdb_backup_restore_sidecar_backup_interval }}
+    object-prefix: rethinkdb-{{ environment_name }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ rethinkdb_name }}
+  labels:
+    app: {{ rethinkdb_name }}
+type: Opaque
+data:
+  rethinkdb-password: "{{ rethinkdb_password | b64encode }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ rethinkdb_name }}
+  name: {{ rethinkdb_name }}
+spec:
+  ports:
+  - name: "10080"
+    port: 10080
+    targetPort: 8080
+  - name: "28015"
+    port: 28015
+    targetPort: 28015
+  selector:
+    app: {{ rethinkdb_name }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+type: Opaque
+data:
+{% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
+  bucketLocation: {{ rethinkdb_backup_restore_sidecar_gcp_backup_location | b64encode }}
+  projectID: {{ rethinkdb_backup_restore_sidecar_gcp_project_id  | b64encode }}
+  serviceaccount.json: {{ rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json | b64encode }}
+{% endif %}
+{% if rethinkdb_expose_frontend %}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ rethinkdb_name }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: {{ rethinkdb_ingress_dns }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ rethinkdb_name }}
+          servicePort: 10080
+{% endif %}

@@ -1,0 +1,69 @@
+---
+- name: Deploy metal control plane
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_chart_custom_folder: "{{ ansible_parent_role_paths[0] }}/files/metal-control-plane"
+    helm_chart: "./metal-control-plane"
+    helm_release_name: metal-control-plane
+    helm_target_namespace: "{{ metal_control_plane_namespace }}"
+    helm_value_file_template: metal-values.j2
+    # deployment can take a while due to post install hooks, therefore increasing the timeout for this chart...
+    helm_timeout: 600s
+    helm_chart_inject_config_hash: yes
+
+- name: Patch tcp-services in ingress controller
+  k8s:
+    api_version: v1
+    kind: ConfigMap
+    namespace: ingress-nginx
+    name: tcp-services
+    definition:
+      data:
+        5222: "{{ metal_control_plane_namespace }}/metal-console:10001"
+  when: metal_expose_ingress_service_ports
+
+- name: Patch udp-services in ingress controller
+  k8s:
+    api_version: v1
+    kind: ConfigMap
+    namespace: ingress-nginx
+    name: udp-services
+    definition:
+      data:
+        5222: "{{ metal_control_plane_namespace }}/metal-console:10001"
+  when: metal_expose_ingress_service_ports
+
+- name: Expose tcp services in ingress controller
+  k8s:
+    api_version: v1
+    kind: Service
+    namespace: ingress-nginx
+    name: ingress-nginx
+    definition:
+      spec:
+        ports:
+        - name: http
+          port: 80
+          targetPort: http
+        - name: https
+          port: 443
+          targetPort: https
+        - name: metal-control-plane-console
+          port: 5222
+          protocol: TCP
+          targetPort: 5222
+  when: metal_expose_ingress_service_ports
+
+# for automation tests, we need to wait until all the services are ready...
+- name: Wait until api is available
+  uri:
+    url: "{{ metal_check_api_health_endpoint }}"
+    follow_redirects: safe
+    status_code: 200
+    validate_certs: no
+  register: result
+  until: result is success
+  retries: 60
+  delay: 10
+  when: metal_check_api_available

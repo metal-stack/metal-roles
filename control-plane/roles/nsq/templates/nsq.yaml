@@ -1,0 +1,210 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "{{ metal_control_plane_namespace }}"
+  labels:
+    app: "metal-stack-control-plane"
+    name: "{{ metal_control_plane_namespace }}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nsqd
+  name: nsqd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nsqd
+  template:
+    metadata:
+      labels:
+        app: nsqd
+    spec:
+      containers:
+      - args:
+        - /nsqd
+        - -log-level={{ nsq_log_level }}
+        - -lookupd-tcp-address=nsq-lookupd:4160
+        - -broadcast-address={{ nsq_broadcast_address }}
+        - -mem-queue-size=0
+        - -data-path=/data
+{% if nsq_tls_enabled %}
+        - -tls-required=tcp-https
+        - -tls-client-auth-policy=require-verify
+        - -tls-root-ca-file=/certs/ca_cert.pem
+        - -tls-cert=/certs/client_cert.pem
+        - -tls-key=/certs/client_key.pem
+{% endif %}
+        image: {{ nsq_image_name }}:{{ nsq_image_tag }}
+        name: nsqd
+        ports:
+        - containerPort: 4150
+        - containerPort: 4151
+{% if nsq_set_resource_limits %}
+        resources: {{ nsq_nsqd_resources | to_json }}
+{% endif %}
+        volumeMounts:
+        - name: nsqd
+          mountPath: /data
+        - name: nsqd-certs
+          mountPath: /certs
+          readOnly: true
+      - name: nsq-admin
+        image: {{ nsq_image_name }}:{{ nsq_image_tag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4171
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 30
+        args:
+          - /nsqadmin
+          - -log-level={{ nsq_log_level }}
+          - -lookupd-http-address=nsq-lookupd:4161
+        volumeMounts:
+        - name: nsqd-etc-nsswitch-conf
+          mountPath: /etc/nsswitch.conf
+          subPath: nsswitch.conf
+      hostAliases:
+      - hostnames:
+        - {{ nsq_broadcast_address }}
+        ip: 127.0.0.1
+      volumes:
+      - name: nsqd
+        persistentVolumeClaim:
+          claimName: nsqd
+      - name: nsqd-certs
+        secret:
+          secretName: nsqd
+      - name: nsqd-etc-nsswitch-conf
+        configMap:
+          name: nsqd-etc-nsswitch-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nsqd
+  name: nsqd
+spec:
+  ports:
+  - name: "4150"
+    port: 4150
+    targetPort: 4150
+  - name: "4151"
+    port: 4151
+    targetPort: 4151
+  - name: "4171"
+    port: 4171
+    targetPort: 4171
+  selector:
+    app: nsqd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nsq-lookupd
+  name: nsq-lookupd
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nsq-lookupd
+  template:
+    metadata:
+      labels:
+        app: nsq-lookupd
+    spec:
+      containers:
+      - args:
+        - /nsqlookupd
+        - -log-level={{ nsq_log_level }}
+        - -broadcast-address={{ nsq_broadcast_address }}
+        image: {{ nsq_image_name }}:{{ nsq_image_tag }}
+        name: nsq-lookupd
+        ports:
+        - containerPort: 4160
+        - containerPort: 4161
+{% if nsq_set_resource_limits %}
+        resources: {{ nsq_nsq_lookupd_resources | to_json }}
+{% endif %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: nsqd
+  name: nsqd
+data:
+  client_key.pem: {{ nsq_certs_client_key | b64encode }}
+  client_cert.pem: {{ nsq_certs_client_cert | b64encode }}
+  ca_cert.pem: {{ nsq_certs_ca_cert | b64encode }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: nsqd
+  name: nsqd
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ nsq_nsqd_data_size }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nsq-lookupd
+  name: nsq-lookupd
+spec:
+  ports:
+  - name: "4160"
+    port: 4160
+    targetPort: 4160
+  - name: "4161"
+    port: 4161
+    targetPort: 4161
+  selector:
+    app: nsq-lookupd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nsqadmin
+  labels:
+    app: nsq-admin
+spec:
+  ports:
+  - port: 4171
+    targetPort: 4171
+    name: http
+  selector:
+    app: nsq-admin
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nsqd-etc-nsswitch-conf
+data:
+  nsswitch.conf: |
+    # https://github.com/golang/go/issues/22846#issuecomment-346377144
+    hosts: files dns

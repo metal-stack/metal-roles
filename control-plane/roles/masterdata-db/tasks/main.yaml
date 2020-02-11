@@ -1,0 +1,6 @@
+---
+- name: Deploy masterdata db
+  include_role:
+    name: metal-roles/control-plane/roles/postgres-backup-restore
+  vars:
+    postgres_name: masterdata-db

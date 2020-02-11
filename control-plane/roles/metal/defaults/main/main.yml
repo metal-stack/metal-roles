@@ -1,0 +1,62 @@
+---
+metal_expose_ingress_service_ports: yes
+metal_check_api_available: yes
+
+metal_set_resource_limits: yes
+
+metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api_base_path }}v1/health
+
+# images
+metal_api_image_name: registry.fi-ts.io/metal/metal-api
+metal_api_image_tag: latest
+metalctl_image_name: registry.fi-ts.io/metal/metalctl
+metalctl_image_tag: latest
+metal_console_image_name: registry.fi-ts.io/metal/metal-console
+metal_console_image_tag: latest
+masterdata_api_image_name: registry.fi-ts.io/cloud-native/masterdata-api
+masterdata_api_image_tag: latest
+
+# metal-api
+metal_api_replicas: 3
+metal_api_base_path: "/metal/"
+metal_api_dex_address:
+metal_api_db_address: metal-db
+metal_api_db_password: change-me
+metal_api_ipam_db_address: ipam-db
+metal_api_ipam_db_port: 5432
+metal_api_ipam_db_name: postgres
+metal_api_ipam_db_user: postgres
+metal_api_ipam_db_password: change-me
+metal_api_nsq_tcp_address: "{{ metal_control_plane_ingress_dns }}:4150"
+metal_api_nsq_http_address: "nsqd:4151"
+metal_api_nsq_tls_enabled: true
+metal_api_nsq_tls_secret_name: nsqd
+metal_api_view_key: change-me
+metal_api_edit_key: change-me
+metal_api_admin_key: change-me
+metal_api_sizes: []
+metal_api_images: []
+metal_api_partitions: []
+metal_api_networks: []
+metal_api_ips: []
+
+# masterdata-api
+metal_masterdata_api_db_address: masterdata-db
+metal_masterdata_api_db_port: 5432
+metal_masterdata_api_db_name: postgres
+metal_masterdata_api_db_user: postgres
+metal_masterdata_api_db_password: change-me
+metal_masterdata_api_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
+metal_masterdata_api_tls_server_key:
+metal_masterdata_api_tls_server_cert:
+metal_masterdata_api_hmac: change-me
+metal_masterdata_api_tenants: []
+metal_masterdata_api_projects: []
+
+# metal-console
+metal_console_replicas: 3
+metal_mgmt_services: {}
+
+# ingress
+metal_api_ingress: {}
+metal_api_ingress_dns: api.{{ metal_control_plane_ingress_dns }}

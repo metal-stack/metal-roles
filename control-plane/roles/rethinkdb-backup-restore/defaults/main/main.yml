@@ -1,0 +1,28 @@
+---
+rethinkdb_image_name: rethinkdb
+rethinkdb_image_tag: 2.4.0
+
+rethinkdb_name: rethinkdb
+rethinkdb_storage_size: 5Gi
+rethinkdb_password: change-me
+
+rethinkdb_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
+rethinkdb_backup_restore_sidecar_image_tag: latest
+rethinkdb_backup_restore_sidecar_provider: local
+rethinkdb_backup_restore_sidecar_backup_interval: 180s
+rethinkdb_backup_restore_sidecar_log_level: debug
+
+rethinkdb_backup_restore_sidecar_gcp_backup_location:
+rethinkdb_backup_restore_sidecar_gcp_project_id:
+rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json:
+
+rethinkdb_expose_frontend: no
+rethinkdb_ingress_dns: rethinkdb.{{ metal_control_plane_ingress_dns }}
+
+rethinkdb_resources:
+  requests:
+    memory: "2Gi"
+    cpu: "200m"
+  limits:
+    memory: "4Gi"
+    cpu: "500m"
