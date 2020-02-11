@@ -1,0 +1,21 @@
+---
+- name: deploy pixiecore
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: pixiecore
+    systemd_docker_image_name: "{{ pixiecore_image_name }}"
+    systemd_docker_image_tag: "{{ pixiecore_image_tag }}"
+    systemd_docker_cpu_period: 50000
+    systemd_docker_cpu_quota: 10000
+    systemd_docker_memory: 256m
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    # Because Pixiecore needs to listen for DHCP traffic,
+    # it has to run with access to the host's networking stack.
+    # Both Rkt and Docker do this with the --net=host commandline flag.
+    # https://github.com/google/netboot/tree/master/pixiecore
+    systemd_docker_network: host
+    # With the flag --dhcp-no-bind Pixiecore does not bind to the DHCP port and only listens for Pixie-Requests
+    # This enables to use an existing DHCP server
+    systemd_docker_command: ["api", "http://localhost:4242", "--debug", "--dhcp-no-bind"]
