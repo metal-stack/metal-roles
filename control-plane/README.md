@@ -1,5 +1,7 @@
 # control-plane
 
+Contains roles for deploying the metal-control-plane.
+
 ## Requirements
 
 - [ansible-common](https://github.com/metal-stack/ansible-common)
