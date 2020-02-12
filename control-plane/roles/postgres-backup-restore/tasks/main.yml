@@ -1,5 +1,5 @@
 ---
-- name: Deploy rethinkdb
+- name: Deploy postgres (backup-restore)
   k8s:
     definition: "{{ lookup('template', 'postgres.yaml') }}"
     namespace: "{{ metal_control_plane_namespace }}"

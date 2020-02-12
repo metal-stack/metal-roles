@@ -1,0 +1,29 @@
+---
+masterdata_db_name: masterdata-db
+
+masterdata_db_image_name: postgres
+masterdata_db_image_tag: 12-alpine
+
+masterdata_db_storage_size: 5Gi
+masterdata_db_db: masterdata
+masterdata_db_user: postgres
+masterdata_db_password: change-me
+
+masterdata_db_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
+masterdata_db_backup_restore_sidecar_image_tag: latest
+masterdata_db_backup_restore_sidecar_provider: local
+masterdata_db_backup_restore_sidecar_backup_interval: 180s
+masterdata_db_backup_restore_sidecar_log_level: debug
+masterdata_db_backup_restore_sidecar_object_prefix: "{{ masterdata_db_name }}-{{ metal_control_plane_stage_name }}"
+
+masterdata_db_backup_restore_sidecar_gcp_backup_location:
+masterdata_db_backup_restore_sidecar_gcp_project_id:
+masterdata_db_backup_restore_sidecar_gcp_serviceaccount_json:
+
+masterdata_db_resources:
+  requests:
+    memory: "128Mi"
+    cpu: "20m"
+  limits:
+    memory: "256Mi"
+    cpu: "100m"

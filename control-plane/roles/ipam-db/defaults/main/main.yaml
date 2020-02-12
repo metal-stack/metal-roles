@@ -1,0 +1,29 @@
+---
+ipam_db_name: ipam-db
+
+ipam_db_image_name: postgres
+ipam_db_image_tag: 12-alpine
+
+ipam_db_storage_size: 5Gi
+ipam_db_db: ipam
+ipam_db_user: postgres
+ipam_db_password: change-me
+
+ipam_db_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
+ipam_db_backup_restore_sidecar_image_tag: latest
+ipam_db_backup_restore_sidecar_provider: local
+ipam_db_backup_restore_sidecar_backup_interval: 180s
+ipam_db_backup_restore_sidecar_log_level: debug
+ipam_db_backup_restore_sidecar_object_prefix: "{{ ipam_db_name }}-{{ metal_control_plane_stage_name }}"
+
+ipam_db_backup_restore_sidecar_gcp_backup_location:
+ipam_db_backup_restore_sidecar_gcp_project_id:
+ipam_db_backup_restore_sidecar_gcp_serviceaccount_json:
+
+ipam_db_resources:
+  requests:
+    memory: "128Mi"
+    cpu: "20m"
+  limits:
+    memory: "256Mi"
+    cpu: "100m"

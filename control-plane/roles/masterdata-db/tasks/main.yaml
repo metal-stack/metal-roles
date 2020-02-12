@@ -3,4 +3,20 @@
   include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
   vars:
-    postgres_name: masterdata-db
+    postgres_name: "{{ masterdata_db_name }}"
+    postgres_image_name: "{{ masterdata_db_image_name }}"
+    postgres_image_tag: "{{ masterdata_db_image_tag }}"
+    postgres_storage_size: "{{ masterdata_db_storage_size }}"
+    postgres_db: "{{ masterdata_db_db }}"
+    postgres_user: "{{ masterdata_db_user }}"
+    postgres_password: "{{ masterdata_db_password }}"
+    postgres_backup_restore_sidecar_image_name: "{{ masterdata_db_backup_restore_sidecar_image_name }}"
+    postgres_backup_restore_sidecar_image_tag: "{{ masterdata_db_backup_restore_sidecar_image_tag }}"
+    postgres_backup_restore_sidecar_provider: "{{ masterdata_db_backup_restore_sidecar_provider }}"
+    postgres_backup_restore_sidecar_backup_interval: "{{ masterdata_db_backup_restore_sidecar_backup_interval }}"
+    postgres_backup_restore_sidecar_log_level: "{{ masterdata_db_backup_restore_sidecar_log_level }}"
+    postgres_backup_restore_sidecar_object_prefix: "{{ masterdata_db_backup_restore_sidecar_object_prefix }}"
+    postgres_backup_restore_sidecar_gcp_backup_location: "{{ masterdata_db_backup_restore_sidecar_gcp_backup_location }}"
+    postgres_backup_restore_sidecar_gcp_project_id: "{{ masterdata_db_backup_restore_sidecar_gcp_project_id }}"
+    postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ masterdata_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    postgres_resources: "{{ masterdata_db_resources }}"

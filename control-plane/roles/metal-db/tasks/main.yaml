@@ -3,4 +3,20 @@
   include_role:
     name: metal-roles/control-plane/roles/rethinkdb-backup-restore
   vars:
-    rethinkdb_name: metal-db
+    rethinkdb_name: "{{ metal_db_name }}"
+    rethinkdb_image_name: "{{ metal_db_image_name }}"
+    rethinkdb_image_tag: "{{ metal_db_image_tag }}"
+    rethinkdb_name: "{{ metal_db_name }}"
+    rethinkdb_storage_size: "{{ metal_db_storage_size }}"
+    rethinkdb_password: "{{ metal_db_password }}"
+    rethinkdb_backup_restore_sidecar_image_name: "{{ metal_db_backup_restore_sidecar_image_name }}"
+    rethinkdb_backup_restore_sidecar_image_tag: "{{ metal_db_backup_restore_sidecar_image_tag }}"
+    rethinkdb_backup_restore_sidecar_provider: "{{ metal_db_backup_restore_sidecar_provider }}"
+    rethinkdb_backup_restore_sidecar_backup_interval: "{{ metal_db_backup_restore_sidecar_backup_interval }}"
+    rethinkdb_backup_restore_sidecar_log_level: "{{ metal_db_backup_restore_sidecar_log_level }}"
+    rethinkdb_backup_restore_sidecar_gcp_backup_location: "{{ metal_db_backup_restore_sidecar_gcp_backup_location }}"
+    rethinkdb_backup_restore_sidecar_gcp_project_id: "{{ metal_db_backup_restore_sidecar_gcp_project_id }}"
+    rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json: "{{ metal_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    rethinkdb_expose_frontend: "{{ metal_db_expose_frontend }}"
+    rethinkdb_ingress_dns: "{{ metal_db_ingress_dns }}"
+    rethinkdb_resources: "{{ metal_db_resources }}"

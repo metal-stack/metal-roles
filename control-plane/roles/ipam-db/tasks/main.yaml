@@ -3,4 +3,20 @@
   include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
   vars:
-    postgres_name: ipam-db
+    postgres_name: "{{ ipam_db_name }}"
+    postgres_image_name: "{{ ipam_db_image_name }}"
+    postgres_image_tag: "{{ ipam_db_image_tag }}"
+    postgres_storage_size: "{{ ipam_db_storage_size }}"
+    postgres_db: "{{ ipam_db_db }}"
+    postgres_user: "{{ ipam_db_user }}"
+    postgres_password: "{{ ipam_db_password }}"
+    postgres_backup_restore_sidecar_image_name: "{{ ipam_db_backup_restore_sidecar_image_name }}"
+    postgres_backup_restore_sidecar_image_tag: "{{ ipam_db_backup_restore_sidecar_image_tag }}"
+    postgres_backup_restore_sidecar_provider: "{{ ipam_db_backup_restore_sidecar_provider }}"
+    postgres_backup_restore_sidecar_backup_interval: "{{ ipam_db_backup_restore_sidecar_backup_interval }}"
+    postgres_backup_restore_sidecar_log_level: "{{ ipam_db_backup_restore_sidecar_log_level }}"
+    postgres_backup_restore_sidecar_object_prefix: "{{ ipam_db_backup_restore_sidecar_object_prefix }}"
+    postgres_backup_restore_sidecar_gcp_backup_location: "{{ ipam_db_backup_restore_sidecar_gcp_backup_location }}"
+    postgres_backup_restore_sidecar_gcp_project_id: "{{ ipam_db_backup_restore_sidecar_gcp_project_id }}"
+    postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ ipam_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    postgres_resources: "{{ ipam_db_resources }}"
