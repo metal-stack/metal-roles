@@ -2,6 +2,7 @@
 set_resource_limits: true
 
 zap_encoding: json
+zap_level: debug
 
 images:
   metal_api:
@@ -103,6 +104,8 @@ metal_console:
 
 mgmtservices: []
 
+ingress_public_dns:
+deploy_ingress: true
 ingress:
   tls:
     enabled: false

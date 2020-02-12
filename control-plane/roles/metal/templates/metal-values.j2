@@ -1,7 +1,8 @@
 ---
-ingress_public_dns: "{{ metal_api_ingress_dns }}"
-
 set_resource_limits: {{ metal_set_resource_limits }}
+
+zap_encoding: {{ metal_log_encoding }}
+zap_level: {{ metal_log_level }}
 
 provider_tenant: {{ metal_masterdata_api_provider_tenant }}
 
@@ -104,4 +105,6 @@ masterdata_api:
 
 mgmtservices: {{ metal_mgmt_services | to_json }}
 
-ingress: {{ metal_api_ingress | to_json }}
+ingress_public_dns: "{{ metal_ingress_dns }}"
+deploy_ingress: {{ metal_deploy_ingress }}
+ingress: {{ metal_ingress | to_json }}

@@ -6,6 +6,9 @@ metal_set_resource_limits: yes
 
 metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api_base_path }}v1/health
 
+metal_log_level: debug
+metal_log_encoding: json
+
 # images
 metal_api_image_name: registry.fi-ts.io/metal/metal-api
 metal_api_image_tag: latest
@@ -56,7 +59,15 @@ metal_masterdata_api_projects: []
 # metal-console
 metal_console_replicas: 3
 metal_mgmt_services: {}
+# expected metal_mgmt_services data structure looks like this:
+# metal_mgmt_services:
+# - id: partition-a-mgmt-service
+#   port: port-of-the-reverse-proxies
+#   ips:
+#     - ip-of-your-mgmt-server-01
+#     - ip-of-your-mgmt-server-02
 
 # ingress
-metal_api_ingress: {}
-metal_api_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
+metal_deploy_ingress: true
+metal_ingress: {}
+metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}

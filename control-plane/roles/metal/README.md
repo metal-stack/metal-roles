@@ -18,8 +18,10 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | ---------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | metal_expose_ingress_service_ports |           | Exposes tcp and udp services over nginx-ingress, requires [nginx-ingress](https://github.com/kubernetes/ingress-nginx) to be setup |
 | metal_check_api_available          |           | Checks whether the metal-api is reachable from the outside after deployment                                                        |
-| metal_check_api_health_endpoint    |           | The endpoint to call if the metal-api is rechable from the outside after deployment                                                |
+| metal_check_api_health_endpoint    |           | The endpoint to call if the metal-api is reachable from the outside after deployment                                               |
 | metal_set_resource_limits          |           | Deploys metal components with or without resource limits (possibly disable for development environments)                           |
+| metal_log_level                    |           | The log level of the control plane components                                                                                      |
+| metal_log_encoding                 |           | The output format of the logger                                                                                                    |
 
 ### Images
 
@@ -88,7 +90,8 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 # Ingress
 
-| Name                  | Mandatory | Description                                                                |
-| --------------------- | --------- | -------------------------------------------------------------------------- |
-| metal_api_ingress     |           | Alternative configuration of the ingress (can be used for configuring TLS) |
-| metal_api_ingress_dns |           | The virtual host to reach the metal-api on                                 |
+| Name                 | Mandatory | Description                                                                |
+| -------------------- | --------- | -------------------------------------------------------------------------- |
+| metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
+| metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
+| metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |

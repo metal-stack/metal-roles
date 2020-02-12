@@ -37,8 +37,10 @@ spec:
         - containerPort: 8080
         - containerPort: 2112
         env:
+{{- if eq .Values.zap_level "debug" }}
         - name: DEBUG
           value: "1"
+{{- end }}
         - name: METAL_API_BIND_ADDR
           value: 0.0.0.0
         - name: METAL_API_BASE_PATH
@@ -46,7 +48,7 @@ spec:
         - name: ZAP_ENCODING
           value: {{ .Values.zap_encoding }}
         - name: ZAP_LEVEL
-          value: debug
+          value: {{ .Values.zap_level }}
         - name: METAL_API_DB_ADDR
           value: {{ .Values.metal_api.db_address }}
         - name: METAL_API_DB_PASSWORD
@@ -161,12 +163,14 @@ spec:
         command: ["/metal-api"]
         args: ["initdb"]
         env:
+{{- if eq .Values.zap_level "debug" }}
         - name: DEBUG
           value: "1"
+{{- end }}
         - name: ZAP_ENCODING
           value: {{ .Values.zap_encoding }}
         - name: ZAP_LEVEL
-          value: debug
+          value: {{ .Values.zap_level }}
         - name: METAL_API_DB_ADDR
           value: {{ .Values.metal_api.db_address }}
         - name: METAL_API_DB_PASSWORD
@@ -371,12 +375,14 @@ spec:
             - /metal-api
             - resurrect-machines
             env:
+{{- if eq .Values.zap_level "debug" }}
             - name: DEBUG
               value: "1"
+{{- end }}
             - name: ZAP_ENCODING
               value: {{ .Values.zap_encoding }}
             - name: ZAP_LEVEL
-              value: debug
+              value: {{ .Values.zap_level }}
             - name: METAL_API_DB_ADDR
               value: {{ .Values.metal_api.db_address }}
             - name: METAL_API_DB_PASSWORD

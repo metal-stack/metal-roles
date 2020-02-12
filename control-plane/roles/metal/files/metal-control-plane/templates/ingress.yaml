@@ -1,3 +1,4 @@
+{{- if .Values.deploy_ingress }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -30,3 +31,4 @@ spec:
         backend:
           serviceName: "metal-api"
           servicePort: {{ .Values.ports.metal_api }}
+{{- end }}
