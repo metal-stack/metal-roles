@@ -157,7 +157,7 @@ data:
     log-level: {{ rethinkdb_backup_restore_sidecar_log_level }}
     backup-provider: {{ rethinkdb_backup_restore_sidecar_provider }}
     rethinkdb-passwordfile: /rethinkdb-secret/rethinkdb-password.txt
-    backup-cron-schedule: {{ rethinkdb_backup_restore_sidecar_backup_cron_schedule }}
+    backup-cron-schedule: "{{ rethinkdb_backup_restore_sidecar_backup_cron_schedule }}"
     object-prefix: rethinkdb-{{ environment_name }}
 ---
 apiVersion: v1
