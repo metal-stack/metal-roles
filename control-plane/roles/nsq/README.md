@@ -2,13 +2,13 @@
 
 Deploys [nsq](https://nsq.io/) in a standalone configuration.
 
-The admin console can be reached via sidecar by using port-forwarding:
+The admin console can be reached by using port-forwarding:
 
 ```
 kubectl port-forward -n metal-control-plane svc/nsqadmin 4171
 ```
 
-Using the sidecar configuration was the only possibility to make this possible as we enforce certificate authentication via the TCP port but do not use encrypted communication for in-cluster traffic via the HTTP endpoints.
+Adding nsqadmin as a sidecar into the nsqd pod was the only reasonable way to make the admin console work properly in this setup. This is because we enforce certificate authentication via the TCP port but do not use encrypted communication for in-cluster traffic via the HTTP endpoints, which nsadmin does not really like.
 
 As our control plane also requires non-HTTP ports to be exposed to the outside world, we currently use [tcp and udp service exposal of Kubernetes nginx-ingress](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/).
 
