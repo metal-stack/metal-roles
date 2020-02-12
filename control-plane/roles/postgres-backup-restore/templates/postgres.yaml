@@ -172,7 +172,7 @@ data:
     db: postgres
     log-level: {{ postgres_backup_restore_sidecar_log_level }}
     backup-provider: {{ postgres_backup_restore_sidecar_provider }}
-    backup-interval: {{ postgres_backup_restore_sidecar_backup_interval }}
+    backup-cron-schedule: {{ postgres_backup_restore_sidecar_backup_cron_schedule }}
     object-prefix: {{ postgres_backup_restore_sidecar_object_prefix }}
 ---
 apiVersion: v1

@@ -12,7 +12,7 @@ ipam_db_password: change-me
 ipam_db_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
 ipam_db_backup_restore_sidecar_image_tag: latest
 ipam_db_backup_restore_sidecar_provider: local
-ipam_db_backup_restore_sidecar_backup_interval: 180s
+ipam_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 ipam_db_backup_restore_sidecar_log_level: debug
 ipam_db_backup_restore_sidecar_object_prefix: "{{ ipam_db_name }}-{{ metal_control_plane_stage_name }}"
 

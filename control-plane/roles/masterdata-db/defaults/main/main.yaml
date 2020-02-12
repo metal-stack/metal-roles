@@ -12,7 +12,7 @@ masterdata_db_password: change-me
 masterdata_db_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
 masterdata_db_backup_restore_sidecar_image_tag: latest
 masterdata_db_backup_restore_sidecar_provider: local
-masterdata_db_backup_restore_sidecar_backup_interval: 180s
+masterdata_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 masterdata_db_backup_restore_sidecar_log_level: debug
 masterdata_db_backup_restore_sidecar_object_prefix: "{{ masterdata_db_name }}-{{ metal_control_plane_stage_name }}"
 
