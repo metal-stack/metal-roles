@@ -1,27 +1,24 @@
 ---
 - name: create nsq certs directory
   file:
-    path: /certs/nsq
+    path: "{{ metal_core_nsq_cert_dir }}"
     state: directory
-  when:
-  - metal_core_nsqd_ca_cert is defined
-  - metal_core_nsqd_client_cert is defined
+  when: metal_core_nsq_tls_enabled
 
-- name: copy nsq CA certificate
+- name: copy nsq certificates
   copy:
-    dest: "/certs/nsq/{{ metal_core_nsqd_ca_cert_filename }}"
+    dest: "{{ metal_core_nsq_cert_dir }}/{{ item.filename }}"
     mode: 0640
-    content: "{{ metal_core_nsqd_ca_cert }}"
+    content: "{{ item.content }}"
   no_log: yes
-  when: metal_core_nsqd_ca_cert is defined
-
-- name: copy nsq client certificate
-  copy:
-    dest: "/certs/nsq/{{ metal_core_nsqd_client_cert_filename }}"
-    mode: 0640
-    content: "{{ metal_core_nsqd_client_cert }}"
-  no_log: yes
-  when: metal_core_nsqd_client_cert is defined
+  loop:
+    - filename: ca.pem
+      content: "{{ metal_core_nsqd_ca_cert }}"
+    - filename: client.pem
+      content: "{{ metal_core_nsqd_client_cert }}"
+  loop_control:
+    label: "{{ item.filename }}"
+  when: metal_core_nsq_tls_enabled
 
 - name: deploy metal-core
   include_role:
@@ -35,46 +32,13 @@
     systemd_docker_memory: 256m
     # metal-core needs to figure out the switch ports, this is only possible from host network
     systemd_docker_network: host
-    systemd_docker_volumes:
-      - /etc/network/:/etc/network
-      - /etc/frr/:/etc/frr
-      - /var/run/dbus:/var/run/dbus
-      - /run/systemd/private:/run/systemd/private
-      - /certs/nsq:/certs:ro
+    systemd_docker_volumes: "{{ lookup('template', 'metal-core-volumes.j2') | from_yaml }}"
     systemd_docker_cap_add:
       - sys_admin
-    systemd_service_environment:
-      TZ: "{{ timezone }}"
-      METAL_CORE_CIDR: "{{ metal_core_cidr }}"
-      METAL_CORE_LOOPBACK_IP: "{{ lo }}"
-      METAL_CORE_PARTITION_ID: "{{ partition_id }}"
-      METAL_CORE_RACK_ID: "{{ partition_rack_id }}"
-      METAL_CORE_BIND_ADDRESS: 0.0.0.0
-      METAL_CORE_PORT: "{{ metal_core_port }}"
-      METAL_CORE_MACHINE_TOPIC: "{{ partition_id }}-machine"
-      METAL_CORE_SWITCH_TOPIC: "{{ partition_id }}-switch"
-      METAL_CORE_METAL_API_IP: "{{ api_addr }}"
-      METAL_CORE_METAL_API_PORT: "{{ api_port }}"
-      METAL_CORE_METAL_API_PROTOCOL: "{{ api_protocol }}"
-      METAL_CORE_METAL_API_BASEPATH: "{{ api_basepath }}"
-      METAL_CORE_HMAC_KEY: "{{ metal_core_hmac_key }}"
-      # The nsqd is running on another machine. The port is exposed to the vagrant host.
-      # Access is possible via the vagrant bridge ip.
-      METAL_CORE_MQ_ADDRESS: "{{ api_nsq_lookupd }}"
-      METAL_CORE_MQ_LOGLEVEL: "{{ metal_core_nsq_loglevel }}"
-      METAL_CORE_LOG_LEVEL: "{{ metal_core_log_level }}"
-      METAL_CORE_MQ_CA_CERT_FILE: "{{ '/certs/' + metal_core_nsqd_ca_cert_filename }}"
-      METAL_CORE_MQ_CLIENT_CERT_FILE: "{{ '/certs/' + metal_core_nsqd_client_cert_filename }}"
-      METAL_CORE_ASN: "{{ asn }}"
-      METAL_CORE_RECONFIGURE_SWITCH: "{{ reconfigure_switch }}"
-      METAL_CORE_RECONFIGURE_SWITCH_INTERVAL: "{{ reconfigure_switch_interval }}"
-      METAL_CORE_MANAGEMENT_GATEWAY: "{{ mgmt_gateway }}"
-      METAL_CORE_CHANGE_BOOT_ORDER: "{{ metal_core_change_boot_order }}"
-      METAL_CORE_ADDITIONAL_BRIDGE_VIDS: "{{ additional_bridge_vids | join(',') }}"
-      METAL_CORE_ADDITIONAL_BRIDGE_PORTS: "{{ additional_bridge_ports | join(',') }}"
+    systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
 
 - name: wait for metal-core to listen on port
   wait_for:
-    port: 4242
+    port: "{{ metal_core_port }}"
     timeout: 300
     msg: "metal-core did not come up"
