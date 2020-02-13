@@ -3,22 +3,3 @@
   k8s:
     definition: "{{ lookup('template', 'nsq.yaml') }}"
     namespace: "{{ metal_control_plane_namespace }}"
-
-- name: Expose tcp services in ingress controller
-  k8s:
-    api_version: v1
-    kind: Service
-    namespace: ingress-nginx
-    name: ingress-nginx
-    definition:
-      spec:
-        ports:
-        - name: nsq-lookupd
-          port: 4161
-          protocol: TCP
-          targetPort: 4161
-        - name: nsqd
-          port: 4150
-          protocol: TCP
-          targetPort: 4150
-  when: nsq_expose_ingress_service_ports

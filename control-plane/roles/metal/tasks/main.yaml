@@ -20,6 +20,8 @@
     name: tcp-services
     definition:
       data:
+        4161: "{{ metal_control_plane_namespace }}/nsq-lookupd:4161"
+        4150: "{{ metal_control_plane_namespace }}/nsqd:4150"
         5222: "{{ metal_control_plane_namespace }}/metal-console:10001"
   when: metal_expose_ingress_service_ports
 
@@ -49,6 +51,14 @@
         - name: https
           port: 443
           targetPort: https
+        - name: nsq-lookupd
+          port: 4161
+          protocol: TCP
+          targetPort: 4161
+        - name: nsqd
+          port: 4150
+          protocol: TCP
+          targetPort: 4150
         - name: metal-control-plane-console
           port: 5222
           protocol: TCP
