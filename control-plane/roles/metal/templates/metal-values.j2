@@ -11,14 +11,14 @@ images:
     image: "{{ metal_api_image_name }}"
     tag: "{{ metal_api_image_tag }}"
   metalctl:
-    image: "{{ metalctl_image_name }}"
-    tag: "{{ metalctl_image_tag }}"
+    image: "{{ metal_metalctl_image_name }}"
+    tag: "{{ metal_metalctl_image_tag }}"
   metal_console:
     image: "{{ metal_console_image_name }}"
     tag: "{{ metal_console_image_tag }}"
   masterdata_api:
-    image: "{{ masterdata_api_image_name }}"
-    tag: "{{ masterdata_api_image_tag }}"
+    image: "{{ metal_masterdata_api_image_name }}"
+    tag: "{{ metal_masterdata_api_image_tag }}"
 
 metal_console:
   replicas: "{{ metal_console_replicas }}"

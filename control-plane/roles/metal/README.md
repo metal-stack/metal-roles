@@ -31,12 +31,12 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | ------------------------- | --------- | ----------------------------------- |
 | metal_api_image_name      |           | Image version of the metal-api      |
 | metal_api_image_tag       |           | Image tag of the metal-api          |
-| metalctl_image_name       |           | Image version of the metalctl       |
-| metalctl_image_tag        |           | Image tag of the metalctl           |
+| metal_metalctl_image_name       |     | Image version of the metalctl       |
+| metal_metalctl_image_tag        |     | Image tag of the metalctl           |
 | metal_console_image_name  |           | Image version of the metal-console  |
 | metal_console_image_tag   |           | Image tag of the metal-console      |
-| masterdata_api_image_name |           | Image version of the masterdata-api |
-| masterdata_api_image_tag  |           | Image tag of the masterdata-api     |
+| metal_masterdata_api_image_name |     | Image version of the masterdata-api |
+| metal_masterdata_api_image_tag  |     | Image tag of the masterdata-api     |
 
 ### metal-api
 

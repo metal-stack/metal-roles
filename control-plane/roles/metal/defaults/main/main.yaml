@@ -12,12 +12,12 @@ metal_log_encoding: json
 # images
 metal_api_image_name: registry.fi-ts.io/metal/metal-api
 metal_api_image_tag: latest
-metalctl_image_name: registry.fi-ts.io/metal/metalctl
-metalctl_image_tag: latest
+metal_metalctl_image_name: registry.fi-ts.io/metal/metalctl
+metal_metalctl_image_tag: latest
 metal_console_image_name: registry.fi-ts.io/metal/metal-console
 metal_console_image_tag: latest
-masterdata_api_image_name: registry.fi-ts.io/cloud-native/masterdata-api
-masterdata_api_image_tag: latest
+metal_masterdata_api_image_name: registry.fi-ts.io/cloud-native/masterdata-api
+metal_masterdata_api_image_tag: latest
 
 # metal-api
 metal_api_replicas: 3
