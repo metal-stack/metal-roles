@@ -1,4 +1,10 @@
 ---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    that:
+      - pixiecore_image_tag is defined
+
 - name: deploy pixiecore
   include_role:
     name: ansible-common/roles/systemd-docker-service

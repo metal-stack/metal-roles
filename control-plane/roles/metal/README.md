@@ -25,18 +25,16 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### Images
 
-**You may pin all images to specific versions and not to `latest`.**
-
-| Name                      | Mandatory | Description                         |
-| ------------------------- | --------- | ----------------------------------- |
-| metal_api_image_name      |           | Image version of the metal-api      |
-| metal_api_image_tag       |           | Image tag of the metal-api          |
-| metal_metalctl_image_name       |     | Image version of the metalctl       |
-| metal_metalctl_image_tag        |     | Image tag of the metalctl           |
-| metal_console_image_name  |           | Image version of the metal-console  |
-| metal_console_image_tag   |           | Image tag of the metal-console      |
-| metal_masterdata_api_image_name |     | Image version of the masterdata-api |
-| metal_masterdata_api_image_tag  |     | Image tag of the masterdata-api     |
+| Name                            | Mandatory | Description                         |
+| ------------------------------- | --------- | ----------------------------------- |
+| metal_api_image_name            |           | Image version of the metal-api      |
+| metal_api_image_tag             | yes       | Image tag of the metal-api          |
+| metal_metalctl_image_name       |           | Image version of the metalctl       |
+| metal_metalctl_image_tag        | yes       | Image tag of the metalctl           |
+| metal_console_image_name        |           | Image version of the metal-console  |
+| metal_console_image_tag         | yes       | Image tag of the metal-console      |
+| metal_masterdata_api_image_name |           | Image version of the masterdata-api |
+| metal_masterdata_api_image_tag  | yes       | Image tag of the masterdata-api     |
 
 ### metal-api
 

@@ -7,7 +7,6 @@ metal_db_storage_size: 5Gi
 metal_db_password: change-me
 
 metal_db_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
-metal_db_backup_restore_sidecar_image_tag: latest
 metal_db_backup_restore_sidecar_provider: local
 metal_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 metal_db_backup_restore_sidecar_log_level: debug

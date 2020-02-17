@@ -1,6 +1,5 @@
 ---
 metal_core_image_name: registry.fi-ts.io/metal/metal-core
-metal_core_image_tag: latest
 metal_core_port: 4242
 metal_core_log_level: warn
 metal_core_hmac_key: change-me
