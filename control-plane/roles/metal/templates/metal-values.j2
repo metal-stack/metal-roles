@@ -4,8 +4,6 @@ set_resource_limits: {{ metal_set_resource_limits }}
 zap_encoding: {{ metal_log_encoding }}
 zap_level: {{ metal_log_level }}
 
-provider_tenant: {{ metal_masterdata_api_provider_tenant }}
-
 images:
   metal_api:
     image: "{{ metal_api_image_name }}"
@@ -71,6 +69,7 @@ metal_api:
 {% endfor %}
 
 masterdata_api:
+  provider_tenant: {{ metal_masterdata_api_provider_tenant }}
   db_address: {{ metal_masterdata_api_db_address }}
   db_port: {{ metal_masterdata_api_db_port }}
   db_name: {{ metal_masterdata_api_db_name }}
