@@ -94,8 +94,10 @@ spec:
 {{- end }}
         - name: METAL_API_MASTERDATA_HMAC
           value: "{{ .Values.masterdata_api.hmac }}"
-        - name: METAL_API_MASTERDATA_ADDR
-          value: masterdata-api:8443
+        - name: METAL_API_MASTERDATA_HOSTNAME
+          value: masterdata-api
+        - name: METAL_API_MASTERDATA_PORT
+          value: "{{ .Values.ports.masterdata_api }}"
         - name: METAL_API_MASTERDATA_CAPATH
           value: /certs/masterdata-api/ca.pem
         - name: METAL_API_MASTERDATA_CERTPATH
