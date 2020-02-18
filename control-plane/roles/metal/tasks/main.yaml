@@ -14,7 +14,6 @@
       - metal_masterdata_api_tls_client_cert is defined
       - metal_masterdata_api_tls_client_key is defined
 
-metal_masterdata_api_tls_cert_key:
 - name: Deploy metal control plane
   include_role:
     name: ansible-common/roles/helm-chart

@@ -15,6 +15,14 @@ metal_metalctl_image_name: registry.fi-ts.io/metal/metalctl
 metal_console_image_name: metalstack/metal-console
 metal_masterdata_api_image_name: metalstack/masterdata-api
 
+# service ports
+metal_api_port: 8080
+metal_api_metrics_port: 2112
+metal_masterdata_api_port: 8443
+metal_masterdata_api_metrics_port: 2113
+metal_console_port: 10001
+metal_bmc_reverse_proxy_port: 3333
+
 # metal-api
 metal_api_replicas: 3
 metal_api_base_path: "/metal/"

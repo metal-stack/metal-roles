@@ -21,6 +21,14 @@ images:
 metal_console:
   replicas: "{{ metal_console_replicas }}"
 
+ports:
+  metal_api: {{ metal_api_port }}
+  metal_api_metrics: {{ metal_api_metrics_port }}
+  masterdata_api: {{ metal_masterdata_api_port }}
+  masterdata_api_metrics: {{ metal_masterdata_api_metrics_port }}
+  metal_console: {{ metal_console_port }}
+  bmc_reverse_proxy: {{ metal_bmc_reverse_proxy_port }}
+
 metal_api:
   db_address: "{{ metal_api_db_address }}"
   db_password: "{{ metal_api_db_password }}"

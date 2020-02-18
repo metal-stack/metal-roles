@@ -6,16 +6,16 @@ zap_level: debug
 
 images:
   metal_api:
-    image: registry.fi-ts.io/metal/metal-api
+    image: metalstack/metal-api
     tag: latest
   masterdata_api:
-    image: registry.fi-ts.io/cloud-native/masterdata-api
+    image: metalstack/masterdata-api
     tag: latest
   metalctl:
     image: registry.fi-ts.io/metal/metalctl
     tag: latest
   metal_console:
-    image: registry.fi-ts.io/metal/metal-console
+    image: metalstack/metal-console
     tag: latest
 
 resources:
@@ -44,6 +44,8 @@ resources:
 ports:
   metal_api: 8080
   metal_api_metrics: 2112
+  masterdata_api: 8443
+  masterdata_api_metrics: 2113
   metal_console: 10001
   bmc_reverse_proxy: 3333
 

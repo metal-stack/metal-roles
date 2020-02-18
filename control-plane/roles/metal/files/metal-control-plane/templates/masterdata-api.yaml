@@ -78,11 +78,11 @@ spec:
         - containerPort: 8443
         readinessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:8443", "-tls", "-tls-ca-cert=/certs/server.pem", "-tls-server-name=metal-pod.io"]
+            command: ["/bin/grpc_health_probe", "-addr=:8443", "-tls", "-tls-ca-cert=/certs/ca.pem", "-tls-client-cert=/certs/server.pem", "-tls-client-key=/certs/server-key.pem", "-tls-server-name=localhost"]
           initialDelaySeconds: 5
         livenessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:8443", "-tls", "-tls-ca-cert=/certs/server.pem", "-tls-server-name=metal-pod.io"]
+            command: ["/bin/grpc_health_probe", "-addr=:8443", "-tls", "-tls-ca-cert=/certs/ca.pem", "-tls-client-cert=/certs/server.pem", "-tls-client-key=/certs/server-key.pem", "-tls-server-name=localhost"]
           initialDelaySeconds: 10
         volumeMounts:
         - name: certs
@@ -113,11 +113,11 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: "8443"
-    port: 8443
+  - name: "{{ .Values.ports.masterdata_api }}"
+    port: {{ .Values.ports.masterdata_api }}
     targetPort: 8443
-  - name: "2112"
-    port: 2112
+  - name: "{{ .Values.ports.masterdata_api_metrics }}"
+    port: {{ .Values.ports.masterdata_api_metrics }}
     targetPort: 2112
   selector:
     app: masterdata-api

@@ -36,6 +36,18 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_image_name |           | Image version of the masterdata-api |
 | metal_masterdata_api_image_tag  | yes       | Image tag of the masterdata-api     |
 
+### Service Ports
+
+
+| Name                              | Mandatory | Description                                       |
+| --------------------------------- | --------- | ------------------------------------------------- |
+| metal_api_port                    |           | Service port of the metal-api                     |
+| metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
+| metal_masterdata_api_port         |           | Service port of the masterdata-api                |
+| metal_masterdata_api_metrics_port |           | Service port of the masterdata-api metrics server |
+| metal_console_port                |           | Service port of the metal-console                 |
+| metal_bmc_reverse_proxy_port      |           | Service port of the bmc reverse proxy             |
+
 ### metal-api
 
 | Name                          | Mandatory | Description                                                          |
