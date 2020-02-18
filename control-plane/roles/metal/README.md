@@ -25,18 +25,16 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### Images
 
-**You may pin all images to specific versions and not to `latest`.**
-
-| Name                      | Mandatory | Description                         |
-| ------------------------- | --------- | ----------------------------------- |
-| metal_api_image_name      |           | Image version of the metal-api      |
-| metal_api_image_tag       |           | Image tag of the metal-api          |
-| metal_metalctl_image_name       |     | Image version of the metalctl       |
-| metal_metalctl_image_tag        |     | Image tag of the metalctl           |
-| metal_console_image_name  |           | Image version of the metal-console  |
-| metal_console_image_tag   |           | Image tag of the metal-console      |
-| metal_masterdata_api_image_name |     | Image version of the masterdata-api |
-| metal_masterdata_api_image_tag  |     | Image tag of the masterdata-api     |
+| Name                            | Mandatory | Description                         |
+| ------------------------------- | --------- | ----------------------------------- |
+| metal_api_image_name            |           | Image version of the metal-api      |
+| metal_api_image_tag             | yes       | Image tag of the metal-api          |
+| metal_metalctl_image_name       |           | Image version of the metalctl       |
+| metal_metalctl_image_tag        | yes       | Image tag of the metalctl           |
+| metal_console_image_name        |           | Image version of the metal-console  |
+| metal_console_image_tag         | yes       | Image tag of the metal-console      |
+| metal_masterdata_api_image_name |           | Image version of the masterdata-api |
+| metal_masterdata_api_image_tag  | yes       | Image tag of the masterdata-api     |
 
 ### metal-api
 
@@ -75,8 +73,11 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_db_user         |           | The user of the masterdata database                              |
 | metal_masterdata_api_db_password     |           | The password of the masterdata database                          |
 | metal_masterdata_api_provider_tenant |           | The name of the provider tenant                                  |
-| metal_masterdata_api_tls_server_key  |           | Server certificate key for the GRPC server                       |
-| metal_masterdata_api_tls_server_cert |           | Server certificate for the GRPC server                           |
+| metal_masterdata_api_tls_ca          | yes       | CA certificate key for the GRPC server                           |
+| metal_masterdata_api_tls_cert        | yes       | Server certificate for the GRPC server                           |
+| metal_masterdata_api_tls_cert_key    | yes       | Server certificate key for the GRPC server                       |
+| metal_masterdata_api_tls_client_cert | yes       | Client certificate for the GRPC clients                          |
+| metal_masterdata_api_tls_client_key  | yes       | Client certificate key for the GRPC clients                      |
 | metal_masterdata_api_hmac            |           | The HMAC key of the masterdata-api used for API technical access |
 | metal_masterdata_api_tenants         |           | Starts up the masterdata-api with given list of tenants          |
 | metal_masterdata_api_projects        |           | Starts up the masterdata-api with the given list of projects     |

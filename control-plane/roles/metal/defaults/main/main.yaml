@@ -10,14 +10,10 @@ metal_log_level: debug
 metal_log_encoding: json
 
 # images
-metal_api_image_name: registry.fi-ts.io/metal/metal-api
-metal_api_image_tag: latest
+metal_api_image_name: metalstack/metal-api
 metal_metalctl_image_name: registry.fi-ts.io/metal/metalctl
-metal_metalctl_image_tag: latest
-metal_console_image_name: registry.fi-ts.io/metal/metal-console
-metal_console_image_tag: latest
-metal_masterdata_api_image_name: registry.fi-ts.io/cloud-native/masterdata-api
-metal_masterdata_api_image_tag: latest
+metal_console_image_name: metalstack/metal-console
+metal_masterdata_api_image_name: metalstack/masterdata-api
 
 # metal-api
 metal_api_replicas: 3
@@ -50,9 +46,8 @@ metal_masterdata_api_db_name: postgres
 metal_masterdata_api_db_user: postgres
 metal_masterdata_api_db_password: change-me
 metal_masterdata_api_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
-metal_masterdata_api_tls_server_key:
-metal_masterdata_api_tls_server_cert:
 metal_masterdata_api_hmac: change-me
+
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
 

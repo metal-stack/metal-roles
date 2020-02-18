@@ -10,7 +10,6 @@ postgres_user: postgres
 postgres_password: change-me
 
 postgres_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
-postgres_backup_restore_sidecar_image_tag: latest
 postgres_backup_restore_sidecar_provider: local
 postgres_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 postgres_backup_restore_sidecar_log_level: debug

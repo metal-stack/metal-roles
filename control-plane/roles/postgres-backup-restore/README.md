@@ -18,7 +18,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_user                                           |           | The user of the postgres database                                        |
 | postgres_password                                       |           | The password of the postgres database                                    |
 | postgres_backup_restore_sidecar_image_name              |           | Image version of the backup-restore-sidecar                              |
-| postgres_backup_restore_sidecar_image_tag               |           | Image tag of the backup-restore-sidecar                                  |
+| postgres_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                  |
 | postgres_backup_restore_sidecar_provider                |           | The backup provider                                                      |
 | postgres_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                 |
 | postgres_backup_restore_sidecar_log_level               |           | The log level of the sidecar                                             |

@@ -95,8 +95,11 @@ masterdata_api:
     name: metal-system
     description: Metal Master Project
     tenant_id: metal
-  server_key: ""
-  server_cert: ""
+  ca: ""
+  cert: ""
+  cert_key: ""
+  client_cert: ""
+  client_key: ""
   hmac: ""
 
 metal_console:

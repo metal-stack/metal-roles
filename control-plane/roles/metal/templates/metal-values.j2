@@ -4,8 +4,6 @@ set_resource_limits: {{ metal_set_resource_limits }}
 zap_encoding: {{ metal_log_encoding }}
 zap_level: {{ metal_log_level }}
 
-provider_tenant: {{ metal_masterdata_api_provider_tenant }}
-
 images:
   metal_api:
     image: "{{ metal_api_image_name }}"
@@ -71,6 +69,7 @@ metal_api:
 {% endfor %}
 
 masterdata_api:
+  provider_tenant: {{ metal_masterdata_api_provider_tenant }}
   db_address: {{ metal_masterdata_api_db_address }}
   db_port: {{ metal_masterdata_api_db_port }}
   db_name: {{ metal_masterdata_api_db_name }}
@@ -81,8 +80,11 @@ masterdata_api:
     ---
     {{ entity | to_nice_yaml | indent(width=4, first=false) }}
 {% endfor %}
-  server_key: "{{ metal_masterdata_api_tls_server_key | b64encode }}"
-  server_cert: "{{ metal_masterdata_api_tls_server_cert | b64encode }}"
+  ca: "{{ metal_masterdata_api_tls_ca | b64encode }}"
+  cert_key: "{{ metal_masterdata_api_tls_cert_key | b64encode }}"
+  cert: "{{ metal_masterdata_api_tls_cert | b64encode }}"
+  client_key: "{{ metal_masterdata_api_tls_client_key | b64encode }}"
+  client_cert: "{{ metal_masterdata_api_tls_client_cert | b64encode }}"
   hmac: "{{ metal_masterdata_api_hmac }}"
   projects: |
     ---

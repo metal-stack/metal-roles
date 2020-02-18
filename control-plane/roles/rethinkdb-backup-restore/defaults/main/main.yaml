@@ -7,7 +7,6 @@ rethinkdb_storage_size: 5Gi
 rethinkdb_password: change-me
 
 rethinkdb_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
-rethinkdb_backup_restore_sidecar_image_tag: latest
 rethinkdb_backup_restore_sidecar_provider: local
 rethinkdb_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 rethinkdb_backup_restore_sidecar_log_level: debug
