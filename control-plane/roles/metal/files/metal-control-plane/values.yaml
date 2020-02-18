@@ -99,6 +99,7 @@ masterdata_api:
   cert: ""
   cert_key: ""
   client_cert: ""
+  client_key: ""
   hmac: ""
 
 metal_console:

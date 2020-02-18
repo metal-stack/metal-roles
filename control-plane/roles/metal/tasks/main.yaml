@@ -12,6 +12,7 @@
       - metal_masterdata_api_tls_cert is defined
       - metal_masterdata_api_tls_cert_key is defined
       - metal_masterdata_api_tls_client_cert is defined
+      - metal_masterdata_api_tls_client_key is defined
 
 metal_masterdata_api_tls_cert_key:
 - name: Deploy metal control plane

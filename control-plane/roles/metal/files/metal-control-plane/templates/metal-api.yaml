@@ -100,6 +100,8 @@ spec:
           value: /certs/masterdata-api/ca.pem
         - name: METAL_API_MASTERDATA_CERTPATH
           value: /certs/masterdata-api/client.pem
+        - name: METAL_API_MASTERDATA_CERTKEYPATH
+          value: /certs/masterdata-api/client-key.pem
 {{- if .Values.set_resource_limits }}
         resources:
 {{ toYaml .Values.resources.metal_api | indent 10 }}

@@ -23,6 +23,7 @@ type: Opaque
 data:
   ca.pem: {{ .Values.masterdata_api.ca }}
   client.pem: {{ .Values.masterdata_api.client_cert }}
+  client-key.pem: {{ .Values.masterdata_api.client_key }}
   server-key.pem: {{ .Values.masterdata_api.cert_key }}
   server.pem: {{ .Values.masterdata_api.cert }}
 ---

@@ -83,6 +83,8 @@ masterdata_api:
   ca: "{{ metal_masterdata_api_tls_ca | b64encode }}"
   cert_key: "{{ metal_masterdata_api_tls_cert_key | b64encode }}"
   cert: "{{ metal_masterdata_api_tls_cert | b64encode }}"
+  client_key: "{{ metal_masterdata_api_tls_client_key | b64encode }}"
+  client_cert: "{{ metal_masterdata_api_tls_client_cert | b64encode }}"
   hmac: "{{ metal_masterdata_api_hmac }}"
   projects: |
     ---
