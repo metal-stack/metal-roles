@@ -21,8 +21,10 @@ metadata:
   name: masterdata-api-tls
 type: Opaque
 data:
-  server-key.pem: {{ .Values.masterdata_api.server_key }}
-  server.pem: {{ .Values.masterdata_api.server_cert }}
+  ca.pem: {{ .Values.masterdata_api.ca }}
+  client.pem: {{ .Values.masterdata_api.client_cert }}
+  server-key.pem: {{ .Values.masterdata_api.cert_key }}
+  server.pem: {{ .Values.masterdata_api.cert }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,9 +47,11 @@ spec:
       - name: masterdata-api
         image: {{ .Values.images.masterdata_api.image }}:{{ .Values.images.masterdata_api.tag }}
         env:
-          - name: MASTERDATA_API_SERVERCERT
+          - name: MASTERDATA_API_CA
+            value: /certs/ca.pem
+          - name: MASTERDATA_API_CERT
             value: /certs/server.pem
-          - name: MASTERDATA_API_SERVERKEY
+          - name: MASTERDATA_API_CERTKEY
             value: /certs/server-key.pem
           - name: MASTERDATA_API_DBHOST
             value: {{ .Values.masterdata_api.db_address }}

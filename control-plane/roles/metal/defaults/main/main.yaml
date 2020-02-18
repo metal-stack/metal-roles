@@ -46,9 +46,8 @@ metal_masterdata_api_db_name: postgres
 metal_masterdata_api_db_user: postgres
 metal_masterdata_api_db_password: change-me
 metal_masterdata_api_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
-metal_masterdata_api_tls_server_key:
-metal_masterdata_api_tls_server_cert:
 metal_masterdata_api_hmac: change-me
+
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
 

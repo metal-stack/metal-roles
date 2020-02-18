@@ -80,8 +80,9 @@ masterdata_api:
     ---
     {{ entity | to_nice_yaml | indent(width=4, first=false) }}
 {% endfor %}
-  server_key: "{{ metal_masterdata_api_tls_server_key | b64encode }}"
-  server_cert: "{{ metal_masterdata_api_tls_server_cert | b64encode }}"
+  ca: "{{ metal_masterdata_api_tls_ca | b64encode }}"
+  cert_key: "{{ metal_masterdata_api_tls_cert_key | b64encode }}"
+  cert: "{{ metal_masterdata_api_tls_cert | b64encode }}"
   hmac: "{{ metal_masterdata_api_hmac }}"
   projects: |
     ---

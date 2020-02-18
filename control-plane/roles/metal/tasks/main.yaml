@@ -8,7 +8,12 @@
       - metal_metalctl_image_tag is defined
       - metal_console_image_tag is defined
       - metal_masterdata_api_image_tag is defined
+      - metal_masterdata_api_tls_ca is defined
+      - metal_masterdata_api_tls_cert is defined
+      - metal_masterdata_api_tls_cert_key is defined
+      - metal_masterdata_api_tls_client_cert is defined
 
+metal_masterdata_api_tls_cert_key:
 - name: Deploy metal control plane
   include_role:
     name: ansible-common/roles/helm-chart

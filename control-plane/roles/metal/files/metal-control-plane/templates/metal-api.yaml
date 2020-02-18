@@ -96,8 +96,10 @@ spec:
           value: "{{ .Values.masterdata_api.hmac }}"
         - name: METAL_API_MASTERDATA_ADDR
           value: masterdata-api:8443
+        - name: METAL_API_MASTERDATA_CAPATH
+          value: /certs/masterdata-api/ca.pem
         - name: METAL_API_MASTERDATA_CERTPATH
-          value: /certs/masterdata-api/server.pem
+          value: /certs/masterdata-api/client.pem
 {{- if .Values.set_resource_limits }}
         resources:
 {{ toYaml .Values.resources.metal_api | indent 10 }}
