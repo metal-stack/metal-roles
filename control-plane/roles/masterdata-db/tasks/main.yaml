@@ -16,6 +16,7 @@
     postgres_backup_restore_sidecar_backup_cron_schedule: "{{ masterdata_db_backup_restore_sidecar_backup_cron_schedule }}"
     postgres_backup_restore_sidecar_log_level: "{{ masterdata_db_backup_restore_sidecar_log_level }}"
     postgres_backup_restore_sidecar_object_prefix: "{{ masterdata_db_backup_restore_sidecar_object_prefix }}"
+    postgres_backup_restore_sidecar_gcp_bucket_name: "{{ masterdata_db_backup_restore_sidecar_gcp_bucket_name }}"
     postgres_backup_restore_sidecar_gcp_backup_location: "{{ masterdata_db_backup_restore_sidecar_gcp_backup_location }}"
     postgres_backup_restore_sidecar_gcp_project_id: "{{ masterdata_db_backup_restore_sidecar_gcp_project_id }}"
     postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ masterdata_db_backup_restore_sidecar_gcp_serviceaccount_json }}"

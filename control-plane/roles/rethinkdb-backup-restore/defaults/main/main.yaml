@@ -11,6 +11,7 @@ rethinkdb_backup_restore_sidecar_provider: local
 rethinkdb_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 rethinkdb_backup_restore_sidecar_log_level: debug
 
+rethinkdb_backup_restore_sidecar_gcp_bucket_name:
 rethinkdb_backup_restore_sidecar_gcp_backup_location:
 rethinkdb_backup_restore_sidecar_gcp_project_id:
 rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json:

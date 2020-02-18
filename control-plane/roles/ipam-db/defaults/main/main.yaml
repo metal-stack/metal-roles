@@ -15,6 +15,7 @@ ipam_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 ipam_db_backup_restore_sidecar_log_level: debug
 ipam_db_backup_restore_sidecar_object_prefix: "{{ ipam_db_name }}-{{ metal_control_plane_stage_name }}"
 
+ipam_db_backup_restore_sidecar_gcp_bucket_name:
 ipam_db_backup_restore_sidecar_gcp_backup_location:
 ipam_db_backup_restore_sidecar_gcp_project_id:
 ipam_db_backup_restore_sidecar_gcp_serviceaccount_json:

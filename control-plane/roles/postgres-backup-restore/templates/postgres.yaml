@@ -192,6 +192,7 @@ metadata:
 type: Opaque
 data:
 {% if postgres_backup_restore_sidecar_provider == "gcp" %}
+  bucketName: {{ postgres_backup_restore_sidecar_gcp_bucket_name | b64encode }}
   bucketLocation: {{ postgres_backup_restore_sidecar_gcp_backup_location | b64encode }}
   projectID: {{ postgres_backup_restore_sidecar_gcp_project_id  | b64encode }}
   serviceaccount.json: {{ postgres_backup_restore_sidecar_gcp_serviceaccount_json | b64encode }}

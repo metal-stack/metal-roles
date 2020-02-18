@@ -194,6 +194,7 @@ metadata:
 type: Opaque
 data:
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
+  bucketName: {{ rethinkdb_backup_restore_sidecar_gcp_bucket_name | b64encode }}
   bucketLocation: {{ rethinkdb_backup_restore_sidecar_gcp_backup_location | b64encode }}
   projectID: {{ rethinkdb_backup_restore_sidecar_gcp_project_id  | b64encode }}
   serviceaccount.json: {{ rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json | b64encode }}

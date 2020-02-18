@@ -22,6 +22,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_backup_restore_sidecar_provider                |           | The backup provider                                                      |
 | postgres_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                 |
 | postgres_backup_restore_sidecar_log_level               |           | The log level of the sidecar                                             |
+| postgres_backup_restore_sidecar_gcp_bucket_name         |           | Bucket name  of the GCP bucket                                           | 
 | postgres_backup_restore_sidecar_gcp_backup_location     |           | Location of the GCP bucket                                               |
 | postgres_backup_restore_sidecar_gcp_project_id          |           | GCP project name                                                         |
 | postgres_backup_restore_sidecar_gcp_serviceaccount_json |           | GCP Serviceaccount JSON string (service account requires bucket access)  |

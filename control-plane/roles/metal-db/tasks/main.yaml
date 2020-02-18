@@ -13,6 +13,7 @@
     rethinkdb_backup_restore_sidecar_provider: "{{ metal_db_backup_restore_sidecar_provider }}"
     rethinkdb_backup_restore_sidecar_backup_cron_schedule: "{{ metal_db_backup_restore_sidecar_backup_cron_schedule }}"
     rethinkdb_backup_restore_sidecar_log_level: "{{ metal_db_backup_restore_sidecar_log_level }}"
+    rethinkdb_backup_restore_sidecar_gcp_bucket_name: "{{ metal_db_backup_restore_sidecar_gcp_bucket_name }}"
     rethinkdb_backup_restore_sidecar_gcp_backup_location: "{{ metal_db_backup_restore_sidecar_gcp_backup_location }}"
     rethinkdb_backup_restore_sidecar_gcp_project_id: "{{ metal_db_backup_restore_sidecar_gcp_project_id }}"
     rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json: "{{ metal_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
