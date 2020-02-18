@@ -45,7 +45,7 @@ metal_api:
       secret_name: "{{ metal_api_nsq_tls_secret_name }}"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
-  dex_address: "{{ dex.address }}"
+  dex_address: "{{ metal_api_dex_address }}"
   view_key: "{{ metal_api_view_key }}"
   edit_key: "{{ metal_api_edit_key }}"
   admin_key: "{{ metal_api_admin_key }}"
