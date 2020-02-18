@@ -26,7 +26,7 @@ spec:
         - sh
         - -c
         # IMPORTANT: the --directory needs to point to the exact sidecar data dir, otherwise the database will be restored to the wrong location
-        - backup-restore-sidecar wait && rethinkdb --bind all --directory /data --initial-password ${RETHINKDB_PASSWORD}
+        - backup-restore-sidecar wait && rethinkdb --bind all --directory /data/rethinkdb --initial-password ${RETHINKDB_PASSWORD}
         env:
         - name: RETHINKDB_PASSWORD
           valueFrom:
@@ -56,7 +56,7 @@ spec:
         args:
         - sh
         - -c
-        - backup-restore-sidecar start --log-level debug
+        - mkdir -p /data/rethinkdb && backup-restore-sidecar start --log-level debug
         env:
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
@@ -154,6 +154,7 @@ metadata:
 data:
   config.yaml: |
     db: rethinkdb
+    db-data-directory: /data/rethinkdb/
     log-level: {{ rethinkdb_backup_restore_sidecar_log_level }}
     backup-provider: {{ rethinkdb_backup_restore_sidecar_provider }}
     rethinkdb-passwordfile: /rethinkdb-secret/rethinkdb-password.txt
