@@ -60,7 +60,7 @@ spec:
         resources: {{ postgres_resources | to_json }}
         volumeMounts:
         - name: {{ postgres_name }}
-          mountPath: /var/lib/postgresql/data/pgdata
+          mountPath: /data
         - name: bin-provision
           subPath: backup-restore-sidecar
           mountPath: /usr/local/bin/backup-restore-sidecar
