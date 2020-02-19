@@ -31,7 +31,7 @@ metal_api_db_address: metal-db
 metal_api_db_password: change-me
 metal_api_ipam_db_address: ipam-db
 metal_api_ipam_db_port: 5432
-metal_api_ipam_db_name: postgres
+metal_api_ipam_db_name: ipam
 metal_api_ipam_db_user: postgres
 metal_api_ipam_db_password: change-me
 metal_api_nsq_tcp_address: "{{ metal_control_plane_ingress_dns }}:4150"
@@ -50,7 +50,7 @@ metal_api_ips: []
 # masterdata-api
 metal_masterdata_api_db_address: masterdata-db
 metal_masterdata_api_db_port: 5432
-metal_masterdata_api_db_name: postgres
+metal_masterdata_api_db_name: masterdata
 metal_masterdata_api_db_user: postgres
 metal_masterdata_api_db_password: change-me
 metal_masterdata_api_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
