@@ -1,5 +1,6 @@
 ---
 masterdata_db_name: masterdata-db
+masterdata_db_namespace: "{{ metal_control_plane_namespace }}"
 
 masterdata_db_image_name: postgres
 masterdata_db_image_tag: 12-alpine

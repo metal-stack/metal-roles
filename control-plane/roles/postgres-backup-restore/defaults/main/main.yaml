@@ -1,5 +1,6 @@
 ---
 postgres_name: postgres
+postgres_namespace: "{{ metal_control_plane_namespace }}"
 
 postgres_image_name: postgres
 postgres_image_tag: 12-alpine

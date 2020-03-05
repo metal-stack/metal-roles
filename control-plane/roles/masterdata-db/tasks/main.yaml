@@ -4,6 +4,7 @@
     name: metal-roles/control-plane/roles/postgres-backup-restore
   vars:
     postgres_name: "{{ masterdata_db_name }}"
+    postgres_namespace: "{{ masterdata_db_namespace }}"
     postgres_image_name: "{{ masterdata_db_image_name }}"
     postgres_image_tag: "{{ masterdata_db_image_tag }}"
     postgres_storage_size: "{{ masterdata_db_storage_size }}"

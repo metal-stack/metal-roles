@@ -1,5 +1,6 @@
 ---
 ipam_db_name: ipam-db
+ipam_db_namespace: "{{ metal_control_plane_namespace }}"
 
 ipam_db_image_name: postgres
 ipam_db_image_tag: 12-alpine
