@@ -337,8 +337,8 @@ metadata:
     app: metal-api
 spec:
   schedule: "*/1 * * * *"
-  successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
       backoffLimit: 3
@@ -346,17 +346,24 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-          - name: trigger-liveliness-evaluation
-            image: gempesaw/curl-jq
-            env:
-            - name: API_BASE_URL
-              value: http://metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+          - name: trigger-machine-liveliness
+            image: {{ .Values.images.metal_api.image }}:{{ .Values.images.metal_api.tag }}
             command:
-              - sh
-              - -c
-              - |
-                  set -exu
-                  curl -XPOST -H "accept: application/json" -H "Content-Type: application/json" -d "[ \"string\"]" --fail ${API_BASE_URL}v1/machine/liveliness
+            - /metal-api
+            - machine-liveliness
+            env:
+{{- if eq .Values.zap_level "debug" }}
+            - name: DEBUG
+              value: "1"
+{{- end }}
+            - name: ZAP_ENCODING
+              value: {{ .Values.zap_encoding }}
+            - name: ZAP_LEVEL
+              value: {{ .Values.zap_level }}
+            - name: METAL_API_DB_ADDR
+              value: {{ .Values.metal_api.db_address }}
+            - name: METAL_API_DB_PASSWORD
+              value: {{ .Values.metal_api.db_password }}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -366,7 +373,7 @@ metadata:
     app: metal-api
 spec:
   schedule: "0 * * * *"
-  successfulJobsHistoryLimit: 0
+  successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
