@@ -400,6 +400,16 @@ spec:
               value: {{ .Values.metal_api.db_address }}
             - name: METAL_API_DB_PASSWORD
               value: {{ .Values.metal_api.db_password }}
+            - name: METAL_API_IPAM_DB_ADDR
+              value: {{ .Values.metal_api.ipam_db_address }}
+            - name: METAL_API_IPAM_DB_PORT
+              value: "{{ .Values.metal_api.ipam_db_port }}"
+            - name: METAL_API_IPAM_DB_NAME
+              value: {{ .Values.metal_api.ipam_db_name }}
+            - name: METAL_API_IPAM_DB_PASSWORD
+              value: {{ .Values.metal_api.ipam_db_password }}
+            - name: METAL_API_IPAM_DB_USER
+              value: {{ .Values.metal_api.ipam_db_user }}
             - name: METAL_API_NSQD_TCP_ADDR
               value: {{ .Values.metal_api.nsq.tcp_address }}
             - name: METAL_API_NSQD_HTTP_ENDPOINT
