@@ -11,7 +11,7 @@ metal_log_encoding: json
 
 # images
 metal_api_image_name: metalstack/metal-api
-metal_metalctl_image_name: registry.fi-ts.io/metal/metalctl
+metal_metalctl_image_name: metalstack/metalctl
 metal_console_image_name: metalstack/metal-console
 metal_masterdata_api_image_name: metalstack/masterdata-api
 
