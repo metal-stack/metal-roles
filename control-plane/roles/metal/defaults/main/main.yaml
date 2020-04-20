@@ -11,12 +11,13 @@ metal_log_encoding: json
 
 # images
 metal_api_image_name: metalstack/metal-api
-metal_metalctl_image_name: registry.fi-ts.io/metal/metalctl
+metal_metalctl_image_name: metalstack/metalctl
 metal_console_image_name: metalstack/metal-console
 metal_masterdata_api_image_name: metalstack/masterdata-api
 
 # service ports
 metal_api_port: 8080
+metal_api_grpc_port: 50051
 metal_api_metrics_port: 2112
 metal_masterdata_api_port: 8443
 metal_masterdata_api_metrics_port: 2113
@@ -38,6 +39,8 @@ metal_api_nsq_tcp_address: "{{ metal_control_plane_ingress_dns }}:4150"
 metal_api_nsq_http_address: "nsqd:4151"
 metal_api_nsq_tls_enabled: true
 metal_api_nsq_tls_secret_name: nsqd
+metal_api_grpc_tls_enabled: true
+metal_api_grpc_tls_secret_name: grpc
 metal_api_view_key: change-me
 metal_api_edit_key: change-me
 metal_api_admin_key: change-me

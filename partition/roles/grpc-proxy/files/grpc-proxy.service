@@ -1,0 +1,18 @@
+[Unit]
+Description=gRPC Proxy
+After=docker.service
+Wants=docker.service
+StartLimitIntervalSec=0
+
+[Service]
+ExecStartPre=-/usr/bin/docker pull nginx:1.17
+ExecStartPre=-/usr/bin/docker rm grpc-proxy
+ExecStartPre=/usr/bin/docker run -d --net=host --name grpc-proxy -v /grpc-proxy/nginx.conf:/etc/nginx/nginx.conf:ro nginx:1.17
+ExecStart=/usr/bin/docker attach grpc-proxy
+StandardOutput=journal
+TimeoutStartSec=0s
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

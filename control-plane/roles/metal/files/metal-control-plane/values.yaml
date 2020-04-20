@@ -43,6 +43,7 @@ resources:
 
 ports:
   metal_api: 8080
+  metal_api_grpc: 50051
   metal_api_metrics: 2112
   masterdata_api: 8443
   masterdata_api_metrics: 2113
@@ -66,6 +67,10 @@ metal_api:
   nsq:
     tcp_address: ""
     http_address: ""
+    tls:
+      enabled: false
+      secret_name: ""
+  grpc:
     tls:
       enabled: false
       secret_name: ""
@@ -115,3 +120,10 @@ ingress:
   tls:
     enabled: false
     annotations: {}
+
+# grpc secrets
+grpc_certs_server_key: ""
+grpc_certs_server_cert: ""
+grpc_certs_client_key: ""
+grpc_certs_client_cert: ""
+grpc_certs_ca_cert: ""

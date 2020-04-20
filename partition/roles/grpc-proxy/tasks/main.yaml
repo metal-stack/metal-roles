@@ -1,0 +1,31 @@
+---
+- name: Create /grpc-proxy directory
+  file:
+    path: /grpc-proxy
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Render nginx.conf
+  template:
+    src: nginx.conf
+    dest: /grpc-proxy/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy grpc-proxy systemd unit
+  copy:
+    src: grpc-proxy.service
+    dest: /etc/systemd/system/grpc-proxy.service
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Start grpc-proxy systemd unit
+  systemd:
+    name: grpc-proxy.service
+    daemon-reload: yes
+    enabled: yes
+    state: started

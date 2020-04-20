@@ -11,6 +11,19 @@ stringData:
   edit_key: {{ .Values.metal_api.edit_key }}
   admin_key: {{ .Values.metal_api.admin_key }}
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: grpc
+  name: grpc
+data:
+  server_key.pem: {{ .Values.grpc_certs_server_key_enc }}
+  server_cert.pem: {{ .Values.grpc_certs_server_cert_enc }}
+  client_key.pem: {{ .Values.grpc_certs_client_key_enc }}
+  client_cert.pem: {{ .Values.grpc_certs_client_cert_enc }}
+  ca_cert.pem: {{ .Values.grpc_certs_ca_cert_enc }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,6 +48,8 @@ spec:
         name: metal-api
         ports:
         - containerPort: 8080
+        - containerPort: 50051
+          protocol: TCP
         - containerPort: 2112
         env:
 {{- if eq .Values.zap_level "debug" }}
@@ -92,6 +107,16 @@ spec:
         - name: METAL_API_NSQD_CLIENT_CERT_FILE
           value: /certs/nsq/client_cert.pem
 {{- end }}
+        - name: METAL_API_GRPC_TLS_ENABLED
+          value: "{{ .Values.metal_api.grpc.tls.enabled }}"
+{{- if .Values.metal_api.grpc.tls.enabled }}
+        - name: METAL_API_GRPC_CA_CERT_FILE
+          value: /certs/grpc/ca_cert.pem
+        - name: METAL_API_GRPC_SERVER_CERT_FILE
+          value: /certs/grpc/server_cert.pem
+        - name: METAL_API_GRPC_SERVER_KEY_FILE
+          value: /certs/grpc/server_key.pem
+{{- end }}
         - name: METAL_API_MASTERDATA_HMAC
           value: "{{ .Values.masterdata_api.hmac }}"
         - name: METAL_API_MASTERDATA_HOSTNAME
@@ -114,6 +139,11 @@ spec:
           mountPath: /certs/nsq/
           readOnly: true
 {{- end }}
+{{- if .Values.metal_api.grpc.tls.enabled }}
+        - name: {{ .Values.metal_api.grpc.tls.secret_name }}
+          mountPath: /certs/grpc/
+          readOnly: true
+{{- end }}
         - name: masterdata-api-tls
           mountPath: /certs/masterdata-api/
           readOnly: true
@@ -122,6 +152,11 @@ spec:
       - name: {{ .Values.metal_api.nsq.tls.secret_name }}
         secret:
           secretName: {{ .Values.metal_api.nsq.tls.secret_name }}
+{{- end }}
+{{- if .Values.metal_api.grpc.tls.enabled }}
+      - name: {{ .Values.metal_api.grpc.tls.secret_name }}
+        secret:
+          secretName: {{ .Values.metal_api.grpc.tls.secret_name }}
 {{- end }}
       - name: masterdata-api-tls
         secret:
@@ -138,6 +173,9 @@ spec:
   - name: "{{ .Values.ports.metal_api }}"
     port: {{ .Values.ports.metal_api }}
     targetPort: 8080
+  - name: "{{ .Values.ports.metal_api_grpc }}"
+    port: {{ .Values.ports.metal_api_grpc }}
+    targetPort: 50051
   - name: "{{ .Values.ports.metal_api_metrics }}"
     port: {{ .Values.ports.metal_api_metrics }}
     targetPort: 2112
@@ -419,12 +457,34 @@ spec:
               value: /certs/nsq/ca_cert.pem
             - name: METAL_API_NSQD_CLIENT_CERT_FILE
               value: /certs/nsq/client_cert.pem
+{{- end }}
+{{- if .Values.metal_api.grpc.tls.enabled }}
+            - name: METAL_API_GRPC_CA_CERT_FILE
+              value: /certs/grpc/ca_cert.pem
+            - name: METAL_API_GRPC_CLIENT_CERT_FILE
+              value: /certs/grpc/client_cert.pem
+            - name: METAL_API_GRPC_CLIENT_KEY_FILE
+              value: /certs/grpc/client_key.pem
+{{- end }}
             volumeMounts:
+{{- if .Values.metal_api.nsq.tls.enabled }}
             - name: {{ .Values.metal_api.nsq.tls.secret_name }}
               mountPath: /certs/nsq/
               readOnly: true
+{{- end }}
+{{- if .Values.metal_api.grpc.tls.enabled }}
+            - name: {{ .Values.metal_api.grpc.tls.secret_name }}
+              mountPath: /certs/grpc/
+              readOnly: true
+{{- end }}
           volumes:
+{{- if .Values.metal_api.nsq.tls.enabled }}
           - name: {{ .Values.metal_api.nsq.tls.secret_name }}
             secret:
               secretName: {{ .Values.metal_api.nsq.tls.secret_name }}
+{{- end }}
+{{- if .Values.metal_api.grpc.tls.enabled }}
+          - name: {{ .Values.metal_api.grpc.tls.secret_name }}
+            secret:
+              secretName: {{ .Values.metal_api.grpc.tls.secret_name }}
 {{- end }}

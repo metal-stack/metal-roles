@@ -35,6 +35,7 @@
     name: tcp-services
     definition:
       data:
+        50051: "{{ metal_control_plane_namespace }}/metal-api:50051"
         4161: "{{ metal_control_plane_namespace }}/nsq-lookupd:4161"
         4150: "{{ metal_control_plane_namespace }}/nsqd:4150"
         5222: "{{ metal_control_plane_namespace }}/metal-console:10001"
