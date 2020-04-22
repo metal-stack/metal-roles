@@ -27,7 +27,7 @@ You can look up all the default values [here](control-plane-defaults/main.yaml).
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | [ipam-db](roles/ipam-db)                                   | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                      |
 | [masterdata-db](roles/masterdata-db)                       | Deploys a database for the masterdata-api                                                                                       |
-| [metal](roles/metal)                                       | Deploys all Metal Stack components of the metal-control-plane via Helm                                                          |
+| [metal](roles/metal)                                       | Deploys all metal-stack components of the metal-control-plane via Helm                                                          |
 | [metal-db](roles/metal-db)                                 | Deploys a database for the metal-api                                                                                            |
 | [nsq](roles/nsq)                                           | Deploys [nsq](https://nsq.io/)                                                                                                  |
 | [postgres-backup-restore](roles/postgres-backup-restore)   | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |

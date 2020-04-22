@@ -1,6 +1,6 @@
 # metal
 
-This role contains a [helm chart](control-plane/metal/files/metal-control-plane) that contains all major components to run the Metal Stack. If you do not want to use Ansible for deployment, this chart can be the starting point for your deployment of Metal Stack.
+This role contains a [helm chart](control-plane/metal/files/metal-control-plane) that contains all major components to run the metal-stack. If you do not want to use Ansible for deployment, this chart can be the starting point for your deployment of metal-stack.
 
 The helm chart uses [hooks](https://github.com/helm/helm/blob/master/docs/charts_hooks.md) to deploy the control plane. There is a post-install hook to initialize the rethinkdb tables (there would be race conditions if there are multiple metal-api replicas initializing the database at the same time). Then, there are post-install and post-upgrade hooks to initialize and update the "masterdata" of the control plane (e.g. images, partitions, networks in this control plane).
 
