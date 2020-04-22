@@ -65,6 +65,7 @@ metal_api:
   edit_key: ""
   admin_key: ""
   nsq:
+    lookupd_http_address: ""
     tcp_address: ""
     http_address: ""
     tls:
