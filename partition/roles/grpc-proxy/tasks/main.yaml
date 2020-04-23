@@ -33,7 +33,7 @@
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
     systemd_docker_network: host
-    systemd_docker_volumes: "{{ lookup('template', 'metal-core-volumes.j2') | from_yaml }}"
+    systemd_docker_volumes: "{{ lookup('template', 'grpc-proxy-volumes.j2') | from_yaml }}"
     systemd_docker_cap_add:
       - sys_admin
 
