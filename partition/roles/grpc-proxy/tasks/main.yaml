@@ -29,6 +29,7 @@
     systemd_service_name: grpc-proxy
     systemd_docker_image_name: "{{ grpc_proxy_image_name }}"
     systemd_docker_image_tag: "{{ grpc_proxy_image_tag }}"
+    systemd_service_timeout_start_sec: 120
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
