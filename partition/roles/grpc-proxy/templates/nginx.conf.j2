@@ -5,8 +5,8 @@ error_log /dev/stdout info;
 
 stream {
     server {
-        listen 50051;
+        listen {{ grpc_proxy_port }};
         proxy_connect_timeout 5s;
-        proxy_pass {{ mgmt_gateway }}:50051;
+        proxy_pass {{ mgmt_gateway }}:{{ metal_api_grpc_port }};
     }
 }

@@ -1,4 +1,11 @@
 ---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - grpc_proxy_image_tag is defined
+
 - name: Create /grpc-proxy directory
   file:
     path: /grpc-proxy
@@ -9,23 +16,29 @@
 
 - name: Render nginx.conf
   template:
-    src: nginx.conf
+    src: nginx.conf.j2
     dest: /grpc-proxy/nginx.conf
     owner: root
     group: root
     mode: '0644'
 
-- name: Copy grpc-proxy systemd unit
-  copy:
-    src: grpc-proxy.service
-    dest: /etc/systemd/system/grpc-proxy.service
-    owner: root
-    group: root
-    mode: '0600'
+- name: deploy grpc-proxy
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: grpc-proxy
+    systemd_docker_image_name: "{{ grpc_proxy_image_name }}"
+    systemd_docker_image_tag: "{{ grpc_proxy_image_tag }}"
+    systemd_docker_cpu_period: 50000
+    systemd_docker_cpu_quota: 10000
+    systemd_docker_memory: 256m
+    systemd_docker_network: host
+    systemd_docker_volumes: "{{ lookup('template', 'metal-core-volumes.j2') | from_yaml }}"
+    systemd_docker_cap_add:
+      - sys_admin
 
-- name: Start grpc-proxy systemd unit
-  systemd:
-    name: grpc-proxy.service
-    daemon-reload: yes
-    enabled: yes
-    state: started
+- name: wait for grpc-proxy to listen on port
+  wait_for:
+    port: "{{ grpc_proxy_port }}"
+    timeout: 300
+    msg: "grpc_proxy did not come up"

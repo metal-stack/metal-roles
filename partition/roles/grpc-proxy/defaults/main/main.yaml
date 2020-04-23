@@ -1,0 +1,4 @@
+---
+grpc_proxy_image_name: nginx
+grpc_proxy_port: 50051
+metal_api_grpc_port: 50051
