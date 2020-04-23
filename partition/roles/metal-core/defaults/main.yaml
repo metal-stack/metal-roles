@@ -11,7 +11,7 @@ metal_core_nsq_cert_dir: /certs/nsq
 metal_core_nsqd_ca_cert:
 metal_core_nsqd_client_cert:
 
-metal_core_grpc_port:
+metal_core_grpc_port: 50051
 
 metal_core_grpc_tls_enabled: true
 metal_core_grpc_cert_dir: /certs/grpc

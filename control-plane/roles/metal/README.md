@@ -70,6 +70,11 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_nsq_tls_secret_name      |           | The name of the secret where nsq certificates are stored             |
 | metal_api_grpc_tls_enabled         |           | Enables TLS for gRPC                                                 |
 | metal_api_grpc_tls_secret_name     |           | The name of the secret where gRPC certificates are stored            |
+| metal_api_grpc_certs_server_key    |           | The gRPC client key as a string                                      |
+| metal_api_grpc_certs_server_cert   |           | The gRPC client certificate as a string                              |
+| metal_api_grpc_certs_client_key    |           | The gRPC client key as a string                                      |
+| metal_api_grpc_certs_client_cert   |           | The gRPC client certificate as a string                              |
+| metal_api_grpc_certs_ca_cert       |           | The gRPC ca certificate as a string                                  |
 | metal_api_view_key                 |           | The HMAC view key of the metal-api used for API technical access     |
 | metal_api_edit_key                 |           | The HMAC edit key of the metal-api used for API technical access     |
 | metal_api_admin_key                |           | The HMAC admin key of the metal-api used for API technical access    |

@@ -73,7 +73,7 @@ spec:
         args:
           - /nsqadmin
           - -log-level={{ nsq_log_level }}
-          - -lookupd-http-address={{ api_nsq_lookupd }}
+          - -lookupd-http-address=nsq-lookupd:4161
         volumeMounts:
         - name: nsqd-etc-nsswitch-conf
           mountPath: /etc/nsswitch.conf

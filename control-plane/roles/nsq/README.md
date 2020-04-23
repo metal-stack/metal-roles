@@ -33,8 +33,4 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | nsq_certs_client_key             |           | The nsq certificate client key as a string                                                                                           |
 | nsq_certs_client_cert            |           | The nsq client certificate as a string                                                                                             |
 | nsq_certs_ca_cert                |           | The nsq ca certificate as a string                                                                                                 |
-| grpc_certs_server_key            |           | The gRPC client key as a string                                                                                           |
-| grpc_certs_server_cert           |           | The gRPC client certificate as a string                                                                                             |
-| grpc_certs_client_key            |           | The gRPC client key as a string                                                                                           |
-| grpc_certs_client_cert           |           | The gRPC client certificate as a string                                                                                             |
-| grpc_certs_ca_cert               |           | The gRPC ca certificate as a string                                                                                                 |
+
