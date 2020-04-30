@@ -74,6 +74,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_partitions          |           | Creates partitions (as masterdata) to the metal-api after deployment |
 | metal_api_networks            |           | Creates networks (as masterdata) to the metal-api after deployment   |
 | metal_api_ips                 |           | Creates ips (as masterdata) to the metal-api after deployment        |
+| metal_api_resources           |           | Sets the given container resources                                   |
 
 ### masterdata-api
 
@@ -93,13 +94,15 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_hmac            |           | The HMAC key of the masterdata-api used for API technical access |
 | metal_masterdata_api_tenants         |           | Starts up the masterdata-api with given list of tenants          |
 | metal_masterdata_api_projects        |           | Starts up the masterdata-api with the given list of projects     |
+| metal_masterdata_api_resources       |           | Sets the given container resources                               |
 
 # metal-console
 
-| Name                   | Mandatory | Description                                                                                                 |
-| ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
-| metal_console_replicas |           | The number of deployed replicas of the metal-console                                                        |
-| metal_mgmt_services    |           | Endpoints to reverse bmc-proxies located inside the partitions for establishing machine console connections |
+| Name                    | Mandatory | Description                                                                                                 |
+| ----------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
+| metal_console_replicas  |           | The number of deployed replicas of the metal-console                                                        |
+| metal_mgmt_services     |           | Endpoints to reverse bmc-proxies located inside the partitions for establishing machine console connections |
+| metal_console_resources |           | Sets the given container resources                                                                          |
 
 # Ingress
 

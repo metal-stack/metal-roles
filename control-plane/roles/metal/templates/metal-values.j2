@@ -18,6 +18,17 @@ images:
     image: "{{ metal_masterdata_api_image_name }}"
     tag: "{{ metal_masterdata_api_image_tag }}"
 
+resources:
+{% if metal_api_resources %}
+  metal_api: {{ metal_api_resources | to_json }}
+{% endif %}
+{% if metal_masterdata_api_resources %}
+  masterdata_api: {{ metal_masterdata_api_resources | to_json }}
+{% endif %}
+{% if metal_console_resources %}
+  metal_console: {{ metal_console_resources | to_json }}
+{% endif %}
+
 metal_console:
   replicas: "{{ metal_console_replicas }}"
 
