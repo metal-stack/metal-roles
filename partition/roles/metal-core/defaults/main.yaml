@@ -11,6 +11,10 @@ metal_core_nsq_cert_dir: /certs/nsq
 metal_core_nsqd_ca_cert:
 metal_core_nsqd_client_cert:
 
+metal_core_spine_uplinks:
+- swp31
+- swp32
+
 api_protocol: https
 api_basepath: "/"
 
