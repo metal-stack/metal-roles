@@ -46,6 +46,7 @@ metal_api_images: []
 metal_api_partitions: []
 metal_api_networks: []
 metal_api_ips: []
+metal_api_resources:
 
 # masterdata-api
 metal_masterdata_api_db_address: masterdata-db
@@ -55,12 +56,15 @@ metal_masterdata_api_db_user: postgres
 metal_masterdata_api_db_password: change-me
 metal_masterdata_api_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
 metal_masterdata_api_hmac: change-me
+metal_masterdata_api_resources:
 
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
 
 # metal-console
 metal_console_replicas: 3
+metal_console_resources:
+
 metal_mgmt_services: {}
 # expected metal_mgmt_services data structure looks like this:
 # metal_mgmt_services:
