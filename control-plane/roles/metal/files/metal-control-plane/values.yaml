@@ -36,10 +36,10 @@ resources:
   metal_console:
     requests:
       memory: "64Mi"
-      cpu: "20m"
+      cpu: "40m"
     limits:
       memory: "128Mi"
-      cpu: "30m"
+      cpu: "60m"
 
 ports:
   metal_api: 8080

@@ -27,6 +27,15 @@
     helm_timeout: 600s
     helm_chart_inject_config_hash: yes
 
+- name: Set services for patching ingress controller service exposal
+  set_fact:
+    metal_tcp_services:
+      "5222": "{{ metal_control_plane_namespace }}/metal-console:10001"
+      "50051": "{{ metal_control_plane_namespace }}/metal-api:50051"
+    metal_udp_services:
+      "5222": "{{ metal_control_plane_namespace }}/metal-console:10001"
+  when: metal_expose_ingress_service_ports
+
 - name: Patch tcp-services in ingress controller
   k8s:
     api_version: v1
@@ -34,11 +43,7 @@
     namespace: ingress-nginx
     name: tcp-services
     definition:
-      data:
-        50051: "{{ metal_control_plane_namespace }}/metal-api:50051"
-        4161: "{{ metal_control_plane_namespace }}/nsq-lookupd:4161"
-        4150: "{{ metal_control_plane_namespace }}/nsqd:4150"
-        5222: "{{ metal_control_plane_namespace }}/metal-console:10001"
+      data: "{{ lookup('k8s', api_version='v1', kind='ConfigMap', namespace='ingress-nginx', resource_name='tcp-services').get('data', {}) | combine(metal_tcp_services) }}"
   when: metal_expose_ingress_service_ports
 
 - name: Patch udp-services in ingress controller
@@ -48,8 +53,7 @@
     namespace: ingress-nginx
     name: udp-services
     definition:
-      data:
-        5222: "{{ metal_control_plane_namespace }}/metal-console:10001"
+      data: "{{ lookup('k8s', api_version='v1', kind='ConfigMap', namespace='ingress-nginx', resource_name='udp-services').get('data', {}) | combine(metal_udp_services) }}"
   when: metal_expose_ingress_service_ports
 
 - name: Expose tcp services in ingress controller
@@ -61,20 +65,6 @@
     definition:
       spec:
         ports:
-        - name: http
-          port: 80
-          targetPort: http
-        - name: https
-          port: 443
-          targetPort: https
-        - name: nsq-lookupd
-          port: 4161
-          protocol: TCP
-          targetPort: 4161
-        - name: nsqd
-          port: 4150
-          protocol: TCP
-          targetPort: 4150
         - name: metal-control-plane-console
           port: 5222
           protocol: TCP

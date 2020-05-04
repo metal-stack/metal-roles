@@ -1,8 +1,8 @@
 # metal-roles
 
-This repository contains Ansible roles for deploying Metal Stack. It does not contain any specific playbooks.
+This repository contains Ansible roles for deploying metal-stack. It does not contain any specific playbooks.
 
-The Metal Stack primarily consists of a control plane and partitions that register at the control plane. For this reason, the roles in this repository are divided into two separate folders, one containing roles relevant for the control plane and another directory containing roles for bootstrapping a partition. Please find more documentation in the respective sub folders:
+The metal-stack primarily consists of a control plane and partitions that register at the control plane. For this reason, the roles in this repository are divided into two separate folders, one containing roles relevant for the control plane and another directory containing roles for bootstrapping a partition. Please find more documentation in the respective sub folders:
 
 - [Control Plane Deployment](control-plane)
 - [Partition Deployment](partition)

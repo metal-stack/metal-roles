@@ -1,6 +1,6 @@
 # metal
 
-This role contains a [helm chart](control-plane/metal/files/metal-control-plane) that contains all major components to run the Metal Stack. If you do not want to use Ansible for deployment, this chart can be the starting point for your deployment of Metal Stack.
+This role contains a [helm chart](control-plane/metal/files/metal-control-plane) that contains all major components to run the metal-stack. If you do not want to use Ansible for deployment, this chart can be the starting point for your deployment of metal-stack.
 
 The helm chart uses [hooks](https://github.com/helm/helm/blob/master/docs/charts_hooks.md) to deploy the control plane. There is a post-install hook to initialize the rethinkdb tables (there would be race conditions if there are multiple metal-api replicas initializing the database at the same time). Then, there are post-install and post-upgrade hooks to initialize and update the "masterdata" of the control plane (e.g. images, partitions, networks in this control plane).
 
@@ -42,7 +42,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | Name                              | Mandatory | Description                                       |
 | --------------------------------- | --------- | ------------------------------------------------- |
 | metal_api_port                    |           | Service port of the metal-api                     |
-| metal_api_grpc_port               |           | Service port of the metal-api grpc server         |
 | metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
 | metal_masterdata_api_port         |           | Service port of the masterdata-api                |
 | metal_masterdata_api_metrics_port |           | Service port of the masterdata-api metrics server |
@@ -83,6 +82,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_partitions               |           | Creates partitions (as masterdata) to the metal-api after deployment |
 | metal_api_networks                 |           | Creates networks (as masterdata) to the metal-api after deployment   |
 | metal_api_ips                      |           | Creates ips (as masterdata) to the metal-api after deployment        |
+| metal_api_resources                |           | Sets the given container resources                                   |
 
 ### masterdata-api
 
@@ -102,13 +102,15 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_hmac            |           | The HMAC key of the masterdata-api used for API technical access |
 | metal_masterdata_api_tenants         |           | Starts up the masterdata-api with given list of tenants          |
 | metal_masterdata_api_projects        |           | Starts up the masterdata-api with the given list of projects     |
+| metal_masterdata_api_resources       |           | Sets the given container resources                               |
 
 # metal-console
 
-| Name                   | Mandatory | Description                                                                                                 |
-| ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
-| metal_console_replicas |           | The number of deployed replicas of the metal-console                                                        |
-| metal_mgmt_services    |           | Endpoints to reverse bmc-proxies located inside the partitions for establishing machine console connections |
+| Name                    | Mandatory | Description                                                                                                 |
+| ----------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
+| metal_console_replicas  |           | The number of deployed replicas of the metal-console                                                        |
+| metal_mgmt_services     |           | Endpoints to reverse bmc-proxies located inside the partitions for establishing machine console connections |
+| metal_console_resources |           | Sets the given container resources                                                                          |
 
 # Ingress
 

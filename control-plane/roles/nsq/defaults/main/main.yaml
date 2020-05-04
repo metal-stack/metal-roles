@@ -15,10 +15,10 @@ nsq_nsqd_resources:
 nsq_nsq_lookupd_resources:
   requests:
     memory: "8Mi"
-    cpu: "10m"
+    cpu: "20m"
   limits:
     memory: "16Mi"
-    cpu: "20m"
+    cpu: "40m"
 
 nsq_log_level: info
 nsq_broadcast_address: "{{ metal_control_plane_ingress_dns }}"
