@@ -1,0 +1,78 @@
+---
+- name: setup key for docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+- name: add docker engine repo
+  apt_repository:
+    repo: 'deb [arch=amd64] https://download.docker.com/linux/debian buster stable'
+    update_cache: yes
+
+- name: install docker
+  apt:
+    name: docker-ce
+    state: present
+    force_apt_get: yes
+
+- name: add docker as systemd service which can run in a vrf
+  lineinfile:
+    path: /etc/vrf/systemd.conf
+    regexp: '^docker$'
+    line: 'docker'
+
+- name: template daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+
+- name: delete docker service
+  file:
+    path: /lib/systemd/system/docker.service
+    state: absent
+
+- name: create docker systemd service
+  template:
+    src: docker.service.j2
+    dest: /lib/systemd/system/docker@.service
+
+- name: mask docker.socket service
+  systemd:
+    masked: yes
+    enabled: false
+    daemon_reload: yes
+    name: docker.socket
+
+- name: disable docker.service
+  systemd:
+    state: stopped
+    enabled: false
+    name: docker.service
+
+- name: enable and start docker.service
+  systemd:
+    state: started
+    enabled: true
+    name: docker@mgmt
+
+- name: create docker-system-prune.service
+  copy:
+    src: docker-system-prune.service
+    dest: /etc/systemd/system/docker-system-prune.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: create docker-system-prune.timer
+  copy:
+    src: docker-system-prune.timer
+    dest: /etc/systemd/system/docker-system-prune.timer
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: docker-system-prune.timer must be enabled and running
+  systemd:
+    name: docker-system-prune.timer
+    enabled: yes
+    state: started
