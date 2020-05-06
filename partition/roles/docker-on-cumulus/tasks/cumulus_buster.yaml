@@ -26,34 +26,22 @@
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
 
-- name: delete docker service
+- name: create override directory to systemd
   file:
-    path: /lib/systemd/system/docker.service
-    state: absent
+    path: /etc/systemd/system/docker.service.d/
+    state: directory
 
-- name: create docker systemd service
+- name: override systemd service startup
   template:
-    src: docker.service.j2
-    dest: /lib/systemd/system/docker@.service
-
-- name: mask docker.socket service
-  systemd:
-    masked: yes
-    enabled: false
-    daemon_reload: yes
-    name: docker.socket
-
-- name: disable docker.service
-  systemd:
-    state: stopped
-    enabled: false
-    name: docker.service
+    src: docker-no-socket-mgmt-vrf.conf.j2
+    dest: /etc/systemd/system/docker.service.d/docker-no-socket-mgmt-vrf.conf
 
 - name: enable and start docker.service
   systemd:
     state: started
     enabled: true
-    name: docker@mgmt
+    daemon_reload: yes
+    name: docker
 
 - name: create docker-system-prune.service
   copy:
