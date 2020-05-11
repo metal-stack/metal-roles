@@ -3,8 +3,7 @@
   include_role:
     name: router
   vars:
-    set_control_plane_acls: true
-    enable_static_route_leak: true
+    router_enable_static_route_leak: true
 
 - name: flush handlers
   meta: flush_handlers
