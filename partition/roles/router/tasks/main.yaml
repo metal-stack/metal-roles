@@ -1,7 +1,7 @@
 ---
 - name: configure mgmt vrf
   include: mgmt_vrf.yaml
-  when: enable_mgmt_vrf
+  when: router_enable_mgmt_vrf
 
 - name: configure switch plane
   include: switch_plane.yaml
