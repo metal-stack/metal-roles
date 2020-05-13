@@ -8,13 +8,13 @@ Contains roles for deploying the metal-partition.
 
 ## Variables
 
-The `parition-defaults` folder contains defaults that are used by multiple roles in the control-plane directory.
+The `partition-defaults` folder contains defaults that are used by multiple roles in the partition directory.
 
 You can look up all the default values [here](partition-defaults/main.yaml).
 
 | Name                                | Mandatory | Description                                                                                                              |
 | ----------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------ |
-| router_nameservers                  | yes       | A list of nameservers                                                                                                    |
+| partition_nameservers               | yes       | A list of nameservers                                                                                                    |
 
 
 ## Roles
@@ -25,8 +25,8 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | [docker-on-cumulus](roles/docker-on-cumulus)                             | Deploys docker on cumulus                                                                                                       |
 | [ipmi-catcher](roles/ipmi-catcher)                                       | Deploys ipmi-catcher to crawl ipmi ip addresses                                                                                 |
 | [leaf](roles/leaf)                                                       | Deploys network config for cumulus switches                                                                                     |
-| [pixicore](roles/pixicore)                                               | Deploys pixicore                                                                                                                |
-| [router](roles/router)                                                   | Deploys router config on cumulus swichtes                                                                                       |
+| [pixiecore](roles/pixiecore)                                             | Deploys pixiecore                                                                                                                |
+| [router](roles/router)                                                   | Deploys router config on cumulus switches                                                                                       |
 
 ## Examples
 
