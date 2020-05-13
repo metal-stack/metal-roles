@@ -62,6 +62,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_ipam_db_name        |           | The database name of the ipam database                               |
 | metal_api_ipam_db_user        |           | The user of the ipam database                                        |
 | metal_api_ipam_db_password    |           | The password of the ipam database                                    |
+| metal_api_nsq_lookupd_address |           | The http address of nsq-lookupd                                      | 
 | metal_api_nsq_tcp_address     |           | The tcp address of nsqd                                              |
 | metal_api_nsq_http_address    |           | The http address of nsqd (only used for in-cluster traffic)          |
 | metal_api_nsq_tls_enabled     |           | Enables TLS for nsq                                                  |
