@@ -35,7 +35,6 @@ metal_api_ipam_db_port: 5432
 metal_api_ipam_db_name: ipam
 metal_api_ipam_db_user: postgres
 metal_api_ipam_db_password: change-me
-metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tcp_address: "{{ metal_control_plane_ingress_dns }}:4150"
 metal_api_nsq_http_address: "nsqd:4151"
 metal_api_nsq_lookupd_http_address: "nsq-lookupd:4161"
