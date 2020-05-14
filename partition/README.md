@@ -15,6 +15,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | Name                                | Mandatory | Description                                                                                                              |
 | ----------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------ |
 | partition_nameservers               | yes       | A list of nameservers                                                                                                    |
+| partition_id                        | yes       | Partition id                                                                                                             |
 
 
 ## Roles
