@@ -1,4 +1,4 @@
-TZ: "{{ timezone }}"
+TZ: "{{ partition_timezone}}"
 METAL_CORE_CIDR: "{{ metal_core_cidr }}"
 METAL_CORE_LOOPBACK_IP: "{{ lo }}"
 METAL_CORE_PARTITION_ID: "{{ partition_id }}"
@@ -7,10 +7,10 @@ METAL_CORE_BIND_ADDRESS: 0.0.0.0
 METAL_CORE_PORT: "{{ metal_core_port }}"
 METAL_CORE_MACHINE_TOPIC: "{{ partition_id }}-machine"
 METAL_CORE_SWITCH_TOPIC: "{{ partition_id }}-switch"
-METAL_CORE_METAL_API_IP: "{{ api_addr }}"
-METAL_CORE_METAL_API_PORT: "{{ api_port }}"
-METAL_CORE_METAL_API_PROTOCOL: "{{ api_protocol }}"
-METAL_CORE_METAL_API_BASEPATH: "{{ api_basepath }}"
+METAL_CORE_METAL_API_IP: "{{ partition_metal_api_addr }}"
+METAL_CORE_METAL_API_PORT: "{{ partition_metal_api_port }}"
+METAL_CORE_METAL_API_PROTOCOL: "{{ partition_metal_api_protocol }}"
+METAL_CORE_METAL_API_BASEPATH: "{{ partition_metal_api_basepath }}"
 METAL_CORE_HMAC_KEY: "{{ metal_core_hmac_key }}"
 # The nsqd is running on another machine. The port is exposed to the vagrant host.
 # Access is possible via the vagrant bridge ip.

@@ -11,8 +11,8 @@ metal_core_nsq_cert_dir: /certs/nsq
 metal_core_nsqd_ca_cert:
 metal_core_nsqd_client_cert:
 
-api_protocol: https
-api_basepath: "/"
+partition_metal_api_protocol: https
+partition_metal_api_basepath: "/"
 
 reconfigure_switch: false
 reconfigure_switch_interval: 10s
