@@ -1,11 +1,11 @@
 # ipmi-catcher
-
+Deploys pixiecore container
 
 ## Variables
 
-This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
+This role uses variables from [partition-defaults](/partition). So, make sure you define them adequately as well.
 
-You can look up all the default values of this role [here](defaults/main/main.yaml).
+You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                            | Mandatory | Description                         |
 | ------------------------------- | --------- | ----------------------------------- |
