@@ -5,5 +5,5 @@ Installs docker daemon on cumulus
 
 | Name                            | Mandatory | Description                         |
 | ------------------------------- | --------- | ----------------------------------- |
-| fluentd_endpoint                |           | Fluentd Endpoint                    |
-
+| fluentd_endpoint                |           | Fluentd endpoint                    |
+| fluentd_logging                 |           | Fluentd logging                     |
