@@ -1,5 +1,5 @@
 # ipmi-catcher
-Deploys pixiecore container
+Deploys the ipmi-catcher that gathers information about DHCP leases for ipmi access to servers.
 
 ## Variables
 
@@ -11,4 +11,3 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | ------------------------------- | --------- | ----------------------------------- |
 | ipmi_catcher_image_name         |           | Image version of the impi-catcher   |
 | ipmi_catcher_image_tag          | yes       | Image tag of the impi-catcher       |
-
