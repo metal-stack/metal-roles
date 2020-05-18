@@ -1,5 +1,5 @@
 # docker-on-cumulus
-Installs docker daemon on cumulus 
+Installs docker on cumulus in the default vrf.
 
 ## Variables
 
