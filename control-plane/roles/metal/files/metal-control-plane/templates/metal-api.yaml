@@ -225,7 +225,7 @@ spec:
         name: metal-api-createmasterdata
         env:
         - name: METALCTL_URL
-          value: http://metal-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+          value: http://metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
         - name: METALCTL_HMAC
           valueFrom:
             secretKeyRef:
@@ -283,7 +283,7 @@ spec:
         name: metal-api-createmasterdata
         env:
         - name: METALCTL_URL
-          value: http://metal-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+          value: http://metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
         - name: METALCTL_HMAC
           valueFrom:
             secretKeyRef:
@@ -307,7 +307,7 @@ spec:
         image: gempesaw/curl-jq
         env:
         - name: API_BASE_URL
-          value: metal-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+          value: metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
         command:
           - sh
           - -c
@@ -412,6 +412,8 @@ spec:
               value: {{ .Values.metal_api.ipam_db_password }}
             - name: METAL_API_IPAM_DB_USER
               value: {{ .Values.metal_api.ipam_db_user }}
+            - name: METAL_API_NSQLOOKUPD_ADDR
+              value: {{ .Values.metal_api.nsq.lookupd_address }}
             - name: METAL_API_NSQD_TCP_ADDR
               value: {{ .Values.metal_api.nsq.tcp_address }}
             - name: METAL_API_NSQD_HTTP_ENDPOINT
