@@ -53,7 +53,7 @@ metal_api:
     tcp_address: "{{ metal_api_nsq_tcp_address }}"
     http_address: "{{ metal_api_nsq_http_address }}"
     tls:
-      enabled: "{{ metal_api_nsq_tls_enabled }}"
+      enabled: {{ metal_api_nsq_tls_enabled }}
       secret_name: "{{ metal_api_nsq_tls_secret_name }}"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"

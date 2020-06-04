@@ -5,6 +5,8 @@
     quiet: yes
     that:
       - metal_core_image_tag is defined
+      - metal_core_rack_id != ""
+      - metal_core_nsq_lookupd_addr != ""
 
 - name: create nsq certs directory
   file:

@@ -81,5 +81,5 @@
 - name: set hostname
   nclu:
     commands:
-      - add hostname {{ partition_id }}-{{ inventory_hostname }}
+      - add hostname {{ metal_partition_id }}-{{ inventory_hostname }}
     commit: true
