@@ -14,8 +14,8 @@ metal_core_nsqd_client_cert:
 partition_metal_api_protocol: https
 partition_metal_api_basepath: "/"
 
-reconfigure_switch: false
-reconfigure_switch_interval: 10s
+metal_core_reconfigure_switch: false
+metal_core_reconfigure_switch_interval: 10s
 
-additional_bridge_vids: []
-additional_bridge_ports: []
+metal_core_additional_bridge_vids: []
+metal_core_additional_bridge_ports: []
