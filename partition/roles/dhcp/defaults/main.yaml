@@ -1,0 +1,6 @@
+---
+dhcp_net: 10.255.255.0
+dhcp_netmask: 255.255.255.0
+dhcp_dns_servers:
+- 1.1.1.1
+- 8.8.8.8
