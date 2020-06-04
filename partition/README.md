@@ -26,7 +26,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | [docker-on-cumulus](roles/docker-on-cumulus)                             | Deploys docker on cumulus                                                                                                       |
 | [ipmi-catcher](roles/ipmi-catcher)                                       | Deploys ipmi-catcher to crawl ipmi ip addresses                                                                                 |
 | [leaf](roles/leaf)                                                       | Deploys network config for cumulus switches                                                                                     |
-| [pixiecore](roles/pixiecore)                                             | Deploys pixiecore                                                                                                                |
+| [pixiecore](roles/pixiecore)                                             | Deploys pixiecore                                                                                                               |
 | [router](roles/router)                                                   | Deploys router config on cumulus switches                                                                                       |
 
 ## Examples
