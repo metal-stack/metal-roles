@@ -19,12 +19,10 @@
       - /var/lib/dhcp:/var/lib/dhcp:ro
     systemd_docker_cap_add:
       - sys_admin
-    systemd_service_after: docker.service
-    systemd_service_requires: docker.service
     systemd_service_environment:
-      TZ: "{{ partition_timezone}}"
+      TZ: "{{ metal_partition_timezone }}"
       IPMI_CATCHER_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
-      IPMI_CATCHER_PARTITION_ID: "{{ partition_id }}"
-      IPMI_CATCHER_METAL_API_URL: "{{ partition_metal_api_protocol }}://{{ partition_metal_api_addr }}:{{ partition_metal_api_port }}{{ partition_metal_api_basepath }}"
-      IPMI_CATCHER_METAL_API_HMAC_KEY: "{{ ipmi_catcher_hmac_key }}"
+      IPMI_CATCHER_PARTITION_ID: "{{ metal_partition_id }}"
+      IPMI_CATCHER_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
+      IPMI_CATCHER_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
       IPMI_CATCHER_IGNORE_MACS: "{{ ipmi_catcher_ignore_macs | join(',') }}"

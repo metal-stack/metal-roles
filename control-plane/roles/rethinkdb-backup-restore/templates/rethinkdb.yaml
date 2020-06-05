@@ -159,7 +159,7 @@ data:
     backup-provider: {{ rethinkdb_backup_restore_sidecar_provider }}
     rethinkdb-passwordfile: /rethinkdb-secret/rethinkdb-password.txt
     backup-cron-schedule: "{{ rethinkdb_backup_restore_sidecar_backup_cron_schedule }}"
-    object-prefix: rethinkdb-{{ environment_name }}
+    object-prefix: rethinkdb-{{ metal_control_plane_stage_name }}
 ---
 apiVersion: v1
 kind: Secret
