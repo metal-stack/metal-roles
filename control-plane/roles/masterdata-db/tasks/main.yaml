@@ -1,4 +1,21 @@
 ---
+- name: Gather release versions
+  metal_releases:
+    version: "{{ metal_stack_release_version }}"
+  when:
+    - metal_stack_release_version is defined
+    - metal_stack_release_version is not none
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - masterdata_db_image_name is defined
+      - masterdata_db_image_tag is defined
+      - masterdata_db_backup_restore_sidecar_image_name is defined
+      - masterdata_db_backup_restore_sidecar_image_tag is defined
+
 - name: Deploy masterdata db
   include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
