@@ -1,0 +1,31 @@
+---
+- name: copy image-rsync
+  copy:
+    src: image-rsync.sh
+    dest: /usr/local/bin/image-rsync.sh
+    owner: root
+    group: root
+    mode: '0755'
+  register: result
+
+- name: deploy image-sync service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: image-sync
+    systemd_docker_image_name: "{{ image_cache_imagesync_image_name }}"
+    systemd_docker_image_tag: "{{ image_cache_imagesync_image_tag }}"
+    systemd_external_config_changed: "{{ result is changed }}"
+    systemd_service_restart_sec: "{{ image_cache_imagesync_interval_sec }}"
+    systemd_service_environment:
+      BUCKETS: "metal-os metal-hammer metal-kernel"
+      IMAGE_SYNC_SRC: "{{ image_cache_imagesync_src }}"
+    systemd_docker_volumes:
+      - "/usr/local/bin/image-rsync.sh:/image-rsync.sh"
+      - "{{ image_cache_imagesync_dest }}:/images"
+    systemd_docker_command: ["/image-rsync.sh"]
+    systemd_start: "{{ ensure_started.imagesync|default(true) }}"
+    systemd_service_timeout_start_sec: 60
+
+# FIXME add loop over all buckets metal-os, metal-hammer, metal-kernel, cumulus
+# sudo docker run --volume "/minio/data:/images" google/cloud-sdk:278.0.0-alpine gsutil  rsync -d -r gs://images.metal-stack.io/metal-hammer /images/metal-hammer

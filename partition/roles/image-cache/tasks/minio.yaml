@@ -1,0 +1,63 @@
+---
+- name: create minio directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ image_cache_minio_host_dir_path }}/config"
+    - "{{ image_cache_minio_data_host_dir }}"
+    - "{{ image_cache_minio_data_host_dir }}/metal-os"
+    - "{{ image_cache_minio_data_host_dir }}/metal-hammer"
+    - "{{ image_cache_minio_data_host_dir }}/metal-kernel"
+
+- name: generate keys
+  import_tasks: keys.yml
+
+- name: template minio config
+  template:
+    src: config.json.j2
+    dest: "{{ image_cache_minio_host_dir_path }}/config/config.json"
+    owner: "root"
+    group: "root"
+    mode: "0750"
+  register: result
+
+- name: deploy minio service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: minio
+    systemd_docker_image_name: "{{ image_cache_minio_image_name }}"
+    systemd_docker_image_tag: "{{ image_cache_minio_image_tag }}"
+    systemd_external_config_changed: "{{ result is changed }}"
+    systemd_docker_volumes:
+      - "{{ image_cache_minio_host_dir_path }}/config:/root/.minio"
+      - "{{ image_cache_minio_data_host_dir }}:/data"
+    systemd_docker_ports:
+      - host_port: "{{ image_cache_minio_port }}"
+        target_port: 9000
+    systemd_docker_command:
+      - server
+      - /data
+
+- name: wait for minio to listen on port
+  wait_for:
+    port: 9000
+    timeout: 300
+    msg: "minio did not come up"
+
+- name: set mc config for local minio
+  command: >
+    mc config host add \
+      local http://localhost:{{ image_cache_minio_port }} \
+      {{ image_cache_minio_access_key }} \
+      {{ image_cache_minio_secret_key | quote }} \
+      --api s3v4
+  changed_when: false
+
+- name: set minio policies for buckets
+  command: "mc policy set public local/{{ item }}"
+  loop:
+    - metal-os
+    - metal-hammer
+    - metal-kernel

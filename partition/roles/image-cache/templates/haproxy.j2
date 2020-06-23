@@ -1,0 +1,74 @@
+global
+  daemon
+
+  ca-base /etc/ssl/certs
+  crt-base /etc/ssl/private
+
+  # Default ciphers to use on SSL-enabled listening sockets.
+  # For more information, see ciphers(1SSL). This list is from:
+  #  https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+  # An alternative list with additional directives can be obtained from
+  #  https://mozilla.github.io/server-side-tls/ssl-config-generator/?server=haproxy
+  ssl-default-bind-ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS
+  ssl-default-bind-options no-sslv3
+
+defaults
+  mode	http
+
+  log global
+  log stdout format raw daemon
+
+  timeout connect 5000
+  timeout client  50000
+  timeout server  50000
+
+listen stats
+  bind :65534
+  option http-use-htx
+  http-request use-service prometheus-exporter if { path /metrics }
+  mode http
+  stats enable
+  stats uri /
+  stats hide-version
+  option dontlog-normal
+
+resolvers pubdns
+{% for dns_server in image_cache_external_dns_servers %}
+  nameserver {{ dns_server.name }} {{ dns_server.ip }}:53
+{% endfor %}
+
+frontend images
+  bind :80
+  option forwardfor except 127.0.0.1
+  option forwardfor header X-Real-IP
+  acl partition_local_image_cache_dead nbsrv(partition_local_image_cache) eq 0
+  use_backend global_image_store if partition_local_image_cache_dead
+  default_backend partition_local_image_cache
+
+  acl not_found status 404
+  http-response set-header Location https://{{ image_cache_haproxy_fallback_backend_server }}%[capture.req.uri] if not_found
+  http-response set-status 302 if not_found
+
+frontend images_passthrough
+  mode tcp
+  bind :443
+  default_backend global_image_store_passthrough
+
+backend global_image_store_passthrough
+  mode tcp
+  server blobstore {{ image_cache_haproxy_fallback_backend_server }}:443
+
+backend partition_local_image_cache
+  option httpchk GET /minio/health/live HTTP/1.1\r\nHost:\ www
+  http-check expect status 200
+  balance roundrobin
+{% for host in groups['mgmt_servers'] %}
+  server {{ host }} {{ hostvars[host]['switch_mgmt_ip'] }}:{{ image_cache_minio_port }} check {{ 'backup' if inventory_hostname != host else '' }}
+{% endfor %}
+
+backend global_image_store
+  option httpchk GET {{ image_cache_haproxy_fallback_backend_server_health_endpoint}} HTTP/1.1\r\nHost:\ {{ image_cache_haproxy_fallback_backend_server }}
+  http-check expect status 200
+  balance leastconn
+  http-request set-header Host {{ image_cache_haproxy_fallback_backend_server }}
+  server blobstore {{ image_cache_haproxy_fallback_backend_server }}:443 ssl verify required ca-file ca-certificates.crt check inter 30s rise 2 fall 3 resolvers pubdns resolve-prefer ipv4

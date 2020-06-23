@@ -1,0 +1,54 @@
+---
+- name: Create key directory
+  file:
+    path: "{{ image_cache_minio_host_dir_path }}/keys"
+    state: directory
+
+## GENERATE ACCESS KEY
+
+- name: Check if access key was already generated
+  stat:
+    path: "{{ image_cache_minio_host_dir_path }}/keys/access.key"
+  register: result
+
+- name: Generate access key
+  copy:
+    dest: "{{ image_cache_minio_host_dir_path }}/keys/access.key"
+    content: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
+    mode: 0600
+    owner: root
+    group: root
+  when: not result.stat.exists
+
+## GENERATE SERET KEY
+
+- name: Check if secret key was already generated
+  stat:
+    path: "{{ image_cache_minio_host_dir_path }}/keys/secret.key"
+  register: result
+
+- name: Generate secret key
+  copy:
+    dest: "{{ image_cache_minio_host_dir_path }}/keys/secret.key"
+    content: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=40') }}"
+    mode: 0600
+    owner: root
+    group: root
+  when: not result.stat.exists
+
+## READ KEYS
+
+- name: Read access key
+  slurp:
+    src: "{{ image_cache_minio_host_dir_path }}/keys/access.key"
+  register: access_key
+
+- name: Read access key
+  slurp:
+    src: "{{ image_cache_minio_host_dir_path }}/keys/secret.key"
+  register: secret_key
+
+- name: Set keys as facts
+  set_fact:
+    image_cache_minio_access_key: "{{ access_key.content | b64decode }}"
+    image_cache_minio_secret_key: "{{ secret_key.content | b64decode }}"

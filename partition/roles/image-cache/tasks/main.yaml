@@ -1,0 +1,23 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - coredns_image_tag is defined
+      - haproxy_image_tag is defined
+      - minio_image_tag is defined
+      - imagesync_image_tag is defined
+      - image_cache_imagesync_src is not none
+
+- name: Setup CoreDNS
+  import_tasks: coredns.yaml
+
+- name: Setup MinIO
+  import_tasks: minio.yaml
+
+- name: Setup image-sync
+  import_tasks: image-sync.yaml
+
+- name: Setup haproxy
+  import_tasks: haproxy.yaml
