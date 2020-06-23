@@ -11,9 +11,10 @@ Contains roles for deploying the metal-control-plane.
 
 The `global-defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all the default values [here](../global-defaults/main.yaml).
 
-| Name                        | Mandatory | Description                                                                                                                                                |
-| --------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| metal_stack_release_version |           | If defined fetches image versions from the [release](https://github.com/metal-stack/releases) vector, such that image names and tags are getting populated | 
+| Name                               | Mandatory | Description                                                                                                                                                |
+| ---------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| metal_stack_release_version        |           | If defined fetches image versions from the [release](https://github.com/metal-stack/releases) vector, such that image names and tags are getting populated |
+| metal_stack_release_vector_mapping |           | Describes the paths to map images from the release vector to the roles in this repository                                                                  |
 
 The `control-plane-defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all the default values [here](control-plane-defaults/main.yaml).
 
