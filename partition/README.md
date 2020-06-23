@@ -8,6 +8,12 @@ Contains roles for deploying the metal-partition.
 
 ## Variables
 
+The `global-defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all the default values [here](../global-defaults/main.yaml).
+
+| Name                        | Mandatory | Description                                                                                                                                                |
+| --------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| metal_stack_release_version |           | If defined fetches image versions from the [release](https://github.com/metal-stack/releases) vector, such that image names and tags are getting populated |
+
 The `partition-defaults` folder contains defaults that are used by multiple roles in the partition directory.
 
 You can look up all the default values [here](partition-defaults/main.yaml).
