@@ -34,8 +34,10 @@ metal_stack_release_vector_mapping:
   gardener_os_controller_image_tag: "docker-images.metal-stack.gardener.os-metal-extension.tag"
   gardener_os_controller_image_name: "docker-images.metal-stack.gardener.os-metal-extension.name"
   # kubernetes
-  csi_lvm_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
-  csi_lvm_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"
+  csi_lvm_controller_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
+  csi_lvm_controller_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"
+  csi_lvm_provisioner_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-provisioner.tag"
+  csi_lvm_provisioner_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-provisioner.name"
   metal_cloud_controller_manager_image_tag: "docker-images.metal-stack.kubernetes.metal-ccm.tag"
   metal_cloud_controller_manager_image_name: "docker-images.metal-stack.kubernetes.metal-ccm.name"
   splunk_audit_webhook_image_tag: "docker-images.metal-stack.kubernetes.splunk-audit-webhook.tag"
