@@ -10,15 +10,15 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 | Name                                                    | Mandatory | Description                                                              |
 | ------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
-| postgres_image_name                                     |           | Image version of the postgres                                            |
-| postgres_image_tag                                      |           | Image tag of the postgres                                                |
+| postgres_image_name                                     | yes       | Image version of the postgres                                            |
+| postgres_image_tag                                      | yes       | Image tag of the postgres                                                |
 | postgres_name                                           |           | The name of the postgres instance                                        |
 | postgres_namespace                                      |           | The deployment's target namespace                                        |
 | postgres_storage_size                                   |           | The size of the PVC                                                      |
 | postgres_db                                             |           | The name of the database                                                 |
 | postgres_user                                           |           | The user of the postgres database                                        |
 | postgres_password                                       |           | The password of the postgres database                                    |
-| postgres_backup_restore_sidecar_image_name              |           | Image version of the backup-restore-sidecar                              |
+| postgres_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                              |
 | postgres_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                  |
 | postgres_backup_restore_sidecar_provider                |           | The backup provider                                                      |
 | postgres_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                 |

@@ -1,0 +1,47 @@
+---
+metal_stack_release_version:
+
+metal_stack_release_vector_mapping:
+  # binaries
+  metal_hammer_image_tag: "binaries.metal-stack.metal-hammer.version"
+  metal_hammer_image_url: "binaries.metal-stack.metal-hammer.url"
+  # control plane
+  metal_api_image_tag: "docker-images.metal-stack.control-plane.metal-api.tag"
+  metal_api_image_name: "docker-images.metal-stack.control-plane.metal-api.name"
+  metal_metalctl_image_tag: "docker-images.metal-stack.control-plane.metalctl.tag"
+  metal_metalctl_image_name: "docker-images.metal-stack.control-plane.metalctl.name"
+  metal_masterdata_api_image_tag: "docker-images.metal-stack.control-plane.masterdata-api.tag"
+  metal_masterdata_api_image_name: "docker-images.metal-stack.control-plane.masterdata-api.name"
+  metal_console_image_tag: "docker-images.metal-stack.control-plane.metal-console.tag"
+  metal_console_image_name: "docker-images.metal-stack.control-plane.metal-console.name"
+  # partition
+  metal_core_image_tag: "docker-images.metal-stack.partition.metal-core.tag"
+  metal_core_image_name: "docker-images.metal-stack.partition.metal-core.name"
+  pixiecore_image_tag: "docker-images.metal-stack.partition.pixiecore.tag"
+  pixiecore_image_name: "docker-images.metal-stack.partition.pixiecore.name"
+  # generic
+  metal_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
+  metal_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
+  ipam_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
+  ipam_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
+  masterdata_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
+  masterdata_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
+  # gardener
+  gardener_extension_provider_metal_image_tag: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.tag"
+  gardener_extension_provider_metal_image_name: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.name"
+  gardener_os_controller_image_tag: "docker-images.metal-stack.gardener.os-metal-extension.tag"
+  gardener_os_controller_image_name: "docker-images.metal-stack.gardener.os-metal-extension.name"
+  # kubernetes
+  csi_lvm_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
+  csi_lvm_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"
+  gardener_metal_cloud_controller_manager_image_tag: "docker-images.metal-stack.kubernetes.metal-ccm.tag"
+  gardener_metal_cloud_controller_manager_image_name: "docker-images.metal-stack.kubernetes.metal-ccm.name"
+  # third party
+  nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"
+  nsq_image_name: "docker-images.third-party.control-plane.nsq.name"
+  ipam_db_image_tag: "docker-images.third-party.control-plane.ipam-db.tag"
+  ipam_db_image_name: "docker-images.third-party.control-plane.ipam-db.name"
+  masterdata_db_image_tag: "docker-images.third-party.control-plane.masterdata-db.tag"
+  masterdata_db_image_name: "docker-images.third-party.control-plane.masterdata-db.name"
+  metal_db_image_tag: "docker-images.third-party.control-plane.metal-db.tag"
+  metal_db_image_name: "docker-images.third-party.control-plane.metal-db.name"

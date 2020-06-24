@@ -17,11 +17,11 @@ As our control plane also requires non-HTTP ports to be exposed to the outside w
 This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
 
 You can look up all the default values of this role [here](defaults/main/main.yaml).
-
+  
 | Name                             | Mandatory | Description                                                                                                                        |
 | -------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| nsq_image_name                   |           | Image name of nsq                                                                                                                  |
-| nsq_image_tag                    |           | Image version of nsq                                                                                                               |
+| nsq_image_name                   | yes       | Image name of nsq                                                                                                                  |
+| nsq_image_tag                    | yes       | Image version of nsq                                                                                                               |
 | nsq_expose_ingress_service_ports |           | Exposes tcp and udp services over nginx-ingress, requires [nginx-ingress](https://github.com/kubernetes/ingress-nginx) to be setup |
 | nsq_set_resource_limits          |           | Deploys nsq with or without resource limits (possibly disable for development environments)                                        |
 | nsq_nsqd_resources               |           | The kubernetes resources for the actual nsqd container                                                                             |
