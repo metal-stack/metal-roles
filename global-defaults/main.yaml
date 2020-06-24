@@ -36,8 +36,10 @@ metal_stack_release_vector_mapping:
   # kubernetes
   csi_lvm_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
   csi_lvm_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"
-  gardener_metal_cloud_controller_manager_image_tag: "docker-images.metal-stack.kubernetes.metal-ccm.tag"
-  gardener_metal_cloud_controller_manager_image_name: "docker-images.metal-stack.kubernetes.metal-ccm.name"
+  metal_cloud_controller_manager_image_tag: "docker-images.metal-stack.kubernetes.metal-ccm.tag"
+  metal_cloud_controller_manager_image_name: "docker-images.metal-stack.kubernetes.metal-ccm.name"
+  splunk_audit_webhook_image_tag: "docker-images.metal-stack.kubernetes.splunk-audit-webhook.tag"
+  splunk_audit_webhook_image_name: "docker-images.metal-stack.kubernetes.splunk-audit-webhook.name"
   # third party
   nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"
   nsq_image_name: "docker-images.third-party.control-plane.nsq.name"
