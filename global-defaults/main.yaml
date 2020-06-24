@@ -5,6 +5,8 @@ metal_stack_release_vector_mapping:
   # binaries
   metal_hammer_image_tag: "binaries.metal-stack.metal-hammer.version"
   metal_hammer_image_url: "binaries.metal-stack.metal-hammer.url"
+  metal_kernel_tag: "binaries.metal-stack.kernel.version"
+  metal_kernel_url: "binaries.metal-stack.kernel.url"
   # control plane
   metal_api_image_tag: "docker-images.metal-stack.control-plane.metal-api.tag"
   metal_api_image_name: "docker-images.metal-stack.control-plane.metal-api.name"
