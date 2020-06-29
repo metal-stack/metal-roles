@@ -37,7 +37,7 @@ An example for how to use this project can be found in the [mini-lab](https://gi
 Many roles require names and tags of the microservices to be set explicitly. You can, however, make use of the [setup_release](https://github.com/metal-stack/ansible-common/blob/master/library/setup_release.py) module, which fetches image release versions from the [release](https://github.com/metal-stack/releases) vector. This way, you only need to define the following data structure somewhere in your playbooks:
 
 ```yaml
-setup_release:
+setup_yaml:
   - name: metal-stack
     version: master # use release versions if you want to have stable deployment!
 
