@@ -1,6 +1,5 @@
 ---
 metal_stack_release:
-  url_template: https://raw.githubusercontent.com/metal-stack/releases/%s/release.yaml
   mapping:
     # binaries
     metal_hammer_image_tag: "binaries.metal-stack.metal-hammer.version"
