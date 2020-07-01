@@ -30,6 +30,7 @@ metal_stack_release:
     # gardener
     gardener_extension_provider_metal_image_tag: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.tag"
     gardener_extension_provider_metal_image_name: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.name"
+    gardener_extension_provider_metal_repo_url: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.repository"
     gardener_os_controller_image_tag: "docker-images.metal-stack.gardener.os-metal-extension.tag"
     gardener_os_controller_image_name: "docker-images.metal-stack.gardener.os-metal-extension.name"
     gardener_machine_controller_manager_image_tag: "docker-images.metal-stack.gardener.machine-controller-manager.tag"
