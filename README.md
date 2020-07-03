@@ -34,8 +34,6 @@ An example for how to use this project can be found in the [mini-lab](https://gi
 
 ## Resolving Image Versions
 
-## Resolving Image Versions
-
 Many roles require names and tags of the microservices to be set explicitly. You can, however, make use of the [setup_yaml](https://github.com/metal-stack/ansible-common/blob/master/library/setup_yaml.py) module, which fetches image release versions from the [release](https://github.com/metal-stack/releases) vector. This way, you only need to define the following data structure somewhere in your playbooks:
 
 ```yaml
