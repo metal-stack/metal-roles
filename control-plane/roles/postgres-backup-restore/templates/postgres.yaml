@@ -77,7 +77,9 @@ spec:
         args:
         - sh
         - -c
-        - mkdir -p /data/postgres && backup-restore-sidecar start --log-level debug
+        - mkdir -p /data/postgres && backup-restore-sidecar start
+        ports:
+        - containerPort: 2112
         env:
         - name: BACKUP_RESTORE_SIDECAR_POSTGRES_PASSWORD
           valueFrom:
@@ -207,6 +209,9 @@ metadata:
   name: {{ postgres_name }}
 spec:
   ports:
+  - name: "metrics"
+    port: 2112
+    targetPort: 2112
   - name: "5432"
     port: 5432
     targetPort: 5432
