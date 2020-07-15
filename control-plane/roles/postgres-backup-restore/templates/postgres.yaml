@@ -33,7 +33,7 @@ spec:
         args:
         - sh
         - -c
-        - backup-restore-sidecar wait && docker-entrypoint.sh postgres
+        - backup-restore-sidecar wait && docker-entrypoint.sh postgres -c shared_preload_libraries=pg_stat_statements -c max_connections={{ postgres_max_connections }}
         ports:
         - containerPort: 5432
         env:
@@ -69,6 +69,8 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
+        - name: initdb-{{ postgres_name }}
+          mountPath: /docker-entrypoint-initdb.d/initdb.sql
       - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
         name: backup-restore-sidecar
         command:
@@ -155,6 +157,9 @@ spec:
 {% endif %}
       - name: bin-provision
         emptyDir: {}
+      - name: initdb-{{ postgres_name }}
+        configMap:
+          name postgres-initdb-{{ postgres_name }}
   volumeClaimTemplates:
   - metadata:
       name: {{ postgres_name }}
@@ -177,6 +182,14 @@ data:
     backup-provider: {{ postgres_backup_restore_sidecar_provider }}
     backup-cron-schedule: "{{ postgres_backup_restore_sidecar_backup_cron_schedule }}"
     object-prefix: {{ postgres_backup_restore_sidecar_object_prefix }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-initdb-{{ postgres_name }}
+data:
+  initdb.sql: |
+    CREATE EXTENSION pg_stat_statements;
 ---
 apiVersion: v1
 kind: Secret

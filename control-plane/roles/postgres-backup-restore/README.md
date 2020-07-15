@@ -18,6 +18,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_db                                             |           | The name of the database                                                 |
 | postgres_user                                           |           | The user of the postgres database                                        |
 | postgres_password                                       |           | The password of the postgres database                                    |
+| postgres_max_connections                                |           | The amount of max. connections possible, defaults to 100                 |
 | postgres_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                              |
 | postgres_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                  |
 | postgres_backup_restore_sidecar_provider                |           | The backup provider                                                      |
