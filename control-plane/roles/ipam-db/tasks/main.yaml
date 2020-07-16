@@ -24,6 +24,7 @@
     postgres_db: "{{ ipam_db_db }}"
     postgres_user: "{{ ipam_db_user }}"
     postgres_password: "{{ ipam_db_password }}"
+    postgres_max_connections: "{{ ipam_db_max_connections }}"
     postgres_backup_restore_sidecar_image_name: "{{ ipam_db_backup_restore_sidecar_image_name }}"
     postgres_backup_restore_sidecar_image_tag: "{{ ipam_db_backup_restore_sidecar_image_tag }}"
     postgres_backup_restore_sidecar_provider: "{{ ipam_db_backup_restore_sidecar_provider }}"

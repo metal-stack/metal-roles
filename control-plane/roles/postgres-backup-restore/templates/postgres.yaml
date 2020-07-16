@@ -69,8 +69,6 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
-        - name: initdb-{{ postgres_name }}
-          mountPath: /docker-entrypoint-initdb.d/initdb.sql
       - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
         name: backup-restore-sidecar
         command:
@@ -157,9 +155,6 @@ spec:
 {% endif %}
       - name: bin-provision
         emptyDir: {}
-      - name: initdb-{{ postgres_name }}
-        configMap:
-          name postgres-initdb-{{ postgres_name }}
   volumeClaimTemplates:
   - metadata:
       name: {{ postgres_name }}
@@ -182,14 +177,7 @@ data:
     backup-provider: {{ postgres_backup_restore_sidecar_provider }}
     backup-cron-schedule: "{{ postgres_backup_restore_sidecar_backup_cron_schedule }}"
     object-prefix: {{ postgres_backup_restore_sidecar_object_prefix }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-initdb-{{ postgres_name }}
-data:
-  initdb.sql: |
-    CREATE EXTENSION pg_stat_statements;
+
 ---
 apiVersion: v1
 kind: Secret
