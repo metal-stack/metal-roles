@@ -6,6 +6,7 @@ masterdata_db_storage_size: 5Gi
 masterdata_db_db: masterdata
 masterdata_db_user: postgres
 masterdata_db_password: change-me
+masterdata_db_max_connections: 100
 
 masterdata_db_backup_restore_sidecar_provider: local
 masterdata_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
