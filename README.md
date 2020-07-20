@@ -16,10 +16,12 @@ For your deployment project, set up a `requirements.yml`:
 ```yaml
 - src: https://github.com/metal-stack/ansible-common.git
   name: ansible-common
-  version: v0.4.0
+  version: master # use release versions if you want to have stable deployment!
 - src: https://github.com/metal-stack/metal-roles.git
   name: metal-roles
-  version: v0.1.0
+  version: master # use release versions if you want to have stable deployment!
+
+# you can find release versions here: https://github.com/metal-stack/releases
 ```
 
 You can then download the roles with the following command:
@@ -29,3 +31,15 @@ ansible-galaxy install -r requirements.yml
 ```
 
 An example for how to use this project can be found in the [mini-lab](https://github.com/metal-stack/mini-lab) project.
+
+## Resolving Image Versions
+
+Many roles require names and tags of the microservices to be set explicitly. You can, however, make use of the [setup_yaml](https://github.com/metal-stack/ansible-common/blob/master/library/setup_yaml.py) module, which fetches image release versions from the [release](https://github.com/metal-stack/releases) vector. This way, you only need to define the following data structure somewhere in your playbooks:
+
+```yaml
+setup_yaml:
+  - url: https://raw.githubusercontent.com/metal-stack/releases/master/release.yaml
+    meta_var: metal_stack_release
+    # the metal_stack_release variable is provided through role defaults of this project
+    # use release versions if you want to have stable deployment!
+```

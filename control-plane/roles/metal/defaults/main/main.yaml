@@ -9,12 +9,6 @@ metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api
 metal_log_level: debug
 metal_log_encoding: json
 
-# images
-metal_api_image_name: metalstack/metal-api
-metal_metalctl_image_name: metalstack/metalctl
-metal_console_image_name: metalstack/metal-console
-metal_masterdata_api_image_name: metalstack/masterdata-api
-
 # service ports
 metal_api_port: 8080
 metal_api_grpc_port: 50051
@@ -27,7 +21,7 @@ metal_bmc_reverse_proxy_port: 3333
 # metal-api
 metal_api_replicas: 3
 metal_api_base_path: "/metal/"
-metal_api_dex_address:
+metal_api_dex_address: ""
 metal_api_db_address: metal-db
 metal_api_db_password: change-me
 metal_api_ipam_db_address: ipam-db

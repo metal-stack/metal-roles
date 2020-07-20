@@ -1,12 +1,19 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - metal_api_image_name is defined
       - metal_api_image_tag is defined
+      - metal_metalctl_image_name is defined
       - metal_metalctl_image_tag is defined
+      - metal_console_image_name is defined
       - metal_console_image_tag is defined
+      - metal_masterdata_api_image_name is defined
       - metal_masterdata_api_image_tag is defined
       - metal_masterdata_api_tls_ca is defined
       - metal_masterdata_api_tls_cert is defined

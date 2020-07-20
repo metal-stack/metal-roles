@@ -2,15 +2,12 @@
 ipam_db_name: ipam-db
 ipam_db_namespace: "{{ metal_control_plane_namespace }}"
 
-ipam_db_image_name: postgres
-ipam_db_image_tag: 12-alpine
-
 ipam_db_storage_size: 5Gi
 ipam_db_db: ipam
 ipam_db_user: postgres
 ipam_db_password: change-me
+ipam_db_max_connections: 100
 
-ipam_db_backup_restore_sidecar_image_name: metalstack/backup-restore-sidecar
 ipam_db_backup_restore_sidecar_provider: local
 ipam_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 ipam_db_backup_restore_sidecar_log_level: debug

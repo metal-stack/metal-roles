@@ -1,4 +1,17 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - masterdata_db_image_name is defined
+      - masterdata_db_image_tag is defined
+      - masterdata_db_backup_restore_sidecar_image_name is defined
+      - masterdata_db_backup_restore_sidecar_image_tag is defined
+
 - name: Deploy masterdata db
   include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
@@ -11,6 +24,7 @@
     postgres_db: "{{ masterdata_db_db }}"
     postgres_user: "{{ masterdata_db_user }}"
     postgres_password: "{{ masterdata_db_password }}"
+    postgres_max_connections: "{{ masterdata_db_max_connections }}"
     postgres_backup_restore_sidecar_image_name: "{{ masterdata_db_backup_restore_sidecar_image_name }}"
     postgres_backup_restore_sidecar_image_tag: "{{ masterdata_db_backup_restore_sidecar_image_tag }}"
     postgres_backup_restore_sidecar_provider: "{{ masterdata_db_backup_restore_sidecar_provider }}"

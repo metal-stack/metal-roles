@@ -1,4 +1,17 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - rethinkdb_image_name is defined
+      - rethinkdb_image_tag is defined
+      - rethinkdb_backup_restore_sidecar_image_name is defined
+      - rethinkdb_backup_restore_sidecar_image_tag is defined
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"

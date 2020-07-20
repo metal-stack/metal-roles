@@ -56,7 +56,9 @@ spec:
         args:
         - sh
         - -c
-        - mkdir -p /data/rethinkdb && backup-restore-sidecar start --log-level debug
+        - mkdir -p /data/rethinkdb && backup-restore-sidecar start
+        ports:
+        - containerPort: 2112
         env:
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
@@ -159,7 +161,7 @@ data:
     backup-provider: {{ rethinkdb_backup_restore_sidecar_provider }}
     rethinkdb-passwordfile: /rethinkdb-secret/rethinkdb-password.txt
     backup-cron-schedule: "{{ rethinkdb_backup_restore_sidecar_backup_cron_schedule }}"
-    object-prefix: rethinkdb-{{ environment_name }}
+    object-prefix: rethinkdb-{{ metal_control_plane_stage_name }}
 ---
 apiVersion: v1
 kind: Secret
@@ -179,6 +181,9 @@ metadata:
   name: {{ rethinkdb_name }}
 spec:
   ports:
+  - name: "metrics"
+    port: 2112
+    targetPort: 2112
   - name: "10080"
     port: 10080
     targetPort: 8080

@@ -27,13 +27,13 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 | Name                            | Mandatory | Description                         |
 | ------------------------------- | --------- | ----------------------------------- |
-| metal_api_image_name            |           | Image version of the metal-api      |
+| metal_api_image_name            | yes       | Image version of the metal-api      |
 | metal_api_image_tag             | yes       | Image tag of the metal-api          |
-| metal_metalctl_image_name       |           | Image version of the metalctl       |
+| metal_metalctl_image_name       | yes       | Image version of the metalctl       |
 | metal_metalctl_image_tag        | yes       | Image tag of the metalctl           |
-| metal_console_image_name        |           | Image version of the metal-console  |
+| metal_console_image_name        | yes       | Image version of the metal-console  |
 | metal_console_image_tag         | yes       | Image tag of the metal-console      |
-| metal_masterdata_api_image_name |           | Image version of the masterdata-api |
+| metal_masterdata_api_image_name | yes       | Image version of the masterdata-api |
 | metal_masterdata_api_image_tag  | yes       | Image tag of the masterdata-api     |
 
 ### Service Ports
@@ -62,9 +62,9 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_ipam_db_name             |           | The database name of the ipam database                               |
 | metal_api_ipam_db_user             |           | The user of the ipam database                                        |
 | metal_api_ipam_db_password         |           | The password of the ipam database                                    |
+| metal_api_nsq_lookupd_http_address |           | The http address of nsqlookupd (only used for in-cluster traffic)    |
 | metal_api_nsq_tcp_address          |           | The tcp address of nsqd                                              |
 | metal_api_nsq_http_address         |           | The http address of nsqd (only used for in-cluster traffic)          |
-| metal_api_nsq_lookupd_http_address |           | The http address of nsqlookupd (only used for in-cluster traffic)    |
 | metal_api_nsq_tls_enabled          |           | Enables TLS for nsq                                                  |
 | metal_api_nsq_tls_secret_name      |           | The name of the secret where nsq certificates are stored             |
 | metal_api_grpc_tls_enabled         |           | Enables TLS for gRPC                                                 |

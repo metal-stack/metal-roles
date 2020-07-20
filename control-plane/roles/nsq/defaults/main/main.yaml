@@ -1,9 +1,6 @@
 ---
 nsq_expose_ingress_service_ports: yes
 
-nsq_image_name: nsqio/nsq
-nsq_image_tag: v1.2.0
-
 nsq_set_resource_limits: true
 nsq_nsqd_resources:
   requests:

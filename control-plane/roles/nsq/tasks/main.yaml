@@ -1,4 +1,15 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - nsq_image_name is defined
+      - nsq_image_tag is defined
+
 - name: Deploy nsq
   k8s:
     definition: "{{ lookup('template', 'nsq.yaml') }}"

@@ -1,8 +1,8 @@
 ---
-metal_core_image_name: metalstack/metal-core
 metal_core_port: 4242
 metal_core_log_level: warn
 metal_core_hmac_key: change-me
+metal_core_rack_id:
 metal_core_change_boot_order: true
 
 metal_core_nsq_log_level: warn
@@ -10,6 +10,9 @@ metal_core_nsq_tls_enabled: true
 metal_core_nsq_cert_dir: /certs/nsq
 metal_core_nsqd_ca_cert:
 metal_core_nsqd_client_cert:
+
+metal_core_reconfigure_switch: true
+metal_core_reconfigure_switch_interval: 10s
 
 metal_core_grpc_port: 50051
 
@@ -22,8 +25,7 @@ metal_core_grpc_client_key:
 api_protocol: https
 api_basepath: "/"
 
-reconfigure_switch: false
-reconfigure_switch_interval: 10s
+metal_core_additional_bridge_vids: []
+metal_core_additional_bridge_ports: []
 
-additional_bridge_vids: []
-additional_bridge_ports: []
+metal_core_consider_hosts_file_resolution: false

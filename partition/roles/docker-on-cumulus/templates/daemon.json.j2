@@ -2,10 +2,10 @@
   "iptables": false,
 	"ip-forward": false,
 	"ip-masq": false,
-{% if fluentd_logging %}
+{% if docker_fluentd_logging_enabled %}
   "log-driver": "fluentd",
   "log-opts": {
-       "fluentd-address": "{{ fluentd_endpoint }}",
+       "fluentd-address": "{{ docker_fluentd_endpoint }}",
        "tag": "{{ inventory_hostname }}"
      }
 {% else %}

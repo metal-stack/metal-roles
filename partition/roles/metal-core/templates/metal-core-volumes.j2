@@ -5,6 +5,9 @@
 {% if metal_core_nsq_tls_enabled %}
 - "{{ metal_core_nsq_cert_dir }}:/certs/nsq:ro"
 {% endif %}
+{% if metal_core_consider_hosts_file_resolution %}
+- /etc/nsswitch.conf:/etc/nsswitch.conf
+{% endif %}
 {% if metal_core_grpc_tls_enabled %}
 - "{{ metal_core_grpc_cert_dir }}:/certs/grpc:ro"
 {% endif %}

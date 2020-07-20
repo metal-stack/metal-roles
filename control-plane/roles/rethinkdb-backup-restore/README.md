@@ -10,13 +10,13 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 | Name                                                     | Mandatory | Description                                                               |
 | -------------------------------------------------------- | --------- | ------------------------------------------------------------------------- |
-| rethinkdb_image_name                                     |           | Image version of the rethinkdb                                            |
-| rethinkdb_image_tag                                      |           | Image tag of the rethinkdb                                                |
+| rethinkdb_image_name                                     | yes       | Image version of the rethinkdb                                            |
+| rethinkdb_image_tag                                      | yes       | Image tag of the rethinkdb                                                |
 | rethinkdb_name                                           |           | The name of the rethinkdb instance                                        |
-| rethinkdb_namespace                                      |           | The deployment's target namespace                                         | 
+| rethinkdb_namespace                                      |           | The deployment's target namespace                                         |
 | rethinkdb_storage_size                                   |           | The size of the PVC                                                       |
 | rethinkdb_password                                       |           | The password of the rethinkdb                                             |
-| rethinkdb_backup_restore_sidecar_image_name              |           | Image version of the backup-restore-sidecar                               |
+| rethinkdb_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                               |
 | rethinkdb_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                   |
 | rethinkdb_backup_restore_sidecar_provider                |           | The backup provider                                                       |
 | rethinkdb_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                  |

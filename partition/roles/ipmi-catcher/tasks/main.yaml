@@ -1,0 +1,28 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - ipmi_catcher_image_tag is defined
+
+- name: deploy ipmi-catcher service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_start: "{{ ensure_started.ipmi_catcher|default(true) }}"
+    systemd_service_name: ipmi-catcher
+    systemd_docker_image_name: "{{ ipmi_catcher_image_name }}"
+    systemd_docker_image_tag: "{{ ipmi_catcher_image_tag }}"
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      - /var/lib/dhcp:/var/lib/dhcp:ro
+    systemd_docker_cap_add:
+      - sys_admin
+    systemd_service_environment:
+      TZ: "{{ metal_partition_timezone }}"
+      IPMI_CATCHER_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
+      IPMI_CATCHER_PARTITION_ID: "{{ metal_partition_id }}"
+      IPMI_CATCHER_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
+      IPMI_CATCHER_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
+      IPMI_CATCHER_IGNORE_MACS: "{{ ipmi_catcher_ignore_macs | join(',') }}"

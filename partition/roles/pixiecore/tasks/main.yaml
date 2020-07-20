@@ -1,9 +1,13 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - pixiecore_image_name is defined
       - pixiecore_image_tag is defined
 
 - name: deploy pixiecore
@@ -24,4 +28,4 @@
     systemd_docker_network: host
     # With the flag --dhcp-no-bind Pixiecore does not bind to the DHCP port and only listens for Pixie-Requests
     # This enables to use an existing DHCP server
-    systemd_docker_command: ["api", "http://localhost:4242", "--debug", "--dhcp-no-bind"]
+    systemd_docker_command: ["api", "{{ pixiecore_api_url }}", "--debug", "--dhcp-no-bind"]

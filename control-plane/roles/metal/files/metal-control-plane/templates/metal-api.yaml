@@ -263,7 +263,7 @@ spec:
         name: metal-api-createmasterdata
         env:
         - name: METALCTL_URL
-          value: http://metal-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+          value: http://metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
         - name: METALCTL_HMAC
           valueFrom:
             secretKeyRef:
@@ -321,7 +321,7 @@ spec:
         name: metal-api-createmasterdata
         env:
         - name: METALCTL_URL
-          value: http://metal-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+          value: http://metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
         - name: METALCTL_HMAC
           valueFrom:
             secretKeyRef:
@@ -345,7 +345,7 @@ spec:
         image: gempesaw/curl-jq
         env:
         - name: API_BASE_URL
-          value: metal-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
+          value: metal-api:{{ .Values.ports.metal_api }}{{ .Values.metal_api.base_path }}
         command:
           - sh
           - -c

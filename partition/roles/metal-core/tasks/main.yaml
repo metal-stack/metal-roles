@@ -1,10 +1,16 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - metal_core_image_name is defined
       - metal_core_image_tag is defined
+      - metal_core_rack_id is not none
+      - metal_core_nsq_lookupd_addr is not none
 
 - name: create nsq certs directory
   file:
