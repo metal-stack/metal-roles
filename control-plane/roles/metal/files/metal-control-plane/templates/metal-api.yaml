@@ -98,7 +98,7 @@ spec:
         - name: METAL_API_PROVIDER_TENANT
           value: "{{ .Values.masterdata_api.provider_tenant }}"
         - name: METAL_API_NSQLOOKUPD_ADDR
-          value: {{ .Values.metal_api.nsq.lookupd_http_address }}
+          value: {{ .Values.metal_api.nsq.lookupd_address }}
         - name: METAL_API_NSQD_TCP_ADDR
           value: {{ .Values.metal_api.nsq.tcp_address }}
         - name: METAL_API_NSQD_HTTP_ENDPOINT
@@ -451,7 +451,7 @@ spec:
             - name: METAL_API_IPAM_DB_USER
               value: {{ .Values.metal_api.ipam_db_user }}
             - name: METAL_API_NSQLOOKUPD_ADDR
-              value: {{ .Values.metal_api.nsq.lookupd_http_address }}
+              value: {{ .Values.metal_api.nsq.lookupd_address }}
             - name: METAL_API_NSQD_TCP_ADDR
               value: {{ .Values.metal_api.nsq.tcp_address }}
             - name: METAL_API_NSQD_HTTP_ENDPOINT
