@@ -6,7 +6,7 @@ metal_set_resource_limits: yes
 
 metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api_base_path }}v1/health
 
-metal_log_level: debug
+metal_log_level: info
 metal_log_encoding: json
 
 # service ports
