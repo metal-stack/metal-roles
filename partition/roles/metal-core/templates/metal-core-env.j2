@@ -25,7 +25,7 @@ METAL_CORE_MQ_CLIENT_CERT_FILE: "{{ metal_core_nsq_cert_dir }}/client.pem"
 METAL_CORE_RECONFIGURE_SWITCH: "{{ metal_core_reconfigure_switch }}"
 METAL_CORE_RECONFIGURE_SWITCH_INTERVAL: "{{ metal_core_reconfigure_switch_interval }}"
 METAL_CORE_MANAGEMENT_GATEWAY: "{{ metal_partition_mgmt_gateway }}"
-METAL_CORE_GRPC_ADDRESS: "{{ metal_partition_mgmt_gateway }}:{{ metal_api_grpc_port }}"
+METAL_CORE_GRPC_ADDRESS: "{{ metal_core_grpc_address }}"
 {% if metal_core_grpc_tls_enabled %}
 METAL_CORE_GRPC_CA_CERT_FILE: "{{ metal_core_grpc_cert_dir }}/ca.pem"
 METAL_CORE_GRPC_CLIENT_CERT_FILE: "{{ metal_core_grpc_cert_dir }}/client.pem"

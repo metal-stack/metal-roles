@@ -19,6 +19,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | metal_partition_timezone                | yes       | The timezone in which this partition is located                                                  |
 | metal_partition_metal_api_addr          | yes       | The address of the metal-api that this partition connects to                                     |
 | metal_partition_metal_api_port          |           | The port of the metal-api that this partition connects to                                        |
+| metal_partition_metal_api_grpc_port     |           | The port of the metal-api gRPC server that this partition connects to                            |
 | metal_partition_metal_api_protocol      |           | The protocol of the metal-api that this partition connects to                                    |
 | metal_partition_metal_api_basepath      |           | The basepath of the metal-api that this partition connects to                                    |
 | metal_partition_metal_api_hmac_edit_key |           | The HMAC edit key used for authenticating at the metal-api                                       |

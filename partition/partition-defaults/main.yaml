@@ -5,6 +5,7 @@ metal_partition_id:
 metal_partition_metal_api_protocol: https
 metal_partition_metal_api_addr:
 metal_partition_metal_api_port: 443
+metal_partition_metal_api_grpc_port: 50051
 metal_partition_metal_api_basepath: "/"
 metal_partition_metal_api_hmac_edit_key: change-me
 
