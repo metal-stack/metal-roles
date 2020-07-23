@@ -138,6 +138,4 @@ ingress: {{ metal_ingress | to_json }}
 
 grpc_certs_server_key_enc: "{{ metal_api_grpc_certs_server_key | b64encode }}"
 grpc_certs_server_cert_enc: "{{ metal_api_grpc_certs_server_cert | b64encode }}"
-grpc_certs_client_key_enc: "{{ metal_api_grpc_certs_client_key | b64encode }}"
-grpc_certs_client_cert_enc: "{{ metal_api_grpc_certs_client_cert | b64encode }}"
 grpc_certs_ca_cert_enc: "{{ metal_api_grpc_certs_ca_cert | b64encode }}"

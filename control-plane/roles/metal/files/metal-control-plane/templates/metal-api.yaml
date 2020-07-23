@@ -20,8 +20,6 @@ metadata:
 data:
   server_key.pem: {{ .Values.grpc_certs_server_key_enc }}
   server_cert.pem: {{ .Values.grpc_certs_server_cert_enc }}
-  client_key.pem: {{ .Values.grpc_certs_client_key_enc }}
-  client_cert.pem: {{ .Values.grpc_certs_client_cert_enc }}
   ca_cert.pem: {{ .Values.grpc_certs_ca_cert_enc }}
 ---
 apiVersion: apps/v1
@@ -462,23 +460,10 @@ spec:
             - name: METAL_API_NSQD_CLIENT_CERT_FILE
               value: /certs/nsq/client_cert.pem
 {{- end }}
-{{- if .Values.metal_api.grpc.tls.enabled }}
-            - name: METAL_API_GRPC_CA_CERT_FILE
-              value: /certs/grpc/ca_cert.pem
-            - name: METAL_API_GRPC_CLIENT_CERT_FILE
-              value: /certs/grpc/client_cert.pem
-            - name: METAL_API_GRPC_CLIENT_KEY_FILE
-              value: /certs/grpc/client_key.pem
-{{- end }}
             volumeMounts:
 {{- if .Values.metal_api.nsq.tls.enabled }}
             - name: {{ .Values.metal_api.nsq.tls.secret_name }}
               mountPath: /certs/nsq/
-              readOnly: true
-{{- end }}
-{{- if .Values.metal_api.grpc.tls.enabled }}
-            - name: {{ .Values.metal_api.grpc.tls.secret_name }}
-              mountPath: /certs/grpc/
               readOnly: true
 {{- end }}
           volumes:
@@ -486,9 +471,4 @@ spec:
           - name: {{ .Values.metal_api.nsq.tls.secret_name }}
             secret:
               secretName: {{ .Values.metal_api.nsq.tls.secret_name }}
-{{- end }}
-{{- if .Values.metal_api.grpc.tls.enabled }}
-          - name: {{ .Values.metal_api.grpc.tls.secret_name }}
-            secret:
-              secretName: {{ .Values.metal_api.grpc.tls.secret_name }}
 {{- end }}
