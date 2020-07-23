@@ -59,7 +59,6 @@ metal_api:
   grpc:
     tls:
       enabled: "{{ metal_api_grpc_tls_enabled }}"
-      secret_name: "{{ metal_api_grpc_tls_secret_name }}"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
   dex_address: "{{ metal_api_dex_address }}"

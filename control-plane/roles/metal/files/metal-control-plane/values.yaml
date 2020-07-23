@@ -65,6 +65,7 @@ metal_api:
   edit_key: ""
   admin_key: ""
   nsq:
+  nsq:
     lookupd_address: ""
     tcp_address: ""
     http_address: ""
@@ -74,7 +75,6 @@ metal_api:
   grpc:
     tls:
       enabled: false
-      secret_name: ""
   partitions: "[]"
   sizes: "[]"
   images: "[]"

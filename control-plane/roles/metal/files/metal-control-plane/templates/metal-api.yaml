@@ -140,7 +140,7 @@ spec:
           readOnly: true
 {{- end }}
 {{- if .Values.metal_api.grpc.tls.enabled }}
-        - name: {{ .Values.metal_api.grpc.tls.secret_name }}
+        - name: grpc
           mountPath: /certs/grpc/
           readOnly: true
 {{- end }}
@@ -154,9 +154,9 @@ spec:
           secretName: {{ .Values.metal_api.nsq.tls.secret_name }}
 {{- end }}
 {{- if .Values.metal_api.grpc.tls.enabled }}
-      - name: {{ .Values.metal_api.grpc.tls.secret_name }}
+      - name: grpc
         secret:
-          secretName: {{ .Values.metal_api.grpc.tls.secret_name }}
+          secretName: grpc
 {{- end }}
       - name: masterdata-api-tls
         secret:
