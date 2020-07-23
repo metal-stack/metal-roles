@@ -4,3 +4,5 @@ metal_control_plane_ingress_dns:
 metal_control_plane_host_provider:
 metal_control_plane_stage_name: test
 metal_control_plane_namespace: metal-control-plane
+
+helm_force: false
