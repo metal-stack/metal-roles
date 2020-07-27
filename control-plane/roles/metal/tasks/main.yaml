@@ -77,6 +77,10 @@
           port: 5222
           protocol: TCP
           targetPort: 5222
+        - name: metal-control-plane-grpc
+          port: 50051
+          protocol: TCP
+          targetPort: 50051
   when: metal_expose_ingress_service_ports
 
 # for automation tests, we need to wait until all the services are ready...
