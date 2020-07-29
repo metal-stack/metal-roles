@@ -1,5 +1,8 @@
 ---
-- name: Check mandatory variables for this role are set
+- name: Gather release versions
+  setup_yaml:
+
+    - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
