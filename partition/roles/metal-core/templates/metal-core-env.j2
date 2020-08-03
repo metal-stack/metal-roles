@@ -38,3 +38,8 @@ METAL_CORE_MANAGEMENT_GATEWAY: "{{ metal_partition_mgmt_gateway }}"
 METAL_CORE_CHANGE_BOOT_ORDER: "{{ metal_core_change_boot_order }}"
 METAL_CORE_ADDITIONAL_BRIDGE_VIDS: "{{ metal_core_additional_bridge_vids | join(',') }}"
 METAL_CORE_ADDITIONAL_BRIDGE_PORTS: "{{ metal_core_additional_bridge_ports | join(',') }}"
+{% if metal_core_spine_uplinks is defined %}
+METAL_CORE_SPINE_UPLINKS: "{{ metal_core_spine_uplinks | join(',') }}"
+{% endif %}
+METAL_CORE_INTERFACES_TPL_FILE: "{{ metal_core_interfaces_tpl_file }}"
+METAL_CORE_FRR_TPL_FILE: "{{ metal_core_frr_tpl_file }}"
