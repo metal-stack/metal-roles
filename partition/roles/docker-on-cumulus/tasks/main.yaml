@@ -7,16 +7,24 @@
       - ca-certificates
       - curl
       - gnupg2
+  when: ansible_distribution_major_version == "3"
 
 - name: setup key for docker
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 
-- name: add docker engine repo
+- name: add docker engine repo for debian jessie
   apt_repository:
     repo: 'deb [arch=amd64] https://download.docker.com/linux/debian jessie edge'
     update_cache: yes
+  when: ansible_distribution_major_version == "3"
+
+- name: add docker engine repo for debian buster
+  apt_repository:
+    repo: 'deb [arch=amd64] https://download.docker.com/linux/debian buster stable'
+    update_cache: yes
+  when: ansible_distribution_major_version == "4"
 
 - name: install docker
   apt:
