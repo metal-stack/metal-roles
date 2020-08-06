@@ -6,11 +6,12 @@ metal_set_resource_limits: yes
 
 metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api_base_path }}v1/health
 
-metal_log_level: debug
+metal_log_level: info
 metal_log_encoding: json
 
 # service ports
 metal_api_port: 8080
+metal_api_grpc_port: 50051
 metal_api_metrics_port: 2112
 metal_masterdata_api_port: 8443
 metal_masterdata_api_metrics_port: 2113
@@ -28,11 +29,12 @@ metal_api_ipam_db_port: 5432
 metal_api_ipam_db_name: ipam
 metal_api_ipam_db_user: postgres
 metal_api_ipam_db_password: change-me
-metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tcp_address: "{{ metal_control_plane_ingress_dns }}:4150"
 metal_api_nsq_http_address: "nsqd:4151"
+metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tls_enabled: true
 metal_api_nsq_tls_secret_name: nsqd
+metal_api_grpc_tls_enabled: true
 metal_api_view_key: change-me
 metal_api_edit_key: change-me
 metal_api_admin_key: change-me

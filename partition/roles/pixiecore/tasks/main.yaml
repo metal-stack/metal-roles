@@ -17,6 +17,7 @@
     systemd_service_name: pixiecore
     systemd_docker_image_name: "{{ pixiecore_image_name }}"
     systemd_docker_image_tag: "{{ pixiecore_image_tag }}"
+    systemd_service_timeout_start_sec: 60
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m

@@ -33,6 +33,29 @@
     label: "{{ item.filename }}"
   when: metal_core_nsq_tls_enabled
 
+- name: create gRPC certs directory
+  file:
+    path: "{{ metal_core_grpc_cert_dir }}"
+    state: directory
+  when: metal_core_grpc_tls_enabled
+
+- name: copy gRPC certificates
+  copy:
+    dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
+    mode: 0640
+    content: "{{ item.content }}"
+  no_log: yes
+  loop:
+    - filename: ca.pem
+      content: "{{ metal_core_grpc_ca_cert }}"
+    - filename: client.pem
+      content: "{{ metal_core_grpc_client_cert }}"
+    - filename: client-key.pem
+      content: "{{ metal_core_grpc_client_key }}"
+  loop_control:
+    label: "{{ item.filename }}"
+  when: metal_core_grpc_tls_enabled
+
 - name: deploy metal-core
   include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -40,6 +63,7 @@
     systemd_service_name: metal-core
     systemd_docker_image_name: "{{ metal_core_image_name }}"
     systemd_docker_image_tag: "{{ metal_core_image_tag }}"
+    systemd_service_timeout_start_sec: 60
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
