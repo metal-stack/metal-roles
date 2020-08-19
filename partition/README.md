@@ -28,6 +28,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 
 | Role Name                                    | Description                                     |
 | -------------------------------------------- | ----------------------------------------------- |
+| [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy                             | 
 | [dhcp](roles/dhcp)                           | Deploys a dhcp server                           |
 | [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus                       |
 | [ipmi-catcher](roles/ipmi-catcher)           | Deploys ipmi-catcher to crawl ipmi ip addresses |

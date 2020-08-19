@@ -22,6 +22,10 @@ metal_stack_release:
     pixiecore_image_name: "docker-images.metal-stack.partition.pixiecore.name"
     ipmi_catcher_image_tag: "docker-images.metal-stack.partition.ipmi-catcher.tag"
     ipmi_catcher_image_name: "docker-images.metal-stack.partition.ipmi-catcher.name"
+    bmc_proxy_image_tag: "docker-images.metal-stack.partition.bmc-proxy.tag"
+    bmc_proxy_image_name: "docker-images.metal-stack.partition.bmc-proxy.name"
+    bmc_reverse_proxy_image_tag: "docker-images.metal-stack.partition.bmc-reverse-proxy.tag"
+    bmc_reverse_proxy_image_name: "docker-images.metal-stack.partition.bmc-reverse-proxy.name"
     # generic
     metal_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     metal_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"

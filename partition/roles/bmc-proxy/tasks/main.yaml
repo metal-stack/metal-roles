@@ -1,0 +1,47 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - bmc_proxy_image_name is defined
+      - bmc_proxy_image_tag is defined
+      - bmc_reverse_proxy_image_name is defined
+      - bmc_reverse_proxy_image_tag is defined
+
+- name: Obtain docker bridge ip
+  command: docker network inspect bridge
+  register: docker_inspect_result
+  when: bmc_proxy_docker_bridge_ip is not none
+
+- name: Set docker bridge ip
+  set_fact:
+    bmc_proxy_docker_bridge_ip: "{{ (docker_inspect_result | from_json)[0].get("IPAM").get("Config")[0].get("Gateway") }}"
+  when: bmc_proxy_docker_bridge_ip is not none
+
+- name: Deploy bmc-proxy service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: bmc-proxy
+    systemd_docker_image_name: "{{ bmc_proxy_image_name }}"
+    systemd_docker_image_tag: "{{ bmc_proxy_image_tag }}"
+    systemd_docker_ports:
+      - host_port: "{{ bmc_proxy_port }}"
+        target_port: 4444
+    systemd_service_environment:
+      BMC_PROXY_PORT: 4444
+
+- name: Deploy bmc-reverse-proxy service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: bmc-reverse-proxy
+    systemd_docker_image_name: "{{ bmc_reverse_proxy_image_name }}"
+    systemd_docker_image_tag: "{{ bmc_reverse_proxy_image_tag }}"
+    systemd_docker_ports:
+      - host_port: "{{ bmc_reverse_proxy_port }}"
+        target_port: 3333
+    systemd_docker_host_to_ip_mapping:
+      - host: bmc-proxy
+        ip: "{{ bmc_proxy_docker_bridge_ip }}"

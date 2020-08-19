@@ -1,0 +1,5 @@
+---
+bmc_proxy_port: 4444
+bmc_reverse_proxy_port: 3333
+
+bmc_proxy_docker_bridge_ip:
