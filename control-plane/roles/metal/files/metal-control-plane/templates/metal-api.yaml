@@ -19,8 +19,8 @@ metadata:
   name: grpc
 data:
   server_key.pem: {{ .Values.grpc_certs_server_key_enc }}
-  server_cert.pem: {{ .Values.grpc_certs_server_cert_enc }}
-  ca_cert.pem: {{ .Values.grpc_certs_ca_cert_enc }}
+  server.pem: {{ .Values.grpc_certs_server_cert_enc }}
+  ca.pem: {{ .Values.grpc_certs_ca_cert_enc }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -103,17 +103,17 @@ spec:
           value: {{ .Values.metal_api.nsq.http_address }}
 {{- if .Values.metal_api.nsq.tls.enabled }}
         - name: METAL_API_NSQD_CA_CERT_FILE
-          value: /certs/nsq/ca_cert.pem
+          value: /certs/ca.pem
         - name: METAL_API_NSQD_CLIENT_CERT_FILE
-          value: /certs/nsq/client_cert.pem
+          value: /certs/nsq/client.pem
 {{- end }}
         - name: METAL_API_GRPC_TLS_ENABLED
           value: "{{ .Values.metal_api.grpc.tls.enabled }}"
 {{- if .Values.metal_api.grpc.tls.enabled }}
         - name: METAL_API_GRPC_CA_CERT_FILE
-          value: /certs/grpc/ca_cert.pem
+          value: /certs/grpc/ca.pem
         - name: METAL_API_GRPC_SERVER_CERT_FILE
-          value: /certs/grpc/server_cert.pem
+          value: /certs/grpc/server.pem
         - name: METAL_API_GRPC_SERVER_KEY_FILE
           value: /certs/grpc/server_key.pem
 {{- end }}
@@ -456,9 +456,9 @@ spec:
               value: {{ .Values.metal_api.nsq.http_address }}
 {{- if .Values.metal_api.nsq.tls.enabled }}
             - name: METAL_API_NSQD_CA_CERT_FILE
-              value: /certs/nsq/ca_cert.pem
+              value: /certs/ca.pem
             - name: METAL_API_NSQD_CLIENT_CERT_FILE
-              value: /certs/nsq/client_cert.pem
+              value: /certs/nsq/client.pem
 {{- end }}
             volumeMounts:
 {{- if .Values.metal_api.nsq.tls.enabled }}
