@@ -11,8 +11,6 @@
       - metal_api_image_tag is defined
       - metal_metalctl_image_name is defined
       - metal_metalctl_image_tag is defined
-      - metal_console_image_name is defined
-      - metal_console_image_tag is defined
       - metal_masterdata_api_image_name is defined
       - metal_masterdata_api_image_tag is defined
       - metal_masterdata_api_tls_ca is defined
@@ -20,6 +18,8 @@
       - metal_masterdata_api_tls_cert_key is defined
       - metal_masterdata_api_tls_client_cert is defined
       - metal_masterdata_api_tls_client_key is defined
+      - metal_console_image_name is defined
+      - metal_console_image_tag is defined
       - metal_console_bmc_proxy_certs_server_key is defined
       - metal_console_bmc_proxy_certs_server_pub is defined
       - metal_console_bmc_proxy_certs_client_key is defined
