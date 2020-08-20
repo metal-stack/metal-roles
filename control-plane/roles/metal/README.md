@@ -46,7 +46,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_port         |           | Service port of the masterdata-api                |
 | metal_masterdata_api_metrics_port |           | Service port of the masterdata-api metrics server |
 | metal_console_port                |           | Service port of the metal-console                 |
-| metal_bmc_reverse_proxy_port      |           | Service port of the bmc reverse proxy             |
 
 ### metal-api
 
@@ -103,16 +102,16 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 # metal-console
 
-| Name                                      | Mandatory | Description                                                                                                 |
-| ----------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
-| metal_console_replicas                    |           | The number of deployed replicas of the metal-console                                                        |
-| metal_mgmt_services                       |           | Endpoints to reverse bmc-proxies located inside the partitions for establishing machine console connections |
-| metal_console_resources                   |           | Sets the given container resources                                                                          |
-| metal_console_bmc_proxy_certs_ca_cert     | yes       | The bmc-proxy ca certificate as a string                                                                    |
-| metal_console_bmc_proxy_certs_server_key  | yes       | The bmc-proxy server key as a string                                                                        |
-| metal_console_bmc_proxy_certs_server_pub  | yes       | The bmc-proxy server public key as a string                                                                 |
-| metal_console_bmc_proxy_certs_client_cert | yes       | The bmc-proxy client certificate as a string                                                                |
-| metal_console_bmc_proxy_certs_client_key  | yes       | The bmc-proxy client key as a string                                                                        |
+| Name                                      | Mandatory | Description                                                                                                                        |
+| ----------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| metal_console_replicas                    |           | The number of deployed replicas of the metal-console                                                                               |
+| metal_console_resources                   |           | Sets the given container resources                                                                                                 |
+| metal_console_bmc_proxy_endpoints         |           | Endpoints to reverse bmc-proxies inside the partitions for establishing machine console connections, requires external dns entries | 
+| metal_console_bmc_proxy_certs_ca_cert     | yes       | The bmc-proxy ca certificate as a string                                                                                           |
+| metal_console_bmc_proxy_certs_server_key  | yes       | The bmc-proxy server key as a string                                                                                               |
+| metal_console_bmc_proxy_certs_server_pub  | yes       | The bmc-proxy server public key as a string                                                                                        |
+| metal_console_bmc_proxy_certs_client_cert | yes       | The bmc-proxy client certificate as a string                                                                                       |
+| metal_console_bmc_proxy_certs_client_key  | yes       | The bmc-proxy client key as a string                                                                                               |
 
 # Ingress
 
