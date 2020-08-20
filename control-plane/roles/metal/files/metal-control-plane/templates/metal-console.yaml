@@ -51,16 +51,16 @@ spec:
           - name: bmc-proxy-certs
             mountPath: /certs
             readOnly: true
-        volumes:
-          - name: bmc-proxy-certs
-            secret:
-              secretName: bmc-proxy-certs
         ports:
         - containerPort: 10001
 {{- if .Values.set_resource_limits }}
         resources:
 {{ toYaml .Values.resources.metal_console | indent 10 }}
 {{- end }}
+      volumes:
+      - name: bmc-proxy-certs
+        secret:
+          secretName: bmc-proxy-certs
 status: {}
 ---
 apiVersion: v1
