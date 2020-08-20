@@ -19,7 +19,7 @@
 
 - name: Set docker bridge ip
   set_fact:
-    bmc_proxy_docker_bridge_ip: "{{ (docker_inspect_result | from_json)[0].get("IPAM").get("Config")[0].get("Gateway") }}"
+    bmc_proxy_docker_bridge_ip: "{{ (docker_inspect_result | from_json)[0].get('IPAM').get('Config')[0].get('Gateway') }}"
   when: bmc_proxy_docker_bridge_ip is not none
 
 - name: create bmc-proxy host directory
