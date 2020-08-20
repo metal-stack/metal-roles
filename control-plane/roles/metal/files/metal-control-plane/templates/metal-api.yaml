@@ -103,7 +103,7 @@ spec:
           value: {{ .Values.metal_api.nsq.http_address }}
 {{- if .Values.metal_api.nsq.tls.enabled }}
         - name: METAL_API_NSQD_CA_CERT_FILE
-          value: /certs/ca.pem
+          value: /certs/nsq/ca.pem
         - name: METAL_API_NSQD_CLIENT_CERT_FILE
           value: /certs/nsq/client.pem
 {{- end }}
@@ -456,7 +456,7 @@ spec:
               value: {{ .Values.metal_api.nsq.http_address }}
 {{- if .Values.metal_api.nsq.tls.enabled }}
             - name: METAL_API_NSQD_CA_CERT_FILE
-              value: /certs/ca.pem
+              value: /certs/nsq/ca.pem
             - name: METAL_API_NSQD_CLIENT_CERT_FILE
               value: /certs/nsq/client.pem
 {{- end }}
