@@ -112,8 +112,6 @@ masterdata_api:
 metal_console:
   replicas: 3
 
-bmc_proxy_endpoints: []
-
 ingress_public_dns:
 deploy_ingress: true
 ingress:

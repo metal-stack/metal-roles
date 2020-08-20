@@ -106,7 +106,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | ----------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | metal_console_replicas                    |           | The number of deployed replicas of the metal-console                                                                               |
 | metal_console_resources                   |           | Sets the given container resources                                                                                                 |
-| metal_console_bmc_proxy_endpoints         |           | Endpoints to reverse bmc-proxies inside the partitions for establishing machine console connections, requires external dns entries | 
 | metal_console_bmc_proxy_certs_ca_cert     | yes       | The bmc-proxy ca certificate as a string                                                                                           |
 | metal_console_bmc_proxy_certs_server_key  | yes       | The bmc-proxy server key as a string                                                                                               |
 | metal_console_bmc_proxy_certs_server_pub  | yes       | The bmc-proxy server public key as a string                                                                                        |

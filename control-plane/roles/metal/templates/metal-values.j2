@@ -128,8 +128,6 @@ masterdata_api:
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% endfor %}
 
-bmc_proxy_endpoints: {{ metal_console_bmc_proxy_endpoints | to_json }}
-
 ingress_public_dns: "{{ metal_ingress_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}

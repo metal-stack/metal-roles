@@ -61,14 +61,6 @@ metal_masterdata_api_projects: []
 metal_console_replicas: 3
 metal_console_resources:
 
-metal_console_bmc_proxy_endpoints: []
-# expected metal_console_bmc_proxy_endpoints data structure looks like this:
-# metal_console_bmc_proxy_endpoints:
-# - name: partition-a
-#   endpoint: bmc-proxy-a-address.example.com
-# - name: partition-b
-#   endpoint: bmc-proxy-b-address.example.com
-
 # ingress
 metal_deploy_ingress: true
 metal_ingress: {}
