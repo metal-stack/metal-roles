@@ -76,3 +76,14 @@ spec:
     targetPort: 10001
   selector:
     app: metal-console
+
+{{- range .Values.bmc_proxy_endpoints }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}-bmc-proxy
+spec:
+  type: ExternalName
+  externalName: {{ .endpoint }}
+{{- end }}

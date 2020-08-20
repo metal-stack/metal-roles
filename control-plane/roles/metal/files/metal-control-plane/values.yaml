@@ -48,7 +48,6 @@ ports:
   masterdata_api: 8443
   masterdata_api_metrics: 2113
   metal_console: 10001
-  bmc_reverse_proxy: 3333
 
 metal_api:
   replicas: 3
@@ -113,7 +112,7 @@ masterdata_api:
 metal_console:
   replicas: 3
 
-mgmtservices: []
+bmc_proxy_endpoints: []
 
 ingress_public_dns:
 deploy_ingress: true

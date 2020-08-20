@@ -16,7 +16,6 @@ metal_api_metrics_port: 2112
 metal_masterdata_api_port: 8443
 metal_masterdata_api_metrics_port: 2113
 metal_console_port: 10001
-metal_bmc_reverse_proxy_port: 3333
 
 # metal-api
 metal_api_replicas: 3
@@ -62,14 +61,13 @@ metal_masterdata_api_projects: []
 metal_console_replicas: 3
 metal_console_resources:
 
-metal_mgmt_services: []
-# expected metal_mgmt_services data structure looks like this:
-# metal_mgmt_services:
-# - id: partition-a-mgmt-service
-#   port: port-of-the-reverse-proxies
-#   ips:
-#     - ip-of-your-mgmt-server-01
-#     - ip-of-your-mgmt-server-02
+metal_console_bmc_proxy_endpoints: []
+# expected metal_console_bmc_proxy_endpoints data structure looks like this:
+# metal_console_bmc_proxy_endpoints:
+# - name: partition-a
+#   endpoint: bmc-proxy-a-address.example.com
+# - name: partition-b
+#   endpoint: bmc-proxy-b-address.example.com
 
 # ingress
 metal_deploy_ingress: true
