@@ -8,3 +8,7 @@ bmc_proxy_host_dir_path: /bmc-proxy
 bmc_proxy_cert_dir_path: "{{ bmc_proxy_host_dir_path }}/certs"
 bmc_proxy_cert_owner: root
 bmc_proxy_cert_group: root
+
+bmc_proxy_certs_ca_cert:
+bmc_proxy_certs_server_cert:
+bmc_proxy_certs_server_key:

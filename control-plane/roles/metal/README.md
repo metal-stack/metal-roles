@@ -73,7 +73,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_grpc_certs_server_cert      |           | The gRPC client certificate as a string                              |
 | metal_api_bmc_proxy_certs_ca_cert     | yes       | The bmc-proxy ca certificate as a string                             |
 | metal_api_bmc_proxy_certs_server_key  | yes       | The bmc-proxy server key as a string                                 |
-| metal_api_bmc_proxy_certs_server_cert | yes       | The bmc-proxy server certificate as a string                         |
 | metal_api_bmc_proxy_certs_server_pub  | yes       | The bmc-proxy server public key as a string                          |
 | metal_api_bmc_proxy_certs_client_cert | yes       | The bmc-proxy client certificate as a string                         |
 | metal_api_bmc_proxy_certs_client_key  | yes       | The bmc-proxy client key as a string                                 |

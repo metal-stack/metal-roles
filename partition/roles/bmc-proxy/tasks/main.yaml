@@ -46,7 +46,7 @@
 - name: copy ca certificates
   copy:
     dest: "{{ bmc_proxy_cert_dir_path }}/ca.pem"
-    content: "{{ metal_api_bmc_proxy_certs_ca_cert }}"
+    content: "{{ bmc_proxy_certs_ca_cert }}"
     mode: 0640
     owner: "{{ bmc_proxy_cert_owner }}"
     group: "{{ bmc_proxy_cert_group }}"
@@ -61,9 +61,9 @@
   no_log: yes
   loop:
     - filename: server.pem
-      content: "{{ metal_api_bmc_proxy_certs_server_cert }}"
+      content: "{{ bmc_proxy_certs_server_cert }}"
     - filename: server-key.pem
-      content: "{{ metal_api_bmc_proxy_certs_server_key }}"
+      content: "{{ bmc_proxy_certs_server_key }}"
   loop_control:
     label: "{{ item.filename }}"
 

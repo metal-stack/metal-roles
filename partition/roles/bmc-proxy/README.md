@@ -13,3 +13,7 @@ Deploys a bmc-proxy and bmc-reverse-proxy, which is the counterpart to the metal
 | bmc_proxy_port               |           | The port on which the bmc-proxy listens                                                                            |
 | bmc_reverse_proxy_port       |           | The port on which the bmc-reverse-proxy listens                                                                    |
 | bmc_proxy_docker_bridge_ip   |           | Required for communication between bmc-proxy and bmc-reverse-proxy, if not defined will be looked up automatically |
+| bmc_proxy_certs_ca_cert      | yes       | The bmc-proxy ca certificate as a string                                                                           |
+| bmc_proxy_certs_server_cert  | yes       | The bmc-proxy server certificate as a string                                                                       |
+| bmc_proxy_certs_server_key   | yes       | The bmc-proxy server key as a string                                                                               |
+
