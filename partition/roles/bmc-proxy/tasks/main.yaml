@@ -8,6 +8,9 @@
       - bmc_proxy_image_tag is defined
       - bmc_reverse_proxy_image_name is defined
       - bmc_reverse_proxy_image_tag is defined
+      - bmc_proxy_certs_ca_cert is not none
+      - bmc_proxy_certs_server_cert is not none
+      - bmc_proxy_certs_server_key is not none
 
 - name: Obtain docker bridge ip
   command: docker network inspect bridge
