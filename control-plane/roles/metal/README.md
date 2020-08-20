@@ -71,12 +71,12 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_grpc_certs_ca_cert          |           | The gRPC ca certificate as a string                                  |
 | metal_api_grpc_certs_server_key       |           | The gRPC client key as a string                                      |
 | metal_api_grpc_certs_server_cert      |           | The gRPC client certificate as a string                              |
-| metal_api_bmc_proxy_certs_ca_cert     |           | The bmc-proxy ca certificate as a string                             |
-| metal_api_bmc_proxy_certs_server_key  |           | The bmc-proxy server key as a string                                 |
-| metal_api_bmc_proxy_certs_server_cert |           | The bmc-proxy server certificate as a string                         |
-| metal_api_bmc_proxy_certs_server_pub  |           | The bmc-proxy server public key as a string                          |
-| metal_api_bmc_proxy_certs_client_cert |           | The bmc-proxy client certificate as a string                         |
-| metal_api_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string                                 |
+| metal_api_bmc_proxy_certs_ca_cert     | yes       | The bmc-proxy ca certificate as a string                             |
+| metal_api_bmc_proxy_certs_server_key  | yes       | The bmc-proxy server key as a string                                 |
+| metal_api_bmc_proxy_certs_server_cert | yes       | The bmc-proxy server certificate as a string                         |
+| metal_api_bmc_proxy_certs_server_pub  | yes       | The bmc-proxy server public key as a string                          |
+| metal_api_bmc_proxy_certs_client_cert | yes       | The bmc-proxy client certificate as a string                         |
+| metal_api_bmc_proxy_certs_client_key  | yes       | The bmc-proxy client key as a string                                 |
 | metal_api_view_key                    |           | The HMAC view key of the metal-api used for API technical access     |
 | metal_api_edit_key                    |           | The HMAC edit key of the metal-api used for API technical access     |
 | metal_api_admin_key                   |           | The HMAC admin key of the metal-api used for API technical access    |
