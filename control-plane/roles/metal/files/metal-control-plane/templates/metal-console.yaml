@@ -1,3 +1,4 @@
+{{- if .Values.metal_console.enabled }}
 ---
 apiVersion: v1
 kind: Secret
@@ -76,3 +77,4 @@ spec:
     targetPort: 10001
   selector:
     app: metal-console
+{{- end }}

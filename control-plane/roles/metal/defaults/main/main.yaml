@@ -58,8 +58,14 @@ metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
 
 # metal-console
+metal_console_enabled: false
 metal_console_replicas: 3
 metal_console_resources:
+metal_console_bmc_proxy_certs_server_key:
+metal_console_bmc_proxy_certs_server_pub:
+metal_console_bmc_proxy_certs_client_key:
+metal_console_bmc_proxy_certs_client_cert:
+metal_console_bmc_proxy_certs_ca_cert:
 
 # ingress
 metal_deploy_ingress: true
