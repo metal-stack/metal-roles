@@ -18,12 +18,12 @@
 - name: Obtain docker bridge ip
   command: docker network inspect bridge
   register: docker_inspect_result
-  when: bmc_proxy_docker_bridge_ip is not none
+  when: bmc_proxy_docker_bridge_ip is none
 
 - name: Set docker bridge ip
   set_fact:
     bmc_proxy_docker_bridge_ip: "{{ (docker_inspect_result.stdout | from_json)[0].get('IPAM').get('Config')[0]['Gateway'] }}"
-  when: bmc_proxy_docker_bridge_ip is not none
+  when: bmc_proxy_docker_bridge_ip is none
 
 - name: create bmc-proxy host directory
   file:
