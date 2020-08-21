@@ -39,7 +39,6 @@ ports:
   masterdata_api: {{ metal_masterdata_api_port }}
   masterdata_api_metrics: {{ metal_masterdata_api_metrics_port }}
   metal_console: {{ metal_console_port }}
-  bmc_reverse_proxy: {{ metal_bmc_reverse_proxy_port }}
 
 metal_api:
   db_address: "{{ metal_api_db_address }}"
@@ -129,8 +128,6 @@ masterdata_api:
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% endfor %}
 
-mgmtservices: {{ metal_mgmt_services | to_json }}
-
 ingress_public_dns: "{{ metal_ingress_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
@@ -138,3 +135,9 @@ ingress: {{ metal_ingress | to_json }}
 grpc_certs_server_key_enc: "{{ metal_api_grpc_certs_server_key | b64encode }}"
 grpc_certs_server_cert_enc: "{{ metal_api_grpc_certs_server_cert | b64encode }}"
 grpc_certs_ca_cert_enc: "{{ metal_api_grpc_certs_ca_cert | b64encode }}"
+
+bmc_proxy_certs_server_key_enc: "{{ metal_console_bmc_proxy_certs_server_key | b64encode }}"
+bmc_proxy_certs_server_pub_enc: "{{ metal_console_bmc_proxy_certs_server_pub | b64encode }}"
+bmc_proxy_certs_client_key_enc: "{{ metal_console_bmc_proxy_certs_client_key | b64encode }}"
+bmc_proxy_certs_client_cert_enc: "{{ metal_console_bmc_proxy_certs_client_cert | b64encode }}"
+bmc_proxy_certs_ca_cert_enc: "{{ metal_console_bmc_proxy_certs_ca_cert | b64encode }}"

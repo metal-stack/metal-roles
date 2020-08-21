@@ -1,4 +1,17 @@
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: bmc-proxy-certs
+  name: bmc-proxy-certs
+data:
+  server_key.pem: {{ .Values.bmc_proxy_certs_server_key_enc }}
+  server_key.pub: {{ .Values.bmc_proxy_certs_server_pub_enc }}
+  client_key.pem: {{ .Values.bmc_proxy_certs_client_key_enc }}
+  client.pem: {{ .Values.bmc_proxy_certs_client_cert_enc }}
+  ca.pem: {{ .Values.bmc_proxy_certs_ca_cert_enc }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,12 +47,20 @@ spec:
           value: {{ .Values.zap_level }}
         image: {{ .Values.images.metal_console.image }}:{{ .Values.images.metal_console.tag }}
         name: metal-console
+        volumeMounts:
+          - name: bmc-proxy-certs
+            mountPath: /certs
+            readOnly: true
         ports:
         - containerPort: 10001
 {{- if .Values.set_resource_limits }}
         resources:
 {{ toYaml .Values.resources.metal_console | indent 10 }}
 {{- end }}
+      volumes:
+      - name: bmc-proxy-certs
+        secret:
+          secretName: bmc-proxy-certs
 status: {}
 ---
 apiVersion: v1

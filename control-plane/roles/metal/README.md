@@ -46,7 +46,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_port         |           | Service port of the masterdata-api                |
 | metal_masterdata_api_metrics_port |           | Service port of the masterdata-api metrics server |
 | metal_console_port                |           | Service port of the metal-console                 |
-| metal_bmc_reverse_proxy_port      |           | Service port of the bmc reverse proxy             |
 
 ### metal-api
 
@@ -68,9 +67,9 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_nsq_tls_enabled        |           | Enables TLS for nsq                                                  |
 | metal_api_nsq_tls_secret_name    |           | The name of the secret where nsq certificates are stored             |
 | metal_api_grpc_tls_enabled       |           | Enables TLS for gRPC                                                 |
+| metal_api_grpc_certs_ca_cert     |           | The gRPC ca certificate as a string                                  |
 | metal_api_grpc_certs_server_key  |           | The gRPC client key as a string                                      |
 | metal_api_grpc_certs_server_cert |           | The gRPC client certificate as a string                              |
-| metal_api_grpc_certs_ca_cert     |           | The gRPC ca certificate as a string                                  |
 | metal_api_view_key               |           | The HMAC view key of the metal-api used for API technical access     |
 | metal_api_edit_key               |           | The HMAC edit key of the metal-api used for API technical access     |
 | metal_api_admin_key              |           | The HMAC admin key of the metal-api used for API technical access    |
@@ -103,11 +102,15 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 # metal-console
 
-| Name                    | Mandatory | Description                                                                                                 |
-| ----------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
-| metal_console_replicas  |           | The number of deployed replicas of the metal-console                                                        |
-| metal_mgmt_services     |           | Endpoints to reverse bmc-proxies located inside the partitions for establishing machine console connections |
-| metal_console_resources |           | Sets the given container resources                                                                          |
+| Name                                      | Mandatory | Description                                                                                                                        |
+| ----------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| metal_console_replicas                    |           | The number of deployed replicas of the metal-console                                                                               |
+| metal_console_resources                   |           | Sets the given container resources                                                                                                 |
+| metal_console_bmc_proxy_certs_ca_cert     | yes       | The bmc-proxy ca certificate as a string                                                                                           |
+| metal_console_bmc_proxy_certs_server_key  | yes       | The bmc-proxy server key as a string                                                                                               |
+| metal_console_bmc_proxy_certs_server_pub  | yes       | The bmc-proxy server public key as a string                                                                                        |
+| metal_console_bmc_proxy_certs_client_cert | yes       | The bmc-proxy client certificate as a string                                                                                       |
+| metal_console_bmc_proxy_certs_client_key  | yes       | The bmc-proxy client key as a string                                                                                               |
 
 # Ingress
 

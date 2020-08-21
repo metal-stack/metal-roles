@@ -34,8 +34,8 @@ spec:
 {% if nsq_tls_enabled %}
         - -tls-required=tcp-https
         - -tls-client-auth-policy=require-verify
-        - -tls-root-ca-file=/certs/ca_cert.pem
-        - -tls-cert=/certs/client_cert.pem
+        - -tls-root-ca-file=/certs/ca.pem
+        - -tls-cert=/certs/client.pem
         - -tls-key=/certs/client_key.pem
 {% endif %}
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
@@ -153,8 +153,8 @@ metadata:
   name: nsqd
 data:
   client_key.pem: {{ nsq_certs_client_key | b64encode }}
-  client_cert.pem: {{ nsq_certs_client_cert | b64encode }}
-  ca_cert.pem: {{ nsq_certs_ca_cert | b64encode }}
+  client.pem: {{ nsq_certs_client_cert | b64encode }}
+  ca.pem: {{ nsq_certs_ca_cert | b64encode }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
