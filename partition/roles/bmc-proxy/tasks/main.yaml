@@ -49,7 +49,7 @@
     group: "{{ bmc_proxy_cert_group }}"
     mode: 0700
 
-- name: copy ca certificates
+- name: copy ca certificate
   copy:
     dest: "{{ bmc_proxy_cert_dir_path }}/ca.pem"
     content: "{{ bmc_proxy_certs_ca_cert }}"

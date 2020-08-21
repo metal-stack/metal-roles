@@ -6,9 +6,9 @@ metadata:
     app: bmc-proxy-certs
   name: bmc-proxy-certs
 data:
-  server_key.pem: {{ .Values.bmc_proxy_certs_server_key_enc }}
-  server_key.pub: {{ .Values.bmc_proxy_certs_server_pub_enc }}
-  client_key.pem: {{ .Values.bmc_proxy_certs_client_key_enc }}
+  server-key.pem: {{ .Values.bmc_proxy_certs_server_key_enc }}
+  server-key.pub: {{ .Values.bmc_proxy_certs_server_pub_enc }}
+  client-key.pem: {{ .Values.bmc_proxy_certs_client_key_enc }}
   client.pem: {{ .Values.bmc_proxy_certs_client_cert_enc }}
   ca.pem: {{ .Values.bmc_proxy_certs_ca_cert_enc }}
 ---
