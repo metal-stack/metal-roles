@@ -30,6 +30,7 @@ resources:
 {% endif %}
 
 metal_console:
+  enabled: {{ metal_console_enabled }}
   replicas: "{{ metal_console_replicas }}"
 
 ports:

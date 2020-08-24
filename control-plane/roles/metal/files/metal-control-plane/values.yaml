@@ -110,6 +110,7 @@ masterdata_api:
   hmac: ""
 
 metal_console:
+  enabled: false
   replicas: 3
 
 ingress_public_dns:

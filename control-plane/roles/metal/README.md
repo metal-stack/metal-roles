@@ -102,15 +102,16 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 # metal-console
 
-| Name                                      | Mandatory | Description                                                                                                                        |
-| ----------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| metal_console_replicas                    |           | The number of deployed replicas of the metal-console                                                                               |
-| metal_console_resources                   |           | Sets the given container resources                                                                                                 |
-| metal_console_bmc_proxy_certs_ca_cert     | yes       | The bmc-proxy ca certificate as a string                                                                                           |
-| metal_console_bmc_proxy_certs_server_key  | yes       | The bmc-proxy server key as a string                                                                                               |
-| metal_console_bmc_proxy_certs_server_pub  | yes       | The bmc-proxy server public key as a string                                                                                        |
-| metal_console_bmc_proxy_certs_client_cert | yes       | The bmc-proxy client certificate as a string                                                                                       |
-| metal_console_bmc_proxy_certs_client_key  | yes       | The bmc-proxy client key as a string                                                                                               |
+| Name                                      | Mandatory | Description                                                        |
+| ----------------------------------------- | --------- | ------------------------------------------------------------------ |
+| metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console               |
+| metal_console_replicas                    |           | The number of deployed replicas of the metal-console               |
+| metal_console_resources                   |           | Sets the given container resources                                 |
+| metal_console_bmc_proxy_certs_ca_cert     |           | The bmc-proxy ca certificate as a string (required if enabled)     |
+| metal_console_bmc_proxy_certs_server_key  |           | The bmc-proxy server key as a string (required if enabled)         |
+| metal_console_bmc_proxy_certs_server_pub  |           | The bmc-proxy server public key as a string (required if enabled)  |
+| metal_console_bmc_proxy_certs_client_cert |           | The bmc-proxy client certificate as a string (required if enabled) |
+| metal_console_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string (required if enabled)         |
 
 # Ingress
 
