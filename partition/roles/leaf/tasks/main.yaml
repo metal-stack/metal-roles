@@ -25,3 +25,9 @@
   when:
     - '"10.0.1.0/24" not in route_check.stdout'
     - dhcp_server_ip is defined
+
+- name: create bridgemac.json
+  copy:
+    src: bridgemac.json
+    dest: /etc/network/ifupdown2/policy.d/bridgemac.json
+  notify: restart ifreload
