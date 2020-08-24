@@ -30,4 +30,4 @@
   copy:
     src: bridgemac.json
     dest: /etc/network/ifupdown2/policy.d/bridgemac.json
-  notify: restart ifreload
+  notify: reload interfaces
