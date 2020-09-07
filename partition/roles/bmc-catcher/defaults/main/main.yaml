@@ -1,0 +1,3 @@
+---
+bmc_catcher_image_name: metalstack/bmc-catcher
+bmc_catcher_ignore_macs: []
