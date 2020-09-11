@@ -22,6 +22,15 @@ data:
   server.pem: {{ .Values.grpc_certs_server_cert_enc }}
   ca.pem: {{ .Values.grpc_certs_ca_cert_enc }}
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: bmc
+  name: bmc
+data:
+  supermetal.pwd: {{ .Values.bmc_supermetal_pwd }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -144,6 +153,11 @@ spec:
           mountPath: /certs/grpc/
           readOnly: true
 {{- end }}
+{{- if .Values.metal_api.bmc.supermetal.enabled }}
+        - name: bmc
+          mountPath: /bmc/
+          readOnly: true
+{{- end }}
         - name: masterdata-api-tls
           mountPath: /certs/masterdata-api/
           readOnly: true
@@ -157,6 +171,11 @@ spec:
       - name: grpc
         secret:
           secretName: grpc
+{{- end }}
+{{- if .Values.metal_api.bmc.supermetal.enabled }}
+      - name: supermetal
+        secret:
+          secretName: supermetal
 {{- end }}
       - name: masterdata-api-tls
         secret:

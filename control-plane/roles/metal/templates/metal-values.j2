@@ -133,6 +133,9 @@ ingress_public_dns: "{{ metal_ingress_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
+bmc_supermetal_enabled: "{{ metal_api_bmc_supermetal_enabled }}"
+bmc_supermetal_pwd: "{{ metal_api_bmc_supermetal_pwd }}"
+
 grpc_certs_server_key_enc: "{{ metal_api_grpc_certs_server_key | b64encode }}"
 grpc_certs_server_cert_enc: "{{ metal_api_grpc_certs_server_cert | b64encode }}"
 grpc_certs_ca_cert_enc: "{{ metal_api_grpc_certs_ca_cert | b64encode }}"
