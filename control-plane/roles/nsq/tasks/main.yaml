@@ -10,6 +10,17 @@
       - nsq_image_name is defined
       - nsq_image_tag is defined
 
+# this task is only needed for migrating nsqd from Deployment to StatefulSet
+# see https://github.com/metal-stack/metal-roles/pull/33
+# this can be removed some time later in the future
+- name: Remove nsqd deployment (migrating to StatefulSet)
+  k8s:
+    api_version: v1
+    kind: Deployment
+    namespace: "{{ metal_control_plane_namespace }}"
+    name: nsqd
+    state: absent
+
 - name: Deploy nsq
   k8s:
     definition: "{{ lookup('template', 'nsq.yaml') }}"
