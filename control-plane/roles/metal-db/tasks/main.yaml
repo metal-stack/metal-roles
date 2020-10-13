@@ -21,6 +21,7 @@
     rethinkdb_image_name: "{{ metal_db_image_name }}"
     rethinkdb_image_tag: "{{ metal_db_image_tag }}"
     rethinkdb_storage_size: "{{ metal_db_storage_size }}"
+    rethinkdb_storage_class: "{{ metal_db_storage_class }}"
     rethinkdb_password: "{{ metal_db_password }}"
     rethinkdb_backup_restore_sidecar_image_name: "{{ metal_db_backup_restore_sidecar_image_name }}"
     rethinkdb_backup_restore_sidecar_image_tag: "{{ metal_db_backup_restore_sidecar_image_tag }}"

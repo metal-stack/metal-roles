@@ -21,6 +21,7 @@
     postgres_image_name: "{{ ipam_db_image_name }}"
     postgres_image_tag: "{{ ipam_db_image_tag }}"
     postgres_storage_size: "{{ ipam_db_storage_size }}"
+    postgres_storage_class: "{{ ipam_db_storage_class }}"
     postgres_db: "{{ ipam_db_db }}"
     postgres_user: "{{ ipam_db_user }}"
     postgres_password: "{{ ipam_db_password }}"
