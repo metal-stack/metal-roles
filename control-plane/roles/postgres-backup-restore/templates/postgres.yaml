@@ -164,6 +164,9 @@ spec:
       resources:
         requests:
           storage: {{ postgres_storage_size }}
+{% if postgres_storage_class %}
+      storageClassName: {{ postgres_storage_class }}
+{% endif %}
 ---
 apiVersion: v1
 kind: ConfigMap

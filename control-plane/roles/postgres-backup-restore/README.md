@@ -15,6 +15,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_name                                           |           | The name of the postgres instance                                        |
 | postgres_namespace                                      |           | The deployment's target namespace                                        |
 | postgres_storage_size                                   |           | The size of the PVC                                                      |
+| postgres_storage_class                                  |           | The storage class of the PVC                                             |
 | postgres_db                                             |           | The name of the database                                                 |
 | postgres_user                                           |           | The user of the postgres database                                        |
 | postgres_password                                       |           | The password of the postgres database                                    |
