@@ -3,6 +3,7 @@ masterdata_db_name: masterdata-db
 masterdata_db_namespace: "{{ metal_control_plane_namespace }}"
 
 masterdata_db_storage_size: 5Gi
+masterdata_db_storage_class:
 masterdata_db_db: masterdata
 masterdata_db_user: postgres
 masterdata_db_password: change-me
