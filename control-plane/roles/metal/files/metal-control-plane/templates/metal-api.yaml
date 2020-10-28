@@ -27,9 +27,9 @@ kind: Secret
 metadata:
   labels:
     app: bmc
-  name: bmc
+  name: {{ .Values.metal_api.bmc.secret.name }}
 data:
-  supermetal.pwd: {{ .Values.bmc_supermetal_pwd }}
+  superuser.pwd: {{ .Values.bmc_superuser_pwd }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -126,6 +126,8 @@ spec:
         - name: METAL_API_GRPC_SERVER_KEY_FILE
           value: /certs/grpc/server_key.pem
 {{- end }}
+        - name: METAL_API_BMC_SUPERUSER_PWD_FILE
+          value: {{ .Values.metal_api.bmc.secret.mount_path }}/superuser.pwd
         - name: METAL_API_MASTERDATA_HMAC
           value: "{{ .Values.masterdata_api.hmac }}"
         - name: METAL_API_MASTERDATA_HOSTNAME
@@ -153,9 +155,9 @@ spec:
           mountPath: /certs/grpc/
           readOnly: true
 {{- end }}
-{{- if .Values.metal_api.bmc.supermetal.enabled }}
-        - name: bmc
-          mountPath: /bmc/
+{{- if .Values.metal_api.bmc.superuser.enabled }}
+        - name: {{ .Values.metal_api.bmc.secret.name }}
+          mountPath: {{ .Values.metal_api.bmc.secret.mount_path }}
           readOnly: true
 {{- end }}
         - name: masterdata-api-tls
@@ -172,10 +174,10 @@ spec:
         secret:
           secretName: grpc
 {{- end }}
-{{- if .Values.metal_api.bmc.supermetal.enabled }}
-      - name: supermetal
+{{- if .Values.metal_api.bmc.superuser.enabled }}
+      - name: {{ .Values.metal_api.bmc.secret.name }}
         secret:
-          secretName: supermetal
+          secretName: {{ .Values.metal_api.bmc.secret.name }}
 {{- end }}
       - name: masterdata-api-tls
         secret:

@@ -74,7 +74,10 @@ metal_api:
     tls:
       enabled: false
   bmc:
-    supermetal:
+    secret:
+      name: bmc
+      mount_path: /bmc
+    superuser:
       enabled: false
   partitions: "[]"
   sizes: "[]"
