@@ -3,6 +3,7 @@ ipam_db_name: ipam-db
 ipam_db_namespace: "{{ metal_control_plane_namespace }}"
 
 ipam_db_storage_size: 5Gi
+ipam_db_storage_class:
 ipam_db_db: ipam
 ipam_db_user: postgres
 ipam_db_password: change-me

@@ -148,6 +148,9 @@ spec:
       resources:
         requests:
           storage: {{ rethinkdb_storage_size }}
+{% if rethinkdb_storage_class %}
+      storageClassName: {{ rethinkdb_storage_class }}
+{% endif %}
 ---
 apiVersion: v1
 kind: ConfigMap
