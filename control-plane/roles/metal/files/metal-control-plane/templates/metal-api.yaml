@@ -21,8 +21,8 @@ data:
   server_key.pem: {{ .Values.grpc_certs_server_key_enc }}
   server.pem: {{ .Values.grpc_certs_server_cert_enc }}
   ca.pem: {{ .Values.grpc_certs_ca_cert_enc }}
----
 {{- if .Values.metal_api.bmc.superuser.enabled }}
+---
 apiVersion: v1
 kind: Secret
 metadata:
