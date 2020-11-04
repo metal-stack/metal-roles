@@ -79,8 +79,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_networks               |           | Creates networks (as masterdata) to the metal-api after deployment            |
 | metal_api_ips                    |           | Creates ips (as masterdata) to the metal-api after deployment                 |
 | metal_api_resources              |           | Sets the given container resources                                            |
-| metal_api_bmc_secret_name        |           | The BMC secret name                                                           |
-| metal_api_bmc_secret_mount_path  |           | The mount path to the BMC secret                                              |
 | metal_api_bmc_superuser_enabled  |           | Enables creating the BMC superuser and disabling the default one              |
 | metal_api_bmc_superuser_pwd      |           | If enabled use this password for the new BMC superuser                        |
 

@@ -133,10 +133,8 @@ ingress_public_dns: "{{ metal_ingress_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
-bmc_secret_name: "{{ metal_api_bmc_secret_name }}"
-bmc_secret_mount_path: "{{ metal_api_bmc_secret_mount_path }}"
 bmc_superuser_enabled: "{{ metal_api_bmc_superuser_enabled }}"
-bmc_superuser_pwd: "{{ metal_api_bmc_superuser_pwd }}"
+bmc_superuser_pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
 
 grpc_certs_server_key_enc: "{{ metal_api_grpc_certs_server_key | b64encode }}"
 grpc_certs_server_cert_enc: "{{ metal_api_grpc_certs_server_cert | b64encode }}"
