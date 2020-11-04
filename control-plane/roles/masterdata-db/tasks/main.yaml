@@ -21,6 +21,7 @@
     postgres_image_name: "{{ masterdata_db_image_name }}"
     postgres_image_tag: "{{ masterdata_db_image_tag }}"
     postgres_storage_size: "{{ masterdata_db_storage_size }}"
+    postgres_storage_class: "{{ masterdata_db_storage_class }}"
     postgres_db: "{{ masterdata_db_db }}"
     postgres_user: "{{ masterdata_db_user }}"
     postgres_password: "{{ masterdata_db_password }}"
