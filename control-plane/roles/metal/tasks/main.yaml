@@ -33,7 +33,6 @@
     # deployment can take a while due to post install hooks, therefore increasing the timeout for this chart...
     helm_timeout: 600s
     helm_chart_inject_config_hash: yes
-    helm_force: false
 
 - name: Set services for patching ingress controller service exposal
   set_fact:
