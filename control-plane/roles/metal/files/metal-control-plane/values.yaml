@@ -73,6 +73,9 @@ metal_api:
   grpc:
     tls:
       enabled: false
+      server_key_enc: ""
+      server_cert_enc: ""
+      ca_cert_enc: ""
   bmc:
     superuser:
       pwd_enc: ""
@@ -115,6 +118,13 @@ masterdata_api:
 metal_console:
   enabled: false
   replicas: 3
+  bmc_proxy:
+    tls:
+      server_key_enc: ""
+      server_pub_enc: ""
+      client_key_enc: ""
+      client_cert_enc: ""
+      ca_cert_enc: ""
 
 ingress_public_dns:
 deploy_ingress: true

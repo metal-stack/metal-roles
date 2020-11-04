@@ -7,11 +7,11 @@ metadata:
     app: bmc-proxy-certs
   name: bmc-proxy-certs
 data:
-  server-key.pem: {{ .Values.bmc_proxy_certs_server_key_enc }}
-  server-key.pub: {{ .Values.bmc_proxy_certs_server_pub_enc }}
-  client-key.pem: {{ .Values.bmc_proxy_certs_client_key_enc }}
-  client.pem: {{ .Values.bmc_proxy_certs_client_cert_enc }}
-  ca.pem: {{ .Values.bmc_proxy_certs_ca_cert_enc }}
+  server-key.pem: {{ .Values.metal_console.bmc_proxy.tls.server_key_enc }}
+  server-key.pub: {{ .Values.metal_console.bmc_proxy.tls.server_pub_enc }}
+  client-key.pem: {{ .Values.metal_console.bmc_proxy.tls.client_key_enc }}
+  client.pem: {{ .Values.metal_console.bmc_proxy.tls.client_cert_enc }}
+  ca.pem: {{ .Values.metal_console.bmc_proxy.tls.ca_cert_enc }}
 ---
 apiVersion: apps/v1
 kind: Deployment
