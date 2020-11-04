@@ -27,8 +27,8 @@ apiVersion: v1
 kind: Secret
 metadata:
   labels:
-    app: bmc
-  name: bmc
+    app: metal-api-bmc
+  name: metal-api-bmc
 data:
   superuser.pwd: {{ .Values.bmc.superuser.pwd_enc }}
 {{- end }}
@@ -179,7 +179,7 @@ spec:
 {{- if .Values.metal_api.bmc.superuser.enabled }}
       - name: bmc
         secret:
-          secretName: bmc
+          secretName: metal-api-bmc
 {{- end }}
       - name: masterdata-api-tls
         secret:
