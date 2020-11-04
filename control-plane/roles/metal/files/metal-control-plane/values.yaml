@@ -75,6 +75,7 @@ metal_api:
       enabled: false
   bmc:
     superuser:
+      pwd_enc: ""
       enabled: false
   partitions: "[]"
   sizes: "[]"

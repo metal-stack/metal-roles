@@ -30,7 +30,7 @@ metadata:
     app: bmc
   name: bmc
 data:
-  superuser.pwd: {{ .Values.bmc_superuser_pwd_enc }}
+  superuser.pwd: {{ .Values.bmc.superuser.pwd_enc }}
 {{- end }}
 ---
 apiVersion: apps/v1

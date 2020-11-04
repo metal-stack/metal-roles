@@ -59,6 +59,10 @@ metal_api:
   grpc:
     tls:
       enabled: "{{ metal_api_grpc_tls_enabled }}"
+  bmc:
+    superuser:
+      enabled: "{{ metal_api_bmc_superuser_enabled }}"
+      pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
   dex_address: "{{ metal_api_dex_address }}"
@@ -132,9 +136,6 @@ masterdata_api:
 ingress_public_dns: "{{ metal_ingress_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
-
-bmc_superuser_enabled: "{{ metal_api_bmc_superuser_enabled }}"
-bmc_superuser_pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
 
 grpc_certs_server_key_enc: "{{ metal_api_grpc_certs_server_key | b64encode }}"
 grpc_certs_server_cert_enc: "{{ metal_api_grpc_certs_server_cert | b64encode }}"
