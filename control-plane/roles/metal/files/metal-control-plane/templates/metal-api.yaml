@@ -15,12 +15,12 @@ apiVersion: v1
 kind: Secret
 metadata:
   labels:
-    app: grpc
-  name: grpc
+    app: metal-api-grpc
+  name: metal-api-grpc
 data:
-  server_key.pem: {{ .Values.grpc_certs_server_key_enc }}
-  server.pem: {{ .Values.grpc_certs_server_cert_enc }}
-  ca.pem: {{ .Values.grpc_certs_ca_cert_enc }}
+  server_key.pem: {{ .Values.metal_api.grpc.tls.server_key_enc }}
+  server.pem: {{ .Values.metal_api.grpc.tls.server_cert_enc }}
+  ca.pem: {{ .Values.metal_api.grpc.tls.ca_cert_enc }}
 {{- if .Values.metal_api.bmc.superuser.enabled }}
 ---
 apiVersion: v1
@@ -174,7 +174,7 @@ spec:
 {{- if .Values.metal_api.grpc.tls.enabled }}
       - name: grpc
         secret:
-          secretName: grpc
+          secretName: metal-api-grpc
 {{- end }}
 {{- if .Values.metal_api.bmc.superuser.enabled }}
       - name: bmc
