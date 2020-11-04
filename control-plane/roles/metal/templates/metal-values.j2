@@ -59,6 +59,10 @@ metal_api:
   grpc:
     tls:
       enabled: "{{ metal_api_grpc_tls_enabled }}"
+  bmc:
+    superuser:
+      enabled: "{{ metal_api_bmc_superuser_enabled }}"
+      pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
   dex_address: "{{ metal_api_dex_address }}"

@@ -34,6 +34,8 @@ metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tls_enabled: true
 metal_api_nsq_tls_secret_name: nsqd
 metal_api_grpc_tls_enabled: true
+metal_api_bmc_superuser_enabled: false
+metal_api_bmc_superuser_pwd: change-me
 metal_api_view_key: change-me
 metal_api_edit_key: change-me
 metal_api_admin_key: change-me
