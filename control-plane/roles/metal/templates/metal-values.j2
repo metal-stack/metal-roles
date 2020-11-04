@@ -71,7 +71,7 @@ metal_api:
       ca_cert_enc: "{{ metal_api_grpc_certs_ca_cert | b64encode }}"
   bmc:
     superuser:
-      enabled: "{{ metal_api_bmc_superuser_enabled }}"
+      enabled: {{ metal_api_bmc_superuser_enabled }}
       pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
