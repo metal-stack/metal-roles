@@ -30,7 +30,7 @@ metadata:
     app: metal-api-bmc
   name: metal-api-bmc
 data:
-  superuser.pwd: {{ .Values.bmc.superuser.pwd_enc }}
+  superuser.pwd: {{ .Values.metal_api.bmc.superuser.pwd_enc }}
 {{- end }}
 ---
 apiVersion: apps/v1
