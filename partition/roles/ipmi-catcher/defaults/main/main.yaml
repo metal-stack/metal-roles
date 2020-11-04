@@ -1,3 +1,0 @@
----
-ipmi_catcher_image_name: metalstack/ipmi-catcher
-ipmi_catcher_ignore_macs: []

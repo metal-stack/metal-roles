@@ -1,0 +1,31 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - bmc_catcher_image_tag is defined
+
+- name: deploy bmc-catcher service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_start: "{{ ensure_started.bmc_catcher|default(true) }}"
+    systemd_service_name: bmc-catcher
+    systemd_docker_image_name: "{{ bmc_catcher_image_name }}"
+    systemd_docker_image_tag: "{{ bmc_catcher_image_tag }}"
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      - /var/lib/dhcp:/var/lib/dhcp:ro
+    systemd_docker_cap_add:
+      - sys_admin
+    systemd_service_environment:
+      TZ: "{{ metal_partition_timezone }}"
+      BMC_CATCHER_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
+      BMC_CATCHER_PARTITION_ID: "{{ metal_partition_id }}"
+      BMC_CATCHER_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
+      BMC_CATCHER_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
+      BMC_CATCHER_IGNORE_MACS: "{{ bmc_catcher_ignore_macs | join(',') }}"

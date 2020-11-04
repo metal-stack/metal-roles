@@ -31,7 +31,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy                             | 
 | [dhcp](roles/dhcp)                           | Deploys a dhcp server                           |
 | [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus                       |
-| [ipmi-catcher](roles/ipmi-catcher)           | Deploys ipmi-catcher to crawl ipmi ip addresses |
+| [bmc-catcher](roles/bmc-catcher)             | Deploys bmc-catcher to crawl ipmi ip addresses  |
 | [leaf](roles/leaf)                           | Deploys network config for cumulus switches     |
 | [metal-core](roles/metal-core)               | Deploys metal-core                              |
 | [pixiecore](roles/pixiecore)                 | Deploys pixiecore                               |
