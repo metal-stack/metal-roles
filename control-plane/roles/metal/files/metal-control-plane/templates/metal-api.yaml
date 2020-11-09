@@ -128,8 +128,10 @@ spec:
         - name: METAL_API_GRPC_SERVER_KEY_FILE
           value: /certs/grpc/server_key.pem
 {{- end }}
+{{- if .Values.metal_api.bmc.superuser.enabled }}
         - name: METAL_API_BMC_SUPERUSER_PWD_FILE
           value: /bmc/superuser.pwd
+{{- end }}
         - name: METAL_API_MASTERDATA_HMAC
           value: "{{ .Values.masterdata_api.hmac }}"
         - name: METAL_API_MASTERDATA_HOSTNAME
