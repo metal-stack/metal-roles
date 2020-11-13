@@ -1,8 +1,6 @@
 # metal
 
-This role contains a [helm chart](control-plane/metal/files/metal-control-plane) that contains all major components to run the metal-stack. If you do not want to use Ansible for deployment, this chart can be the starting point for your deployment of metal-stack.
-
-The helm chart uses [hooks](https://github.com/helm/helm/blob/master/docs/charts_hooks.md) to deploy the control plane. There is a post-install hook to initialize the rethinkdb tables (there would be race conditions if there are multiple metal-api replicas initializing the database at the same time). Then, there are post-install and post-upgrade hooks to initialize and update the "masterdata" of the control plane (e.g. images, partitions, networks in this control plane).
+This role basically deploys the `metal-control-plane` [helm chart](https://github.com/metal-stack/helm-charts/tree/master/charts/metal-control-plane). It uses [hooks](https://github.com/helm/helm/blob/master/docs/charts_hooks.md) to deploy the control plane. There is a post-install hook to initialize the rethinkdb tables (there would be race conditions if there are multiple metal-api replicas initializing the database at the same time). Then, there are post-install and post-upgrade hooks to initialize and update the "masterdata" of the control plane (e.g. images, partitions, networks in this control plane).
 
 As our control plane also requires non-HTTP ports to be exposed to the outside world, we currently use [tcp and udp service exposal of Kubernetes nginx-ingress](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/).
 
@@ -22,6 +20,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_set_resource_limits          |           | Deploys metal components with or without resource limits (possibly disable for development environments)                           |
 | metal_log_level                    |           | The log level of the control plane components                                                                                      |
 | metal_log_encoding                 |           | The output format of the logger                                                                                                    |
+| metal_local_helm_chart_path        |           | Local path to the metal control plane helm chart, which can be useful for development purposes                                     |
 
 ### Images
 

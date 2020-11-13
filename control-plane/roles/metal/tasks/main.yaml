@@ -25,8 +25,9 @@
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_chart_custom_folder: "{{ ansible_parent_role_paths[0] }}/files/metal-control-plane"
-    helm_chart: "./metal-control-plane"
+    helm_repo: https://helm.metal-stack.io
+    helm_chart_custom_folder: "{{ metal_local_helm_chart_path if metal_local_helm_chart_path else None }}"
+    helm_chart: "metal-control-plane"
     helm_release_name: metal-control-plane
     helm_target_namespace: "{{ metal_control_plane_namespace }}"
     helm_value_file_template: metal-values.j2
