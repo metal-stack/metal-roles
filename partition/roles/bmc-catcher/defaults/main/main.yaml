@@ -1,3 +1,6 @@
 ---
 bmc_catcher_image_name: metalstack/bmc-catcher
 bmc_catcher_ignore_macs: []
+
+bmc_catcher_bmc_superuser:
+bmc_catcher_bmc_superuser_pwd:
