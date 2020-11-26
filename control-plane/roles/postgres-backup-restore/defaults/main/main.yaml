@@ -3,6 +3,7 @@ postgres_name: postgres
 postgres_namespace: "{{ metal_control_plane_namespace }}"
 
 postgres_storage_size: 5Gi
+postgres_storage_class:
 postgres_db: postgres
 postgres_user: postgres
 postgres_password: change-me

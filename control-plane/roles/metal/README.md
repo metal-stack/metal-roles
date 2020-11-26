@@ -49,36 +49,38 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### metal-api
 
-| Name                             | Mandatory | Description                                                          |
-| -------------------------------- | --------- | -------------------------------------------------------------------- |
-| metal_api_replicas               |           | The number of deployed replicas of the metal-api                     |
-| metal_api_base_path              |           | The base path of the HTTP server                                     |
-| metal_api_dex_address            |           | The URL to the dex server                                            |
-| metal_api_db_address             |           | The URL of the metal-db                                              |
-| metal_api_db_password            |           | The password of the metal-db                                         |
-| metal_api_ipam_db_address        |           | The URL to the ipam database                                         |
-| metal_api_ipam_db_port           |           | The port of the ipam database                                        |
-| metal_api_ipam_db_name           |           | The database name of the ipam database                               |
-| metal_api_ipam_db_user           |           | The user of the ipam database                                        |
-| metal_api_ipam_db_password       |           | The password of the ipam database                                    |
-| metal_api_nsq_lookupd_address    |           | The http address of nsqlookupd (only used for in-cluster traffic)    |
-| metal_api_nsq_tcp_address        |           | The tcp address of nsqd                                              |
-| metal_api_nsq_http_address       |           | The http address of nsqd (only used for in-cluster traffic)          |
-| metal_api_nsq_tls_enabled        |           | Enables TLS for nsq                                                  |
-| metal_api_nsq_tls_secret_name    |           | The name of the secret where nsq certificates are stored             |
-| metal_api_grpc_tls_enabled       |           | Enables TLS for gRPC                                                 |
-| metal_api_grpc_certs_ca_cert     |           | The gRPC ca certificate as a string                                  |
-| metal_api_grpc_certs_server_key  |           | The gRPC client key as a string                                      |
-| metal_api_grpc_certs_server_cert |           | The gRPC client certificate as a string                              |
-| metal_api_view_key               |           | The HMAC view key of the metal-api used for API technical access     |
-| metal_api_edit_key               |           | The HMAC edit key of the metal-api used for API technical access     |
-| metal_api_admin_key              |           | The HMAC admin key of the metal-api used for API technical access    |
-| metal_api_sizes                  |           | Creates sizes (as masterdata) to the metal-api after deployment      |
-| metal_api_images                 |           | Creates images (as masterdata) to the metal-api after deployment     |
-| metal_api_partitions             |           | Creates partitions (as masterdata) to the metal-api after deployment |
-| metal_api_networks               |           | Creates networks (as masterdata) to the metal-api after deployment   |
-| metal_api_ips                    |           | Creates ips (as masterdata) to the metal-api after deployment        |
-| metal_api_resources              |           | Sets the given container resources                                   |
+| Name                             | Mandatory | Description                                                                   |
+| -------------------------------- | --------- | ----------------------------------------------------------------------------- |
+| metal_api_replicas               |           | The number of deployed replicas of the metal-api                              |
+| metal_api_base_path              |           | The base path of the HTTP server                                              |
+| metal_api_dex_address            |           | The URL to the dex server                                                     |
+| metal_api_db_address             |           | The URL of the metal-db                                                       |
+| metal_api_db_password            |           | The password of the metal-db                                                  |
+| metal_api_ipam_db_address        |           | The URL to the ipam database                                                  |
+| metal_api_ipam_db_port           |           | The port of the ipam database                                                 |
+| metal_api_ipam_db_name           |           | The database name of the ipam database                                        |
+| metal_api_ipam_db_user           |           | The user of the ipam database                                                 |
+| metal_api_ipam_db_password       |           | The password of the ipam database                                             |
+| metal_api_nsq_lookupd_address    |           | The http address of nsqlookupd (only used for in-cluster traffic)             |
+| metal_api_nsq_tcp_address        |           | The tcp address of nsqd                                                       |
+| metal_api_nsq_http_address       |           | The http address of nsqd (only used for in-cluster traffic)                   |
+| metal_api_nsq_tls_enabled        |           | Enables TLS for nsq                                                           |
+| metal_api_nsq_tls_secret_name    |           | The name of the secret where nsq certificates are stored                      |
+| metal_api_grpc_tls_enabled       |           | Enables TLS for gRPC                                                          |
+| metal_api_grpc_certs_ca_cert     |           | The gRPC ca certificate as a string                                           |
+| metal_api_grpc_certs_server_key  |           | The gRPC client key as a string                                               |
+| metal_api_grpc_certs_server_cert |           | The gRPC client certificate as a string                                       |
+| metal_api_view_key               |           | The HMAC view key of the metal-api used for API technical access              |
+| metal_api_edit_key               |           | The HMAC edit key of the metal-api used for API technical access              |
+| metal_api_admin_key              |           | The HMAC admin key of the metal-api used for API technical access             |
+| metal_api_sizes                  |           | Creates sizes (as masterdata) to the metal-api after deployment               |
+| metal_api_images                 |           | Creates images (as masterdata) to the metal-api after deployment              |
+| metal_api_partitions             |           | Creates partitions (as masterdata) to the metal-api after deployment          |
+| metal_api_networks               |           | Creates networks (as masterdata) to the metal-api after deployment            |
+| metal_api_ips                    |           | Creates ips (as masterdata) to the metal-api after deployment                 |
+| metal_api_resources              |           | Sets the given container resources                                            |
+| metal_api_bmc_superuser_enabled  |           | Enables creating the BMC superuser and disabling the default one              |
+| metal_api_bmc_superuser_pwd      |           | If enabled use this password for the new BMC superuser                        |
 
 ### masterdata-api
 
