@@ -9,6 +9,6 @@ This role uses variables from [partition-defaults](/partition). So, make sure yo
 You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                   | Mandatory | Description                      |
-| -----------------------| --------- | -------------------------------- |
-| bmc_catcher_image_name |           | Image version of the bmc-catcher |
+| ---------------------- | --------- | -------------------------------- |
+| bmc_catcher_image_name | yes       | Image version of the bmc-catcher |
 | bmc_catcher_image_tag  | yes       | Image tag of the bmc-catcher     |

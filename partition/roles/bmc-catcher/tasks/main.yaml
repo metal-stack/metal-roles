@@ -8,6 +8,7 @@
     quiet: yes
     that:
       - bmc_catcher_image_tag is defined
+      - bmc_catcher_image_name is defined
 
 - name: deploy bmc-catcher service
   include_role:
