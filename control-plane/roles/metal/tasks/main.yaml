@@ -20,13 +20,16 @@
       - metal_masterdata_api_tls_client_key is defined
       - metal_console_image_name is defined
       - metal_console_image_tag is defined
+      - metal_helm_chart_local_path is not none or metal_helm_chart_repo is defined
+      - metal_helm_chart_local_path is not none or metal_helm_chart_version is defined
 
 - name: Deploy metal control plane
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: https://helm.metal-stack.io
-    helm_chart_custom_folder: "{{ metal_local_helm_chart_path if metal_local_helm_chart_path else None }}"
+    helm_repo: "{{ metal_helm_chart_repo | default(omit) }}"
+    helm_chart_version: "{{ metal_helm_chart_repo | default(omit) }}"
+    helm_chart_custom_folder: "{{ metal_helm_chart_local_path | default(omit) }}"
     helm_chart: "metal-control-plane"
     helm_release_name: metal-control-plane
     helm_target_namespace: "{{ metal_control_plane_namespace }}"

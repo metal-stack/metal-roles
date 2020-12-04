@@ -63,3 +63,6 @@ metal_stack_release:
     masterdata_db_image_name: "docker-images.third-party.control-plane.masterdata-db.name"
     metal_db_image_tag: "docker-images.third-party.control-plane.metal-db.tag"
     metal_db_image_name: "docker-images.third-party.control-plane.metal-db.name"
+    # helm-charts
+    metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
+    metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"

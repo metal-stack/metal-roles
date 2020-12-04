@@ -1,7 +1,8 @@
 ---
 metal_expose_ingress_service_ports: yes
 metal_check_api_available: yes
-metal_control_plane_local_path:
+
+metal_helm_chart_local_path:
 
 metal_set_resource_limits: yes
 
