@@ -43,8 +43,6 @@ metal_stack_release:
     gardener_machine_controller_manager_image_name: "docker-images.metal-stack.gardener.machine-controller-manager.name"
     gardener_mcm_provider_metal_image_name: "docker-images.metal-stack.gardener.machine-controller-manager-provider-metal.name"
     gardener_mcm_provider_metal_image_tag: "docker-images.metal-stack.gardener.machine-controller-manager-provider-metal.tag"
-    firewall_controller_image_tag: "docker-images.metal-stack.gardener.firewall-controller.tag"
-    firewall_controller_image_name: "docker-images.metal-stack.gardener.firewall-controller.name"
     # kubernetes
     csi_lvm_controller_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
     csi_lvm_controller_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"
