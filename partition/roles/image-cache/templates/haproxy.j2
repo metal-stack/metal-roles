@@ -63,7 +63,7 @@ backend partition_local_image_cache
   http-check expect status 200
   balance roundrobin
 {% for server in image_cache_servers %}
-  server {{ server.name }} {{ server.ip }}:{{ image_cache_sync_port }} check {{ 'backup' if inventory_hostname != host else '' }}
+  server {{ server.name }} {{ server.ip }}:{{ image_cache_sync_port }} check {{ 'backup' if inventory_hostname != server.name else '' }}
 {% endfor %}
 
 backend global_image_store
