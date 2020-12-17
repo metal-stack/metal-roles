@@ -9,7 +9,7 @@
       - image_cache_sync_image_tag is defined
       - image_cache_servers | length > 0
       - image_cache_sync_metal_api_endpoint is not none
-      - image_cache_sync_metal_api_hmac is not none
+      - image_cache_sync_metal_api_view_hmac is not none
 
 - name: Setup CoreDNS
   import_tasks: coredns.yaml
