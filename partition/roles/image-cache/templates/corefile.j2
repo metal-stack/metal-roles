@@ -1,5 +1,5 @@
 .:53 {
-    forward .{% for dns_server in image_cache_external_dns_servers %}{% if loop.index < 2 %} {{ dns_server.ip }}{% endif %}{% endfor %}
+    forward .{% for dns_server in image_cache_external_dns_servers %}{% if loop.index0 < 2 %} {{ dns_server.ip }}{% endif %}{% endfor %}
     errors
 }
 
