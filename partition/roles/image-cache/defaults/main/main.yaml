@@ -11,7 +11,7 @@ image_cache_external_dns_servers:
     ip: 8.8.8.8
   - name: cloudflare01
     ip: 1.1.1.1
-  - name: cloudflare01
+  - name: cloudflare02
     ip: 1.0.0.1
 
 # coredns
@@ -38,5 +38,5 @@ image_cache_sync_excludes:
 # the backup server must be reachable over https and have a valid certificate
 # you can only have a single fallback server, thus it does not make sense to
 # spread images across too many locations
-image_cache_haproxy_fallback_backend_server: image_cache_global_image_stores[0]
+image_cache_haproxy_fallback_backend_server: images.metal-stack.io
 image_cache_haproxy_fallback_backend_server_health_endpoint: /
