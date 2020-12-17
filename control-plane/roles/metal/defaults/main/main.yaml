@@ -2,6 +2,8 @@
 metal_expose_ingress_service_ports: yes
 metal_check_api_available: yes
 
+metal_helm_chart_local_path:
+
 metal_set_resource_limits: yes
 
 metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api_base_path }}v1/health

@@ -43,8 +43,6 @@ metal_stack_release:
     gardener_machine_controller_manager_image_name: "docker-images.metal-stack.gardener.machine-controller-manager.name"
     gardener_mcm_provider_metal_image_name: "docker-images.metal-stack.gardener.machine-controller-manager-provider-metal.name"
     gardener_mcm_provider_metal_image_tag: "docker-images.metal-stack.gardener.machine-controller-manager-provider-metal.tag"
-    firewall_controller_image_tag: "docker-images.metal-stack.gardener.firewall-controller.tag"
-    firewall_controller_image_name: "docker-images.metal-stack.gardener.firewall-controller.name"
     # kubernetes
     csi_lvm_controller_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
     csi_lvm_controller_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"
@@ -63,3 +61,6 @@ metal_stack_release:
     masterdata_db_image_name: "docker-images.third-party.control-plane.masterdata-db.name"
     metal_db_image_tag: "docker-images.third-party.control-plane.metal-db.tag"
     metal_db_image_name: "docker-images.third-party.control-plane.metal-db.name"
+    # helm-charts
+    metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
+    metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
