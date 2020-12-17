@@ -2,6 +2,10 @@
 image_cache_global_image_stores:
   - images.metal-stack.io
 
+image_cache_servers: []
+# - name: server01 (should be an inventory hostname to generate optimal config)
+#   ip: 1.2.3.4
+
 image_cache_external_dns_servers:
   - name: google
     ip: 8.8.8.8
@@ -12,33 +16,27 @@ image_cache_external_dns_servers:
 
 # coredns
 image_cache_coredns_image_name: coredns/coredns
-
 image_cache_coredns_host_dir_path: /coredns
 
 # haproxy
 image_cache_haproxy_image_name: haproxy
-
 image_cache_haproxy_host_dir_path: /haproxy
+
+# image-sync
+image_cache_sync_image_name: ghcr.io/metal-stack/metal-image-cache-sync
+image_cache_sync_max_cache_size: 100G
+image_cache_sync_max_images_per_name: -1
+image_cache_sync_min_images_per_name: 4
+image_cache_sync_metal_api_endpoint:
+image_cache_sync_metal_api_hmac:
+image_cache_sync_schedule: "*/10 * * * *"
+image_cache_sync_host_path: /metal-image-cache-sync
+image_cache_sync_port: 9000
+image_cache_sync_excludes:
+  - "/pull_requests/"
 
 # the backup server must be reachable over https and have a valid certificate
 # you can only have a single fallback server, thus it does not make sense to
 # spread images across too many locations
 image_cache_haproxy_fallback_backend_server: image_cache_global_image_stores[0]
 image_cache_haproxy_fallback_backend_server_health_endpoint: /
-
-# minio
-image_cache_minio_image_name: minio/minio
-image_cache_minio_port: 9000
-
-image_cache_minio_host_dir_path: /minio
-image_cache_minio_data_host_dir: "{{ minio_host_dir_path }}/data"
-
-# image-sync
-image_cache_imagesync_image_name: google/cloud-sdk
-
-# this has to be backend bucket name
-# do not confuse this with the dns frontend address, has to start with gs://
-image_cache_imagesync_src:
-image_cache_imagesync_dest: /minio/data
-
-image_cache_imagesync_interval_sec: 20

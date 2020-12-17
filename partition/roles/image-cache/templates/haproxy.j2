@@ -59,11 +59,11 @@ backend global_image_store_passthrough
   server blobstore {{ image_cache_haproxy_fallback_backend_server }}:443
 
 backend partition_local_image_cache
-  option httpchk GET /minio/health/live HTTP/1.1\r\nHost:\ www
+  option httpchk GET /health HTTP/1.1\r\nHost:\ www
   http-check expect status 200
   balance roundrobin
-{% for host in groups['mgmt_servers'] %}
-  server {{ host }} {{ hostvars[host]['switch_mgmt_ip'] }}:{{ image_cache_minio_port }} check {{ 'backup' if inventory_hostname != host else '' }}
+{% for server in image_cache_servers %}
+  server {{ server.name }} {{ server.ip }}:{{ image_cache_sync_port }} check {{ 'backup' if inventory_hostname != host else '' }}
 {% endfor %}
 
 backend global_image_store
