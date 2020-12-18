@@ -4,12 +4,11 @@ This role is being used to deploy an image cache to a partition.
 
 The image-cache is highly-available and falls back to the "global image store" (the internet) on cache misses or cache backend issues.
 
-For pointing your images to the image-cache, you use an HTTP URL to the image (the global image store will be accessed through HTTPS in case of a cache miss).
+For pointing your images to the image-cache, you use HTTP image URLs in the metal-api (the global image store will be accessed through HTTPS in case of a cache miss).
 
 ## Requirements
 
-- **The global images that you want to cache have to be hosted on GKE** (this is the case for [images.metal-stack.io](https://images.metal-stack.io/))
-- [MinIO Client](https://docs.min.io/docs/minio-client-complete-guide.html) as part of the deployment base image
+- The global images that you want to cache has to be hosted on S3-compatible cloud storage (this is the case for [images.metal-stack.io](https://images.metal-stack.io/), which is configured by default)
 
 ## Reasoning
 
@@ -36,10 +35,11 @@ Introducing a partition-local cache for machine images brings the following adva
 
 ## Variables
 
+### Role Vars
+
 | Name                                                        | Mandatory | Description                                                                                                               |
 | ----------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------- |
 | image_cache_global_image_stores                             |           | The image store addresses for which the DNS requests are intercepted and pointed to the image cache                       |
-| image_cache_servers                                         | yes       | The servers on which the image cache will be deployed, name (inventory hostnames) and ip have to be specified             |
 | image_cache_external_dns_servers                            |           | DNS servers that are used for resolving all other DNS requests                                                            |
 | image_cache_coredns_image_name                              |           | The image name of CoreDNS                                                                                                 |
 | image_cache_coredns_image_tag                               | yes       | The image tag of CoreDNS                                                                                                  |
@@ -60,3 +60,9 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_haproxy_host_dir_path                           |           | The host path for haproxy configuration                                                                                   |
 | image_cache_haproxy_fallback_backend_server                 |           | The domain name of the "global image store" (internet, must have valid HTTPS)                                             |
 | image_cache_haproxy_fallback_backend_server_health_endpoint |           | The health endpoint which is expected to return 200 of the "global image store"                                           |
+
+### Host Vars
+
+| Name                    | Mandatory | Description                                                                                                                            |
+| ----------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| image_cache_internal_ip |           | Alternative IP (default is ansible_host) used for resolving DNS requests to image cache hosts and for internal component communication | 

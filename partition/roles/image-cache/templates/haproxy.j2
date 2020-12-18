@@ -63,8 +63,8 @@ backend partition_local_image_cache
   http-check send meth GET uri /health ver HTTP/1.1 hdr host www
   http-check expect status 200
   balance roundrobin
-{% for server in image_cache_servers %}
-  server {{ server.name }} {{ server.ip }}:{{ image_cache_sync_port }} check {{ 'backup' if inventory_hostname != server.name else '' }}
+{% for host in play_hosts %}
+  server {{ hostvars[host]['inventory_hostname'] }} {{ hostvars[host]['image_cache_internal_ip'] if 'image_cache_internal_ip' in hostvars[host] else hostvars[host]['ansible_host'] }}:{{ image_cache_sync_port }} check {{ 'backup' if inventory_hostname != hostvars[host]['inventory_hostname'] else '' }}
 {% endfor %}
 
 backend global_image_store
