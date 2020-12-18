@@ -59,7 +59,8 @@ backend global_image_store_passthrough
   server blobstore {{ image_cache_haproxy_fallback_backend_server }}:443
 
 backend partition_local_image_cache
-  option httpchk GET /health HTTP/1.1\r\nHost:\ www
+  option httpchk
+  http-check send meth GET uri /health ver HTTP/1.1 hdr host www
   http-check expect status 200
   balance roundrobin
 {% for server in image_cache_servers %}
@@ -67,7 +68,8 @@ backend partition_local_image_cache
 {% endfor %}
 
 backend global_image_store
-  option httpchk GET {{ image_cache_haproxy_fallback_backend_server_health_endpoint}} HTTP/1.1\r\nHost:\ {{ image_cache_haproxy_fallback_backend_server }}
+  option httpchk
+  http-check send meth GET uri {{ image_cache_haproxy_fallback_backend_server_health_endpoint}} ver HTTP/1.1 hdr host {{ image_cache_haproxy_fallback_backend_server }}
   http-check expect status 200
   balance leastconn
   http-request set-header Host {{ image_cache_haproxy_fallback_backend_server }}
