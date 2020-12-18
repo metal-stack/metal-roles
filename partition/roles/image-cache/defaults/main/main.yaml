@@ -11,11 +11,9 @@ image_cache_external_dns_servers:
     ip: 1.0.0.1
 
 # coredns
-image_cache_coredns_image_name: coredns/coredns
 image_cache_coredns_host_dir_path: /coredns
 
 # haproxy
-image_cache_haproxy_image_name: haproxy
 image_cache_haproxy_host_dir_path: /haproxy
 
 # image-sync

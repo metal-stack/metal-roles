@@ -37,14 +37,23 @@ Introducing a partition-local cache for machine images brings the following adva
 
 ### Role Vars
 
+#### Images
+
+| Name                           | Mandatory | Description                              |
+| ------------------------------ | --------- | ---------------------------------------- |
+| image_cache_sync_image_name    | yes       | The image name of metal-cache-image-sync |
+| image_cache_sync_image_tag     | yes       | The image tag of metal-cache-image-sync  |
+| image_cache_coredns_image_name | yes       | The image name of CoreDNS                |
+| image_cache_coredns_image_tag  | yes       | The image tag of CoreDNS                 |
+| image_cache_haproxy_image_name | yes       | The image name of haproxy                |
+| image_cache_haproxy_image_tag  | yes       | The image tag of haproxy                 |
+
+#### Configuration
+
 | Name                                                        | Mandatory | Description                                                                                                               |
 | ----------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------- |
 | image_cache_global_image_stores                             |           | The image store addresses for which the DNS requests are intercepted and pointed to the image cache                       |
 | image_cache_external_dns_servers                            |           | DNS servers that are used for resolving all other DNS requests                                                            |
-| image_cache_coredns_image_name                              |           | The image name of CoreDNS                                                                                                 |
-| image_cache_coredns_image_tag                               | yes       | The image tag of CoreDNS                                                                                                  |
-| image_cache_sync_image_name                                 | yes       | The image name of metal-cache-image-sync                                                                                  |
-| image_cache_sync_image_tag                                  | yes       | The image tag of metal-cache-image-sync                                                                                   |
 | image_cache_sync_max_cache_size                             |           | Maximum size that the cache should have in the end (can exceed if min amount of images for all image variants is reached) |
 | image_cache_sync_max_images_per_name                        |           | Maximum amount of images to cache for an image variant                                                                    |
 | image_cache_sync_min_images_per_name                        |           | Minimum amount of images to keep of an image variant                                                                      |
@@ -55,8 +64,6 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_sync_host_path                                  |           | Root path of where to store the images                                                                                    |
 | image_cache_sync_port                                       |           | The image tag of metal-cache-image-sync                                                                                   |
 | image_cache_coredns_host_dir_path                           |           | The host path for CoreDNS configuration                                                                                   |
-| image_cache_haproxy_image_name                              |           | The image name of haproxy                                                                                                 |
-| image_cache_haproxy_image_tag                               | yes       | The image tag of haproxy                                                                                                  |
 | image_cache_haproxy_host_dir_path                           |           | The host path for haproxy configuration                                                                                   |
 | image_cache_haproxy_fallback_backend_server                 |           | The domain name of the "global image store" (internet, must have valid HTTPS)                                             |
 | image_cache_haproxy_fallback_backend_server_health_endpoint |           | The health endpoint which is expected to return 200 of the "global image store"                                           |
