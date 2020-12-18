@@ -4,10 +4,11 @@ This role is being used to deploy an image cache to a partition.
 
 The image-cache is highly-available and falls back to the "global image store" (the internet) on cache misses or cache backend issues.
 
-For pointing your images to the image-cache, you use HTTP image URLs in the metal-api (the global image store will be accessed through HTTPS in case of a cache miss).
+For pointing your images to the image cache, you use HTTP image URLs in the metal-api (the global image store will be accessed through HTTPS in case of a cache miss).
 
 ## Requirements
 
+- Your DHCP inside your partition's PXE boot network needs to point the machines to the image cache servers for their DNS resolution
 - The global images that you want to cache have to be hosted on S3-compatible cloud storage (this is the case for [images.metal-stack.io](https://images.metal-stack.io/), which is configured by default)
 
 ## Reasoning
@@ -20,17 +21,16 @@ Introducing a partition-local cache for machine images brings the following adva
 
 ## Architecture
 
-- The [metal-image-cache-sync](https://github.com/metal-stack/metal-image-cache-sync) service mirrors images from the global-image-store into the local file system, the partition-image-cache
-- The DHCP server in the "bootstrap PXE network" tells PXE clients to use the management servers for DNS resolution
+- The [metal-image-cache-sync](https://github.com/metal-stack/metal-image-cache-sync) service mirrors images configured in the metal-api from the global-image-store into the local file system
 - CoreDNS is deployed on the management server and intercepts DNS requests that are directed to the global image store
-  - This interception makes the image cache transparent for the clients
-  - The global image store domain resolves to the IP of one of the management servers (round-robin)
+  - This approach makes the image cache transparent for the clients
+  - The global image store domain resolves to the IP of one of the image cache servers (round-robin)
 - Haproxy is used to dispatch HTTP image downloads to the fastest available backends
   - If the image cache is running properly in the partition -> client downloads the image from there
-    - Haproxy prefers the MinIO instance on the same server and load-balances between the other configured instances in case the local instance is down
-    - If the image cache returns 404 not found on the requested image (cache sync), it redirects to the HTTPS frontend
-    - The HTTPS frontend will just use forward to the global image store
-  - If image-cache is not running on any of the management servers -> retrieve image from global image store
+    - Haproxy prefers the image cache on the same server and load-balances between the other configured instances in case the local instance is down
+    - If the image cache returns 404 not found on the requested image (cache miss), it redirects the requester to the HTTPS frontend
+    - The HTTPS frontend forward the request to the global image store
+  - If the image cache is not running on any of the servers -> retrieve image from global image store
     - Haproxy will handle the SSL
 
 ## Variables
