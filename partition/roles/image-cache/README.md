@@ -43,7 +43,7 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_external_dns_servers                            |           | DNS servers that are used for resolving all other DNS requests                                                            |
 | image_cache_coredns_image_name                              |           | The image name of CoreDNS                                                                                                 |
 | image_cache_coredns_image_tag                               | yes       | The image tag of CoreDNS                                                                                                  |
-| image_cache_sync_image_name                                 |           | The image name of metal-cache-image-sync                                                                                  |
+| image_cache_sync_image_name                                 | yes       | The image name of metal-cache-image-sync                                                                                  |
 | image_cache_sync_image_tag                                  | yes       | The image tag of metal-cache-image-sync                                                                                   |
 | image_cache_sync_max_cache_size                             |           | Maximum size that the cache should have in the end (can exceed if min amount of images for all image variants is reached) |
 | image_cache_sync_max_images_per_name                        |           | Maximum amount of images to cache for an image variant                                                                    |

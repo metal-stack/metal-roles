@@ -19,7 +19,6 @@ image_cache_haproxy_image_name: haproxy
 image_cache_haproxy_host_dir_path: /haproxy
 
 # image-sync
-image_cache_sync_image_name: ghcr.io/metal-stack/metal-image-cache-sync
 image_cache_sync_max_cache_size: 100G
 image_cache_sync_max_images_per_name: -1
 image_cache_sync_min_images_per_name: 4
