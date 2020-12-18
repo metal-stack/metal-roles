@@ -31,7 +31,7 @@ image_cache_sync_metal_api_endpoint: "{{ metal_partition_metal_api_protocol }}:/
 image_cache_sync_metal_api_view_hmac:
 image_cache_sync_schedule: "*/10 * * * *"
 image_cache_sync_host_path: /metal-image-cache-sync
-image_cache_sync_port: 9000
+image_cache_sync_port: 9001
 image_cache_sync_excludes:
   - "/pull_requests/"
 
