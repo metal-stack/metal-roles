@@ -1,0 +1,35 @@
+---
+image_cache_global_image_stores:
+  - images.metal-stack.io
+
+image_cache_external_dns_servers:
+  - name: google
+    ip: 8.8.8.8
+  - name: cloudflare01
+    ip: 1.1.1.1
+  - name: cloudflare02
+    ip: 1.0.0.1
+
+# coredns
+image_cache_coredns_host_dir_path: /coredns
+
+# haproxy
+image_cache_haproxy_host_dir_path: /haproxy
+
+# image-sync
+image_cache_sync_max_cache_size: 100G
+image_cache_sync_max_images_per_name: -1
+image_cache_sync_min_images_per_name: 4
+image_cache_sync_metal_api_endpoint: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
+image_cache_sync_metal_api_view_hmac:
+image_cache_sync_schedule: "*/10 * * * *"
+image_cache_sync_host_path: /metal-image-cache-sync
+image_cache_sync_port: 9001
+image_cache_sync_excludes:
+  - "/pull_requests/"
+
+# the backup server must be reachable over https and have a valid certificate
+# you can only have a single fallback server, thus it does not make sense to
+# spread images across too many locations
+image_cache_haproxy_fallback_backend_server: images.metal-stack.io
+image_cache_haproxy_fallback_backend_server_health_endpoint: /

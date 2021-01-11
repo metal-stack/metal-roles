@@ -1,0 +1,14 @@
+.:53 {
+    forward .{% for dns_server in image_cache_external_dns_servers %}{% if loop.index0 < 2 %} {{ dns_server.ip }}{% endif %}{% endfor %}
+
+    errors
+}
+
+{% for cache in image_cache_global_image_stores %}
+{{ cache }}:53 {
+    loadbalance round_robin
+    file /root/metal-image-cache.db
+    log
+    errors
+}
+{% endfor %}

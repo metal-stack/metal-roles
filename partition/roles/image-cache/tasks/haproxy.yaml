@@ -1,0 +1,35 @@
+---
+- name: create haproxy directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ image_cache_haproxy_host_dir_path }}/config"
+
+- name: template haproxy config
+  template:
+    src: haproxy.j2
+    dest: "{{ image_cache_haproxy_host_dir_path }}/config/haproxy.cfg"
+    owner: "root"
+    group: "root"
+    mode: "0750"
+  register: result
+
+- name: deploy haproxy service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: haproxy
+    systemd_docker_image_name: "{{ image_cache_haproxy_image_name }}"
+    systemd_docker_image_tag: "{{ image_cache_haproxy_image_tag }}"
+    systemd_external_config_changed: "{{ result is changed }}"
+    systemd_docker_volumes:
+      - "{{ image_cache_haproxy_host_dir_path }}/config:/usr/local/etc/haproxy:ro"
+      - /etc/ssl/certs:/etc/ssl/certs:ro
+    systemd_docker_ports:
+      - host_port: "80"
+        target_port: "80"
+      - host_port: "443"
+        target_port: "443"
+      - host_port: "65534"
+        target_port: "65534"
