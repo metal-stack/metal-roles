@@ -4,12 +4,13 @@ This role is being used to deploy an image cache to a partition.
 
 The image-cache is highly-available and falls back to the "global image store" (the internet) on cache misses or cache backend issues.
 
-For pointing your images to the image cache, you use HTTP image URLs in the metal-api (the global image store will be accessed through HTTPS in case of a cache miss).
+For pointing your images to the image cache, you are gonna use HTTP image URLs in the metal-api. CoreDNS will intercept HTTP image requests on port 80 and redirect them to the partition's image cache. The global image store will be accessed through HTTPS in case of a cache miss.
 
 ## Requirements
 
 - Your DHCP inside your partition's PXE boot network needs to point the machines to the image cache servers for their DNS resolution
-- The global images that you want to cache have to be hosted on S3-compatible cloud storage (this is the case for [images.metal-stack.io](https://images.metal-stack.io/), which is configured by default)
+- The global images that you want to cache have to be hosted on S3-compatible cloud storage (this is the case for our official image store [images.metal-stack.io](https://images.metal-stack.io/), which you are free to use and is configured by default)
+- The global image store requires a valid HTTPS certificate (in case you use your own image store)
 
 ## Reasoning
 
@@ -29,7 +30,7 @@ Introducing a partition-local cache for machine images brings the following adva
   - If the image cache is running properly in the partition -> client downloads the image from there
     - Haproxy prefers the image cache on the same server and load-balances between the other configured instances in case the local instance is down
     - If the image cache returns 404 not found on the requested image (cache miss), it redirects the requester to the HTTPS frontend
-    - The HTTPS frontend forward the request to the global image store
+    - The HTTPS frontend forwards the request to the global image store
   - If the image cache is not running on any of the servers -> retrieve image from global image store
     - Haproxy will handle the SSL
 
