@@ -29,8 +29,8 @@ Introducing a partition-local cache for machine images brings the following adva
 - Haproxy is used to dispatch HTTP image downloads to the fastest available backends
   - If the image cache is running properly in the partition -> client downloads the image from there
     - Haproxy prefers the image cache on the same server and load-balances between the other configured instances in case the local instance is down
-    - If the image cache returns 404 not found on the requested image (cache miss), it redirects the requester to the HTTPS frontend
-    - The HTTPS frontend forwards the request to the global image store
+    - If the image cache returns 404 not found on the requested image (cache miss), it redirects the requester to the global image store (HTTPS)
+    - The HTTPS frontend forwards the request to the global image store (client does SSL)
   - If the image cache is not running on any of the servers -> retrieve image from global image store
     - Haproxy will handle the SSL
 
