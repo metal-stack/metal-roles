@@ -3,6 +3,7 @@ metal_expose_ingress_service_ports: yes
 metal_check_api_available: yes
 
 metal_helm_chart_local_path:
+metal_helm_chart_timeout: "600s"
 
 metal_set_resource_limits: yes
 
@@ -10,6 +11,9 @@ metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api
 
 metal_log_level: info
 metal_log_encoding: json
+
+# metalctl
+metal_metalctl_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 
 # service ports
 metal_api_port: 8080
@@ -20,6 +24,7 @@ metal_masterdata_api_metrics_port: 2113
 metal_console_port: 10001
 
 # metal-api
+metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_api_replicas: 3
 metal_api_base_path: "/metal/"
 metal_api_dex_address: ""
@@ -49,6 +54,7 @@ metal_api_ips: []
 metal_api_resources:
 
 # masterdata-api
+metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_masterdata_api_db_address: masterdata-db
 metal_masterdata_api_db_port: 5432
 metal_masterdata_api_db_name: masterdata
@@ -62,6 +68,7 @@ metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
 
 # metal-console
+metal_console_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_console_enabled: false
 metal_console_replicas: 3
 metal_console_resources:

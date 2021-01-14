@@ -1,6 +1,8 @@
 ---
 nsq_expose_ingress_service_ports: yes
 
+nsq_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 nsq_set_resource_limits: true
 nsq_nsqd_resources:
   requests:

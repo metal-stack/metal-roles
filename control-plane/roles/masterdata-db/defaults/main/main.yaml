@@ -2,6 +2,8 @@
 masterdata_db_name: masterdata-db
 masterdata_db_namespace: "{{ metal_control_plane_namespace }}"
 
+masterdata_db_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 masterdata_db_storage_size: 5Gi
 masterdata_db_storage_class:
 masterdata_db_db: masterdata
@@ -9,6 +11,7 @@ masterdata_db_user: postgres
 masterdata_db_password: change-me
 masterdata_db_max_connections: 100
 
+masterdata_db_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 masterdata_db_backup_restore_sidecar_provider: local
 masterdata_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 masterdata_db_backup_restore_sidecar_log_level: debug

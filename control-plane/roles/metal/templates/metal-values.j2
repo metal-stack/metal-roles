@@ -7,15 +7,19 @@ zap_level: {{ metal_log_level }}
 images:
   metal_api:
     image: "{{ metal_api_image_name }}"
+    imagePullPolicy: "{{ metal_api_image_pull_policy }}"
     tag: "{{ metal_api_image_tag }}"
   metalctl:
     image: "{{ metal_metalctl_image_name }}"
+    imagePullPolicy: "{{ metal_metalctl_image_pull_policy }}"
     tag: "{{ metal_metalctl_image_tag }}"
   metal_console:
     image: "{{ metal_console_image_name }}"
+    imagePullPolicy: "{{ metal_console_image_pull_policy }}"
     tag: "{{ metal_console_image_tag }}"
   masterdata_api:
     image: "{{ metal_masterdata_api_image_name }}"
+    imagePullPolicy: "{{ metal_masterdata_api_image_pull_policy }}"
     tag: "{{ metal_masterdata_api_image_tag }}"
 
 resources:

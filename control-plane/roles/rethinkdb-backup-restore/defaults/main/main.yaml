@@ -1,10 +1,14 @@
 ---
 rethinkdb_name: rethinkdb
 rethinkdb_namespace: "{{ metal_control_plane_namespace }}"
+
+rethinkdb_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 rethinkdb_storage_size: 5Gi
 rethinkdb_storage_class:
 rethinkdb_password: change-me
 
+rethinkdb_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 rethinkdb_backup_restore_sidecar_provider: local
 rethinkdb_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 rethinkdb_backup_restore_sidecar_log_level: debug
