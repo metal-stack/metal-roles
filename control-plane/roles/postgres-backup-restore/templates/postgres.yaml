@@ -25,8 +25,9 @@ spec:
         app: {{ postgres_name }}
     spec:
       containers:
-      - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
-        name: postgres
+      - name: postgres
+        image: {{ postgres_image_name }}:{{ postgres_image_tag }}
+        imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
         - tini
         - --
@@ -69,8 +70,9 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
-      - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
-        name: backup-restore-sidecar
+      - name: backup-restore-sidecar
+        image: {{ postgres_image_name }}:{{ postgres_image_tag }}
+        imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
         - tini
         - --
@@ -129,7 +131,7 @@ spec:
       initContainers:
       - name: backup-restore-sidecar-provider
         image: {{ postgres_backup_restore_sidecar_image_name }}:{{ postgres_backup_restore_sidecar_image_tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ postgres_backup_restore_sidecar_image_pull_policy }}
         command:
         - cp
         - /backup-restore-sidecar

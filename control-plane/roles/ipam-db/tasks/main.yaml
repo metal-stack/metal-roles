@@ -18,6 +18,7 @@
   vars:
     postgres_name: "{{ ipam_db_name }}"
     postgres_namespace: "{{ ipam_db_namespace }}"
+    postgres_image_pull_policy: "{{ ipam_db_image_pull_policy }}"
     postgres_image_name: "{{ ipam_db_image_name }}"
     postgres_image_tag: "{{ ipam_db_image_tag }}"
     postgres_storage_size: "{{ ipam_db_storage_size }}"
@@ -26,6 +27,7 @@
     postgres_user: "{{ ipam_db_user }}"
     postgres_password: "{{ ipam_db_password }}"
     postgres_max_connections: "{{ ipam_db_max_connections }}"
+    postgres_backup_restore_sidecar_image_pull_policy: "{{ ipam_db_backup_restore_sidecar_image_pull_policy }}"
     postgres_backup_restore_sidecar_image_name: "{{ ipam_db_backup_restore_sidecar_image_name }}"
     postgres_backup_restore_sidecar_image_tag: "{{ ipam_db_backup_restore_sidecar_image_tag }}"
     postgres_backup_restore_sidecar_provider: "{{ ipam_db_backup_restore_sidecar_provider }}"

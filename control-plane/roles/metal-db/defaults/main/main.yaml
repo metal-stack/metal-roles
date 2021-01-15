@@ -1,10 +1,14 @@
 ---
 metal_db_name: metal-db
 metal_db_namespace: "{{ metal_control_plane_namespace }}"
+
+metal_db_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 metal_db_storage_size: 5Gi
 metal_db_storage_class:
 metal_db_password: change-me
 
+metal_db_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_db_backup_restore_sidecar_provider: local
 metal_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 metal_db_backup_restore_sidecar_log_level: debug

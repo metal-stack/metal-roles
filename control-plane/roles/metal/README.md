@@ -23,19 +23,24 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_helm_chart_repo              |           | The repository URL of the metal control plane helm chart                                                                           |
 | metal_helm_chart_version           |           | The version of the metal control plane helm chart                                                                                  |
 | metal_helm_chart_local_path        |           | Local path to the metal control plane helm chart, which can be useful for development purposes                                     |
+| metal_helm_chart_timeout           |           | Timeout for deploying the control plane helm chart (can help when internet connection is slow)                                     | 
 
 ### Images
 
-| Name                            | Mandatory | Description                         |
-| ------------------------------- | --------- | ----------------------------------- |
-| metal_api_image_name            | yes       | Image version of the metal-api      |
-| metal_api_image_tag             | yes       | Image tag of the metal-api          |
-| metal_metalctl_image_name       | yes       | Image version of the metalctl       |
-| metal_metalctl_image_tag        | yes       | Image tag of the metalctl           |
-| metal_console_image_name        | yes       | Image version of the metal-console  |
-| metal_console_image_tag         | yes       | Image tag of the metal-console      |
-| metal_masterdata_api_image_name | yes       | Image version of the masterdata-api |
-| metal_masterdata_api_image_tag  | yes       | Image tag of the masterdata-api     |
+| Name                                   | Mandatory | Description                             |
+| -------------------------------------- | --------- | --------------------------------------- |
+| metal_api_image_name                   | yes       | Image version of the metal-api          |
+| metal_api_image_tag                    | yes       | Image tag of the metal-api              |
+| metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
+| metal_metalctl_image_name              | yes       | Image version of metalctl               |
+| metal_metalctl_image_tag               | yes       | Image tag of metalctl                   |
+| metal_metalctl_image_pull_policy       |           | Image pull policy of metalctl           |
+| metal_console_image_name               | yes       | Image version of the metal-console      |
+| metal_console_image_tag                | yes       | Image tag of the metal-console          |
+| metal_console_image_pull_policy        |           | Image pull policy of the metal-console  |
+| metal_masterdata_api_image_name        | yes       | Image version of the masterdata-api     |
+| metal_masterdata_api_image_tag         | yes       | Image tag of the masterdata-api         |
+| metal_masterdata_api_image_pull_policy |           | Image pull policy of the masterdata-api |
 
 ### Service Ports
 

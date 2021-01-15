@@ -18,6 +18,7 @@
   vars:
     postgres_name: "{{ masterdata_db_name }}"
     postgres_namespace: "{{ masterdata_db_namespace }}"
+    postgres_image_pull_policy: "{{ masterdata_db_image_pull_policy }}"
     postgres_image_name: "{{ masterdata_db_image_name }}"
     postgres_image_tag: "{{ masterdata_db_image_tag }}"
     postgres_storage_size: "{{ masterdata_db_storage_size }}"
@@ -26,6 +27,7 @@
     postgres_user: "{{ masterdata_db_user }}"
     postgres_password: "{{ masterdata_db_password }}"
     postgres_max_connections: "{{ masterdata_db_max_connections }}"
+    postgres_backup_restore_sidecar_image_pull_policy: "{{ masterdata_db_backup_restore_sidecar_image_pull_policy }}"
     postgres_backup_restore_sidecar_image_name: "{{ masterdata_db_backup_restore_sidecar_image_name }}"
     postgres_backup_restore_sidecar_image_tag: "{{ masterdata_db_backup_restore_sidecar_image_tag }}"
     postgres_backup_restore_sidecar_provider: "{{ masterdata_db_backup_restore_sidecar_provider }}"
