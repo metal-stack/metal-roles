@@ -77,6 +77,12 @@ metal_api:
     superuser:
       enabled: {{ metal_api_bmc_superuser_enabled }}
       pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
+  s3:
+    region: {{ metal_api_s3_region }}
+    address: {{ metal_api_s3_address }}
+    key: {{ metal_api_s3_key }}
+    secret: {{ metal_api_s3_secret }}
+    hostname_immutable: {{ metal_api_s3_hostname_immutable }}
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
   dex_address: "{{ metal_api_dex_address }}"
