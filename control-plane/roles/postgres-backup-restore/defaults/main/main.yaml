@@ -10,6 +10,12 @@ postgres_db: postgres
 postgres_user: postgres
 postgres_password: change-me
 postgres_max_connections: 100
+postgres_shared_libraries_preload:
+  - pg_stat_statements
+postgres_shared_buffers:
+postgres_maintenance_work_mem:
+postgres_work_mem:
+postgres_effective_cache_size:
 
 postgres_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 postgres_backup_restore_sidecar_provider: local
