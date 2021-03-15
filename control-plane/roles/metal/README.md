@@ -87,9 +87,10 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_resources                  |           | Sets the given container resources                                                                                           |
 | metal_api_bmc_superuser_enabled      |           | Enables creating the BMC superuser and disabling the default one                                                             |
 | metal_api_bmc_superuser_pwd          |           | If enabled use this password for the new BMC superuser                                                                       |
-| metal_api_s3_address                 |           | The address of the S3 server                                                                                                 |
-| metal_api_s3_key                     |           | The key of the S3 server                                                                                                     |
-| metal_api_s3_secret                  |           | The secret of the S3 server                                                                                                  |
+| metal_api_s3_enabled                 |           | Whether the S3 server that serves firmware updates is enabled                                                                |
+| metal_api_s3_address                 |           | The address of the S3 server that serves firmware updates                                                                    |
+| metal_api_s3_key                     |           | The key of the S3 server that serves firmware updates                                                                        |
+| metal_api_s3_secret                  |           | The secret of the S3 server that serves firmware updates                                                                     |
 
 ### masterdata-api
 

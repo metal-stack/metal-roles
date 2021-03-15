@@ -78,6 +78,7 @@ metal_api:
       enabled: {{ metal_api_bmc_superuser_enabled }}
       pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
   s3:
+    enabled: {{ metal_api_s3_enabled }}
     address: {{ metal_api_s3_address }}
     key: {{ metal_api_s3_key }}
     secret: {{ metal_api_s3_secret }}
