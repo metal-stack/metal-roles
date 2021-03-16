@@ -26,7 +26,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_backup_restore_sidecar_provider                |           | The backup provider                                                      |
 | postgres_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                 |
 | postgres_backup_restore_sidecar_log_level               |           | The log level of the sidecar                                             |
-| postgres_backup_restore_sidecar_gcp_bucket_name         |           | Bucket name of the GCP bucket                                            | 
+| postgres_backup_restore_sidecar_gcp_bucket_name         |           | Bucket name of the GCP bucket                                            |
 | postgres_backup_restore_sidecar_gcp_backup_location     |           | Location of the GCP bucket                                               |
 | postgres_backup_restore_sidecar_gcp_project_id          |           | GCP project name                                                         |
 | postgres_backup_restore_sidecar_gcp_serviceaccount_json |           | GCP Serviceaccount JSON string (service account requires bucket access)  |
@@ -34,3 +34,8 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_ingress_dns                                    |           | The virtual host to reach the postgres frontend when exposed via ingress |
 | postgres_resources                                      |           | The kubernetes resources for the actual postgres container               |
 | postgres_backup_restore_sidecar_image_pull_policy       |           | Image pull policy (defaults to IfNotPresent)                             |
+| postgres_shared_libraries_preload                       |           | Allows setting shared libraries preload configuration                    |
+| postgres_shared_buffers                                 |           | Allows setting shared buffer size                                        |
+| postgres_maintenance_work_mem                           |           | Allows setting maintenance work memory                                   |
+| postgres_work_mem                                       |           | Allows setting work memory                                               |
+| postgres_effective_cache_size                           |           | Allows setting effective cache size                                      |
