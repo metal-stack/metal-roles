@@ -52,8 +52,8 @@ metal_stack_release:
     duros_controller_image_name: "docker-images.metal-stack.kubernetes.duros-controller.name"
     metal_cloud_controller_manager_image_tag: "docker-images.metal-stack.kubernetes.metal-ccm.tag"
     metal_cloud_controller_manager_image_name: "docker-images.metal-stack.kubernetes.metal-ccm.name"
-    audit_forwarder_image_tag: "docker-images.metal-stack.audit-forwarder.tag"
-    audit_forwarder_image_name: "docker-images.metal-stack.audit-forwarder.name"
+    audit_forwarder_image_tag: "docker-images.metal-stack.kubernetes.audit-forwarder.tag"
+    audit_forwarder_image_name: "docker-images.metal-stack.kubernetes.audit-forwarder.name"
     # third party
     nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"
     nsq_image_name: "docker-images.third-party.control-plane.nsq.name"
