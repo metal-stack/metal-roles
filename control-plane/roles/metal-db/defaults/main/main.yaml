@@ -28,3 +28,11 @@ metal_db_resources:
   limits:
     memory: "4Gi"
     cpu: "500m"
+
+metal_db_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
+metal_db_registry_auth:
+  auths:
+    docker.io:
+      username: "{{ metal_registry_auth_user }}"
+      password: "{{ metal_registry_auth_password }}"
+      auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
