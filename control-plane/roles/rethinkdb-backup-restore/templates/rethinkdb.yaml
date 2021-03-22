@@ -28,10 +28,10 @@ spec:
       labels:
         app: {{ rethinkdb_name }}
     spec:
-  {% if rethinkdb_registry_auth_enabled %}
-        imagePullSecrets:
-        - name: {{ rethinkdb_name }}-registry-credentials
-  {% endif %}
+{% if rethinkdb_registry_auth_enabled %}
+      imagePullSecrets:
+      - name: {{ rethinkdb_name }}-registry-credentials
+{% endif %}
       containers:
       - name: rethinkdb
         image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}

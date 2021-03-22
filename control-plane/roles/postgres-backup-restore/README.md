@@ -12,6 +12,8 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | ------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
 | postgres_image_name                                     | yes       | Image version of the postgres                                            |
 | postgres_image_tag                                      | yes       | Image tag of the postgres                                                |
+| postgres_registry_auth_enabled                          |           | Enables registry authentication                                          |
+| postgres_registry_auth                                  |           | The dockerconfigjson content used for registry authentication            |
 | postgres_image_pull_policy                              |           | Image pull policy (defaults to IfNotPresent)                             |
 | postgres_name                                           |           | The name of the postgres instance                                        |
 | postgres_namespace                                      |           | The deployment's target namespace                                        |
