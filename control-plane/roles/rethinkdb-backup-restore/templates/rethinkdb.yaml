@@ -1,3 +1,15 @@
+{% if rethinkdb_registry_auth_enabled %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: {{ rethinkdb_name }}-registry-credentials
+  name: {{ rethinkdb_name }}-registry-credentials
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ rethinkdb_registry_auth | to_json | b64encode }}
+{% endif %}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -16,6 +28,10 @@ spec:
       labels:
         app: {{ rethinkdb_name }}
     spec:
+  {% if rethinkdb_registry_auth_enabled %}
+        imagePullSecrets:
+        - name: {{ rethinkdb_name }}-registry-credentials
+  {% endif %}
       containers:
       - name: rethinkdb
         image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}

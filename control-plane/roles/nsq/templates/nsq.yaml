@@ -6,6 +6,18 @@ metadata:
   labels:
     app: "metal-stack-control-plane"
     name: "{{ metal_control_plane_namespace }}"
+{% if nsq_registry_auth_enabled %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: nsq-registry-credentials
+  name: nsq-registry-credentials
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ nsq_registry_auth | to_json | b64encode }}
+{% endif %}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -24,6 +36,10 @@ spec:
       labels:
         app: nsqd
     spec:
+{% if nsq_registry_auth_enabled %}
+      imagePullSecrets:
+      - name: nsq-registry-credentials
+{% endif %}
       containers:
       - name: nsqd
         args:
