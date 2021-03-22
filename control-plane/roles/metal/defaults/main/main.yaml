@@ -52,6 +52,11 @@ metal_api_partitions: []
 metal_api_networks: []
 metal_api_ips: []
 metal_api_resources:
+metal_api_s3_enabled: false
+metal_api_s3_address:
+metal_api_s3_key:
+metal_api_s3_secret:
+metal_api_s3_firmware_bucket:
 
 # masterdata-api
 metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
