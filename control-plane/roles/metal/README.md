@@ -60,6 +60,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_replicas                   |           | The number of deployed replicas of the metal-api                                                                             |
 | metal_api_base_path                  |           | The base path of the HTTP server                                                                                             |
 | metal_api_dex_address                |           | The URL to the dex server                                                                                                    |
+| metal_api_dex_clientid               |           | The trusted dex clientid                                                                                                     |
 | metal_api_db_address                 |           | The URL of the metal-db                                                                                                      |
 | metal_api_db_password                |           | The password of the metal-db                                                                                                 |
 | metal_api_ipam_db_address            |           | The URL to the ipam database                                                                                                 |
