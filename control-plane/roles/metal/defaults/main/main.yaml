@@ -28,7 +28,7 @@ metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_api_replicas: 3
 metal_api_hpa_enabled: false
 metal_api_hpa_max: 5
-metal_api_hpa_min: 2
+metal_api_hpa_min: 3
 metal_api_hpa_cpu_percentage: 70
 metal_api_base_path: "/metal/"
 metal_api_dex_address: ""
