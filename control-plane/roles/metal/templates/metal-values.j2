@@ -33,6 +33,13 @@ resources:
   metal_console: {{ metal_console_resources | to_json }}
 {% endif %}
 
+hpa:
+  metal_api:
+    enabled: {{ metal_api_hpa_enabled }}
+    max: {{ metal_api_hpa_max }}
+    min: {{ metal_api_hpa_min }}
+    cpu_percentage: {{ metal_api_hpa_cpu_percentage }}
+
 metal_console:
   enabled: {{ metal_console_enabled }}
   replicas: "{{ metal_console_replicas }}"
