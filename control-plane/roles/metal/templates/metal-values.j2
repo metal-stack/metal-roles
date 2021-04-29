@@ -123,6 +123,7 @@ metal_api:
     ---
     {{ entity | to_nice_yaml | indent(width=4, first=false) }}
 {% endfor %}
+  filesystemlayouts: |
 {% for entity in metal_api_filesystemlayouts %}
     ---
     {{ entity | to_nice_yaml | indent(width=4, first=false) }}
