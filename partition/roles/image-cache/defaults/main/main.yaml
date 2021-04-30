@@ -1,6 +1,12 @@
 ---
-image_cache_global_image_stores:
+image_cache_intercept_domains:
   - images.metal-stack.io
+  - github.com
+
+image_cache_kernel_cache_enabled: true
+image_cache_kernel_route_prefix: "/metal-stack/kernel"
+image_cache_boot_image_cache_enabled: true
+image_cache_boot_image_route_prefix: "/metal-stack/metal-hammer"
 
 image_cache_external_dns_servers:
   - name: google
@@ -26,6 +32,8 @@ image_cache_sync_metal_api_view_hmac:
 image_cache_sync_schedule: "*/10 * * * *"
 image_cache_sync_host_path: /metal-image-cache-sync
 image_cache_sync_port: 9001
+image_cache_sync_kernel_port: 9002
+image_cache_sync_boot_image_port: 9003
 image_cache_sync_excludes:
   - "/pull_requests/"
 
@@ -34,3 +42,7 @@ image_cache_sync_excludes:
 # spread images across too many locations
 image_cache_haproxy_fallback_backend_server: images.metal-stack.io
 image_cache_haproxy_fallback_backend_server_health_endpoint: /
+image_cache_haproxy_kernel_fallback_backend_server: github.com
+image_cache_haproxy_kernel_fallback_backend_server_health_endpoint: /
+image_cache_haproxy_boot_image_fallback_backend_server: github.com
+image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint: /
