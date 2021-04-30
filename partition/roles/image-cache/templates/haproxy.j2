@@ -49,7 +49,7 @@ frontend images
   use_backend global_kernel_store if partition_local_kernel_cache_dead
 {% endif %}
 
-{% if image_cache_enable_boot_image_cache %}
+{% if image_cache_boot_image_cache_enabled %}
   acl has_boot_image_path_prefix path_beg {{ image_cache_boot_image_route_prefix }}
   use_backend partition_local_boot_image_cache if has_boot_image_path_prefix
   acl partition_local_boot_image_cache_dead nbsrv(partition_local_boot_image_cache) eq 0
@@ -65,7 +65,7 @@ frontend images
 {% if image_cache_kernel_cache_enabled %}
   http-response set-header Location https://{{ image_cache_haproxy_kernel_fallback_backend_server }}%[capture.req.uri] if not_found has_kernel_path_prefix
 {% endif %}
-{% if image_cache_enable_boot_image_cache %}
+{% if image_cache_boot_image_cache_enabled %}
   http-response set-header Location https://{{ image_cache_haproxy_boot_image_fallback_backend_server }}%[capture.req.uri] if not_found has_boot_image_path_prefix
 {% endif %}
   http-response set-header Location https://{{ image_cache_haproxy_fallback_backend_server }}%[capture.req.uri] if not_found
@@ -78,7 +78,7 @@ frontend images_passthrough
   acl has_kernel_path_prefix path_beg {{ image_cache_kernel_route_prefix }}
   use_backend global_kernel_store_passthrough if has_kernel_path_prefix
 {% endif %}
-{% if image_cache_enable_boot_image_cache %}
+{% if image_cache_boot_image_cache_enabled %}
   acl has_boot_image_path_prefix path_beg {{ image_cache_boot_image_route_prefix }}
   use_backend global_boot_image_store_passthrough if has_boot_image_path_prefix
 {% endif %}
@@ -95,7 +95,7 @@ backend global_kernel_store_passthrough
   server {{ image_cache_haproxy_kernel_fallback_backend_server }} {{ image_cache_haproxy_kernel_fallback_backend_server }}:443
 {% endif %}
 
-{% if image_cache_enable_boot_image_cache %}
+{% if image_cache_boot_image_cache_enabled %}
 backend global_boot_image_store_passthrough
   mode tcp
   server {{ image_cache_haproxy_boot_image_fallback_backend_server }} {{ image_cache_haproxy_boot_image_fallback_backend_server }}:443
@@ -121,7 +121,7 @@ backend partition_local_kernel_cache
 {% endfor %}
 {% endif %}
 
-{% if image_cache_enable_boot_image_cache %}
+{% if image_cache_boot_image_cache_enabled %}
 backend partition_local_boot_image_cache
   option httpchk
   http-check send meth GET uri /health ver HTTP/1.1 hdr host www
@@ -150,7 +150,7 @@ backend global_kernel_store
   server {{ image_cache_haproxy_kernel_fallback_backend_server }} {{ image_cache_haproxy_kernel_fallback_backend_server }}:443 ssl verify required ca-file ca-certificates.crt check inter 30s rise 2 fall 3 resolvers pubdns resolve-prefer ipv4
 {% endif %}
 
-{% if image_cache_enable_boot_image_cache %}
+{% if image_cache_boot_image_cache_enabled %}
 backend global_boot_image_store
   option httpchk
   http-check send meth GET uri {{ image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint }} ver HTTP/1.1 hdr host {{ image_cache_haproxy_boot_image_fallback_backend_server }}
