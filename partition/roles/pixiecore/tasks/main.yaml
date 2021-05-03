@@ -21,6 +21,7 @@
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
+    systemd_docker_dns: "{{ pixiecore_dns_servers | default(omit) }}"
     # Because Pixiecore needs to listen for DHCP traffic,
     # it has to run with access to the host's networking stack.
     # Both Rkt and Docker do this with the --net=host commandline flag.
