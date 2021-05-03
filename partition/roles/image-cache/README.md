@@ -6,6 +6,8 @@ The image-cache is highly-available and falls back to the "global image store" (
 
 For pointing your images to the image cache, you are gonna use HTTP image URLs in the metal-api. CoreDNS will intercept HTTP image requests on port 80 and redirect them to the partition's image cache. The global image store will be accessed through HTTPS in case of a cache miss.
 
+The cache is also capable of providing kernels and boot images configured in the metal-api.
+
 ## Requirements
 
 - Your DHCP inside your partition's PXE boot network needs to point the machines to the image cache servers for their DNS resolution
@@ -29,7 +31,7 @@ Introducing a partition-local cache for machine images brings the following adva
 - Haproxy is used to dispatch HTTP image downloads to the fastest available backends
   - If the image cache is running properly in the partition -> client downloads the image from there
     - Haproxy prefers the image cache on the same server and load-balances between the other configured instances in case the local instance is down
-    - If the image cache returns 404 not found on the requested image (cache miss), it redirects the requester to the global image store (HTTPS)
+    - If the image cache does not find the requested resource, the cache returns a 307 redirect (cache miss), the requester will now attempt to access the same resource via HTTPS
     - The HTTPS frontend forwards the request to the global image store (client does SSL)
   - If the image cache is not running on any of the servers -> retrieve image from global image store
     - Haproxy will handle the SSL
@@ -76,7 +78,7 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_haproxy_kernel_fallback_backend_server                     |           | The domain name of the "global kernel store" (internet, must have valid HTTPS)                                            |
 | image_cache_haproxy_kernel_fallback_backend_server_health_endpoint     |           | The health endpoint which is expected to return 200 of the "global kernel store"                                          |
 | image_cache_haproxy_boot_image_fallback_backend_server                 |           | The domain name of the "global boot image store" (internet, must have valid HTTPS)                                        |
-| image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint |           | The health endpoint which is expected to return 200 of the "global boot image store"                                      | 
+| image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint |           | The health endpoint which is expected to return 200 of the "global boot image store"                                      |
 
 ### Host Vars
 

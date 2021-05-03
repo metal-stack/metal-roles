@@ -60,16 +60,6 @@ frontend images
   use_backend global_image_store if partition_local_image_cache_dead
   default_backend partition_local_image_cache
 
-  acl not_found status 404
-  http-response set-status 302 if not_found
-{% if image_cache_kernel_cache_enabled %}
-  http-response set-header Location https://{{ image_cache_haproxy_kernel_fallback_backend_server }}%[capture.req.uri] if not_found has_kernel_path_prefix
-{% endif %}
-{% if image_cache_boot_image_cache_enabled %}
-  http-response set-header Location https://{{ image_cache_haproxy_boot_image_fallback_backend_server }}%[capture.req.uri] if not_found has_boot_image_path_prefix
-{% endif %}
-  http-response set-header Location https://{{ image_cache_haproxy_fallback_backend_server }}%[capture.req.uri] if not_found
-
 frontend images_passthrough
   mode tcp
   bind :443
