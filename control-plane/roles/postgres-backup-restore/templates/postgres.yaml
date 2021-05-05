@@ -6,6 +6,18 @@ metadata:
   labels:
     app: "metal-stack-control-plane"
     name: "{{ metal_control_plane_namespace }}"
+{% if postgres_registry_auth_enabled %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: {{ postgres_name }}-registry-credentials
+  name: {{ postgres_name }}-registry-credentials
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ postgres_registry_auth | to_json | b64encode }}
+{% endif %}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -24,16 +36,27 @@ spec:
       labels:
         app: {{ postgres_name }}
     spec:
+{% if postgres_registry_auth_enabled %}
+      imagePullSecrets:
+      - name: {{ postgres_name }}-registry-credentials
+{% endif %}
       containers:
-      - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
-        name: postgres
+      - name: postgres
+        image: {{ postgres_image_name }}:{{ postgres_image_tag }}
+        imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
         - tini
         - --
         args:
         - sh
         - -c
-        - backup-restore-sidecar wait && docker-entrypoint.sh postgres -c shared_preload_libraries=pg_stat_statements -c max_connections={{ postgres_max_connections }}
+        - backup-restore-sidecar wait && docker-entrypoint.sh postgres
+          {% if postgres_shared_libraries_preload %}-c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}
+          {% if postgres_maintenance_work_mem %}-c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}
+          {% if postgres_shared_buffers %}-c shared_buffers={{ postgres_shared_buffers }}{% endif %}
+          {% if postgres_effective_cache_size %}-c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}
+          {% if postgres_work_mem %}-c work_mem={{ postgres_work_mem }}{% endif %}
+          -c max_connections={{ postgres_max_connections }}
         ports:
         - containerPort: 5432
         env:
@@ -69,8 +92,9 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
-      - image: {{ postgres_image_name }}:{{ postgres_image_tag }}
-        name: backup-restore-sidecar
+      - name: backup-restore-sidecar
+        image: {{ postgres_image_name }}:{{ postgres_image_tag }}
+        imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
         - tini
         - --
@@ -129,7 +153,7 @@ spec:
       initContainers:
       - name: backup-restore-sidecar-provider
         image: {{ postgres_backup_restore_sidecar_image_name }}:{{ postgres_backup_restore_sidecar_image_tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ postgres_backup_restore_sidecar_image_pull_policy }}
         command:
         - cp
         - /backup-restore-sidecar

@@ -2,13 +2,22 @@
 postgres_name: postgres
 postgres_namespace: "{{ metal_control_plane_namespace }}"
 
+postgres_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 postgres_storage_size: 5Gi
 postgres_storage_class:
 postgres_db: postgres
 postgres_user: postgres
 postgres_password: change-me
 postgres_max_connections: 100
+postgres_shared_libraries_preload:
+  - pg_stat_statements
+postgres_shared_buffers:
+postgres_maintenance_work_mem:
+postgres_work_mem:
+postgres_effective_cache_size:
 
+postgres_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 postgres_backup_restore_sidecar_provider: local
 postgres_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 postgres_backup_restore_sidecar_log_level: debug
@@ -26,3 +35,11 @@ postgres_resources:
   limits:
     memory: "256Mi"
     cpu: "100m"
+
+postgres_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
+postgres_registry_auth:
+  auths:
+    docker.io:
+      username: "{{ metal_registry_auth_user }}"
+      password: "{{ metal_registry_auth_password }}"
+      auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"

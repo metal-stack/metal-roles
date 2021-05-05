@@ -1,6 +1,8 @@
 ---
 nsq_expose_ingress_service_ports: yes
 
+nsq_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 nsq_set_resource_limits: true
 nsq_nsqd_resources:
   requests:
@@ -25,3 +27,11 @@ nsq_tls_enabled: false
 nsq_certs_client_key:
 nsq_certs_client_cert:
 nsq_certs_ca_cert:
+
+nsq_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
+nsq_registry_auth:
+  auths:
+    docker.io:
+      username: "{{ metal_registry_auth_user }}"
+      password: "{{ metal_registry_auth_password }}"
+      auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"

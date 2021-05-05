@@ -17,7 +17,7 @@ As our control plane also requires non-HTTP ports to be exposed to the outside w
 This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
 
 You can look up all the default values of this role [here](defaults/main/main.yaml).
-  
+
 | Name                             | Mandatory | Description                                                                                                                        |
 | -------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | nsq_image_name                   | yes       | Image name of nsq                                                                                                                  |
@@ -30,7 +30,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | nsq_broadcast_address            |           | The nsq broadcast address                                                                                                          |
 | nsq_nsqd_data_size               |           | The size of the nsqd data volume (used when memory cache is full)                                                                  |
 | nsq_tls_enabled                  |           | Enables TLS for nsq                                                                                                                |
-| nsq_certs_client_key             |           | The nsq certificate client key as a string                                                                                           |
+| nsq_certs_client_key             |           | The nsq certificate client key as a string                                                                                         |
 | nsq_certs_client_cert            |           | The nsq client certificate as a string                                                                                             |
 | nsq_certs_ca_cert                |           | The nsq ca certificate as a string                                                                                                 |
-
+| nsq_image_pull_policy            |           | Image pull policy (defaults to IfNotPresent)                                                                                       | 

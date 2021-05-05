@@ -1,0 +1,6 @@
+{% for cache in image_cache_global_image_stores %}
+{{ cache }}.        IN  SOA {{ cache }}. {{ cache }}. 2015082541 7200 3600 1209600 3600
+{% for host in play_hosts %}
+{{ cache }}.        IN  A   {{ hostvars[host]['image_cache_internal_ip'] if 'image_cache_internal_ip' in hostvars[host] else hostvars[host]['ansible_host'] }}
+{% endfor %}
+{% endfor %}

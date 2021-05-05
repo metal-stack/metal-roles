@@ -2,6 +2,8 @@
 ipam_db_name: ipam-db
 ipam_db_namespace: "{{ metal_control_plane_namespace }}"
 
+ipam_db_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 ipam_db_storage_size: 5Gi
 ipam_db_storage_class:
 ipam_db_db: ipam
@@ -9,6 +11,7 @@ ipam_db_user: postgres
 ipam_db_password: change-me
 ipam_db_max_connections: 100
 
+ipam_db_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 ipam_db_backup_restore_sidecar_provider: local
 ipam_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 ipam_db_backup_restore_sidecar_log_level: debug
@@ -26,3 +29,11 @@ ipam_db_resources:
   limits:
     memory: "256Mi"
     cpu: "100m"
+
+ipam_db_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
+ipam_db_registry_auth:
+  auths:
+    docker.io:
+      username: "{{ metal_registry_auth_user }}"
+      password: "{{ metal_registry_auth_password }}"
+      auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"

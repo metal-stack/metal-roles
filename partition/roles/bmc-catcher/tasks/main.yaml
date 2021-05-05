@@ -8,6 +8,7 @@
     quiet: yes
     that:
       - bmc_catcher_image_tag is defined
+      - bmc_catcher_image_name is defined
       - bmc_catcher_bmc_superuser is defined
       - bmc_catcher_bmc_superuser_pwd is defined
 

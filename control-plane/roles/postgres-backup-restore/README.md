@@ -12,6 +12,9 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | ------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
 | postgres_image_name                                     | yes       | Image version of the postgres                                            |
 | postgres_image_tag                                      | yes       | Image tag of the postgres                                                |
+| postgres_registry_auth_enabled                          |           | Enables registry authentication                                          |
+| postgres_registry_auth                                  |           | The dockerconfigjson content used for registry authentication            |
+| postgres_image_pull_policy                              |           | Image pull policy (defaults to IfNotPresent)                             |
 | postgres_name                                           |           | The name of the postgres instance                                        |
 | postgres_namespace                                      |           | The deployment's target namespace                                        |
 | postgres_storage_size                                   |           | The size of the PVC                                                      |
@@ -32,3 +35,9 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_expose_frontend                                |           | Exposes the postgres over ingress (only use for dev environments)        |
 | postgres_ingress_dns                                    |           | The virtual host to reach the postgres frontend when exposed via ingress |
 | postgres_resources                                      |           | The kubernetes resources for the actual postgres container               |
+| postgres_backup_restore_sidecar_image_pull_policy       |           | Image pull policy (defaults to IfNotPresent)                             |
+| postgres_shared_libraries_preload                       |           | Allows setting shared libraries preload configuration                    |
+| postgres_shared_buffers                                 |           | Allows setting shared buffer size                                        |
+| postgres_maintenance_work_mem                           |           | Allows setting maintenance work memory                                   |
+| postgres_work_mem                                       |           | Allows setting work memory                                               |
+| postgres_effective_cache_size                           |           | Allows setting effective cache size                                      |

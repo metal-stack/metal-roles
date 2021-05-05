@@ -1,0 +1,38 @@
+---
+- name: create coredns directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ image_cache_coredns_host_dir_path }}/config"
+
+- name: template coredns config
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ image_cache_coredns_host_dir_path }}/config/{{ item.dest }}"
+    owner: "root"
+    group: "root"
+    mode: "0750"
+  loop:
+    - src: corefile.j2
+      dest: Corefile
+    - src: metal-image-cache.j2
+      dest: metal-image-cache.db
+  register: result
+
+- name: deploy coredns service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: coredns
+    systemd_docker_image_name: "{{ image_cache_coredns_image_name }}"
+    systemd_external_config_changed: "{{ result is changed }}"
+    systemd_docker_image_tag: "{{ image_cache_coredns_image_tag }}"
+    systemd_docker_volumes:
+      - "{{ image_cache_coredns_host_dir_path }}/config:/root/"
+    systemd_docker_ports:
+      - host_port: "{{ switch_mgmt_ip }}:53"
+        target_port: "53/udp"
+    systemd_docker_command:
+      - -conf
+      - /root/Corefile

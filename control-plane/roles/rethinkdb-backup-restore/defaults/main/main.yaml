@@ -1,10 +1,14 @@
 ---
 rethinkdb_name: rethinkdb
 rethinkdb_namespace: "{{ metal_control_plane_namespace }}"
+
+rethinkdb_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
 rethinkdb_storage_size: 5Gi
 rethinkdb_storage_class:
 rethinkdb_password: change-me
 
+rethinkdb_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 rethinkdb_backup_restore_sidecar_provider: local
 rethinkdb_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 rethinkdb_backup_restore_sidecar_log_level: debug
@@ -24,3 +28,11 @@ rethinkdb_resources:
   limits:
     memory: "4Gi"
     cpu: "500m"
+
+rethinkdb_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
+rethinkdb_registry_auth:
+  auths:
+    docker.io:
+      username: "{{ metal_registry_auth_user }}"
+      password: "{{ metal_registry_auth_password }}"
+      auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"

@@ -7,15 +7,19 @@ zap_level: {{ metal_log_level }}
 images:
   metal_api:
     image: "{{ metal_api_image_name }}"
+    imagePullPolicy: "{{ metal_api_image_pull_policy }}"
     tag: "{{ metal_api_image_tag }}"
   metalctl:
     image: "{{ metal_metalctl_image_name }}"
+    imagePullPolicy: "{{ metal_metalctl_image_pull_policy }}"
     tag: "{{ metal_metalctl_image_tag }}"
   metal_console:
     image: "{{ metal_console_image_name }}"
+    imagePullPolicy: "{{ metal_console_image_pull_policy }}"
     tag: "{{ metal_console_image_tag }}"
   masterdata_api:
     image: "{{ metal_masterdata_api_image_name }}"
+    imagePullPolicy: "{{ metal_masterdata_api_image_pull_policy }}"
     tag: "{{ metal_masterdata_api_image_tag }}"
 
 resources:
@@ -28,6 +32,13 @@ resources:
 {% if metal_console_resources %}
   metal_console: {{ metal_console_resources | to_json }}
 {% endif %}
+
+hpa:
+  metal_api:
+    enabled: {{ metal_api_hpa_enabled }}
+    max: {{ metal_api_hpa_max }}
+    min: {{ metal_api_hpa_min }}
+    cpu_percentage: {{ metal_api_hpa_cpu_percentage }}
 
 metal_console:
   enabled: {{ metal_console_enabled }}
@@ -73,9 +84,16 @@ metal_api:
     superuser:
       enabled: {{ metal_api_bmc_superuser_enabled }}
       pwd_enc: "{{ metal_api_bmc_superuser_pwd | b64encode }}"
+  s3:
+    enabled: {{ metal_api_s3_enabled }}
+    address: {{ metal_api_s3_address }}
+    key: {{ metal_api_s3_key }}
+    secret: {{ metal_api_s3_secret }}
+    firmware_bucket: {{ metal_api_s3_firmware_bucket }}
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
   dex_address: "{{ metal_api_dex_address }}"
+  dex_clientid: "{{ metal_api_dex_clientid }}"
   view_key: "{{ metal_api_view_key }}"
   edit_key: "{{ metal_api_edit_key }}"
   admin_key: "{{ metal_api_admin_key }}"
