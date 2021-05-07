@@ -7,7 +7,8 @@
     systemd_docker_image_name: "{{ image_cache_sync_image_name }}"
     systemd_docker_image_tag: "{{ image_cache_sync_image_tag }}"
     systemd_service_environment:
-      METAL_IMAGE_CACHE_SYNC_BIND_ADDRESS: "0.0.0.0:3000"
+      METAL_IMAGE_CACHE_SYNC_ENABLE_KERNEL_CACHE: "{{ image_cache_kernel_cache_enabled }}"
+      METAL_IMAGE_CACHE_SYNC_ENABLE_BOOT_IMAGE_CACHE: "{{ image_cache_boot_image_cache_enabled }}"
       METAL_IMAGE_CACHE_SYNC_MAX_CACHE_SIZE: "{{ image_cache_sync_max_cache_size }}"
       METAL_IMAGE_CACHE_SYNC_MAX_IMAGES_PER_NAME: "{{ image_cache_sync_max_images_per_name }}"
       METAL_IMAGE_CACHE_SYNC_MIN_IMAGES_PER_NAME: "{{ image_cache_sync_min_images_per_name }}"
@@ -17,7 +18,5 @@
       METAL_IMAGE_CACHE_SYNC_EXCLUDES: "{{ image_cache_sync_excludes | join(',') }}"
       METAL_IMAGE_CACHE_SYNC_EXPIRATION_GRACE_PERIOD: "{{ image_cache_sync_expiration_grace_period }}"
     systemd_docker_volumes:
-      - "{{ image_cache_sync_host_path }}:/var/lib/metal-image-cache-sync/images"
-    systemd_docker_ports:
-      - host_port: "{{ image_cache_sync_port }}"
-        target_port: "3000"
+      - "{{ image_cache_sync_host_path }}:/var/lib/metal-image-cache-sync"
+    systemd_docker_ports: "{{ lookup('template', 'metal-image-cache-ports.j2') | from_yaml }}"

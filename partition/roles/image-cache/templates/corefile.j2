@@ -4,7 +4,7 @@
     errors
 }
 
-{% for cache in image_cache_global_image_stores %}
+{% for cache in image_cache_intercept_domains %}
 {{ cache }}:53 {
     loadbalance round_robin
     file /root/metal-image-cache.db
