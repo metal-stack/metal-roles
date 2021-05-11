@@ -45,36 +45,14 @@ frontend images
 {% if image_cache_kernel_cache_enabled %}
   acl has_kernel_path_prefix path_beg {{ image_cache_kernel_route_prefix }}
   use_backend partition_local_kernel_cache if has_kernel_path_prefix
-  acl partition_local_kernel_cache_dead nbsrv(partition_local_kernel_cache) eq 0
-  use_backend global_kernel_store if has_kernel_path_prefix partition_local_kernel_cache_dead
 {% endif %}
 
 {% if image_cache_boot_image_cache_enabled %}
   acl has_boot_image_path_prefix path_beg {{ image_cache_boot_image_route_prefix }}
   use_backend partition_local_boot_image_cache if has_boot_image_path_prefix
-  acl partition_local_boot_image_cache_dead nbsrv(partition_local_boot_image_cache) eq 0
-  use_backend global_boot_image_store if has_boot_image_path_prefix partition_local_boot_image_cache_dead
 {% endif %}
 
-  acl partition_local_image_cache_dead nbsrv(partition_local_image_cache) eq 0
-  use_backend global_image_store if partition_local_image_cache_dead
   default_backend partition_local_image_cache
-
-backend global_image_store_passthrough
-  mode tcp
-  server {{ image_cache_haproxy_fallback_backend_server }} {{ image_cache_haproxy_fallback_backend_server }}:443
-
-{% if image_cache_kernel_cache_enabled %}
-backend global_kernel_store_passthrough
-  mode tcp
-  server {{ image_cache_haproxy_kernel_fallback_backend_server }} {{ image_cache_haproxy_kernel_fallback_backend_server }}:443
-{% endif %}
-
-{% if image_cache_boot_image_cache_enabled %}
-backend global_boot_image_store_passthrough
-  mode tcp
-  server {{ image_cache_haproxy_boot_image_fallback_backend_server }} {{ image_cache_haproxy_boot_image_fallback_backend_server }}:443
-{% endif %}
 
 backend partition_local_image_cache
   option httpchk
