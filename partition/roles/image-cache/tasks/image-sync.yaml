@@ -17,6 +17,7 @@
       METAL_IMAGE_CACHE_SYNC_SCHEDULE: "{{ image_cache_sync_schedule }}"
       METAL_IMAGE_CACHE_SYNC_EXCLUDES: "{{ image_cache_sync_excludes | join(',') }}"
       METAL_IMAGE_CACHE_SYNC_EXPIRATION_GRACE_PERIOD: "{{ image_cache_sync_expiration_grace_period }}"
+      METAL_IMAGE_CACHE_SYNC_HTTPS_FORWARD_PROXY_DOMAINS: "{{ image_cache_intercept_domains | join(',') }}"
     systemd_docker_volumes:
       - "{{ image_cache_sync_host_path }}:/var/lib/metal-image-cache-sync"
     systemd_docker_ports: "{{ lookup('template', 'metal-image-cache-ports.j2') | from_yaml }}"
