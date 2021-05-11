@@ -19,8 +19,8 @@
 - name: Setup CoreDNS
   import_tasks: coredns.yaml
 
-- name: Setup image-sync
-  import_tasks: image-sync.yaml
-
 - name: Setup haproxy
   import_tasks: haproxy.yaml
+
+- name: Setup image-sync
+  import_tasks: image-sync.yaml

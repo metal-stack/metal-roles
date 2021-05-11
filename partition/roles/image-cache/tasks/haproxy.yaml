@@ -29,7 +29,5 @@
     systemd_docker_ports:
       - host_port: "80"
         target_port: "80"
-      - host_port: "443"
-        target_port: "443"
       - host_port: "65534"
         target_port: "65534"
