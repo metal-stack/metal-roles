@@ -64,32 +64,10 @@ frontend images_passthrough
   mode tcp
   bind :443
 
-{% if image_cache_kernel_cache_enabled %}
-  acl has_kernel_path_prefix path_beg {{ image_cache_kernel_route_prefix }}
-  use_backend global_kernel_store_passthrough if has_kernel_path_prefix
-{% endif %}
-{% if image_cache_boot_image_cache_enabled %}
-  acl has_boot_image_path_prefix path_beg {{ image_cache_boot_image_route_prefix }}
-  use_backend global_boot_image_store_passthrough if has_boot_image_path_prefix
-{% endif %}
-
-  default_backend global_image_store_passthrough
-
-backend global_image_store_passthrough
-  mode tcp
-  server {{ image_cache_haproxy_fallback_backend_server }} {{ image_cache_haproxy_fallback_backend_server }}:443
-
-{% if image_cache_kernel_cache_enabled %}
-backend global_kernel_store_passthrough
-  mode tcp
-  server {{ image_cache_haproxy_kernel_fallback_backend_server }} {{ image_cache_haproxy_kernel_fallback_backend_server }}:443
-{% endif %}
-
-{% if image_cache_boot_image_cache_enabled %}
-backend global_boot_image_store_passthrough
-  mode tcp
-  server {{ image_cache_haproxy_boot_image_fallback_backend_server }} {{ image_cache_haproxy_boot_image_fallback_backend_server }}:443
-{% endif %}
+{% for domain in image_cache_intercept_domains %}
+  acl has_sni_domain_{{ loop.index }} ssl_fc_sni {{ domain }}
+  use_backend global_https_passthrough_{{ loop.index }} if has_sni_domain_{{ loop.index }}
+{% endfor %}
 
 backend partition_local_image_cache
   option httpchk
@@ -122,30 +100,8 @@ backend partition_local_boot_image_cache
 {% endfor %}
 {% endif %}
 
-backend global_image_store
-  option httpchk
-  http-check send meth GET uri {{ image_cache_haproxy_fallback_backend_server_health_endpoint }} ver HTTP/1.1 hdr host {{ image_cache_haproxy_fallback_backend_server }}
-  http-check expect status 200
+{% for domain in image_cache_intercept_domains %}
+backend global_https_passthrough_{{ loop.index }}
   balance leastconn
-  http-request set-header Host {{ image_cache_haproxy_fallback_backend_server }}
-  server {{ image_cache_haproxy_fallback_backend_server }} {{ image_cache_haproxy_fallback_backend_server }}:443 ssl verify required ca-file ca-certificates.crt check inter 30s rise 2 fall 3 resolvers pubdns resolve-prefer ipv4
-
-{% if image_cache_kernel_cache_enabled %}
-backend global_kernel_store
-  option httpchk
-  http-check send meth GET uri {{ image_cache_haproxy_kernel_fallback_backend_server_health_endpoint }} ver HTTP/1.1 hdr host {{ image_cache_haproxy_kernel_fallback_backend_server }}
-  http-check expect status 200
-  balance leastconn
-  http-request set-header Host {{ image_cache_haproxy_kernel_fallback_backend_server }}
-  server {{ image_cache_haproxy_kernel_fallback_backend_server }} {{ image_cache_haproxy_kernel_fallback_backend_server }}:443 ssl verify required ca-file ca-certificates.crt check inter 30s rise 2 fall 3 resolvers pubdns resolve-prefer ipv4
-{% endif %}
-
-{% if image_cache_boot_image_cache_enabled %}
-backend global_boot_image_store
-  option httpchk
-  http-check send meth GET uri {{ image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint }} ver HTTP/1.1 hdr host {{ image_cache_haproxy_boot_image_fallback_backend_server }}
-  http-check expect status 200
-  balance leastconn
-  http-request set-header Host {{ image_cache_haproxy_boot_image_fallback_backend_server }}
-  server {{ image_cache_haproxy_boot_image_fallback_backend_server }} {{ image_cache_haproxy_boot_image_fallback_backend_server }}:443 ssl verify required ca-file ca-certificates.crt check inter 30s rise 2 fall 3 resolvers pubdns resolve-prefer ipv4
-{% endif %}
+  server {{ domain }} {{ domain }}:443 ssl verify required ca-file ca-certificates.crt check inter 30s rise 2 fall 3 resolvers pubdns resolve-prefer ipv4
+{% endfor %}
