@@ -41,3 +41,5 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_maintenance_work_mem                           |           | Allows setting maintenance work memory                                   |
 | postgres_work_mem                                       |           | Allows setting work memory                                               |
 | postgres_effective_cache_size                           |           | Allows setting effective cache size                                      |
+| postgres_backup_restore_sidecar_object_prefix           |           | The prefix to store the object in the cloud provider bucket              |
+| postgres_backup_restore_sidecar_object_max_keep         |           | The number of objects to keep at the cloud provider bucket               |
