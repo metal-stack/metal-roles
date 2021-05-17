@@ -204,6 +204,9 @@ data:
     backup-provider: {{ postgres_backup_restore_sidecar_provider }}
     backup-cron-schedule: "{{ postgres_backup_restore_sidecar_backup_cron_schedule }}"
     object-prefix: {{ postgres_backup_restore_sidecar_object_prefix }}
+{% if postgres_backup_restore_sidecar_object_max_keep %}
+    object-max-keep: {{ postgres_backup_restore_sidecar_object_max_keep }}
+{% endif %}
 ---
 apiVersion: v1
 kind: Secret

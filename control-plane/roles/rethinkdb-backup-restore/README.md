@@ -33,3 +33,4 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | rethinkdb_ingress_dns                                    |           | The virtual host to reach the rethinkdb frontend when exposed via ingress |
 | rethinkdb_resources                                      |           | The kubernetes resources for the actual rethinkdb container               |
 | rethinkdb_backup_restore_sidecar_image_pull_policy       |           | Image pull policy (defaults to IfNotPresent)                              |
+| rethinkdb_backup_restore_sidecar_object_max_keep         |           | The number of objects to keep at the cloud provider bucket                |
