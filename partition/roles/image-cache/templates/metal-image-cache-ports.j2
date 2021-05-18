@@ -1,0 +1,10 @@
+- host_port: "{{ image_cache_sync_port }}"
+  target_port: "3000"
+{% if image_cache_kernel_cache_enabled %}
+- host_port: "{{ image_cache_sync_kernel_port }}"
+  target_port: "3001"
+{% endif %}
+{% if image_cache_boot_image_cache_enabled %}
+- host_port: "{{ image_cache_sync_boot_image_port }}"
+  target_port: "3002"
+{% endif %}

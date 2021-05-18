@@ -9,6 +9,8 @@
     that:
       - bmc_catcher_image_tag is defined
       - bmc_catcher_image_name is defined
+      - bmc_catcher_bmc_superuser is defined
+      - bmc_catcher_bmc_superuser_pwd is defined
 
 - name: deploy bmc-catcher service
   include_role:
@@ -30,3 +32,5 @@
       BMC_CATCHER_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
       BMC_CATCHER_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
       BMC_CATCHER_IGNORE_MACS: "{{ bmc_catcher_ignore_macs | join(',') }}"
+      BMC_CATCHER_IPMI_USER: "{{ bmc_catcher_bmc_superuser }}"
+      BMC_CATCHER_IPMI_PASSWORD: "{{ bmc_catcher_bmc_superuser_pwd }}"
