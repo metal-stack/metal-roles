@@ -41,3 +41,5 @@
     postgres_backup_restore_sidecar_gcp_project_id: "{{ ipam_db_backup_restore_sidecar_gcp_project_id }}"
     postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ ipam_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
     postgres_resources: "{{ ipam_db_resources }}"
+    postgres_backup_restore_sidecar_object_max_keep: "{{ ipam_db_backup_restore_sidecar_object_max_keep }}"
+
