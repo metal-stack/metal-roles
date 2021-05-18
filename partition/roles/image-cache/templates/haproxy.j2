@@ -45,19 +45,20 @@ frontend images
 {% if image_cache_kernel_cache_enabled %}
   acl has_kernel_path_prefix path_beg {{ image_cache_kernel_route_prefix }}
   use_backend partition_local_kernel_cache if has_kernel_path_prefix
-  # acl partition_local_kernel_cache_dead nbsrv(partition_local_kernel_cache) eq 0
-  # use_backend global_kernel_store if has_kernel_path_prefix partition_local_kernel_cache_dead
+  acl partition_local_kernel_cache_dead nbsrv(partition_local_kernel_cache) eq 0
+  http-request redirect scheme https if partition_local_kernel_cache_dead
 {% endif %}
 
 {% if image_cache_boot_image_cache_enabled %}
   acl has_boot_image_path_prefix path_beg {{ image_cache_boot_image_route_prefix }}
   use_backend partition_local_boot_image_cache if has_boot_image_path_prefix
-  # acl partition_local_boot_image_cache_dead nbsrv(partition_local_boot_image_cache) eq 0
-  # use_backend global_boot_image_store if has_boot_image_path_prefix partition_local_boot_image_cache_dead
+  acl partition_local_boot_image_cache_dead nbsrv(partition_local_boot_image_cache) eq 0
+  http-request redirect scheme https if partition_local_boot_image_cache_dead
 {% endif %}
 
-  # acl partition_local_image_cache_dead nbsrv(partition_local_image_cache) eq 0
-  # use_backend global_image_store if partition_local_image_cache_dead
+  acl partition_local_image_cache_dead nbsrv(partition_local_image_cache) eq 0
+  http-request redirect scheme https if partition_local_image_cache_dead
+
   default_backend partition_local_image_cache
 
 frontend images_passthrough
@@ -68,7 +69,7 @@ frontend images_passthrough
   tcp-request content accept if { req_ssl_hello_type 1 }
 
 {% for domain in image_cache_intercept_domains %}
-  use_backend global_https_passthrough_{{ loop.index }} if  { req_ssl_sni -i {{ domain }} }
+  use_backend global_https_passthrough_{{ loop.index }} if { req_ssl_sni -i {{ domain }} }
 {% endfor %}
 
 backend partition_local_image_cache
@@ -104,6 +105,7 @@ backend partition_local_boot_image_cache
 
 {% for domain in image_cache_intercept_domains %}
 backend global_https_passthrough_{{ loop.index }}
-  balance leastconn
-  server {{ domain }} {{ domain }}:443 ssl verify required ca-file ca-certificates.crt check inter 30s rise 2 fall 3 resolvers pubdns resolve-prefer ipv4
+  mode tcp
+  server {{ domain }} {{ domain}}:443
+
 {% endfor %}
