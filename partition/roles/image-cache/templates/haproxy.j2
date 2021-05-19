@@ -37,6 +37,13 @@ resolvers pubdns
   nameserver {{ dns_server.name }} {{ dns_server.ip }}:53
 {% endfor %}
 
+  hold valid    60s
+  hold other    60s
+  hold refused  60s
+  hold nx       60s
+  hold timeout  60s
+  hold obsolete 60s
+
 frontend caches
   bind :80
   option forwardfor except 127.0.0.1
