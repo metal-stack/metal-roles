@@ -45,7 +45,7 @@ resolvers pubdns
   hold obsolete 60s
 
 frontend caches
-  bind :80
+  bind :8080
   option forwardfor except 127.0.0.1
   option forwardfor header X-Real-IP
 
@@ -70,7 +70,7 @@ frontend caches
 
 frontend https_passthrough
   mode tcp
-  bind *:443
+  bind *:8443
 
   tcp-request inspect-delay 5s
   tcp-request content accept if { req_ssl_hello_type 1 }
