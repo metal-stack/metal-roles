@@ -12,7 +12,7 @@
     dest: "{{ image_cache_haproxy_host_dir_path }}/config/haproxy.cfg"
     owner: "root"
     group: "root"
-    mode: "0750"
+    mode: "0755"
   register: result
 
 - name: deploy haproxy service
@@ -28,8 +28,8 @@
       - /etc/ssl/certs:/etc/ssl/certs:ro
     systemd_docker_ports:
       - host_port: "80"
-        target_port: "80"
+        target_port: "8080"
       - host_port: "443"
-        target_port: "443"
+        target_port: "8443"
       - host_port: "65534"
         target_port: "65534"
