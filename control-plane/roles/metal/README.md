@@ -13,7 +13,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### General
 
 | Name                               | Mandatory | Description                                                                                                                        |
-| ---------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+|------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------|
 | metal_expose_ingress_service_ports |           | Exposes tcp and udp services over nginx-ingress, requires [nginx-ingress](https://github.com/kubernetes/ingress-nginx) to be setup |
 | metal_check_api_available          |           | Checks whether the metal-api is reachable from the outside after deployment                                                        |
 | metal_check_api_health_endpoint    |           | The endpoint to call if the metal-api is reachable from the outside after deployment                                               |
@@ -28,7 +28,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Images
 
 | Name                                   | Mandatory | Description                             |
-| -------------------------------------- | --------- | --------------------------------------- |
+|----------------------------------------|-----------|-----------------------------------------|
 | metal_api_image_name                   | yes       | Image version of the metal-api          |
 | metal_api_image_tag                    | yes       | Image tag of the metal-api              |
 | metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
@@ -44,9 +44,8 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### Service Ports
 
-
 | Name                              | Mandatory | Description                                       |
-| --------------------------------- | --------- | ------------------------------------------------- |
+|-----------------------------------|-----------|---------------------------------------------------|
 | metal_api_port                    |           | Service port of the metal-api                     |
 | metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
 | metal_masterdata_api_port         |           | Service port of the masterdata-api                |
@@ -55,54 +54,55 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### metal-api
 
-| Name                             | Mandatory | Description                                                          |
-| -------------------------------- | --------- | -------------------------------------------------------------------- |
-| metal_api_replicas               |           | The number of deployed replicas of the metal-api                     |
-| metal_api_hpa_enabled            |           | Enables horizontal pod autoscaling for the metal-api                 |
-| metal_api_hpa_max                |           | Max amount of replicas for the HPA of the metal-api                  |
-| metal_api_hpa_min                |           | Min amount of replicas for the HPA of the metal-api                  |
-| metal_api_hpa_cpu_percentage     |           | Target CPU utilization percentage  for the HPA of the metal-api      |
-| metal_api_base_path              |           | The base path of the HTTP server                                     |
-| metal_api_dex_address            |           | The URL to the dex server                                            |
-| metal_api_dex_clientid           |           | The trusted dex clientid                                             |
-| metal_api_db_address             |           | The URL of the metal-db                                              |
-| metal_api_db_password            |           | The password of the metal-db                                         |
-| metal_api_ipam_db_address        |           | The URL to the ipam database                                         |
-| metal_api_ipam_db_port           |           | The port of the ipam database                                        |
-| metal_api_ipam_db_name           |           | The database name of the ipam database                               |
-| metal_api_ipam_db_user           |           | The user of the ipam database                                        |
-| metal_api_ipam_db_password       |           | The password of the ipam database                                    |
-| metal_api_nsq_lookupd_address    |           | The http address of nsqlookupd (only used for in-cluster traffic)    |
-| metal_api_nsq_tcp_address        |           | The tcp address of nsqd                                              |
-| metal_api_nsq_http_address       |           | The http address of nsqd (only used for in-cluster traffic)          |
-| metal_api_nsq_tls_enabled        |           | Enables TLS for nsq                                                  |
-| metal_api_nsq_tls_secret_name    |           | The name of the secret where nsq certificates are stored             |
-| metal_api_grpc_tls_enabled       |           | Enables TLS for gRPC                                                 |
-| metal_api_grpc_certs_ca_cert     |           | The gRPC ca certificate as a string                                  |
-| metal_api_grpc_certs_server_key  |           | The gRPC client key as a string                                      |
-| metal_api_grpc_certs_server_cert |           | The gRPC client certificate as a string                              |
-| metal_api_view_key               |           | The HMAC view key of the metal-api used for API technical access     |
-| metal_api_edit_key               |           | The HMAC edit key of the metal-api used for API technical access     |
-| metal_api_admin_key              |           | The HMAC admin key of the metal-api used for API technical access    |
-| metal_api_sizes                  |           | Creates sizes (as masterdata) to the metal-api after deployment      |
-| metal_api_images                 |           | Creates images (as masterdata) to the metal-api after deployment     |
-| metal_api_partitions             |           | Creates partitions (as masterdata) to the metal-api after deployment |
-| metal_api_networks               |           | Creates networks (as masterdata) to the metal-api after deployment   |
-| metal_api_ips                    |           | Creates ips (as masterdata) to the metal-api after deployment        |
-| metal_api_filesystemlayouts      |           | Creates filesystemlayouts to the metal-api after deployment          |
-| metal_api_resources              |           | Sets the given container resources                                   |
-| metal_api_bmc_superuser_enabled  |           | Enables creating the BMC superuser and disabling the default one     |
-| metal_api_bmc_superuser_pwd      |           | If enabled use this password for the new BMC superuser               |
-| metal_api_s3_enabled             |           | Whether the S3 server that serves firmware is enabled                |
-| metal_api_s3_address             |           | The address of the S3 server that serves firmwares                   |
-| metal_api_s3_key                 |           | The key of the S3 server that serves firmwares                       |
-| metal_api_s3_secret              |           | The secret of the S3 server that serves firmwares                    |
-| metal_api_s3_firmware_bucket     |           | The S3 bucket name that contains the firmwares                       |
+| Name                                | Mandatory | Description                                                                                    |
+|-------------------------------------|-----------|------------------------------------------------------------------------------------------------|
+| metal_api_replicas                  |           | The number of deployed replicas of the metal-api                                               |
+| metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
+| metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
+| metal_api_hpa_min                   |           | Min amount of replicas for the HPA of the metal-api                                            |
+| metal_api_hpa_cpu_percentage        |           | Target CPU utilization percentage  for the HPA of the metal-api                                |
+| metal_api_base_path                 |           | The base path of the HTTP server                                                               |
+| metal_api_dex_address               |           | The URL to the dex server                                                                      |
+| metal_api_dex_clientid              |           | The trusted dex clientid                                                                       |
+| metal_api_db_address                |           | The URL of the metal-db                                                                        |
+| metal_api_db_password               |           | The password of the metal-db                                                                   |
+| metal_api_ipam_db_address           |           | The URL to the ipam database                                                                   |
+| metal_api_ipam_db_port              |           | The port of the ipam database                                                                  |
+| metal_api_ipam_db_name              |           | The database name of the ipam database                                                         |
+| metal_api_ipam_db_user              |           | The user of the ipam database                                                                  |
+| metal_api_ipam_db_password          |           | The password of the ipam database                                                              |
+| metal_api_nsq_lookupd_address       |           | The http address of nsqlookupd (only used for in-cluster traffic)                              |
+| metal_api_nsq_tcp_address           |           | The tcp address of nsqd                                                                        |
+| metal_api_nsq_http_address          |           | The http address of nsqd (only used for in-cluster traffic)                                    |
+| metal_api_nsq_tls_enabled           |           | Enables TLS for nsq                                                                            |
+| metal_api_nsq_tls_secret_name       |           | The name of the secret where nsq certificates are stored                                       |
+| metal_api_grpc_tls_enabled          |           | Enables TLS for gRPC                                                                           |
+| metal_api_grpc_certs_ca_cert        |           | The gRPC ca certificate as a string                                                            |
+| metal_api_grpc_certs_server_key     |           | The gRPC client key as a string                                                                |
+| metal_api_grpc_certs_server_cert    |           | The gRPC client certificate as a string                                                        |
+| metal_api_view_key                  |           | The HMAC view key of the metal-api used for API technical access                               |
+| metal_api_edit_key                  |           | The HMAC edit key of the metal-api used for API technical access                               |
+| metal_api_admin_key                 |           | The HMAC admin key of the metal-api used for API technical access                              |
+| metal_api_sizes                     |           | Creates sizes (as masterdata) to the metal-api after deployment                                |
+| metal_api_images                    |           | Creates images (as masterdata) to the metal-api after deployment                               |
+| metal_api_partitions                |           | Creates partitions (as masterdata) to the metal-api after deployment                           |
+| metal_api_networks                  |           | Creates networks (as masterdata) to the metal-api after deployment                             |
+| metal_api_ips                       |           | Creates ips (as masterdata) to the metal-api after deployment                                  |
+| metal_api_filesystemlayouts         |           | Creates filesystemlayouts to the metal-api after deployment                                    |
+| metal_api_resources                 |           | Sets the given container resources                                                             |
+| metal_api_bmc_superuser_enabled     |           | Enables creating the BMC superuser and disabling the default one                               |
+| metal_api_bmc_superuser_pwd         |           | If enabled use this password for the new BMC superuser                                         |
+| metal_api_s3_enabled                |           | Whether the S3 server that serves firmware is enabled                                          |
+| metal_api_s3_address                |           | The address of the S3 server that serves firmwares                                             |
+| metal_api_s3_key                    |           | The key of the S3 server that serves firmwares                                                 |
+| metal_api_s3_secret                 |           | The secret of the S3 server that serves firmwares                                              |
+| metal_api_s3_firmware_bucket        |           | The S3 bucket name that contains the firmwares                                                 |
+| metal_api_password_reason_minlength |           | If machine console password is requested this defines if and how long the given reason must be |
 
 ### masterdata-api
 
 | Name                                 | Mandatory | Description                                                      |
-| ------------------------------------ | --------- | ---------------------------------------------------------------- |
+|--------------------------------------|-----------|------------------------------------------------------------------|
 | metal_masterdata_api_db_address      |           | The URL to the masterdata database                               |
 | metal_masterdata_api_db_port         |           | The port of the masterdata database                              |
 | metal_masterdata_api_db_name         |           | The database name of the masterdata database                     |
@@ -119,10 +119,10 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_projects        |           | Starts up the masterdata-api with the given list of projects     |
 | metal_masterdata_api_resources       |           | Sets the given container resources                               |
 
-# metal-console
+### metal-console
 
 | Name                                      | Mandatory | Description                                                        |
-| ----------------------------------------- | --------- | ------------------------------------------------------------------ |
+|-------------------------------------------|-----------|--------------------------------------------------------------------|
 | metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console               |
 | metal_console_replicas                    |           | The number of deployed replicas of the metal-console               |
 | metal_console_resources                   |           | Sets the given container resources                                 |
@@ -132,10 +132,10 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_console_bmc_proxy_certs_client_cert |           | The bmc-proxy client certificate as a string (required if enabled) |
 | metal_console_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string (required if enabled)         |
 
-# Ingress
+### Ingress
 
 | Name                 | Mandatory | Description                                                                |
-| -------------------- | --------- | -------------------------------------------------------------------------- |
+|----------------------|-----------|----------------------------------------------------------------------------|
 | metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
 | metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
 | metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |

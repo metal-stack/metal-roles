@@ -97,6 +97,9 @@ metal_api:
   view_key: "{{ metal_api_view_key }}"
   edit_key: "{{ metal_api_edit_key }}"
   admin_key: "{{ metal_api_admin_key }}"
+{% if metal_api_password_reason_minlength %}
+  password_reason_minlength: "{{ metal_api_password_reason_minlength }}"
+{% endif %}
   # let's create some multi-document YAMLs from our metal api masterdata def:
   sizes: |
 {% for entity in metal_api_sizes %}
