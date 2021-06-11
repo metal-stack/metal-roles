@@ -56,6 +56,7 @@ metal_api_images: []
 metal_api_partitions: []
 metal_api_networks: []
 metal_api_ips: []
+metal_api_filesystemlayouts: []
 metal_api_resources:
 metal_api_s3_enabled: false
 metal_api_s3_address:
