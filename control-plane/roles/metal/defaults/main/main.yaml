@@ -63,6 +63,7 @@ metal_api_s3_address:
 metal_api_s3_key:
 metal_api_s3_secret:
 metal_api_s3_firmware_bucket:
+metal_api_password_reason_minlength:
 
 # masterdata-api
 metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
