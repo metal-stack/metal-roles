@@ -34,7 +34,7 @@ metal_db_resources:
 metal_db_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 metal_db_registry_auth:
   auths:
-    docker.io:
+    https://index.docker.io/v1/:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
