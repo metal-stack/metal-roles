@@ -68,7 +68,7 @@
     systemd_service_timeout_start_sec: 60
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
-    systemd_docker_memory: 256m
+    systemd_docker_memory: 1024m
     # metal-core needs to figure out the switch ports, this is only possible from host network
     systemd_docker_network: host
     systemd_docker_volumes: "{{ lookup('template', 'metal-core-volumes.j2') | from_yaml }}"
