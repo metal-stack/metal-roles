@@ -4,7 +4,20 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - metal_python_version is not none
+      - metal_python_version is not none or metal_python_fallback_to_metal_api_version | bool
+
+- name: Gather releases
+  setup_yaml:
+  when:
+    - metal_python_version is none
+    - metal_python_fallback_to_metal_api_version
+
+- name: Set metal-python from release vector
+  set_fact:
+    metal_python_version: "{{ metal_api_image_tag }}"
+  when:
+    - metal_python_version is none
+    - metal_python_fallback_to_metal_api_version
 
 - name: Install metal-python
   block:

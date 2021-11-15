@@ -13,6 +13,7 @@ None
 | Name                                         | Mandatory | Description                                                                  |
 | -------------------------------------------- | --------- | ---------------------------------------------------------------------------- |
 | metal_python_version                         | yes       | The metal-python version to install.                                         |
+| metal_python_fallback_to_metal_api_version   |           | Attempts to derive fitting metal-python version from release vector          |
 | metal_python_install_latest_on_version_error |           | Whether to just install latest metal-python when given version was not found |
 
 ## Examples
