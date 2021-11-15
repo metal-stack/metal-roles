@@ -28,7 +28,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | [masterdata-db](roles/masterdata-db)                       | Deploys a database for the masterdata-api                                                                                       |
 | [metal](roles/metal)                                       | Deploys all metal-stack components of the metal-control-plane via Helm                                                          |
 | [metal-db](roles/metal-db)                                 | Deploys a database for the metal-api                                                                                            |
-| [metal-python](roles/metal-python)                         | Deploys metal-python                                                                                                            |
+| [metal-python](roles/metal-python)                         | Installs metal-python                                                                                                           |
 | [nsq](roles/nsq)                                           | Deploys [nsq](https://nsq.io/)                                                                                                  |
 | [postgres-backup-restore](roles/postgres-backup-restore)   | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |
 | [prepare](roles/prepare)                                   | Contains tasks for preparing the deployment of the metal-control-plane                                                          |
