@@ -38,6 +38,11 @@
     regexp: '^docker$'
     line: 'docker'
 
+- name: ensure /etc/docker directory
+  file:
+    path: /etc/docker
+    state: directory
+
 - name: template daemon.json
   template:
     src: daemon.json.j2
