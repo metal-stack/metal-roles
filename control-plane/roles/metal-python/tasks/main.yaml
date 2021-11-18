@@ -1,0 +1,40 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - metal_python_version is not none or metal_python_version_from_release_vector | bool
+
+- name: Gather releases
+  setup_yaml:
+  when:
+    - metal_python_version is none
+    - metal_python_version_from_release_vector
+
+- name: Set metal-python from release vector
+  set_fact:
+    metal_python_version: "{{ metal_api_image_tag }}"
+  when:
+    - metal_python_version is none
+    - metal_python_version_from_release_vector
+
+- name: Install metal-python
+  block:
+    - name: Install metal-python {{ metal_python_version }}
+      pip:
+        name:
+          - metal_python=={{ metal_python_version }}
+
+  rescue:
+    # attempt with latest available client when fitting client is not available
+    - name: Install latest metal-python (fallback)
+      pip:
+        name:
+          - metal_python
+      when: metal_python_install_latest_on_version_error | bool
+
+    - name: Fail on unavailable version
+      fail:
+        msg: "given metal-python version not found"
+      when: not metal_python_install_latest_on_version_error | bool

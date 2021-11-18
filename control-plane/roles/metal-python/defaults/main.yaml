@@ -1,0 +1,4 @@
+---
+metal_python_version:
+metal_python_version_from_release_vector: yes
+metal_python_install_latest_on_version_error: yes

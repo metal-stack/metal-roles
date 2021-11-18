@@ -18,16 +18,17 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                                                 |
 | metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                                     |
 | metal_control_plane_host_provider     |           | The name of the provider where the control plane is hosted, can be used for provider specific switches in the automation |
-| metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                                            | 
+| metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                                            |
 
 ## Roles
 
-| Role Name                                                                | Description                                                                                                                     |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| Role Name                                                  | Description                                                                                                                     |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | [ipam-db](roles/ipam-db)                                   | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                      |
 | [masterdata-db](roles/masterdata-db)                       | Deploys a database for the masterdata-api                                                                                       |
 | [metal](roles/metal)                                       | Deploys all metal-stack components of the metal-control-plane via Helm                                                          |
 | [metal-db](roles/metal-db)                                 | Deploys a database for the metal-api                                                                                            |
+| [metal-python](roles/metal-python)                         | Installs metal-python                                                                                                           |
 | [nsq](roles/nsq)                                           | Deploys [nsq](https://nsq.io/)                                                                                                  |
 | [postgres-backup-restore](roles/postgres-backup-restore)   | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |
 | [prepare](roles/prepare)                                   | Contains tasks for preparing the deployment of the metal-control-plane                                                          |
