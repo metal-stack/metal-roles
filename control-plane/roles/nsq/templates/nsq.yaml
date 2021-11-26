@@ -47,7 +47,6 @@ spec:
         - -log-level={{ nsq_log_level }}
         - -lookupd-tcp-address=nsq-lookupd:4160
         - -broadcast-address={{ nsq_broadcast_address }}
-        - -mem-queue-size=0
         - -data-path=/data
 {% if nsq_tls_enabled %}
         - -tls-required=tcp-https
