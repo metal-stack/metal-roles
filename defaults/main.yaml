@@ -60,6 +60,8 @@ metal_stack_release:
     audit_forwarder_image_name: "docker-images.metal-stack.kubernetes.audit-forwarder.name"
     node_init_image_tag: "docker-images.metal-stack.kubernetes.node-init.tag"
     node_init_image_name: "docker-images.metal-stack.kubernetes.node-init.name"
+    droptailer_image_tag: "docker-images.metal-stack.kubernetes.droptailer.tag"
+    droptailer_image_name: "docker-images.metal-stack.kubernetes.droptailer.name"
     # third party
     nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"
     nsq_image_name: "docker-images.third-party.control-plane.nsq.name"
