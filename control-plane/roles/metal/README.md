@@ -2,8 +2,6 @@
 
 This role basically deploys the `metal-control-plane` [helm chart](https://github.com/metal-stack/helm-charts/tree/master/charts/metal-control-plane). It uses [hooks](https://github.com/helm/helm/blob/master/docs/charts_hooks.md) to deploy the control plane. There is a post-install hook to initialize the rethinkdb tables (there would be race conditions if there are multiple metal-api replicas initializing the database at the same time). Then, there are post-install and post-upgrade hooks to initialize and update the "masterdata" of the control plane (e.g. images, partitions, networks in this control plane).
 
-As our control plane also requires non-HTTP ports to be exposed to the outside world, we currently use [tcp and udp service exposal of Kubernetes nginx-ingress](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/).
-
 ## Variables
 
 This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
@@ -14,7 +12,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 | Name                               | Mandatory | Description                                                                                                                        |
 |------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------|
-| metal_expose_ingress_service_ports |           | Exposes tcp and udp services over nginx-ingress, requires [nginx-ingress](https://github.com/kubernetes/ingress-nginx) to be setup |
 | metal_check_api_available          |           | Checks whether the metal-api is reachable from the outside after deployment                                                        |
 | metal_check_api_health_endpoint    |           | The endpoint to call if the metal-api is reachable from the outside after deployment                                               |
 | metal_set_resource_limits          |           | Deploys metal components with or without resource limits (possibly disable for development environments)                           |

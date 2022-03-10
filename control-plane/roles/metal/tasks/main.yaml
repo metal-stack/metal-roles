@@ -39,54 +39,6 @@
     helm_timeout: "{{ metal_helm_chart_timeout }}"
     helm_chart_inject_config_hash: yes
 
-- name: Set services for patching ingress controller service exposal
-  set_fact:
-    metal_tcp_services:
-      "5222": "{{ metal_control_plane_namespace }}/metal-console:10001"
-      "50051": "{{ metal_control_plane_namespace }}/metal-api:50051"
-    metal_udp_services:
-      "5222": "{{ metal_control_plane_namespace }}/metal-console:10001"
-  when: metal_expose_ingress_service_ports
-
-- name: Patch tcp-services in ingress controller
-  k8s:
-    api_version: v1
-    kind: ConfigMap
-    namespace: ingress-nginx
-    name: tcp-services
-    definition:
-      data: "{{ lookup('k8s', api_version='v1', kind='ConfigMap', namespace='ingress-nginx', resource_name='tcp-services').get('data', {}) | combine(metal_tcp_services) }}"
-  when: metal_expose_ingress_service_ports
-
-- name: Patch udp-services in ingress controller
-  k8s:
-    api_version: v1
-    kind: ConfigMap
-    namespace: ingress-nginx
-    name: udp-services
-    definition:
-      data: "{{ lookup('k8s', api_version='v1', kind='ConfigMap', namespace='ingress-nginx', resource_name='udp-services').get('data', {}) | combine(metal_udp_services) }}"
-  when: metal_expose_ingress_service_ports
-
-- name: Expose tcp services in ingress controller
-  k8s:
-    api_version: v1
-    kind: Service
-    namespace: ingress-nginx
-    name: ingress-nginx
-    definition:
-      spec:
-        ports:
-        - name: metal-control-plane-console
-          port: 5222
-          protocol: TCP
-          targetPort: 5222
-        - name: metal-control-plane-grpc
-          port: 50051
-          protocol: TCP
-          targetPort: 50051
-  when: metal_expose_ingress_service_ports
-
 # for automation tests, we need to wait until all the services are ready...
 - name: Wait until api is available
   uri:

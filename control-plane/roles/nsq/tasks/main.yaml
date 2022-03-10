@@ -15,38 +15,3 @@
     definition: "{{ lookup('template', 'nsq.yaml') }}"
     namespace: "{{ metal_control_plane_namespace }}"
 
-- name: Set services for patching ingress controller service exposal
-  set_fact:
-    nsq_tcp_services:
-      "4161": "{{ metal_control_plane_namespace }}/nsq-lookupd:4161"
-      "4150": "{{ metal_control_plane_namespace }}/nsqd:4150"
-  when: nsq_expose_ingress_service_ports
-
-- name: Patch tcp-services in ingress controller
-  k8s:
-    api_version: v1
-    kind: ConfigMap
-    namespace: ingress-nginx
-    name: tcp-services
-    definition:
-      data: "{{ lookup('k8s', api_version='v1', kind='ConfigMap', namespace='ingress-nginx', resource_name='tcp-services').get('data', {}) | combine(nsq_tcp_services) }}"
-  when: nsq_expose_ingress_service_ports
-
-- name: Expose tcp services in ingress controller
-  k8s:
-    api_version: v1
-    kind: Service
-    namespace: ingress-nginx
-    name: ingress-nginx
-    definition:
-      spec:
-        ports:
-        - name: nsq-lookupd
-          port: 4161
-          protocol: TCP
-          targetPort: 4161
-        - name: nsqd
-          port: 4150
-          protocol: TCP
-          targetPort: 4150
-  when: nsq_expose_ingress_service_ports
