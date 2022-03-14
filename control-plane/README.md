@@ -5,7 +5,15 @@ Contains roles for deploying the metal-control-plane.
 ## Requirements
 
 - [ansible-common](https://github.com/metal-stack/ansible-common)
-- an ingress-controller in your cluster ([nginx-ingress](https://github.com/kubernetes/ingress-nginx) is the default of this project, you need to parametrize the roles carefully if you want to use another ingress-controller. when you just use nginx-ingress, make sure to also deploy it to the default namespace `ingress-nginx`)
+- an ingress-controller in your cluster ([nginx-ingress](https://github.com/kubernetes/ingress-nginx) is the default of this project)
+- As our control plane also requires layer-4 services to be exposed to the outside world, you need to take care of exposing them in order to make them reachable from a partition. This can for instance be achieved through [tcp and udp service exposal of Kubernetes nginx-ingress](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/). You can look up how it can be done in the [mini-lab](https://github.com/metal-stack/mini-lab). Here comes the list of required ports:
+
+    | Port  | Protocol | Service Name  | Description                   |
+    | ----- | -------- | ------------- | ----------------------------- |
+    | 4150  | TCP      | nsqd          | nsq Daemon (HTTPS)            |
+    | 4161  | TCP      | nsq-lookupd   | nsqlookup Damon (HTTP)        |
+    | 5222  | TCP      | metal-console | Console forwarding (SSH)      |
+    | 50051 | TCP      | metal-api     | metal-api gRPC API (protobuf) |
 
 ## Variables
 
