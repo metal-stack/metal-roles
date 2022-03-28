@@ -232,7 +232,7 @@ data:
 {% endif %}
 {% if rethinkdb_expose_frontend %}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ rethinkdb_name }}
@@ -246,7 +246,10 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: {{ rethinkdb_name }}
-          servicePort: 10080
+          service:
+            name: {{ rethinkdb_name }}
+            port:
+              number: 10080
 {% endif %}
