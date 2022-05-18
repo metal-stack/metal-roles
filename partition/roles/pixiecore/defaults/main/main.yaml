@@ -1,3 +1,11 @@
 ---
+pixiecore_partition_id:
 pixiecore_api_url: http://localhost:4242
 pixiecore_dns_servers: []
+pixiecore_grpc_cert_dir: /certs/grpc
+pixiecore_grpc_ca_cert:
+pixiecore_grpc_client_cert:
+pixiecore_grpc_client_key:
+pixiecore_grpc_address: "{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_grpc_port }}"
+pixiecore_metal_api_url: https://api.metal-stack.dev/metal
+pixiecore_metal_api_hmac_view_key: chage-me

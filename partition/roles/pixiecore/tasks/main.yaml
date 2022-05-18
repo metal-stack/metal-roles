@@ -22,6 +22,8 @@
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
     systemd_docker_dns: "{{ pixiecore_dns_servers }}"
+    systemd_docker_volumes:
+      - "{{ pixiecore_grpc_cert_dir }}:/certs/grpc:ro"
     # Because Pixiecore needs to listen for DHCP traffic,
     # it has to run with access to the host's networking stack.
     # Both Rkt and Docker do this with the --net=host commandline flag.
@@ -29,4 +31,15 @@
     systemd_docker_network: host
     # With the flag --dhcp-no-bind Pixiecore does not bind to the DHCP port and only listens for Pixie-Requests
     # This enables to use an existing DHCP server
-    systemd_docker_command: ["api", "{{ pixiecore_api_url }}", "--debug", "--dhcp-no-bind"]
+    systemd_docker_command: 
+      - "grpc"
+      - "--debug"
+      - "--dhcp-no-bind"
+      - "--pixie-api-url={{ pixiecore_api_url }}"
+      - "--grpc-address={{ pixiecore_grpc_address }}"
+      - "--grpc-ca-cert={{ pixiecore_grpc_ca_cert }}"
+      - "--grpc-cert={{ pixiecore_grpc_client_cert }}"
+      - "--grpc-key={{ pixiecore_grpc_client_key }}"
+      - "--metal-api-url={{ pixiecore_metal_api_url }}"
+      - "--metal-api-view-hmac={{ pixiecore_metal_api_hmac_view_key }}"
+      - "--partition={{ pixiecore_partition_id }}"
