@@ -1,0 +1,3 @@
+---
+dhcp_relay_interface: vlan4000
+dhcp_relay_server:
