@@ -2,6 +2,8 @@
 pixiecore_dns_servers: []
 pixiecore_partition_id: "{{ metal_partition_id }}"
 
+pixiecore_api_port: 4242
+
 pixiecore_grpc_address: "{{ metal_partition_metal_api_grpc_address }}"
 pixiecore_grpc_cert_dir: "{{ metal_partition_metal_api_grpc_cert_dir }}"
 pixiecore_grpc_ca_cert: "{{ metal_partition_metal_api_grpc_ca_cert }}"

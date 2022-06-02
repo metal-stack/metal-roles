@@ -12,7 +12,7 @@
       - pixiecore_grpc_ca_cert is not none
       - pixiecore_grpc_client_cert is not none
       - pixiecore_grpc_client_key is not none
-      - pixiecore_api_url is defined
+      - pixiecore_api_host is defined
 
 - name: create gRPC certs directory
   file:
@@ -61,7 +61,8 @@
       - "grpc"
       - "--debug"
       - "--dhcp-no-bind"
-      - "--pixie-api-url={{ pixiecore_api_url }}"
+      - "--port={{ pixiecore_api_port }}"
+      - "--pixie-api-url={{ pixiecore_api_host }}:{{ pixiecore_api_port }}/certs"
       - "--grpc-address={{ pixiecore_grpc_address }}"
       - "--grpc-ca-cert=/certs/grpc/ca.pem"
       - "--grpc-cert=/certs/grpc/client.pem"
