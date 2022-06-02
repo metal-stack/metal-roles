@@ -12,6 +12,7 @@
       - pixiecore_grpc_ca_cert is not none
       - pixiecore_grpc_client_cert is not none
       - pixiecore_grpc_client_key is not none
+      - pixiecore_api_url is defined
 
 - name: create gRPC certs directory
   file:

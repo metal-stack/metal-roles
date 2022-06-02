@@ -1,5 +1,4 @@
 ---
-pixiecore_api_url: http://localhost:4242
 pixiecore_dns_servers: []
 pixiecore_partition_id: "{{ metal_partition_id }}"
 
