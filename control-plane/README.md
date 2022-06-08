@@ -31,6 +31,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 
 | Role Name                                                  | Description                                                                                                                     |
 | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [headscale](roles/headscale)                               | Deploys headscale                                                                                                               |
 | [ipam-db](roles/ipam-db)                                   | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                      |
 | [masterdata-db](roles/masterdata-db)                       | Deploys a database for the masterdata-api                                                                                       |
 | [metal](roles/metal)                                       | Deploys all metal-stack components of the metal-control-plane via Helm                                                          |
