@@ -9,6 +9,32 @@
     that:
       - pixiecore_image_name is defined
       - pixiecore_image_tag is defined
+      - pixiecore_grpc_ca_cert is not none
+      - pixiecore_grpc_client_cert is not none
+      - pixiecore_grpc_client_key is not none
+      - pixiecore_api_host is defined
+
+- name: create gRPC certs directory
+  file:
+    path: "{{ pixiecore_grpc_cert_dir }}"
+    state: directory
+
+- name: copy gRPC certificates
+  copy:
+    dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
+    mode: 0640
+    content: "{{ item.content }}"
+  no_log: yes
+  loop:
+    - filename: ca.pem
+      content: "{{ pixiecore_grpc_ca_cert }}"
+    - filename: client.pem
+      content: "{{ pixiecore_grpc_client_cert }}"
+    - filename: client-key.pem
+      content: "{{ pixiecore_grpc_client_key }}"
+  loop_control:
+    label: "{{ item.filename }}"
+  register: grpc_certs
 
 - name: deploy pixiecore
   include_role:
@@ -22,6 +48,8 @@
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
     systemd_docker_dns: "{{ pixiecore_dns_servers }}"
+    systemd_docker_volumes:
+      - "{{ pixiecore_grpc_cert_dir }}:/certs/grpc:ro"
     # Because Pixiecore needs to listen for DHCP traffic,
     # it has to run with access to the host's networking stack.
     # Both Rkt and Docker do this with the --net=host commandline flag.
@@ -29,4 +57,17 @@
     systemd_docker_network: host
     # With the flag --dhcp-no-bind Pixiecore does not bind to the DHCP port and only listens for Pixie-Requests
     # This enables to use an existing DHCP server
-    systemd_docker_command: ["api", "{{ pixiecore_api_url }}", "--debug", "--dhcp-no-bind"]
+    systemd_docker_command:
+      - "grpc"
+      - "--debug"
+      - "--dhcp-no-bind"
+      - "--port={{ pixiecore_api_port }}"
+      - "--pixie-api-url={{ pixiecore_api_host }}:{{ pixiecore_api_port }}/certs"
+      - "--grpc-address={{ pixiecore_grpc_address }}"
+      - "--grpc-ca-cert=/certs/grpc/ca.pem"
+      - "--grpc-cert=/certs/grpc/client.pem"
+      - "--grpc-key=/certs/grpc/client-key.pem"
+      - "--metal-api-url={{ pixiecore_metal_api_url }}"
+      - "--metal-api-view-hmac={{ pixiecore_metal_api_hmac_view_key }}"
+      - "--partition={{ pixiecore_partition_id }}"
+    systemd_external_config_changed: "{{ grpc_certs is changed }}"

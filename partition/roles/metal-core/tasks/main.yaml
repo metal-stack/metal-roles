@@ -38,7 +38,6 @@
   file:
     path: "{{ metal_core_grpc_cert_dir }}"
     state: directory
-  when: metal_core_grpc_tls_enabled
 
 - name: copy gRPC certificates
   copy:
@@ -55,7 +54,6 @@
       content: "{{ metal_core_grpc_client_key }}"
   loop_control:
     label: "{{ item.filename }}"
-  when: metal_core_grpc_tls_enabled
   register: grpc_certs
 
 - name: deploy metal-core
