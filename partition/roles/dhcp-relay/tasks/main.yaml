@@ -6,8 +6,13 @@
     that:
       - dhcp_relay_server is not none
 
+# config is written to /etc/default/isc-dhcp-relay
+
 - name: add dhcp relay interface
   command: net add dhcp relay interface {{ dhcp_relay_interface }}
+
+- name: remove priorly configured dhcp relay servers
+  command: net del dhcp relay server
 
 - name: add dhcp relay server
   command: net add dhcp relay server {{ dhcp_relay_server }}
