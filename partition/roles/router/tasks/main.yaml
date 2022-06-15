@@ -1,10 +1,10 @@
 ---
 - name: configure mgmt vrf
-  include: mgmt_vrf.yaml
+  import_tasks: mgmt_vrf.yaml
   when: router_enable_mgmt_vrf
 
 - name: configure switch plane
-  include: switch_plane.yaml
+  import_tasks: switch_plane.yaml
   when: ports is defined
 
 - name: flush handlers
