@@ -25,7 +25,6 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | metal_control_plane_ingress_dns       | yes       | The dns name used for exposing services via ingress                                                                      |
 | metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                                                 |
 | metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                                     |
-| metal_control_plane_host_provider     |           | The name of the provider where the control plane is hosted, can be used for provider specific switches in the automation |
 | metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                                            |
 
 ## Roles
