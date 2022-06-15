@@ -1,5 +1,4 @@
 ---
-metal_core_port: 4242
 metal_core_log_level: warn
 metal_core_hmac_key: change-me
 metal_core_rack_id:

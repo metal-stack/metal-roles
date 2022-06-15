@@ -75,8 +75,8 @@
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
     systemd_external_config_changed: "{{ nsq_certs is changed or grpc_certs is changed }}"
 
-- name: wait for metal-core to listen on port
+- name: wait for metal-core to listen on metrics port
   wait_for:
-    port: "{{ metal_core_port }}"
+    port: 2112
     timeout: 300
     msg: "metal-core did not come up"
