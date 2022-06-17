@@ -12,6 +12,21 @@
       - metal_core_rack_id is not none
       - metal_core_nsq_lookupd_addr is not none
 
+- name: Get stat for SONiC's version file
+  stat:
+    path: /etc/sonic/sonic_version.yml
+  register: sonic_version_file
+
+- name: Set sonic to true if SONiC's version file exists
+  set_fact:
+    sonic: true
+  when: sonic_version_file.stat.exists
+
+- name: Set sonic to false if SONiC's version file doesn't exist
+  set_fact:
+    sonic: false
+  when: not sonic_version_file.stat.exists
+
 - name: create nsq certs directory
   file:
     path: "{{ metal_core_nsq_cert_dir }}"

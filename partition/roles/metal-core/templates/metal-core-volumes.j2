@@ -1,5 +1,9 @@
+{% if sonic %}
+- /etc/sonic/:/etc/sonic
+{% else %}
 - /etc/network/:/etc/network
 - /etc/frr/:/etc/frr
+{% endif %}
 - /var/run/dbus:/var/run/dbus
 - /run/systemd/private:/run/systemd/private
 {% if metal_core_nsq_tls_enabled %}
