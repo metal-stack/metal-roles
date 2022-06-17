@@ -18,18 +18,11 @@ iface mgmt
     address 127.0.0.1/8
     vrf-table auto
 
-{% for iface in interfaces %}
-auto {{ iface.name }}
-iface {{ iface.name }}
-    mtu {{ mtu.default }}
-    bridge-access 4000
-
-{% endfor %}
 {% for iface in uplinks %}
+
 auto {{ iface.name }}
 iface {{ iface.name }}
     mtu {{ mtu.vxlan }}
-
 {% endfor %}
 
 auto bridge
@@ -38,6 +31,7 @@ iface bridge
     bridge-vids 4000
     bridge-vlan-aware yes
 
+# PXE-Config
 auto vlan4000
 iface vlan4000
     mtu {{ mtu.default }}
@@ -55,3 +49,10 @@ iface vni104000
     vxlan-id 104000
     vxlan-local-tunnelip {{ lo }}
 
+{% for iface in interfaces %}
+
+auto {{ iface.name }}
+iface {{ iface.name }}
+    mtu {{ mtu.default }}
+    bridge-access 4000
+{% endfor %}

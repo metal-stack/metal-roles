@@ -1,33 +1,30 @@
 #jinja2: lstrip_blocks: "True", trim_blocks: "True"
-frr version 4.0+cl3u9
 frr defaults datacenter
 hostname {{ ansible_hostname }}
 username cumulus nopassword
-!
 service integrated-vtysh-config
 !
 log syslog informational
+{% for iface in uplinks %}
 !
-vrf mgmt
- ip route 10.0.1.0/24 {{ ansible_host }} nexthop-vrf default
- exit-vrf
+interface iface
+ ipv6 nd ra-interval 6
+ no ipv6 nd suppress-ra
+{% endfor %}
 !
 router bgp {{ asn }}
  bgp router-id {{ lo }}
  neighbor FABRIC peer-group
  neighbor FABRIC remote-as external
+ neighbor FABRIC timers 2 8
  {% for iface in uplinks %}
  neighbor {{ iface.name }} interface peer-group FABRIC
  {% endfor %}
  !
- address-family ipv4 unicast
-  neighbor FABRIC activate
-  redistribute connected route-map LOOPBACKS
- exit-address-family
- !
  address-family l2vpn evpn
-  neighbor FABRIC activate
   advertise-all-vni
+  neighbor FABRIC activate
+  neighbor FABRIC allowas-in 2
  exit-address-family
 !
 route-map LOOPBACKS permit 10
