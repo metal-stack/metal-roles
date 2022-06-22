@@ -14,8 +14,12 @@
 - name: remove priorly configured dhcp relay servers
   command: net del dhcp relay server
 
+- set_fact:
+    _dhcp_relay_servers: "{{ [dhcp_relay_server] if dhcp_relay_server is string else dhcp_relay_server }}"
+
 - name: add dhcp relay server
-  command: net add dhcp relay server {{ dhcp_relay_server }}
+  command: net add dhcp relay server {{ item }}
+  loop: "{{ _dhcp_relay_servers }}"
 
 - name: commit configuration
   command: net commit
