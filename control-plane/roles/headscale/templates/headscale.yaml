@@ -108,6 +108,8 @@ spec:
         secret:
           secretName: headscale
 ---
+{% if disable_ingress %}
+{% else %}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -120,9 +122,9 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
-{% for key, value in headscale_ingress_annotations.items() %}
-    {{ key }}: "{{ value }}"
-{% endfor %}
+{% if cert_manager_cluster_issuer is defined %}
+    cert-manager.io/cluster-issuer: "{{ cert_manager_cluster_issuer }}"
+{% endif %}
 spec:
 {% if headscale_tls %}
   tls:
@@ -138,3 +140,4 @@ spec:
             backend:
               serviceName: headscale
               servicePort: 8080
+{% endif %}

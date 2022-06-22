@@ -8,11 +8,18 @@ This role just wraps the [postgres-backup-restore](/control-plane/roles/postgres
 
 The role should take the same variables as the wrapped role, but prefixed with `headscale_db_` instead of `postgres_`.
 
-| Name                          | Mandatory | Description                                                 |
-| ----------------------------- | --------- | ----------------------------------------------------------- |
-| headscale_image_name          | yes       | Image name of headscale                                     |
-| headscale_image_tag           | yes       | Image version of headscale                                  |
-| headscale_namespace           |           | The deployment's target namespace                           |
-| headscale_tls                 |           | Enables TLS for headscale                                   |
-| headscale_ingress_annotations |           | Annotations that will be attached to the ingress resource   |
-| headscale_resources           |           | The kubernetes resources for the actual headscale container |
+| Name                                           | Mandatory | Description                                                 |
+|------------------------------------------------|-----------|-------------------------------------------------------------|
+| headscale_image_name                           | yes       | Image name of headscale                                     |
+| headscale_image_tag                            | yes       | Image version of headscale                                  |
+| headscale_db_image_name                        | yes       | Image name of headscale DB                                  |
+| headscale_db_image_tag                         | yes       | Image version of headscale DB                               |
+| headscale_db_backup_restore_sidecar_image_name | yes       | Image name of init container for headscale DB               |
+| headscale_db_backup_restore_sidecar_image_tag  | yes       | Image version of init container for headscale DB            |
+| headscale_private_key                          | yes       | Private key                                                 |
+| headscale_ingress_dns                          | yes       | Domain name                                                 |
+| headscale_namespace                            |           | The deployment's target namespace                           |
+| headscale_tls                                  |           | Enables TLS for headscale                                   |
+| headscale_ingress_annotations                  |           | Annotations that will be attached to the ingress resource   |
+| headscale_resources                            |           | The kubernetes resources for the actual headscale container |
+| disable_ingress                                |           | Disable ingress                                             |

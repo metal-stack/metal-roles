@@ -2,8 +2,6 @@
 headscale_namespace: headscale
 
 headscale_tls: yes
-headscale_ingress_annotations:
-  cert-manager.io/cluster-issuer: "{{ cert_manager_cluster_issuer }}"
 
 headscale_resources:
   requests:

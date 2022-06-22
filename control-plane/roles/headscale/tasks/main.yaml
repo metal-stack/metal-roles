@@ -7,6 +7,8 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - headscale_image_name is defined
+      - headscale_image_tag is defined
       - headscale_db_image_name is defined
       - headscale_db_image_tag is defined
       - headscale_db_backup_restore_sidecar_image_name is defined
