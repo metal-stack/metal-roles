@@ -7,7 +7,6 @@ METAL_CORE_CIDR: "{{ metal_core_cidr }}"
 METAL_CORE_PARTITION_ID: "{{ metal_partition_id }}"
 METAL_CORE_RACK_ID: "{{ metal_core_rack_id }}"
 METAL_CORE_BIND_ADDRESS: 0.0.0.0
-METAL_CORE_MACHINE_TOPIC: "{{ metal_partition_id }}-machine"
 METAL_CORE_SWITCH_TOPIC: "{{ metal_partition_id }}-switch"
 METAL_CORE_METAL_API_IP: "{{ metal_partition_metal_api_addr }}"
 METAL_CORE_METAL_API_PORT: "{{ metal_partition_metal_api_port }}"
@@ -15,10 +14,6 @@ METAL_CORE_METAL_API_PROTOCOL: "{{ metal_partition_metal_api_protocol }}"
 METAL_CORE_METAL_API_BASEPATH: "{{ metal_partition_metal_api_basepath }}"
 METAL_CORE_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
 METAL_CORE_LOG_LEVEL: "{{ metal_core_log_level }}"
-{% if metal_core_nsq_tls_enabled %}
-METAL_CORE_MQ_CA_CERT_FILE: "{{ metal_core_nsq_cert_dir }}/ca.pem"
-METAL_CORE_MQ_CLIENT_CERT_FILE: "{{ metal_core_nsq_cert_dir }}/client.pem"
-{% endif %}
 METAL_CORE_RECONFIGURE_SWITCH: "{{ metal_core_reconfigure_switch }}"
 METAL_CORE_RECONFIGURE_SWITCH_INTERVAL: "{{ metal_core_reconfigure_switch_interval }}"
 METAL_CORE_MANAGEMENT_GATEWAY: "{{ metal_partition_mgmt_gateway }}"

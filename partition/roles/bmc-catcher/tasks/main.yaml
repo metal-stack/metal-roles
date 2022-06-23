@@ -40,6 +40,7 @@
   vars:
     systemd_start: "{{ ensure_started.bmc_catcher|default(true) }}"
     systemd_service_name: bmc-catcher
+    systemd_external_config_changed: "{{ nsq_certs is changed }}"
     systemd_docker_image_name: "{{ bmc_catcher_image_name }}"
     systemd_docker_image_tag: "{{ bmc_catcher_image_tag }}"
     systemd_docker_network: host
@@ -58,4 +59,6 @@
       BMC_CATCHER_IPMI_PASSWORD: "{{ bmc_catcher_bmc_superuser_pwd }}"
       BMC_CATCHER_MQ_ADDRESS: "{{ bmc_catcher_nsq_lookupd_addr }}"
       BMC_CATCHER_MQ_LOGLEVEL: "{{ bmc_catcher_nsq_log_level }}"
-
+      BMC_CATCHER_MQ_CA_CERT_FILE: "{{bmc_catcher_nsq_cert_dir }}/ca.pem"
+      BMC_CATCHER_MQ_CLIENT_CERT_FILE: "{{ bmc_catcher_nsq_cert_dir }}/client.pem"
+      BMC_CATCHER_MACHINE_TOPIC: "{{ metal_partition_id }}-machine"
