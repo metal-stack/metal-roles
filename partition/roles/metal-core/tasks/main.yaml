@@ -10,7 +10,6 @@
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
-      - metal_core_nsq_lookupd_addr is not none
 
 - name: create nsq certs directory
   file:

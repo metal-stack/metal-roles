@@ -3,3 +3,10 @@ bmc_catcher_ignore_macs: []
 
 bmc_catcher_bmc_superuser:
 bmc_catcher_bmc_superuser_pwd:
+
+
+bmc_catcher_nsq_log_level: warn
+bmc_catcher_nsq_tls_enabled: true
+bmc_catcher_nsq_cert_dir: /certs/nsq
+bmc_catcher_nsqd_ca_cert:
+bmc_catcher_nsqd_client_cert:

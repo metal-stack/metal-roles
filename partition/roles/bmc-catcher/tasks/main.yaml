@@ -12,6 +12,28 @@
       - bmc_catcher_bmc_superuser is defined
       - bmc_catcher_bmc_superuser_pwd is defined
 
+- name: create nsq certs directory
+  file:
+    path: "{{ bmc_catcher_nsq_cert_dir }}"
+    state: directory
+  when: bmc_catcher_nsq_tls_enabled
+
+- name: copy nsq certificates
+  copy:
+    dest: "{{ bmc_catcher_nsq_cert_dir }}/{{ item.filename }}"
+    mode: 0640
+    content: "{{ item.content }}"
+  no_log: yes
+  loop:
+    - filename: ca.pem
+      content: "{{ bmc_catcher_nsqd_ca_cert }}"
+    - filename: client.pem
+      content: "{{ bmc_catcher_nsqd_client_cert }}"
+  loop_control:
+    label: "{{ item.filename }}"
+  when: bmc_catcher_nsq_tls_enabled
+  register: nsq_certs
+
 - name: deploy bmc-catcher service
   include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -34,3 +56,6 @@
       BMC_CATCHER_IGNORE_MACS: "{{ bmc_catcher_ignore_macs | join(',') }}"
       BMC_CATCHER_IPMI_USER: "{{ bmc_catcher_bmc_superuser }}"
       BMC_CATCHER_IPMI_PASSWORD: "{{ bmc_catcher_bmc_superuser_pwd }}"
+      BMC_CATCHER_MQ_ADDRESS: "{{ bmc_catcher_nsq_lookupd_addr }}"
+      BMC_CATCHER_MQ_LOGLEVEL: "{{ bmc_catcher_nsq_log_level }}"
+
