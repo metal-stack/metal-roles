@@ -4,12 +4,6 @@ metal_core_hmac_key: change-me
 metal_core_rack_id:
 metal_core_change_boot_order: true
 
-metal_core_nsq_log_level: warn
-metal_core_nsq_tls_enabled: true
-metal_core_nsq_cert_dir: /certs/nsq
-metal_core_nsqd_ca_cert:
-metal_core_nsqd_client_cert:
-
 metal_core_reconfigure_switch: true
 metal_core_reconfigure_switch_interval: 10s
 
