@@ -13,6 +13,7 @@
       - bmc_catcher_bmc_superuser_pwd is defined
       - not bmc_catcher_nsq_tls_enabled or (bmc_catcher_nsq_tls_enabled and bmc_catcher_nsqd_ca_cert is not none)
       - not bmc_catcher_nsq_tls_enabled or (bmc_catcher_nsq_tls_enabled and bmc_catcher_nsqd_client_cert is not none)
+
 - name: create nsq certs directory
   file:
     path: "{{ bmc_catcher_nsq_cert_dir }}"
