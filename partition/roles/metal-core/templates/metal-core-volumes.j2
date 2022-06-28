@@ -1,5 +1,6 @@
 {% if sonic %}
 - /etc/sonic/:/etc/sonic
+- "/var/run/redis/:/var/run/redis:ro"
 {% else %}
 - /etc/network/:/etc/network
 - /etc/frr/:/etc/frr
