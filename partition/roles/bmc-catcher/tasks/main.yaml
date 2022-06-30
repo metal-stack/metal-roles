@@ -13,6 +13,9 @@
       - bmc_catcher_bmc_superuser_pwd is defined
       - not bmc_catcher_nsq_tls_enabled or (bmc_catcher_nsq_tls_enabled and bmc_catcher_nsqd_ca_cert is not none)
       - not bmc_catcher_nsq_tls_enabled or (bmc_catcher_nsq_tls_enabled and bmc_catcher_nsqd_client_cert is not none)
+      - bmc_catcher_console_ca_cert is not none
+      - bmc_catcher_console_cert is not none
+      - bmc_catcher_console_key is not none
 
 - name: create nsq certs directory
   file:
@@ -36,6 +39,32 @@
   when: bmc_catcher_nsq_tls_enabled
   register: nsq_certs
 
+- name: create bmc-catcher console certificates directory
+  file:
+    dest: "{{ bmc_catcher_console_cert_dir }}"
+    state: directory
+    owner: "{{ bmc_catcher_console_cert_owner }}"
+    group: "{{ bmc_catcher_console_cert_group }}"
+    mode: 0700
+
+- name: copy bmc-catcher console certificates
+  copy:
+    dest: "{{ bmc_catcher_console_cert_dir }}/{{ item.filename }}"
+    content: "{{ item.content }}"
+    mode: 0640
+    owner: "{{ bmc_catcher_console_cert_owner }}"
+    group: "{{ bmc_catcher_console_cert_group }}"
+  no_log: yes
+  loop:
+    - filename: ca.pem
+      content: "{{ bmc_catcher_console_ca_cert }}"
+    - filename: cert.pem
+      content: "{{ bmc_catcher_console_cert }}"
+    - filename: key.pem
+      content: "{{ bmc_catcher_console_key }}"
+  loop_control:
+    label: "{{ item.filename }}"
+
 - name: deploy bmc-catcher service
   include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -45,12 +74,13 @@
     systemd_external_config_changed: "{{ nsq_certs is changed }}"
     systemd_docker_image_name: "{{ bmc_catcher_image_name }}"
     systemd_docker_image_tag: "{{ bmc_catcher_image_tag }}"
-    systemd_docker_network: host
+    systemd_docker_ports:
+      - host_port: "{{ bmc_catcher_console_port }}"
+        target_port: "{{ bmc_catcher_console_port }}"
     systemd_docker_volumes:
       - /var/lib/dhcp:/var/lib/dhcp:ro
       - /certs/nsq:/certs/nsq:ro
-    systemd_docker_cap_add:
-      - sys_admin
+      - /certs/console:/certs/console:ro
     systemd_service_environment:
       TZ: "{{ metal_partition_timezone }}"
       BMC_CATCHER_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
@@ -65,3 +95,7 @@
       BMC_CATCHER_MQ_CA_CERT_FILE: "{{bmc_catcher_nsq_cert_dir }}/ca.pem"
       BMC_CATCHER_MQ_CLIENT_CERT_FILE: "{{ bmc_catcher_nsq_cert_dir }}/client.pem"
       BMC_CATCHER_MACHINE_TOPIC: "{{ metal_partition_id }}-machine"
+      BMC_CATCHER_CONSOLE_PORT: "{{ bmc_catcher_console_port }}"
+      BMC_CATCHER_CONSOLE_CA_CERT_FILE: "{{bmc_catcher_console_cert_dir }}/ca.pem"
+      BMC_CATCHER_CONSOLE_CERT_FILE: "{{bmc_catcher_console_cert_dir }}/cert.pem"
+      BMC_CATCHER_CONSOLE_KEY_FILE:  "{{bmc_catcher_console_cert_dir }}/key.pem"
