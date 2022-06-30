@@ -74,13 +74,13 @@
     systemd_external_config_changed: "{{ nsq_certs is changed }}"
     systemd_docker_image_name: "{{ bmc_catcher_image_name }}"
     systemd_docker_image_tag: "{{ bmc_catcher_image_tag }}"
-    systemd_docker_network: host
+    systemd_docker_ports:
+      - host_port: "{{ bmc_catcher_console_port }}"
+        target_port: "{{ bmc_catcher_console_port }}"
     systemd_docker_volumes:
       - /var/lib/dhcp:/var/lib/dhcp:ro
       - /certs/nsq:/certs/nsq:ro
       - /certs/console:/certs/console:ro
-    systemd_docker_cap_add:
-      - sys_admin
     systemd_service_environment:
       TZ: "{{ metal_partition_timezone }}"
       BMC_CATCHER_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
