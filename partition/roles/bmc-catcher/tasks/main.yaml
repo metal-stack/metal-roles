@@ -44,7 +44,7 @@
     dest: "{{ bmc_catcher_console_cert_dir }}"
     state: directory
     owner: "{{ bmc_catcher_console_cert_owner }}"
-    group: "{{ bmc_catcher_console_cert_group: }}"
+    group: "{{ bmc_catcher_console_cert_group }}"
     mode: 0700
 
 - name: copy bmc-catcher console certificates
@@ -53,7 +53,7 @@
     content: "{{ item.content }}"
     mode: 0640
     owner: "{{ bmc_catcher_console_cert_owner }}"
-    group: "{{ bmc_catcher_console_cert_group: }}"
+    group: "{{ bmc_catcher_console_cert_group }}"
   no_log: yes
   loop:
     - filename: ca.pem
