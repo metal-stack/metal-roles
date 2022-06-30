@@ -26,8 +26,6 @@ metal_stack_release:
     pixiecore_image_name: "docker-images.metal-stack.partition.pixiecore.name"
     bmc_catcher_image_tag: "docker-images.metal-stack.partition.bmc-catcher.tag"
     bmc_catcher_image_name: "docker-images.metal-stack.partition.bmc-catcher.name"
-    bmc_proxy_image_tag: "docker-images.metal-stack.partition.bmc-proxy.tag"
-    bmc_proxy_image_name: "docker-images.metal-stack.partition.bmc-proxy.name"
     image_cache_sync_image_tag: "docker-images.metal-stack.partition.metal-image-cache-sync.tag"
     image_cache_sync_image_name: "docker-images.metal-stack.partition.metal-image-cache-sync.name"
     # generic
@@ -71,8 +69,6 @@ metal_stack_release:
     masterdata_db_image_name: "docker-images.third-party.control-plane.masterdata-db.name"
     metal_db_image_tag: "docker-images.third-party.control-plane.metal-db.tag"
     metal_db_image_name: "docker-images.third-party.control-plane.metal-db.name"
-    bmc_reverse_proxy_image_tag: "docker-images.third-party.partition.bmc-reverse-proxy.tag"
-    bmc_reverse_proxy_image_name: "docker-images.third-party.partition.bmc-reverse-proxy.name"
     image_cache_coredns_image_tag: "docker-images.third-party.partition.image-cache-coredns.tag"
     image_cache_coredns_image_name: "docker-images.third-party.partition.image-cache-coredns.name"
     image_cache_haproxy_image_tag: "docker-images.third-party.partition.image-cache-haproxy.tag"
