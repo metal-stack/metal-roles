@@ -20,3 +20,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | bmc_catcher_nsq_cert_dir      |           | Defines the path of the NSQ certificates                                                                |
 | bmc_catcher_nsqd_ca_cert      |           | The CA certificate that signed the NSQ client cert                                                      |
 | bmc_catcher_nsqd_client_cert  |           | The NSQ client certificate                                                                              |
+| bmc_catcher_console_port      |           | The port where to listen for incoming metal-console connections                                         |
+| bmc_catcher_console_ca_cert   |           | The CA certificate for the metal-console port as a string                                               |
+| bmc_catcher_console_cert      |           | The certificate for metal-console port as a string                                                      |
+| bmc_catcher_console_key       |           | The key for the metal-console port  as a string                                                         |
