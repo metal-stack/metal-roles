@@ -78,6 +78,7 @@
     systemd_docker_volumes:
       - /var/lib/dhcp:/var/lib/dhcp:ro
       - /certs/nsq:/certs/nsq:ro
+      - /certs/console:/certs/console:ro
     systemd_docker_cap_add:
       - sys_admin
     systemd_service_environment:
