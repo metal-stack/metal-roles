@@ -24,6 +24,15 @@
       - metal_helm_chart_local_path is not none or metal_helm_chart_version is defined
       - not metal_api_s3_enabled or metal_api_s3_address is not none
 
+- name: Create variable from command
+  command: "echo Hello"
+  register: command_output
+
+- debug: msg="{{command_output.stdout}}"
+
+- name: Check headscale setup
+  raw: kubectl get pods -n headscale
+
 - name: Deploy metal control plane
   include_role:
     name: ansible-common/roles/helm-chart

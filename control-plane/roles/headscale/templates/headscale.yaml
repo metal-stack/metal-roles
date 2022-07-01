@@ -9,6 +9,7 @@ data:
     # Address to listen to / bind to on the server
 
     listen_addr: 0.0.0.0:8080
+    grpc_allow_insecure: true
     ephemeral_node_inactivity_timeout: 30m
     private_key_path: /vol/data/private.key
     derp:
@@ -49,6 +50,9 @@ spec:
   - name: http
     port: 8080
     targetPort: http
+  - name: grpc
+    port: 50443
+    targetPort: grpc
   selector:
     app: headscale
 ---
@@ -83,6 +87,8 @@ spec:
         - containerPort: 8080
           name: http
           protocol: TCP
+        - containerPort: 50443
+          name: grpc
         env:
         - name: HEADSCALE_DB_PORT
           value: "5432"
