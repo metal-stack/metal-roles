@@ -24,8 +24,8 @@ metal_stack_release:
     metal_core_image_name: "docker-images.metal-stack.partition.metal-core.name"
     pixiecore_image_tag: "docker-images.metal-stack.partition.pixiecore.tag"
     pixiecore_image_name: "docker-images.metal-stack.partition.pixiecore.name"
-    bmc_catcher_image_tag: "docker-images.metal-stack.partition.bmc-catcher.tag"
-    bmc_catcher_image_name: "docker-images.metal-stack.partition.bmc-catcher.name"
+    metal_bmc_image_tag: "docker-images.metal-stack.partition.metal-bmc.tag"
+    metal_bmc_image_name: "docker-images.metal-stack.partition.metal-bmc.name"
     image_cache_sync_image_tag: "docker-images.metal-stack.partition.metal-image-cache-sync.tag"
     image_cache_sync_image_name: "docker-images.metal-stack.partition.metal-image-cache-sync.name"
     # generic
