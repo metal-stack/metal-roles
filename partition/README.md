@@ -31,17 +31,17 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 
 ## Roles
 
-| Role Name                                    | Description                                    |
-| -------------------------------------------- | ---------------------------------------------- |
-| [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy                            |
-| [dhcp](roles/dhcp)                           | Deploys a dhcp server                          |
-| [dhcp-relay](roles/dhcp-relay)               | Deploys a dhcp-relay                           |
-| [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus                      |
-| [bmc-catcher](roles/bmc-catcher)             | Deploys bmc-catcher to crawl ipmi ip addresses |
-| [leaf](roles/leaf)                           | Deploys network config for cumulus switches    |
-| [metal-core](roles/metal-core)               | Deploys metal-core                             |
-| [pixiecore](roles/pixiecore)                 | Deploys pixiecore                              |
-| [router](roles/router)                       | Deploys router config on cumulus switches      |
+| Role Name                                    | Description                                 |
+| -------------------------------------------- | ------------------------------------------- |
+| [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy                         |
+| [dhcp](roles/dhcp)                           | Deploys a dhcp server                       |
+| [dhcp-relay](roles/dhcp-relay)               | Deploys a dhcp-relay                        |
+| [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus                   |
+| [metal-bmc](roles/metal-bmc)                 | Deploys metal-bmc                           |
+| [leaf](roles/leaf)                           | Deploys network config for cumulus switches |
+| [metal-core](roles/metal-core)               | Deploys metal-core                          |
+| [pixiecore](roles/pixiecore)                 | Deploys pixiecore                           |
+| [router](roles/router)                       | Deploys router config on cumulus switches   |
 
 ## Examples
 
