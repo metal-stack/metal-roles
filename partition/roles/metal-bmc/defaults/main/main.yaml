@@ -1,8 +1,8 @@
 ---
 metal_bmc_ignore_macs: []
 
-metal_bmc_bmc_superuser:
-metal_bmc_bmc_superuser_pwd:
+metal_bmc_ipmi_user:
+metal_bmc_ipmi_user_pwd:
 
 
 metal_bmc_nsq_log_level: info

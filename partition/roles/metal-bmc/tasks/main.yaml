@@ -9,8 +9,8 @@
     that:
       - metal_bmc_image_tag is defined
       - metal_bmc_image_name is defined
-      - metal_bmc_bmc_superuser is defined
-      - metal_bmc_bmc_superuser_pwd is defined
+      - metal_bmc_ipmi_user is defined
+      - metal_bmc_ipmi_user_pwd is defined
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_ca_cert is not none)
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_client_cert is not none)
       - metal_bmc_console_ca_cert is not none
@@ -88,8 +88,8 @@
       METAL_BMC_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
       METAL_BMC_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
       METAL_BMC_IGNORE_MACS: "{{ metal_bmc_ignore_macs | join(',') }}"
-      METAL_BMC_IPMI_USER: "{{ metal_bmc_bmc_superuser }}"
-      METAL_BMC_IPMI_PASSWORD: "{{ metal_bmc_bmc_superuser_pwd }}"
+      METAL_BMC_IPMI_USER: "{{ metal_bmc_ipmi_user }}"
+      METAL_BMC_IPMI_PASSWORD: "{{ metal_bmc_ipmi_user_pwd }}"
       METAL_BMC_MQ_ADDRESS: "{{ metal_bmc_nsq_lookupd_addr }}"
       METAL_BMC_MQ_LOGLEVEL: "{{ metal_bmc_nsq_log_level }}"
       METAL_BMC_MQ_CA_CERT_FILE: "{{metal_bmc_nsq_cert_dir }}/ca.pem"

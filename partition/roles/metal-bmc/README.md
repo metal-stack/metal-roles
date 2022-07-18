@@ -12,8 +12,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | ---------------------------- | --------- | ----------------------------------------------------------------------------------------------------- |
 | metal_bmc_image_name         | yes       | Image version of the metal-bmc                                                                        |
 | metal_bmc_image_tag          | yes       | Image tag of the metal-bmc                                                                            |
-| metal_bmc_superuser          | yes       | Name of the BMC superuser                                                                             |
-| metal_bmc_superuser_pwd      | yes       | Password of the BMC superuser                                                                         |
+| metal_bmc_ipmi_user          | yes       | Name of the IPMI user used for communication with machine BMCs                                        |
+| metal_bmc_ipmi_user_pwd      | yes       | Password of the IPMI user used for communication with machine BMCs                                    |
 | metal_bmc_nsq_lookupd_addr   | yes       | The address to the nsq-lookupd that metal-bmc uses for discovering the NSQ of the metal control plane |
 | metal_bmc_nsq_log_level      |           | The metal-core log level used on NSQ communication                                                    |
 | metal_bmc_nsq_tls_enabled    |           | Enables tls encryption on NSQ traffic                                                                 |
