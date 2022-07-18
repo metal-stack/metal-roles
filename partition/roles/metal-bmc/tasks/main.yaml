@@ -9,8 +9,8 @@
     that:
       - metal_bmc_image_tag is defined
       - metal_bmc_image_name is defined
-      - metal_bmc_ipmi_user is defined
-      - metal_bmc_ipmi_user_pwd is defined
+      - metal_bmc_ipmi_user is not none
+      - metal_bmc_ipmi_user_pwd is not none
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_ca_cert is not none)
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_client_cert is not none)
       - metal_bmc_console_ca_cert is not none
