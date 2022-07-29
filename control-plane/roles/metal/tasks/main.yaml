@@ -18,6 +18,8 @@
       - metal_masterdata_api_tls_cert_key is defined
       - metal_masterdata_api_tls_client_cert is defined
       - metal_masterdata_api_tls_client_key is defined
+      - ipam_image_name is defined
+      - ipam_image_tag is defined
       - metal_console_image_name is defined
       - metal_console_image_tag is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart_repo is defined

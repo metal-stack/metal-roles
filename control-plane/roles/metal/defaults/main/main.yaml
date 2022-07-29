@@ -34,11 +34,7 @@ metal_api_dex_address: ""
 metal_api_dex_clientid: ""
 metal_api_db_address: metal-db
 metal_api_db_password: change-me
-metal_api_ipam_db_address: ipam-db
-metal_api_ipam_db_port: 5432
-metal_api_ipam_db_name: ipam
-metal_api_ipam_db_user: postgres
-metal_api_ipam_db_password: change-me
+metal_api_ipam_grpc_server_endpoint: ipam
 metal_api_nsq_tcp_address: "{{ metal_control_plane_ingress_dns }}:4150"
 metal_api_nsq_http_address: "nsqd:4151"
 metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
@@ -78,6 +74,14 @@ metal_masterdata_api_resources:
 
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
+
+# ipam
+metal_ipam_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+metal_ipam_db_host: ipam-db
+metal_ipam_db_port: 5432
+metal_ipam_db_name: ipam
+metal_ipam_db_user: postgres
+metal_ipam_db_password: change-me
 
 # metal-console
 metal_console_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
