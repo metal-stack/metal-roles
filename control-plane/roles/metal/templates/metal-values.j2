@@ -90,6 +90,11 @@ metal_api:
     key: {{ metal_api_s3_key }}
     secret: {{ metal_api_s3_secret }}
     firmware_bucket: {{ metal_api_s3_firmware_bucket }}
+  headscale:
+    enabled: {{ headscale_count.stdout | int > 1 }}
+    api_key: "{{ headscale_api_key.stdout }}"
+    control_plane_address: "http{{ 's' if headscale_tls }}://{{ headscale_ingress_dns }}"
+    internal_api_address: "headscale.{{ headscale_namespace }}:50443"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
   dex_address: "{{ metal_api_dex_address }}"

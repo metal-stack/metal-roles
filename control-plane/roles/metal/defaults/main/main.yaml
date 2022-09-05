@@ -94,3 +94,8 @@ metal_console_bmc_proxy_certs_ca_cert:
 metal_deploy_ingress: true
 metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
+
+# headscale
+headscale_enabled: false
+headscale_namespace: headscale
+headscale_tls: yes

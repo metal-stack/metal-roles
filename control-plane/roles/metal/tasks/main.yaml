@@ -30,8 +30,17 @@
 
 - debug: msg="{{command_output.stdout}}"
 
-- name: Check headscale setup
-  raw: kubectl get pods -n headscale
+- name: Count pods in headscale namespace
+  raw: kubectl get pods -n {{ headscale_namespace }} | wc -l
+  register: headscale_count
+  when: headscale_enabled | bool
+  
+- name: Setup headscale API key
+  raw:  kubectl exec $(kubectl get pods -n {{ headscale_namespace }} --no-headers=true -o custom-columns=":metadata.name" | head -n1) -n {{ headscale_namespace }} -- headscale apikeys create -e 365d  | tail -n1
+  register: headscale_api_key
+  when: 
+    - headscale_enabled | bool
+    - headscale_count.stdout | int > 1
 
 - name: Deploy metal control plane
   include_role:
