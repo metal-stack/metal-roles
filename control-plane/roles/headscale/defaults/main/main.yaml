@@ -12,3 +12,5 @@ headscale_resources:
   limits:
     cpu: 500m
     memory: 200M
+
+headscale_api_key_expiration: 365d

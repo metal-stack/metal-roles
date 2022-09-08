@@ -75,7 +75,7 @@
   kubernetes.core.k8s_exec:
     namespace: "{{ headscale_namespace }}"
     pod: "{{ lookup('k8s', api_version='v1', namespace=headscale_namespace, kind='Pod')[0].get('metadata', {}).get('name') }}"
-    command: headscale apikeys create -e 365d
+    command: headscale apikeys create -e {{ headscale_api_key_expiration }}
   register: headscale_api_key
   when:
     - not headscale_api_key_already_created
