@@ -17,7 +17,7 @@ data:
         - https://controlplane.tailscale.com/derpmap/default
 
     db_type: postgres
-    db_host: headscale-db.headscale.svc.cluster.local
+    db_host: headscale-db
     db_name: {{ headscale_db_db }}
     db_user: {{ headscale_db_user }}
 ---
@@ -114,24 +114,22 @@ spec:
         secret:
           secretName: headscale
 ---
-{% if disable_ingress %}
-{% else %}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
     app: headscale
   name: headscale
   annotations:
-    kubernetes.io/ingress.class: "nginx"
 {% if headscale_tls %}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
-{% if cert_manager_cluster_issuer is defined %}
-    cert-manager.io/cluster-issuer: "{{ cert_manager_cluster_issuer }}"
-{% endif %}
+{% for key, value in headscale_ingress_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
 spec:
+  ingressClassName: nginx
 {% if headscale_tls %}
   tls:
     - hosts:
@@ -143,7 +141,9 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: headscale
-              servicePort: 8080
-{% endif %}
+              service:
+                name: headscale
+                port:
+                  number: 8080

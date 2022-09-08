@@ -22,4 +22,3 @@ The role should take the same variables as the wrapped role, but prefixed with `
 | headscale_tls                                  |           | Enables TLS for headscale                                   |
 | headscale_ingress_annotations                  |           | Annotations that will be attached to the ingress resource   |
 | headscale_resources                            |           | The kubernetes resources for the actual headscale container |
-| disable_ingress                                |           | Disable ingress                                             |
