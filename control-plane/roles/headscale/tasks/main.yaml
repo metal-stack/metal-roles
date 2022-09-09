@@ -1,0 +1,96 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - headscale_image_name is defined
+      - headscale_image_tag is defined
+      - headscale_db_image_name is defined
+      - headscale_db_image_tag is defined
+      - headscale_db_backup_restore_sidecar_image_name is defined
+      - headscale_db_backup_restore_sidecar_image_tag is defined
+      - headscale_private_key is defined
+      - headscale_ingress_dns is not none
+
+- name: Create namespace for headscale
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ headscale_namespace }}"
+        labels:
+          name: "{{ headscale_namespace }}"
+
+- name: Deploy headscale db
+  include_role:
+    name: metal-roles/control-plane/roles/postgres-backup-restore
+  vars:
+    postgres_name: "{{ headscale_db_name }}"
+    postgres_namespace: "{{ headscale_namespace }}"
+    postgres_image_name: "{{ headscale_db_image_name }}"
+    postgres_image_tag: "{{ headscale_db_image_tag }}"
+    postgres_storage_size: "{{ headscale_db_storage_size }}"
+    postgres_storage_class: "{{ headscale_db_storage_class }}"
+    postgres_db: "{{ headscale_db_db }}"
+    postgres_user: "{{ headscale_db_user }}"
+    postgres_password: "{{ headscale_db_password }}"
+    postgres_max_connections: "{{ headscale_db_max_connections }}"
+    postgres_backup_restore_sidecar_image_name: "{{ headscale_db_backup_restore_sidecar_image_name }}"
+    postgres_backup_restore_sidecar_image_tag: "{{ headscale_db_backup_restore_sidecar_image_tag }}"
+    postgres_backup_restore_sidecar_provider: "{{ headscale_db_backup_restore_sidecar_provider }}"
+    postgres_backup_restore_sidecar_backup_cron_schedule: "{{ headscale_db_backup_restore_sidecar_backup_cron_schedule }}"
+    postgres_backup_restore_sidecar_log_level: "{{ headscale_db_backup_restore_sidecar_log_level }}"
+    postgres_backup_restore_sidecar_object_prefix: "{{ headscale_db_backup_restore_sidecar_object_prefix }}"
+    postgres_backup_restore_sidecar_gcp_bucket_name: "{{ headscale_db_backup_restore_sidecar_gcp_bucket_name }}"
+    postgres_backup_restore_sidecar_gcp_backup_location: "{{ headscale_db_backup_restore_sidecar_gcp_backup_location }}"
+    postgres_backup_restore_sidecar_gcp_project_id: "{{ headscale_db_backup_restore_sidecar_gcp_project_id }}"
+    postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ headscale_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    postgres_resources: "{{ headscale_db_resources }}"
+
+- name: Deploy headscale
+  k8s:
+    definition: "{{ lookup('template', 'headscale.yaml') }}"
+    namespace: "{{ headscale_namespace }}"
+    apply: yes
+
+- name: Determine if api key secret was already created
+  set_fact:
+    headscale_api_key_already_created: "{{ lookup('k8s', api_version='v1', namespace=headscale_namespace, kind='Secret', resource_name='headscale-api-key') }}"
+
+- name: Wait until headscale deployment is ready
+  command: echo
+  changed_when: false
+  retries: 10
+  delay: 12
+  when: not headscale_api_key_already_created
+  until:
+    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace=headscale_namespace, resource_name='headscale').get('status', {}).get('readyReplicas', 0) >= 1
+
+- name: Create headscale API key
+  kubernetes.core.k8s_exec:
+    namespace: "{{ headscale_namespace }}"
+    pod: "{{ lookup('k8s', api_version='v1', namespace=headscale_namespace, kind='Pod')[0].get('metadata', {}).get('name') }}"
+    command: headscale apikeys create -e {{ headscale_api_key_expiration }}
+  register: headscale_api_key
+  when:
+    - not headscale_api_key_already_created
+
+- name: Create namespace for headscale
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: headscale-api-key
+        namespace: "{{ headscale_namespace }}"
+        labels:
+          name: "{{ headscale_namespace }}"
+      stringData:
+        key: "{{ headscale_api_key.stdout_lines[-1] | trim }}"
+  when:
+    - not headscale_api_key_already_created

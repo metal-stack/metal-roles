@@ -1,0 +1,149 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: headscale-config
+data:
+  config.yaml: |
+    server_url: http{{ 's' if headscale_tls }}://{{ headscale_ingress_dns }}
+    # Address to listen to / bind to on the server
+
+    listen_addr: 0.0.0.0:8080
+    grpc_allow_insecure: true
+    ephemeral_node_inactivity_timeout: 30m
+    private_key_path: /vol/data/private.key
+    derp:
+      urls:
+        - https://controlplane.tailscale.com/derpmap/default
+
+    db_type: postgres
+    db_host: headscale-db
+    db_name: {{ headscale_db_db }}
+    db_user: {{ headscale_db_user }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: headscale
+type: Opaque
+data:
+  # can be generated with headscale generate private-key | base64
+  private.key: {{ headscale_private_key | b64encode }}
+---
+apiVersion: v1
+stringData:
+  password: {{ headscale_db_password }}
+kind: Secret
+metadata:
+  name: postgresql
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: headscale
+  name: headscale
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+  - name: grpc
+    port: 50443
+    targetPort: grpc
+  selector:
+    app: headscale
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headscale
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: headscale
+  template:
+    metadata:
+      labels:
+        app: headscale
+    spec:
+      containers:
+      - command:
+        - headscale
+        - serve
+        name: headscale
+        image: {{ headscale_image_name }}:{{ headscale_image_tag }}
+        imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          tcpSocket:
+            port: http
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 50443
+          name: grpc
+        env:
+        - name: HEADSCALE_DB_PORT
+          value: "5432"
+        - name: HEADSCALE_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: postgresql
+        resources: {{ headscale_resources | to_json }}
+        volumeMounts:
+        - mountPath: /vol/data
+          name: private-key
+        - mountPath: /etc/headscale
+          name: etc
+      volumes:
+      - configMap:
+          name: headscale-config
+        name: etc
+      - name: secret
+        secret:
+          secretName: postgresql
+      - name: private-key
+        secret:
+          secretName: headscale
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: headscale
+  name: headscale
+  annotations:
+{% if headscale_tls %}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+{% for key, value in headscale_ingress_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+spec:
+  ingressClassName: nginx
+{% if headscale_tls %}
+  tls:
+    - hosts:
+      - {{ headscale_ingress_dns }}
+      secretName: headscale-tls
+{% endif %}
+  rules:
+    - host: {{ headscale_ingress_dns }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: headscale
+                port:
+                  number: 8080

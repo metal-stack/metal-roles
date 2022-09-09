@@ -1,0 +1,27 @@
+---
+headscale_db_name: headscale-db
+
+headscale_db_storage_size: 5Gi
+headscale_db_storage_class:
+headscale_db_db: headscale
+headscale_db_user: postgres
+headscale_db_password: change-me
+headscale_db_max_connections: 250
+
+headscale_db_backup_restore_sidecar_provider: local
+headscale_db_backup_restore_sidecar_backup_cron_schedule: "0 0 * * *"
+headscale_db_backup_restore_sidecar_log_level: debug
+headscale_db_backup_restore_sidecar_object_prefix: "{{ headscale_db_name }}"
+
+headscale_db_backup_restore_sidecar_gcp_bucket_name:
+headscale_db_backup_restore_sidecar_gcp_backup_location:
+headscale_db_backup_restore_sidecar_gcp_project_id:
+headscale_db_backup_restore_sidecar_gcp_serviceaccount_json:
+
+headscale_db_resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "2Gi"
+    cpu: "500m"

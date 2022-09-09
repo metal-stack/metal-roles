@@ -1,0 +1,16 @@
+---
+headscale_namespace: "{{ metal_control_plane_namespace }}"
+headscale_ingress_dns: "headscale.{{ metal_control_plane_ingress_dns }}"
+
+headscale_tls: yes
+headscale_ingress_annotations: {}
+
+headscale_resources:
+  requests:
+    cpu: 100m
+    memory: 100M
+  limits:
+    cpu: 500m
+    memory: 200M
+
+headscale_api_key_expiration: 365d

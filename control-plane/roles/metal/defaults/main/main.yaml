@@ -94,3 +94,10 @@ metal_console_bmc_proxy_certs_ca_cert:
 metal_deploy_ingress: true
 metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
+
+# headscale
+metal_api_headscale_enabled: false
+metal_api_headscale_tls: yes
+metal_api_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data', {}).get('key') | b64decode }}"
+metal_api_headscale_control_plane_address: "http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_ingress_dns }}"
+metal_api_headscale_internal_api_address: "headscale:50443"
