@@ -4,6 +4,8 @@ This role deploys a headscale server into the control plane. It is an optional c
 
 This role just wraps the [postgres-backup-restore](/control-plane/roles/postgres-backup-restore) role. Refer to this role for further documentation.
 
+If you want to rotate the API key, you need to delete the `headscale-api-key` secret and re-run the deployment.
+
 ## Variables
 
 The role should take the same variables as the wrapped role, but prefixed with `headscale_db_` instead of `postgres_`.
