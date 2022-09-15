@@ -65,7 +65,7 @@
 - name: Wait until headscale deployment is ready
   command: echo
   changed_when: false
-  retries: 10
+  retries: 20
   delay: 12
   when: not headscale_api_key_already_created
   until:
