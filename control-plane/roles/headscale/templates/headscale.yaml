@@ -17,6 +17,7 @@ data:
     derp:
       urls:
         - https://controlplane.tailscale.com/derpmap/default
+    ip_prefixes: {{ headscale_ip_prefixes | to_json }}
 
     db_type: postgres
     db_host: headscale-db

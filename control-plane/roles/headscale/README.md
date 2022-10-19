@@ -11,7 +11,7 @@ If you want to rotate the API key, you need to delete the `headscale-api-key` se
 The role should take the same variables as the wrapped role, but prefixed with `headscale_db_` instead of `postgres_`.
 
 | Name                                           | Mandatory | Description                                                 |
-| ---------------------------------------------- | --------- | ----------------------------------------------------------- |
+|------------------------------------------------|-----------|-------------------------------------------------------------|
 | headscale_image_name                           | yes       | Image name of headscale                                     |
 | headscale_image_tag                            | yes       | Image version of headscale                                  |
 | headscale_db_image_name                        | yes       | Image name of headscale DB                                  |
@@ -26,3 +26,4 @@ The role should take the same variables as the wrapped role, but prefixed with `
 | headscale_ingress_annotations                  |           | Annotations that will be attached to the ingress resource   |
 | headscale_resources                            |           | The kubernetes resources for the actual headscale container |
 | headscale_api_key_expiration                   |           | The time how long the generated api key will be valid       |
+| headscale_ip_prefixes                          |           | Slice of IP Prefixes where the tunnel endpoints are created |
