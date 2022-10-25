@@ -14,3 +14,7 @@ headscale_resources:
     memory: 200M
 
 headscale_api_key_expiration: 365d
+
+headscale_ip_prefixes:
+  - fd7a:115c:a1e0::/48
+  - 100.64.0.0/1
