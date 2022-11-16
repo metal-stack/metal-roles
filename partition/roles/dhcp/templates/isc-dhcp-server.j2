@@ -18,4 +18,8 @@
 
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
 #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+{% if sonic %}
+INTERFACESv4="Vlan4000"
+{% else %}
 INTERFACES="vlan4000"
+{% endif %}

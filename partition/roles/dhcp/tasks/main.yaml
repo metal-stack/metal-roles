@@ -9,21 +9,63 @@
       - dhcp_server_ip is not none
       - dhcp_range_min is not none
       - dhcp_range_max is not none
+        
+- name: Get stat for SONiC's version file
+  stat:
+    path: /etc/sonic/sonic_version.yml
+  register: sonic_version_file
+
+- name: Set sonic to true if SONiC's version file exists
+  set_fact:
+    sonic: true
+  when: sonic_version_file.stat.exists
+  
+- name: Set sonic to false if SONiC's version file doesn't exist
+  set_fact:
+    sonic: false
+  when: not sonic_version_file.stat.exists
+
+- name: install dhcpd
+  apt:
+    update_cache: yes
+    name:
+      - isc-dhcp-server
+  when: sonic
 
 - name: render dhcpd conf
   template:
     src: dhcpd.conf.j2
     dest: /etc/dhcp/dhcpd.conf
-  notify: dhcpd restart
 
 - name: render isc config for
   template:
     src: isc-dhcp-server.j2
     dest: /etc/default/isc-dhcp-server
-  notify: dhcpd restart
+    
+- name: restart dhcpd
+  service:
+    name: isc-dhcp-server
+    enabled: true
+    state: restarted
+  when: not sonic
+  
+- name: restart isc-dhcp-server
+  service:
+    name: isc-dhcp-server
+    enabled: true
+    state: restarted
+  when: sonic
 
 - name: dhcpd enabled
   service:
     name: dhcpd
     enabled: true
     state: started
+  when: not sonic
+    
+- name: isc-dhcp-server restart
+  service:
+    name: isc-dhcp-server
+    enabled: true
+    state: started
+  when: sonic
