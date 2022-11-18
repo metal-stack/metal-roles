@@ -11,14 +11,14 @@ If you want to rotate the API key, you need to delete the `headscale-api-key` se
 The role should take the same variables as the wrapped role, but prefixed with `headscale_db_` instead of `postgres_`.
 
 | Name                                           | Mandatory | Description                                                 |
-|------------------------------------------------|-----------|-------------------------------------------------------------|
+| ---------------------------------------------- | --------- | ----------------------------------------------------------- |
 | headscale_image_name                           | yes       | Image name of headscale                                     |
 | headscale_image_tag                            | yes       | Image version of headscale                                  |
 | headscale_db_image_name                        | yes       | Image name of headscale DB                                  |
 | headscale_db_image_tag                         | yes       | Image version of headscale DB                               |
 | headscale_db_backup_restore_sidecar_image_name | yes       | Image name of init container for headscale DB               |
 | headscale_db_backup_restore_sidecar_image_tag  | yes       | Image version of init container for headscale DB            |
-| headscale_private_key                          | yes       | Private key                                                 |
+| headscale_private_key                          |           | Private key                                                 |
 | headscale_noise_private_key                    | yes       | Noise Protocol Private key for TS2021 compatibility         |
 | headscale_ingress_dns                          |           | Domain name                                                 |
 | headscale_namespace                            |           | The deployment's target namespace                           |
