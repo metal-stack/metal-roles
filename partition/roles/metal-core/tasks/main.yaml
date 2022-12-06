@@ -11,17 +11,17 @@
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
 
-- name: Get stat for SONiC's version file
+- name: Get stat for SONiC version file
   stat:
     path: /etc/sonic/sonic_version.yml
   register: sonic_version_file
 
-- name: Set sonic to true if SONiC's version file exists
+- name: Set sonic to true if SONiC version file exists
   set_fact:
     sonic: true
   when: sonic_version_file.stat.exists
 
-- name: Set sonic to false if SONiC's version file doesn't exist
+- name: Set sonic to false if SONiC version file doesn't exist
   set_fact:
     sonic: false
   when: not sonic_version_file.stat.exists
