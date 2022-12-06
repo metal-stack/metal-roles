@@ -2,73 +2,73 @@
 - name: Gather release versions
   setup_yaml:
 
-# - name: Check mandatory variables for this role are set
-#   assert:
-#     fail_msg: "not all mandatory variables given, check role documentation"
-#     quiet: yes
-#     that:
-#       - metal_core_image_name is defined
-#       - metal_core_image_tag is defined
-#       - metal_core_rack_id is not none
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - metal_core_image_name is defined
+      - metal_core_image_tag is defined
+      - metal_core_rack_id is not none
 
-# - name: Get stat for SONiC's version file
-#   stat:
-#     path: /etc/sonic/sonic_version.yml
-#   register: sonic_version_file
+- name: Get stat for SONiC's version file
+  stat:
+    path: /etc/sonic/sonic_version.yml
+  register: sonic_version_file
 
-# - name: Set sonic to true if SONiC's version file exists
-#   set_fact:
-#     sonic: true
-#   when: sonic_version_file.stat.exists
+- name: Set sonic to true if SONiC's version file exists
+  set_fact:
+    sonic: true
+  when: sonic_version_file.stat.exists
 
-# - name: Set sonic to false if SONiC's version file doesn't exist
-#   set_fact:
-#     sonic: false
-#   when: not sonic_version_file.stat.exists
+- name: Set sonic to false if SONiC's version file doesn't exist
+  set_fact:
+    sonic: false
+  when: not sonic_version_file.stat.exists
 
-# - name: create gRPC certs directory
-#   file:
-#     path: "{{ metal_core_grpc_cert_dir }}"
-#     state: directory
+- name: create gRPC certs directory
+  file:
+    path: "{{ metal_core_grpc_cert_dir }}"
+    state: directory
 
-# - name: copy gRPC certificates
-#   copy:
-#     dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
-#     mode: 0640
-#     content: "{{ item.content }}"
-#   no_log: true
-#   loop:
-#     - filename: ca.pem
-#       content: "{{ metal_core_grpc_ca_cert }}"
-#     - filename: client.pem
-#       content: "{{ metal_core_grpc_client_cert }}"
-#     - filename: client-key.pem
-#       content: "{{ metal_core_grpc_client_key }}"
-#   loop_control:
-#     label: "{{ item.filename }}"
-#   register: grpc_certs
+- name: copy gRPC certificates
+  copy:
+    dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
+    mode: 0640
+    content: "{{ item.content }}"
+  no_log: true
+  loop:
+    - filename: ca.pem
+      content: "{{ metal_core_grpc_ca_cert }}"
+    - filename: client.pem
+      content: "{{ metal_core_grpc_client_cert }}"
+    - filename: client-key.pem
+      content: "{{ metal_core_grpc_client_key }}"
+  loop_control:
+    label: "{{ item.filename }}"
+  register: grpc_certs
 
-# - name: deploy metal-core
-#   include_role:
-#     name: ansible-common/roles/systemd-docker-service
-#   vars:
-#     systemd_service_name: metal-core
-#     systemd_docker_image_name: "{{ metal_core_image_name }}"
-#     systemd_docker_image_tag: "{{ metal_core_image_tag }}"
-#     systemd_service_timeout_start_sec: 60
-#     systemd_docker_cpu_period: 50000
-#     systemd_docker_cpu_quota: 10000
-#     systemd_docker_memory: 1024m
-#     # metal-core needs to figure out the switch ports, this is only possible from host network
-#     systemd_docker_network: host
-#     systemd_docker_volumes: "{{ lookup('template', 'metal-core-volumes.j2') | from_yaml }}"
-#     systemd_docker_cap_add:
-#       - sys_admin
-#     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
-#     systemd_external_config_changed: "{{ grpc_certs is changed }}"
+- name: deploy metal-core
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: metal-core
+    systemd_docker_image_name: "{{ metal_core_image_name }}"
+    systemd_docker_image_tag: "{{ metal_core_image_tag }}"
+    systemd_service_timeout_start_sec: 60
+    systemd_docker_cpu_period: 50000
+    systemd_docker_cpu_quota: 10000
+    systemd_docker_memory: 1024m
+    # metal-core needs to figure out the switch ports, this is only possible from host network
+    systemd_docker_network: host
+    systemd_docker_volumes: "{{ lookup('template', 'metal-core-volumes.j2') | from_yaml }}"
+    systemd_docker_cap_add:
+      - sys_admin
+    systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
+    systemd_external_config_changed: "{{ grpc_certs is changed }}"
 
-# - name: wait for metal-core to listen on metrics port
-#   wait_for:
-#     port: 2112
-#     timeout: 300
-#     msg: "metal-core did not come up"
+- name: wait for metal-core to listen on metrics port
+  wait_for:
+    port: 2112
+    timeout: 300
+    msg: "metal-core did not come up"
