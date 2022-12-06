@@ -25,8 +25,7 @@
     jump: MASQUERADE
     out_interface: eth0
     table: nat
-  sudo: true
-  sudo_user: root
+  become: true
 
 - name: Activate ipv4 forwarding on eth0
   ansible.posix.sysctl:
@@ -34,13 +33,11 @@
     reload: no
     sysctl_set: yes
     value: 1
-  sudo: true
-  sudo_user: root
+  become: true
 
 - name: Set hostname
   ansible.builtin.command: config hostname {{ metal_partition_id }}-{{ inventory_hostname }}
-  sudo: true
-  sudo_user: root
+  become: true
 
 - name: install services
   copy:
@@ -50,5 +47,4 @@
   with_items:
     - bgp-validation@.service
     - write-to-db@.service
-  sudo: true
-  sudo_user: root
+  become: true
