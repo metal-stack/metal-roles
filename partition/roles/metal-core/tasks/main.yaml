@@ -36,7 +36,7 @@
     dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
     mode: 0640
     content: "{{ item.content }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: ca.pem
       content: "{{ metal_core_grpc_ca_cert }}"
