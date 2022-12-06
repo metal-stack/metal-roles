@@ -32,7 +32,7 @@
     name: net.ipv4.conf.eth0.forwarding
     reload: no
     sysctl_set: yes
-    value: 1
+    value: "1"
   become: true
 
 - name: Set hostname
