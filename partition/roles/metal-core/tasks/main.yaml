@@ -1,6 +1,6 @@
 ---
-# - name: Gather release versions
-#   setup_yaml:
+- name: Gather release versions
+  setup_yaml:
 
 - name: Check mandatory variables for this role are set
   assert:
