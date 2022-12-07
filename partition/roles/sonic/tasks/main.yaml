@@ -1,23 +1,16 @@
 ---
-# # TODO check for a ansible module
-# - name: enable management vrf for eth0
-#   # sudo config vrf add mgmt 
-#   # or put that to config_db.json
-#   # "MGMT_VRF_CONFIG": {                                                                                                                                                  │2022/12/05 13:34:56 [notice] 1#1: signal 28 (SIGWINCH) received
-#   #      "vrf_global": {                                                                                                                                                   │2022/12/05 13:34:56 [notice] 31#31: signal 28 (SIGWINCH) received
-#   #          "mgmtVrfEnabled": "true"                                                                                                                                      │2022/12/05 13:34:56 [notice] 29#29: signal 28 (SIGWINCH) received
-#   #      }                                                                                                                                                                 │2022/12/05 13:34:56 [notice] 1#1: signal 28 (SIGWINCH) received
-#   #  },
+- name: Set hostname
+  ansible.builtin.command: config hostname {{ metal_partition_id }}-{{ inventory_hostname }}
 
-# - name: enable route leak via mgmt vrf
-#   # vtysh config 
-#   # ip route 0.0.0.0/0 {{ ip of mgmt eth0 gateway }} nexthop-vrf mgmt
+- name: enable ntp
+  ansible.builtin.command: config ntp add {{ item }}
+  with_items: "{{ ntpservers }}"
 
-# - name: enable dns
-#   # will be served and configured by dhcp server
-
-# - name: enable ntp
-
+- name: render resolv.conf
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+  notify: reload interfaces
 
 - name: Activate IP MASQUERADE on eth0
   ansible.builtin.iptables:
@@ -25,7 +18,6 @@
     jump: MASQUERADE
     out_interface: eth0
     table: nat
-  become: true
 
 - name: Activate ipv4 forwarding on eth0
   ansible.posix.sysctl:
@@ -33,11 +25,7 @@
     reload: no
     sysctl_set: yes
     value: "1"
-  become: true
 
-- name: Set hostname
-  ansible.builtin.command: config hostname {{ metal_partition_id }}-{{ inventory_hostname }}
-  become: true
 
 - name: install services
   copy:
@@ -47,4 +35,3 @@
   with_items:
     - bgp-validation@.service
     - write-to-db@.service
-  become: true
