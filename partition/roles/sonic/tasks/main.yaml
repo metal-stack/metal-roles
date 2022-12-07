@@ -10,7 +10,6 @@
   template:
     src: resolv.conf.j2
     dest: /etc/resolv.conf
-  notify: reload interfaces
 
 - name: Activate IP MASQUERADE on eth0
   ansible.builtin.iptables:
