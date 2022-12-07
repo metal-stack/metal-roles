@@ -1,10 +1,12 @@
 ---
 - name: Set hostname
   ansible.builtin.command: config hostname {{ metal_partition_id }}-{{ inventory_hostname }}
+  notify: config save
 
 - name: enable ntp
   ansible.builtin.command: config ntp add {{ item }}
   with_items: "{{ ntpservers }}"
+  notify: config save
 
 - name: render resolv.conf
   template:
