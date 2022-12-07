@@ -4,5 +4,5 @@
     daemon_reload: yes
 
 - name: config save
-  ansible.builtin.command: config save
+  ansible.builtin.command: config save -y
 
