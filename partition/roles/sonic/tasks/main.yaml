@@ -27,7 +27,6 @@
     sysctl_set: yes
     value: "1"
 
-
 - name: install services
   copy:
     src: "{{ item }}"
