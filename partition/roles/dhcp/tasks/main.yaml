@@ -10,13 +10,20 @@
       - dhcp_range_min is not none
       - dhcp_range_max is not none
 
+- name: install isc-dhcp-server
+  apt:
+    name:
+    - isc-dhcp-server
+    update_cache : yes
+    force_apt_get: yes
+
 - name: render dhcpd conf
   template:
     src: dhcpd.conf.j2
     dest: /etc/dhcp/dhcpd.conf
   notify: dhcpd restart
 
-- name: render isc config for
+- name: render isc-dhcp-server config
   template:
     src: isc-dhcp-server.j2
     dest: /etc/default/isc-dhcp-server
