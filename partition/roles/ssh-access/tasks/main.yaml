@@ -1,0 +1,52 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - ssh_access_group_name is defined
+      - ssh_access_private_key_path is defined
+      - ssh_access_public_key_path is defined
+
+- name: copy ssh key pairs
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  loop:
+  - src: "{{ ssh_access_private_key_path }}"
+    dest: "/home/{{ ansible_user }}/.ssh/id_rsa"
+    mode: "0600"
+  - src: "{{ ssh_access_public_key_path }}"
+    dest: "/home/{{ ansible_user }}/.ssh/id_rsa.pub"
+    mode: "0644"
+
+- name: configure sshd to avoid root login and password authentication, hide OS information
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: restart sshd
+  with_items:
+    - { regexp: "^PasswordAuthentication .+", line: "PasswordAuthentication no" }
+    - { regexp: "^PermitRootLogin .+", line: "PermitRootLogin no" }
+    - { regexp: "^DebianBanner .+", line: "DebianBanner no" }
+
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {% for host in groups[ssh_access_group_name] %}
+      {{ hostvars[host].ansible_host }} {{ host }}
+      {% endfor %}
+
+- name: template ssh configuration
+  template:
+    src: ssh_config.j2
+    dest: /home/{{ ansible_user }}/.ssh/config
+    mode: 0644
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"

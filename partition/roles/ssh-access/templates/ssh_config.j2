@@ -1,0 +1,6 @@
+{% for host in groups[ssh_access_group_name] %}
+Host {{ hostvars[host]['ansible_hostname'] }}
+    User {{ hostvars[host]['ansible_user'] }}
+    HostName {{ hostvars[host]['ansible_hostname'] }}
+    IdentityFile ~/.ssh/id_rsa
+{% endfor %}
