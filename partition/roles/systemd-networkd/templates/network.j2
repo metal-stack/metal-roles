@@ -1,0 +1,10 @@
+[Match]
+MACAddress={{ item.mac }}
+
+[Network]
+LinkLocalAddressing=ipv6
+{% for address in item.addresses|default([]) %}
+
+[Address]
+Address={{ address }}
+{% endfor %}
