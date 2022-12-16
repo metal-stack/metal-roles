@@ -22,6 +22,8 @@
   - src: "{{ ssh_access_public_key_path }}"
     dest: "/home/{{ ansible_user }}/.ssh/id_rsa.pub"
     mode: "0644"
+  loop_control:
+    label: "{{ item.src }}"
 
 - name: configure sshd to avoid root login and password authentication, hide OS information
   lineinfile:
