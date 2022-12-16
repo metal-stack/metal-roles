@@ -1,0 +1,12 @@
+---
+# Note: systemd timedatectl does not modify /etc/timezone but /etc/localtime. This is "ok"!
+- name: apply timezone to align with the global setting
+  timezone:
+    name: {{ common_timezone }}
+
+- name: install required packages
+  apt:
+    name: "{{ common_packages }}"
+    update_cache : yes
+    force_apt_get: yes
+  when: common_packages
