@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+function error() {
+  echo -e "\\e[0;33mERROR: The Zero Touch Provisioning script failed while running the command \$BASH_COMMAND at line \$BASH_LINENO.\e[0m" >&2
+}
+
+# Log all output from this script
+#
+exec >> /var/log/autoprovision 2>&1
+date "+%FT%T ztp starting script $0"
+trap error ERR
+
+echo "authorize login for metal admins via management servers and login for Ansible deployments"
+mkdir -p /home/admin/.ssh
+echo "{{ authorized_keys | join('\n') }}" >> /home/admin/.ssh/authorized_keys
+chmod 700 -R /home/admin/.ssh
+chown admin:admin -R /home/admin/.ssh
+
+# The script must return an exit code of 0 upon success, as this triggers the autoprovisioning process to be marked as complete in the autoprovisioning configuration file.
+exit 0
