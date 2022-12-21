@@ -1,6 +1,6 @@
 ---
 - name: Set hostname
-  ansible.builtin.command: config hostname {{ metal_partition_id }}-{{ inventory_hostname }}
+  ansible.builtin.command: config hostname {{ metal_partition_id }}-{{ ansible_hostname }}
   notify: config save
 
 - name: enable ntp
