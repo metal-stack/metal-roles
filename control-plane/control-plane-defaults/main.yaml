@@ -4,3 +4,12 @@ metal_control_plane_ingress_dns:
 metal_control_plane_stage_name: test
 metal_control_plane_namespace: metal-control-plane
 metal_control_plane_image_pull_policy: IfNotPresent
+
+# auditing
+metal_auditing_enabled: true
+metal_auditing_index_prefix: "auditing"
+metal_auditing_index_interval: "@daily"
+metal_meilisearch_ingress: {}
+metal_meilisearch_environment: development
+metal_meilisearch_auth_existing_secret: metal-auditing-master-key
+metal_meilisearch_persistence: {}

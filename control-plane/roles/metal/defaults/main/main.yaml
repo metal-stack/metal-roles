@@ -101,3 +101,12 @@ metal_api_headscale_tls: yes
 metal_api_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data', {}).get('key') | b64decode if metal_api_headscale_enabled else '' }}"
 metal_api_headscale_control_plane_address: "http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_ingress_dns }}"
 metal_api_headscale_internal_api_address: "headscale:50443"
+
+# auditing
+metal_auditing_enabled: false
+metal_auditing_index_prefix: "auditing"
+metal_auditing_index_interval: "@daily"
+metal_meilisearch_ingress: {}
+metal_meilisearch_environment: development
+metal_meilisearch_auth_existing_secret: metal-auditing-master-key
+metal_meilisearch_persistence: {}
