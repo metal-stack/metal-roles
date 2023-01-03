@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: thanos-receiver
+  name: thanos-receiver
+spec:
+  serviceName: thanos-receiver
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thanos-receiver
+  template:
+    metadata:
+      labels:
+        app: thanos-receiver
+    spec:
+      containers:
+      - args:
+        - receive
+        - --log.level=debug
+        - --receive.local-endpoint=$(NAME):10901
+        - --grpc-address=0.0.0.0:10901
+        - --http-address=0.0.0.0:10902
+        - --tsdb.path=/var/thanos/receiver
+        - --label=receive_cluster="{{ environment_name }}"
+        - --label=receive_replica="$(NAME)"
+        - --objstore.config=$(OBJSTORE_CONFIG)
+        - --tsdb.retention=1d
+        - --receive.hashrings-file=/thanos-receiver-hashrings.json
+        env:
+        - name: NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: OBJSTORE_CONFIG
+          valueFrom:
+            secretKeyRef:
+              key: thanos.yaml
+              name: thanos-objstore-config
+        image: quay.io/thanos/thanos:{{ monitoring_thanos_version }}
+        name: thanos-receiver
+        ports:
+        - containerPort: 19291
+          name: receiver
+        - containerPort: 10901
+          name: grpc
+        - containerPort: 10902
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /var/thanos/receiver
+          readOnly: false
+        - mountPath: /thanos-receiver-hashrings.json
+          name: thanos-receiver-hashrings
+          subPath: thanos-receiver-hashrings.json
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: thanos-receiver-hashrings
+        name: thanos-receiver-hashrings
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+      volumeMode: Filesystem

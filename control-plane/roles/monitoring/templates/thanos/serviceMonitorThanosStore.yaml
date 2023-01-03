@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+    k8s-app: thanos-store
+  name: thanos-store
+spec:
+  endpoints:
+  - interval: 15s
+    port: http
+  jobLabel: k8s-app
+  selector:
+    matchLabels:
+      app: thanos-store

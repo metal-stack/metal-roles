@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: thanos-query
+    thanos-peers: "true"
+  name: thanos-query
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thanos-query
+      thanos-peers: "true"
+  template:
+    metadata:
+      labels:
+        app: thanos-query
+        thanos-peers: "true"
+    spec:
+      containers:
+      - args:
+        - query
+        - --log.level=debug
+        - --query.timeout=2m
+        - --query.max-concurrent=20
+        - --query.replica-label=replica
+        - --store.sd-interval=1m
+        - --query.auto-downsampling
+        - --store=thanos-sidecar:10901
+        - --store=thanos-store:10901
+        - --store=thanos-receiver-0:10901
+        - --store=thanos-receiver-1:10901
+        - --store=thanos-ruler:10901
+        - --query.replica-label=replica
+        - --query.replica-label=receive_replica
+        - --store.sd-files=store-targets-sd.yaml
+        image: quay.io/thanos/thanos:{{ monitoring_thanos_version }}
+        name: thanos-query
+        livenessProbe:
+          failureThreshold: 4
+          httpGet:
+            path: /-/healthy
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 30
+        readinessProbe:
+          failureThreshold: 4
+          httpGet:
+            path: /-/ready
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 30
+          initialDelaySeconds: 30
+        ports:
+        - containerPort: 10902
+          name: http
+        - containerPort: 10901
+          name: grpc
+        - containerPort: 10900
+          name: cluster
+        volumeMounts:
+        - name: store-targets-sd
+          mountPath: "/store-targets-sd.yaml"
+          subPath: "store-targets-sd.yaml"
+      volumes:
+      - name: store-targets-sd
+        configMap:
+          name: thanos-query-store-sd

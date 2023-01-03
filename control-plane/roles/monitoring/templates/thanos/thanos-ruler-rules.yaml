@@ -1,0 +1,201 @@
+{% raw %}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: thanos-ruler
+  name: thanos-ruler-rules
+data:
+  rules.yaml: |
+    groups:
+      - name: thanos-ruler-shoot-slo.rules
+        partial_response_strategy: "warn"
+        rules:
+        - record: shoot:slo:condition
+          expr: |2
+              avg(clamp_max(kube_statefulset_status_replicas_ready{statefulset="etcd-main"},1)) by (namespace)
+              * avg(clamp_max(kube_deployment_status_replicas_ready{deployment="kube-scheduler"},1)) by (namespace)
+              * on (namespace) group_left(name,project, purpose) avg(garden_shoot_condition:namespaced{purpose=~"infrastructure|production", condition="APIServerAvailable"} >=0 <=1)
+              by (namespace, name, project, purpose)
+
+        - record: ruler:shoot:slo:ratio_rate5m
+          expr: |2
+              1-sum_over_time(
+                min by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[5m:]
+              )
+              /
+              count_over_time(
+                avg by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[5m:]
+              )
+
+        - record: ruler:shoot:slo:ratio_rate30m
+          expr: |2
+              1-sum_over_time(
+                min by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[30m:]
+              )
+              /
+              count_over_time(
+                avg by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[30m:]
+              )
+
+        - record: ruler:shoot:slo:ratio_rate1h
+          expr: |2
+              1-sum_over_time(
+                min by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[1h:]
+              )
+              /
+              count_over_time(
+                avg by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[1h:]
+              )
+
+        - record: ruler:shoot:slo:ratio_rate6h
+          expr: |2
+              1-sum_over_time(
+                min by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[6h:]
+              )
+              /
+              count_over_time(
+                avg by(name, project, namespace, purpose)(
+                  shoot:slo:condition
+                )[6h:]
+              )
+
+        - alert: ShootErrorBudgetBurn
+          expr: |2
+              (
+                100 * ruler:shoot:slo:ratio_rate1h{purpose="production"} > 14.4 * 0.5
+                and
+                100 * ruler:shoot:slo:ratio_rate5m{purpose="production"} > 14.4 * 0.5
+              ) + on (name,project) group_left(seed) avg(garden_shoot_info) by (name,project,seed)
+          for: 15m
+          labels:
+            system: "{{$labels.project}}-{{$labels.name}}"
+            severity: "critical"
+            long_window: "1h"
+            mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.3"
+          annotations:
+            summary: "shoot {{$labels.project}}/{{$labels.name}} burns its error budget very fast"
+            description: "Shoot {{$labels.project}}/{{$labels.name}} has failures {{ $value | printf `%.2f` }}% over the last hour. More details see 'cloudctl cluster ls'"
+
+        - alert: SlowShootErrorBudgetBurn
+          expr: |2
+              (
+                100 * ruler:shoot:slo:ratio_rate6h{purpose="production"} > 6 * 0.5
+                and
+                100 * ruler:shoot:slo:ratio_rate30m{purpose="production"} > 6 * 0.5
+              ) + on (name,project) group_left(seed) avg(garden_shoot_info) by (name,project,seed)
+          for: 60m
+          labels:
+            system: "{{$labels.project}}-{{$labels.name}}"
+            severity: "critical"
+            long_window: "6h"
+            mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.4"
+          annotations:
+            summary: "Shoot {{$labels.project}}/{{$labels.name}} slowly burns its error budget"
+            description: "Shoot {{$labels.project}}/{{$labels.name}} is down {{ $value | printf `%.2f` }}% over the last 6 hours."
+
+        - alert: SeedErrorBudgetBurn
+          expr: |2
+              (
+                100 * ruler:shoot:slo:ratio_rate1h{purpose="infrastructure"} > 14.4 * 0.5
+                and
+                100 * ruler:shoot:slo:ratio_rate5m{purpose="infrastructure"} > 14.4 * 0.5
+              ) + on (name,project) group_left(seed) avg(garden_shoot_info) by (name,project,seed)
+          for: 15m
+          labels:
+            system: "{{$labels.project}}-{{$labels.name}}"
+            severity: "critical"
+            long_window: "1h"
+            mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.3"
+          annotations:
+            summary: "Seed {{$labels.project}}/{{$labels.name}} burns its error budget very fast"
+            description: "Seed {{$labels.project}}/{{$labels.name}} has failures {{ $value | printf `%.2f` }}% over the last hour. More details see 'cloudctl cluster ls'"
+
+        - alert: SlowSeedShootErrorBudgetBurn
+          expr: |2
+              (
+                100 * ruler:shoot:slo:ratio_rate6h{purpose="infrastructure"} > 6 * 0.5
+                and
+                100 * ruler:shoot:slo:ratio_rate30m{purpose="infrastructure"} > 6 * 0.5
+              ) + on (name,project) group_left(seed) avg(garden_shoot_info) by (name,project,seed)
+          for: 60m
+          labels:
+            system: "{{$labels.project}}-{{$labels.name}}"
+            severity: "critical"
+            long_window: "6h"
+            mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.4"
+          annotations:
+            summary: "Seed {{$labels.project}}/{{$labels.name}} slowly burns its error budget"
+            description: "Seed {{$labels.project}}/{{$labels.name}} is down {{ $value | printf `%.2f` }}% over the last 6 hours."
+
+      - name: thanos-ruler-partition-network.rules
+        partial_response_strategy: "warn"
+        rules:
+          - alert: NodeNetworkReceiveErrs
+            annotations:
+              description: '{{ $labels.instance }} interface {{ $labels.device }} {{ $labels.machinename }} {{ $labels.machineid }} has encountered
+                {{ printf "%.0f" $value }}% receive errors.'
+              summary: Network interface is reporting many receive errors.
+            expr:
+              (
+                100*avg(rate(node_network_receive_errs_total{endpoint=""}[30m])) by (device,instance)/ avg(rate(node_network_receive_packets_total{endpoint=""}[30m])) by (device,instance) * on (instance,device) group_left(machineid) last_over_time(avg(frr:instance:metal_switch_interface_info) by (machineid,instance,device)[30m:]) * on (machineid) group_left(machinename) topk(1,last_over_time(avg(metal_machine_allocation_info) by (machineid,machinename)[30m:])) by (machineid)
+                or
+                100*avg(rate(node_network_receive_errs_total{endpoint="", device!="wg0"}[30m])) by (device,instance)/ avg(rate(node_network_receive_packets_total{endpoint="", device!="wg0"}[30m])) by (device,instance) unless last_over_time(avg(frr:instance:metal_switch_interface_info) by (instance,device)[30m:])
+              ) >1
+            for: 2h
+            labels:
+              severity: critical
+          - alert: NodeNetworkTransmitErrs
+            annotations:
+              description: '{{ $labels.instance }} interface {{ $labels.device }} {{ $labels.machinename }} {{ $labels.machineid }} has encountered
+                {{ printf "%.0f" $value }}% transmit errors.'
+              summary: Network interface is reporting many transmit errors.
+            expr:
+              (
+                100*avg(rate(node_network_transmit_errs_total{endpoint=""}[30m])) by (device,instance)/ avg(rate(node_network_transmit_packets_total{endpoint=""}[30m])) by (device,instance) * on (instance,device) group_left(machineid) last_over_time(avg(frr:instance:metal_switch_interface_info) by (machineid,instance,device)[30m:]) * on (machineid) group_left(machinename) topk(1,last_over_time(avg(metal_machine_allocation_info) by (machineid,machinename)[30m:])) by (machineid)
+                or
+                100*avg(rate(node_network_transmit_errs_total{endpoint="", device!="wg0"}[30m])) by (device,instance)/ avg(rate(node_network_transmit_packets_total{endpoint="", device!="wg0"}[30m])) by (device,instance) unless last_over_time(avg(frr:instance:metal_switch_interface_info) by (instance,device)[30m:])
+              ) >1
+            for: 2h
+            labels:
+              severity: crictical
+          - alert: UnderlayBgpPeerDown
+            expr:
+              (
+                (device:frr_bgp_peer_state{instance=~".*leaf.*",vrf="default"} or frr_bgp_peer_state{instance=~".*spine.*",peer_as!="0",vrf="default"} or frr_bgp_peer_state{instance=~".*exit.*",vrf="default"})
+                * on (instance,device) group_left(machineid) last_over_time(avg(frr:instance:metal_switch_interface_info) by (machineid,instance,device)[5m:]) * on (machineid) group_left(machinename) topk(1,last_over_time(avg(metal_machine_allocation_info) by (machineid,machinename)[5m:])) by (machineid)
+              ) == 0
+            for: 30m
+            labels:
+              severity: "critical"
+              mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.4"
+            annotations:
+              description: "Peer {{ $labels.peer }} ({{ $labels.machinename }}) on {{ $labels.instance }} is DOWN"
+          - alert: VrfBgpPeerDown
+            expr:
+              (
+                avg(device:frr_bgp_peer_state{vrf!="default"}) by (instance,device,peer,vrf) * on (instance,device) group_left(machineid) last_over_time(avg(frr:instance:metal_switch_interface_info) by (machineid,instance,device)[5m:]) * on (machineid) group_left(machinename) topk(1,last_over_time(avg(metal_machine_allocation_info) by (machineid,machinename)[5m:])) by (machineid)
+                or
+                avg(device:frr_bgp_peer_state{vrf!="default"}) by (instance,device,peer,vrf) unless ignoring(peer,vrf) last_over_time(avg(frr:instance:metal_switch_interface_info) by (instance,device)[5m:])
+              ) == 0
+            for: 30m
+            labels:
+              severity: "critical"
+            annotations:
+              description: "Peer {{ $labels.peer }} ({{ $labels.machinename }} {{ $labels.vrf }}) on {{ $labels.instance }} is DOWN"
+
+{% endraw %}

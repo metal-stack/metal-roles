@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: thanos-ruler
+  name: thanos-ruler-alert-relabel
+data:
+  ruler-alert-relabel-config.yaml: |
+    - source_labels: [mc_tool_rule]
+      target_label: mc_tool_rule
+      regex: ()
+      replacement: "PROM.FITS.NATIVECLOUD.KUBERNETES.5"
+    - source_labels: [tenant]
+      target_label: tenant
+      regex: ()
+      replacement: "CN"
+    - regex: 'replica'
+      action: labeldrop
+    - regex: 'thanos_component'
+      action: labeldrop

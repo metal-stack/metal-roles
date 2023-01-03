@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: thanos-query
+  name: thanos-query-store-sd
+data:
+  store-targets-sd.yaml: |
+    ---
+    - targets:
+{% for partition in monitoring_partitions %}
+{% for endpoint in partition.thanos_endpoints_shoot %}
+      - thanos-tunnel-{{ partition.id ~ '-' ~ endpoint.name }}:10901
+{% endfor %}
+{% endfor %}

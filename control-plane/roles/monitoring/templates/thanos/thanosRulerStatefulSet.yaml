@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: thanos-ruler
+  name: thanos-ruler
+spec:
+  selector:
+    matchLabels:
+      app: thanos-ruler
+  serviceName: thanos-ruler
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: thanos-ruler
+    spec:
+      containers:
+      - args:
+        - rule
+        - --data-dir=/var/thanos/ruler
+        - --rule-file=/etc/thanos/rules/rules.yaml
+        - --alert.query-url=https://thanos.{{ metal_control_plane_ingress_dns }}
+        - --alertmanagers.url=http://prometheus-alertmanager:9093
+        - --query=http://thanos-query:10902
+        - --label=thanos_component="ruler"
+        - --label=replica="ruler1"
+        - --alert.relabel-config-file=/etc/thanos/ruler-alert-relabel-config.yaml
+        - --objstore.config=$(OBJSTORE_CONFIG)
+        env:
+        - name: OBJSTORE_CONFIG
+          valueFrom:
+            secretKeyRef:
+              key: thanos.yaml
+              name: thanos-objstore-config
+        image: quay.io/thanos/thanos:{{ monitoring_thanos_version }}
+        ports:
+        - containerPort: 10902
+          name: http
+          protocol: TCP
+        - containerPort: 10901
+          name: grpc
+          protocol: TCP
+        name: thanos-ruler
+        volumeMounts:
+        - mountPath: /var/thanos/ruler
+          name: data
+        - mountPath: /etc/thanos/rules/
+          name: thanos-ruler-rules
+        - mountPath: /etc/thanos/
+          name: thanos-ruler-alert-relabel
+          readOnly: true
+      - args:
+        - -webhook-url=http://localhost:10902/-/reload
+        - -volume-dir=/etc/thanos/rules
+        image: jimmidyson/configmap-reload:v0.7.1
+        name: configmap-reloader
+        volumeMounts:
+        - mountPath: /etc/thanos/rules/
+          name: thanos-ruler-rules
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: thanos-ruler-rules
+        name: thanos-ruler-rules
+      - configMap:
+          defaultMode: 420
+          name: thanos-ruler-alert-relabel
+        name: thanos-ruler-alert-relabel
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: thanos-ruler-rules
+        name: thanos-ruler-rules
+      - configMap:
+          defaultMode: 420
+          name: thanos-ruler-alert-relabel
+        name: thanos-ruler-alert-relabel
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      volumeMode: Filesystem
