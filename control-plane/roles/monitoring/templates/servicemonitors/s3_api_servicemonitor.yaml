@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: s3-api-servicemonitor
+  namespace: monitoring
+  labels:
+    app: s3-api
+    k8s-app: s3-api-servicemonitor
+    release: prometheus
+spec:
+  jobLabel: role
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app: s3-api
+  endpoints:
+  - port: "metrics"
+    interval: 15s

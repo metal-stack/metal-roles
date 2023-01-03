@@ -1,0 +1,93 @@
+---
+- name: Create monitoring namespace {{ metal_monitoring_namespace }}
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ metal_monitoring_namespace }}"
+        labels:
+          name: "{{ metal_monitoring_namespace }}"
+
+- name: Deploy Grafana Dashboard ConfigMaps
+  k8s:
+    definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+     - thanos-compact.yaml
+     - thanos-query.yaml
+     - thanos-rule.yaml
+     - thanos-sidecar.yaml
+     - thanos-store.yaml
+     - thanos-receiver.yaml
+     - thanos-overview.yaml
+     - go-processes.yaml
+     - alertmanager.yaml
+     - ipmi-state.yaml
+     - frr-state.yaml
+     - cumulus-state.yaml
+     - metal-api-state.yaml
+     - shoot-cluster-status.yaml
+     - partition-log.yaml
+     - gardener-usage-overview.yaml
+     - shoot-states-overview.yaml
+     - shoot-customization.yaml
+     - shoot-details.yaml
+     - leaf-switches.yaml
+     - s3-cluster.yaml
+     - lightbox_volumes.yaml
+     - rethinkdb.yaml
+     - exit-traffic.yaml
+     - keycloak.yaml
+     - lightbox_cluster_2_3.yaml
+     - lightbox_nodes-2-3.yaml
+     - lightbox_performance.yaml
+     - network-traffic.yaml
+     - nginx.yaml
+     - rgw-usage.yaml
+     - lightbits-latency.yaml
+     - fio-exporter.yaml
+     - machine-capacity.yaml
+
+- name: Deploy Thanos config Secret
+  k8s:
+    definition: "{{ lookup('template', 'thanos/thanos-config-secret.yaml') }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  vars:
+    thanos_config: "{{ lookup('template', 'thanos/thanos-{{ thanos_storage_type }}-config.yaml') }}"
+
+- name: Apply Prometheos Operator CRDs
+  k8s:
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ monitoring_prometheus_operator_version + '/example/prometheus-operator-crd/' + item , split_lines=False) }}"
+  loop:
+    - monitoring.coreos.com_alertmanagers.yaml
+    - monitoring.coreos.com_podmonitors.yaml
+    - monitoring.coreos.com_probes.yaml
+    - monitoring.coreos.com_prometheuses.yaml
+    - monitoring.coreos.com_prometheusrules.yaml
+    - monitoring.coreos.com_servicemonitors.yaml
+    - monitoring.coreos.com_thanosrulers.yaml
+
+- name: Apply VPA resources
+  k8s:
+    definition: "{{ lookup('template', 'vpa/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+    - loki-vpa.yaml
+    - prometheus-vpa.yaml
+    - thanos-compactor-vpa.yaml
+    - thanos-store-vpa.yaml
+
+- name: Deploy Prometheus Operator
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "https://prometheus-community.github.io/helm-charts"
+    helm_chart: kube-prometheus-stack
+    helm_release_name: prometheus
+    helm_target_namespace: "{{ metal_monitoring_namespace }}"
+    helm_value_file_template: "{{ orig_role_path + '/templates/prometheus_operator_helm_values.yaml' }}"
+    helm_chart_version: "{{ monitoring_prometheus_operator_chart_version }}"
+    helm_wait: false
+    helm_force: false
+    helm_timeout: 1200s

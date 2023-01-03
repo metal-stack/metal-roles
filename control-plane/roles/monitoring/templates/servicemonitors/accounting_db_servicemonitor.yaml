@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: accounting-db-servicemonitor
+  namespace: monitoring
+  labels:
+    app: accounting-db
+    release: prometheus
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: accounting-db
+  namespaceSelector:
+    matchNames:
+    - metal-extension-accounting
+  endpoints:
+  - port: "metrics"
+    interval: 60s

@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-controller-manager-servicemonitor
+  namespace: monitoring
+  labels:
+    app: kube-controller-manager
+    k8s-app: kube-controller-manager-servicemonitor
+    release: prometheus
+spec:
+  jobLabel: app
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      role: controller-manager
+  endpoints:
+  - port: "metrics"
+    interval: 15s
