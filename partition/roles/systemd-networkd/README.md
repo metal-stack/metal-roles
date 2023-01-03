@@ -10,8 +10,8 @@ Deploys network-configuration for systems using systemd-networkd.
 | systemd_networkd_vrfs             | no        | An array of VRFs to be configured.                             |
 | systemd_networkd_vrfs.name        | no        | The name of the VRF.                                           |
 | systemd_networkd_vrfs.table       | no        | The routing table id of the VRF.                               |
-| systemd_networkd_nics             | no        | An array of network interfaces to be configured.               |
-| systemd_networkd_nics.mac         | yes       | The MAC of the network interface.                              |
+| systemd_networkd_nics             | no        | An array of network interfaces to be configured. Mac or Name is mandatory. |
+| systemd_networkd_nics.mac         | no        | The MAC of the network interface.                              |
 | systemd_networkd_nics.mtu         | no        | The MTU to use for this interface.                             |
 | systemd_networkd_nics.name        | no        | The name this interface will be renamed to.                    |
 | systemd_networkd_nics.dhcp        | no        | Configure the interface addresses with DHCP.                   |

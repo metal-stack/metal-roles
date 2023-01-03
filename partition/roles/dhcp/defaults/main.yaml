@@ -1,12 +1,12 @@
 ---
 dhcp_subnets: []
-- comment: ""
-  network:
-  netmask:
-  range:
-    begin:
-    end:
-  options: []
+#- comment: ""
+#  network:
+#  netmask:
+#  range:
+#    begin:
+#    end:
+#  options: []
 
 dhcp_listening_interfaces: vlan4000
 
