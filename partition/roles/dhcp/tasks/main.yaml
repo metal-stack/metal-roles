@@ -4,12 +4,13 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - dhcp_net is defined
-      - dhcp_netmask is not none
-      - dhcp_server_ip is not none
-      - dhcp_range_min is not none
-      - dhcp_range_max is not none
-        
+      - item.network is defined
+      - item.netmask is not none
+      - item.range is not none
+      - item.range.begin is not none
+      - item.range.end is not none
+  loop: "{{ dhcp_subnets }}"
+
 - name: Get stat for SONiC's version file
   stat:
     path: /etc/sonic/sonic_version.yml

@@ -6,9 +6,11 @@ Configures and starts dhcpd.
 
 | Name             | Mandatory | Description                                                      |
 | ---------------- | --------- | ---------------------------------------------------------------- |
-| dhcp_net         | yes       | The dhcp network address  in which dhcp addresses will be leased |
-| dhcp_netmask     | yes       | The netmask of the dhcp network                                  |
-| dhcp_range_min   | yes       | The smallest address within the dhcp network to offer            |
-| dhcp_range_max   | yes       | The highest address within the dhcp network to offer             |
-| dhcp_server_ip   | yes       |                                                                  |
-| dhcp_dns_servers |           | Defines DNS servers for the machines that use this dhcp server   |
+| dhcp_subnets         | yes       | An array of subnets for which dhcp should lease addresses from |
+| dhcp_subnets.comment | yes |The comment for this dhcp subnet |
+| dhcp_subnets.network | yes |The dhcp network address in which dhcp addresses will be leased |
+| dhcp_subnets.netmask | yes |The netmask of the dhcp network |
+| dhcp_subnets.range.begin   | yes       | The smallest address within the dhcp network to offer            |
+| dhcp_subnets.range.end   | yes       | The highest address within the dhcp network to offer             |
+| dhcp_subnets.options |           | The options for a given subnet.   |
+| dhcp_global_options |           | The global options.   |
