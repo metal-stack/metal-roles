@@ -8,4 +8,4 @@ Name={{ item.name }}
 [Link]
 Name={{ item.name }}
 NamePolicy=
-MTUBytes={{ item.mtu | default(mtu) }}
+MTUBytes={{ item.mtu | default(systemd_networkd_mtu) }}
