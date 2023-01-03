@@ -4,4 +4,4 @@ MACAddress={{ item.mac }}
 [Link]
 Name={{ item.name }}
 NamePolicy=
-MTUBytes={{ mtu }}
+MTUBytes={{ item.mtu | default(mtu) }}

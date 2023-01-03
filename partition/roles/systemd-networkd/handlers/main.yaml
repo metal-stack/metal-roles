@@ -3,3 +3,8 @@
   service:
     name: systemd-networkd
     state: restarted
+
+- name: restart systemd-udev-trigger
+  service:
+    name: systemd-udev-trigger
+    state: restarted
