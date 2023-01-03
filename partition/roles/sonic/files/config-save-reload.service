@@ -1,0 +1,11 @@
+[Unit]
+Description=Save and reload ConfigDB
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/local/bin/config save -y
+ExecStart=/usr/local/bin/config reload -y
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
