@@ -49,31 +49,15 @@
   template:
     src: isc-dhcp-server.j2
     dest: /etc/default/isc-dhcp-server
-    
-- name: restart dhcpd
-  service:
-    name: isc-dhcp-server
-    enabled: true
-    state: restarted
-  when: not sonic
   
 - name: restart isc-dhcp-server
   service:
     name: isc-dhcp-server
     enabled: true
     state: restarted
-  when: sonic
-
-- name: dhcpd enabled
-  service:
-    name: dhcpd
-    enabled: true
-    state: started
-  when: not sonic
     
 - name: isc-dhcp-server restart
   service:
     name: isc-dhcp-server
     enabled: true
     state: started
-  when: sonic
