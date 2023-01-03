@@ -1,0 +1,30 @@
+- job_name: 'gardener-metrics-exporter'
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - {{ k8s_monitoring_namespace }}
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_name]
+    regex: gardener-metrics-exporter
+    action: keep
+  metric_relabel_configs:
+   - source_labels: [ __name__ ]
+     regex: '^garden_.*$'
+     action: keep
+{% if  monitoring_keycloak is defined %}
+- job_name: 'keycloak-{{ monitoring_keycloak.name }}'
+  static_configs:
+  - targets: ["{{ monitoring_keycloak.target }}"]
+  basic_auth:
+    username: "{{ monitoring_keycloak.user }}"
+    password: "{{ monitoring_keycloak.password }}"
+  scheme: https
+  tls_config:
+    insecure_skip_verify: true
+  honor_labels: true
+  metrics_path: /federate
+  params:
+    match[]:
+    - '{job=~"keycloak.*"}'
+{% endif %}

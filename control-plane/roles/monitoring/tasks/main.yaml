@@ -6,12 +6,12 @@
 - name: Create namespace {{ metal_monitoring_namespace }}
   k8s:
     definition:
-      api_version: v1
+      apiVersion: v1
       kind: Namespace
       metadata:
         name: "{{ metal_monitoring_namespace }}"
         labels:
-          group: "{{ environment_name }}"
+          name: "{{ metal_monitoring_namespace }}"
 
 - name: Deploy Grafana Dashboard ConfigMaps
   k8s:
