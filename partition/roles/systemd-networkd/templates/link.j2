@@ -1,5 +1,9 @@
 [Match]
+{% if item.mac is defined %}
 MACAddress={{ item.mac }}
+{% else %}
+Name={{ item.name }}
+{% endif %}
 
 [Link]
 Name={{ item.name }}
