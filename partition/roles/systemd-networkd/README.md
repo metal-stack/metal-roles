@@ -41,5 +41,6 @@ systemd_network_nics:
   - vni104000
 
 systemd_network_vrfs:
-- vrfManagement: 1000
+- name: vrfManagement
+  table: 1000
 ```
