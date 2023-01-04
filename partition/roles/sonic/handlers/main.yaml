@@ -3,11 +3,12 @@
   systemd:
     daemon_reload: yes
 
-- name: config save
-  ansible.builtin.command: config save -y
-
 - name: write metal conf to db
   ansible.builtin.command: sonic-cfggen --yaml /etc/sonic/metal.yaml --write-to-db
+  notify: config save
+
+- name: config save
+  ansible.builtin.command: config save -y
 
 - name: config reload
   ansible.builtin.command: config reload -y
