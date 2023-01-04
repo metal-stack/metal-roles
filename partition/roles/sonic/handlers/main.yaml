@@ -6,3 +6,18 @@
 - name: config save
   ansible.builtin.command: config save -y
 
+- name: write metal conf to db
+  ansible.builtin.command: sonic-cfggen --yaml /etc/sonic/metal.yaml --write-to-db
+
+- name: config reload
+  ansible.builtin.command: config reload -y
+  async: 120
+  poll: 0
+  notify: wait for new connection
+
+- name: wait for new connection
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 30
+    timeout: 300

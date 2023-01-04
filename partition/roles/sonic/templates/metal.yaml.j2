@@ -1,0 +1,68 @@
+#jinja2: lstrip_blocks: "False", trim_blocks: "False"
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: split
+    hostname: "{{ inventory_hostname }}"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP_SERVER:
+  {% for ntpserver in sonic_ntpservers %}
+  {{ ntpserver }}: {}
+  {% endfor %}
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|{{ sonic_loopback_address }}/32: {}
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: {{ sonic_mgmt_vrf | bool }}
+
+BREAKOUT_CFG:
+  {% for port, mode in sonic_breakouts.items() %}
+  {{ port }}:
+    brkout_mode: "{{ mode }}"
+  {% endfor %}
+
+INTERFACE:
+  {% for port in sonic_bgp_ports %}
+  {{ port }}:
+    ipv6_use_link_local_only: enable
+  {% endfor %}
+
+PORT:
+  {% for port in sonic_ports %}
+  {{ port.name }}:
+    admin_status: up
+    speed: {{ port.speed|default(sonic_ports_default_speed) }}
+    mtu: {{ port.mtu|default(sonic_ports_default_mtu) }}
+    fec: {{ port.fec|default(sonic_ports_default_fec)|string|lower }}
+  {% endfor %}
+
+VLAN:
+  {% for vlan in sonic_vlans %}
+  Vlan{{ vlan.id }}:
+    dhcp_servers: {{ vlan.dhcp_servers }}
+    vlanid: {{ vlan.id }}
+  {% endfor %}
+
+VLAN_INTERFACE:
+  {% for vlan in sonic_vlans %}
+  Vlan{{ vlan.id }}: {}
+  {% if vlan.ip is defined %}
+  Vlan{{ vlan.id }}|{{ vlan.ip }}: {}
+  {% endif %}
+  {% endfor %}
+
+VLAN_MEMBER:
+  {% for vlan in sonic_vlans %}
+  {% for untagged_port in vlan.untagged_ports %}
+  Vlan{{ vlan.id }}|{{ untagged_port }}:
+      tagging_mode: untagged
+  {% endfor %}
+  {% endfor %}

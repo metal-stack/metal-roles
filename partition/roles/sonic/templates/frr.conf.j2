@@ -1,0 +1,42 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+frr defaults datacenter
+hostname {{ ansible_hostname }}
+username cumulus nopassword
+!
+service integrated-vtysh-config
+!
+log syslog {{ sonic_frr_syslog_level }}
+{% if sonic_frr_debug_options is defined %}
+{% for option in sonic_frr_debug_options %}
+{{ option }}
+{% endfor %}
+{% endif %}
+{% for port in sonic_bgp_ports %}
+!
+interface {{ port }}
+ ipv6 nd ra-interval 6
+ no ipv6 nd suppress-ra
+{% endfor %}
+!
+router bgp {{ sonic_asn }}
+ bgp router-id {{ sonic_loopback_address }}
+ bgp bestpath as-path multipath-relax
+ neighbor FABRIC peer-group
+ neighbor FABRIC remote-as external
+ neighbor FABRIC timers 1 3
+{% for port in sonic_bgp_ports %}
+ neighbor {{ port }} interface peer-group FABRIC
+{% endfor %}
+ !
+ address-family ipv4 unicast
+  redistribute connected
+{% if sonic_static_routes|length > 0 %}
+  redistribute static
+{% endif %}
+ exit-address-family
+!
+line vty
+{% for route in sonic_static_routes %}
+ip route {{ route }}
+{% endfor %}
+!

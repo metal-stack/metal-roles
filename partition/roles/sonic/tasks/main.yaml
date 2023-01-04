@@ -1,12 +1,14 @@
 ---
-- name: Set hostname
-  ansible.builtin.command: config hostname {{ inventory_hostname }}
-  notify: config save
-
-- name: enable ntp
-  ansible.builtin.command: config ntp add {{ item }}
-  with_items: "{{ ntpservers }}"
-  notify: config save
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - sonic_mgmt_vrf is defined
+      - sonic_loopback_address is defined
+      - sonic_asn is defined
+      - sonic_ntpservers is defined
+      - sonic_nameservers is defined
 
 - name: render resolv.conf
   template:
@@ -19,6 +21,7 @@
     jump: MASQUERADE
     out_interface: eth0
     table: nat
+  when: sonic_ip_masquerade
 
 - name: Activate ipv4 forwarding on eth0
   ansible.posix.sysctl:
@@ -26,8 +29,9 @@
     reload: no
     sysctl_set: yes
     value: "1"
+  when: sonic_ip_masquerade
 
-- name: install services
+- name: Install services
   copy:
     src: "{{ item }}"
     dest: "/etc/systemd/system/{{ item }}"
@@ -36,3 +40,19 @@
     - bgp-validation@.service
     - write-to-db@.service
     - config-save-reload.service
+
+- name: Render metal config for config_db.json
+  template:
+    src: metal.yaml.j2
+    dest: /etc/sonic/metal.yaml
+  notify:
+  - write metal conf to db
+  - config save
+  - config reload
+
+- name: Render frr config
+  template:
+    src: frr.conf.j2
+    dest: /etc/sonic/frr/frr.conf
+  notify:
+  - config reload
