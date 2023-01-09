@@ -1,0 +1,5 @@
+# derived from https://github.com/m-kraus/prometheus_experiments/blob/master/thanos/creds/bucket_config.s3-minio.sample
+type: FILESYSTEM
+config:
+  directory: "~/thanosStorage"
+prefix: ""

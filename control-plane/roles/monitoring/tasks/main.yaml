@@ -1,8 +1,4 @@
 ---
-- name: Store current role path so we can refer to files
-  set_fact:
-    orig_role_path: "{{ role_path }}"
-
 - name: Create namespace {{ metal_monitoring_namespace }}
   k8s:
     definition:
@@ -53,44 +49,44 @@
      - fio-exporter.yaml
      - machine-capacity.yaml
 
-- name: Deploy Thanos config Secret
-  k8s:
-    definition: "{{ lookup('template', 'thanos/thanos-config-secret.yaml') }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  vars:
-    thanos_config: "{{ lookup('template', 'thanos/thanos-{{ thanos_storage_type }}-config.yaml') }}"
+# - name: Deploy Thanos config Secret
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/thanos-config-secret.yaml') }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   vars:
+#     thanos_config: "{{ lookup('template', 'thanos/thanos-localstorage-config.yaml') }}"
 
-- name: Apply Prometheos Operator CRDs
-  k8s:
-    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ monitoring_prometheus_operator_version + '/example/prometheus-operator-crd/' + item , split_lines=False) }}"
-  loop:
-    - monitoring.coreos.com_alertmanagers.yaml
-    - monitoring.coreos.com_podmonitors.yaml
-    - monitoring.coreos.com_probes.yaml
-    - monitoring.coreos.com_prometheuses.yaml
-    - monitoring.coreos.com_prometheusrules.yaml
-    - monitoring.coreos.com_servicemonitors.yaml
-    - monitoring.coreos.com_thanosrulers.yaml
-  # still broken
-  # kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
-  #    - monitoring.coreos.com_alertmanagerconfigs.yaml
+# - name: Apply Prometheos Operator CRDs
+#   k8s:
+#     definition: "{{ lookup('url', 'https://github.com/prometheus-operator/prometheus-operator/tree/v0.62.0' + '/example/prometheus-operator-crd/' + item , split_lines=False) }}"
+#   loop:
+#     - monitoring.coreos.com_alertmanagers.yaml
+#     - monitoring.coreos.com_podmonitors.yaml
+#     - monitoring.coreos.com_probes.yaml
+#     - monitoring.coreos.com_prometheuses.yaml
+#     - monitoring.coreos.com_prometheusrules.yaml
+#     - monitoring.coreos.com_servicemonitors.yaml
+#     - monitoring.coreos.com_thanosrulers.yaml
+#   # still broken
+#   # kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
+#   #    - monitoring.coreos.com_alertmanagerconfigs.yaml
 
-- name: Apply VPA resources
-  k8s:
-    definition: "{{ lookup('template', 'vpa/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-    - loki-vpa.yaml
-    - prometheus-vpa.yaml
-    - thanos-compactor-vpa.yaml
-    - thanos-store-vpa.yaml
+# - name: Apply VPA resources
+#   k8s:
+#     definition: "{{ lookup('template', 'vpa/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#     - loki-vpa.yaml
+#     - prometheus-vpa.yaml
+#     - thanos-compactor-vpa.yaml
+#     - thanos-store-vpa.yaml
 
-- name: Deploy prometheus scrape config secret
-  k8s:
-    definition: "{{ lookup('template', 'prometheus-scrape-config.yaml') }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  vars:
-    prometheus_scrape_config: "{{ lookup('template', 'additional-scrape.yaml') }}"
+# - name: Deploy prometheus scrape config secret
+#   k8s:
+#     definition: "{{ lookup('template', 'prometheus-scrape-config.yaml') }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   vars:
+#     prometheus_scrape_config: "{{ lookup('template', 'additional-scrape.yaml') }}"
 
 - name: Deploy Prometheus Operator
   include_role:
@@ -100,100 +96,100 @@
     helm_chart: kube-prometheus-stack
     helm_release_name: prometheus
     helm_target_namespace: "{{ metal_monitoring_namespace }}"
-    helm_value_file_template: "{{ orig_role_path + '/templates/prometheus_operator_helm_values.yaml' }}"
+    helm_value_file_template: "{{ lookup('template', 'prometheus_operator_helm_values.yaml') }}"
     helm_chart_version: "{{ monitoring_prometheus_operator_chart_version }}"
     helm_wait: false
     helm_force: false
     helm_timeout: 1200s
 
-- name: Deploy Thanos tls to shoots
-  k8s:
-    definition: "{{ lookup('template', 'thanos/thanosTunnel.yaml') }}"
-    namespace: "{{ metal_monitoring_namespace }}"
+# - name: Deploy Thanos tls to shoots
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/thanosTunnel.yaml') }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
 
-- name: Deploy Thanos Sidecar Service and ServiceMonitor
-  k8s:
-    definition: "{{ lookup('template', 'thanos/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - thanosSidecarService.yaml
-     - serviceMonitorThanosSidecar.yaml
+# - name: Deploy Thanos Sidecar Service and ServiceMonitor
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#      - thanosSidecarService.yaml
+#      - serviceMonitorThanosSidecar.yaml
 
-- name: Deploy Thanos Querier Store Targets Service Discovery Files
-  k8s:
-    definition: "{{ item }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-    - "{{ lookup('template', 'thanos/store-targets-sd.yaml') }}"
+# - name: Deploy Thanos Querier Store Targets Service Discovery Files
+#   k8s:
+#     definition: "{{ item }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#     - "{{ lookup('template', 'thanos/store-targets-sd.yaml') }}"
 
-- name: Deploy Thanos Querier
-  k8s:
-    definition: "{{ lookup('template', 'thanos/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-    - thanosQueryDeployment.yaml
-    - thanosQueryService.yaml
-    - thanosQueryIngress.yaml
-    - serviceMonitorThanosQuery.yaml
-    - thanosQueryPDB.yaml
+# - name: Deploy Thanos Querier
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#     - thanosQueryDeployment.yaml
+#     - thanosQueryService.yaml
+#     - thanosQueryIngress.yaml
+#     - serviceMonitorThanosQuery.yaml
+#     - thanosQueryPDB.yaml
 
-- name: Deploy Thanos Store
-  k8s:
-    definition: "{{ lookup('template', 'thanos/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - thanosStoreStatefulSet.yaml
-     - thanosStoreService.yaml
-     - serviceMonitorThanosStore.yaml
+# - name: Deploy Thanos Store
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#      - thanosStoreStatefulSet.yaml
+#      - thanosStoreService.yaml
+#      - serviceMonitorThanosStore.yaml
 
-- name: Deploy Thanos Compactor
-  k8s:
-    definition: "{{ lookup('template', 'thanos/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - thanosCompactorStatefulSet.yaml
-     - thanosCompactorService.yaml
-     - serviceMonitorThanosCompactor.yaml
+# - name: Deploy Thanos Compactor
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#      - thanosCompactorStatefulSet.yaml
+#      - thanosCompactorService.yaml
+#      - serviceMonitorThanosCompactor.yaml
 
-- name: Deploy Thanos Receiver
-  k8s:
-    definition: "{{ lookup('template', 'thanos/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - thanosReceiverService.yaml
-     - thanosReceiverHashring.yaml
-     - thanosReceiverStatefulSet.yaml
-     - thanosReceiverIngress.yaml
-     - serviceMonitorThanosReceiver.yaml
-     - thanosReceiverPDB.yaml
+# - name: Deploy Thanos Receiver
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#      - thanosReceiverService.yaml
+#      - thanosReceiverHashring.yaml
+#      - thanosReceiverStatefulSet.yaml
+#      - thanosReceiverIngress.yaml
+#      - serviceMonitorThanosReceiver.yaml
+#      - thanosReceiverPDB.yaml
 
-- name: Deploy Thanos Ruler
-  k8s:
-    definition: "{{ lookup('template', 'thanos/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - thanos-ruler-alert-relabel.yaml
-     - thanos-ruler-rules.yaml
-     - thanosRulerService.yaml
-     - thanosRulerStatefulSet.yaml
-     - serviceMonitorThanosRuler.yaml
+# - name: Deploy Thanos Ruler
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#      - thanos-ruler-alert-relabel.yaml
+#      - thanos-ruler-rules.yaml
+#      - thanosRulerService.yaml
+#      - thanosRulerStatefulSet.yaml
+#      - serviceMonitorThanosRuler.yaml
 
-- name: Deploy RethinkDB Exporter
-  k8s:
-    definition: "{{ lookup('template', item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - rethinkdb-exporter.yaml
+# - name: Deploy RethinkDB Exporter
+#   k8s:
+#     definition: "{{ lookup('template', item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#      - rethinkdb-exporter.yaml
 
-- name: Deploy CA certificate for loki
-  k8s:
-    definition: "{{ lookup('template', 'loki/loki-ca-secret.yaml') }}"
-    namespace: "{{ metal_monitoring_namespace }}"
+# - name: Deploy CA certificate for loki
+#   k8s:
+#     definition: "{{ lookup('template', 'loki/loki-ca-secret.yaml') }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
 
-- name: Deploy loki gcs secret
-  k8s:
-    definition: "{{ lookup('template', 'loki/loki-gcs-secret.yaml') }}"
-    namespace: "{{ metal_monitoring_namespace }}"
+# - name: Deploy loki gcs secret
+#   k8s:
+#     definition: "{{ lookup('template', 'loki/loki-gcs-secret.yaml') }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
 
 - name: Deploy Promtail
   include_role:
@@ -208,22 +204,22 @@
     helm_wait: false
     helm_timeout: 1200s
 
-- name: Get seed kubeconfig
-  set_fact:
-    seed_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') }}"
-  when: lookup('k8s', api_version='v1', kind='Namespace', resource_name='garden')
+# # - name: Get seed kubeconfig
+# #   set_fact:
+# #     seed_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') }}"
+# #   when: lookup('k8s', api_version='v1', kind='Namespace', resource_name='garden')
 
-- name: Deploy gardener-metrics-exporter
-  k8s:
-    definition: "{{ lookup('template', 'gardener-metrics-exporter/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - secret-metric-exporter.yaml
-     - serviceaccount-metrics-exporter.yaml
-     - rbac.yaml
-     - deployment-metrics-exporter.yaml
-     - service-metrics-exporter.yaml
-  when: lookup('k8s', api_version='v1', kind='Namespace', resource_name='garden')
+# # - name: Deploy gardener-metrics-exporter
+# #   k8s:
+# #     definition: "{{ lookup('template', 'gardener-metrics-exporter/' + item) }}"
+# #     namespace: "{{ metal_monitoring_namespace }}"
+# #   loop:
+# #      - secret-metric-exporter.yaml
+# #      - serviceaccount-metrics-exporter.yaml
+# #      - rbac.yaml
+# #      - deployment-metrics-exporter.yaml
+# #      - service-metrics-exporter.yaml
+# #   when: lookup('k8s', api_version='v1', kind='Namespace', resource_name='garden')
 
 - name: Deploy metal-metrics-exporter
   k8s:
@@ -260,19 +256,19 @@
     - s3_api_servicemonitor.yaml
     - nginx_servicemonitor.yaml
 
-- name: Deploy alerting rules
-  k8s:
-    definition: "{{ lookup('template', 'rules/' + item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-    - partition-rules.yaml
-    - shoot-operation-rules.yaml
-    - seed-rules.yaml
-    - db-backup-rules.yaml
-    - metal-api-rules.yaml
-    - s3-api-rules.yaml
-    - keycloak-rules.yaml
-    - thanos-rules.yaml
+# - name: Deploy alerting rules
+#   k8s:
+#     definition: "{{ lookup('template', 'rules/' + item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#     - partition-rules.yaml
+#     - shoot-operation-rules.yaml
+#     - seed-rules.yaml
+#     - db-backup-rules.yaml
+#     - metal-api-rules.yaml
+#     - s3-api-rules.yaml
+#     - keycloak-rules.yaml
+#     - thanos-rules.yaml
 
 - name: Deploy Loki
   include_role:
@@ -288,11 +284,11 @@
     helm_force: false
     helm_timeout: 1200s
 
-- name: Add eventrouter and alertlogger
-  k8s:
-    definition: "{{ lookup('template', item) }}"
-    namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-    - eventrouter.yaml
-    - alertloggerService.yaml
-    - alertloggerStatefulSet.yaml
+# - name: Add eventrouter and alertlogger
+#   k8s:
+#     definition: "{{ lookup('template', item) }}"
+#     namespace: "{{ metal_monitoring_namespace }}"
+#   loop:
+#     - eventrouter.yaml
+#     - alertloggerService.yaml
+#     - alertloggerStatefulSet.yaml

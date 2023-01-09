@@ -1,5 +1,0 @@
-type: GCS
-config:
-  bucket: "{{ thanos_gcs_bucket }}"
-  service_account: |-
-{{ lookup('env', 'MONITORING_BUCKET_CREDENTIALS') | b64decode | indent(4, true)}}
