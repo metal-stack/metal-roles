@@ -1,0 +1,8 @@
+
+grafana:
+  enabled: false
+
+# promtail:
+#   initContainer:
+#     enabled: true
+#     fsInotifyMaxUserInstances: 10
