@@ -3,7 +3,7 @@
   - role: endpoints
     namespaces:
       names:
-      - {{ k8s_monitoring_namespace }}
+      - {{ metal_monitoring_namespace }}
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
     regex: gardener-metrics-exporter

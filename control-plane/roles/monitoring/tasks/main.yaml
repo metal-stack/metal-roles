@@ -9,18 +9,6 @@
         labels:
           name: "{{ metal_monitoring_namespace }}"
 
-
-- name: Deploy loki-stack
-  include_role:
-    name: ansible-common/roles/helm-chart
-  vars:
-    helm_repo: "https://grafana.github.io/helm-charts"
-    helm_chart: loki-stack
-    helm_target_namespace: monitoring
-    helm_release_name: loki-stack
-    helm_value_file_template: "loki-stack-values.yaml"
-
-
 - name: Deploy prometheus-stack
   include_role:
     name: ansible-common/roles/helm-chart
@@ -30,6 +18,23 @@
     helm_target_namespace: monitoring
     helm_release_name: kube-prometheus-stack
     helm_value_file_template: "prometheus-stack-values.yaml"
+
+
+- name: Deploy Grafana
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+    - go-processes.yaml
+    - metal-api.yaml
+
+
+- name: Deploy Alertmanager
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'grafana_dashboards/' 'alertmanager.yaml') }}"
+    namespace: monitoring
 
 
 - name: Deploy metal-metrics-exporter
@@ -43,6 +48,25 @@
 
 
 
+- name: Deploy loki-stack
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "https://grafana.github.io/helm-charts"
+    helm_chart: loki-stack
+    helm_target_namespace: monitoring
+    helm_release_name: loki-stack
+    helm_value_file_template: "loki-stack-values.yaml"
+
+- name: Deploy metal-metrics-exporter
+  k8s:
+    definition: "{{ lookup('template', 'metal-metrics-exporter/' + item) }}"
+    namespace: monitoring
+  loop:
+    - metal-metrics-exporter-secret.yaml
+    - metal-metrics-exporter-deployment.yaml
+    - metal-metrics-exporter-service.yaml
+
 - name: Deploy service monitors
   k8s:
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
@@ -54,52 +78,3 @@
     - masterdata_api_servicemonitor.yaml
     - masterdata_db_servicemonitor.yaml
     - ipam_db_servicemonitor.yaml
-
-
-- name: Deploy grafana dashboards
-  k8s:
-    definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
-    namespace: monitoring
-  loop:
-    - go-processes.yaml
-  
-
-# - name: Deploy Grafana Dashboard ConfigMaps
-#   k8s:
-#     definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
-#     namespace: "{{ metal_monitoring_namespace }}"
-#   loop:
-#      - thanos-compact.yaml
-#      - thanos-query.yaml
-#      - thanos-rule.yaml
-#      - thanos-sidecar.yaml
-#      - thanos-store.yaml
-#      - thanos-receiver.yaml
-#      - thanos-overview.yaml
-#      - go-processes.yaml
-#      - alertmanager.yaml
-#      - ipmi-state.yaml
-#      - frr-state.yaml
-#      - cumulus-state.yaml
-#      - metal-api-state.yaml
-#      - shoot-cluster-status.yaml
-#      - partition-log.yaml
-#      - gardener-usage-overview.yaml
-#      - shoot-states-overview.yaml
-#      - shoot-customization.yaml
-#      - shoot-details.yaml
-#      - leaf-switches.yaml
-#      - s3-cluster.yaml
-#      - lightbox_volumes.yaml
-#      - rethinkdb.yaml
-#      - exit-traffic.yaml
-#      - keycloak.yaml
-#      - lightbox_cluster_2_3.yaml
-#      - lightbox_nodes-2-3.yaml
-#      - lightbox_performance.yaml
-#      - network-traffic.yaml
-#      - nginx.yaml
-#      - rgw-usage.yaml
-#      - lightbits-latency.yaml
-#      - fio-exporter.yaml
-#      - machine-capacity.yaml

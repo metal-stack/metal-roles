@@ -19,7 +19,7 @@ spec:
         - name: metal-metrics-exporter
           command:
             - /metal-metrics-exporter
-          image: "ghcr.io/metal-stack/metal-metrics-exporter:v0.1.1"
+          image: "ghcr.io/metal-stack/metal-metrics-exporter:{{ monitoring_metal_metrics_exporter_version }}"
           ports:
             - containerPort: 9080
               name: metrics
