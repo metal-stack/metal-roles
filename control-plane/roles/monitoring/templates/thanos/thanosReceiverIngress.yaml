@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 type: Opaque
 data:
-  auth: {{ monitoring_alerts_htpw }}
+  auth: admin
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

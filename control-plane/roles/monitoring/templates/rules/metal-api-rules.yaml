@@ -1,0 +1,44 @@
+{% raw %}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    release: prometheus
+    role: alert-rules
+  name: metal-api.rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: metal-api.rules
+    rules:
+    - alert: MetalApiErrorRate
+      expr: sum(rate(metal_api_requests_total{code!="200"}[5m])) by(pod)  / sum(rate(metal_api_requests_total[5m])) by(pod) *100 > 0.5
+      for: 30m
+      labels:
+        severity: critical
+        mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.4"
+      annotations:
+        description: "{{ $value | printf `%.2f` }}% of requests to {{ $labels.pod }} have errors"
+    - alert: MetalApiSlow
+      expr: histogram_quantile(0.90, sum by(le, pod) (rate(metal_api_request_duration_seconds_bucket{route="/metal/v1/machine/{id}/event"}[5m]))) > 0.5
+      for: 30m
+      labels:
+        severity: critical
+        mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.5"
+      annotations:
+        description: "Metal API has a 99th percentile latency of {{ $value | printf `%.2f` }} seconds for pod {{ $labels.pod }}"
+    - alert: MetalApiGoProcessesHigh
+      expr: avg(go_goroutines{job="metal-api"}) by(pod)>500
+      for: 30m
+      labels:
+        severity: critical
+        mc_tool_rule: "PROM.FITS.NATIVECLOUD.KUBERNETES.5"
+      annotations:
+        description: "Metal API pod {{ $labels.pod }} has high number of go processes {{ $value | printf `%.2f` }}"
+
+  - name: metal-api-recording.rules
+    rules:
+    - record: frr:instance:metal_switch_interface_info
+      expr: |2
+        label_replace(metal_switch_interface_info,"instance","$1","switchname","(.*)")
+{% endraw %}

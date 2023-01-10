@@ -1,0 +1,37 @@
+image:
+  repository: grafana/promtail
+  tag: {{ monitoring_promtail_version }}
+
+serviceMonitor:
+  enabled: true
+  labels:
+      release: prometheus
+config:
+  clients:
+    - url: http://loki:3100/loki/api/v1/push
+
+  snippets:
+    pipelineStages:
+      - cri: {}
+      - docker: {}
+      - match:
+          selector: '{app="eventrouter"}'
+          stages:
+          - json:
+              expressions:
+                event: event
+          - json:
+              expressions:
+                metadata: metadata
+              source: event
+          - json:
+              expressions:
+                namespace: namespace
+              source: metadata
+          - labels:
+              namespace: null
+          - output:
+              source: event
+
+extraArgs:
+  - -client.external-labels=cluster={{ environment_name }}

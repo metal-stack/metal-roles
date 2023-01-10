@@ -1,0 +1,99 @@
+{% raw %}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    release: prometheus
+    role: alert-rules
+  name: keycloak.rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: keycloak.rules
+    rules:
+    - alert: KeycloakJavaHeapThresholdExceeded
+      annotations:
+        message: >-
+          {{ printf "%0.0f" $value }}% heap usage of {{ $labels.job }}
+      expr: |
+        100 * jvm_memory_bytes_used{area="heap",job=~"keycloak.*"}
+          / jvm_memory_bytes_max{area="heap",job=~"keycloak.*"}
+          > 90
+      for: 1m
+      labels:
+        severity: critical
+    - alert: KeycloakJavaNonHeapThresholdExceeded
+      annotations:
+        message: >-
+          {{ printf "%0.0f" $value }}% nonheap usage of {{ $labels.job }}
+      expr: |
+        100 * jvm_memory_bytes_used{area="nonheap",job=~"keycloak.*"}
+          / jvm_memory_bytes_max{area="nonheap",job=~"keycloak.*"}
+          > 90
+      for: 1m
+      labels:
+        severity: critical
+    - alert: KeycloakJavaGCTimePerMinuteScavenge
+      annotations:
+        message: >-
+          Amount of time per minute spent on garbage collection of {{ $labels.job }} exceeds 90%.
+          This could indicate that the available heap memory is insufficient.
+      expr: |
+        increase(jvm_gc_collection_seconds_sum{gc="PS Scavenge",job=~"keycloak.*"}[1m]) > 1 * 60 * 0.9
+      for: 1m
+      labels:
+        severity: critical
+    - alert: KeycloakJavaGCTimePerMinuteMarkSweep
+      annotations:
+        message: >-
+          Amount of time per minute spent on garbage collection of {{ $labels.job }} exceeds 90%.
+          This could indicate that the available heap memory is insufficient.
+      expr: |
+        increase(jvm_gc_collection_seconds_sum{gc="PS MarkSweep",job=~"keycloak.*"}[1m]) > 1 * 60 * 0.9
+      for: 1m
+      labels:
+        severity: critical
+    - alert: KeycloakJavaDeadlockedThreads
+      annotations:
+        message: >-
+          Number of threads in deadlock state of {{ $labels.job }}
+      expr: |
+        jvm_threads_deadlocked{job=~"keycloak.*"}
+          > 0
+      for: 1m
+      labels:
+        severity: critical
+    - alert: KeycloakLoginFailedThresholdExceeded
+      annotations:
+        message: >-
+          More than 50 failed login attempts for realm {{ $labels.realm }},
+          provider {{ $labels.provider }} over the last 5 minutes. (Rate of {{ printf "%0f" $value }})
+      expr: >
+        rate(keycloak_failed_login_attempts_total{job=~"keycloak.*"}[5m])
+        * 300 > 50
+      for: 5m
+      labels:
+        severity: critical
+    - alert: KeycloakAPIRequestDuration90PercThresholdExceeded
+      annotations:
+        message: >-
+          90% of the total requests are not served within 1 second for the last 5 minutes for the RH SSO API in {{ $labels.job }}
+      expr: >
+        (sum(rate(keycloak_request_duration_bucket{le="1000.0"}[5m])) by (job)
+        /
+        sum(rate(keycloak_request_duration_count[5m])) by (job)) < 0.90
+      for: 5m
+      labels:
+        severity: critical
+    - alert: KeycloakAPIRequestDuration99PercThresholdExceeded
+      annotations:
+        message: >-
+          99.5% of the total requests are not served within 10 seconds for the last 5 minutes for the RH SSO API in {{ $labels.job}}
+      expr: >
+        (sum(rate(keycloak_request_duration_bucket{le="10000.0"}[5m])) by (job)
+        /
+        sum(rate(keycloak_request_duration_count[5m])) by (job)) < 0.995
+      for: 5m
+      labels:
+        severity: critical
+{% endraw %}
