@@ -27,6 +27,12 @@
     sysctl_set: yes
     value: "1"
 
+- name: install frr-reload
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/FRRouting/frr/master/tools/frr-reload.py
+    dest: /usr/local/bin/frr-reload.py
+    mode: '0700'
+
 - name: install services
   copy:
     src: "{{ item }}"
