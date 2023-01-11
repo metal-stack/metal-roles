@@ -15,12 +15,64 @@
   vars:
     helm_repo: "https://prometheus-community.github.io/helm-charts"
     helm_chart: kube-prometheus-stack
-    helm_target_namespace: monitoring
+    helm_target_namespace: {{ metal_monitoring_namespace }}
     helm_release_name: kube-prometheus-stack
     helm_value_file_template: "prometheus-stack-values.yaml"
 
 
-- name: Deploy Grafana
+# Stores logs
+- name: Deploy loki-stack
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "https://grafana.github.io/helm-charts"
+    helm_chart: loki-stack
+    helm_target_namespace: {{ metal_monitoring_namespace }}
+    helm_release_name: loki-stack
+    helm_value_file_template: "loki-stack-values.yaml"
+
+
+- name: Deploy Grafana Dashboard ConfigMaps
+  k8s:
+    definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
+    namespace: {{ metal_monitoring_namespace }}
+  loop:
+     - thanos-compact.yaml
+     - thanos-query.yaml
+     - thanos-rule.yaml
+     - thanos-sidecar.yaml
+     - thanos-store.yaml
+     - thanos-receiver.yaml
+     - thanos-overview.yaml
+     - go-processes.yaml
+     - alertmanager.yaml
+     - ipmi-state.yaml
+     - frr-state.yaml
+     - cumulus-state.yaml
+     - metal-api-state.yaml
+     - shoot-cluster-status.yaml
+     - partition-log.yaml
+     - gardener-usage-overview.yaml
+     - shoot-states-overview.yaml
+     - shoot-customization.yaml
+     - shoot-details.yaml
+     - leaf-switches.yaml
+     - s3-cluster.yaml
+     - lightbox_volumes.yaml
+     - rethinkdb.yaml
+     - exit-traffic.yaml
+     - keycloak.yaml
+     - lightbox_cluster_2_3.yaml
+     - lightbox_nodes-2-3.yaml
+     - lightbox_performance.yaml
+     - network-traffic.yaml
+     - nginx.yaml
+     - rgw-usage.yaml
+     - lightbits-latency.yaml
+     - fio-exporter.yaml
+     - machine-capacity.yaml
+
+- name: Deploy Grafana dashboards
   k8s:
     state: present
     definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
@@ -32,47 +84,24 @@
 - name: Deploy metal-metrics-exporter
   k8s:
     definition: "{{ lookup('template', 'metal-metrics-exporter/' + item) }}"
-    namespace: monitoring
+    namespace: {{ metal_monitoring_namespace }}
   loop:
     - metal-metrics-exporter-secret.yaml
     - metal-metrics-exporter-deployment.yaml
     - metal-metrics-exporter-service.yaml
 
 
-# - name: Create monitoring ingress for grafana
-#   k8s:
-#     definition: "{{ lookup('template', item) }}"
-#     namespace: monitoring
-#   loop:
-#      - grafana_ingress.yaml
-#      - loki_ingress.yaml
-#      - alerts_ingress.yaml
-#      - prom_ingress.yaml
-
-# Stores logs
-- name: Deploy loki-stack
-  include_role:
-    name: ansible-common/roles/helm-chart
-  vars:
-    helm_repo: "https://grafana.github.io/helm-charts"
-    helm_chart: loki-stack
-    helm_target_namespace: monitoring
-    helm_release_name: loki-stack
-    helm_value_file_template: "loki-stack-values.yaml"
-
-
-# Set up alerting rules for Loki 
 - name: Deploy Alertmanager
   k8s:
     state: present
     definition: "{{ lookup('template', 'grafana_dashboards/' 'alertmanager.yaml') }}"
-    namespace: monitoring
+    namespace: {{ metal_monitoring_namespace }}
 
 
 - name: Deploy metal-metrics-exporter
   k8s:
     definition: "{{ lookup('template', 'metal-metrics-exporter/' + item) }}"
-    namespace: monitoring
+    namespace: {{ metal_monitoring_namespace }}
   loop:
     - metal-metrics-exporter-secret.yaml
     - metal-metrics-exporter-deployment.yaml
@@ -80,24 +109,26 @@
     - metal-metrics-exporter-servicemonitor.yaml
 
 
-- name: Deploy service monitors
+- name: Create service monitors
   k8s:
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
-    namespace: monitoring
+    namespace: {{ metal_monitoring_namespace }}
   loop:
     - metal-metrics-exporter-servicemonitor.yaml
+    - machine_controller_manager_servicemonitor.yaml
     - metal_api_servicemonitor.yaml
     - metal_db_servicemonitor.yaml
     - masterdata_api_servicemonitor.yaml
     - masterdata_db_servicemonitor.yaml
     - ipam_db_servicemonitor.yaml
+    - nginx_servicemonitor.yaml
 
 
-
+# Set up alerting rules for Loki 
 - name: Deploy alerting rules
   k8s:
     definition: "{{ lookup('template', 'rules/' + item) }}"
-    namespace: monitoring
+    namespace: {{ metal_monitoring_namespace }}
   loop:
     # - partition-rules.yaml
     # - shoot-operation-rules.yaml
@@ -108,15 +139,60 @@
     # - thanos-rules.yaml
 
 
-# #Pulls the logs from Loki
-# - name: Deploy Promtail
-#   include_role:
-#     name: ansible-common/roles/helm-chart
-#   vars:
-#     helm_repo: "https://grafana.github.io/helm-charts"
-#     helm_chart: "promtail"
-#     helm_release_name: promtail
-#     helm_target_namespace: monitoring
-#     helm_value_file_template: "{{ lookup('template' , 'loki', 'promtail_values.yaml') }}"
-#     helm_wait: false
-#     helm_timeout: 1200s
+- name: Create monitoring ingress for grafana
+  k8s:
+    definition: "{{ lookup('template', item) }}"
+    namespace: {{ metal_monitoring_namespace }}
+  loop:
+     - grafana_ingress.yaml
+     - loki_ingress.yaml
+     - alerts_ingress.yaml
+     - prom_ingress.yaml
+
+
+# - name: Deploy Thanos Store
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ k8s_monitoring_namespace }}"
+#   loop:
+#      - thanosStoreStatefulSet.yaml
+#      - thanosStoreService.yaml
+#      - serviceMonitorThanosStore.yaml
+
+
+# - name: Deploy Thanos Compactor
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ k8s_monitoring_namespace }}"
+#   loop:
+#      - thanosCompactorStatefulSet.yaml
+#      - thanosCompactorService.yaml
+#      - serviceMonitorThanosCompactor.yaml
+
+
+# - name: Deploy Thanos Receiver
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ k8s_monitoring_namespace }}"
+#   loop:
+#      - thanosReceiverService.yaml
+#      - thanosReceiverHashring.yaml
+#      - thanosReceiverStatefulSet.yaml
+#      - thanosReceiverIngress.yaml
+#      - serviceMonitorThanosReceiver.yaml
+#      - thanosReceiverPDB.yaml
+
+
+# - name: Deploy Thanos Ruler
+#   k8s:
+#     definition: "{{ lookup('template', 'thanos/' + item) }}"
+#     namespace: "{{ k8s_monitoring_namespace }}"
+#   loop:
+#      - thanos-ruler-alert-relabel.yaml
+#      - thanos-ruler-rules.yaml
+#      - thanosRulerService.yaml
+#      - thanosRulerStatefulSet.yaml
+#      - serviceMonitorThanosRuler.yaml
+
+
+
