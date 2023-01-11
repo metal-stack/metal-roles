@@ -147,8 +147,7 @@
      - grafana_ingress.yaml
      - loki_ingress.yaml
      - alerts_ingress.yaml
-     - prom_ingress.yaml
-
+  
 
 # - name: Deploy Thanos Store
 #   k8s:
