@@ -94,7 +94,7 @@
 - name: Deploy Alertmanager
   k8s:
     state: present
-    definition: "{{ lookup('template', 'grafana_dashboards/' 'alertmanager.yaml') }}"
+    definition: "{{ lookup('template', 'grafana_dashboards/alertmanager.yaml') }}"
     namespace: {{ metal_monitoring_namespace }}
 
 
