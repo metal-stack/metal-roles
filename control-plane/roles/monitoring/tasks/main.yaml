@@ -20,16 +20,16 @@
     helm_value_file_template: "prometheus-stack-values.yaml"
 
 
-# Stores logs
-- name: Deploy loki-stack
-  include_role:
-    name: ansible-common/roles/helm-chart
-  vars:
-    helm_repo: "https://grafana.github.io/helm-charts"
-    helm_chart: loki-stack
-    helm_target_namespace: {{ metal_monitoring_namespace }}
-    helm_release_name: loki-stack
-    helm_value_file_template: "loki-stack-values.yaml"
+# # Stores logs
+# - name: Deploy loki-stack
+#   include_role:
+#     name: ansible-common/roles/helm-chart
+#   vars:
+#     helm_repo: "https://grafana.github.io/helm-charts"
+#     helm_chart: loki-stack
+#     helm_target_namespace: {{ metal_monitoring_namespace }}
+#     helm_release_name: loki-stack
+#     helm_value_file_template: "loki-stack-values.yaml"
 
 
 - name: Deploy Grafana Dashboard ConfigMaps
