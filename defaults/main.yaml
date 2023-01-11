@@ -82,3 +82,8 @@ metal_stack_release:
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
+    # monitoring
+    metal_monitoring_namespace: ""
+    prometheus_version: ""
+    grafana_version: ""
+    node_exporter_version: ""
