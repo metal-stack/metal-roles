@@ -33,6 +33,11 @@
     dest: /usr/local/bin/frr-reload.py
     mode: '0700'
 
+- name: create /etc/sonic/metal directory for ConfigDB patches
+  file:
+    path: /etc/sonic/metal
+    state: directory
+    
 - name: install services
   copy:
     src: "{{ item }}"
@@ -42,3 +47,14 @@
     - bgp-validation@.service
     - write-to-db@.service
     - config-save-reload.service
+
+- name: create base config patch for ConfigDB
+  template:
+    src: configdb-base.json
+    dest: /etc/sonic/metal/base.json
+
+- name: apply base config patch to ConfigDB
+  systemd:
+    name: write-to-db@/etc/sonic/metal/base.json.service
+    enabled: yes
+    state: started

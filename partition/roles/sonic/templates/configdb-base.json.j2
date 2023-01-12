@@ -1,0 +1,31 @@
+{
+  "FEATURE": {
+    "dhcp_relay": {
+      "state": "enabled"
+    }
+  },
+  "LOOPBACK_INTERFACE": {
+    "Loopback0": {},
+    "Loopback0|{{ lo }}": {}
+  },
+  "VLAN": {
+    "Vlan4000": {
+{% if metal_core_dhcp_servers is defined %}
+        "vlanid": "4000",
+        "dhcp_servers": {{ metal_core_dhcp_servers }}
+{% else %}
+        "vlanid": "4000"
+{% endif %}
+    }
+  },
+  "VLAN_INTERFACE": {
+    "Vlan4000": {},
+    "Vlan4000|{{ metal_core_cidr }}": {}
+  },
+  "VXLAN_TUNNEL_MAP": {
+    "vtep|map_104000_Vlan4000": {
+      "vlan": "Vlan4000",
+      "vni": "104000"
+    }
+  }
+}
