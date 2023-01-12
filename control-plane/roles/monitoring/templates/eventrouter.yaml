@@ -71,7 +71,7 @@ spec:
     spec:
       containers:
         - name: kube-eventrouter
-          image: mwennrich/eventrouter:latest
+          image: {{monitoring_eventrouter_image_name}}:{{monitoring_eventrouter_image_tag}}
           imagePullPolicy: IfNotPresent
           volumeMounts:
           - name: config-volume

@@ -29,3 +29,6 @@ The following variables can be set to configure the role:
 |      node_exporter_version          |          | yes       | Node exporter version                                       |
 |  monitoring_alertlogger_image_name  |          | yes       | Alertlogger image name                                      |
 |  monitoring_alertlogger_image_tag   |          | yes       | Alertlogger image tag                                       |
+|  monitoring_eventrouter_image_name  |          | yes       | eventrouter image name                                      |
+|  monitoring_eventrouter_image_tag   |          | yes       | eventrouter image tag                                       |
+

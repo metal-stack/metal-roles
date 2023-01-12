@@ -89,3 +89,5 @@ metal_stack_release:
     prometheus_version: ""
     grafana_version: ""
     node_exporter_version: ""
+    monitoring_eventrouter_image_name: ""
+    monitoring_eventrouter_image_tag: ""
