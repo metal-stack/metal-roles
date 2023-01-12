@@ -20,18 +20,6 @@
     helm_value_file_template: "prometheus-stack-values.yaml"
 
 
-# # Stores logs
-# - name: Deploy loki-stack
-#   include_role:
-#     name: ansible-common/roles/helm-chart
-#   vars:
-#     helm_repo: "https://grafana.github.io/helm-charts"
-#     helm_chart: loki-stack
-#     helm_target_namespace: {{ metal_monitoring_namespace }}
-#     helm_release_name: loki-stack
-#     helm_value_file_template: "loki-stack-values.yaml"
-
-
 - name: Deploy Grafana Dashboard ConfigMaps
   k8s:
     definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
@@ -120,21 +108,6 @@
     - masterdata_db_servicemonitor.yaml
     - ipam_db_servicemonitor.yaml
     - nginx_servicemonitor.yaml
-
-
-# Set up alerting rules for Loki 
-- name: Deploy alerting rules
-  k8s:
-    definition: "{{ lookup('template', 'rules/' + item) }}"
-    namespace: {{ metal_monitoring_namespace }}
-  loop:
-    # - partition-rules.yaml
-    # - shoot-operation-rules.yaml
-    # - seed-rules.yaml
-    - db-backup-rules.yaml
-    - metal-api-rules.yaml
-    # - keycloak-rules.yaml
-    # - thanos-rules.yaml
 
 
 - name: Create monitoring ingress for grafana

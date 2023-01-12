@@ -20,10 +20,12 @@ The following variables can be set to configure the role:
 
 ### General
 
-| Name                               | Mandatory | Description                                                                                                                        |
-|------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------|
-| metal_monitoring_namespace          |           | Naming of the newly created namespace           
-|      prometheus_version             |  
-|      grafana_version                |  
-|      node_exporter_version          |     
 
+| Name                                           | Mandatory | Description                                                 |
+|------------------------------------------------|-----------|-------------------------------------------------------------|
+| metal_monitoring_namespace          |          | yes       | Naming of the newly created namespace                       |           
+|      prometheus_version             |          | yes       | Prometheus version                                          |
+|      grafana_version                |          | yes       | Grafana version                                             | 
+|      node_exporter_version          |          | yes       | Node exporter version                                       |
+|  monitoring_alertlogger_image_name  |          | yes       | Alertlogger image name                                      |
+|  monitoring_alertlogger_image_tag   |          | yes       | Alertlogger image tag                                       |

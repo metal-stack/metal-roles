@@ -19,7 +19,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: alertlogger
-        image: docker.io/mwennrich/alertlogger:v0.9.0
+        image: {{monitoring_alertlogger_image_name}}:{{monitoring_alertlogger_image_tag}}
         ports:
         - containerPort: 5001
           name: http
