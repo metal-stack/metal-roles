@@ -4,6 +4,7 @@ kind: Ingress
 metadata:
   name: monitoring-ingress-alerts
   annotations:
+{% if monitoring_ingress_alerts_tls %}
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: alerts-basic-auth
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - alertmanager'
@@ -15,10 +16,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - alerts.{{ metal_control_plane_ingress_dns }}
+      - monitoring_alerts.{{ metal_control_plane_ingress_dns }}
       secretName: monitoring-ingress-tls-alerts
   rules:
-  - host: alerts.{{ metal_control_plane_ingress_dns }}
+  - host: monitoring_alerts.{{ metal_control_plane_ingress_dns }}
     http:
       paths:
       - path: /
