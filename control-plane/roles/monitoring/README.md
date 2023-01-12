@@ -31,4 +31,5 @@ The following variables can be set to configure the role:
 |  monitoring_alertlogger_image_tag   |          | yes       | Alertlogger image tag                                       |
 |  monitoring_eventrouter_image_name  |          | yes       | eventrouter image name                                      |
 |  monitoring_eventrouter_image_tag   |          | yes       | eventrouter image tag                                       |
+|  monitoring_additional_ingress_annotations     |           | Annotations that will be attached to the ingress resource   |
 
