@@ -4,7 +4,8 @@ image:
 serviceMonitor:
   enabled: true
   labels:
-      release: prometheus
+    release: prometheus
+
 config:
   clients:
     - url: http://loki:3100/loki/api/v1/push
@@ -33,4 +34,4 @@ config:
               source: event
 
 extraArgs:
-  - -client.external-labels=cluster={{ environment_name }}
+  - -client.external-labels=cluster={{ metal_control_plane_stage_name }}

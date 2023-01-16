@@ -4,21 +4,26 @@ kind: Ingress
 metadata:
   name: monitoring-ingress-loki
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    fluentbit.io/parser: nginx
-    kubernetes.io/ingress.class: nginx
+{% if logging_ingress_loki_tls %}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
-    nginx.ingress.kubernetes.io/auth-tls-secret: "monitoring/loki-ca-secret"
+    nginx.ingress.kubernetes.io/auth-tls-secret: "{{ logging_namespace }}/loki-ca-secret"
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+{% endif %}
+{% for key, value in logging_ingress_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
 spec:
+  ingressClassName: nginx
+{% if logging_ingress_loki_tls %}
   tls:
     - hosts:
-      - loki.{{ metal_control_plane_ingress_dns }}
+      - {{ logging_ingress_dns }}
       secretName: monitoring-loki-ingress-tls
+{% endif %}
   rules:
-  - host: loki.{{ metal_control_plane_ingress_dns }}
+  - host: {{ logging_ingress_dns }}
     http:
       paths:
       - path: /
