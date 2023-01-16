@@ -32,5 +32,6 @@ The following variables can be set to configure the role:
 |  monitoring_eventrouter_image_name  |          | yes       | eventrouter image name                                      |
 |  monitoring_eventrouter_image_tag   |          | yes       | eventrouter image tag                                       |
 |  monitoring_additional_ingress_annotations     |           | Annotations that will be attached to the ingress resource   |
-| monitoring_ingress_dns                         |           | Domain 
+|  monitoring_ingress_dns                        |           | Domain 
+|  monitoring_tls                                |           | Enables TLS for monitoring                                  |
 
