@@ -87,11 +87,5 @@ metal_stack_release:
     logging_chart_version: "helm-charts.logging.loki-stack.version"
     logging_chart_repo: "helm-charts.logging.loki-stack.repository"
     # monitoring
-    # metal_monitoring_namespace: ""
-    # metal_monitoring_image_name: ""
-    # metal_monitoring_image_tag: ""
-    # prometheus_version: ""
-    # grafana_version: ""
-    # node_exporter_version: ""
-    # monitoring_eventrouter_image_name: ""
-    # monitoring_eventrouter_image_tag: ""
+    prometheus_stack_version: "helm-charts.monitoring.kube-prometheus-stack.version"
+    prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"

@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: thanos-receiver-hashrings
-  namespace: monitoring
-data:
-  thanos-receiver-hashrings.json: |
-    [ { "hashring": "soft-tenants", "endpoints": ["thanos-receiver-0:10901","thanos-receiver-1:10901"] } ]
