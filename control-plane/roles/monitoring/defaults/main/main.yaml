@@ -1,1 +1,4 @@
+---
+monitoring_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
+monitoring_tls: yes
 monitoring_additional_ingress_annotations: {}
