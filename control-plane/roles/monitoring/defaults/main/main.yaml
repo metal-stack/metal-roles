@@ -4,3 +4,4 @@ monitoring_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
 monitoring_tls: yes
 monitoring_metal_metrics_exporter_version:
 monitoring_additional_ingress_annotations: {}
+monitoring_prometheus_operator_version: "9.3.2"

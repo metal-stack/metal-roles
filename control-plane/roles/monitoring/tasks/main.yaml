@@ -11,7 +11,7 @@
         name: "{{ metal_monitoring_namespace }}"
         labels:
           name: "{{ metal_monitoring_namespace }}"
-
+    
 - name: Deploy kube-prometheus-stack
   include_role:
     name: ansible-common/roles/helm-chart
@@ -20,9 +20,8 @@
     helm_chart: kube-prometheus-stack
     helm_target_namespace: "{{ metal_monitoring_namespace }}"
     helm_release_name: kube-prometheus-stack
-    helm_chart_version: "{{prometheus_chart_version}}"
+    helm_chart_version: "{{ prometheus_chart_version }}"
     helm_value_file_template: "prometheus-stack-values.yaml"
-
 
 # - name: Deploy Grafana Dashboard ConfigMaps
 #   k8s:
