@@ -87,5 +87,5 @@ metal_stack_release:
     logging_chart_version: "helm-charts.logging.loki-stack.version"
     logging_chart_repo: "helm-charts.logging.loki-stack.repository"
     # monitoring
-    prometheus_stack_version: "helm-charts.monitoring.kube-prometheus-stack.version"
+    prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"

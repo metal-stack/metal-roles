@@ -26,7 +26,7 @@
 # - name: Deploy Grafana Dashboard ConfigMaps
 #   k8s:
 #     definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
-#     namespace: {{ metal_monitoring_namespace }}
+#     namespace: "{{ metal_monitoring_namespace }}"
 #   loop:
 #      - go-processes.yaml
 #      - alertmanager.yaml
