@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gardener-metrics-exporter
+  namespace: {{ k8s_monitoring_namespace }}
+  labels:
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gardener
+      role: metrics-exporter
+  template:
+    metadata:
+      labels:
+        app: gardener
+        role: metrics-exporter
+    spec:
+      serviceAccountName: gardener-metrics-exporter
+      automountServiceAccountToken: false
+      containers:
+      - name: gardener-metrics-exporter
+        image: eu.gcr.io/gardener-project/gardener/metrics-exporter:0.20.0
+        imagePullPolicy: IfNotPresent
+        command:
+        - /gardener-metrics-exporter
+        - --bind-address=0.0.0.0
+        - --port=2718
+        - --kubeconfig=/etc/seed/kubecfg.yaml
+        ports:
+        - name: port
+          containerPort: 2718
+        volumeMounts:
+          - mountPath: /etc/seed
+            name: seed-kubecfg
+            readOnly: true
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+      volumes:
+        - name: seed-kubecfg
+          secret:
+            defaultMode: 420
+            secretName: seed-kubecfg

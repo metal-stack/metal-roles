@@ -82,6 +82,25 @@
     namespace: "{{ metal_monitoring_namespace }}"
     apply: true
 
+- name: Deploy RethinkDB Exporter
+  k8s:
+    definition: "{{ lookup('template', item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+     - rethinkdb-exporter.yaml
+
+
+- name: Deploy gardener-metrics-exporter
+  k8s:
+    definition: "{{ lookup('template', 'gardener-metrics-exporter/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+     - secret-metric-exporter.yaml
+     - serviceaccount-metrics-exporter.yaml
+     - rbac.yaml
+     - deployment-metrics-exporter.yaml
+     - service-metrics-exporter.yaml
+  when: lookup('k8s', api_version='v1', kind='Namespace', resource_name='garden')
 
 
 
