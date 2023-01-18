@@ -1,0 +1,32 @@
+---
+- name: Create namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ metal_control_plane_namespace }}"
+        labels:
+          name: "{{ metal_control_plane_namespace }}"
+
+- name: Create meili secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ metal_auditing_meili_auth_existing_secret }}"
+        namespace: "{{ metal_control_plane_namespace }}"
+      stringData:
+        MEILI_MASTER_KEY: "{{ metal_auditing_meili_auth_secret }}"
+
+- name: Deploy meilisearch
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "https://meilisearch.github.io/meilisearch-kubernetes"
+    helm_chart: meilisearch
+    helm_target_namespace: "{{ metal_control_plane_namespace }}"
+    helm_chart_version: "{{ metal_auditing_meili_chart_version }}"
+    helm_release_name: auditing-meili
+    helm_value_file_template: "values.yaml"

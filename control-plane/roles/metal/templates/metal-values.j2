@@ -199,12 +199,6 @@ auditing:
   enabled: {{ metal_auditing_enabled }}
   index_prefix: "{{ metal_auditing_index_prefix }}"
   index_interval: "{{ metal_auditing_index_interval }}"
-  auditing_secret: "{{ metal_auditing_secret }}"
-
-meilisearch:
-  ingress: {{ metal_meilisearch_ingress }}
-  persistence: {{ metal_meilisearch_persistence}}
-  environment:
-    MEILI_ENV: "{{ metal_meilisearch_environment }}"
-  auth:
-    existingSecret: "{{ metal_meilisearch_auth_existing_secret }}"
+  auditing_secret: "{{ metal_auditing_meili_secret }}"
+  existingMasterKeySecret: "{{ metal_auditing_meili_auth_existing_secret }}"
+  url: "{{  metal_auditing_url }}"

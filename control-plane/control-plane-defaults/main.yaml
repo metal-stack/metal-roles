@@ -9,7 +9,6 @@ metal_control_plane_image_pull_policy: IfNotPresent
 metal_auditing_enabled: true
 metal_auditing_index_prefix: "auditing"
 metal_auditing_index_interval: "@daily"
-metal_meilisearch_ingress: {}
-metal_meilisearch_environment: development
-metal_meilisearch_auth_existing_secret: metal-auditing-master-key
-metal_meilisearch_persistence: {}
+metal_auditing_meili_auth_existing_secret: metal-auditing-master-key
+metal_auditing_meili_auth_secret: "geheim"
+metal_auditing_url: "http://auditing-meili-meilisearch.metal-control-plane.svc.cluster.local:7700"
