@@ -23,72 +23,64 @@
     helm_chart_version: "{{ prometheus_chart_version }}"
     helm_value_file_template: "prometheus-stack-values.yaml"
 
-# - name: Deploy Grafana Dashboard ConfigMaps
-#   k8s:
-#     definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
-#     namespace: "{{ metal_monitoring_namespace }}"
-#   loop:
-#      - go-processes.yaml
-#      - alertmanager.yaml
-#      - ipmi-state.yaml
-#      - frr-state.yaml
-#      - cumulus-state.yaml
-#      - metal-api-state.yaml
-#      - network-traffic.yaml
-#      - nginx.yaml
-#      - rgw-usage.yaml
-#      - fio-exporter.yaml
-#      - machine-capacity.yaml
+- name: Deploy Grafana Dashboard ConfigMaps
+  k8s:
+    definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+     - go-processes.yaml
+     - alertmanager.yaml
+     - ipmi-state.yaml
+     - frr-state.yaml
+     - cumulus-state.yaml
+     - metal-api-state.yaml
+     - network-traffic.yaml
+     - nginx.yaml
+     - rgw-usage.yaml
+     - fio-exporter.yaml
+     - machine-capacity.yaml
+     - leaf-switches.yaml
 
-# - name: Deploy Grafana dashboards
-#   k8s:
-#     definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
-#     namespace: "{{ metal_monitoring_namespace }}"
-#   loop:
-#     - go-processes.yaml
-#     - metal-api.yaml
-
-# - name: Deploy metal-metrics-exporter
-#   k8s:
-#     definition: "{{ lookup('template', 'metal-metrics-exporter/' + item) }}"
-#     namespace: {{ metal_monitoring_namespace }}
-#   loop:
-#     - metal-metrics-exporter-secret.yaml
-#     - metal-metrics-exporter-deployment.yaml
-#     - metal-metrics-exporter-service.yaml
+- name: Deploy Grafana dashboards
+  k8s:
+    definition: "{{ lookup('template', 'grafana_dashboards/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+    - go-processes.yaml
+    - metal-api.yaml
 
 
-# - name: Deploy metal-metrics-exporter
-#   k8s:
-#     definition: "{{ lookup('template', 'metal-metrics-exporter/' + item) }}"
-#     namespace: {{ metal_monitoring_namespace }}
-#   loop:
-#     - metal-metrics-exporter-secret.yaml
-#     - metal-metrics-exporter-deployment.yaml
-#     - metal-metrics-exporter-service.yaml
-#     - metal-metrics-exporter-servicemonitor.yaml
+- name: Deploy metal-metrics-exporter
+  k8s:
+    definition: "{{ lookup('template', 'metal-metrics-exporter/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+    - metal-metrics-exporter-secret.yaml
+    - metal-metrics-exporter-deployment.yaml
+    - metal-metrics-exporter-service.yaml
+    - metal-metrics-exporter-servicemonitor.yaml
 
 
-# - name: Create service monitors
-#   k8s:
-#     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
-#     namespace: {{ metal_monitoring_namespace }}
-#   loop:
-#     - metal-metrics-exporter-servicemonitor.yaml
-#     - machine_controller_manager_servicemonitor.yaml
-#     - metal_api_servicemonitor.yaml
-#     - metal_db_servicemonitor.yaml
-#     - masterdata_api_servicemonitor.yaml
-#     - masterdata_db_servicemonitor.yaml
-#     - ipam_db_servicemonitor.yaml
-#     - nginx_servicemonitor.yaml
+- name: Create service monitors
+  k8s:
+    definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+  loop:
+    - metal-metrics-exporter-servicemonitor.yaml
+    - machine_controller_manager_servicemonitor.yaml
+    - metal_api_servicemonitor.yaml
+    - metal_db_servicemonitor.yaml
+    - masterdata_api_servicemonitor.yaml
+    - masterdata_db_servicemonitor.yaml
+    - ipam_db_servicemonitor.yaml
+    - nginx_servicemonitor.yaml
 
 
-# - name: Create monitoring ingress for grafana
-#   k8s:
-#     definition: "{{ lookup('template', 'grafana_ingress.yaml') }}"
-#     namespace: "{{ metal_monitoring_namespace }}"
-#     apply: true
+- name: Create monitoring ingress for grafana
+  k8s:
+    definition: "{{ lookup('template', 'grafana_ingress.yaml') }}"
+    namespace: "{{ metal_monitoring_namespace }}"
+    apply: true
 
 
 
