@@ -2,11 +2,11 @@
 
 This role is designed to set up monitoring using Ansible. 
 The role includes tasks to install and configure the following monitoring tools:
--    Prometheus
--     Grafana
--    Node Exporter
--    Alertmanager
--    Thanos
+- Prometheus
+- Grafana
+- Node Exporter
+- Alertmanager
+- Thanos
 
 ## Variables
 
