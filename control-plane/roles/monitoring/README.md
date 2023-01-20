@@ -20,15 +20,15 @@ The following variables can be set to configure the role:
 
 | Name                                           | Mandatory | Description                                                 |
 |------------------------------------------------|-----------|-------------------------------------------------------------|
-| metal_monitoring_namespace          |          | yes       | Naming of the newly created namespace                       |           
-|      prometheus_version             |          | yes       | Prometheus version                                          |
-|      grafana_version                |          | yes       | Grafana version                                             | 
-|      node_exporter_version          |          | yes       | Node exporter version                                       |
-|  monitoring_alertlogger_image_name  |          | yes       | Alertlogger image name                                      |
-|  monitoring_alertlogger_image_tag   |          | yes       | Alertlogger image tag                                       |
-|  monitoring_eventrouter_image_name  |          | yes       | eventrouter image name                                      |
-|  monitoring_eventrouter_image_tag   |          | yes       | eventrouter image tag                                       |
+| metal_monitoring_namespace                     | yes       | Naming of the newly created namespace                       |           
+|      prometheus_version                        | yes       | Prometheus version                                          |
+|      grafana_version                           | yes       | Grafana version                                             | 
+|      node_exporter_version                     | yes       | Node exporter version                                       |
+|  monitoring_alertlogger_image_name             | yes       | Alertlogger image name                                      |
+|  monitoring_alertlogger_image_tag              | yes       | Alertlogger image tag                                       |
+|  monitoring_eventrouter_image_name             | yes       | eventrouter image name                                      |
+|  monitoring_eventrouter_image_tag              | yes       | eventrouter image tag                                       |
 |  monitoring_additional_ingress_annotations     |           | Annotations that will be attached to the ingress resource   |
-|  monitoring_ingress_dns                        |           | Domain 
+|  monitoring_ingress_dns                        |           | Domain                                                      |
 |  monitoring_tls                                |           | Enables TLS for monitoring                                  |
 
