@@ -30,7 +30,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: DB_PASSWORD
-          value: {{ metal_db_password }}
+          value: {{ monitoring_metal_db_password }}
         - name: DB_ADDRESSES
           value: metal-db.metal-control-plane:28015
         - name: STATS_TABLE_ESTIMATES

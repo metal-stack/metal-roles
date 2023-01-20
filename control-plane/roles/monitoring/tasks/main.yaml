@@ -49,7 +49,6 @@
     - go-processes.yaml
     - metal-api.yaml
 
-
 - name: Deploy metal-metrics-exporter
   k8s:
     definition: "{{ lookup('template', 'metal-metrics-exporter/' + item) }}"
