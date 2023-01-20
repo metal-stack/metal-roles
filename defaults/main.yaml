@@ -89,4 +89,3 @@ metal_stack_release:
     # monitoring
     prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
-    
