@@ -1,6 +1,6 @@
 # monitoring
 
-This role is designed to set up monitoring for a Linux-based system using Ansible. 
+This role is designed to set up monitoring using Ansible. 
 The role includes tasks to install and configure the following monitoring tools:
 -    Prometheus
 -     Grafana

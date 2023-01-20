@@ -7,4 +7,4 @@ logging_ingress_annotations: {}
 
 logging_loki_size: 30Gi
 
-logging_gcp_service_account_json:
+logging_gcp_service_account_json: ""
