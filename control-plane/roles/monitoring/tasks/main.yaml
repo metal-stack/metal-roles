@@ -96,5 +96,3 @@
 #      - deployment-metrics-exporter.yaml
 #      - service-metrics-exporter.yaml
 #   when: lookup('k8s', api_version='v1', kind='Namespace', resource_name='garden')
-
-
