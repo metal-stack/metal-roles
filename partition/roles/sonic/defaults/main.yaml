@@ -17,6 +17,7 @@ sonic_ports_default_fec: none
 sonic_loopback_address:
 sonic_asn: 
 sonic_bgp_ports: []
+sonic_frr_render: true
 sonic_frr_debug_options: []
 sonic_frr_syslog_level: informational
 sonic_frr_l2vpn_evpn: false

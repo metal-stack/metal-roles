@@ -4,7 +4,7 @@ Description=Save and reload ConfigDB
 [Service]
 Type=oneshot
 ExecStartPre=/usr/local/bin/config save -y
-ExecStart=/usr/local/bin/config reload -y
+ExecStart=/usr/local/bin/frr-reload.py /etc/sonic/frr/frr.conf --reload --confdir /etc/sonic/frr --debug --rundir /etc/sonic/frr/
 StandardOutput=journal
 
 [Install]

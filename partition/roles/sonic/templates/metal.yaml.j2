@@ -23,27 +23,34 @@ MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: {{ sonic_mgmt_vrf | bool }}
 
+{% if sonic_breakouts is defined and sonic_breakouts.items()|length > 0  %}
 BREAKOUT_CFG:
   {% for port, mode in sonic_breakouts.items() %}
   {{ port }}:
     brkout_mode: "{{ mode }}"
   {% endfor %}
+{% endif %}
 
+{% if sonic_bgp_ports is defined and sonic_bgp_ports|length > 0 %}
 INTERFACE:
   {% for port in sonic_bgp_ports %}
   {{ port }}:
     ipv6_use_link_local_only: enable
   {% endfor %}
+{% endif %}
 
+{% if sonic_ports|length > 0 %}
 PORT:
   {% for port in sonic_ports %}
   {{ port.name }}:
     admin_status: up
-    speed: {{ port.speed|default(sonic_ports_default_speed) }}
-    mtu: {{ port.mtu|default(sonic_ports_default_mtu) }}
-    fec: {{ port.fec|default(sonic_ports_default_fec)|string|lower }}
+    speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
+    mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
+    fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
   {% endfor %}
+{% endif %}
 
+{% if sonic_vlans is defined and sonic_vlans|length > 0 %}
 VLAN:
   {% for vlan in sonic_vlans %}
   Vlan{{ vlan.id }}:
@@ -66,3 +73,5 @@ VLAN_MEMBER:
       tagging_mode: untagged
   {% endfor %}
   {% endfor %}
+
+{% endif %}

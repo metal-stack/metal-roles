@@ -53,5 +53,9 @@
   template:
     src: frr.conf.j2
     dest: /etc/sonic/frr/frr.conf
+  when: sonic_frr_render
   notify:
   - config reload
+
+- name: Flush handlers
+  meta: flush_handlers
