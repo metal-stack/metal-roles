@@ -16,7 +16,7 @@
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "https://prometheus-community.github.io/helm-charts"
+    helm_repo: "{{ prometheus_stack_repo }}"
     helm_chart: kube-prometheus-stack
     helm_target_namespace: "{{ metal_monitoring_namespace }}"
     helm_release_name: kube-prometheus-stack
