@@ -81,10 +81,9 @@
 
 - name: Deploy RethinkDB Exporter
   k8s:
-    definition: "{{ lookup('template', item) }}"
+    definition: "{{ lookup('template', 'rethinkdb-exporter.yaml') }}"
     namespace: "{{ metal_monitoring_namespace }}"
-  loop:
-     - rethinkdb-exporter.yaml
+    apply: true
 
 - name: Deploy gardener-metrics-exporter
   k8s:
