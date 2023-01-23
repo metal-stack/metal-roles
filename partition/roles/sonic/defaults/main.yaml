@@ -1,0 +1,34 @@
+---
+sonic_mgmt_vrf: true
+sonic_ntpservers: []
+sonic_nameservers: []
+sonic_ip_masquerade: false
+
+## Physical settings
+sonic_breakouts: {}
+sonic_ports: []
+#- name: Ethernet50
+#  speed: 10000
+sonic_ports_default_speed: 10000
+sonic_ports_default_mtu: 9216
+sonic_ports_default_fec: none 
+
+## BGP related settings
+sonic_loopback_address:
+sonic_asn: 
+sonic_bgp_ports: []
+sonic_frr_render: true
+sonic_frr_debug_options: []
+sonic_frr_syslog_level: informational
+sonic_frr_l2vpn_evpn: false
+sonic_frr_route_map: {}
+# name: LOOPBACKS
+# match: interface name Loopback0
+sonic_frr_static_routes: []
+
+# VLAN settings
+sonic_vlans: []
+#- id: 1
+#  ip: ''
+#  untagged_ports: []
+#  dhcp_servers: [] 
