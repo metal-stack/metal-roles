@@ -2,7 +2,7 @@
 
 Configures and starts dhcpd.
 
-This role can deploy on switches running Cumulus Linux or SONiC. It then requires the `switch_facts` module from `ansible-common` to be run beforehand.
+This role can deploy on switches running Cumulus Linux or SONiC. It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
 
 ## Variables
 
@@ -14,5 +14,5 @@ This role can deploy on switches running Cumulus Linux or SONiC. It then require
 | dhcp_subnets.netmask     | yes       | The netmask of the dhcp network                                 |
 | dhcp_subnets.range.begin | yes       | The smallest address within the dhcp network to offer           |
 | dhcp_subnets.range.end   | yes       | The highest address within the dhcp network to offer            |
-| dhcp_subnets.options     |           | The options for a given subnet.                                 |
-| dhcp_global_options      |           | The global options.                                             |
+| dhcp_subnets.options     |           | The options for a given subnet                                  |
+| dhcp_global_options      |           | The global options                                              |
