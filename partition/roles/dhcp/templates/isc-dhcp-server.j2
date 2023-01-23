@@ -18,8 +18,8 @@
 
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
 #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
-{% if metal_stack_switch_os_is_sonic | default(false) %}
-INTERFACESv4="{{ dhcp_listening_interfaces | join(' ') }}"
-{% else %}
+{% if metal_stack_switch_os_is_cumulus | default(false) %}
 INTERFACES="{{ dhcp_listening_interfaces | join(' ') }}"
+{% else %}
+INTERFACESv4="{{ dhcp_listening_interfaces | join(' ') }}"
 {% endif %}

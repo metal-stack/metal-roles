@@ -7,7 +7,7 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - dhcp_listening_interfaces is iterable
+      - dhcp_listening_interfaces | type_debug == "list"
       - item.network is defined
       - item.netmask is not none
       - item.range is not none
