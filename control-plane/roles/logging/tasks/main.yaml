@@ -29,7 +29,7 @@
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "https://grafana.github.io/helm-charts"
+    helm_repo: "{{ logging_chart_repo }}"
     helm_chart: loki-stack
     helm_target_namespace: "{{ logging_namespace }}"
     helm_release_name: loki-stack
