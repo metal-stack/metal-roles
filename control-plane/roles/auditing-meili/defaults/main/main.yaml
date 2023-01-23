@@ -1,5 +1,6 @@
 ---
+metal_auditing_meili_secret: ""
+
 metal_auditing_meili_ingress: {}
-metal_auditing_meili_environment: development
+metal_auditing_meili_environment: production
 metal_auditing_meili_persistence: {}
-metal_auditing_meili_chart_version: "0.1.44"

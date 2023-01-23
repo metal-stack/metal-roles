@@ -1,4 +1,7 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: Create namespace
   k8s:
     definition:
@@ -10,21 +13,22 @@
           name: "{{ metal_control_plane_namespace }}"
 
 - name: Create meili secret
+  when: metal_auditing_meili_secret | length > 0
   k8s:
     definition:
       apiVersion: v1
       kind: Secret
       metadata:
-        name: "{{ metal_auditing_meili_auth_existing_secret }}"
+        name: "{{ metal_auditing_meili_secret_name }}"
         namespace: "{{ metal_control_plane_namespace }}"
       stringData:
-        MEILI_MASTER_KEY: "{{ metal_auditing_meili_auth_secret }}"
+        MEILI_MASTER_KEY: "{{ metal_auditing_meili_secret }}"
 
 - name: Deploy meilisearch
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "https://meilisearch.github.io/meilisearch-kubernetes"
+    helm_repo: "{{ metal_auditing_meili_chart_repo }}"
     helm_chart: meilisearch
     helm_target_namespace: "{{ metal_control_plane_namespace }}"
     helm_chart_version: "{{ metal_auditing_meili_chart_version }}"
