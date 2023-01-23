@@ -7,9 +7,6 @@ metadata:
 {% if monitoring_ingress_grafana_tls %}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
-    nginx.ingress.kubernetes.io/auth-tls-secret: "{{ monitoring_namespace }}/"
-    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
 {% endif %}
 {% for key, value in monitoring_additional_ingress_annotations.items() %}
     {{ key }}: "{{ value }}"
