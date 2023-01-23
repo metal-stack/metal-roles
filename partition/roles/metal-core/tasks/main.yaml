@@ -2,6 +2,9 @@
 - name: Gather release versions
   setup_yaml:
 
+- name: Gather switch facts
+  switch_facts:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
