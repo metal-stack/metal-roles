@@ -36,7 +36,6 @@
      - metal-api-state.yaml
      - network-traffic.yaml
      - nginx.yaml
-     - rgw-usage.yaml
      - fio-exporter.yaml
      - machine-capacity.yaml
      - leaf-switches.yaml
