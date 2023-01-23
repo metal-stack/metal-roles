@@ -1,10 +1,24 @@
 ---
-dhcp_net:
-dhcp_netmask:
-dhcp_range_min:
-dhcp_range_max:
-dhcp_server_ip:
+dhcp_subnets: []
+# examples:
+# - comment: ""
+#   network:
+#   netmask:
+#   range:
+#     begin:
+#     end:
+#   options: []
 
-dhcp_dns_servers:
-- 1.1.1.1
-- 8.8.8.8
+dhcp_listening_interfaces:
+ - vlan4000
+
+dhcp_default_lease_time: 172800
+dhcp_max_lease_time: 345600
+
+dhcp_global_options: []
+# examples:
+# - default-url = "http://{{ ansible_host }}/onie-installer"
+# - ztp_provisioning_script_url code 239 = text
+# - ztp_provisioning_script_url "http://{{ ansible_host }}/ztp.sh"
+
+dhcp_service_name: "{{ 'dhcpd' if metal_stack_switch_os_is_cumulus | default(false) else 'isc-dhcp-server' }}"
