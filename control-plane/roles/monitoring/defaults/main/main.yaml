@@ -3,7 +3,7 @@ metal_monitoring_namespace: monitoring
 monitoring_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
 monitoring_ingress_grafana_tls: yes
 monitoring_additional_ingress_annotations: {}
-monitoring_metal_db_password: "{{metal_db_password}}"
+monitoring_metal_db_password: "change-me"
 monitoring_grafana_ingress_cert: ""
 monitoring_metal_metrics_exporter: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_hmac: "metal-admin"
