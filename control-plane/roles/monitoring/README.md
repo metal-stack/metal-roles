@@ -1,12 +1,12 @@
 # monitoring
 
-This role is designed to set up monitoring using Ansible. 
+This role is designed to set up monitoring using Ansible.
 The role includes tasks to install and configure the following monitoring tools:
+
 - Prometheus
 - Grafana
 - Node Exporter
 - Alertmanager
-- Thanos
 
 ## Variables
 
@@ -17,18 +17,14 @@ The following variables can be set to configure the role:
 
 ### General
 
-
-| Name                                           | Mandatory | Description                                                 |
-|------------------------------------------------|-----------|-------------------------------------------------------------|
-| metal_monitoring_namespace                     | yes       | Naming of the newly created namespace                       |           
-|      prometheus_version                        | yes       | Prometheus version                                          |
-|      grafana_version                           | yes       | Grafana version                                             | 
-|      node_exporter_version                     | yes       | Node exporter version                                       |
-|  monitoring_alertlogger_image_name             | yes       | Alertlogger image name                                      |
-|  monitoring_alertlogger_image_tag              | yes       | Alertlogger image tag                                       |
-|  monitoring_eventrouter_image_name             | yes       | eventrouter image name                                      |
-|  monitoring_eventrouter_image_tag              | yes       | eventrouter image tag                                       |
-|  monitoring_additional_ingress_annotations     |           | Annotations that will be attached to the ingress resource   |
-|  monitoring_ingress_dns                        |           | Domain                                                      |
-|  monitoring_ingress_grafana_tls                | yes       | Enables TLS for monitoring                                  |
-
+| Name                                      | Mandatory | Description                                                 |
+| ----------------------------------------- | --------- | ----------------------------------------------------------- |
+| monitoring_namespace                      |           | Name of the monitoring namespace                            |
+| monitoring_prometheus_tag                 |           | Prometheus container image tag, defaults to chart's default |
+| monitoring_alertlogger_image_name         | yes       | Alertlogger image name                                      |
+| monitoring_alertlogger_image_tag          | yes       | Alertlogger image tag                                       |
+| monitoring_eventrouter_image_name         | yes       | eventrouter image name                                      |
+| monitoring_eventrouter_image_tag          | yes       | eventrouter image tag                                       |
+| monitoring_additional_ingress_annotations |           | Annotations that will be attached to the ingress resource   |
+| monitoring_ingress_dns                    |           | The dns name used for exposing services via ingress         |
+| monitoring_ingress_grafana_tls            |           | Enables TLS for monitoring                                  |

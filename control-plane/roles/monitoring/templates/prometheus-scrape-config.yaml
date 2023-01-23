@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: prometheus-prometheus-scrape-confg
-data:
-  additional-scrape-configs.yaml: {{ monitoring_prometheus_scrape_config | b64encode }}

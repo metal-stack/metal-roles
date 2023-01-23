@@ -1,3 +1,27 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: metal-metrics-exporter-config
+type: Opaque
+stringData:
+  url: {{ monitoring_metal_api_url }}
+  hmac: {{ monitoring_metal_api_hmac }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metal-metrics-exporter
+  labels:
+    app: metal-metrics-exporter
+spec:
+  ports:
+    - name: metrics
+      port: 9080
+      targetPort: metrics
+  selector:
+    app: metal-metrics-exporter
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,9 +43,10 @@ spec:
         - name: metal-metrics-exporter
           command:
             - /metal-metrics-exporter
-          image: "ghcr.io/metal-stack/metal-metrics-exporter:latest"
+          image: {{ metal_metrics_exporter_image_name }}:{{ metal_metrics_exporter_image_tag }}
+          imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
           ports:
-            - containerPort: 9081
+            - containerPort: 9080
               name: metrics
           env:
             - name: METAL_API_URL

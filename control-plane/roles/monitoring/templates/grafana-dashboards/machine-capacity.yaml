@@ -42,7 +42,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P5DCFC7561CCDE821"
+            "uid": "prometheus"
           },
           "description": "",
           "fieldConfig": {
@@ -100,11 +100,11 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "P5DCFC7561CCDE821"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(metal_partition_capacity_free{partition=\"$partition\", size=~\".+-.+\", size!~\"s3-large-x86|s2-xlarge-x86\"}) by (partition,size)",
+              "expr": "sum(metal_partition_capacity_free{partition=\"$partition\", size=~\".+-.+\"}) by (partition,size)",
               "format": "time_series",
               "instant": true,
               "legendFormat": "{{size}}",
@@ -130,7 +130,7 @@ data:
             },
             "datasource": {
               "type": "prometheus",
-              "uid": "P5DCFC7561CCDE821"
+              "uid": "prometheus"
             },
             "definition": "label_values(metal_partition_capacity_total, partition)",
             "hide": 0,

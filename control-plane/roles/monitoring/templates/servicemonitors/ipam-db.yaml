@@ -1,19 +1,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: ipam-db-servicemonitor
-  namespace: monitoring
   labels:
-    app: ipam-db
-    release: prometheus
+    release: kube-prometheus-stack
+  name: ipam-db
 spec:
-  jobLabel: app
   selector:
     matchLabels:
       app: ipam-db
   namespaceSelector:
     matchNames:
-    - metal-control-plane
+    - {{ metal_control_plane_namespace }}
   endpoints:
   - port: "metrics"
     interval: 60s
