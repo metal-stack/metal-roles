@@ -44,7 +44,7 @@ data:
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "P5DCFC7561CCDE821"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -90,7 +90,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "P5DCFC7561CCDE821"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "frr_collector_up{instance=~\"$instance\", partition=~\"$partition\"}",
@@ -137,7 +137,7 @@ data:
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "P5DCFC7561CCDE821"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -183,7 +183,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "P5DCFC7561CCDE821"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(frr_bgp_peer_groups_count_total{instance=~\"$instance\", partition=~\"$partition\"}) by (instance)",
@@ -230,7 +230,7 @@ data:
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "P5DCFC7561CCDE821"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -277,7 +277,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "P5DCFC7561CCDE821"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(frr_bgp_peer_message_received_total{instance=~\"$instance\", partition=~\"$partition\"}[$__interval])) by(instance)  ",
@@ -324,7 +324,7 @@ data:
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "P5DCFC7561CCDE821"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -371,7 +371,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "P5DCFC7561CCDE821"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(frr_bgp_peer_message_sent_total{instance=~\"$instance\", partition=~\"$partition\"}[$__interval])) by(instance)  ",
@@ -426,7 +426,7 @@ data:
             },
             "datasource": {
               "type": "prometheus",
-              "uid": "P5DCFC7561CCDE821"
+              "uid": "prometheus"
             },
             "definition": "label_values(frr_collector_up, instance)",
             "hide": 0,
@@ -455,7 +455,7 @@ data:
             },
             "datasource": {
               "type": "prometheus",
-              "uid": "P5DCFC7561CCDE821"
+              "uid": "prometheus"
             },
             "definition": "label_values(frr_collector_up, partition)",
             "hide": 0,

@@ -31,12 +31,12 @@
     definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
-     - exit-traffic.yaml
-     - frr-state.yaml
      - machine-capacity.yaml
      - metal-api.yaml
      - network-traffic.yaml
   # *** Thanos required, will be added ***
+  #  - exit-traffic.yaml
+  #  - frr-state.yaml
   #  - metal-api-state.yaml
   #  - go-processes.yaml
   #  - ipmi-state.yaml
@@ -54,5 +54,6 @@
     - metal-api.yaml
     - metal-db.yaml
     - metal-metrics-exporter.yaml
+
 
 

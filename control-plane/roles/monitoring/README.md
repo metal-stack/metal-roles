@@ -28,3 +28,5 @@ The following variables can be set to configure the role:
 | monitoring_additional_ingress_annotations |           | Annotations that will be attached to the ingress resource   |
 | monitoring_ingress_dns                    |           | The dns name used for exposing services via ingress         |
 | monitoring_ingress_grafana_tls            |           | Enables TLS for monitoring                                  |
+| monitoring_prometheus_ingress_value       |           | Enables ingress for prometheus                              |
+

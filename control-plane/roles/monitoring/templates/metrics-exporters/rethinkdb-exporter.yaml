@@ -35,6 +35,8 @@ spec:
           value: {{ monitoring_rethinkdb_exporter_metal_db_endpoint }}
         - name: STATS_TABLE_ESTIMATES
           value: "true"
+        - name: LOG_JSON_OUTPUT
+          value: "true"
         ports:
         - name: metrics
           containerPort: 9055

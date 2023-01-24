@@ -88,3 +88,8 @@ metal_stack_release:
     logging_chart_repo: "helm-charts.logging.loki-stack.repository"
     prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
+    # monitoring
+    rethinkdb_exporter_repo: "docker-images.metal-stack.control-plane.rethinkdb-exporter.repository"
+    rethinkdb_exporter_tag: "docker-images.metal-stack.control-plane.rethinkdb-exporter.tag"
+    event_exporter_repo: "docker-images.metal-stack.control-plane.event-exporter.repository"
+    event_exporter_tag: "docker-images.metal-stack.control-plane.event-exporter.tag"
