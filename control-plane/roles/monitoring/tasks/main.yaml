@@ -12,6 +12,17 @@
         labels:
           name: "{{ monitoring_namespace }}"
 
+- name: Deploy kube-prometheus-stack
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ prometheus_stack_repo }}"
+    helm_chart: kube-prometheus-stack
+    helm_target_namespace: "{{ monitoring_namespace }}"
+    helm_release_name: kube-prometheus-stack
+    helm_chart_version: "{{ prometheus_chart_version }}"
+    helm_value_file_template: "prometheus-stack-values.yaml"
+
 - name: Deploy metrics exporters
   import_tasks: exporters.yaml
 
@@ -20,16 +31,17 @@
     definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
-     - cumulus-state.yaml
      - exit-traffic.yaml
      - frr-state.yaml
-     - go-processes.yaml
-     - ipmi-state.yaml
-     - leaf-switches.yaml
      - machine-capacity.yaml
-     - metal-api-state.yaml
      - metal-api.yaml
      - network-traffic.yaml
+  # *** Thanos required, will be added ***
+  #  - metal-api-state.yaml
+  #  - go-processes.yaml
+  #  - ipmi-state.yaml
+  #  - leaf-switches.yaml
+  #  - cumulus-state.yaml
 
 - name: Create service monitors
   k8s:
@@ -43,13 +55,4 @@
     - metal-db.yaml
     - metal-metrics-exporter.yaml
 
-- name: Deploy kube-prometheus-stack
-  include_role:
-    name: ansible-common/roles/helm-chart
-  vars:
-    helm_repo: "{{ prometheus_stack_repo }}"
-    helm_chart: kube-prometheus-stack
-    helm_target_namespace: "{{ monitoring_namespace }}"
-    helm_release_name: kube-prometheus-stack
-    helm_chart_version: "{{ prometheus_chart_version }}"
-    helm_value_file_template: "prometheus-stack-values.yaml"
+

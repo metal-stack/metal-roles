@@ -1,6 +1,5 @@
 ---
 monitoring_namespace: monitoring
-
 monitoring_grafana_admin_password: admin
 monitoring_grafana_dashboard_timezone: Europe/Berlin
 monitoring_grafana_additional_datasources:
