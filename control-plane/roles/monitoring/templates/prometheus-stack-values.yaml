@@ -1,7 +1,7 @@
 ---
 prometheus:
   ingress:
-    enabled: {{ monitoring_prometheus_ingress_value }}
+    enabled: {{ monitoring_prometheus_ingress_enabled }}
     ingressClassName: nginx
     hosts:
       - {{ monitoring_prometheus_ingress_dns }}

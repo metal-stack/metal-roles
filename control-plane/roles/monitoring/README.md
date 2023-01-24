@@ -19,14 +19,17 @@ The following variables can be set to configure the role:
 
 | Name                                      | Mandatory | Description                                                 |
 | ----------------------------------------- | --------- | ----------------------------------------------------------- |
+| rethinkdb_exporter_name                   | yes       | rethinkdb exporter image name                               |
+| rethinkdb_exporter_tag                    | yes       | rethinkdb exporter image tag                                |
+| event_exporter_name                       | yes       | event exporter image name                                   |
+| event_exporter_tag                        | yes       | event exporter image tag                                    |
+| logging_chart_version                     | yes       | version of the logging stack chart                          |
+| logging_chart_repo                        | yes       | chart of the logging stack                                  |
+| prometheus_chart_version                  | yes       | version of the prometheus stack chart                       |
+| prometheus_stack_repo                     | yes       | chart of the prometheus stack                               |
 | monitoring_namespace                      |           | Name of the monitoring namespace                            |
 | monitoring_prometheus_tag                 |           | Prometheus container image tag, defaults to chart's default |
-| monitoring_alertlogger_image_name         | yes       | Alertlogger image name                                      |
-| monitoring_alertlogger_image_tag          | yes       | Alertlogger image tag                                       |
-| monitoring_eventrouter_image_name         | yes       | eventrouter image name                                      |
-| monitoring_eventrouter_image_tag          | yes       | eventrouter image tag                                       |
 | monitoring_additional_ingress_annotations |           | Annotations that will be attached to the ingress resource   |
 | monitoring_ingress_dns                    |           | The dns name used for exposing services via ingress         |
 | monitoring_ingress_grafana_tls            |           | Enables TLS for monitoring                                  |
-| monitoring_prometheus_ingress_value       |           | Enables ingress for prometheus                              |
-
+| monitoring_prometheus_ingress_enabled     |           | Enables ingress for prometheus                              |
