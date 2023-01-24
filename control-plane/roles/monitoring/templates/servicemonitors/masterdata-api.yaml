@@ -1,12 +1,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: masterdata-api-servicemonitor
-  namespace: monitoring
   labels:
-    app: masterdata-api
-    k8s-app: masterdata-api-servicemonitor
-    release: prometheus
+    release: kube-prometheus-stack
+  name: masterdata-api
 spec:
   jobLabel: app
   selector:
@@ -14,7 +11,7 @@ spec:
       app: masterdata-api
   namespaceSelector:
     matchNames:
-    - metal-control-plane
+    - {{ metal_control_plane_namespace }}
   endpoints:
   - port: "2113"
     interval: 15s

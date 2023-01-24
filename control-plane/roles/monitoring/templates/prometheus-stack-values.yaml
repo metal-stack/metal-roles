@@ -1,28 +1,40 @@
+---
 prometheus:
   ingress:
     enabled: true
     ingressClassName: nginx
     hosts:
-      - prometheus.0.0.0.0.nip.io
+      - {{ monitoring_prometheus_ingress_dns }}
+{% if monitoring_additional_ingress_annotations %}
+    annotations:
+{% for key, value in monitoring_additional_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+
+{% if monitoring_prometheus_tag is defined %}
+  prometheusSpec:
+    image:
+      tag: "{{ monitoring_prometheus_tag }}"
+{% endif %}
 
 grafana:
-  adminPassword: admin
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      url: http://loki-stack:3100/
-      access: proxy
-      orgId: 1
-      version: 1
-      isDefault: false
-      jsonData:
-        maxLines: 1000
+  adminPassword: {{ monitoring_grafana_admin_password }}
+  defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
+
+  additionalDataSources: {{ monitoring_additional_ingress_annotations | to_json }}
 
   ingress:
     enabled: true
     ingressClassName: nginx
     hosts:
-      - grafana.0.0.0.0.nip.io
+      - {{ monitoring_grafana_ingress_dns }}
+{% if monitoring_additional_ingress_annotations %}
+    annotations:
+{% for key, value in monitoring_additional_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
 
 alertmanager:
   enabled: false

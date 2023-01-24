@@ -12,19 +12,6 @@
         labels:
           name: "{{ logging_namespace }}"
 
-- name: Deploy GCP secret for loki
-  k8s:
-    namespace: "{{ logging_namespace }}"
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: "{{ logging_namespace }}"
-      data:
-        gcs.json: "{{ logging_gcp_service_account_json }}"
-  when: logging_gcp_service_account_json is not none
-
-# Stores logs
 - name: Deploy loki-stack
   include_role:
     name: ansible-common/roles/helm-chart
