@@ -10,9 +10,8 @@
     definition: "{{ lookup('template', 'metrics-exporters/rethinkdb-exporter.yaml') }}"
     namespace: "{{ monitoring_namespace }}"
     apply: true
-    
+
 - name: Deploy event-exporter
   k8s:
-    definition: "{{ lookup('template', 'eventrouter.yaml') }}"
+    definition: "{{ lookup('template', 'metrics-exporters/event-exporter.yaml') }}"
     namespace: "{{ monitoring_namespace }}"
-
