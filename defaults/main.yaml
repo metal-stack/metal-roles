@@ -19,6 +19,8 @@ metal_stack_release:
     metal_masterdata_api_image_name: "docker-images.metal-stack.control-plane.masterdata-api.name"
     metal_console_image_tag: "docker-images.metal-stack.control-plane.metal-console.tag"
     metal_console_image_name: "docker-images.metal-stack.control-plane.metal-console.name"
+    metal_metrics_exporter_image_tag: "docker-images.metal-stack.control-plane.metal-metrics-exporter.tag"
+    metal_metrics_exporter_image_name: "docker-images.metal-stack.control-plane.metal-metrics-exporter.name"
     # partition
     metal_core_image_tag: "docker-images.metal-stack.partition.metal-core.tag"
     metal_core_image_name: "docker-images.metal-stack.partition.metal-core.name"
@@ -82,3 +84,12 @@ metal_stack_release:
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
+    logging_chart_version: "helm-charts.logging.loki-stack.version"
+    logging_chart_repo: "helm-charts.logging.loki-stack.repository"
+    prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
+    prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
+    # monitoring
+    rethinkdb_exporter_name: "docker-images.metal-stack.control-plane.rethinkdb-exporter.name"
+    rethinkdb_exporter_tag: "docker-images.metal-stack.control-plane.rethinkdb-exporter.tag"
+    event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
+    event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"

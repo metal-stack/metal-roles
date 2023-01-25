@@ -1,0 +1,52 @@
+---
+prometheus:
+  ingress:
+    enabled: {{ monitoring_prometheus_ingress_enabled }}
+    ingressClassName: nginx
+    hosts:
+      - {{ monitoring_prometheus_ingress_dns }}
+{% if monitoring_additional_ingress_annotations %}
+    annotations:
+{% for key, value in monitoring_additional_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+
+{% if monitoring_prometheus_image_tag is defined %}
+  prometheusSpec:
+    image:
+      tag: "{{ monitoring_prometheus_image_tag }}"
+{% endif %}
+
+grafana:
+  adminPassword: {{ monitoring_grafana_admin_password }}
+  defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
+
+  additionalDataSources: {{ monitoring_additional_ingress_annotations | to_json }}
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - {{ monitoring_grafana_ingress_dns }}
+{% if monitoring_additional_ingress_annotations %}
+    annotations:
+{% for key, value in monitoring_additional_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+
+alertmanager:
+  enabled: false
+
+kubeProxy:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kubeEtcd:
+  enabled: false
+
+kubeControllerManager:
+  enabled: false
