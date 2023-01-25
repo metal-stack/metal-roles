@@ -12,10 +12,10 @@ prometheus:
 {% endfor %}
 {% endif %}
 
-{% if monitoring_prometheus_tag is defined %}
+{% if monitoring_prometheus_image_tag is defined %}
   prometheusSpec:
     image:
-      tag: "{{ monitoring_prometheus_tag }}"
+      tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
 
 grafana:
