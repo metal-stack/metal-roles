@@ -2,6 +2,6 @@
 logging_namespace: monitoring
 logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 logging_ingress_loki_tls: yes
+logging_ingress_loki_client_verify_ca:
 logging_ingress_annotations: {}
 logging_loki_size: 30Gi
-logging_gcp_service_account_json: ""
