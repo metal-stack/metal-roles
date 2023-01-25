@@ -1,0 +1,61 @@
+---
+gardener_image_vector_overwrite:
+gardener_component_image_vector_overwrite:
+
+gardener_extension_provider_metal_repo_ref: "{{ gardener_extension_provider_metal_image_tag }}"
+gardener_os_controller_repo_ref: "{{ gardener_os_controller_image_tag }}"
+# TODO: as soon as our changes on cilium controller are merged to upstream, we can remove the path to the fork
+gardener_networking_cilium_repo_ref: "metal-stack/gardener-extension-networking-cilium/{{ gardener_networking_cilium_image_tag }}"
+
+gardener_virtual_api_server_svc_cluster_ip_add: 20
+gardener_virtual_api_server_public_dns: gardener-kube-apiserver.{{ metal_control_plane_ingress_dns }}
+gardener_virtual_api_server_healthcheck_static_token:
+
+gardener_apiserver_replicas: 1
+gardener_apiserver_vpa: true
+
+gardener_use_dns_records: true
+gardener_dns_domain:
+gardener_dns_provider:
+
+gardener_cert_management_issuer_private_key: ""
+
+gardener_backup_infrastructure:
+gardener_backup_infrastructure_secret:
+
+gardener_soil_name: "{{ metal_control_plane_stage_name }}"
+gardener_soil_kubeconfig_file_path: "{{ lookup('env', 'KUBECONFIG') }}"
+gardener_soil_vertical_pod_autoscaler_enabled: false
+gardener_soil_project_owner_name: admin
+
+gardener_gardenlet_shoot_concurrent_syncs: 5
+gardener_gardenlet_shoot_reconcile_in_maintenance_only: false
+gardener_gardenlet_shoot_respect_sync_period_overwrite: true
+
+gardener_shooted_seeds: []
+gardener_shooted_seed_max_pods: 110
+gardener_shooted_seed_node_cidr_mask_size: 23
+
+gardener_apiserver_resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 400m
+    memory: 1Gi
+
+gardener_controller_manager_resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 750m
+    memory: 512Mi
+
+gardener_scheduler_resources:
+  requests:
+    cpu: 50m
+    memory: 50Mi
+  limits:
+    cpu: 300m
+    memory: 256Mi

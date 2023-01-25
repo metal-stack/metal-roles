@@ -1,0 +1,31 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerDeployment
+metadata:
+  name: networking-cilium
+type: helm
+providerConfig:
+  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/' + gardener_networking_cilium_repo_ref + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+  values:
+    image:
+      repository: "{{ gardener_networking_cilium_image_name }}"
+      tag: "{{ gardener_networking_cilium_image_tag }}"
+      pullPolicy: Always
+    imageVectorOverwrite: |
+      images:
+        - name: cilium-agent
+          sourceRepository: github.com/cilium/cilium
+          repository: quay.io/cilium/cilium
+          tag: v1.12.1
+        - name: cilium-preflight
+          sourceRepository: github.com/cilium/cilium
+          repository: quay.io/cilium/cilium
+          tag: v1.12.1
+        - name: cilium-operator
+          sourceRepository: github.com/cilium/cilium
+          repository: quay.io/cilium/operator
+          tag: v1.12.1
+        - name: hubble-relay
+          sourceRepository: github.com/cilium/hubble-ui
+          repository: quay.io/cilium/hubble-relay
+          tag: v1.12.1

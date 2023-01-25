@@ -1,0 +1,136 @@
+---
+global:
+  admission:
+    image:
+      repository: {{ gardener_admission_controller_image_name }}
+      tag: {{ gardener_admission_controller_image_tag }}
+    enabled: true
+    kubeconfig: |
+      {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+    config:
+      server:
+        https:
+          tls:
+            caBundle: |
+              {{ gardener_admission_controller_ca | indent(width=14, first=false) }}
+            crt: |
+              {{ gardener_admission_controller_cert | indent(width=14, first=false) }}
+            key: |
+              {{ gardener_admission_controller_key | indent(width=14, first=false) }}
+
+  apiserver:
+    replicaCount: {{ gardener_apiserver_replicas }}
+    clusterIdentity: gardener-soil-{{ metal_control_plane_stage_name }}
+    resources: {{ gardener_apiserver_resources | to_json }}
+    featureGates:
+      SeedChange: true
+      UseDNSRecords: {{ gardener_use_dns_records }}
+      WorkerPoolKubernetesVersion: true
+    image:
+      repository: {{ gardener_apiserver_image_name }}
+      tag: {{ gardener_apiserver_image_tag }}
+    etcd:
+      useSidecar: false
+      servers: https://etcd-{{ metal_control_plane_stage_name }}-etcd-client:2379
+      caBundle: |
+        {{ gardener_etcd_ca_cert | indent(width=8, first=false) }}
+      tls:
+        crt: |
+          {{ gardener_etcd_client_cert | indent(width=10, first=false) }}
+        key: |
+          {{ gardener_etcd_client_key | indent(width=10, first=false) }}
+    insecureSkipTLSVerify: false
+    caBundle: |
+      {{ gardener_api_server_ca | indent(width=6, first=false) }}
+    tls:
+      crt: |
+        {{ gardener_api_server_cert | indent(width=8, first=false) }}
+      key: |
+        {{ gardener_api_server_key | indent(width=8, first=false) }}
+    kubeconfig: |
+      {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+
+    vpa: {{ gardener_apiserver_vpa }}
+    # this requires the Hvpa resource in autoscaling.k8s.io/v1alpha1, which is not in the GKE cluster... how to actually use this?
+    # hvpa:
+    #   enabled: true
+    #   maxReplicas: 4
+    #   minReplicas: 1
+    #   targetAverageUtilizationCpu: 400
+    #   targetAverageUtilizationMemory: 400
+    #   vpaScaleUpStabilization:
+    #     stabilizationDuration: "3m"
+    #     minChange:
+    #       cpu:
+    #         value: 300m
+    #         percentage: 80
+    #       memory:
+    #         value: 600M
+    #         percentage: 80
+    #   vpaScaleDownStabilization:
+    #     stabilizationDuration: "15m"
+    #     minChange:
+    #       cpu:
+    #         value: 200m
+    #         percentage: 80
+    #       memory:
+    #         value: 300M
+    #         percentage: 80
+    #   limitsRequestsGapScaleParams:
+    #     cpu:
+    #       value: "1"
+    #       percentage: 40
+    #     memory:
+    #       value: "2G"
+    #       percentage: 40
+
+  scheduler:
+    resources: {{ gardener_scheduler_resources | to_json }}
+    image:
+      repository: {{ gardener_scheduler_image_name }}
+      tag: {{ gardener_scheduler_image_tag }}
+    kubeconfig: |
+      {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+
+  controller:
+    resources: {{ gardener_controller_manager_resources | to_json }}
+    image:
+      repository: {{ gardener_controller_manager_image_name }}
+      tag: {{ gardener_controller_manager_image_tag }}
+
+    config:
+      featureGates:
+        UseDNSRecords: {{ gardener_use_dns_records }}
+        # ssh key pair rotation is removed in 1.51, but was enabled by default in 1.45
+        # TODO: comment in this line prior to deploying g/g 1.45
+        # RotateSSHKeypairOnMaintenance: false
+      server:
+        https:
+          tls:
+            caBundle: |
+              {{ gardener_controller_manager_ca | indent(width=14, first=false) }}
+            crt: |
+              {{ gardener_controller_manager_cert | indent(width=14, first=false) }}
+            key: |
+              {{ gardener_controller_manager_key | indent(width=14, first=false) }}
+      controllers:
+        shootMaintenance:
+          enableShootCoreAddonRestarter: false
+    kubeconfig: |
+      {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+
+  internalDomain:
+    provider: "{{ gardener_dns_provider }}"
+    domain: "{{ gardener_dns_domain }}"
+    credentials: {{ gardener_dns_credentials | to_json }}
+
+  defaultDomains:
+  - provider: "{{ gardener_dns_provider }}"
+    domain: "{{ gardener_dns_domain }}"
+    credentials: {{ gardener_dns_credentials | to_json }}
+
+  deployment:
+   virtualGarden:
+     enabled: true
+     clusterIP: "{{ gardener_virtual_api_server_svc_cluster_ip }}"
+     createNamespace: false

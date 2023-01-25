@@ -1,0 +1,17 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerRegistration
+metadata:
+  name: provider-metal
+spec:
+  deployment:
+    policy: Always
+    deploymentRefs:
+    - name: provider-metal
+  resources:
+  - kind: ControlPlane
+    type: metal
+  - kind: Infrastructure
+    type: metal
+  - kind: Worker
+    type: metal

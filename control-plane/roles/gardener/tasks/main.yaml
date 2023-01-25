@@ -1,0 +1,158 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - gardener_repo_url is defined
+      - gardener_repo_ref is defined
+      - gardener_gardenlet_image_tag is defined
+      - gardener_gardenlet_image_name is defined
+      - gardener_etcd_repo_ref is defined
+      - gardener_apiserver_image_tag is defined
+      - gardener_controller_manager_image_tag is defined
+      - gardener_scheduler_image_tag is defined
+      - gardener_extension_provider_metal_image_tag is defined
+      - gardener_machine_controller_manager_image_tag is defined
+      - gardener_os_controller_image_tag is defined
+      - metal_cloud_controller_manager_image_tag is defined
+      - gardener_networking_calico_image_tag is defined
+      - gardener_external_dns_image_tag is defined
+      - csi_lvm_controller_image_tag is defined
+      - csi_lvm_provisioner_image_tag is defined
+      - gardener_api_server_ca is not none
+      - gardener_api_server_ca_key is not none
+      - gardener_api_server_cert is not none
+      - gardener_api_server_key is not none
+      - gardener_api_server_client_cert is not none
+      - gardener_api_server_client_key is not none
+      - gardener_kube_aggregator_client_cert is not none
+      - gardener_kube_aggregator_client_key is not none
+      - gardener_kube_controller_manager_client_cert is not none
+      - gardener_kube_controller_manager_client_key is not none
+      - gardener_admin_client_cert is not none
+      - gardener_admin_client_key is not none
+      - gardener_service_account_client_key is not none
+      - gardener_admission_controller_ca is not none
+      - gardener_admission_controller_cert is not none
+      - gardener_admission_controller_key is not none
+      - gardener_controller_manager_ca is not none
+      - gardener_controller_manager_cert is not none
+      - gardener_controller_manager_key is not none
+      - gardener_admission_metal_ca is not none
+      - gardener_admission_metal_cert is not none
+      - gardener_admission_metal_key is not none
+      - gardener_etcd_ca_cert is not none
+      - gardener_etcd_cert is not none
+      - gardener_etcd_cert_key is not none
+      - gardener_etcd_client_cert is not none
+      - gardener_etcd_client_key is not none
+      - gardener_virtual_api_server_public_dns is not none
+      - gardener_virtual_api_server_healthcheck_static_token is not none
+      - gardener_dns_domain is not none
+      - gardener_dns_provider is not none
+      - gardener_cloud_profile_metal_api_url is not none
+      - not gardener_extension_provider_metal_auth_enabled or group_role_binding_controller_image_tag is defined
+      - not gardener_extension_provider_metal_auth_enabled or authn_webhook_image_tag is defined
+      - not gardener_extension_provider_metal_accounting_enabled or accounting_exporter_image_tag is defined
+      - not gardener_extension_provider_metal_cluster_audit_enabled or audit_forwarder_image_tag is defined
+
+# Gardener expects a VPA to be present, otherwise VPA enabled and soil bootstrapping do not work
+# maybe this can be removed in a future version of Gardener?
+- name: Deploy VerticalPodAutoscaler CRD if required
+  k8s:
+    definition: "{{ lookup('template', 'vpa.yaml') }}"
+    apply: yes
+  when: not lookup('k8s', api_version='apiextensions.k8s.io/v1', kind='CustomResourceDefinition', resource_name='verticalpodautoscalers.autoscaling.k8s.io')
+
+- name: Create garden namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: garden
+        labels:
+          gardener.cloud/role: "project"
+          project.gardener.cloud/name: "{{ gardener_soil_name }}"
+
+- name: Fail when provider unsupported
+  fail:
+    msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
+  when:
+    - metal_control_plane_host_provider not in ["gcp", "metal"]
+
+- name: GCP control plane service cidr
+  import_tasks: control-plane-networks/gcp.yaml
+  when:
+    - metal_control_plane_host_provider == "gcp"
+
+- name: metal control plane service cidr
+  import_tasks: control-plane-networks/metal.yaml
+  when:
+    - metal_control_plane_host_provider == "metal"
+
+- name: Deploy virtual garden
+  import_tasks: virtual_garden.yaml
+
+- name: Deploy Gardener
+  import_tasks: gardener.yaml
+
+- name: Register admission controllers
+  import_tasks: admission_controllers.yaml
+
+- name: Add Metal cloud profile
+  k8s:
+    definition: "{{ lookup('template', '30-cloud-profile-metal.yaml') }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
+
+- name: Register extension controllers
+  import_tasks: extensions.yaml
+
+- name: Register control plane as seed
+  import_tasks: seed.yaml
+
+- name: Create Gardener project for shooted seeds
+  k8s:
+    definition:
+      apiVersion: core.gardener.cloud/v1alpha1
+      kind: Project
+      metadata:
+        name: "{{ gardener_soil_name }}"
+      spec:
+        namespace: garden
+        tolerations:
+          defaults:
+            - key: seed.gardener.cloud/protected
+            - key: seed.gardener.cloud/invisible
+            - key: seed.gardener.cloud/disable-capacity-reservation
+          whitelist:
+            - key: seed.gardener.cloud/protected
+            - key: seed.gardener.cloud/invisible
+            - key: seed.gardener.cloud/disable-capacity-reservation
+        owner:
+          apiGroup: rbac.authorization.k8s.io
+          kind: User
+          name: "{{ gardener_soil_project_owner_name }}"
+        members:
+        - apiGroup: rbac.authorization.k8s.io
+          kind: User
+          name: "{{ gardener_soil_project_owner_name }}"
+          role: admin
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+  when: not lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Project', resource_name=gardener_soil_name)
+
+- name: Loop over shooted seeds
+  include_tasks: shooted_seed.yaml
+  loop: "{{ gardener_shooted_seeds }}"
+  loop_control:
+    loop_var: gardener_shooted_seed
+    label: "{{ gardener_shooted_seed.name }}"
