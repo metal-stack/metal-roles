@@ -1,0 +1,32 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - ztp_authorized_keys is not none
+
+- name: create ztp config directory
+  file:
+    path: "{{ ztp_host_dir_path }}/config"
+    state: directory
+
+- name: render ztp script
+  template:
+    src: "ztp.sh.j2"
+    dest: "{{ ztp_host_dir_path }}/config/ztp.sh"
+    mode: 0644
+
+- name: deploy server for serving ztp.sh
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: ztp-server
+    systemd_docker_image_name: "{{ ztp_image_name }}"
+    systemd_docker_image_tag: "{{ ztp_image_tag }}"
+    systemd_service_timeout_start_sec: 60
+    systemd_docker_volumes:
+      - "{{ ztp_host_dir_path }}/config:/var/www/html"
+    systemd_docker_ports:
+      - host_port: "{{ ztp_port }}"
+        target_port: "80"

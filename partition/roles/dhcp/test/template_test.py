@@ -7,34 +7,39 @@ from ansible.template import Templar
 
 class DHCPD(unittest.TestCase):
     def test_dhcpd_config_template(self):
-        dhcpd_conf = read_template_file("dhcpd.conf.j2")
+        t = read_template_file("dhcpd.conf.j2")
 
         templar = Templar(loader=None, variables=dict(
-            dhcp_server_net="1.2.3.4",
-            dhcp_range_min="1",
-            dhcp_range_max="2",
-            dhcp_server_ip="2.2.2.2",
+            dhcp_subnets=[
+                dict(
+                    comment="testing",
+                    network="1.2.3.4",
+                    netmask="24",
+                    range=dict(begin=1, end=2),
+                    options=["routers 2.2.2.2", "domain-name-servers 1.1.1.1, 8.8.8.8"],
+                ),
+            ],
+            dhcp_default_lease_time=600,
+            dhcp_max_lease_time=600,
+            dhcp_global_options=[],
             groups=dict(mgmt_servers=["mgmt01", "mgmt02"]),
             hostvars=dict(mgmt01=dict(switch_mgmt_ip="3.3.3.3"), mgmt02=dict(switch_mgmt_ip="4.4.4.4")),
-            dhcp_public_dns_servers_fallback=["1.1.1.1", "8.8.8.8"]
         ))
 
-        res = templar.template(dhcpd_conf)
+        res = templar.template(t)
 
-        self.assertIn("option domain-name-servers 3.3.3.3, 4.4.4.4;", res)
+        self.assertIn("""
+authoritative;
 
-    def test_dhcpd_config_template_fallback(self):
-        dhcpd_conf = read_template_file("dhcpd.conf.j2")
+default-lease-time 600;
+max-lease-time 600;
 
-        templar = Templar(loader=None, variables=dict(
-            dhcp_server_net="1.2.3.4",
-            dhcp_range_min="1",
-            dhcp_range_max="2",
-            dhcp_server_ip="2.2.2.2",
-            groups=dict(),
-            dhcp_public_dns_servers_fallback=["1.1.1.1", "8.8.8.8"]
-        ))
+log-facility local7;
 
-        res = templar.template(dhcpd_conf)
-
-        self.assertIn("option domain-name-servers 1.1.1.1, 8.8.8.8;", res)
+# testing
+subnet 1.2.3.4 netmask 24 {
+  range 1 2;
+  option routers 2.2.2.2;
+  option domain-name-servers 1.1.1.1, 8.8.8.8;
+}
+""".strip(), res.strip())

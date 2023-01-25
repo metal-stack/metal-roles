@@ -29,7 +29,6 @@
 - name: install docker
   apt:
     name: docker-ce
-    state: present
     force_apt_get: yes
 
 - name: add docker as systemd service which can run in a vrf
