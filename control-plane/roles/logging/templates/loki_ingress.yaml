@@ -1,3 +1,13 @@
+{% if logging_ingress_loki_client_verify_ca %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: loki-ca-secret
+type: Opaque
+data:
+  ca.crt: {{ logging_ingress_loki_client_verify_ca | b64encode }}
+{% endif %}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -7,9 +17,11 @@ metadata:
 {% if logging_ingress_loki_tls %}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% if logging_ingress_loki_client_verify_ca %}
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
     nginx.ingress.kubernetes.io/auth-tls-secret: "{{ logging_namespace }}/loki-ca-secret"
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+{% endif %}
 {% endif %}
 {% for key, value in logging_ingress_annotations.items() %}
     {{ key }}: "{{ value }}"
