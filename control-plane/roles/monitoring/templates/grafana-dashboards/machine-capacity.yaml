@@ -133,7 +133,6 @@ data:
               "uid": "prometheus"
             },
             "definition": "label_values(metal_partition_capacity_total, partition)",
-            "hide": 0,
             "includeAll": true,
             "multi": false,
             "name": "partition",
