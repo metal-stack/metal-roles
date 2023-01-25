@@ -23,13 +23,15 @@ The following variables can be set to configure the role:
 | rethinkdb_exporter_tag                    | yes       | rethinkdb exporter image tag                                |
 | event_exporter_name                       | yes       | event exporter image name                                   |
 | event_exporter_tag                        | yes       | event exporter image tag                                    |
-| logging_chart_version                     | yes       | version of the logging stack chart                          |
-| logging_chart_repo                        | yes       | chart of the logging stack                                  |
 | prometheus_chart_version                  | yes       | version of the prometheus stack chart                       |
 | prometheus_stack_repo                     | yes       | chart of the prometheus stack                               |
 | monitoring_namespace                      |           | Name of the monitoring namespace                            |
-| monitoring_prometheus_tag                 |           | Prometheus container image tag, defaults to chart's default |
-| monitoring_additional_ingress_annotations |           | Annotations that will be attached to the ingress resource   |
-| monitoring_ingress_dns                    |           | The dns name used for exposing services via ingress         |
-| monitoring_ingress_grafana_tls            |           | Enables TLS for monitoring                                  |
+| monitoring_ingress_grafana_tls            |           | If enabled, exposes Grafana through HTTPS on the ingress    |
+| monitoring_grafana_ingress_dns            |           | The dns name used for exposing Grafana via ingress          |
+| monitoring_prometheus_ingress_dns         |           | If enabled, exposes Prometheus through HTTPS on the ingress |
+| monitoring_prometheus_image_tag           |           | Prometheus container image tag, defaults to chart's default |
 | monitoring_prometheus_ingress_enabled     |           | Enables ingress for prometheus                              |
+| monitoring_additional_ingress_annotations |           | Annotations that will be attached to the ingress resource   |
+| monitoring_grafana_admin_password         |           | Sets the admin password for Grafana                         |
+| monitoring_grafana_dashboard_timezone     |           | Sets the default's dashboard timezone for Grafana           |
+| monitoring_grafana_additional_datasources |           | Configures additional datasources for Grafana               |

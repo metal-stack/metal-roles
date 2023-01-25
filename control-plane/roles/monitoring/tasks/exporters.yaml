@@ -15,3 +15,4 @@
   k8s:
     definition: "{{ lookup('template', 'metrics-exporters/event-exporter.yaml') }}"
     namespace: "{{ monitoring_namespace }}"
+    apply: true

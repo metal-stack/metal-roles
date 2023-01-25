@@ -33,15 +33,6 @@
   loop:
      - machine-capacity.yaml
      - metal-api.yaml
-     - network-traffic.yaml
-  # *** Thanos required, will be added ***
-  #  - exit-traffic.yaml
-  #  - frr-state.yaml
-  #  - metal-api-state.yaml
-  #  - go-processes.yaml
-  #  - ipmi-state.yaml
-  #  - leaf-switches.yaml
-  #  - cumulus-state.yaml
 
 - name: Create service monitors
   k8s:
@@ -54,6 +45,3 @@
     - metal-api.yaml
     - metal-db.yaml
     - metal-metrics-exporter.yaml
-
-
-
