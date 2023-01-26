@@ -75,3 +75,9 @@ VLAN_MEMBER:
   {% endfor %}
 
 {% endif %}
+
+{% if sonic_lldp_hello_timer is defined %}
+LLDP:
+  Global:
+    hello_timer: {{ sonic_lldp_hello_timer }}
+{% endif %}
