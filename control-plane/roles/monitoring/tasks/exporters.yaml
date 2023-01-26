@@ -19,6 +19,11 @@
 
 - name: Deploy alertmanager
   k8s:
-    definition: "{{ lookup('template', 'metrics-exporters/alertmanager.yaml') }}"
+    definition: "{{ lookup('template', 'alertmanager/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
-    apply: true
+  loop:
+    - alertmanager.secter.yaml
+    - alertmanager.service.yaml
+    - alertmanager.serviceaccount.yaml
+    - alertmanager.servicemonitor.yaml
+    - alertmanager.yaml
