@@ -39,6 +39,7 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: not gardener_use_dns_records
 
 - name: "Register controller: os extension provider metal"
   k8s:

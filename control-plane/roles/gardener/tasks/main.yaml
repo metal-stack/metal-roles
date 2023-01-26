@@ -76,9 +76,6 @@
       kind: Namespace
       metadata:
         name: garden
-        labels:
-          gardener.cloud/role: "project"
-          project.gardener.cloud/name: "{{ gardener_soil_name }}"
 
 - name: Fail when provider unsupported
   fail:
@@ -153,6 +150,18 @@
           role: admin
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
   when: not lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Project', resource_name=gardener_soil_name)
+
+- name: Add project labels to garden namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        labels:
+          gardener.cloud/role: "project"
+          project.gardener.cloud/name: "{{ gardener_soil_name }}"
+        name: garden
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig }}"
 
 - name: Loop over shooted seeds
   include_tasks: shooted_seed.yaml
