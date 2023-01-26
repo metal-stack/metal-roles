@@ -22,7 +22,7 @@
     definition: "{{ lookup('template', 'alertmanager/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
-    - alertmanager.secter.yaml
+    - alertmanager.secret.yaml
     - alertmanager.service.yaml
     - alertmanager.serviceaccount.yaml
     - alertmanager.servicemonitor.yaml
