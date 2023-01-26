@@ -61,11 +61,11 @@
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
 
-- name: Deploy managed seed resource
-  k8s:
-    definition: "{{ lookup('template', 'managed-seed.j2') }}"
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-    apply: yes
+# - name: Deploy managed seed resource
+#   k8s:
+#     definition: "{{ lookup('template', 'managed-seed.j2') }}"
+#     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+#     apply: yes
 
 - name: Delay shoot rollout
   ansible.builtin.pause:

@@ -161,7 +161,7 @@
           gardener.cloud/role: "project"
           project.gardener.cloud/name: "{{ gardener_soil_name }}"
         name: garden
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
 
 - name: Loop over shooted seeds
   include_tasks: shooted_seed.yaml
