@@ -36,7 +36,7 @@ spec:
 {% for worker_group in gardener_shooted_seed.worker_groups %}
     - name: "group-cri-{{ loop.index0 }}"
       cri:
-        name: {{ worker_group.worker_cri | default("containerd")) }}
+        name: {{ worker_group.worker_cri | default("containerd") }}
       maximum: {{ worker_group.worker_count }}
       minimum: {{ worker_group.worker_count }}
       maxSurge: {{ worker_group.worker_max_surge }}
