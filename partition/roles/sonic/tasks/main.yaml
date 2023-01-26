@@ -48,6 +48,10 @@
   notify:
   - write metal conf to db
   - config reload
+    
+- name: Set NTP timezone
+  timezone:
+    name: {{ sonic_timezone }}
 
 - name: Render frr config
   template:
