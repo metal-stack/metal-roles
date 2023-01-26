@@ -4,11 +4,11 @@ metadata:
   name: "{{ gardener_shooted_seed.name }}"
   namespace: garden
   annotations:
-      garden.sapcloud.io/createdBy: cp@metal-pod.io
       shoot.gardener.cloud/managed-seed-api-server: "{{ true | managed_seed_annotation(api_server=gardener_shooted_seed.api_server) }}"
       cluster.metal-stack.io/name: "{{ gardener_shooted_seed.name }}"
       cluster.metal-stack.io/project: "{{ gardener_shooted_seed.project_id }}"
       cluster.metal-stack.io/tenant: "{{ metal_control_plane_provider_tenant }}"
+      cluster.metal-stack.io/partition: "{{ gardener_shooted_seed.partition }}"
 spec:
   seedName: "{{ gardener_seed.name }}"
   secretBindingName: "{{ gardener_shooted_seed.name }}-provider-secret"
@@ -33,30 +33,10 @@ spec:
   provider:
     type: metal
     workers:
-{% if gardener_shooted_seed.worker_count > 0 %}
-    - name: default-worker
-      maximum: {{ gardener_shooted_seed.worker_count }}
-      minimum: {{ gardener_shooted_seed.worker_count }}
-      maxSurge: {{ gardener_shooted_seed.worker_count }}
-      maxUnavailable: 0
-      machine:
-        type: "{{ gardener_shooted_seed.worker_size }}"
-        image: {{ gardener_shooted_seed.worker_image | to_json }}
-{% endif %}
-{% for worker_group in gardener_shooted_seed.additional_worker_groups | default([]) %}
-    - name: "group-{{ loop.index0 }}"
-      maximum: {{ worker_group.worker_count }}
-      minimum: {{ worker_group.worker_count }}
-      maxSurge: 3
-      maxUnavailable: 0
-      machine:
-        type: "{{ worker_group.worker_size }}"
-        image: {{ worker_group.worker_image | to_json }}
-{% endfor %}
-{% for worker_group in gardener_shooted_seed.additional_cri_worker_groups | default([]) %}
+{% for worker_group in gardener_shooted_seed.worker_groups %}
     - name: "group-cri-{{ loop.index0 }}"
       cri:
-        name: {{ worker_group.worker_cri }}
+        name: {{ worker_group.worker_cri | default("containerd")) }}
       maximum: {{ worker_group.worker_count }}
       minimum: {{ worker_group.worker_count }}
       maxSurge: {{ worker_group.worker_max_surge }}
@@ -92,8 +72,8 @@ spec:
       featureGates: {{ gardener_shooted_seed.feature_gates | to_json }}
   networking:
     type: calico
-    pods: 10.244.128.0/18
-    services: 10.244.192.0/18
+    pods: {{ gardener_shooted_seed.pod_cidr }}
+    services: {{ gardener_shooted_seed.service_cidr }}
     providerConfig:
       apiVersion: calico.networking.extensions.gardener.cloud/v1alpha1
       kind: NetworkConfig

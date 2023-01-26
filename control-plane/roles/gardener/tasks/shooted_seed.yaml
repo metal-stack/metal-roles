@@ -1,15 +1,4 @@
 ---
-- name: Acquire shooted seed static ips
-  metal_ip:
-    ip: "{{ item }}"
-    name: "{{ gardener_shooted_seed.name }}"
-    description: "Seed metallb ip"
-    network: "{{ gardener_shooted_seed.internet_network_id }}"
-    project: "{{ gardener_shooted_seed.project_id }}"
-    api_hmac: "{{ metal_api_admin_key }}"
-    api_url: "{{ metal_api_url }}"
-  loop: "{{ gardener_shooted_seed.ips }}"
-
 - name: Create backup infrastructure secret for shooted seed
   k8s:
     definition:
@@ -22,6 +11,7 @@
       data: "{{ gardener_backup_infrastructure_secret }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
+  when: gardener_backup_infrastructure_secret
 
 - name: Create backup infrastructure config for shooted seed
   set_fact:
@@ -31,6 +21,7 @@
       secretRef:
         name: "{{ gardener_shooted_seed.name }}-backup-secret"
         namespace: garden
+  when: gardener_backup_infrastructure_secret
 
 - name: Add seed provider secret
   k8s:
@@ -76,7 +67,7 @@
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
 
-# can be useful for rollouts where the shooted seed or managed seed resource changes:
-# - name: Wait before continuing
-#   ansible.builtin.pause:
-#     minutes: 5
+- name: Delay shoot rollout
+  ansible.builtin.pause:
+    minutes: "{{ gardener_shooted_seed_rollout_delay_minutes }}"
+  when: gardener_shooted_seed_rollout_delay_minutes
