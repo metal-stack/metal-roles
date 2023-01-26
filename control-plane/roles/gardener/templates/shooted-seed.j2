@@ -10,7 +10,7 @@ metadata:
       cluster.metal-stack.io/tenant: "{{ metal_control_plane_provider_tenant }}"
       cluster.metal-stack.io/partition: "{{ gardener_shooted_seed.partition }}"
 spec:
-  seedName: "{{ gardener_seed.name }}"
+  seedName: "{{ gardener_soil_name }}"
   secretBindingName: "{{ gardener_shooted_seed.name }}-provider-secret"
   cloudProfileName: metal
   region: "{{ gardener_shooted_seed.region }}"
