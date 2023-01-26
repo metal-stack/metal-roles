@@ -26,7 +26,7 @@ monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns
 monitoring_ingress_grafana_tls: yes
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
-  
+monitoring_slack_channel_url: "https://hooks.slack.com/services/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"
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_metal_api_hmac: "metal-admin"
