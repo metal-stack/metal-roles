@@ -35,7 +35,7 @@
           cloudprofile.garden.sapcloud.io/name: metal
       type: Opaque
       data:
-        metalAPIHMac: "{{ gardener_shooted_seed.metal_api_hmac | b64encode }}"
+        metalAPIHMac: "{{ gardener_cloud_profile_metal_api_hmac | b64encode }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
 

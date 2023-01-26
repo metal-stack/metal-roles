@@ -55,6 +55,7 @@
       - gardener_dns_domain is not none
       - gardener_dns_provider is not none
       - gardener_cloud_profile_metal_api_url is not none
+      - gardener_cloud_profile_metal_api_hmac is not none
       - not gardener_extension_provider_metal_auth_enabled or group_role_binding_controller_image_tag is defined
       - not gardener_extension_provider_metal_auth_enabled or authn_webhook_image_tag is defined
       - not gardener_extension_provider_metal_accounting_enabled or accounting_exporter_image_tag is defined
