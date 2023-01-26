@@ -74,6 +74,9 @@ global:
         HVPA: false
         HVPAForShootedSeed: false
         UseDNSRecords: {{ gardener_use_dns_records }}
+{% if gardener_use_dns_records %}
+        DisableDNSProviderManagement: true
+{% endif %}
 
     vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
 
