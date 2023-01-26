@@ -16,3 +16,9 @@
     definition: "{{ lookup('template', 'metrics-exporters/event-exporter.yaml') }}"
     namespace: "{{ monitoring_namespace }}"
     apply: true
+
+- name: Deploy alertmanager
+  k8s:
+    definition: "{{ lookup('template', 'metrics-exporters/alertmanager.yaml') }}"
+    namespace: "{{ monitoring_namespace }}"
+    apply: true
