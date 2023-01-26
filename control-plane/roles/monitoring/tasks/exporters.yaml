@@ -17,13 +17,11 @@
     namespace: "{{ monitoring_namespace }}"
     apply: true
 
-- name: Deploy alertmanager
+- name: Add eventrouter and alertlogger
   k8s:
-    definition: "{{ lookup('template', 'alertmanager/' + item) }}"
+    definition: "{{ lookup('template', item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
-    - alertmanager.secret.yaml
-    - alertmanager.service.yaml
-    - alertmanager.serviceaccount.yaml
-    - alertmanager.servicemonitor.yaml
-    - alertmanager.yaml
+    - eventrouter.yaml
+    - alertloggerService.yaml
+    - alertloggerStatefulSet.yaml

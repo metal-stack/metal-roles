@@ -22,7 +22,7 @@ grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
-  additionalDataSources: {{ monitoring_additional_ingress_annotations | to_json }}
+  additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
 
   ingress:
     enabled: true
@@ -35,9 +35,170 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-
 alertmanager:
-  enabled: false
+  enabled: true
+  additionalDataSources: {{ monitoring_additional_alertmanager_annotations | to_json }}
+#   config:
+#     global:
+#       resolve_timeout: 5m
+#       slack_api_url: "{{ monitoring_slack_url }}"
+#     route:
+#       group_wait: 2m
+#       group_interval: 15m
+#       group_by: ['...']
+#       repeat_interval: 120h
+#       receiver: 'null'
+#       routes:
+#         - match_re:
+#             severity: 'critical'
+#           receiver: 'alertlogger'
+#           continue: true
+#         - match_re:
+#             job: '.*'
+#           receiver: 'alertlogger'
+#           continue: true
+#         - match_re:
+#             pod: '(reserve-excess|Watchdog|stackdriver|heapster)'
+#           receiver: 'null'
+#         - match_re:
+#             deployment: '(reserve-excess|stackdriver|heapster)'
+#           receiver: 'null'
+#         - receiver: 'zis-proxy'
+#           matchers:
+#             - severity="critical"
+#           continue: true
+#         - match_re:
+#             severity: 'critical'
+#           receiver: 'slack'
+#           continue: true
+#         - match_re:
+#             severity: 'critical'
+#           receiver: 'rocketchat'
+#           continue: true
+#     inhibit_rules:
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match_re:
+#         pod: 'reserve-excess.*'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match_re:
+#         pod: 'prometheus-to-sd.*'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match_re:
+#         pod: 'metrics-server.*'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match_re:
+#         pod: 'heapster.*'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match_re:
+#         pod: 'stackdriver.*'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match:
+#         deployment: '(reserve-excess|heapster|stackdriver)'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match:
+#         alertname: 'KubeApiServerTooManyAuditlogFailures'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match:
+#         alertname: 'PrometheusOutOfOrderTimestamps'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match:
+#         alertname: '"KubeHpaMaxedOut"'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'Watchdog'
+#       target_match:
+#         alertname: 'etcdHighNumberOfFailedGRPCRequests'
+#       equal: ['prometheus']
+#     - source_match:
+#         alertname: 'InternetUplinkDown'
+#       target_match_re:
+#         alertname: '(EndpointDown)'
+#       equal: ['partition']
+#     receivers:
+#     - name: 'slack'
+#       slack_configs:
+#       - channel: {{ monitoring_slack_channel | b64decode }}
+#         send_resolved: true
+#         title: |-
+# {%raw%}
+#           {{ .GroupLabels.alertname }}
+#           {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+#             {{" "}}(
+#             {{- with .CommonLabels.Remove .GroupLabels.Names }}
+#               {{- range $index, $label := .SortedPairs -}}
+#                 {{ if (and (ne $label.Name "mc_tool_rule") (and (ne $label.Name "job") (and (ne $label.Name "service") (and (ne $label.Name "endpoint") (ne $label.Name "prometheus"))))) -}}
+#                   {{- if $index }}, {{ end -}}
+#                   {{- $label.Name }}="{{ $label.Value -}}"
+#                 {{- end }}
+#               {{- end }}
+#             {{- end -}}
+#             )
+#           {{- end }}
+#         text: >-
+#           {{ with index .Alerts 0 -}}
+#             :chart_with_upwards_trend: *<{{ .GeneratorURL }}|Graph>*
+#             {{- if .Annotations.runbook }}   :notebook: *<{{ .Annotations.runbook }}|Runbook>*{{ end }}
+#           {{ end }}
+#           *Alert details*:
+#           {{ range .Alerts -}}
+#             *Alert:* {{ .Labels.alertname }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+#           {{ if .Annotations.description }}*Description:* {{ .Annotations.description }}{{end}}
+#           {{ if .Annotations.summary }}*Summary:* {{ .Annotations.summary }}{{end}}
+#           *Details:*
+#             {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
+#             {{ end }}
+#           {{ end }}
+# {%endraw%}
+#     - name: 'null'
+#     - name: 'alertlogger'
+#       webhook_configs:
+#         - url: http://alertlogger:5001
+#     - name: zis-proxy
+#       webhook_configs:
+#       - url: {{  }}
+#         send_resolved: true
+#         http_config:
+#           basic_auth:
+#             username: {{  }}
+#             password: {{  }}
+#           tls_config:
+#             insecure_skip_verify: true
+#     - name: 
+#       webhook_configs:
+#       - send_resolved: true
+#         url: 
+#     templates:
+#     - '/etc/alertmanager/config/*.tmpl'
+
+#   alertmanagerSpec:
+#     secrets:
+#       - "alertmanager-client-tls"
+#     storage:
+#       volumeClaimTemplate:
+#         spec:
+#           storageClassName: standard
+#           accessModes: ["ReadWriteOnce"]
+#           resources:
+#             requests:
+#               storage: 5Gi
+#     externalUrl: "https://alerts.{{ metal_control_plane_ingress_dns }}/"
 
 kubeProxy:
   enabled: false
