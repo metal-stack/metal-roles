@@ -10,3 +10,5 @@ providerConfig:
     image:
       repository: "{{ gardener_shoot_dns_service_image_name }}"
       tag: "{{ gardener_shoot_dns_service_image_tag }}"
+    dnsProviderManagement:
+      enabled: {{ gardener_use_dns_records }}
