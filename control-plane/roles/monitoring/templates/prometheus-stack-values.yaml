@@ -37,7 +37,6 @@ grafana:
 {% endif %}
 alertmanager:
   enabled: true
-  # additionalDataSources: {{ monitoring_additional_alertmanager_annotations | to_json }}
 
 kubeProxy:
   enabled: false
