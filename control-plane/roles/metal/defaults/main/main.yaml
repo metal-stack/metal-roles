@@ -103,7 +103,7 @@ metal_api_headscale_control_plane_address: "http{{ 's' if metal_api_headscale_tl
 metal_api_headscale_internal_api_address: "headscale:50443"
 
 # auditing
-metal_auditing_enabled: true
+metal_auditing_enabled: false
 metal_auditing_index_prefix: "auditing"
 metal_auditing_index_interval: "@daily"
 metal_auditing_url: "http://auditing-meili-meilisearch.metal-control-plane.svc.cluster.local:7700"

@@ -13,7 +13,6 @@
           name: "{{ metal_control_plane_namespace }}"
 
 - name: Create meili secret
-  when: metal_auditing_meili_secret | length > 0
   k8s:
     definition:
       apiVersion: v1
@@ -23,6 +22,7 @@
         namespace: "{{ metal_control_plane_namespace }}"
       stringData:
         MEILI_MASTER_KEY: "{{ metal_auditing_meili_secret }}"
+  when: metal_auditing_meili_secret
 
 - name: Deploy meilisearch
   include_role:
