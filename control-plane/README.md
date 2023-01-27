@@ -26,7 +26,6 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | metal_control_plane_stage_name                 |           | The name of the current stage, can be used for prefixing                             |
 | metal_control_plane_namespace                  |           | The target namespace of all deployed kubernetes resources of the metal-control-plane |
 | metal_control_plane_image_pull_policy          |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities        |
-| metal_control_plane_auditing_meili_secret_name |           | Secret name that holds the API key for meilisearch                                   |
 
 
 ## Roles

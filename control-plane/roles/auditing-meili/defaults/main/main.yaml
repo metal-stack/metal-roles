@@ -1,6 +1,25 @@
 ---
 metal_auditing_meili_secret: ""
+metal_auditing_meili_environment: production
+
+# possible parametrization can be found at the helm-chart repo
+# https://github.com/meilisearch/meilisearch-kubernetes
 
 metal_auditing_meili_ingress: {}
-metal_auditing_meili_environment: production
+# enabled: false
+# className: nginx
+# annotations: {}
+# path: /
+# hosts:
+#   - meilisearch-example.local
+# tls: []
+
 metal_auditing_meili_persistence: {}
+  # enabled: false
+  # accessMode: ReadWriteOnce
+  # storageClass: "-"
+  # size: 10Gi
+  # annotations: {}
+  # volume:
+  #   name: data
+  #   mountPath: /meili_data

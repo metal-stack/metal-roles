@@ -107,3 +107,4 @@ metal_auditing_enabled: true
 metal_auditing_index_prefix: "auditing"
 metal_auditing_index_interval: "@daily"
 metal_auditing_url: "http://auditing-meili-meilisearch.metal-control-plane.svc.cluster.local:7700"
+metal_auditing_meili_secret_name: metal-auditing-master-key

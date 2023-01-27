@@ -4,6 +4,3 @@ metal_control_plane_ingress_dns:
 metal_control_plane_stage_name: test
 metal_control_plane_namespace: metal-control-plane
 metal_control_plane_image_pull_policy: IfNotPresent
-
-# auditing
-metal_control_plane_auditing_meili_secret_name: metal-auditing-master-key

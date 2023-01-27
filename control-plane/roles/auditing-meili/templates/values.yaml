@@ -11,7 +11,7 @@ environment:
   MEILI_NO_ANALYTICS: true
   MEILI_ENV: {{ metal_auditing_meili_environment }}
 auth:
-  existingMasterKeySecret: {{ metal_control_plane_auditing_meili_secret_name }}
+  existingMasterKeySecret: metal-auditing-master-key
 
 persistence: {{ metal_auditing_meili_persistence }}
 ingress: {{ metal_auditing_meili_ingress }}
