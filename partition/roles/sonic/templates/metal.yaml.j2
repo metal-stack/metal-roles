@@ -10,6 +10,10 @@ FEATURE:
     auto_restart: enabled
     state: enabled
 
+NTP:
+  global:
+    src_intf: "eth0"
+
 NTP_SERVER:
   {% for ntpserver in sonic_ntpservers %}
   {{ ntpserver }}: {}
