@@ -21,6 +21,8 @@ metal_stack_release:
     metal_console_image_name: "docker-images.metal-stack.control-plane.metal-console.name"
     metal_metrics_exporter_image_tag: "docker-images.metal-stack.control-plane.metal-metrics-exporter.tag"
     metal_metrics_exporter_image_name: "docker-images.metal-stack.control-plane.metal-metrics-exporter.name"
+    rethinkdb_exporter_name: "docker-images.metal-stack.control-plane.rethinkdb-exporter.name"
+    rethinkdb_exporter_tag: "docker-images.metal-stack.control-plane.rethinkdb-exporter.tag"
     # partition
     metal_core_image_tag: "docker-images.metal-stack.partition.metal-core.tag"
     metal_core_image_name: "docker-images.metal-stack.partition.metal-core.name"
@@ -65,6 +67,8 @@ metal_stack_release:
     droptailer_image_tag: "docker-images.metal-stack.kubernetes.droptailer.tag"
     droptailer_image_name: "docker-images.metal-stack.kubernetes.droptailer.name"
     # third party
+    event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
+    event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"
     nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"
     nsq_image_name: "docker-images.third-party.control-plane.nsq.name"
     ipam_db_image_tag: "docker-images.third-party.control-plane.ipam-db.tag"
@@ -88,8 +92,5 @@ metal_stack_release:
     logging_chart_repo: "helm-charts.logging.loki-stack.repository"
     prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
-    # monitoring
-    rethinkdb_exporter_name: "docker-images.metal-stack.control-plane.rethinkdb-exporter.name"
-    rethinkdb_exporter_tag: "docker-images.metal-stack.control-plane.rethinkdb-exporter.tag"
-    event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
-    event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"
+    metal_auditing_meili_chart_repo: "helm-charts.third-party.meilisearch.repository"
+    metal_auditing_meili_chart_version: "helm-charts.third-party.meilisearch.version"
