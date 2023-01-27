@@ -21,8 +21,8 @@
         name: metal-auditing-master-key
         namespace: "{{ metal_control_plane_namespace }}"
       stringData:
-        MEILI_MASTER_KEY: "{{ metal_auditing_meili_secret }}"
-  when: metal_auditing_meili_secret
+        MEILI_MASTER_KEY: "{{ auditing_meili_secret }}"
+  when: auditing_meili_secret
 
 - name: Deploy meilisearch
   include_role:

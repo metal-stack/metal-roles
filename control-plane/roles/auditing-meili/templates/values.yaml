@@ -9,9 +9,9 @@ livenessProbe:
 
 environment:
   MEILI_NO_ANALYTICS: true
-  MEILI_ENV: {{ metal_auditing_meili_environment }}
+  MEILI_ENV: {{ auditing_meili_environment }}
 auth:
   existingMasterKeySecret: metal-auditing-master-key
 
-persistence: {{ metal_auditing_meili_persistence }}
-ingress: {{ metal_auditing_meili_ingress }}
+persistence: {{ auditing_meili_persistence }}
+ingress: {{ auditing_meili_ingress }}

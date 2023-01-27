@@ -1,11 +1,11 @@
 ---
-metal_auditing_meili_secret: ""
-metal_auditing_meili_environment: production
+auditing_meili_secret: ""
+auditing_meili_environment: production
 
 # possible parametrization can be found at the helm-chart repo
 # https://github.com/meilisearch/meilisearch-kubernetes
 
-metal_auditing_meili_ingress: {}
+auditing_meili_ingress: {}
 # enabled: false
 # className: nginx
 # annotations: {}
@@ -14,7 +14,7 @@ metal_auditing_meili_ingress: {}
 #   - meilisearch-example.local
 # tls: []
 
-metal_auditing_meili_persistence: {}
+auditing_meili_persistence: {}
   # enabled: false
   # accessMode: ReadWriteOnce
   # storageClass: "-"
