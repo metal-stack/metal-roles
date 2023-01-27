@@ -7,7 +7,7 @@ type: helm
 providerConfig:
   chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/external-dns-management/' + gardener_external_dns_image_tag + '/examples/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
   values:
-    createCRDs: true
+    createCRDs: false
     image:
       repository: "{{ gardener_external_dns_image_name }}"
       tag: "{{ gardener_external_dns_image_tag }}"
