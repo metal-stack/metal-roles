@@ -19,7 +19,7 @@
       apiVersion: v1
       kind: Secret
       metadata:
-        name: "{{ metal_auditing_meili_secret_name }}"
+        name: "{{ metal_control_plane_auditing_meili_secret_name }}"
         namespace: "{{ metal_control_plane_namespace }}"
       stringData:
         MEILI_MASTER_KEY: "{{ metal_auditing_meili_secret }}"
