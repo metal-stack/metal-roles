@@ -26,6 +26,7 @@
   template:
     src: link.j2
     dest: "/etc/systemd/network/{{ (i+1)*10 }}-{{ item.name }}.link"
+  when: item.name != 'lo'
   notify:
   - restart systemd-networkd
   - restart systemd-udev-trigger
