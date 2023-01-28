@@ -14,7 +14,7 @@
 
 - name: Template netdev for VRFs
   template:
-    src: networkd/vrf.netdev.j2
+    src: vrf.netdev.j2
     dest: "/etc/systemd/network/0{{ (i+1) }}-{{ item.name }}.netdev"
   when: item.name is defined and item.table is defined
   notify: restart systemd-networkd
