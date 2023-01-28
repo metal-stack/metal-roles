@@ -7,14 +7,14 @@ max-lease-time {{ dhcp_max_lease_time }};
 log-facility local7;
 
 {% for subnet in dhcp_subnets %}
-{% if subnet.comment|default("") %}
+{% if subnet.comment | default("") %}
 # {{ subnet.comment }}
 {% endif %}
 subnet {{ subnet.network }} netmask {{ subnet.netmask }} {
 {% if subnet.range is defined %}
   range {{ subnet.range.begin }} {{ subnet.range.end }};
 {% endif %}
-{% for option in subnet.options|default([]) %}
+{% for option in subnet.options | default([]) %}
   option {{ option }};
 {% endfor %}
 }

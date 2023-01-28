@@ -2,6 +2,9 @@
 - name: Gather release versions
   setup_yaml:
 
+- name: Gather switch facts
+  switch_facts:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
@@ -10,21 +13,6 @@
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
-
-- name: Get stat for SONiC version file
-  stat:
-    path: /etc/sonic/sonic_version.yml
-  register: sonic_version_file
-
-- name: Set sonic to true if SONiC version file exists
-  set_fact:
-    sonic: true
-  when: sonic_version_file.stat.exists
-
-- name: Set sonic to false if SONiC version file doesn't exist
-  set_fact:
-    sonic: false
-  when: not sonic_version_file.stat.exists
 
 - name: create gRPC certs directory
   file:

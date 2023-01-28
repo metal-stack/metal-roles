@@ -2,6 +2,8 @@
 
 Deploys metal-core in a systemd-managed Docker container.
 
+This role can deploy on switches running Cumulus Linux or SONiC. It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
+
 ## Variables
 
 This role uses variables from [partition-defaults](/partition). So, make sure you define them adequately as well.
@@ -9,7 +11,7 @@ This role uses variables from [partition-defaults](/partition). So, make sure yo
 You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 | Name                                      | Mandatory | Description                                                                                                                                                                |
-|-------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | metal_core_image_name                     | yes       | Image name of metal-core                                                                                                                                                   |
 | metal_core_image_tag                      | yes       | Image tag of metal-core                                                                                                                                                    |
 | metal_core_cidr                           |           |                                                                                                                                                                            |

@@ -8,10 +8,8 @@
 
 - name: create ztp config directory
   file:
-    path: "{{ item }}"
+    path: "{{ ztp_host_dir_path }}/config"
     state: directory
-  loop:
-    - "{{ ztp_host_dir_path }}/config"
 
 - name: render ztp script
   template:
