@@ -92,6 +92,10 @@ providerConfig:
         sourceRepository: github.com/gardener/machine-controller-manager
         repository: {{ gardener_machine_controller_manager_image_name }}
         tag: {{ gardener_machine_controller_manager_image_tag }}
+      - name: firewall-controller-manager
+        sourceRepository: github.com/metal-stack/firewall-controller-manager
+        repository: ghcr.io/metal-stack/firewall-controller-manager
+        tag: latest
       - name: machine-controller-manager-provider-metal
         sourceRepository: https://github.com/metal-stack/machine-controller-manager-provider-metal
         repository: {{ gardener_mcm_provider_metal_image_name | default("") }}
