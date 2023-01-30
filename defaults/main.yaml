@@ -121,11 +121,6 @@ metal_stack_release:
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
     metal_auditing_meili_chart_repo: "helm-charts.third-party.meilisearch.repository"
     metal_auditing_meili_chart_version: "helm-charts.third-party.meilisearch.version"
-    # monitoring
-    rethinkdb_exporter_name: "docker-images.metal-stack.control-plane.rethinkdb-exporter.name"
-    rethinkdb_exporter_tag: "docker-images.metal-stack.control-plane.rethinkdb-exporter.tag"
-    event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
-    event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"
     # repositories
     gardener_repo_url: "repositories.third-party.gardener.gardener.url"
     gardener_repo_ref: "repositories.third-party.gardener.gardener.ref"
