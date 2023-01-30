@@ -51,7 +51,7 @@
     
 - name: Set NTP timezone
   timezone:
-    name: {{ sonic_timezone }}
+    name: "{{ sonic_timezone }}"
 
 - name: Render frr config
   template:
