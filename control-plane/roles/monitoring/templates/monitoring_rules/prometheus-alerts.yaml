@@ -1,11 +1,12 @@
----
+{% raw %}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   labels:
-    prometheus: kube-prometheus-stack
+    release: prometheus
     role: alert-rules
   name: example-rule
+  namespace: monitoring
 spec:
   groups:
   - name: example-rule
@@ -17,6 +18,7 @@ spec:
         summary: Memory usage is under pressure, system may become unstable.
       expr: |
         100 - ((node_memory_MemAvailable_bytes{job="node-exporter"} * 100) / node_memory_MemTotal_bytes{job="node-exporter"}) > 70
-      for: 1m
+      for: 2m
       labels:
         severity: warning
+{% endraw %}

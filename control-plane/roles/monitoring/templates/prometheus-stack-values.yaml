@@ -35,45 +35,12 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-alertmanager:
-  enabled: true
-  config:
-    global:
-      slack_api_url: {{monitoring_slack_channel_url}}
-    route:
-      group_by: ['pod_name', 'alertname']
-      group_wait: 30s
-      group_interval: 5m
-      repeat_interval: 12h
-      receiver: 'slack-notifications'
-      routes:
-      - match_re:
-          pod_name: '^k8s_.*'
-        receiver: 'slack-k8s'
-      - match_re:
-          pod_name: '^etcd_.*'
-        receiver: 'slack-etcd'
 
-    receivers:
-    - name: 'slack-notifications'
-      slack_configs:
-      - channel: '#alerts'
-    - name: 'slack-k8s'
-      slack_configs:
-      - channel: '#k8s-alerts'
-    - name: 'slack-etcd'
-      slack_configs:
-      - channel: '#etcd-alerts'
-
-    inhibit_rules:
-    - source_match:
-        pod_name: '^k8s_.*'
-        alertname: 'HighCPUUsage'
-      target_match:
-        pod_name: '^etcd_.*'
-        alertname: 'NodeDown'
-      equal: ['node']
-
+alerting:
+  alertmanagers:
+  - namespace: {{monitoring_namespace}}
+    name: alertmanager-main
+    port: web
 
 kubeProxy:
   enabled: false
