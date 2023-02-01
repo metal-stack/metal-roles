@@ -35,12 +35,41 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-
-alerting:
-  alertmanagers:
-  - namespace: {{monitoring_namespace}}
-    name: alertmanager-main
-    port: web
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      slack_api_url: "{{ monitoring_slack_channel_url }}"
+    route:
+      group_wait: 2m
+      group_interval: 15m
+      group_by: ['...']
+      repeat_interval: 120h
+      receiver: 'null'
+      routes:
+        - match_re:
+            severity: 'critical'
+          receiver: 'alertlogger'
+          continue: true
+        - match_re:
+            job: '.*'
+          receiver: 'alertlogger'
+          continue: true
+        - match_re:
+            severity: 'critical'
+          receiver: 'slack'
+    inhibit_rules:
+    - source_match:
+        alertname: 'Watchdog'
+    receivers:
+    - name: 'slack'
+      slack_configs:
+      - channel: {{monitoring_slack_channel}}
+        send_resolved: true
+    - name: 'null'
+    - name: 'alertlogger'
+      webhook_configs:
+        - url: http://alertlogger:5001
 
 kubeProxy:
   enabled: false

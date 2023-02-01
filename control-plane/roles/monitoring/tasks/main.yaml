@@ -38,7 +38,7 @@
     - monitoring.coreos.com_prometheusrules.yaml
     - monitoring.coreos.com_servicemonitors.yaml
     - monitoring.coreos.com_thanosrulers.yaml
-
+# kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.60.1/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
 - name: Deploy metrics exporters
   import_tasks: exporters.yaml
 
@@ -70,11 +70,4 @@
   loop:
     - metal-api-rules.yaml
     - prometheus-alerts.yaml
-
-- name: Deploy alertmanager
-  k8s:
-    definition: "{{ lookup('template', 'alertmanager/' + item) }}"
-    namespace: "{{ monitoring_namespace }}"
-  loop:
-    - alertmanager.yaml
     - alertmanager-rules.yaml
