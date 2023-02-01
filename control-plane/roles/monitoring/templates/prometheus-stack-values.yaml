@@ -58,9 +58,6 @@ alertmanager:
         - match_re:
             severity: 'critical'
           receiver: 'slack'
-    inhibit_rules:
-    - source_match:
-        alertname: 'Watchdog'
     receivers:
     - name: 'slack'
       slack_configs:
