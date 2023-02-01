@@ -2,6 +2,10 @@
 gardener_image_vector_overwrite:
 gardener_component_image_vector_overwrite:
 
+# TODO: add to release vector
+firewall_controller_manager_image_name: ghcr.io/metal-stack/firewall-controller-manager
+firewall_controller_manager_image_tag: latest
+
 gardener_extension_provider_metal_repo_ref: "{{ gardener_extension_provider_metal_image_tag }}"
 gardener_os_controller_repo_ref: "{{ gardener_os_controller_image_tag }}"
 # TODO: as soon as our changes on cilium controller are merged to upstream, we can remove the path to the fork
