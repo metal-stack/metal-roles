@@ -25,7 +25,7 @@ LOOPBACK_INTERFACE:
 
 MGMT_VRF_CONFIG:
   vrf_global:
-    mgmtVrfEnabled: {{ sonic_mgmt_vrf | lower }}
+    mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"
 
 {% if sonic_breakouts is defined and sonic_breakouts.items()|length > 0  %}
 BREAKOUT_CFG:

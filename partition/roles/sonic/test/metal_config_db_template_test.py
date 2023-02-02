@@ -50,7 +50,7 @@ LOOPBACK_INTERFACE:
 
 MGMT_VRF_CONFIG:
   vrf_global:
-    mgmtVrfEnabled: true
+    mgmtVrfEnabled: "true"
 
 BREAKOUT_CFG:
   Ethernet0:
