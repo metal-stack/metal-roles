@@ -15,6 +15,11 @@
     name: config-save-reload
     state: started
 
+- name: restart bgp
+  systemd:
+    name: bgp
+    state: restarted
+
 - name: config reload
   ansible.builtin.command: config reload -y
   async: 120
