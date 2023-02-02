@@ -25,7 +25,7 @@ LOOPBACK_INTERFACE:
 
 MGMT_VRF_CONFIG:
   vrf_global:
-    mgmtVrfEnabled: {{ sonic_mgmt_vrf | bool }}
+    mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"
 
 {% if sonic_breakouts is defined and sonic_breakouts.items()|length > 0  %}
 BREAKOUT_CFG:
@@ -58,7 +58,9 @@ PORT:
 VLAN:
   {% for vlan in sonic_vlans %}
   Vlan{{ vlan.id }}:
+    {% if vlan.dhcp_servers is defined and vlan.dhcp_servers|length > 0 %}
     dhcp_servers: {{ vlan.dhcp_servers }}
+    {% endif %}
     vlanid: {{ vlan.id }}
   {% endfor %}
 
@@ -79,7 +81,26 @@ VLAN_MEMBER:
   {% endfor %}
 
 {% endif %}
+{% if sonic_vteps is defined and sonic_vteps|length > 0 %}
+VXLAN_EVPN_NVO:
+  nvo:
+    source_vtep: vtep
 
+VXLAN_TUNNEL:
+  vtep:
+    src_ip: "{{ sonic_loopback_address }}"
+
+VXLAN_TUNNEL_MAP:
+{% for vtep in sonic_vteps %}
+  {% if vtep.comment is defined %}
+  # {{ vtep.comment }}
+  {% endif %}
+  "vtep|map_{{ vtep.vni }}_{{ vtep.vlan }}":
+    vlan: "{{ vtep.vlan }}"
+    vni: "{{ vtep.vni }}"
+{% endfor %}
+
+{% endif %}
 {% if sonic_lldp_hello_timer is defined %}
 LLDP:
   Global:

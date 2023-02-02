@@ -31,4 +31,8 @@ Deploys a sonic switch.
 | sonic_vlans.ip             |           | The IP of the SVI of this VLAN.                                                            |
 | sonic_vlans.dhcp_servers   |           | Dhcp servers to relay to.                                                                  |
 | sonic_vlans.untagged_ports |           | Array of untagged ports to bind to this VLAN.                                              |
+| sonic_vteps                |           | VTEPs to configure. If defined FRR will automatically advertise all VNIs.                  |
+| sonic_vteps.comment        |           | Description for the VTEP.                                                                  |
+| sonic_vteps.vlan           |           | The local VLAN interface.                                                                  |
+| sonic_vteps.vni            |           | The global VNI within the CLOS topology.                                                   |
 | sonic_lldp_hello_timer     |           | interval for the lldp daemon on the switch to send hello to neighbors                      |

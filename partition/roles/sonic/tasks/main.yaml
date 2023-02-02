@@ -59,7 +59,7 @@
     dest: /etc/sonic/frr/frr.conf
   when: sonic_frr_render
   notify:
-  - config reload
+  - restart bgp
 
 - name: Flush handlers
   meta: flush_handlers

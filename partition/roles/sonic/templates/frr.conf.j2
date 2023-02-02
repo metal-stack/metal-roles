@@ -38,6 +38,9 @@ router bgp {{ sonic_asn }}
 {% if sonic_frr_l2vpn_evpn %}
  !
  address-family l2vpn evpn
+{% if sonic_vteps is defined and sonic_vteps|length > 0 %}
+  advertise-all-vni
+{% endif %}
   neighbor FABRIC activate
   neighbor FABRIC allowas-in 2
  exit-address-family
