@@ -1,0 +1,10 @@
+[NetDev]
+Name={{ item.vtep.iface }}
+Kind=vxlan
+
+[VXLAN]
+VNI={{ item.vtep.vni }}
+Local={{ item.vtep.ip }}
+UDPChecksum=true
+MacLearning=false
+DestinationPort=4789
