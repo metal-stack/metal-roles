@@ -26,31 +26,34 @@ LOOPBACK_INTERFACE:
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"
-
 {% if sonic_breakouts is defined and sonic_breakouts.items()|length > 0  %}
+
 BREAKOUT_CFG:
   {% for port, mode in sonic_breakouts.items() %}
   {{ port }}:
     brkout_mode: "{{ mode }}"
   {% endfor %}
 {% endif %}
-
 {% if sonic_ports|length > 0 %}
+
 INTERFACE:
   {% for port in sonic_ports %}
-  "{{ port.name }}":
+  {% if port.name in sonic_bgp_ports|default([]) or port.vrf is defined %}
+  {{ port.name }}:
     {% if port.name in sonic_bgp_ports|default([]) %}
     ipv6_use_link_local_only: enable
     {% endif %}
     {% if port.vrf is defined %}
-    "vrf_name": "{{ port.vrf }}"
+    vrf_name: "{{ port.vrf }}"
     {% endif %}
+  {% endif %}
   {% for ip in port.ips|default([]) %}
-  "{{ port.name }}|{{ ip }}": {}
+  {{ port.name }}|{{ ip }}: {}
+  {% endfor %}
   {% endfor %}
 {% endif %}
-
 {% if sonic_ports|length > 0 %}
+
 PORT:
   {% for port in sonic_ports %}
   {{ port.name }}:
@@ -60,8 +63,8 @@ PORT:
     fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
   {% endfor %}
 {% endif %}
-
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
+
 VLAN:
   {% for vlan in sonic_vlans %}
   Vlan{{ vlan.id }}:
@@ -75,7 +78,7 @@ VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
   Vlan{{ vlan.id }}: 
-    "vrf_name": "{{ vlan.vrf }}"
+    vrf_name: "{{ vlan.vrf }}"
   {% else %}
   Vlan{{ vlan.id }}: {}
   {% endif %}
@@ -86,14 +89,14 @@ VLAN_INTERFACE:
 
 VLAN_MEMBER:
   {% for vlan in sonic_vlans %}
-  {% for untagged_port in vlan.untagged_ports %}
+  {% for untagged_port in vlan.untagged_ports|default([]) %}
   Vlan{{ vlan.id }}|{{ untagged_port }}:
       tagging_mode: untagged
   {% endfor %}
   {% endfor %}
-
 {% endif %}
 {% if sonic_vteps is defined and sonic_vteps|length > 0 %}
+
 VXLAN_EVPN_NVO:
   nvo:
     source_vtep: vtep
@@ -111,16 +114,16 @@ VXLAN_TUNNEL_MAP:
     vlan: "{{ vtep.vlan }}"
     vni: "{{ vtep.vni }}"
 {% endfor %}
-
+{% endif %}
 {% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
+
 VRF:
 {% for k, i in sonic_interconnects.items() %}
   {{ i.vrf }}: {}
 {% endfor %}
 {% endif %}
-
-{% endif %}
 {% if sonic_lldp_hello_timer is defined %}
+
 LLDP:
   Global:
     hello_timer: {{ sonic_lldp_hello_timer }}

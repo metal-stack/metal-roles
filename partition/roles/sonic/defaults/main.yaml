@@ -22,7 +22,7 @@ sonic_frr_render: true
 sonic_frr_debug_options: []
 sonic_frr_syslog_level: informational
 sonic_frr_l2vpn_evpn: false
-sonic_frr_route_map: {}
+#sonic_frr_route_map:
 # name: LOOPBACKS
 # match: interface name Loopback0
 sonic_frr_static_routes: []

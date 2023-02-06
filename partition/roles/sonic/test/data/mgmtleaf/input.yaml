@@ -1,0 +1,44 @@
+---
+inventory_hostname: r01mgmtleaf
+
+sonic_loopback_address: 10.0.0.1
+sonic_asn: 420000000
+sonic_ntpservers: ['1.2.3.4']
+sonic_breakouts:
+  Ethernet0: "4x25G"
+
+sonic_ports_default_speed: 1000
+sonic_ports_default_mtu: 9000
+sonic_ports:
+- name: Ethernet0
+- name: Ethernet1
+- name: Ethernet2
+- name: Ethernet3
+- name: Ethernet50
+  speed: 100000
+  mtu: 9216
+  fec: rs
+- name: Ethernet51
+  speed: 100000
+
+sonic_bgp_ports:
+- Ethernet50
+- Ethernet51
+
+sonic_vlans:
+- id: 1
+  dhcp_servers: ['10.255.255.254']
+  ip: '10.255.255.1/24'
+  untagged_ports:
+  - Ethernet0
+  - Ethernet1
+  - Ethernet2
+  - Ethernet3
+- id: 2
+  untagged_ports:
+  - Ethernet4
+
+sonic_vteps:
+- comment: "test-vtep"
+  vlan: Vlan2
+  vni: 10002
