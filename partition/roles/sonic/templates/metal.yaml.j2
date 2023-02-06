@@ -35,11 +35,16 @@ BREAKOUT_CFG:
   {% endfor %}
 {% endif %}
 
-{% if sonic_bgp_ports is defined and sonic_bgp_ports|length > 0 %}
+{% if sonic_bgp_ports|length > 0 or sonic_interconnects|length > 0 %}
 INTERFACE:
   {% for port in sonic_bgp_ports %}
   {{ port }}:
     ipv6_use_link_local_only: enable
+  {% endfor %}
+  {% for k, i in sonic_interconnects.items() %}
+  {{ i.nic }}:
+    "vrf_name": "{{ i.vrf }}"
+  "{{ i.nic }}|{{ i.nic_cidr }}": {}
   {% endfor %}
 {% endif %}
 
@@ -51,6 +56,10 @@ PORT:
     speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
     fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
+  {% endfor %}
+  {% for k, i in sonic_interconnects.items() %}
+  {{ i.nic }}:
+    mtu: "{{ i.mtu }}"
   {% endfor %}
 {% endif %}
 
@@ -99,6 +108,13 @@ VXLAN_TUNNEL_MAP:
     vlan: "{{ vtep.vlan }}"
     vni: "{{ vtep.vni }}"
 {% endfor %}
+
+{% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
+VRF:
+{% for k, i in sonic_interconnects.items() %}
+  {{ i.vrf }}: {}
+{% endfor %}
+{% endif %}
 
 {% endif %}
 {% if sonic_lldp_hello_timer is defined %}

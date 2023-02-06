@@ -36,3 +36,6 @@ sonic_vlans: []
 
 # LLDP Hello timer is 30s by default on the switch, but metal-hammer expects 10s or so
 sonic_lldp_hello_timer: 10
+
+sonic_frr_static_routes_mgmt: []
+sonic_interconnects: {}
