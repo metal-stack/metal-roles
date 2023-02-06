@@ -1,0 +1,48 @@
+---
+- name: Render bridge netdev for vxlans
+  template:
+    src: bridge.netdev.j2
+    dest: /etc/systemd/network/00-bridge.netdev
+  notify: restart systemd-networkd
+
+- name: Render bridge network for vxlans
+  template:
+    src: bridge.network.j2
+    dest: /etc/systemd/network/00-bridge.network
+  notify: restart systemd-networkd
+
+- name: Render netdev for vxlan svi
+  template:
+    src: svi.netdev.j2
+    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.svi.iface }}.netdev"
+  notify: restart systemd-networkd
+  loop: "{{ systemd_networkd_vxlans }}"
+  loop_control:
+    index_var: i
+
+- name: Render network for vxlan svi
+  template:
+    src: svi.network.j2
+    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.svi.iface }}.network"
+  notify: restart systemd-networkd
+  loop: "{{ systemd_networkd_vxlans }}"
+  loop_control:
+    index_var: i
+
+- name: Render netdev for vxlan vtep
+  template:
+    src: vtep.netdev.j2
+    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.vtep.iface }}.netdev"
+  notify: restart systemd-networkd
+  loop: "{{ systemd_networkd_vxlans }}"
+  loop_control:
+    index_var: i
+
+- name: Render network for vxlan vtep
+  template:
+    src: vtep.network.j2
+    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.vtep.iface }}.network"
+  notify: restart systemd-networkd
+  loop: "{{ systemd_networkd_vxlans }}"
+  loop_control:
+    index_var: i

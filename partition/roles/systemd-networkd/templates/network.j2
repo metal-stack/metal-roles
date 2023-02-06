@@ -1,0 +1,23 @@
+[Match]
+{% if item.mac is defined %}
+MACAddress={{ item.mac }}
+{% else %}
+Name={{ item.name }}
+{% endif %}
+
+[Network]
+{% if item.dhcp is defined %}
+DHCP={{ item.dhcp }}
+{% endif %}
+LinkLocalAddressing=ipv6
+{% if item.vrf is defined %}
+VRF={{ item.vrf }}
+{% endif %}
+{% for vxlan in item.vxlans|default([]) %}
+VXLAN={{ vxlan }}
+{% endfor %}
+{% for address in item.addresses|default([]) %}
+
+[Address]
+Address={{ address }}
+{% endfor %}
