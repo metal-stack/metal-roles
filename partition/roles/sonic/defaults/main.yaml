@@ -34,8 +34,13 @@ sonic_vlans: []
 #  untagged_ports: []
 #  dhcp_servers: []
 
+sonic_vteps: []
+
 # LLDP Hello timer is 30s by default on the switch, but metal-hammer expects 10s or so
 sonic_lldp_hello_timer: 10
 
 sonic_frr_static_routes_mgmt: []
 sonic_interconnects: {}
+
+sonic_interconnects_default_peer_group: EXTERNAL
+sonic_interconnects_default_bgp_timers: '1 3'

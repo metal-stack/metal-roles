@@ -61,13 +61,13 @@ router bgp {{ sonic_asn }}
 router bgp {{ sonic_asn }} vrf {{ i.vrf }}
  bgp router-id {{ lo }}
  bgp bestpath as-path multipath-relax
- neighbor {{ i.peer_group | default('EXTERNAL') }} peer-group
- neighbor {{ i.peer_group | default('EXTERNAL') }} remote-as external
- neighbor {{ i.peer_group | default('EXTERNAL') }} timers {{ i.bgp_timers | default('1 3') }}
+ neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} peer-group
+ neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} remote-as external
+ neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} timers {{ i.bgp_timers | default(sonic_interconnects_default_bgp_timers) }}
  {% if i.bfd_parameters is defined %}
  neighbor {{ i.peer_group }} bfd {{ i.bfd_parameters }}
  {% endif %}
- neighbor {{ i.neighbor_ip }} peer-group {{ i.peer_group | default('EXTERNAL') }}
+ neighbor {{ i.neighbor_ip }} peer-group {{ i.peer_group | default(sonic_interconnects_default_peer_group) }}
  {% if i.bgp_md5_password is defined %}
  neighbor {{ i.neighbor_ip }} password {{ i.bgp_md5_password }}
  {% endif %}
@@ -78,12 +78,12 @@ router bgp {{ sonic_asn }} vrf {{ i.vrf }}
   {{ a }}
     {% endfor %}
     {% endif %}
-  neighbor {{ i.peer_group | default('EXTERNAL') }} remove-private-AS all
+  neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} remove-private-AS all
     {% if i.routemap_in is defined %}
-  neighbor {{ i.peer_group | default('EXTERNAL') }} route-map {{ i.routemap_in.name }} in
+  neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} route-map {{ i.routemap_in.name }} in
     {% endif %}
     {% if i.routemap_out is defined %}
-  neighbor {{ i.peer_group | default('EXTERNAL') }} route-map {{ i.routemap_out.name }} out
+  neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} route-map {{ i.routemap_out.name }} out
     {% endif %}
  exit-address-family
  !

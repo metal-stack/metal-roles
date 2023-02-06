@@ -35,16 +35,18 @@ BREAKOUT_CFG:
   {% endfor %}
 {% endif %}
 
-{% if sonic_bgp_ports|length > 0 or sonic_interconnects|length > 0 %}
+{% if sonic_ports|length > 0 %}
 INTERFACE:
-  {% for port in sonic_bgp_ports %}
-  {{ port }}:
+  {% for port in sonic_ports %}
+  "{{ port.name }}":
+    {% if port.name in sonic_bgp_ports|default([]) %}
     ipv6_use_link_local_only: enable
-  {% endfor %}
-  {% for k, i in sonic_interconnects.items() %}
-  {{ i.nic }}:
-    "vrf_name": "{{ i.vrf }}"
-  "{{ i.nic }}|{{ i.nic_cidr }}": {}
+    {% endif %}
+    {% if port.vrf is defined %}
+    "vrf_name": "{{ port.vrf }}"
+    {% endif %}
+  {% for ip in port.ips|default([]) %}
+  "{{ port.name }}|{{ ip }}": {}
   {% endfor %}
 {% endif %}
 
@@ -56,10 +58,6 @@ PORT:
     speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
     fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
-  {% endfor %}
-  {% for k, i in sonic_interconnects.items() %}
-  {{ i.nic }}:
-    mtu: "{{ i.mtu }}"
   {% endfor %}
 {% endif %}
 
@@ -75,7 +73,12 @@ VLAN:
 
 VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
+  {% if vlan.vrf is defined %}
+  Vlan{{ vlan.id }}: 
+    "vrf_name": "{{ vlan.vrf }}"
+  {% else %}
   Vlan{{ vlan.id }}: {}
+  {% endif %}
   {% if vlan.ip is defined %}
   Vlan{{ vlan.id }}|{{ vlan.ip }}: {}
   {% endif %}
