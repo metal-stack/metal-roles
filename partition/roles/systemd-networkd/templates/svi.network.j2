@@ -1,0 +1,15 @@
+[Match]
+Name={{ item.svi.iface }}
+
+[Link]
+MTUBytes={{ item.svi.mtu|default(systemd_networkd_mtu) }}
+
+{% if item.svi.vrf is defined %}
+[Network]
+VRF={{ item.svi.vrf }}
+{% endif %}
+
+{% if item.svi.address is defined %}
+[Network]
+Address={{ item.svi.address }}
+{% endif %}

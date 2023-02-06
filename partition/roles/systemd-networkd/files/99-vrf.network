@@ -1,0 +1,6 @@
+[Match]
+Name=vrf*
+
+[Link]
+ActivationPolicy=up
+RequiredForOnline=no
