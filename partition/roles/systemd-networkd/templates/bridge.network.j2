@@ -1,0 +1,13 @@
+[Match]
+Name=bridge
+
+[Network]
+{% for vxlan in systemd_networkd_vxlans %}
+VLAN={{ vxlan.svi.iface }}
+{% endfor %}
+
+{% for vxlan in systemd_networkd_vxlans %}
+[BridgeVLAN]
+VLAN={{ vxlan.svi.vlanid }}
+
+{% endfor %}
