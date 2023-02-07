@@ -1,0 +1,85 @@
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: split
+    hostname: "exit01"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+NTP_SERVER:
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|10.0.0.1/32: {}
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "true"
+
+BREAKOUT_CFG:
+  Ethernet0:
+    brkout_mode: "4x10G"
+
+INTERFACE:
+  Ethernet0:
+    vrf_name: "VrfMpls"
+  Ethernet0|10.0.0.2/32: {}
+  Ethernet112:
+    ipv6_use_link_local_only: enable
+  Ethernet116:
+    ipv6_use_link_local_only: enable
+
+PORT:
+  Ethernet0:
+    admin_status: up
+    speed: "10000"
+    mtu: "1500"
+    fec: "none"
+  Ethernet112:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet116:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+
+VLAN:
+  Vlan4000:
+    vlanid: 4000
+
+VLAN_INTERFACE:
+  Vlan4000:
+    vrf_name: "vrfMpls"
+
+VLAN_MEMBER:
+
+VXLAN_EVPN_NVO:
+  nvo:
+    source_vtep: vtep
+
+VXLAN_TUNNEL:
+  vtep:
+    src_ip: "10.0.0.1"
+
+VXLAN_TUNNEL_MAP:
+  # MPLS
+  "vtep|map_104000_4000":
+    vlan: "4000"
+    vni: "104000"
+
+VRF:
+  VrfMpls: {}
+
+LLDP:
+  Global:
+    hello_timer: 10

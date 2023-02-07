@@ -1,0 +1,20 @@
+---
+inventory_hostname: spine01
+
+sonic_loopback_address: 10.0.0.1
+sonic_asn: 420000000
+
+sonic_bgp_ports:
+- Ethernet50
+- Ethernet51
+
+sonic_ports_default_speed: 100000
+sonic_ports_default_mtu: 9216
+sonic_ports:
+- name: Ethernet50
+- name: Ethernet51
+
+sonic_frr_l2vpn_evpn: true
+sonic_frr_route_map:
+ name: LOOPBACKS
+ match: interface Loopback0
