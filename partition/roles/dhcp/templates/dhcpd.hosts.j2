@@ -1,0 +1,13 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+{% for host in dhcp_static_hosts %}
+host {{ host.name }} {
+  hardware ethernet {{ host.mac }};
+  fixed-address {{ host.ip }};
+  {% if host.options is defined and host.options|length > 0 %}
+  {% for option in host.options %}
+  option {{ option }};
+  {% endfor %}
+  {% endif %}
+}
+
+{% endfor %}
