@@ -1,0 +1,20 @@
+---
+- name: check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - lvm_vg is not none
+      - lvm_pvs is not none
+      - lvm_lvs is not none
+
+- name: create volumegroup
+  lvg:
+    vg: "{{ lvm_vg }}"
+    pvs: "{{ lvm_pvs }}"
+
+- name: create logical volumes
+  include_tasks: lv.yaml
+  loop: "{{ lvm_lvs }}"
+  loop_control:
+    loop_var: lv

@@ -1,0 +1,27 @@
+---
+- name: create logical volume
+  lvol:
+    vg: "{{ lvm_vg }}"
+    lv: "{{ lv.name }}"
+    size: "{{ lv.size }}"
+    opts: "{{ lv.opts | default('') }}"
+    resizefs: yes
+
+- name: create filesystem
+  filesystem:
+    fstype: "{{ lv.fstype }}"
+    dev: "/dev/{{ lvm_vg }}/{{ lv.name }}"
+
+- name: create mountpath
+  file:
+    path: "{{ lv.mountpath }}"
+    state: directory
+    mode: 0750
+
+- name: mount logical volume
+  mount:
+    path: "{{ lv.mountpath }}"
+    src: "/dev/{{ lvm_vg }}/{{ lv.name }}"
+    fstype: "{{ lv.fstype }}"
+    opts: defaults
+    state: mounted
