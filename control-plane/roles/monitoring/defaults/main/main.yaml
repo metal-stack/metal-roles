@@ -20,14 +20,14 @@ monitoring_grafana_additional_datasources:
       severity_critical: "critical"
       severity_high: "high"
       severity_warning: "warning"
-      severity_info: "info1"
+      severity_info: "info"
 monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
 monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
 monitoring_ingress_grafana_tls: yes
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
-monitoring_slack_channel: "monitoring_prometheus"
-monitoring_slack_channel_url: "https://hooks.slack.com/services/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"
+monitoring_slack_channel: ""
+monitoring_slack_channel_url: ""
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_metal_api_hmac: "metal-admin"

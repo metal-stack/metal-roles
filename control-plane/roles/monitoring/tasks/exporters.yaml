@@ -22,6 +22,5 @@
     definition: "{{ lookup('template', item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
-    - eventrouter.yaml
     - alertloggerService.yaml
     - alertloggerStatefulSet.yaml

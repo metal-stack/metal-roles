@@ -13,8 +13,8 @@ route:
 receivers:
   - name: "slack"
     slack_configs:
-      - api_url: 'https://hooks.slack.com/services/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'
+      - api_url: ""
         send_resolved: true
-        channel: 'monitoring_prometheus'
+        channel: ""
         text: "{{ range .Alerts }}<!channel> {{ .Annotations.summary }}\n{{ .Annotations.description }}\n{{ end }}"
 

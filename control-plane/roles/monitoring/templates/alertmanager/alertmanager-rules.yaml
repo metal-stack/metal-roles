@@ -6,7 +6,6 @@ metadata:
     release: prometheus
     role: alert-rules
   name: metal-api.rules
-  namespace: monitoring
 spec:
   groups:
   - name: metal-api.rules
