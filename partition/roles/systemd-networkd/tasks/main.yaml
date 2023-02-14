@@ -5,6 +5,12 @@
     enabled: yes
     state: started
 
+- name: Copy systemd-networkd conf
+  copy:
+    src: networkd.conf
+    dest: /etc/systemd/
+  notify: restart systemd-networkd
+
 - name: Copy default file for VRFs
   copy:
     src: 99-vrf.network
