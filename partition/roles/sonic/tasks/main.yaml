@@ -38,8 +38,13 @@
   notify: reload systemd
   with_items:
     - bgp-validation@.service
-    - write-to-db@.service
+    - config-if@.service
     - config-save-reload.service
+      
+- name: Install config DB scripts
+  copy:
+    src: scripts/
+    dest: /etc/sonic/scripts/
 
 - name: Render metal config for config_db.json
   template:

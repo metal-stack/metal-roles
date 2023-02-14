@@ -1,0 +1,10 @@
+[Unit]
+Description=Config interface
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c '/etc/sonic/scripts/%I'
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
