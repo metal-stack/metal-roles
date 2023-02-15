@@ -52,6 +52,9 @@ spec:
         image: "{{ gardener_shooted_seed.firewall_image }}"
         size: "{{ gardener_shooted_seed.firewall_size }}"
         networks: {{ gardener_shooted_seed.networks | to_json }}
+{% if gardener_shooted_seed.firewall_controller_version is defined %}
+        controllerVersion: "{{ gardener_shooted_seed.firewall_controller_version }}"
+{% endif %}
       projectID: "{{ gardener_shooted_seed.project_id }}"
       partitionID: "{{ gardener_shooted_seed.partition }}"
     controlPlaneConfig:

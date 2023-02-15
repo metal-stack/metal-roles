@@ -55,6 +55,7 @@ gardener_shooted_seeds: []
 #       version: "10.0"
 #   firewall_size: size
 #   firewall_image: firewall-ubuntu
+#   firewall_controller_version: auto
 #   api_server:
 #     autoscaler:
 #       min_replicas: 1
