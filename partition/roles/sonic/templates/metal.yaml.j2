@@ -119,7 +119,12 @@ VXLAN_TUNNEL_MAP:
 
 VRF:
 {% for k, i in sonic_interconnects.items() %}
+  {% if i.vni is defined %}
+  {{ i.vrf }}:
+    vni: "{{ i.vni }}"
+  {% else %}
   {{ i.vrf }}: {}
+  {% endif %}
 {% endfor %}
 {% endif %}
 {% if sonic_lldp_hello_timer is defined %}
