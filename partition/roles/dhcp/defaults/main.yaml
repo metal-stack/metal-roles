@@ -22,3 +22,8 @@ dhcp_global_options: []
 # - ztp_provisioning_script_url "http://{{ ansible_host }}/ztp.sh"
 
 dhcp_service_name: "{{ 'dhcpd' if metal_stack_switch_os_is_cumulus | default(false) else 'isc-dhcp-server' }}"
+
+#dhcp_static_hosts:
+#- name: r01mgmtleaf01
+#  mac: ""
+#  ip: 10.1.2.3

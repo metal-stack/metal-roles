@@ -1,0 +1,12 @@
+[Match]
+Name={{ item.vtep.iface }}
+
+[Link]
+MTUBytes={{ item.vtep.mtu|default(systemd_networkd_mtu) }}
+
+[Network]
+Bridge=bridge
+
+[BridgeVLAN]
+PVID={{ item.svi.vlanid }}
+EgressUntagged={{ item.svi.vlanid }}
