@@ -33,6 +33,7 @@
   loop:
      - machine-capacity.yaml
      - metal-api.yaml
+     - rethinkdb.yaml
 
 - name: Create service monitors
   k8s:
