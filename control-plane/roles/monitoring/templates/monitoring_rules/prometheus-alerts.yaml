@@ -3,10 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   labels:
-    release: prometheus
+    release: kube-prometheus-stack
     role: alert-rules
   name: example-rule
-  namespace: monitoring
 spec:
   groups:
   - name: example-rule

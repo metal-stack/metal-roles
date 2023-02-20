@@ -36,37 +36,40 @@ grafana:
 {% endfor %}
 {% endif %}
 alertmanager:
+  alertmanagerSpec:
+    logLevel: debug
   config:
     global:
       resolve_timeout: 5m
       slack_api_url: "{{ monitoring_slack_channel_url }}"
+    inhibit_rules: []
     route:
-      group_wait: 2m
-      group_interval: 15m
-      group_by: ['...']
-      repeat_interval: 120h
-      receiver: 'null'
+      group_by: ['alertname', 'cluster', 'service', 'namespace'] 
+      group_wait: 30s
+      group_interval: 30s
+      repeat_interval: 30s
+      receiver: 'slack'
       routes:
-        - match_re:
-            severity: 'critical'
-          receiver: 'alertlogger'
-          continue: true
-        - match_re:
-            job: '.*'
-          receiver: 'alertlogger'
-          continue: true
-        - match_re:
-            severity: 'critical'
-          receiver: 'slack'
+      - receiver: 'null'
+        matchers:
+          - alertname=~"Watchdog|InfoInhibitor"
+      - match: 
+          team: slack 
+        receiver: slack 
+        continue: true 
     receivers:
+    - name: 'null'
     - name: 'slack'
       slack_configs:
-      - channel: {{monitoring_slack_channel}}
+      - channel: "{{ monitoring_slack_channel }}"
         send_resolved: true
-    - name: 'null'
     - name: 'alertlogger'
       webhook_configs:
         - url: http://alertlogger:5001
+    templates:
+    - '/etc/alertmanager/config/*.tmpl'
+
+
 
 kubeProxy:
   enabled: false

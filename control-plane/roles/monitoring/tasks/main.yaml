@@ -73,3 +73,5 @@
     - metal-api-rules.yaml
     - prometheus-alerts.yaml
     - alertmanager-rules.yaml
+    - partition-rules.yaml
+
