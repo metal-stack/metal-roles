@@ -106,5 +106,6 @@ metal_api_headscale_internal_api_address: "headscale:50443"
 metal_auditing_enabled: false
 metal_auditing_index_prefix: "auditing"
 metal_auditing_index_interval: "@daily"
-metal_auditing_url: "http://auditing-meili-meilisearch.metal-control-plane.svc.cluster.local:7700"
+metal_auditing_url: "http://auditing-meili-meilisearch.{{ metal_auditing_namespace }}.svc.cluster.local:7700"
 metal_auditing_meili_secret_name: metal-auditing-master-key
+metal_auditing_namespace: "{{ metal_control_plane_namespace }}"
