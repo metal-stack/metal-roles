@@ -24,18 +24,6 @@
         MEILI_MASTER_KEY: "{{ auditing_meili_secret }}"
   when: auditing_meili_secret
 
-- name: Create meili secret for control plane
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: metal-auditing-master-key
-        namespace: "{{ metal_control_plane_namespace }}"
-      stringData:
-        MEILI_MASTER_KEY: "{{ auditing_meili_secret }}"
-  when: auditing_meili_secret and (metal_control_plane_namespace != metal_auditing_namespace)
-
 - name: Deploy meilisearch
   include_role:
     name: ansible-common/roles/helm-chart
