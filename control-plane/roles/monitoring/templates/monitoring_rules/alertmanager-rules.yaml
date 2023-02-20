@@ -165,7 +165,7 @@ spec:
       annotations:
         summary: Host high CPU load (instance {{ $labels.instance }})
         description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-        
+
       #Container alerts 
     - alert: ContainerCpuUsage
       expr: (sum(rate(container_cpu_usage_seconds_total{name!=""}[3m])) BY (instance, name) * 100) > 80
@@ -194,6 +194,12 @@ spec:
         summary: Container high throttle rate (instance {{ $labels.instance }})
         description: "Container is being throttled\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-
+    - alert: utils Pod not running
+      expr: sum(kube_pod_status_ready{condition="true",pod_name=~"pod-name"}==0)
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: utils pod is not running (instance {{ $labels.pod }})
     
 {% endraw %}

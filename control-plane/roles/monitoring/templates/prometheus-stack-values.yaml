@@ -44,7 +44,7 @@ alertmanager:
       slack_api_url: "{{ monitoring_slack_channel_url }}"
     inhibit_rules: []
     route:
-      group_by: ['alertname', 'cluster', 'service', 'namespace'] 
+      group_by: ['namespace'] 
       group_wait: 30s
       group_interval: 30s
       repeat_interval: 30s
