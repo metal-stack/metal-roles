@@ -41,7 +41,9 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
+{% if monitoring_slack_channel_url is defined %}
       slack_api_url: "{{ monitoring_slack_channel_url }}"
+{% endif %}
     inhibit_rules: []
     route:
       group_by: ['namespace'] 
@@ -59,10 +61,12 @@ alertmanager:
         continue: true 
     receivers:
     - name: 'null'
+{% if monitoring_slack_channel is defined %}
     - name: 'slack'
       slack_configs:
       - channel: "{{ monitoring_slack_channel }}"
         send_resolved: true
+{% endif %}
     - name: 'alertlogger'
       webhook_configs:
         - url: http://alertlogger:5001
