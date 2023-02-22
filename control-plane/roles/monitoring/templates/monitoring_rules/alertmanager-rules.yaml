@@ -194,12 +194,24 @@ spec:
         summary: Container high throttle rate (instance {{ $labels.instance }})
         description: "Container is being throttled\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-    - alert: utils Pod not running
-      expr: sum(kube_pod_status_ready{condition="true",pod_name=~"pod-name"}==0)
+    - alert: AlertmanagerError
+      expr: alertmanager_build_info{job="alertmanager"} == 0
       for: 1m
       labels:
-        severity: critical
+        severity: warning
       annotations:
-        summary: utils pod is not running (instance {{ $labels.pod }})
+        summary: "Alertmanager error"
+        description: "The Alertmanager service is down or not responding."
+
+    - alert: PrometheusRuleEvalError
+      expr: sum(prometheus_rules_evaluation_failures_total) by (job) > 0
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Prometheus rule evaluation error"
+        description: "One or more Prometheus rules failed to evaluate."
+
+
     
 {% endraw %}

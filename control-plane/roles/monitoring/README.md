@@ -36,3 +36,4 @@ The following variables can be set to configure the role:
 | monitoring_grafana_dashboard_timezone     |           | Sets the default's dashboard timezone for Grafana           |
 | monitoring_grafana_additional_datasources |           | Configures additional datasources for Grafana               |
 | monitoring_slack_channel_url              |           | Slack channel url to add on alermanger                      |
+| monitoring_slack_channel                  |           | Slack channel to add on alermanger                          |

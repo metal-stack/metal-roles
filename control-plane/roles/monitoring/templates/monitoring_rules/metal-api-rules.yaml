@@ -31,6 +31,16 @@ spec:
         severity: critical
       annotations:
         description: "Metal API pod {{ $labels.pod }} has high number of go processes {{ $value | printf `%.2f` }}"
+        
+    - alert: MetalApiResponseCodeNotOk
+      expr: http_requests_total{job="metal_api", status!~"2..|3.."} > 0
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Metal API response status code not OK"
+        description: "The metal_api response status code is not in the expected range."
+
 
   - name: metal-api-recording.rules
     rules:
