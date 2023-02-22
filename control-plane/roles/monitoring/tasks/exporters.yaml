@@ -23,4 +23,4 @@
     namespace: "{{ monitoring_namespace }}"
   loop:
     - alertloggerService.yaml
-    - alertloggerStatefulSet.yaml
+    - alertloggerDeployment.yaml
