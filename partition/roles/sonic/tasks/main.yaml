@@ -47,7 +47,7 @@
   with_items:
     - bgp-validation@.service
     - write-to-db@.service
-    - config-save-reload.service
+    - frr-reload.service
 
 - name: Render metal config for config_db.json
   template:
