@@ -20,6 +20,12 @@
 - include_tasks: install/redhat.yaml
   when: not frr_installed and ansible_os_family == 'RedHat'
 
+- name: copy sysctls for frr
+  copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.d/98-frr.conf
+  notify: reload sysctls
+
 - name: enable vtysh
   copy:
     src: vtysh.conf
@@ -42,6 +48,4 @@
   copy:
     content: "{{ frr_conf }}"
     dest: /etc/frr/frr.conf
-    validate: '/usr/bin/vtysh --dryrun --inputfile %s'
-  notify:
-    - reload frr
+  notify: reload frr

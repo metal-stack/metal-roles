@@ -8,3 +8,6 @@
   service:
     name: frr
     state: restarted
+
+- name: reload sysctls
+  command: sysctl --system
