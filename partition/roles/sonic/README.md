@@ -51,6 +51,7 @@ Deploys a sonic switch.
 | sonic_interconnects.bgp_md5_password                       |           | Use a MD5 password for the BGP session with the remote party.                                                        |
 | sonic_interconnects.bgp_timers                             |           | Use specific BGP timer values for the BGP session with the remote party.                                             |
 | sonic_interconnects.neighbor_ip                            |           | Connect to this BGP neighbors IP.                                                                                    |
+| sonic_interconnects.neighbors                              |           | Connect to this BGP neighbors - supports multiple neighbors and also BGP unnumbered by giving `Ethernet0 interface`. |
 | sonic_interconnects.peer_group                             |           | Put the neighbor in this peer group.                                                                                 |
 | sonic_interconnects.prefixlists                            |           | BGP Prefix Lists to configure.                                                                                       |
 | sonic_interconnects.remote_as                              |           | The AS of the BGP neighbor.                                                                                          |
