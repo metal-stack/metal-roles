@@ -19,7 +19,6 @@
   loop:
     - "{{ promtail_etc_host_dir }}"
     - "{{ promtail_etc_host_dir }}/promtail"
-    - "{{ promtail_data_host_dir }}"
 
 - name: template promtail configuration file
   template:
@@ -50,7 +49,6 @@
     systemd_service_requires: docker.service
     systemd_docker_volumes:
       - "{{ promtail_etc_host_dir }}/promtail:/etc/promtail:ro"
-      - "{{ promtail_data_host_dir }}:/data"
-      - "/var/log:/var/log:ro"
+      - "/var/log:/var/log"
     systemd_docker_command:
       - -config.file=/etc/promtail/promtail.yaml

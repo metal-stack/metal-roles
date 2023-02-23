@@ -10,6 +10,8 @@ clients:
     tls_config:
       cert_file: /etc/promtail/cert.pem
       key_file: /etc/promtail/key.pem
+      # TODO: make this work without insecure:
+      insecure_skip_verify: true
 
 {% if metal_stack_switch_os_is_sonic %}
 scrape_configs:
