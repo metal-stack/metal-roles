@@ -1,0 +1,10 @@
+---
+# TODO: move to release vector
+promtail_image_name: grafana/promtail
+promtail_image_tag: 2.7.3
+
+promtail_host_dir_path: /promtail
+promtail_etc_host_dir: "{{ promtail_host_dir_path }}/etc"
+promtail_data_host_dir: "{{ promtail_host_dir_path }}/data"
+
+promtail_loki_push_endpoint: "{{ logging_ingress_dns | default(none) }}"

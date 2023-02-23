@@ -41,6 +41,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | [leaf](roles/leaf)                           | Deploys network config for cumulus switches |
 | [metal-core](roles/metal-core)               | Deploys metal-core                          |
 | [pixiecore](roles/pixiecore)                 | Deploys pixiecore                           |
+| [promtail](roles/promtail)                   | Deploys promtail                            |
 | [router](roles/router)                       | Deploys router config on cumulus switches   |
 
 ## Examples

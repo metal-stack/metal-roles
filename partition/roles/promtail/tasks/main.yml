@@ -1,0 +1,56 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - promtail_loki_push_endpoint is not none
+
+- name: Gather switch facts
+  switch_facts:
+
+- name: create promtail directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "nobody"
+    group: "nogroup"
+    mode: "0755"
+  loop:
+    - "{{ promtail_etc_host_dir }}"
+    - "{{ promtail_etc_host_dir }}/promtail"
+    - "{{ promtail_data_host_dir }}"
+
+- name: template promtail configuration file
+  template:
+    src: promtail.yaml.j2
+    dest: "{{ promtail_etc_host_dir }}/promtail/promtail.yaml"
+  notify: restart promtail
+
+- name: copy client certificate
+  copy:
+    dest: "{{ promtail_etc_host_dir }}/promtail/{{ item.filename }}"
+    content: "{{ item.content }}"
+  no_log: yes
+  loop:
+    - filename: cert.pem
+      content: "{{ promtail_cert }}"
+    - filename: key.pem
+      content: "{{ promtail_cert_key }}"
+  notify: restart promtail
+
+- name: deploy promtail service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: promtail
+    systemd_docker_image_name: "{{ promtail_image_name }}"
+    systemd_docker_image_tag: "{{ promtail_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_volumes:
+      - "{{ promtail_etc_host_dir }}/promtail:/etc/promtail:ro"
+      - "{{ promtail_data_host_dir }}:/data"
+      - "/var/log:/var/log:ro"
+    systemd_docker_command:
+      - -config.file=/etc/promtail/promtail.yaml
