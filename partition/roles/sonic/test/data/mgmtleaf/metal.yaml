@@ -24,10 +24,6 @@ MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "true"
 
-BREAKOUT_CFG:
-  Ethernet0:
-    brkout_mode: "4x25G"
-
 INTERFACE:
   Ethernet50:
     ipv6_use_link_local_only: enable

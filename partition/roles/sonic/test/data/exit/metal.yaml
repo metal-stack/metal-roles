@@ -23,10 +23,6 @@ MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "true"
 
-BREAKOUT_CFG:
-  Ethernet0:
-    brkout_mode: "4x10G"
-
 INTERFACE:
   Ethernet0:
     vrf_name: "VrfMpls"
