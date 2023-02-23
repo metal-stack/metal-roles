@@ -78,7 +78,8 @@ VXLAN_TUNNEL_MAP:
     vni: "104000"
 
 VRF:
-  VrfMpls: {}
+  VrfMpls:
+    vni: "104000"
 
 LLDP:
   Global:

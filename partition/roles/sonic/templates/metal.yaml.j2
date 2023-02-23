@@ -77,7 +77,7 @@ VLAN:
 VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
-  Vlan{{ vlan.id }}: 
+  Vlan{{ vlan.id }}:
     vrf_name: "{{ vlan.vrf }}"
   {% else %}
   Vlan{{ vlan.id }}: {}
