@@ -23,7 +23,6 @@ grafana:
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
   additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
-
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -46,7 +45,8 @@ alertmanager:
 {% endif %}
     inhibit_rules: []
     route:
-      group_by: ['namespace'] 
+      receiver: webhook-logger
+      group_by: ['severity', 'alertname', 'namespace', 'pod', 'job'] 
       group_wait: 30s
       group_interval: 30s
       repeat_interval: 30s
@@ -60,6 +60,11 @@ alertmanager:
         receiver: slack 
         continue: true 
     receivers:
+    - name: webhook-logger
+    webhook_configs:
+    - url: http://webhook-logger:8000/alerts
+      send_resolved: true
+      max_alerts: 0 # 0=all alerts
     - name: 'null'
 {% if monitoring_slack_channel is defined %}
     - name: 'slack'
@@ -72,9 +77,6 @@ alertmanager:
         - url: http://alertlogger:5001
     templates:
     - '/etc/alertmanager/config/*.tmpl'
-
-
-
 kubeProxy:
   enabled: false
 

@@ -1,27 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: alertlogger
+  name: webhook-logger
   labels:
-    app: alertlogger
+    app: webhook-logger
 spec:
-  serviceName: alertlogger
   replicas: 1
   selector:
     matchLabels:
-      app: alertlogger
+      app: webhook-logger
   template:
     metadata:
       labels:
-        app: alertlogger
+        app: webhook-logger
     spec:
-      automountServiceAccountToken: false
       containers:
-      - name: alertlogger
-        image: docker.io/mwennrich/alertlogger:v0.9.0
+      - name: webhook-logger
+        image: {{webhook_logger_image_name}}:{{webhook_logger_image_tag}}
         ports:
-        - containerPort: 5001
+        - containerPort: 8000
           name: http
-        securityContext:
-          allowPrivilegeEscalation: false
-          runAsNonRoot: true

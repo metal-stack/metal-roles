@@ -21,6 +21,8 @@
   k8s:
     definition: "{{ lookup('template', item) }}"
     namespace: "{{ monitoring_namespace }}"
+    apply: true
   loop:
     - alertloggerService.yaml
     - alertloggerDeployment.yaml
+  

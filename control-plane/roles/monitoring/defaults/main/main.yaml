@@ -35,3 +35,4 @@ monitoring_metal_api_hmac: "metal-admin"
 # rethinkdb exporter
 monitoring_rethinkdb_exporter_metal_db_password: "change-me"
 monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28015
+
