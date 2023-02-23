@@ -1,0 +1,47 @@
+---
+- name: check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - frr_version is not none
+
+- name: gather package facts
+  package_facts:
+    manager: auto
+
+- name: check if frr is installed
+  set_fact:
+    frr_installed: "{{ ('packages' in ansible_facts and (ansible_facts.packages['frr']|length > 0) and (frr_version|string in (ansible_facts.packages['frr'][0].version))) | bool }}"
+
+- include_tasks: install/debian.yaml
+  when: not frr_installed and ansible_os_family == 'Debian'
+
+- include_tasks: install/redhat.yaml
+  when: not frr_installed and ansible_os_family == 'RedHat'
+
+- name: enable vtysh
+  copy:
+    src: vtysh.conf
+    dest: /etc/frr/
+  notify: restart frr
+
+- name: enable frr daemons
+  copy:
+    src: daemons
+    dest: /etc/frr/daemons
+  notify: restart frr
+
+- name: ensure frr is started
+  systemd:
+    name: frr
+    enabled: yes
+    state: started
+
+- name: copy frr conf
+  copy:
+    content: "{{ frr_conf }}"
+    dest: /etc/frr/frr.conf
+    validate: '/usr/bin/vtysh --dryrun --inputfile %s'
+  notify:
+    - reload frr
