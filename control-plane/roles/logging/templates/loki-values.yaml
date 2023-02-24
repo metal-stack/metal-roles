@@ -7,11 +7,11 @@ persistence:
   size: 30Gi
 
 write:
-  replicas: 3
+  replicas: 1
   affinity: ""
 
 read:
-  replicas: 3
+  replicas: 1
   affinity: ""
 
 loki:
