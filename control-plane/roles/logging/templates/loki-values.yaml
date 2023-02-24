@@ -24,6 +24,9 @@ loki:
     filesystem:
       directory: /tmp/loki/chunks
 
+  storage:
+    type: 'filesystem'
+
   limits_config:
     enforce_metric_name: false
     reject_old_samples: true
@@ -32,6 +35,12 @@ loki:
     ingestion_burst_size_mb: 64
     per_stream_rate_limit: "16MB"
     per_stream_rate_limit_burst: "32MB"
+
+  ruler:
+    storage:
+      type: local
+      local:
+        directory: /tmp/loki/rules
 
 ingress:
   enabled: true
