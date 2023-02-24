@@ -18,9 +18,17 @@ ingress:
   ingressClassName: "nginx"
   annotations:
 {% for key, value in logging_ingress_annotations.items() %}
-    {{ key }}: "{{ value }}"
+      {{ key }}: "{{ value }}"
 {% endfor %}
-  basicAuth:
-    enabled: true
-    username: {{ promtail_loki_basic_auth_username }}
-    password: {{ promtail_loki_basic_auth_password }}
+{% if logging_ingress_loki_basic_auth %}
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
+{% endif %}
+  hosts:
+    - {{ logging_ingress_dns }}
+{% if logging_ingress_loki_tls %}
+    tls:
+    - hosts:
+      - {{ logging_ingress_dns }}
+      secretName: monitoring-loki-ingress-tls
+{% endif %}
