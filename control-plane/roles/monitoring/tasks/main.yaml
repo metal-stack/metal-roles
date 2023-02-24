@@ -27,7 +27,7 @@
   command: helm show chart --repo {{ prometheus_stack_repo }} kube-prometheus-stack
   register: helm_output
 
-- name: Apply prometheos operator CRDs
+- name: Apply prometheus operator CRDs
   k8s:
     definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ (helm_output.stdout | from_yaml).get('appVersion') + '/example/prometheus-operator-crd/' + item , split_lines=False) | regex_replace('- =\n', '- \"=\"\n') }}"
   loop:
