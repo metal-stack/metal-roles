@@ -17,12 +17,12 @@
     namespace: "{{ monitoring_namespace }}"
     apply: true
 
-- name: Add eventrouter and alertlogger
+- name: Add webhook-logger
   k8s:
     definition: "{{ lookup('template', item) }}"
     namespace: "{{ monitoring_namespace }}"
     apply: true
   loop:
-    - alertloggerService.yaml
-    - alertloggerDeployment.yaml
+    - webhook-logger-Service.yaml
+    - webhook-logger-Deployment.yaml
   

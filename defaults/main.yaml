@@ -93,6 +93,5 @@ metal_stack_release:
     rethinkdb_exporter_tag: "docker-images.metal-stack.control-plane.rethinkdb-exporter.tag"
     event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
     event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"
-    webhook_logger_image_name: "docker-images.metal-stack.control-plane.webhook-logger.name"
-    webhook_logger_image_tag: "docker-images.metal-stack.control-plane.webhook-logger.tag"
-    webhook_logger_repo: "docker-images.metal-stack.control-plane.webhook-logger.repository"
+    webhook_logger_image_name: "docker-images.third-party.control-plane.webhook-logger.name"
+    webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"

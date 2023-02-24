@@ -72,9 +72,6 @@ alertmanager:
       - channel: "{{ monitoring_slack_channel }}"
         send_resolved: true
 {% endif %}
-    - name: 'alertlogger'
-      webhook_configs:
-        - url: http://alertlogger:5001
     templates:
     - '/etc/alertmanager/config/*.tmpl'
 kubeProxy:
