@@ -7,11 +7,9 @@ positions:
 
 clients:
   - url: {{ promtail_loki_push_endpoint }}/loki/api/v1/push
-    tls_config:
-      cert_file: /etc/promtail/cert.pem
-      key_file: /etc/promtail/key.pem
-      # TODO: make this work without insecure:
-      insecure_skip_verify: true
+    basic_auth:
+      username: {{ promtail_loki_basic_auth_username }}
+      password: {{ promtail_loki_basic_auth_password }}
 
 {% if metal_stack_switch_os_is_sonic %}
 scrape_configs:
