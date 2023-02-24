@@ -6,6 +6,12 @@ persistence:
   enabled: true
   size: 30Gi
 
+write:
+  replicas: 1
+
+read:
+  replicas: 1
+
 loki:
   limits_config:
     ingestion_rate_mb: 32
