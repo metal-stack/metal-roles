@@ -57,6 +57,7 @@ scrape_configs:
         job: systemd-journal
         partition: '{{ metal_partition_id }}'
         host: '{{ inventory_hostname }}'
+        devicetype: switch
     pipeline_stages:
     - regex:
         expression: "(lvl|level)=(?P<level>[a-zA-Z]+).*(logger|component)=(?P<component>[a-zA-Z]+)"
