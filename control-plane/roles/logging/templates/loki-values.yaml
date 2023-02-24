@@ -20,6 +20,16 @@ singleBinary:
 loki:
   auth_enabled: false
 
+  ingester:
+    lifecycler:
+      address: 127.0.0.1
+      ring:
+        kvstore:
+          store: inmemory
+        replication_factor: 1
+    chunk_idle_period: 1h
+    chunk_retain_period: 30s
+
   storage_config:
     boltdb:
       directory: /tmp/loki/index
