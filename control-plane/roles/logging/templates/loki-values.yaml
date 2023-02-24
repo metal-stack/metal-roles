@@ -6,7 +6,7 @@ persistence:
   enabled: true
   size: 30Gi
 
-config:
+loki:
   limits_config:
     ingestion_rate_mb: 32
     ingestion_burst_size_mb: 64
