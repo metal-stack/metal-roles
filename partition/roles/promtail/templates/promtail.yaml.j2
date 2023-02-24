@@ -7,6 +7,7 @@ positions:
 
 clients:
   - url: {{ promtail_loki_push_endpoint }}/loki/api/v1/push
+    timeout: 60s
     basic_auth:
       username: {{ promtail_loki_basic_auth_username }}
       password: {{ promtail_loki_basic_auth_password }}

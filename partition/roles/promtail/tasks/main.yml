@@ -35,6 +35,7 @@
     systemd_docker_image_tag: "{{ promtail_image_tag }}"
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
+    systemd_docker_network: host
     systemd_docker_volumes:
       - "{{ promtail_etc_host_dir }}/promtail:/etc/promtail:ro"
       - "/var/log:/var/log"
