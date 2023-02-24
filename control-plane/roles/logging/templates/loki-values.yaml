@@ -27,7 +27,7 @@ ingress:
   hosts:
     - {{ logging_ingress_dns }}
 {% if logging_ingress_loki_tls %}
-    tls:
+  tls:
     - hosts:
       - {{ logging_ingress_dns }}
       secretName: monitoring-loki-ingress-tls
