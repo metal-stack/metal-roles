@@ -7,10 +7,12 @@ persistence:
   size: 30Gi
 
 write:
-  replicas: 1
+  replicas: 3
+  affinity: ""
 
 read:
-  replicas: 1
+  replicas: 3
+  affinity: ""
 
 loki:
   auth_enabled: false
