@@ -16,37 +16,37 @@ clients:
 {% if metal_stack_switch_os_is_sonic %}
 scrape_configs:
 - job_name: system
-  pipeline_stages:
-  - cri: {}
-  - docker: {}
-  - regex:
-      expression: "(?P<level>(INFO|WARNING|ERROR|info|warning|error))"
-  - regex:
-      expression: "(lvl|level)=(?P<level>[a-zA-Z]+).*(logger|component)=(?P<component>[a-zA-Z]+)"
-  - regex:
-      expression: "{{ metal_partition_id }}-{{ inventory_hostname }} (?P<component>[a-zA-Z_-]+)"
-  - regex:
-      expression: "\"app\": \"(?P<component>[a-zA-Z_-]+)\""
-  - regex:
-      expression: "\"machineID\": \"(?P<machineID>[0-9a-f-]+)\""
-  - labels:
-      level:
-      component:
-      machineID:
-  - metrics:
-      log_lines_total:
-        type: Counter
-        description: "total number of log lines"
-        source: component
-        config:
-          action: inc
+  # pipeline_stages:
+  # - cri: {}
+  # - docker: {}
+  # - regex:
+  #     expression: "(?P<level>(INFO|WARNING|ERROR|info|warning|error))"
+  # - regex:
+  #     expression: "(lvl|level)=(?P<level>[a-zA-Z]+).*(logger|component)=(?P<component>[a-zA-Z]+)"
+  # - regex:
+  #     expression: "{{ metal_partition_id }}-{{ inventory_hostname }} (?P<component>[a-zA-Z_-]+)"
+  # - regex:
+  #     expression: "\"app\": \"(?P<component>[a-zA-Z_-]+)\""
+  # - regex:
+  #     expression: "\"machineID\": \"(?P<machineID>[0-9a-f-]+)\""
+  # - labels:
+  #     level:
+  #     component:
+  #     machineID:
+  # - metrics:
+  #     log_lines_total:
+  #       type: Counter
+  #       description: "total number of log lines"
+  #       source: component
+  #       config:
+  #         action: inc
   static_configs:
   - targets:
       - localhost
     labels:
       job: varlogs
       partition: '{{ metal_partition_id }}'
-      host: '{{ metal_partition_id }}-{{ inventory_hostname }}'
+      host: '{{ inventory_hostname }}'
       __path__: /var/log/**/*log
 {% else %}
 scrape_configs:
@@ -57,8 +57,7 @@ scrape_configs:
       labels:
         job: systemd-journal
         partition: '{{ metal_partition_id }}'
-        replica: '{{ metal_partition_id }}-{{ inventory_hostname }}'
-        host: '{{ metal_partition_id }}-{{ inventory_hostname }}'
+        host: '{{ inventory_hostname }}'
     pipeline_stages:
     - regex:
         expression: "(lvl|level)=(?P<level>[a-zA-Z]+).*(logger|component)=(?P<component>[a-zA-Z]+)"
