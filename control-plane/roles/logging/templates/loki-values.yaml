@@ -13,6 +13,8 @@ read:
   replicas: 1
 
 loki:
+  auth_enabled: false
+
   limits_config:
     ingestion_rate_mb: 32
     ingestion_burst_size_mb: 64
