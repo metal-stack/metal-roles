@@ -26,18 +26,6 @@
     dest: "{{ promtail_etc_host_dir }}/promtail/promtail.yaml"
   notify: restart promtail
 
-- name: copy client certificate
-  copy:
-    dest: "{{ promtail_etc_host_dir }}/promtail/{{ item.filename }}"
-    content: "{{ item.content }}"
-  no_log: yes
-  loop:
-    - filename: cert.pem
-      content: "{{ promtail_cert }}"
-    - filename: key.pem
-      content: "{{ promtail_cert_key }}"
-  notify: restart promtail
-
 - name: deploy promtail service
   include_role:
     name: ansible-common/roles/systemd-docker-service
