@@ -2,10 +2,6 @@
 grafana:
   enabled: false
 
-persistence:
-  enabled: true
-  size: 30Gi
-
 # write:
 #   replicas: 1
 #   affinity: ""
@@ -16,6 +12,8 @@ persistence:
 
 singleBinary:
   replicas: 1
+  persistence:
+    size: 30Gi
 
 loki:
   auth_enabled: false

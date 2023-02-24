@@ -5,7 +5,7 @@ monitoring_grafana_dashboard_timezone: Europe/Berlin
 monitoring_grafana_additional_datasources:
   - name: Loki
     type: loki
-    url: http://loki-gateway/
+    url: http://loki:3100/
     access: proxy
     orgId: 1
     version: 1
