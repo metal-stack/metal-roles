@@ -79,6 +79,7 @@ VLAN_INTERFACE:
   {% endif %}
   {% endfor %}
 
+{% if sonic_vlan_members %}
 VLAN_MEMBER:
   {% for vlan in sonic_vlans %}
   {% for untagged_port in vlan.untagged_ports|default([]) %}
@@ -86,6 +87,7 @@ VLAN_MEMBER:
       tagging_mode: untagged
   {% endfor %}
   {% endfor %}
+{% endif %}
 {% endif %}
 {% if sonic_vteps is defined and sonic_vteps|length > 0 %}
 

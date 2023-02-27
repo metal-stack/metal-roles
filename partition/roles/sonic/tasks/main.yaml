@@ -52,7 +52,7 @@
 - name: Configure breakouts
   command: "config interface breakout -y {{ item.key }} '{{ item.value }}'"
   with_dict: "{{ sonic_breakouts }}"
-  when: sonic_breakouts is defined 
+  when: sonic_breakouts is defined
 
 - name: Render metal config for config_db.json
   template:

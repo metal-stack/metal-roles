@@ -28,6 +28,7 @@ sonic_frr_l2vpn_evpn: false
 sonic_frr_static_routes: []
 
 # VLAN settings
+sonic_vlan_members: true
 sonic_vlans: []
 #- id: 1
 #  ip: ''
