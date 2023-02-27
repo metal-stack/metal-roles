@@ -106,5 +106,6 @@ metal_api_headscale_internal_api_address: "headscale:50443"
 metal_auditing_enabled: false
 metal_auditing_index_prefix: "auditing"
 metal_auditing_index_interval: "@daily"
-metal_auditing_url: "http://auditing-meili-meilisearch.metal-control-plane.svc.cluster.local:7700"
+metal_auditing_url: "http://auditing-meili-meilisearch.{{ auditing_meili_namespace }}.svc.cluster.local:7700"
 metal_auditing_meili_secret_name: metal-auditing-master-key
+metal_auditing_meili_api_key: "{{ lookup('k8s', api_version='v1', namespace=auditing_meili_namespace, kind='Secret', resource_name='metal-auditing-master-key').get('data', {}).get('MEILI_MASTER_KEY') | b64decode if metal_auditing_enabled else '' }}"
