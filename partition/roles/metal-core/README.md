@@ -11,11 +11,10 @@ This role uses variables from [partition-defaults](/partition). So, make sure yo
 You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 | Name                                      | Mandatory | Description                                                                                                                                                                |
-| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | metal_core_image_name                     | yes       | Image name of metal-core                                                                                                                                                   |
 | metal_core_image_tag                      | yes       | Image tag of metal-core                                                                                                                                                    |
 | metal_core_cidr                           |           |                                                                                                                                                                            |
-| metal_core_dhcp_servers                   |           | List of dhcp relay server ip addresses                                                                                                                                     |
 | metal_core_log_level                      |           | The metal-core log level                                                                                                                                                   |
 | metal_core_rack_id                        | yes       | The rack id describing the rack in which the leaf switches are contained. Can be a logical rack name and is used by the metal-api to identify the switch pair              |
 | metal_core_reconfigure_switch             |           | If set to true, metal-core will automatically reconfigure files on the switch                                                                                              |
