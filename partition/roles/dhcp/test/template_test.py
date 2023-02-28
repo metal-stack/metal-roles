@@ -42,8 +42,6 @@ subnet 1.2.3.4 netmask 24 {
   option routers 2.2.2.2;
   option domain-name-servers 1.1.1.1, 8.8.8.8;
 }
-
-include "/etc/dhcp/dhcpd.hosts";
 """.strip(), res.strip())
 
     def test_dhcpd_hosts_config_template(self):
