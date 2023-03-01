@@ -11,9 +11,10 @@ This role uses variables from [partition-defaults](/partition). So, make sure yo
 You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 | Name                                      | Mandatory | Description                                                                                                                                                                |
-| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | metal_core_image_name                     | yes       | Image name of metal-core                                                                                                                                                   |
 | metal_core_image_tag                      | yes       | Image tag of metal-core                                                                                                                                                    |
+| metal_core_hostname                       |           | If given use this value instead of os.Hostname because the later takes a while after the switch was installed                                                              |
 | metal_core_cidr                           |           |                                                                                                                                                                            |
 | metal_core_dhcp_servers                   |           | List of dhcp relay server ip addresses                                                                                                                                     |
 | metal_core_log_level                      |           | The metal-core log level                                                                                                                                                   |
