@@ -46,7 +46,6 @@
   notify: reload systemd
   with_items:
     - bgp-validation@.service
-    - write-to-db@.service
     - frr-reload.service
 
 - name: Configure breakouts
