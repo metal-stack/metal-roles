@@ -31,14 +31,6 @@
     value: "1"
   when: sonic_ip_masquerade
 
-- name: Install frr reload helper
-  copy:
-    src: "{{ item }}"
-    dest: "/usr/local/bin/{{ item }}"
-    mode: 755
-  with_items:
-    - frr-reload.py
-
 - name: Install services
   copy:
     src: "{{ item }}"

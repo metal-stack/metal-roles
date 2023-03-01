@@ -3,7 +3,7 @@ Description=Save and reload ConfigDB
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/frr-reload.py /etc/sonic/frr/frr.conf --reload --confdir /etc/sonic/frr --debug --rundir /etc/sonic/frr/
+ExecStart=/usr/bin/docker exec bgp /usr/lib/frr/frr-reload
 StandardOutput=journal
 
 [Install]
