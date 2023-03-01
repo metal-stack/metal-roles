@@ -16,6 +16,7 @@ Deploys network-configuration for systems using systemd-networkd.
 | systemd_networkd_nics.name          | no        | The name this interface will be renamed to.                                                         |
 | systemd_networkd_nics.dhcp          | no        | Configure the interface addresses with DHCP.                                                        |
 | systemd_networkd_nics.addresses     | no        | array of IP addresses for the interfaces in CIDR notation.                                          |
+| systemd_networkd_nics.gateways      | no        | array of Gateways IPs for the interfaces.                                                           |
 | systemd_networkd_nics.vrf           | no        | The VRF to bind this interface to.                                                                  |
 | systemd_networkd_nics.vxlans        | no        | array of VXLANs to terminate on a physical interface.                                               |
 | systemd_networkd_vxlans             | no        | VXLANs to terminate on a server.                                                                    |

@@ -21,3 +21,8 @@ VXLAN={{ vxlan }}
 [Address]
 Address={{ address }}
 {% endfor %}
+{% for gateway in item.gateways|default([]) %}
+
+[Route]
+Gateway={{ gateway}}
+{% endfor %}
