@@ -1,0 +1,8 @@
+[Resolve]
+{% for ns in mgmt_server_nameservers %}
+DNS={{ ns }}
+{% endfor %}
+
+{% if mgmt_server_dns_over_tls %}
+DNSOverTLS=yes
+{% endif %}

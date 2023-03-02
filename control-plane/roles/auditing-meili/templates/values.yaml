@@ -1,0 +1,17 @@
+---
+readinessProbe:
+  periodSeconds: 5
+  InitialDelaySeconds: 5
+
+livenessProbe:
+  periodSeconds: 5
+  InitialDelaySeconds: 5
+
+environment:
+  MEILI_NO_ANALYTICS: true
+  MEILI_ENV: {{ auditing_meili_environment }}
+auth:
+  existingMasterKeySecret: metal-auditing-master-key
+
+persistence: {{ auditing_meili_persistence }}
+ingress: {{ auditing_meili_ingress }}

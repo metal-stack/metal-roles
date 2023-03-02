@@ -1,0 +1,36 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Create namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ auditing_meili_namespace }}"
+        labels:
+          name: "{{ auditing_meili_namespace }}"
+
+- name: Create meili secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: metal-auditing-master-key
+        namespace: "{{ auditing_meili_namespace }}"
+      stringData:
+        MEILI_MASTER_KEY: "{{ auditing_meili_secret }}"
+  when: auditing_meili_secret
+
+- name: Deploy meilisearch
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ metal_auditing_meili_chart_repo }}"
+    helm_chart: meilisearch
+    helm_target_namespace: "{{ auditing_meili_namespace }}"
+    helm_chart_version: "{{ metal_auditing_meili_chart_version }}"
+    helm_release_name: auditing-meili
+    helm_value_file_template: "values.yaml"

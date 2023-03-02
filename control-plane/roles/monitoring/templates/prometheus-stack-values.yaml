@@ -28,8 +28,21 @@ grafana:
     ingressClassName: nginx
     hosts:
       - {{ monitoring_grafana_ingress_dns }}
-{% if monitoring_additional_ingress_annotations %}
+{% if monitoring_ingress_grafana_tls %}
+    tls:
+      - secretName: monitoring-ingress-tls
+        hosts:
+        - {{ monitoring_grafana_ingress_dns }}
+{% endif %}
+
+{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
     annotations:
+{% endif %}
+{% if monitoring_ingress_grafana_tls %}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+{% if monitoring_additional_ingress_annotations %}
 {% for key, value in monitoring_additional_ingress_annotations.items() %}
       {{ key }}: "{{ value }}"
 {% endfor %}

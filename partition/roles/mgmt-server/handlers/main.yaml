@@ -1,0 +1,35 @@
+---
+- name: restart systemd-resolved
+  service:
+    name: systemd-resolved
+    state: restarted
+
+- name: reload frr
+  service:
+    name: frr
+    enabled: true
+    state: reloaded
+
+- name: restart frr
+  service:
+    name: frr
+    enabled: true
+    state: restarted
+
+- name: reload docker
+  service:
+    name: docker
+    enabled: true
+    state: reloaded
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: save iptables v4 rules
+  shell: iptables-save > /etc/iptables/rules.v4
+  listen: persist iptables
+
+- name: save iptables v6 rules
+  shell: ip6tables-save > /etc/iptables/rules.v6
+  listen: persist iptables

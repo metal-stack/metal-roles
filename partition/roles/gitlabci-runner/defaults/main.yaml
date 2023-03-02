@@ -1,0 +1,9 @@
+---
+#gitlab_runner_url:
+#gitlab_runner_token:
+#gitlab_runner_hostpath:
+
+gitlab_runner_description:
+gitlab_runner_tags:
+gitlab_runner_image: gitlab/gitlab-runner
+gitlab_runner_image_tag: alpine

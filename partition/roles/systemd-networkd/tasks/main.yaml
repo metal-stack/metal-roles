@@ -1,0 +1,50 @@
+---
+- name: Enable systemd-networkd
+  systemd:
+    name: systemd-networkd
+    enabled: yes
+    state: started
+
+- name: Copy default file for VRFs
+  copy:
+    src: 99-vrf.network
+    dest: /etc/systemd/network/
+  when: systemd_networkd_vrfs | length > 0
+  notify: restart systemd-networkd
+
+- name: Template netdev for VRFs
+  template:
+    src: vrf.netdev.j2
+    dest: "/etc/systemd/network/0{{ (i+1) }}-{{ item.name }}.netdev"
+  when: item.name is defined and item.table is defined
+  notify: restart systemd-networkd
+  loop: "{{ systemd_networkd_vrfs }}"
+  loop_control:
+    index_var: i
+
+- name: Render systemd-networkd link config
+  template:
+    src: link.j2
+    dest: "/etc/systemd/network/{{ (i+1)*10 }}-{{ item.name }}.link"
+  when: item.name != 'lo'
+  notify:
+  - restart systemd-networkd
+  - restart systemd-udev-trigger
+  loop: "{{ systemd_networkd_nics }}"
+  loop_control:
+    index_var: i
+
+- name: Render systemd-networkd network config
+  template:
+    src: network.j2
+    dest: "/etc/systemd/network/{{ (i+1)*10 }}-{{ item.name }}.network"
+  notify: restart systemd-networkd
+  loop: "{{ systemd_networkd_nics }}"
+  loop_control:
+    index_var: i
+
+- include_tasks: vxlans.yaml
+  when: systemd_networkd_vxlans | length > 0
+
+- name: Flush handlers
+  meta: flush_handlers

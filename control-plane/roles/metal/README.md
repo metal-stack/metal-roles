@@ -10,22 +10,22 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### General
 
-| Name                               | Mandatory | Description                                                                                                                        |
-|------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------|
-| metal_check_api_available          |           | Checks whether the metal-api is reachable from the outside after deployment                                                        |
-| metal_check_api_health_endpoint    |           | The endpoint to call if the metal-api is reachable from the outside after deployment                                               |
-| metal_set_resource_limits          |           | Deploys metal components with or without resource limits (possibly disable for development environments)                           |
-| metal_log_level                    |           | The log level of the control plane components                                                                                      |
-| metal_log_encoding                 |           | The output format of the logger                                                                                                    |
-| metal_helm_chart_repo              |           | The repository URL of the metal control plane helm chart                                                                           |
-| metal_helm_chart_version           |           | The version of the metal control plane helm chart                                                                                  |
-| metal_helm_chart_local_path        |           | Local path to the metal control plane helm chart, which can be useful for development purposes                                     |
-| metal_helm_chart_timeout           |           | Timeout for deploying the control plane helm chart (can help when internet connection is slow)                                     |
+| Name                            | Mandatory | Description                                                                                              |
+| ------------------------------- | --------- | -------------------------------------------------------------------------------------------------------- |
+| metal_check_api_available       |           | Checks whether the metal-api is reachable from the outside after deployment                              |
+| metal_check_api_health_endpoint |           | The endpoint to call if the metal-api is reachable from the outside after deployment                     |
+| metal_set_resource_limits       |           | Deploys metal components with or without resource limits (possibly disable for development environments) |
+| metal_log_level                 |           | The log level of the control plane components                                                            |
+| metal_log_encoding              |           | The output format of the logger                                                                          |
+| metal_helm_chart_repo           |           | The repository URL of the metal control plane helm chart                                                 |
+| metal_helm_chart_version        |           | The version of the metal control plane helm chart                                                        |
+| metal_helm_chart_local_path     |           | Local path to the metal control plane helm chart, which can be useful for development purposes           |
+| metal_helm_chart_timeout        |           | Timeout for deploying the control plane helm chart (can help when internet connection is slow)           |
 
 ### Images
 
 | Name                                   | Mandatory | Description                             |
-|----------------------------------------|-----------|-----------------------------------------|
+| -------------------------------------- | --------- | --------------------------------------- |
 | metal_api_image_name                   | yes       | Image version of the metal-api          |
 | metal_api_image_tag                    | yes       | Image tag of the metal-api              |
 | metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
@@ -42,7 +42,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Service Ports
 
 | Name                              | Mandatory | Description                                       |
-|-----------------------------------|-----------|---------------------------------------------------|
+| --------------------------------- | --------- | ------------------------------------------------- |
 | metal_api_port                    |           | Service port of the metal-api                     |
 | metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
 | metal_masterdata_api_port         |           | Service port of the masterdata-api                |
@@ -52,12 +52,12 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### metal-api
 
 | Name                                | Mandatory | Description                                                                                    |
-|-------------------------------------|-----------|------------------------------------------------------------------------------------------------|
+| ----------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
 | metal_api_replicas                  |           | The number of deployed replicas of the metal-api                                               |
 | metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
 | metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
 | metal_api_hpa_min                   |           | Min amount of replicas for the HPA of the metal-api                                            |
-| metal_api_hpa_cpu_percentage        |           | Target CPU utilization percentage  for the HPA of the metal-api                                |
+| metal_api_hpa_cpu_percentage        |           | Target CPU utilization percentage for the HPA of the metal-api                                 |
 | metal_api_base_path                 |           | The base path of the HTTP server                                                               |
 | metal_api_dex_address               |           | The URL to the dex server                                                                      |
 | metal_api_dex_clientid              |           | The trusted dex clientid                                                                       |
@@ -100,7 +100,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### masterdata-api
 
 | Name                                 | Mandatory | Description                                                      |
-|--------------------------------------|-----------|------------------------------------------------------------------|
+| ------------------------------------ | --------- | ---------------------------------------------------------------- |
 | metal_masterdata_api_db_address      |           | The URL to the masterdata database                               |
 | metal_masterdata_api_db_port         |           | The port of the masterdata database                              |
 | metal_masterdata_api_db_name         |           | The database name of the masterdata database                     |
@@ -120,7 +120,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### metal-console
 
 | Name                                      | Mandatory | Description                                                        |
-|-------------------------------------------|-----------|--------------------------------------------------------------------|
+| ----------------------------------------- | --------- | ------------------------------------------------------------------ |
 | metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console               |
 | metal_console_replicas                    |           | The number of deployed replicas of the metal-console               |
 | metal_console_resources                   |           | Sets the given container resources                                 |
@@ -133,7 +133,18 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Ingress
 
 | Name                 | Mandatory | Description                                                                |
-|----------------------|-----------|----------------------------------------------------------------------------|
+| -------------------- | --------- | -------------------------------------------------------------------------- |
 | metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
 | metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
 | metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
+
+### Auditing
+
+| Name                             | Mandatory | Description                                                                  |
+| -------------------------------- | --------- | ---------------------------------------------------------------------------- |
+| metal_auditing_enabled           |           | Whether to deploy or not to deploy the auditing. Default false.              |
+| metal_auditing_url               |           | The URL of the auditing server (required if enabled)                         |
+| metal_auditing_index_prefix      |           | auditing index prefix.                                                       |
+| metal_auditing_index_interval    |           | auditing index creation interval, can be one of @hourly / @daily / @monthly. |
+| metal_auditing_meili_secret_name |           | Secret name that holds the API key for meilisearch                           |
+| metal_auditing_meili_api_key     |           | API key for meilisearch                                                      |

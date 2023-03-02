@@ -1,0 +1,27 @@
+---
+auditing_meili_namespace: "{{ metal_control_plane_namespace }}"
+auditing_meili_secret: ""
+auditing_meili_environment: production
+
+# possible parametrization can be found at the helm-chart repo
+# https://github.com/meilisearch/meilisearch-kubernetes
+
+auditing_meili_ingress: {}
+# enabled: false
+# className: nginx
+# annotations: {}
+# path: /
+# hosts:
+#   - meilisearch-example.local
+# tls: []
+
+auditing_meili_persistence:
+  {}
+  # enabled: false
+  # accessMode: ReadWriteOnce
+  # storageClass: "-"
+  # size: 10Gi
+  # annotations: {}
+  # volume:
+  #   name: data
+  #   mountPath: /meili_data
