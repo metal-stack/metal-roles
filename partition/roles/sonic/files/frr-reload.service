@@ -1,5 +1,5 @@
 [Unit]
-Description=Save and reload ConfigDB
+Description=Reload FRR
 
 [Service]
 Type=oneshot
