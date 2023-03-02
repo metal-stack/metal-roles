@@ -51,6 +51,7 @@
      - machine-capacity.yaml
      - metal-api.yaml
      - rethinkdb.yaml
+     - alertmanager.yaml
 
 - name: Create service monitors
   k8s:
