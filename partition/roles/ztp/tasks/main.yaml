@@ -26,7 +26,7 @@
     systemd_docker_image_tag: "{{ ztp_image_tag }}"
     systemd_service_timeout_start_sec: 60
     systemd_docker_volumes:
-      - "{{ ztp_host_dir_path }}/config:/var/www/html"
+      - "{{ ztp_host_dir_path }}/config:/usr/share/nginx/html"
     systemd_docker_ports:
       - host_port: "{{ ztp_port }}"
         target_port: "80"
