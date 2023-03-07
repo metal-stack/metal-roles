@@ -23,4 +23,7 @@ subnet {{ subnet.network }} netmask {{ subnet.netmask }} {
 {% for option in dhcp_global_options %}
 {{ option }}
 {% endfor %}
+
+{% if dhcp_static_hosts is defined %}
 include "/etc/dhcp/dhcpd.hosts";
+{% endif %}

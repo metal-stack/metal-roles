@@ -147,3 +147,4 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_auditing_index_prefix      |           | auditing index prefix.                                                       |
 | metal_auditing_index_interval    |           | auditing index creation interval, can be one of @hourly / @daily / @monthly. |
 | metal_auditing_meili_secret_name |           | Secret name that holds the API key for meilisearch                           |
+| metal_auditing_meili_api_key     |           | API key for meilisearch                                                      |
