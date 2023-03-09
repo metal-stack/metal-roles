@@ -15,6 +15,21 @@
     name:
     - docker.io
 
+- name: Copy ssh key pair for gitlab runner
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    dest: "{{ gitlab_runner_hostpath }}/ssh"
+    mode: "{{ item.mode}}"
+  loop:
+  - src: "{{ gitlab_runner_ssh_privkey }}"
+    dest: "{{ gitlab_runner_hostpath }}/ssh/id_rsa"
+    mode: "0600"
+  - src: "{{ gitlab_runner_ssh_pubkey }}"
+    dest: "{{ gitlab_runner_hostpath }}/ssh/id_rsa.pub"
+    mode: "0644"
+  when: gitlab_runner_ssh_privkey and gitlab_runner_ssh_pubkey
+
 - name: check if runner is already registered to avoid double registration
   command: grep -Fxq "[[runners]]" {{ gitlab_runner_hostpath }}/etc/gitlab-runner/config.toml
   register: check_runners
