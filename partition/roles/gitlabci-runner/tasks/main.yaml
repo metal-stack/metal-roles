@@ -17,15 +17,14 @@
 
 - name: Copy ssh key pair for gitlab runner
   copy:
-    src: "{{ item.src }}"
+    content: "{{ item.content }}"
     dest: "{{ item.dest }}"
-    dest: "{{ gitlab_runner_hostpath }}/ssh"
     mode: "{{ item.mode}}"
   loop:
-  - src: "{{ gitlab_runner_ssh_privkey }}"
+  - content: "{{ gitlab_runner_ssh_privkey }}"
     dest: "{{ gitlab_runner_hostpath }}/ssh/id_rsa"
     mode: "0600"
-  - src: "{{ gitlab_runner_ssh_pubkey }}"
+  - content: "{{ gitlab_runner_ssh_pubkey }}"
     dest: "{{ gitlab_runner_hostpath }}/ssh/id_rsa.pub"
     mode: "0644"
   when: gitlab_runner_ssh_privkey and gitlab_runner_ssh_pubkey
