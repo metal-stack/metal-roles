@@ -11,7 +11,7 @@ Deploys a sonic switch.
 | sonic_nameservers                                          | Yes       | The name servers to use on the switch.                                                                               |
 | sonic_loopback_address                                     | Yes       | The loopback address use for this router. Is used to identify routers with bgp unnumbered.                           |
 | sonic_asn                                                  | Yes       | The autonomous system number of the router.                                                                          |
-| sonic_mgmtif_ip                                            |           | The fixed IP address of the management interface. If none is given, defaults to dynamic assignment through DHCP.     |
+| sonic_mgmtif_ip                                            |           | The fixed IP address of the management interface in `IP/netmask` format. If not given, defaults to DHCP.             |
 | sonic_mgmtif_gateway                                       |           | If using a fixed management IP, the default gateway for the management interface.                                    |
 | sonic_ip_masquerade                                        |           | Enable ip masquerading on eth0.                                                                                      |
 | sonic_breakouts                                            |           | The breakout configuration for ports. E.g. `dict('Ethernet0'='4x25G')`                                               |
