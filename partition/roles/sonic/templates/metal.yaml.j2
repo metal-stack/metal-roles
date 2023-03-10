@@ -27,8 +27,8 @@ LOOPBACK_INTERFACE:
 MGMT_INTERFACE:
   eth0|{{ sonic_mgmtif_ip }}:
     gwaddr: "{{ sonic_mgmtif_gateway }}"
-{% endif %}
 
+{% endif %}
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"

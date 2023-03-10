@@ -1,6 +1,9 @@
 ---
 inventory_hostname: r01mgmtleaf
 
+sonic_mgmtif_ip: '10.255.255.254/30'
+sonic_mgmtif_gateway: 10.255.255.253
+
 sonic_loopback_address: 10.0.0.1
 sonic_asn: 420000000
 sonic_ntpservers: ['1.2.3.4']
