@@ -24,7 +24,7 @@ MGMT_INTERFACE:
   eth0|10.255.255.254/30:
     gwaddr: "10.255.255.253"
 
-MMGMT_VRF_CONFIG:
+MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "true"
 
