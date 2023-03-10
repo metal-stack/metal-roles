@@ -102,6 +102,13 @@
     dest: /home/metal/.ssh/id_rsa.pub
     mode: "0644"
 
+# This is so that self connect and cross connect to the other mgmtserver is possible
+- name: Add own ssh key to authorized_keys
+  lineinfile:
+    path: /home/metal/.ssh/authorized_keys
+    regexp: '^{{ mgmt_server_metal_ssh_pubkey }}$'
+    line: '{{ mgmt_server_metal_ssh_pubkey }}'
+
 - name: configure sshd to avoid root login and password authentication, hide OS information
   lineinfile:
     path: /etc/ssh/sshd_config
