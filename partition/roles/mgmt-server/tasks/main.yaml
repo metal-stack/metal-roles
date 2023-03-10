@@ -7,6 +7,8 @@
       - mgmt_server_asn is not none
       - mgmt_server_router_id is not none
       - mgmt_server_spine_facing_interface is not none
+      - mgmt_server_metal_ssh_privkey is not none
+      - mgmt_server_metal_ssh_pubkey is not none
 
 - name: gather package facts
   package_facts:
@@ -84,6 +86,54 @@
     validate: '/usr/bin/vtysh --dryrun --inputfile %s'
   notify:
     - reload frr
+
+- name: Copy ssh key pair for metal user
+  copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode}}"
+    owner: metal
+    group: metal
+  loop:
+  - content: "{{ mgmt_server_metal_ssh_privkey }}"
+    dest: /home/metal/.ssh/id_rsa"
+    mode: "0600"
+  - content: "{{ mgmt_server_metal_ssh_pubkey }}"
+    dest: /home/metal/.ssh/id_rsa.pub"
+    mode: "0644"
+
+- name: configure sshd to avoid root login and password authentication, hide OS information
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: restart sshd
+  with_items:
+    - { regexp: "^PasswordAuthentication .+", line: "PasswordAuthentication no" }
+    - { regexp: "^PermitRootLogin .+", line: "PermitRootLogin no" }
+    - { regexp: "^DebianBanner .+", line: "DebianBanner no" }
+
+- name: Add IP's of all hosts to /etc/hosts to use those hostnames for connections
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*\s{{ item }}$'
+    line: "{{ hostvars[item].ansible_host }} {{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - hostvars[item].ansible_host is defined
+  with_items: "{{ groups.all }}"
+
+- name: copy ssh configuration for easier access to mgmt components
+  copy:
+    src: ssh_config
+    dest: /home/metal/.ssh/config
+    mode: 0644
+    owner: metal
+    group: metal
 
 - name: flush handlers to complete the mgmt-server setup
   meta: flush_handlers
