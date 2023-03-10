@@ -127,9 +127,9 @@
     - hostvars[item].ansible_host is defined
   with_items: "{{ groups.all }}"
 
-- name: copy ssh configuration for easier access to mgmt components
-  copy:
-    src: ssh_config
+- name: Create ssh configuration for easier access to mgmt components
+  template:
+    src: ssh_config.j2
     dest: /home/metal/.ssh/config
     mode: 0644
     owner: metal
