@@ -96,10 +96,10 @@
     group: metal
   loop:
   - content: "{{ mgmt_server_metal_ssh_privkey }}"
-    dest: /home/metal/.ssh/id_rsa"
+    dest: /home/metal/.ssh/id_rsa
     mode: "0600"
   - content: "{{ mgmt_server_metal_ssh_pubkey }}"
-    dest: /home/metal/.ssh/id_rsa.pub"
+    dest: /home/metal/.ssh/id_rsa.pub
     mode: "0644"
 
 - name: configure sshd to avoid root login and password authentication, hide OS information
