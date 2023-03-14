@@ -61,3 +61,5 @@ Deploys a sonic switch.
 | sonic_interconnects.routemap_out                           |           | Apply an outgoing routemap for this BGP session.                                                                     |
 | sonic_interconnects.vni                                    |           | This BGP session will connect the specified VNI within the CLOS topology with the given peer.                        |
 | sonic_interconnects.vrf                                    |           | Use a dedicated BGP session fenced with an VRF for this connection. Also it declares the virtual network as layer-3. |
+| sonic_ssh_sourcerange                                      |           | The source range from which the switch should be reachable over SSH on its prod (non-management) addresses |
+| sonic_ssh_interfaces                                       |           | The interfaces from which to allow access to the switch over SSH on its prod (non-management) interfaces |
