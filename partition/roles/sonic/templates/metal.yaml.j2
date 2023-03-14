@@ -136,7 +136,7 @@ LLDP:
     hello_timer: {{ sonic_lldp_hello_timer }}
 {% endif %}
 
-{% if sonic_ssh_sourcerange is defined and sonic_ssh_interfaces is defined %}
+{% if sonic_ssh_sourcerange is defined %}
 ACL_RULE:
   ALLOW_SSH|DEFAULT_RULE:
     ETHER_TYPE: "2048"
