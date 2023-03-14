@@ -77,7 +77,7 @@
   set_fact:
     _gardener_gardenlet_node_cidr: "{{ _gardener_current_soil_node_cidr if _gardener_current_soil_node_cidr else _gardener_soil_node_cidr }}"
     _gardener_gardenlet_pod_cidr: "{{ _gardener_current_soil_pod_cidr if _gardener_current_soil_pod_cidr else _gardener_soil_pod_cidr }}"
-    _gardener_gardenlet_service_cidr: "{{ _gardener_current_soil_service_cidr if _gardener_current_soil_service_cidr else _gardener_soil_node_cidr }}"
+    _gardener_gardenlet_service_cidr: "{{ _gardener_current_soil_service_cidr if _gardener_current_soil_service_cidr else _gardener_soil_service_cidr }}"
 
 - name: Deploy initial Gardenlet
   include_role:
