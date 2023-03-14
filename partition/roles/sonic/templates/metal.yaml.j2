@@ -150,7 +150,7 @@ ACL_RULE:
 ACL_TABLE:
   ALLOW_SSH:
     policy_desc: "Allow SSH access"
-    ports: {{ sonic_ssh_interfaces }}
+    ports: []
     services:
     - "SSH"
     stage: "ingress"
