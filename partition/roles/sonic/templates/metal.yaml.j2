@@ -142,10 +142,10 @@ ACL_RULE:
     ETHER_TYPE: "2048"
     PACKET_ACTION: "DROP"
     PRIORITY: "1"
-  ALLOW_SSH|RULE_1:
+{% for sourcerange in sonic_ssh_sourceranges %}
+  ALLOW_SSH|RULE_{{ loop.index }}:
     PACKET_ACTION: "ACCEPT"
     PRIORITY: "9999"
-{% for sourcerange in sonic_ssh_sourceranges %}
     SRC_IP: "{{ sourcerange }}"
 {% endfor %}
 
