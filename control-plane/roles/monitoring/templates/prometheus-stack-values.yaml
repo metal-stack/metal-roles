@@ -22,23 +22,72 @@ grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
-  additionalDataSources: {{ monitoring_additional_ingress_annotations | to_json }}
-
+  additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
   ingress:
     enabled: true
     ingressClassName: nginx
     hosts:
       - {{ monitoring_grafana_ingress_dns }}
-{% if monitoring_additional_ingress_annotations %}
+{% if monitoring_ingress_grafana_tls %}
+    tls:
+      - secretName: monitoring-ingress-tls
+        hosts:
+        - {{ monitoring_grafana_ingress_dns }}
+{% endif %}
+
+{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
     annotations:
+{% endif %}
+{% if monitoring_ingress_grafana_tls %}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+{% if monitoring_additional_ingress_annotations %}
 {% for key, value in monitoring_additional_ingress_annotations.items() %}
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-
 alertmanager:
-  enabled: false
-
+  alertmanagerSpec:
+    logLevel: debug
+  config:
+    global:
+      resolve_timeout: 5m
+{% if monitoring_slack_channel_url is defined %}
+      slack_api_url: "{{ monitoring_slack_channel_url }}"
+{% endif %}
+    inhibit_rules: []
+    route:
+      receiver: webhook-logger
+      group_by: ['severity', 'alertname', 'namespace', 'pod', 'job'] 
+      group_wait: 30s
+      group_interval: 30s
+      repeat_interval: 30s
+      routes:
+      - receiver: 'null'
+        matchers:
+          - alertname=~"Watchdog|InfoInhibitor"
+{% if monitoring_slack_channel_url is defined %}
+      - match: 
+          team: slack 
+        receiver: slack 
+        continue: true
+{% endif %}
+    receivers:
+    - name: webhook-logger
+    webhook_configs:
+    - url: http://webhook-logger:8000/alerts
+      send_resolved: true
+      max_alerts: 0 # 0=all alerts
+    - name: 'null'
+{% if monitoring_slack_channel is defined %}
+    - name: 'slack'
+      slack_configs:
+      - channel: "{{ monitoring_slack_channel }}"
+        send_resolved: true
+{% endif %}
+    templates:
+    - '/etc/alertmanager/config/*.tmpl'
 kubeProxy:
   enabled: false
 

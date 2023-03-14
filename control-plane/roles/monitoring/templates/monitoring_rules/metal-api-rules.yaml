@@ -1,0 +1,50 @@
+{% raw %}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    release: kube-prometheus-stack
+    role: alert-rules
+  name: metal-api.rules
+spec:
+  groups:
+  - name: metal-api.rules
+    rules:
+    - alert: MetalApiErrorRate
+      expr: sum(rate(metal_api_requests_total{code!="200"}[5m])) by(pod)  / sum(rate(metal_api_requests_total[5m])) by(pod) *100 > 0.5
+      for: 30m
+      labels:
+        severity: critical
+      annotations:
+        description: "{{ $value | printf `%.2f` }}% of requests to {{ $labels.pod }} have errors"
+    - alert: MetalApiSlow
+      expr: histogram_quantile(0.90, sum by(le, pod) (rate(metal_api_request_duration_seconds_bucket{route="/metal/v1/machine/{id}/event"}[5m]))) > 0.5
+      for: 30m
+      labels:
+        severity: critical
+      annotations:
+        description: "Metal API has a 99th percentile latency of {{ $value | printf `%.2f` }} seconds for pod {{ $labels.pod }}"
+    - alert: MetalApiGoProcessesHigh
+      expr: avg(go_goroutines{job="metal-api"}) by(pod)>500
+      for: 30m
+      labels:
+        severity: critical
+      annotations:
+        description: "Metal API pod {{ $labels.pod }} has high number of go processes {{ $value | printf `%.2f` }}"
+        
+    - alert: MetalApiResponseCodeNotOk
+      expr: http_requests_total{job="metal_api", status!~"2..|3.."} > 0
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Metal API response status code not OK"
+        description: "The metal_api response status code is not in the expected range."
+
+
+  - name: metal-api-recording.rules
+    rules:
+    - record: frr:instance:metal_switch_interface_info
+      expr: |2
+        label_replace(metal_switch_interface_info,"instance","$1","switchname","(.*)")
+{% endraw %}

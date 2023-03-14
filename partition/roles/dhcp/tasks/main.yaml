@@ -47,7 +47,7 @@
     name: "{{ dhcp_service_name }}"
     enabled: true
     state: restarted
-  when: _dhcpd_conf is changed or _isc_dhcp_server is changed or _hosts_conf changed
+  when: _dhcpd_conf is changed or _isc_dhcp_server is changed or _hosts_conf is changed
 
 - name: ensure isc-dhcp-server is running
   service:

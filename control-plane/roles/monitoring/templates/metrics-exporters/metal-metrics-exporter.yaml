@@ -59,7 +59,4 @@ spec:
                 secretKeyRef:
                   name: metal-metrics-exporter-config
                   key: hmac
-          securityContext:
-            runAsUser: 999
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
+
