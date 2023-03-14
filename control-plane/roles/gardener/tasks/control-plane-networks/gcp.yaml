@@ -2,7 +2,7 @@
 # GKE sometimes changes the cidrs, which is a validation error for Gardener.
 # Therefore, do not touch the cidrs once deployed
 - name: Describe GCP cluster
-  command: gcloud --format json container clusters describe {{ gcp_cluster_name }} --zone {{ gcp_location }}
+  command: gcloud --format json container clusters describe {{ gcp_cluster_name }} --region {{ gcp_region }}
   register: gcp_cluster
   changed_when: false
 
