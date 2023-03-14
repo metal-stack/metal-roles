@@ -136,7 +136,7 @@ LLDP:
     hello_timer: {{ sonic_lldp_hello_timer }}
 {% endif %}
 
-{% if sonic_ssh_sourcerange is defined %}
+{% if sonic_ssh_sourceranges is defined %}
 ACL_RULE:
   ALLOW_SSH|DEFAULT_RULE:
     ETHER_TYPE: "2048"
@@ -145,7 +145,9 @@ ACL_RULE:
   ALLOW_SSH|RULE_1:
     PACKET_ACTION: "ACCEPT"
     PRIORITY: "9999"
-    SRC_IP: "{{ sonic_ssh_sourcerange }}"
+{% for sourcerange in sonic_ssh_sourceranges %}
+    SRC_IP: "{{ sourcerange }}"
+{% endfor %}
 
 ACL_TABLE:
   ALLOW_SSH:
