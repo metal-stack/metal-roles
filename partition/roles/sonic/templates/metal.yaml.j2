@@ -145,7 +145,7 @@ ACL_RULE:
 {% for sourcerange in sonic_ssh_sourceranges %}
   ALLOW_SSH|RULE_{{ loop.index }}:
     PACKET_ACTION: "ACCEPT"
-    PRIORITY: "9999"
+    PRIORITY: "9{{ loop.index }}"
     SRC_IP: "{{ sourcerange }}"
 {% endfor %}
 
