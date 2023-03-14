@@ -3,6 +3,8 @@ DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: split
     hostname: "r01mgmtleaf"
+    type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
 
 FEATURE:
   dhcp_relay:

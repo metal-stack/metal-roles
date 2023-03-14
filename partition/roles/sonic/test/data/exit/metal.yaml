@@ -3,6 +3,8 @@ DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: split
     hostname: "exit01"
+    type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
 
 FEATURE:
   dhcp_relay:
@@ -80,3 +82,26 @@ VRF:
 LLDP:
   Global:
     hello_timer: 10
+
+ACL_RULE:
+  ALLOW_SSH|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+  ALLOW_SSH|RULE_1:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "91"
+    SRC_IP: "1.2.3.4/32"
+  ALLOW_SSH|RULE_2:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "92"
+    SRC_IP: "10.11.0.0/16"
+
+ACL_TABLE:
+  ALLOW_SSH:
+    policy_desc: "Allow SSH access"
+    ports: []
+    services:
+    - "SSH"
+    stage: "ingress"
+    type: "CTRLPLANE"
