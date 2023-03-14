@@ -23,6 +23,23 @@
     helm_chart_version: "{{ prometheus_chart_version }}"
     helm_value_file_template: "prometheus-stack-values.yaml"
 
+- name: Determine app version for prometheus operator CRDs
+  command: helm show chart --repo {{ prometheus_stack_repo }} kube-prometheus-stack
+  register: helm_output
+
+- name: Apply prometheus operator CRDs
+  k8s:
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ (helm_output.stdout | from_yaml).get('appVersion') + '/example/prometheus-operator-crd/' + item , split_lines=False) | regex_replace('- =\n', '- \"=\"\n') }}"
+  loop:
+    - monitoring.coreos.com_alertmanagerconfigs.yaml
+    - monitoring.coreos.com_alertmanagers.yaml
+    - monitoring.coreos.com_podmonitors.yaml
+    - monitoring.coreos.com_probes.yaml
+    - monitoring.coreos.com_prometheuses.yaml
+    - monitoring.coreos.com_prometheusrules.yaml
+    - monitoring.coreos.com_servicemonitors.yaml
+    - monitoring.coreos.com_thanosrulers.yaml
+
 - name: Deploy metrics exporters
   import_tasks: exporters.yaml
 
@@ -34,6 +51,7 @@
      - machine-capacity.yaml
      - metal-api.yaml
      - rethinkdb.yaml
+     - alertmanager.yaml
 
 - name: Create service monitors
   k8s:
@@ -46,3 +64,14 @@
     - metal-api.yaml
     - metal-db.yaml
     - metal-metrics-exporter.yaml
+
+- name: Deploy alerting rules
+  k8s:
+    definition: "{{ lookup('template', 'monitoring_rules/' + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop:
+    - metal-api-rules.yaml
+    - prometheus-alerts.yaml
+    - alertmanager-rules.yaml
+    - partition-rules.yaml
+

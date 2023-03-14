@@ -10,3 +10,4 @@ This role deploys a helm chart for [MeiliSearch](https://github.com/meilisearch/
 | auditing_meili_ingress     |           | Configuratrion for ingress, check example or helm chart for details                            |
 | auditing_meili_persistence |           | Configuration for persistence, check example or helm chart for details                         |
 | auditing_meili_environment |           | Sets Meilisearch environment to development/production                                         |
+| auditing_meili_namespace   |           | Namespace to deploy MeiliSearch                                                                |
