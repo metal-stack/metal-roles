@@ -24,7 +24,7 @@ spec:
                 namespace: garden
               type: {{ gardener_dns_provider }}
           ingress:
-            domain: ingress.{{ gardener_shooted_seed.name }}.{{ gardener_dns_domain }}
+            domain: ingress.{{ gardener_shooted_seed.name }}.{{ gardener_soil_name }}.{{ gardener_dns_domain }}
             controller:
               kind: nginx
           networks:
