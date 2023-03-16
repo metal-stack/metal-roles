@@ -3,7 +3,6 @@ kind: ManagedSeed
 metadata:
   name: "{{ gardener_shooted_seed.name }}"
   namespace: garden
-  ownerReferences: null
 spec:
   gardenlet:
     bootstrap: BootstrapToken
@@ -25,12 +24,12 @@ spec:
                 namespace: garden
               type: {{ gardener_dns_provider }}
           ingress:
-            domain: ingress.{{ gardener_shooted_seed.name }}.{{ environment_name }}.{{ gardener_dns_domain }}
+            domain: ingress.{{ gardener_shooted_seed.name }}.{{ gardener_dns_domain }}
             controller:
               kind: nginx
           networks:
-            pods: 10.244.128.0/18
-            services: 10.244.192.0/18
+            pods: "{{ gardener_shooted_seed.pod_cidr }}"
+            services: "{{ gardener_shooted_seed.service_cidr }}"
           provider:
             region: "{{ gardener_shooted_seed.region }}"
             type: metal
