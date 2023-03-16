@@ -27,9 +27,8 @@
 
 - name: execute interface rename script
   command: /root/rename-interfaces.sh
-  async: 1
-  poll: 0
-  notify: wait for new connection
+  async: 300
+  poll: 10
 
 - name: wait for new connection
   wait_for_connection:
