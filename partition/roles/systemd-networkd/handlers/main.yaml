@@ -29,6 +29,7 @@
     owner: root
     group: root
     mode: "0755"
+  when: always
   notify: execute interface rename script
   listen: rename interfaces
 
