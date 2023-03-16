@@ -15,8 +15,18 @@
   poll: 0
   notify: wait for new connection
 
-- name: rename interfaces
-  script: rename-interfaces.sh
+- name: copy rename script to host
+  copy:
+    src: rename-interfaces.sh
+    dest: /root/rename-interfaces.sh
+    owner: root
+    group: root
+    mode: "0755"
+  notify: execute interface rename script
+  listen: rename interfaces
+
+- name: execute interface rename script
+  command: /root/rename-interfaces.sh
   async: 1
   poll: 0
   notify: wait for new connection
