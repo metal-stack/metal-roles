@@ -15,6 +15,13 @@
   poll: 0
   notify: wait for new connection
 
+- name: wait for new connection
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 5
+    timeout: 300
+
 - name: copy rename script to host
   copy:
     src: rename-interfaces.sh
@@ -29,10 +36,3 @@
   command: /root/rename-interfaces.sh
   async: 300
   poll: 10
-
-- name: wait for new connection
-  wait_for_connection:
-    connect_timeout: 20
-    sleep: 5
-    delay: 5
-    timeout: 300
