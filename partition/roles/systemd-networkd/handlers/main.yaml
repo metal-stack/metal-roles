@@ -15,6 +15,12 @@
   poll: 0
   notify: wait for new connection
 
+- name: rename interfaces
+  script: rename-interfaces.sh
+  async: 1
+  poll: 0
+  notify: wait for new connection
+
 - name: wait for new connection
   wait_for_connection:
     connect_timeout: 20

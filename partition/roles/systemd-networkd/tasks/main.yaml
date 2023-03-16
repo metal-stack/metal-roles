@@ -38,7 +38,7 @@
   when: item.name != 'lo'
   notify:
   - restart systemd-networkd
-  - restart systemd-udev-trigger
+  - rename interfaces
   loop: "{{ systemd_networkd_nics }}"
   loop_control:
     index_var: i
