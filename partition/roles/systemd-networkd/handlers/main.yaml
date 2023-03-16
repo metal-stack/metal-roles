@@ -29,11 +29,10 @@
     owner: root
     group: root
     mode: "0755"
-  tags: always
-  notify: execute interface rename script
   listen: rename interfaces
 
 - name: execute interface rename script
   command: /root/rename-interfaces.sh
   async: 300
   poll: 10
+  listen: rename interfaces
