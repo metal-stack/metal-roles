@@ -5,7 +5,7 @@ metadata:
   name: networking-calico
 type: helm
 providerConfig:
-  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener-extension-networking-calico/' + gardener_networking_calico_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/metal-stack/gardener-extension-networking-calico/' + gardener_networking_calico_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
   values:
     image:
       repository: "{{ gardener_networking_calico_image_name }}"
