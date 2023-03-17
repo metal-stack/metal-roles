@@ -64,7 +64,7 @@ gardener_shooted_seeds: []
 #   pod_cidr:
 #   service_cidr:
 
-gardener_shooted_seed_max_pods: 110
+gardener_shooted_seed_max_pods: 250
 gardener_shooted_seed_node_cidr_mask_size: 23
 # can be useful for rollouts where the shooted seed or managed seed resource changes:
 gardener_shooted_seed_rollout_delay_minutes:
