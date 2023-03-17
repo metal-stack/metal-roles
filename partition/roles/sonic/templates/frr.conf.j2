@@ -33,7 +33,7 @@ router bgp {{ sonic_asn }}
 {% endfor %}
  !
  address-family ipv4 unicast
-  redistribute connected{% if sonic_frr_route_map is defined %} route-map {{ sonic_frr_route_map.name }}{% endif %}
+  redistribute connected route-map {{ sonic_frr_route_map.name | default(DENY_MGMT) }}
 {% if sonic_frr_static_routes|length > 0 %}
   redistribute static
 {% endif %}
@@ -115,6 +115,11 @@ route-map {{ i.routemap_out.name }} permit 20
 !
 route-map {{ sonic_frr_route_map.name }} permit 10
   match {{ sonic_frr_route_map.match }}
+{% else %}
+!
+route-map DENY_MGMT deny 10
+  match interface eth0
+route-map DENY_MGMT permit 20
 {% endif %}
 {% if sonic_frr_static_routes_mgmt is defined and sonic_frr_static_routes_mgmt|length > 0 %}
 !
