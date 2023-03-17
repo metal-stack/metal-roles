@@ -33,7 +33,7 @@ router bgp {{ sonic_asn }}
 {% endfor %}
  !
  address-family ipv4 unicast
-  redistribute connected route-map {{ sonic_frr_route_map.name | default(DENY_MGMT) }}
+  redistribute connected route-map {{ sonic_frr_route_map.name | default("DENY_MGMT") }}
 {% if sonic_frr_static_routes|length > 0 %}
   redistribute static
 {% endif %}
