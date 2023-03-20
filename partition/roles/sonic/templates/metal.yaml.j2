@@ -148,6 +148,10 @@ ACL_RULE:
     PRIORITY: "9{{ loop.index }}"
     SRC_IP: "{{ sourcerange }}"
 {% endfor %}
+  ALLOW_NTP|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "1"
 
 ACL_TABLE:
   ALLOW_SSH:
@@ -155,6 +159,13 @@ ACL_TABLE:
     ports: []
     services:
     - "SSH"
+    stage: "ingress"
+    type: "CTRLPLANE"
+  ALLOW_NTP:
+    policy_desc: "Allow NTP"
+    ports: []
+    services:
+    - "NTP"
     stage: "ingress"
     type: "CTRLPLANE"
 {% endif %}
