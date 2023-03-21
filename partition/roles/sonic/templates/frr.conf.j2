@@ -37,7 +37,6 @@ router bgp {{ sonic_asn }}
 {% if sonic_frr_static_routes|length > 0 %}
   redistribute static
 {% endif %}
-
  exit-address-family
 {% if sonic_frr_l2vpn_evpn %}
  !
