@@ -96,6 +96,14 @@ ACL_RULE:
     PACKET_ACTION: "ACCEPT"
     PRIORITY: "92"
     SRC_IP: "10.11.0.0/16"
+  ALLOW_NTP|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+  ALLOW_NTP|RULE_1:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "99"
+    SRC_IP: "0.0.0.0/0"
 
 ACL_TABLE:
   ALLOW_SSH:
@@ -103,5 +111,12 @@ ACL_TABLE:
     ports: []
     services:
     - "SSH"
+    stage: "ingress"
+    type: "CTRLPLANE"
+  ALLOW_NTP:
+    policy_desc: "Allow NTP"
+    ports: []
+    services:
+    - "NTP"
     stage: "ingress"
     type: "CTRLPLANE"
