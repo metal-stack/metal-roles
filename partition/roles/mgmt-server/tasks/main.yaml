@@ -147,4 +147,6 @@
 
 - name: flush dhcp routes if we have a bgp session to the firewall
   command: ip route flush proto dhcp
-  when: mgmt_server_firewall_ip is defined and not mgmt_server_preserve_dhcp_route
+  when:
+    - mgmt_server_firewall_ip is defined
+    - mgmt_server_preserve_dhcp_route is undefined or not mgmt_server_preserve_dhcp_route
