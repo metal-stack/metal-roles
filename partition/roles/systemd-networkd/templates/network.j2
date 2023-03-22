@@ -19,7 +19,7 @@ VXLAN={{ vxlan }}
 {% if item.dhcp is defined and item.dhcpv4routemetrics is defined %}
 
 [DHCPv4]
-RouteMetric=item.dhcpv4routemetrics
+RouteMetric={{ item.dhcpv4routemetrics }}
 {% endif %}
 {% for address in item.addresses|default([]) %}
 
