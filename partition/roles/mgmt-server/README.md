@@ -18,3 +18,4 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_spine_facing_interface    | yes       | the interface where the management spine is connected at the management server.      |
 | mgmt_server_metal_ssh_privkey         | yes       | the private SSH key of the `metal` admin user for connecting to the other components |
 | mgmt_server_metal_ssh_pubkey          | yes       | the public SSH key of the `metal` admin user for connecting to the other components  |
+| mgmt_server_preserve_dhcp_route       | no        | preserve the dhcp (default) route the mgmt server got from the mgmt firewall         |
