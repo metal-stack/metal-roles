@@ -10,11 +10,6 @@
 - name: config save
   ansible.builtin.command: config save -y
 
-- name: config save and reload
-  systemd:
-    name: config-save-reload
-    state: started
-
 - name: restart bgp
   systemd:
     name: bgp
