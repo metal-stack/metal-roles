@@ -42,6 +42,9 @@
 
 - name: Configure breakouts
   command: "config interface breakout -y {{ item.key }} '{{ item.value }}'"
+  register: breakout_result
+  changed_when: "'Breakout process got successfully completed.' in breakout_result.stdout"
+  failed_when: "breakout_result.rc != 0 or 'Dependecies Exist. No further action will be taken' in breakout_result.stdout"
   with_dict: "{{ sonic_breakouts }}"
   when: sonic_breakouts is defined
 
@@ -52,7 +55,7 @@
   notify:
   - write metal conf to db
   - config reload
-    
+
 - name: Set NTP timezone
   timezone:
     name: "{{ sonic_timezone }}"
