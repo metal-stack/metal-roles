@@ -2,13 +2,9 @@ import unittest
 
 import yaml
 import os
+from test import read_template_file
 
 from ansible.template import Templar
-
-def read_template_file(name):
-    with open(os.path.join(os.path.dirname(__file__), "..", "templates", name), 'r') as f:
-        return f.read()
-
 
 def readYaml(f):
     with open(os.path.join(os.path.dirname(__file__), f), "r") as stream:
