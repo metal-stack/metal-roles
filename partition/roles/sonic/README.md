@@ -15,6 +15,7 @@ Deploys a sonic switch.
 | sonic_mgmtif_gateway                                       |           | If using a fixed management IP, the default gateway for the management interface.                                    |
 | sonic_ip_masquerade                                        |           | Enable ip masquerading on eth0.                                                                                      |
 | sonic_breakouts                                            |           | The breakout configuration for ports. E.g. `dict('Ethernet0'='4x25G')`                                               |
+| sonic_config_action                                        |           | Either `load` or `reload`. In the latter case all services will be restarted.                                        |
 | sonic_ports                                                |           | Configuration for ports (mtu, fec, have highest precedence). These ports will be up by default.                      |
 | sonic_ports.speed                                          |           | Speed of the port.                                                                                                   |
 | sonic_ports.mtu                                            |           | MTU of the port.                                                                                                     |

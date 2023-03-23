@@ -9,6 +9,7 @@
       - sonic_asn is defined
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
+      - sonic_config_action in ['load', 'reload']
 
 - name: render resolv.conf
   template:
@@ -67,13 +68,15 @@
     msg: The running configuration doesn't contain 'PORT' {{ sonic_running_cfg }}
   when: "sonic_running_cfg_ports | length == 0"
 
-- name: Render metal config for config_db.json
-  template:
-    src: metal.yaml.j2
-    dest: /etc/sonic/metal.yaml
-  notify:
-  - write metal conf to db
-  - config reload
+- name: Render config_db
+  set_fact:
+    config_db: "{{ lookup('template', 'metal.yaml.j2') }}"
+
+- name: Save config_db as JSON file
+  copy:
+    content: "{{ config_db | from_yaml | to_nice_json }}"
+    dest: /etc/sonic/config_db.json
+  notify: "config {{ sonic_config_action }}"
 
 - name: Set NTP timezone
   timezone:
