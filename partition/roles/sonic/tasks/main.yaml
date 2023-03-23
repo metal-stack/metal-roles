@@ -56,12 +56,20 @@
 - name: Extract running configuration for breakouts and ports
   ansible.builtin.set_fact:
     sonic_running_cfg_breakouts: "{{ sonic_running_cfg | community.general.json_query('BREAKOUT_CFG') }}"
+    sonic_running_cfg_hwsku: "sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.hwsku')"
+    sonic_running_cfg_mac: "sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.mac')"
+    sonic_running_cfg_platform: "sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.platform')"
     sonic_running_cfg_ports: "{{ sonic_running_cfg | community.general.json_query('PORT')  }}"
 
-- name: Fail if running configuration doesn't contain 'BREAKOUT_CFG'
-  ansible.builtin.fail:
-    msg: The running configuration doesn't contain 'BREAKOUT_CFG' {{ sonic_running_cfg }}
-  when: "sonic_running_cfg_breakouts | length == 0"
+- name: Fail if running configuration doesn't contain required informations
+  ansible.builtin.assert:
+    that:
+      - sonic_running_cfg_breakouts is defined and sonic_running_cfg_breakouts | length > 0
+      - sonic_running_cfg_hwsku is defined and sonic_running_cfg_hwsku | length > 0
+      - sonic_running_cfg_mac is defined and sonic_running_cfg_mac | length > 0
+      - sonic_running_cfg_platform is defined and sonic_running_cfg_platform | length > 0
+      - sonic_running_cfg_ports is defined and sonic_running_cfg_ports | length > 0
+    fail_msg: The running configuration is incomplete because it does not contain 'BREAKOUT_CFG', 'PORT', or complete 'DEVICE_METADATA'.
 
 - name: Fail if running configuration doesn't contain 'PORT'
   ansible.builtin.fail:

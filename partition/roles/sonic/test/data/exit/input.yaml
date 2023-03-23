@@ -25,6 +25,10 @@ sonic_running_cfg_breakouts:
   Ethernet116:
     brkout_mode: "1x100G[40G]"
 
+sonic_running_cfg_hwsku: Accton-AS7726-32X
+sonic_running_cfg_mac: e0:01:a6:e3:29:3c
+sonic_running_cfg_platform: x86_64-accton_as7726_32x-r0
+
 sonic_running_cfg_ports:
   Ethernet0:
     alias: Eth1/1(Port1)
