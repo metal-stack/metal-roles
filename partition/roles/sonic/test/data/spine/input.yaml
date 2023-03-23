@@ -5,14 +5,34 @@ sonic_loopback_address: 10.0.0.1
 sonic_asn: 420000000
 
 sonic_bgp_ports:
-- Ethernet50
-- Ethernet51
+- Ethernet120
+- Ethernet124
 
 sonic_ports_default_speed: 100000
 sonic_ports_default_mtu: 9216
 sonic_ports:
-- name: Ethernet50
-- name: Ethernet51
+ Ethernet120:
+ Ethernet124:
+
+sonic_running_cfg_breakouts:
+  Ethernet120:
+    brkout_mode: "1x100G[40G]"
+  Ethernet124:
+    brkout_mode: "1x100G[40G]"
+
+sonic_running_cfg_ports:
+  Ethernet120:
+    alias: Eth31(Port31)
+    index: '31'
+    lanes: '121,122,123,124'
+    parent_port: Ethernet120
+    speed: '100000'
+  Ethernet124:
+    alias: Eth32(Port32)
+    index: '32'
+    lanes: '125,126,127,128'
+    parent_port: Ethernet124
+    speed: '100000'
 
 sonic_frr_l2vpn_evpn: true
 sonic_frr_route_map:

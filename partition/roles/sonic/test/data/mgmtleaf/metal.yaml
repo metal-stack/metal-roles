@@ -31,38 +31,87 @@ MGMT_VRF_CONFIG:
     mgmtVrfEnabled: "true"
 
 INTERFACE:
-  Ethernet50:
+  Ethernet120:
     ipv6_use_link_local_only: enable
-  Ethernet51:
+  Ethernet124:
     ipv6_use_link_local_only: enable
+
+BREAKOUT_CFG:
+  Ethernet0:
+    brkout_mode: "4x25G"
+  Ethernet4:
+    brkout_mode: "1x100G[40G]"
+  Ethernet120:
+    brkout_mode: "1x100G[40G]"
+  Ethernet124:
+    brkout_mode: "1x100G[40G]"
 
 PORT:
   Ethernet0:
+    alias: Eth1/1(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
+    speed: "25000"
     mtu: "9000"
     fec: "none"
   Ethernet1:
+    alias: Eth1/2(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "2"
+    parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
+    speed: "25000"
     mtu: "9000"
     fec: "none"
   Ethernet2:
+    alias: Eth1/3(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "3"
+    parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
+    speed: "25000"
     mtu: "9000"
     fec: "none"
   Ethernet3:
+    alias: Eth1/4(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "4"
+    parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
+    speed: "25000"
     mtu: "9000"
     fec: "none"
-  Ethernet50:
+  Ethernet4:
+    alias: Eth2(Port2)
+    autoneg: "off"
+    index: "2"
+    lanes: "5,6,7,8"
+    parent_port: Ethernet4
+    speed: "100000"
+    mtu: "9000"
+    fec: "none"
+  Ethernet120:
+    alias: Eth31(Port31)
+    autoneg: "off"
+    index: "31"
+    lanes: "121,122,123,124"
+    parent_port: Ethernet120
     admin_status: up
     speed: "100000"
     mtu: "9216"
     fec: "rs"
-  Ethernet51:
+  Ethernet124:
+    alias: Eth32(Port32)
+    autoneg: "off"
+    index: "32"
+    lanes: "125,126,127,128"
+    parent_port: Ethernet124
     admin_status: up
     speed: "100000"
     mtu: "9000"

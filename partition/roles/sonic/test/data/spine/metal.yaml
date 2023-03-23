@@ -26,18 +26,34 @@ MGMT_VRF_CONFIG:
     mgmtVrfEnabled: "true"
 
 INTERFACE:
-  Ethernet50:
+  Ethernet120:
     ipv6_use_link_local_only: enable
-  Ethernet51:
+  Ethernet124:
     ipv6_use_link_local_only: enable
 
+BREAKOUT_CFG:
+  Ethernet120:
+    brkout_mode: "1x100G[40G]"
+  Ethernet124:
+    brkout_mode: "1x100G[40G]"
+
 PORT:
-  Ethernet50:
+  Ethernet120:
+    alias: Eth31(Port31)
+    autoneg: "off"
+    index: "31"
+    lanes: "121,122,123,124"
+    parent_port: Ethernet120
     admin_status: up
     speed: "100000"
     mtu: "9216"
     fec: "none"
-  Ethernet51:
+  Ethernet124:
+    alias: Eth32(Port32)
+    autoneg: "off"
+    index: "32"
+    lanes: "125,126,127,128"
+    parent_port: Ethernet124
     admin_status: up
     speed: "100000"
     mtu: "9216"

@@ -48,6 +48,25 @@
   with_dict: "{{ sonic_breakouts }}"
   when: sonic_breakouts is defined
 
+- name: Get running configuration
+  ansible.builtin.command: show runningconfiguration all
+  register: sonic_running_cfg
+
+- name: Extract running configuration for breakouts and ports
+  ansible.builtin.set_fact:
+    sonic_running_cfg_breakouts: "{{ sonic_running_cfg | community.general.json_query('BREAKOUT_CFG') }}"
+    sonic_running_cfg_ports: "{{ sonic_running_cfg | community.general.json_query('PORT')  }}"
+
+- name: Fail if running configuration doesn't contain 'BREAKOUT_CFG'
+  ansible.builtin.fail:
+    msg: The running configuration doesn't contain 'BREAKOUT_CFG' {{ sonic_running_cfg }}
+  when: "sonic_running_cfg_breakouts | length == 0"
+
+- name: Fail if running configuration doesn't contain 'PORT'
+  ansible.builtin.fail:
+    msg: The running configuration doesn't contain 'PORT' {{ sonic_running_cfg }}
+  when: "sonic_running_cfg_ports | length == 0"
+
 - name: Render metal config for config_db.json
   template:
     src: metal.yaml.j2

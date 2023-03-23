@@ -13,20 +13,74 @@ sonic_breakouts:
 sonic_ports_default_speed: 1000
 sonic_ports_default_mtu: 9000
 sonic_ports:
-- name: Ethernet0
-- name: Ethernet1
-- name: Ethernet2
-- name: Ethernet3
-- name: Ethernet50
-  speed: 100000
-  mtu: 9216
-  fec: rs
-- name: Ethernet51
-  speed: 100000
+  Ethernet0:
+  Ethernet1:
+  Ethernet2:
+  Ethernet3:
+  Ethernet120:
+    speed: 100000
+    mtu: 9216
+    fec: rs
+  Ethernet124:
+    speed: 100000
+
+sonic_running_cfg_breakouts:
+  Ethernet0:
+    brkout_mode: "4x25G"
+  Ethernet4:
+    brkout_mode: "1x100G[40G]"
+  Ethernet120:
+    brkout_mode: "1x100G[40G]"
+  Ethernet124:
+    brkout_mode: "1x100G[40G]"
+
+sonic_running_cfg_ports:
+  Ethernet0:
+    alias: Eth1/1(Port1)
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
+    speed: "25000"
+  Ethernet1:
+    alias: Eth1/2(Port1)
+    index: '1'
+    lanes: '2'
+    parent_port: Ethernet0
+    speed: '25000'
+  Ethernet2:
+    alias: Eth1/3(Port1)
+    index: '1'
+    lanes: '3'
+    parent_port: Ethernet0
+    speed: '25000'
+  Ethernet3:
+    alias: Eth1/4(Port1)
+    index: '1'
+    lanes: '4'
+    parent_port: Ethernet0
+    speed: '25000'
+  Ethernet4:
+    alias: Eth2(Port2)
+    index: '2'
+    lanes: '5,6,7,8'
+    parent_port: Ethernet4
+    speed: '100000'
+  Ethernet120:
+    alias: Eth31(Port31)
+    index: '31'
+    lanes: '121,122,123,124'
+    parent_port: Ethernet120
+    speed: '100000'
+  Ethernet124:
+    alias: Eth32(Port32)
+    index: '32'
+    lanes: '125,126,127,128'
+    parent_port: Ethernet124
+    speed: '100000'
 
 sonic_bgp_ports:
-- Ethernet50
-- Ethernet51
+- Ethernet120
+- Ethernet124
 
 sonic_vlans:
 - id: 1

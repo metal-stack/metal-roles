@@ -7,15 +7,43 @@ sonic_breakouts:
   Ethernet0: "4x10G"
 
 sonic_ports:
-- name: Ethernet0
-  speed: 10000
-  mtu: 1500
-  vrf: VrfMpls
-  ips:
-  - 10.0.0.2/32
+  Ethernet0:
+    speed: 10000
+    mtu: 1500
+    vrf: VrfMpls
+    ips:
+    - 10.0.0.2/32
 # spine uplinks
-- name: Ethernet112
-- name: Ethernet116
+  Ethernet112:
+  Ethernet116:
+
+sonic_running_cfg_breakouts:
+  Ethernet0:
+    brkout_mode: "4x10G"
+  Ethernet112:
+    brkout_mode: "1x100G[40G]"
+  Ethernet116:
+    brkout_mode: "1x100G[40G]"
+
+sonic_running_cfg_ports:
+  Ethernet0:
+    alias: Eth1/1(Port1)
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet112:
+    alias: Eth29(Port29)
+    index: "29"
+    lanes: "113,114,115,116"
+    parent_port: Ethernet112
+    speed: "100000"
+  Ethernet116:
+    alias: Eth30(Port30)
+    index: "30"
+    lanes: "117,118,119,120"
+    parent_port: Ethernet116
+    speed: "100000"
 
 sonic_bgp_ports:
 - Ethernet112

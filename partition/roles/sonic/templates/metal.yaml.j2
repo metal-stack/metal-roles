@@ -37,32 +37,47 @@ MGMT_VRF_CONFIG:
 {% if sonic_ports|length > 0 %}
 
 INTERFACE:
-  {% for port in sonic_ports %}
-  {% if port.name in sonic_bgp_ports|default([]) or port.vrf is defined %}
-  {{ port.name }}:
-    {% if port.name in sonic_bgp_ports|default([]) %}
+  {% for name, cfg in sonic_ports.items() %}
+  {% if name in sonic_bgp_ports|default([]) or cfg.vrf is defined %}
+  {{ name }}:
+    {% if name in sonic_bgp_ports|default([]) %}
     ipv6_use_link_local_only: enable
     {% endif %}
-    {% if port.vrf is defined %}
-    vrf_name: "{{ port.vrf }}"
+    {% if cfg.vrf is defined %}
+    vrf_name: "{{ cfg.vrf }}"
     {% endif %}
   {% endif %}
-  {% for ip in port.ips|default([]) %}
-  {{ port.name }}|{{ ip }}: {}
+  {% for ip in cfg.ips|default([]) %}
+  {{ name }}|{{ ip }}: {}
   {% endfor %}
   {% endfor %}
 {% endif %}
-{% if sonic_ports|length > 0 %}
+
+BREAKOUT_CFG:
+  {% for name, cfg in sonic_running_cfg_breakouts.items() %}
+  {{ name }}:
+    brkout_mode: "{{ cfg.brkout_mode }}"
+  {% endfor %}
 
 PORT:
-  {% for port in sonic_ports %}
-  {{ port.name }}:
+  {% for name, cfg in sonic_running_cfg_ports.items() %}
+  {{ name }}:
+    alias: {{ cfg.alias }}
+    autoneg: "off"
+    index: "{{ cfg.index }}"
+    lanes: "{{ cfg.lanes }}"
+    parent_port: {{ cfg.parent_port }}
+    {% if sonic_ports[name] is defined %}
     admin_status: up
-    speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
-    mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
-    fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
+    speed: "{{ sonic_ports[name].speed|default(cfg.speed) }}"
+    mtu: "{{ sonic_ports[name].mtu|default(sonic_ports_default_mtu) }}"
+    fec: "{{ sonic_ports[name].fec|default(sonic_ports_default_fec)|string|lower }}"
+    {% else %}
+    speed: "{{ cfg.speed }}"
+    mtu: "{{ sonic_ports_default_mtu }}"
+    fec: "{{ sonic_ports_default_fec|string|lower }}"
+    {% endif %}
   {% endfor %}
-{% endif %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
 
 VLAN:
