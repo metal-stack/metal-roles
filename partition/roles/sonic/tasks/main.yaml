@@ -17,6 +17,7 @@
     block: |
       ExecStart=
       ExecStart=/bin/ip vrf exec mgmt /usr/sbin/sshd -D $SSHD_OPTS
+      [Unit]
       After=sonic.target
   when: sonic_mgmt_vrf
   notify:
