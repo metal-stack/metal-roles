@@ -3,11 +3,6 @@
   systemd:
     daemon_reload: yes
 
-- name: restart ssh service
-  systemd:
-    name: ssh
-    state: restarted
-
 - name: write metal conf to db
   ansible.builtin.command: sonic-cfggen --yaml /etc/sonic/metal.yaml --write-to-db
   notify: config save
@@ -37,3 +32,8 @@
     sleep: 5
     delay: 30
     timeout: 300
+
+- name: restart ssh service
+  systemd:
+    name: ssh
+    state: restarted
