@@ -10,19 +10,19 @@
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
 
-- name: Patch ssh service to run in the mgmt vrf
-  blockinfile:
-    path: /etc/systemd/system/ssh.service.d/override.conf
-    insertafter: "ExecStartPre=.*"
-    block: |
-      ExecStart=
-      ExecStart=/bin/ip vrf exec mgmt /usr/sbin/sshd -D $SSHD_OPTS
-      [Unit]
-      After=sonic.target
-  when: sonic_mgmt_vrf
-  notify:
-  - reload systemd
-  - restart ssh service
+# - name: Patch ssh service to run in the mgmt vrf
+#   blockinfile:
+#     path: /etc/systemd/system/ssh.service.d/override.conf
+#     insertafter: "ExecStartPre=.*"
+#     block: |
+#       ExecStart=
+#       ExecStart=/bin/ip vrf exec mgmt /usr/sbin/sshd -D $SSHD_OPTS
+#       [Unit]
+#       After=sonic.target
+#   when: sonic_mgmt_vrf
+#   notify:
+#   - reload systemd
+#   - restart ssh service
 
 - name: render resolv.conf
   template:
