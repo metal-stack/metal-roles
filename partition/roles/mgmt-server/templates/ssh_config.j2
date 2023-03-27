@@ -1,7 +1,7 @@
 {% for host in groups.all %}
 {% if hostvars[host].ansible_host is defined %}
 {% if hostvars[host].ansible_user is defined %}
-Host {{ host }}
+Host {{ host }} {{ hostvars[host].ansible_hostname|default('') }}
         User {{ hostvars[host].ansible_user }}
 {% endif %}
 {% endif %}
