@@ -29,7 +29,7 @@ INTERFACE:
   Ethernet0:
     vrf_name: "VrfMpls"
   Ethernet0|10.0.0.2/32: {}
-  Ethernet3:
+  Ethernet3: {}
   Ethernet3|10.1.2.2/30: {}
   Ethernet112:
     ipv6_use_link_local_only: enable
