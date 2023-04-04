@@ -38,7 +38,7 @@ MGMT_VRF_CONFIG:
 
 INTERFACE:
   {% for port in sonic_ports %}
-  {% if port.name in sonic_bgp_ports|default([]) or port.vrf is defined %}
+  {% if port.name in sonic_bgp_ports|default([]) or port.vrf is defined or port.ips is defined %}
   {{ port.name }}:
     {% if port.name in sonic_bgp_ports|default([]) %}
     ipv6_use_link_local_only: enable

@@ -13,6 +13,11 @@ sonic_ports:
   vrf: VrfMpls
   ips:
   - 10.0.0.2/32
+# Uplink for pxe VLAN
+- name: Ethernet3
+  speed: 10000
+  ips:
+  - 10.1.2.2/30
 # spine uplinks
 - name: Ethernet112
 - name: Ethernet116
@@ -29,6 +34,10 @@ sonic_vteps:
 - comment: MPLS
   vlan: 4000
   vni: 104000
+
+# Default route from PXE VLAN
+sonic_frr_static_routes:
+- "0.0.0.0/0 10.1.2.1"
 
 sonic_interconnects:
   mpls:
