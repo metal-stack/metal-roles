@@ -42,6 +42,11 @@ PORT:
     speed: "10000"
     mtu: "1500"
     fec: "none"
+  Ethernet2:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
   Ethernet3:
     admin_status: up
     speed: "10000"
