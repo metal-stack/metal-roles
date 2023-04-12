@@ -61,3 +61,22 @@
     port: 2112
     timeout: 300
     msg: "metal-core did not come up"
+
+- name: create metal-core.timer for delayed startup of metal-core after boot
+  copy:
+    src: metal-core.timer
+    dest: /etc/systemd/system/metal-core.timer
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable the timer
+  systemd:
+    daemon_reload: true
+    name: metal-core.timer
+    enabled: true
+
+- name: Disable the service so the timer can function
+  systemd:
+    name: metal-core.service
+    enabled: false
