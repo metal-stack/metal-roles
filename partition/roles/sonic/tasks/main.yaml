@@ -79,5 +79,13 @@
   notify:
   - restart bgp
 
+- name: render iptables.json
+  template:
+    src: iptables.json.j2
+    dest: /etc/sonic/iptables.json
+  when: sonic_extended_cacl is defined
+  notify:
+  - restart caclmgrd
+
 - name: Flush handlers
   meta: flush_handlers

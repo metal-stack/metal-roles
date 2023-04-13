@@ -20,6 +20,11 @@
     name: bgp
     state: restarted
 
+- name: restart caclmgrd
+  systemd:
+    name: caclmgrd
+    state: restarted
+
 - name: config reload
   ansible.builtin.command: config reload -y
   async: 120
