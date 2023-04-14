@@ -4,6 +4,9 @@ METAL_CORE_LOOPBACK_IP: "{{ lo }}"
 METAL_CORE_ASN: "{{ asn }}"
 
 METAL_CORE_CIDR: "{{ metal_core_cidr }}"
+{% metal_core_hostname is defined %}
+METAL_CORE_HOSTNAME: "{{ metal_core_hostname }}"
+{% endif %}
 {% if metal_core_dhcp_servers is defined %}
 METAL_CORE_DHCP_SERVERS: "{{ metal_core_dhcp_servers | join(',') }}"
 {% endif %}
