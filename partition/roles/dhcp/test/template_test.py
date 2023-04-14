@@ -16,7 +16,7 @@ class DHCPD(unittest.TestCase):
                     network="1.2.3.4",
                     netmask="24",
                     range=dict(begin=1, end=2),
-                    options=["option routers 2.2.2.2;", "option domain-name-servers 1.1.1.1, 8.8.8.8;"],
+                    options=["routers 2.2.2.2", "domain-name-servers 1.1.1.1, 8.8.8.8"],
                 ),
             ],
             dhcp_default_lease_time=600,
@@ -29,7 +29,6 @@ class DHCPD(unittest.TestCase):
         res = templar.template(t)
 
         self.assertIn("""
-# indicate that the DHCP server should send DHCPNAK messages to misconfigured client
 authoritative;
 
 default-lease-time 600;

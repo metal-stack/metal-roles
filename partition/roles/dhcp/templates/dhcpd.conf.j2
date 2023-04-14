@@ -15,13 +15,13 @@ subnet {{ subnet.network }} netmask {{ subnet.netmask }} {
   range {{ subnet.range.begin }} {{ subnet.range.end }};
 {% endif %}
 {% for option in subnet.options | default([]) %}
-  {{ option }}
+  option {{ option }};
 {% endfor %}
 }
 {% endfor %}
 
 {% for option in dhcp_global_options %}
-{{ option }}
+option {{ option }};
 {% endfor %}
 
 {% if dhcp_static_hosts is defined %}
