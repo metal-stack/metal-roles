@@ -4,6 +4,8 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - ztp_nginx_image_name is defined
+      - ztp_nginx_image_tag is defined
       - ztp_authorized_keys is not none
 
 - name: create ztp config directory
@@ -22,8 +24,8 @@
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: ztp-server
-    systemd_docker_image_name: "{{ ztp_image_name }}"
-    systemd_docker_image_tag: "{{ ztp_image_tag }}"
+    systemd_docker_image_name: "{{ ztp_nginx_image_name }}"
+    systemd_docker_image_tag: "{{ ztp_nginx_image_tag }}"
     systemd_service_timeout_start_sec: 60
     systemd_docker_volumes:
       - "{{ ztp_host_dir_path }}/config:/usr/share/nginx/html"
