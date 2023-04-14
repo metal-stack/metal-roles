@@ -21,6 +21,10 @@ dhcp_global_options: []
 # - ztp_provisioning_script_url code 239 = text
 # - ztp_provisioning_script_url "http://{{ ansible_host }}/ztp.sh"
 
+dhcp_global_deny_list: []
+# examples:
+# - unknown-clients
+
 dhcp_service_name: "{{ 'dhcpd' if metal_stack_switch_os_is_cumulus | default(false) else 'isc-dhcp-server' }}"
 
 #dhcp_static_hosts:
