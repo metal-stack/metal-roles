@@ -16,7 +16,7 @@
 
 - name: Set service dependency
   set_fact:
-    metal_core_service_dependency: "{{ database.service if metal_stack_switch_os_is_sonic else docker.service }}"
+    metal_core_service_dependency: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
 
 - name: create gRPC certs directory
   file:
