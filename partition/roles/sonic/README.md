@@ -62,4 +62,6 @@ Deploys a sonic switch.
 | sonic_interconnects.routemap_out                           |           | Apply an outgoing routemap for this BGP session.                                                                     |
 | sonic_interconnects.vni                                    |           | This BGP session will connect the specified VNI within the CLOS topology with the given peer.                        |
 | sonic_interconnects.vrf                                    |           | Use a dedicated BGP session fenced with an VRF for this connection. Also it declares the virtual network as layer-3. |
-| sonic_ssh_sourceranges                                     |           |  The source ranges from which the switch should be reachable over SSH on its prod (non-management) addresses         |
+| sonic_ssh_sourceranges                                     |           | The source ranges from which the switch should be reachable over SSH on its prod (non-management) addresses          |
+| sonic_extended_cacl.ipv4                                   |           | Iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
+| sonic_extended_cacl.ipv6                                   |           | Iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
