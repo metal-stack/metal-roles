@@ -42,6 +42,8 @@ metal_stack_release:
     headscale_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     headscale_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     # gardener
+    firewall_controller_manager_image_tag: "docker-images.metal-stack.gardener.firewall-controller-manager.tag"
+    firewall_controller_manager_image_name: "docker-images.metal-stack.gardener.firewall-controller-manager.name"
     gardener_extension_provider_metal_image_tag: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.tag"
     gardener_extension_provider_metal_image_name: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.name"
     gardener_extension_provider_metal_repo_url: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.repository"
