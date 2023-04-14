@@ -1,7 +1,4 @@
 ---
-ztp_image_name: nginx
-ztp_image_tag: alpine
-
 ztp_host_dir_path: /ztp
 
 ztp_authorized_keys:
