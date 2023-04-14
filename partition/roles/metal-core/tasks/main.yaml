@@ -14,6 +14,10 @@
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
 
+- name: Set service dependency
+  set_fact:
+    metal_core_service_dependency: "{{ database.service if metal_stack_switch_os_is_sonic else docker.service }}"
+
 - name: create gRPC certs directory
   file:
     path: "{{ metal_core_grpc_cert_dir }}"
@@ -54,6 +58,8 @@
       - sys_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
     systemd_external_config_changed: "{{ grpc_certs is changed }}"
+    systemd_service_after: "{{ metal_core_service_dependency }}"
+    systemd_service_wants: "{{ metal_core_service_dependency }}"
 
 - name: wait for metal-core to listen on metrics port
   wait_for:
