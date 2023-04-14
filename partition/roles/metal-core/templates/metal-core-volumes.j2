@@ -1,6 +1,6 @@
 {% if metal_stack_switch_os_is_sonic %}
 - /etc/sonic/:/etc/sonic
-- /var/run/redis/:/var/run/redis:ro
+- /var/run/redis/:/var/run/redis
 {% else %}
 - /etc/network/:/etc/network
 - /etc/frr/:/etc/frr
