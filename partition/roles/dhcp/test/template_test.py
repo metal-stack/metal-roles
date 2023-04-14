@@ -17,11 +17,13 @@ class DHCPD(unittest.TestCase):
                     netmask="24",
                     range=dict(begin=1, end=2),
                     options=["routers 2.2.2.2", "domain-name-servers 1.1.1.1, 8.8.8.8"],
+                    deny_list=["unknown-clients"],
                 ),
             ],
             dhcp_default_lease_time=600,
             dhcp_max_lease_time=600,
             dhcp_global_options=[],
+            dhcp_global_deny_list=[],
             groups=dict(mgmt_servers=["mgmt01", "mgmt02"]),
             hostvars=dict(mgmt01=dict(switch_mgmt_ip="3.3.3.3"), mgmt02=dict(switch_mgmt_ip="4.4.4.4")),
         ))
@@ -41,6 +43,7 @@ subnet 1.2.3.4 netmask 24 {
   range 1 2;
   option routers 2.2.2.2;
   option domain-name-servers 1.1.1.1, 8.8.8.8;
+  deny unknown-clients;
 }
 """.strip(), res.strip())
 
