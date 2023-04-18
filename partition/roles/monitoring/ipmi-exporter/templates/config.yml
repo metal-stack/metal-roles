@@ -1,0 +1,10 @@
+modules:
+  default:
+    user: root
+    pass: 123321
+    collectors:
+    - ipmi
+    - bmc
+    - chassis
+    - sel
+    - dcmi

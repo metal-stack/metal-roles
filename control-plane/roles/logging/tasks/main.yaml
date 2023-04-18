@@ -34,11 +34,5 @@
     helm_chart: loki
     helm_target_namespace: "{{ logging_namespace }}"
     helm_release_name: loki
-    helm_chart_version: "4.6.1"
+    helm_chart_version: "5.1.0"
     helm_value_file_template: "loki-values.yaml"
-
-# - name: Create monitoring ingress for Loki
-#   k8s:
-#     definition: "{{ lookup('template', 'loki_ingress.yaml') }}"
-#     namespace: "{{ logging_namespace }}"
-#     apply: true
