@@ -1,0 +1,17 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - sonic_upgrade_url is defined
+
+- name: Install new sonic image
+  command: sonic-installer install -y --skip_migration --skip-package-migration {{ sonic_upgrade_url }}
+
+- name: Reboot the system to complete the upgrade
+  reboot:
+    post_reboot_delay: 120
+
+- name: clean up images
+  command: sonic-installer cleanup -y
