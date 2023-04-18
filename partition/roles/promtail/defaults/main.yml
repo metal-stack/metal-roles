@@ -1,7 +1,7 @@
 ---
 # TODO: move to release vector
-promtail_image_name: grafana/promtail
-promtail_image_tag: 2.7.3
+promtail_image_name: "docker-images.third-party.partition.promtail.name"
+promtail_image_tag: "docker-images.third-party.partition.promtail.tag"
 
 promtail_host_dir_path: /promtail
 promtail_etc_host_dir: "{{ promtail_host_dir_path }}/etc"
