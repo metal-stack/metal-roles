@@ -5,12 +5,14 @@
     quiet: yes
     that:
       - sonic_upgrade_url is defined
+      - sonic_upgrade_vrf is defined
 
 - name: Install new sonic image
-  command: sonic-installer install -y --skip_migration --skip-package-migration {{ sonic_upgrade_url }}
+  command: "ip vrf exec {{ sonic_upgrade_vrf }} sonic-installer install -y --skip_migration --skip-package-migration {{ sonic_upgrade_url }}"
 
 - name: Reboot the system to complete the upgrade
   reboot:
+    # Give ZTP time to settle
     post_reboot_delay: 120
 
 - name: clean up images

@@ -7,3 +7,4 @@ Performs an upgrade of the Sonic OS on a device and reboots it to complete the i
 | Name              | Mandatory | Description                                               |
 | ----------------- | --------- | --------------------------------------------------------- |
 | sonic_upgrade_url | yes       | The URL from which to pull the sonic OS image to install. |
+| sonic_upgrade_vrf |           | The vrf used for pulling the upgrade image                |
