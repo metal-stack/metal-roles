@@ -4,11 +4,18 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - sonic_upgrade_url is defined
+      - sonic_upgrade_protocol is defined
+      - sonic_upgrade_host is defined
+      - sonic_upgrade_port is defined
+      - sonic_upgrade_image is defined
       - sonic_upgrade_vrf is defined
 
+
+- name: Download the new sonic image
+  command: "ip vrf exec {{ sonic_upgrade_vrf }} wget {{ sonic_upgrade_protocol }}://{{ sonic_upgrade_host }}:{{ sonic_upgrade_port }}/{{ sonic_upgrade_image }} -O /{{ sonic_upgrade_image }}"
+
 - name: Install new sonic image
-  command: "ip vrf exec {{ sonic_upgrade_vrf }} sonic-installer install -y --skip_migration --skip-package-migration {{ sonic_upgrade_url }}"
+  command: "sonic-installer install -y --skip_migration --skip-package-migration /{{ sonic_upgrade_image }}"
 
 - name: Reboot the system to complete the upgrade
   reboot:
