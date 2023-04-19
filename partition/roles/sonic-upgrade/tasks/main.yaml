@@ -4,23 +4,32 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - sonic_upgrade_protocol is defined
-      - sonic_upgrade_host is defined
-      - sonic_upgrade_port is defined
+      - ( sonic_upgrade_host is defined and sonic_upgrade_image_path is not defined ) or (sonic_upgrade_host is not defined and sonic_upgrade_image_path is defined)
       - sonic_upgrade_image is defined
-      - sonic_upgrade_vrf is defined
 
 
 - name: Download the new sonic image
-  command: "ip vrf exec {{ sonic_upgrade_vrf }} wget {{ sonic_upgrade_protocol }}://{{ sonic_upgrade_host }}:{{ sonic_upgrade_port }}/{{ sonic_upgrade_image }} -O /{{ sonic_upgrade_image }}"
+  command: "ip vrf exec {{ sonic_upgrade_vrf|default("mgmt") }} wget {{ sonic_upgrade_protocol|default("http") }}://{{ sonic_upgrade_host }}:{{ sonic_upgrade_port|default("80") }}/{{ sonic_upgrade_image }} -O /{{ sonic_upgrade_image }}"
+  when: sonic_upgrade_host is defined and sonic_upgrade_image_path is not defined
+
+- name: Push the new sonic image to the device
+  copy:
+    src: "{{ sonic_upgrade_image_path }}/{{ sonic_upgrade_image }}"
+    dest: "/{{ sonic_upgrade_image }}"
+  when: sonic_upgrade_host is not defined and sonic_upgrade_image_path is defined
 
 - name: Install new sonic image
   command: "sonic-installer install -y --skip_migration --skip-package-migration /{{ sonic_upgrade_image }}"
 
 - name: Reboot the system to complete the upgrade
   reboot:
-    # Give ZTP time to settle
-    post_reboot_delay: 120
+
+- name: Wait until sonic has become ready
+  shell: "show system status"
+  register: result
+  until: result is not failed
+  retries: 30
+  delay: 20
 
 - name: clean up images
   command: sonic-installer cleanup -y
