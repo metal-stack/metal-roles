@@ -1,0 +1,11 @@
+- name: Install service remove-neighbors
+  ansible.builtin.template:
+    src: remove-neighbors@.service.js
+    dest: /etc/systemd/system/remove-neighbors@.service
+  notify: reload systemd
+
+- name: Copy remove-neighbors.py
+  ansible.builtin.copy:
+    src: remove-neighbors.py
+    dest: /usr/local/bin/remove-neighbors.py
+    mode: 0744
