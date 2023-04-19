@@ -1,4 +1,8 @@
 ---
+image:
+  repository: "{{ auditing_meili_image.repository }}"
+  tag: "{{ auditing_meili_image.tag }}"
+
 readinessProbe:
   periodSeconds: 5
   InitialDelaySeconds: 5
