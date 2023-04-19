@@ -31,5 +31,9 @@
   retries: 30
   delay: 20
 
+- name: Extra delay to be extra safe
+  wait_for:
+    timeout: 60
+
 - name: clean up images
   command: sonic-installer cleanup -y
