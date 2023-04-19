@@ -9,7 +9,7 @@
 
 
 - name: Download the new sonic image
-  command: "ip vrf exec {{ sonic_upgrade_vrf|default("mgmt") }} wget {{ sonic_upgrade_protocol|default("http") }}://{{ sonic_upgrade_host }}:{{ sonic_upgrade_port|default("80") }}/{{ sonic_upgrade_image }} -O /{{ sonic_upgrade_image }}"
+  command: ip vrf exec {{ sonic_upgrade_vrf|default("mgmt") }} wget {{ sonic_upgrade_protocol|default("http") }}://{{ sonic_upgrade_host }}:{{ sonic_upgrade_port|default("80") }}/{{ sonic_upgrade_image }} -O /{{ sonic_upgrade_image }}
   when: sonic_upgrade_host is defined and sonic_upgrade_image_path is not defined
 
 - name: Push the new sonic image to the device
