@@ -1,4 +1,8 @@
 ---
+image:
+  repository: "{{ metal_auditing_meili_image_name }}"
+  tag: "{{ metal_auditing_meili_image_tag }}"
+
 readinessProbe:
   periodSeconds: 5
   InitialDelaySeconds: 5
