@@ -3,10 +3,6 @@ auditing_meili_namespace: "{{ metal_control_plane_namespace }}"
 auditing_meili_secret: ""
 auditing_meili_environment: production
 
-auditing_meili_image:
-  repository: getmeili/meilisearch
-  tag: v1.1.0
-
 # possible parametrization can be found at the helm-chart repo
 # https://github.com/meilisearch/meilisearch-kubernetes
 
