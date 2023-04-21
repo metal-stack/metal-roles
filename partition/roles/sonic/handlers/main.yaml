@@ -8,6 +8,11 @@
     name: bgp
     state: restarted
 
+- name: restart caclmgrd
+  systemd:
+    name: caclmgrd
+    state: restarted
+
 - name: config load
   ansible.builtin.command: config load --yes
 
@@ -23,3 +28,8 @@
     sleep: 5
     delay: 30
     timeout: 300
+
+# - name: restart ssh service
+#   systemd:
+#     name: ssh
+#     state: restarted

@@ -54,6 +54,7 @@ Deploys a sonic switch.
 | sonic_interconnects.bgp_timers                             |           | Use specific BGP timer values for the BGP session with the remote party.                                             |
 | sonic_interconnects.neighbor_ip                            |           | Connect to this BGP neighbors IP.                                                                                    |
 | sonic_interconnects.neighbors                              |           | Connect to this BGP neighbors - supports multiple neighbors and also BGP unnumbered by giving `Ethernet0 interface`. |
+| sonic_interconnects.unnumbered_interfaces                  |           | Connect with BGP unnumbered on these interfaces - also sets IPv6 options to make unnumbered work right.              |
 | sonic_interconnects.peer_group                             |           | Put the neighbor in this peer group.                                                                                 |
 | sonic_interconnects.prefixlists                            |           | BGP Prefix Lists to configure.                                                                                       |
 | sonic_interconnects.remote_as                              |           | The AS of the BGP neighbor.                                                                                          |
@@ -62,3 +63,5 @@ Deploys a sonic switch.
 | sonic_interconnects.vni                                    |           | This BGP session will connect the specified VNI within the CLOS topology with the given peer.                        |
 | sonic_interconnects.vrf                                    |           | Use a dedicated BGP session fenced with an VRF for this connection. Also it declares the virtual network as layer-3. |
 | sonic_ssh_sourceranges                                     |           | The source ranges from which the switch should be reachable over SSH on its prod (non-management) addresses          |
+| sonic_extended_cacl.ipv4                                   |           | Iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
+| sonic_extended_cacl.ipv6                                   |           | Iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |

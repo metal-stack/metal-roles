@@ -32,6 +32,8 @@ INTERFACE:
   Ethernet0:
     vrf_name: "VrfMpls"
   Ethernet0|10.0.0.2/32: {}
+  Ethernet3: {}
+  Ethernet3|10.1.2.2/30: {}
   Ethernet112:
     ipv6_use_link_local_only: enable
   Ethernet116:
@@ -55,6 +57,21 @@ PORT:
     admin_status: up
     speed: "10000"
     mtu: "1500"
+    fec: "none"
+  Ethernet1:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet2:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet3:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
     fec: "none"
   Ethernet112:
     alias: Eth29(Port29)

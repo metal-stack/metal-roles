@@ -126,7 +126,7 @@
   lineinfile:
     dest: /etc/hosts
     regexp: '.*\s{{ item }}$'
-    line: "{{ hostvars[item].ansible_host }} {{ item }}"
+    line: "{{ hostvars[item].ansible_host }} {{ item }} {{ hostvars[item].host_alias|default('') }}"
     owner: root
     group: root
     mode: 0644

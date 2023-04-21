@@ -13,6 +13,15 @@ sonic_ports:
     vrf: VrfMpls
     ips:
     - 10.0.0.2/32
+# Uplink for pxe VLAN
+Ethernet1:
+  speed: 10000
+Ethernet2:
+  speed: 10000
+Ethernet3:
+  speed: 10000
+  ips:
+  - 10.1.2.2/30
 # spine uplinks
   Ethernet112:
   Ethernet116:
@@ -62,6 +71,10 @@ sonic_vteps:
   vlan: 4000
   vni: 104000
 
+# Default route from PXE VLAN
+sonic_frr_static_routes:
+- "0.0.0.0/0 10.1.2.1"
+
 sonic_interconnects:
   mpls:
     neighbor_ip: 10.0.0.3
@@ -82,6 +95,39 @@ sonic_interconnects:
     prefixlists:
     - "ip prefix-list MPLS_PREFIX_IN seq 10 permit 10.0.0.0/8"
     - "ip prefix-list MPLS_PREFIX_IN seq 20 permit 100.100.0.0/16"
+  pxe:
+    peer_group: PXE
+    neighbors:
+    - "Ethernet1 interface"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE-IN
+      entries:
+      - "match ip address prefix-list PXE_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE-OUT
+      entries:
+      - "match ip address prefix-list PXE_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list PXE_PREFIX_IN seq 10 permit 0.0.0.0/0"
+    - "ip prefix-list PXE_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+  pxe2:
+    peer_group: PXE2
+    unnumbered_interfaces:
+    - "Ethernet2"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE2-IN
+      entries:
+      - "match ip address prefix-list PXE2_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE2-OUT
+      entries:
+      - "match ip address prefix-list PXE2_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list PXE2_PREFIX_IN seq 10 permit 0.0.0.0/0"
+    - "ip prefix-list PXE2_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+
 
 sonic_frr_l2vpn_evpn: true
 sonic_frr_route_map:

@@ -11,6 +11,20 @@
       - sonic_nameservers is defined
       - sonic_config_action in ['load', 'reload']
 
+# - name: Patch ssh service to run in the mgmt vrf
+#   blockinfile:
+#     path: /etc/systemd/system/ssh.service.d/override.conf
+#     insertafter: "ExecStartPre=.*"
+#     block: |
+#       ExecStart=
+#       ExecStart=/bin/ip vrf exec mgmt /usr/sbin/sshd -D $SSHD_OPTS
+#       [Unit]
+#       After=sonic.target
+#   when: sonic_mgmt_vrf
+#   notify:
+#   - reload systemd
+#   - restart ssh service
+
 - name: render resolv.conf
   template:
     src: resolv.conf.j2
@@ -41,8 +55,9 @@
     - bgp-validation@.service
     - frr-reload.service
 
+# Dependecies is returned by config.
 - name: Configure breakouts
-  command: "config interface breakout -y {{ item.key }} '{{ item.value }}'"
+  command: "config interface breakout --yes {{ item.key }} '{{ item.value }}'"
   register: breakout_result
   changed_when: "'Breakout process got successfully completed.' in breakout_result.stdout"
   failed_when: "breakout_result.rc != 0 or 'Dependecies Exist. No further action will be taken' in breakout_result.stdout"
@@ -97,6 +112,16 @@
   when: sonic_frr_render
   notify:
   - restart bgp
+
+- name: render iptables.json
+  template:
+    src: iptables.json.j2
+    dest: /etc/sonic/iptables.json
+  when: sonic_extended_cacl is defined
+  notify:
+  - restart caclmgrd
+
+- import_tasks: remove-neighbors.yaml
 
 - name: Flush handlers
   meta: flush_handlers

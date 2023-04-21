@@ -42,6 +42,8 @@ metal_stack_release:
     headscale_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     headscale_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     # gardener
+    firewall_controller_manager_image_tag: "docker-images.metal-stack.gardener.firewall-controller-manager.tag"
+    firewall_controller_manager_image_name: "docker-images.metal-stack.gardener.firewall-controller-manager.name"
     gardener_extension_provider_metal_image_tag: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.tag"
     gardener_extension_provider_metal_image_name: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.name"
     gardener_extension_provider_metal_repo_url: "docker-images.metal-stack.gardener.gardener-extension-provider-metal.repository"
@@ -85,6 +87,8 @@ metal_stack_release:
     image_cache_coredns_image_name: "docker-images.third-party.partition.image-cache-coredns.name"
     image_cache_haproxy_image_tag: "docker-images.third-party.partition.image-cache-haproxy.tag"
     image_cache_haproxy_image_name: "docker-images.third-party.partition.image-cache-haproxy.name"
+    ztp_nginx_image_tag: "docker-images.third-party.partition.ztp-nginx.tag"
+    ztp_nginx_image_name: "docker-images.third-party.partition.ztp-nginx.name"
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
@@ -97,3 +101,5 @@ metal_stack_release:
     webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"
     metal_auditing_meili_chart_repo: "helm-charts.third-party.meilisearch.repository"
     metal_auditing_meili_chart_version: "helm-charts.third-party.meilisearch.version"
+    metal_auditing_meili_image_name: "helm-charts.third-party.meilisearch.image_name"
+    metal_auditing_meili_image_tag: "helm-charts.third-party.meilisearch.image_tag"

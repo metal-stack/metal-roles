@@ -1,0 +1,39 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - ( sonic_upgrade_host is defined and sonic_upgrade_image_path is not defined ) or (sonic_upgrade_host is not defined and sonic_upgrade_image_path is defined)
+      - sonic_upgrade_image is defined
+
+
+- name: Download the new sonic image
+  command: ip vrf exec {{ sonic_upgrade_vrf|default("mgmt") }} wget {{ sonic_upgrade_protocol|default("http") }}://{{ sonic_upgrade_host }}:{{ sonic_upgrade_port|default("80") }}/{{ sonic_upgrade_image }} -O /{{ sonic_upgrade_image }}
+  when: sonic_upgrade_host is defined and sonic_upgrade_image_path is not defined
+
+- name: Push the new sonic image to the device
+  copy:
+    src: "{{ sonic_upgrade_image_path }}/{{ sonic_upgrade_image }}"
+    dest: "/{{ sonic_upgrade_image }}"
+  when: sonic_upgrade_host is not defined and sonic_upgrade_image_path is defined
+
+- name: Install new sonic image
+  command: "sonic-installer install -y --skip_migration --skip-package-migration /{{ sonic_upgrade_image }}"
+
+- name: Reboot the system to complete the upgrade
+  reboot:
+
+- name: Wait until sonic has become ready
+  shell: "show system status"
+  register: result
+  until: result is not failed
+  retries: 30
+  delay: 20
+
+- name: Extra delay to be extra safe
+  wait_for:
+    timeout: 60
+
+- name: clean up images
+  command: sonic-installer cleanup -y

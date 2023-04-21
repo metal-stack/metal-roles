@@ -15,13 +15,19 @@ subnet {{ subnet.network }} netmask {{ subnet.netmask }} {
   range {{ subnet.range.begin }} {{ subnet.range.end }};
 {% endif %}
 {% for option in subnet.options | default([]) %}
-  {{ option }}
+  option {{ option }};
+{% endfor %}
+{% for deny in subnet.deny_list | default([]) %}
+  deny {{ deny }};
 {% endfor %}
 }
 {% endfor %}
 
 {% for option in dhcp_global_options %}
-{{ option }}
+option {{ option }};
+{% endfor %}
+{% for deny in dhcp_global_deny_list %}
+  deny {{ deny }};
 {% endfor %}
 
 {% if dhcp_static_hosts is defined %}
