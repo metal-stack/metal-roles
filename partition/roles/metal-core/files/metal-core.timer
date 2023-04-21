@@ -1,9 +1,0 @@
-[Unit]
-Description=Delays startup of metal-core until SONiC has started properly
-
-[Timer]
-OnUnitActiveSec=0 sec
-OnBootSec=3min 30 sec
-
-[Install]
-WantedBy=timers.target
