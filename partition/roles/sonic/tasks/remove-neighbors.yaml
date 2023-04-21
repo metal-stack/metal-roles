@@ -1,6 +1,6 @@
 - name: Install service remove-neighbors
   ansible.builtin.template:
-    src: remove-neighbors@.service.js
+    src: remove-neighbors@.service.j2
     dest: /etc/systemd/system/remove-neighbors@.service
   notify: reload systemd
 
