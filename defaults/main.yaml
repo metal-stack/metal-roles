@@ -101,3 +101,5 @@ metal_stack_release:
     webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"
     metal_auditing_meili_chart_repo: "helm-charts.third-party.meilisearch.repository"
     metal_auditing_meili_chart_version: "helm-charts.third-party.meilisearch.version"
+    metal_auditing_meili_image_name: "helm-charts.third-party.meilisearch.image_name"
+    metal_auditing_meili_image_tag: "helm-charts.third-party.meilisearch.image_tag"
