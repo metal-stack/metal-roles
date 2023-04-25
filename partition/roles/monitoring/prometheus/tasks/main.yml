@@ -37,7 +37,7 @@
 - name: generate node_exporter list
   set_fact:
     node_targets: "{{ node_targets|default([]) + [metal_partition_id+'-'+item+':9100'] }} "
-  with_inventory_hostname: "{node_exporter_inventory_list}"
+  with_inventory_hostnames: "{node_exporter_inventory_list}"
 
 - name: create node.json
   copy:
