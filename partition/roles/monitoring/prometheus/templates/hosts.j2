@@ -1,0 +1,49 @@
+# management servers
+# use switch_mgmt_ip (ansible_host is an internet-ip)
+{% for host in groups['mgmt_servers'] %}
+{% if hostvars[host].ansible_host is defined %}
+{{ hostvars[host].switch_mgmt_ip }} {{ metal_partition_id }}-{{ hostvars[host].inventory_hostname }}
+{% endif %}
+{% endfor %}
+
+# leaves
+{% for host in groups['leaves'] %}
+{% if hostvars[host].ansible_host is defined %}
+{{ hostvars[host].ansible_host }} {{ metal_partition_id }}-{{ hostvars[host].inventory_hostname }}
+{% endif %}
+{% endfor %}
+
+# spines
+{% for host in groups['spines'] %}
+{% if hostvars[host].ansible_host is defined %}
+{{ hostvars[host].ansible_host }} {{ metal_partition_id }}-{{ hostvars[host].inventory_hostname }}
+{% endif %}
+{% endfor %}
+
+# exits
+{% for host in groups['exits'] %}
+{% if hostvars[host].ansible_host is defined %}
+{{ hostvars[host].ansible_host }} {{ metal_partition_id }}-{{ hostvars[host].inventory_hostname }}
+{% endif %}
+{% endfor %}
+
+# mgmt_switches
+{% for host in groups['mgmt_switches'] %}
+{% if hostvars[host].ansible_host is defined %}
+{{ hostvars[host].ansible_host }} {{ metal_partition_id }}-{{ hostvars[host].inventory_hostname }}
+{% endif %}
+{% endfor %}
+
+# mgmt_firewalls
+{% for host in groups['mgmt_firewalls'] %}
+{% if hostvars[host].ansible_host is defined %}
+{{ hostvars[host].ansible_host }} {{ metal_partition_id }}-{{ hostvars[host].inventory_hostname }}
+{% endif %}
+{% endfor %}
+
+# storage nodes
+{% for h in monitoring_lightbox_exporter_targets %}
+{% if h.name is defined and h.address is defined %}
+{{ h.address }} {{ metal_partition_id }}-{{ h.name }}
+{% endif %}
+{% endfor %}

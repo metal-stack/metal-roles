@@ -1,0 +1,139 @@
+---
+- name: create prometheus directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "nobody"
+    group: "nogroup"
+    mode: "0755"
+  loop:
+    - "{{ prometheus_etc_host_dir }}"
+    - "{{ prometheus_etc_host_dir }}/prometheus"
+    - "{{ prometheus_etc_host_dir }}/prometheus/jobs"
+    - "{{ prometheus_data_host_dir }}"
+
+- name: generate /etc/hosts
+  template:
+   src: hosts.j2
+   dest: "{{ prometheus_etc_host_dir }}/hosts"
+
+- name: generate prometheus.yml
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/prometheus.yml"
+  notify: restart prometheus
+
+- name: generate metal-core list
+  set_fact:
+    prometheus_metal_core_targets: "{{ prometheus_metal_core_targets|default([]) + [metal_partition_id+'-'+item+':2112'] }} "
+  with_inventory_hostnames: "{metal_core_inventory_list}"
+
+- name: create metal-core.json
+  copy:
+    content: '[{{metal_core_def|combine({label|default("targets"):prometheus_metal_core_targets}) | to_nice_json }}]'
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/metal-core.json"
+  notify: restart prometheus
+
+- name: generate node_exporter list
+  set_fact:
+    node_targets: "{{ node_targets|default([]) + [metal_partition_id+'-'+item+':9100'] }} "
+  with_inventory_hostname: "{node_exporter_inventory_list}"
+
+- name: create node.json
+  copy:
+    content: '[{{node_def|combine({label|default("targets"):node_targets}) | to_nice_json }}]'
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/node.json"
+  notify: restart prometheus
+
+- name: generate blackbox_exporter list
+  set_fact:
+    ping_targets: "{{ ping_targets|default([]) + [metal_partition_id+'-'+item] }} "
+  with_inventory_hostnames: "{blackbox_exporter_inventory_list}"
+
+- name: generate blackbox_exporter list (firewall)
+  set_fact:
+    ping_targets: "{{ ping_targets|default([]) + [metal_partition_id+'-'+item] }} "
+  when: hostvars[item].scrape_source == inventory_hostname
+  with_inventory_hostnames: "{blackbox_exporter_firewall_inventory_list}"
+
+- name: create ping.json
+  copy:
+    content: '[{{ping_def|combine({label|default("targets"):ping_targets}) | to_nice_json }}]'
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/ping.json"
+  notify: restart prometheus
+
+- name: generate frr_exporter list
+  set_fact:
+    frr_targets: "{{ frr_targets|default([]) + [metal_partition_id+'-'+item+':9342'] }} "
+  with_inventory_hostnames: "{frr_exporter_inventory_list}"
+
+- name: create frr.json
+  copy:
+    content: '[{{frr_def|combine({label|default("targets"):frr_targets}) | to_nice_json }}]'
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/frr.json"
+  notify: restart prometheus
+
+- name: list dhcp leases
+  shell: dhcp-lease-list --parsable 2>/dev/null | grep -oE "([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})" | sort
+  register: dhcp_leases
+
+- name: generate ipmi_exporter list
+  set_fact:
+    ipmi_targets: "{{ ipmi_targets|default([]) + [item] }} "
+  loop: "{{ dhcp_leases.stdout_lines }}"
+
+- name: create ipmi.json
+  copy:
+    content: '[{{ipmi_def|combine({label|default("targets"):ipmi_targets|default([])}) | to_nice_json }}]'
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/ipmi.json"
+  notify: restart prometheus
+
+- name: generate promtail list
+  set_fact:
+    promtail_targets: "{{ promtail_targets|default([]) + [metal_partition_id+'-'+item+':9080'] }} "
+  with_inventory_hostnames: "{promtail_inventory_list}"
+
+- name: create promtail.json
+  copy:
+    content: '[{{promtail_def|combine({label|default("targets"):promtail_targets}) | to_nice_json }}]'
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/promtail.json"
+  notify: restart prometheus
+
+- name: copy notification rules
+  copy:
+    src: files/rules/
+    dest: "{{ prometheus_etc_host_dir }}/prometheus/rules/"
+  notify: restart prometheus
+
+- name: deploy prometheus service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: prometheus
+    systemd_docker_image_name: "{{ prometheus_image_name }}"
+    systemd_docker_image_tag: "{{ prometheus_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_volumes:
+      - "{{ prometheus_etc_host_dir }}/prometheus://etc/prometheus"
+      - "{{ prometheus_etc_host_dir }}/hosts://etc/hosts"
+      - "{{ prometheus_data_host_dir }}:/prometheus"
+    systemd_docker_ports:
+      - host_port: "{{ prometheus_port }}"
+        target_port: "{{ prometheus_port }}"
+    systemd_docker_command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.enable-lifecycle
+      - --storage.tsdb.retention.time=6h
+      - --storage.tsdb.no-lockfile
+      - --storage.tsdb.min-block-duration=2h
+      - --storage.tsdb.max-block-duration=2h
+
+- name: wait for prometheus to listen on port
+  wait_for:
+    port: "{{ prometheus_port }}"
+    timeout: 300
+    msg: "prometheus did not come up"
