@@ -1,0 +1,211 @@
+
+# global config
+global:
+  scrape_interval:     30s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 30s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  scrape_timeout: 15s
+  external_labels:
+    partition: '{{ metal_partition_id }}'
+    replica: '{{ metal_partition_id }}-{{ inventory_hostname }}'
+
+# Alertmanager configuration
+alerting:
+  alert_relabel_configs:
+  - source_labels: [replica]
+    regex: (.+)-.+
+    target_label: replica
+  - source_labels: [mc_tool_rule]
+    target_label: mc_tool_rule
+    regex: ()
+  - source_labels: [tenant]
+    target_label: tenant
+    regex: ()
+    replacement: "CN"
+  alertmanagers:
+  - basic_auth:
+      password: {{ monitoring_grafana_admin_password }}
+      username: admin
+    scheme: https
+    static_configs:
+    - targets:
+      - alerts.{{ cp_domain }}:443
+
+# Remote write to thanos-receiver
+remote_write:
+- url: https://thanos-receiver.{{ cp_domain }}/api/v1/receive
+  remote_timeout: 30s
+  basic_auth:
+    username: admin
+    password: {{ monitoring_grafana_admin_password }}
+
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+- /etc/prometheus/rules/*.yaml
+
+
+# A scrape configuration containing exactly one endpoint to scrape:
+scrape_configs:
+- job_name: 'node-exporter'
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/jobs/node.json'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: frr
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/jobs/frr.json'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: metal-core
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/jobs/metal-core.json'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: pixiecore
+  static_configs:
+    - targets:
+      - '{{ metal_partition_id }}-{{ inventory_hostname }}:2113'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: promtail
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/jobs/promtail.json'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: 'ping'
+  metrics_path: /probe
+  params:
+    module: [ping]
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/jobs/ping.json'
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 172.17.0.1:9115  # The blackbox exporter's real hostname:port.
+
+- job_name: 'ipmi'
+  metrics_path: /ipmi
+  params:
+    module: [default]
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/jobs/ipmi.json'
+    refresh_interval: 5m
+  relabel_configs:
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*)
+    target_label: __param_target
+    replacement: ${1}
+    action: replace
+  - source_labels: [__param_target]
+    separator: ;
+    regex: (.*)
+    target_label: instance
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: .*
+    target_label: __address__
+    replacement: 172.17.0.1:9290
+    action: replace
+
+- job_name: 'tcp_connect'
+  metrics_path: /probe
+  scrape_interval: 10s
+  params:
+    module: [tcp_connect]
+  static_configs:
+    - targets:
+      - dex.fi-ts.io:443
+      - registry.fi-ts.io:443
+      - 'loki.{{ cp_domain }}:443'
+      - 'api.{{ cp_domain }}:443'
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 172.17.0.1:9115
+
+- job_name: 'https'
+  metrics_path: /probe
+  scrape_interval: 10s
+  params:
+    module: [https_2xx]
+  static_configs:
+    - targets:
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 172.17.0.1:9115
+
+- job_name: 'https_critical'
+  metrics_path: /probe
+  scrape_interval: 10s
+  params:
+    module: [https_2xx]
+  static_configs:
+    - targets:
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 172.17.0.1:9115
+
+- job_name: 'haproxy'
+  metrics_path: /metrics
+  static_configs:
+  - targets: ['172.17.0.1:65534']
+
+- job_name: 'lightbox-exporter'
+  metrics_path: /metrics
+  scrape_timeout: 25s
+  scrape_interval: 30s
+  honor_timestamps: True
+  static_configs:
+  - targets:
+
+- job_name: 'internet_uplink'
+  metrics_path: /probe
+  params:
+    module: [ping]
+  static_configs:
+    - targets:
+      - 8.8.8.8
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 172.17.0.1:9115  # The blackbox exporter's real hostname:port.
