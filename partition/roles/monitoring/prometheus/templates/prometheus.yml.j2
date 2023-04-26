@@ -21,23 +21,15 @@ alerting:
     target_label: tenant
     regex: ()
     replacement: "CN"
+  {% prometheus_alertmanagers|length %}
   alertmanagers:
-  - basic_auth:
-      password: {{ monitoring_grafana_admin_password }}
-      username: admin
-    scheme: https
-    static_configs:
-    - targets:
-      - alerts.{{ cp_domain }}:443
+  {{ prometheus_alertmanagers | to_yaml(indent=2) }}
+  {% endif %}
 
-# Remote write to thanos-receiver
+{% prometheus_remote_write %}
 remote_write:
-- url: https://thanos-receiver.{{ cp_domain }}/api/v1/receive
-  remote_timeout: 30s
-  basic_auth:
-    username: admin
-    password: {{ monitoring_grafana_admin_password }}
-
+{{ prometheus_remote_write | to_yaml }}
+{% endif %}
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
@@ -49,7 +41,7 @@ scrape_configs:
 - job_name: 'node-exporter'
   file_sd_configs:
   - files:
-    - '/etc/prometheus/jobs/node.json'
+    - '/etc/prometheus/file_sd/node-exporter.yml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -58,7 +50,7 @@ scrape_configs:
 - job_name: frr
   file_sd_configs:
   - files:
-    - '/etc/prometheus/jobs/frr.json'
+    - '/etc/prometheus/file_sd/frr-exporter.yml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -67,7 +59,7 @@ scrape_configs:
 - job_name: metal-core
   file_sd_configs:
   - files:
-    - '/etc/prometheus/jobs/metal-core.json'
+    - '/etc/prometheus/file_sd/metal-core.yml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -85,7 +77,7 @@ scrape_configs:
 - job_name: promtail
   file_sd_configs:
   - files:
-    - '/etc/prometheus/jobs/promtail.json'
+    - '/etc/prometheus/file_sd/promtail.json'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -97,7 +89,7 @@ scrape_configs:
     module: [ping]
   file_sd_configs:
   - files:
-    - '/etc/prometheus/jobs/ping.json'
+    - '/etc/prometheus/file_sd/ping.json'
   relabel_configs:
     - source_labels: [__address__]
       target_label: __param_target
@@ -112,7 +104,7 @@ scrape_configs:
     module: [default]
   file_sd_configs:
   - files:
-    - '/etc/prometheus/jobs/ipmi.json'
+    - '/etc/prometheus/file_sd/ipmi.yml'
     refresh_interval: 5m
   relabel_configs:
   - source_labels: [__address__]
@@ -138,12 +130,9 @@ scrape_configs:
   scrape_interval: 10s
   params:
     module: [tcp_connect]
-  static_configs:
-    - targets:
-      - dex.fi-ts.io:443
-      - registry.fi-ts.io:443
-      - 'loki.{{ cp_domain }}:443'
-      - 'api.{{ cp_domain }}:443'
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/tcp-connect.yml'
   relabel_configs:
     - source_labels: [__address__]
       target_label: __param_target

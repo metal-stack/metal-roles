@@ -7,102 +7,125 @@
     group: "nogroup"
     mode: "0755"
   loop:
-    - "{{ prometheus_etc_host_dir }}"
-    - "{{ prometheus_etc_host_dir }}/prometheus"
-    - "{{ prometheus_etc_host_dir }}/prometheus/jobs"
+    - "{{ prometheus_config_host_dir }}"
+    - "{{ prometheus_config_host_dir }}/file_sd"
     - "{{ prometheus_data_host_dir }}"
 
 - name: generate /etc/hosts
   template:
    src: hosts.j2
-   dest: "{{ prometheus_etc_host_dir }}/hosts"
+   dest: "{{ prometheus_config_host_dir }}/hosts"
 
 - name: generate prometheus.yml
   template:
     src: prometheus.yml.j2
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/prometheus.yml"
+    dest: "{{ prometheus_config_host_dir }}/prometheus.yml"
   notify: restart prometheus
 
-- name: generate metal-core list
+- name: generate prometheus_metal_core_sd
   set_fact:
-    prometheus_metal_core_targets: "{{ prometheus_metal_core_targets|default([]) + [item+':2112'] }} "
-  with_inventory_hostnames: "{metal_core_inventory_list}"
+    prometheus_metal_core_sd:
+      labels:
+        job: metal-core
+      targets: "{{ prometheus_metal_core_targets }}"
 
-- name: create metal-core.json
+- name: create metal-core.yml
   copy:
-    content: '[{{metal_core_def|combine({label|default("targets"):prometheus_metal_core_targets}) | to_nice_json }}]'
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/metal-core.json"
+    content: '{{ prometheus_metal_core_sd | to_nice_yaml(indent=2) }}]'
+    dest: "{{ prometheus_config_host_dir }}/file_sd/metal-core.yml"
   notify: restart prometheus
 
-- name: generate node_exporter list
+- name: generate prometheus_node_exporter_sd
   set_fact:
-    node_targets: "{{ node_targets|default([]) + [item+':9100'] }} "
-  with_inventory_hostnames: "{node_exporter_inventory_list}"
+    prometheus_node_exporter_sd:
+      labels:
+        job: node-exporter
+      targets: "{{ prometheus_node_exporter_targets }}"
 
-- name: create node.json
+- name: create node-exporter.yml
   copy:
-    content: '[{{node_def|combine({label|default("targets"):node_targets}) | to_nice_json }}]'
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/node.json"
+    content: '{{ prometheus_node_exporter_sd | to_nice_yaml(indent=2) }}'
+    dest: "{{ prometheus_config_host_dir }}/file_sd/node-exporter.yml"
   notify: restart prometheus
 
-- name: generate blackbox_exporter list
+- name: generate prometheus_ping_sd
   set_fact:
-    ping_targets: "{{ ping_targets|default([]) + [item] }} "
-  with_inventory_hostnames: "{blackbox_exporter_inventory_list}"
+    prometheus_ping_sd:
+      labels:
+        job: ping
+      targets: "{{ prometheus_ping_targets }}"
 
-- name: generate blackbox_exporter list (firewall)
-  set_fact:
-    ping_targets: "{{ ping_targets|default([]) + [item] }} "
-  when: hostvars[item].scrape_source == inventory_hostname
-  with_inventory_hostnames: "{blackbox_exporter_firewall_inventory_list}"
-
-- name: create ping.json
+- name: create ping.yml
   copy:
-    content: '[{{ping_def|combine({label|default("targets"):ping_targets}) | to_nice_json }}]'
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/ping.json"
+    content: '{{ prometheus_ping_sd | to_nice_yaml(indent=2) }}'
+    dest: "{{ prometheus_config_host_dir }}/file_sd/ping.yml"
   notify: restart prometheus
 
-- name: generate frr_exporter list
+- name: generate prometheus_frr_exporter_sd
   set_fact:
-    frr_targets: "{{ frr_targets|default([]) + [item+':9342'] }} "
-  with_inventory_hostnames: "{frr_exporter_inventory_list}"
+    prometheus_frr_exporter_sd:
+      labels:
+        job: frr
+      targets: "{{ prometheus_frr_exporter_targets }}"
 
-- name: create frr.json
+- name: create frr-exporter.yml
   copy:
-    content: '[{{frr_def|combine({label|default("targets"):frr_targets}) | to_nice_json }}]'
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/frr.json"
+    content: '{{ prometheus_frr_exporter_sd | to_nice_yaml(indent=2) }}'
+    dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yml"
   notify: restart prometheus
 
-- name: list dhcp leases
+- name: get dhcp leases
   shell: dhcp-lease-list --parsable 2>/dev/null | grep -oE "([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})" | sort
-  register: dhcp_leases
+  register: prometheus_dhcp_leases
 
-- name: generate ipmi_exporter list
+- name: generate prometheus_ipmi_exporter_targets
   set_fact:
-    ipmi_targets: "{{ ipmi_targets|default([]) + [item] }} "
-  loop: "{{ dhcp_leases.stdout_lines }}"
+    prometheus_ipmi_exporter_targets: "{{ prometheus_ipmi_exporter_targets|default([]) + [item] }} "
+  loop: "{{ prometheus_dhcp_leases.stdout_lines }}"
 
-- name: create ipmi.json
+- name: generate prometheus_ipmi_exporter_targets_sd
+  set_fact:
+    prometheus_ipmi_exporter_targets_sd:
+      labels:
+        job: ipmi
+      targets: "{{ prometheus_ipmi_exporter_targets }}"
+
+- name: create ipmi.yml
   copy:
-    content: '[{{ipmi_def|combine({label|default("targets"):ipmi_targets|default([])}) | to_nice_json }}]'
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/ipmi.json"
+    content: '{{ prometheus_ipmi_exporter_targets_sd | to_nice_yaml(indent=2) }}'
+    dest: "{{ prometheus_config_host_dir }}/file_sd/ipmi.yml"
   notify: restart prometheus
 
-- name: generate promtail list
+- name: generate prometheus_promtail_sd
   set_fact:
-    promtail_targets: "{{ promtail_targets|default([]) + [item+':9080'] }} "
-  with_inventory_hostnames: "{promtail_inventory_list}"
+    prometheus_promtail_sd:
+      labels:
+        job: frr
+      targets: "{{ prometheus_promtail_targets }}"
 
-- name: create promtail.json
+- name: create promtail.yml
   copy:
-    content: '[{{promtail_def|combine({label|default("targets"):promtail_targets}) | to_nice_json }}]'
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/jobs/promtail.json"
+    content: '{{ prometheus_promtail_sd | to_nice_yaml(indent=2) }}'
+    dest: "{{ prometheus_config_host_dir }}/file_sd/promtail.yml"
+  notify: restart prometheus
+
+- name: generate prometheus_tcp_connect_sd
+  set_fact:
+    prometheus_tcp_connect_sd:
+      labels:
+        job: frr
+      targets: "{{ prometheus_tcp_connect_targets }}"
+
+- name: create tcp_connect.yml
+  copy:
+    content: '{{ prometheus_tcp_connect_sd | to_nice_yaml(indent=2) }}'
+    dest: "{{ prometheus_config_host_dir }}/file_sd/tcp-connect.yml"
   notify: restart prometheus
 
 - name: copy notification rules
   copy:
     src: files/rules/
-    dest: "{{ prometheus_etc_host_dir }}/prometheus/rules/"
+    dest: "{{ prometheus_config_host_dir }}/rules/"
   notify: restart prometheus
 
 - name: deploy prometheus service
@@ -115,8 +138,8 @@
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
     systemd_docker_volumes:
-      - "{{ prometheus_etc_host_dir }}/prometheus://etc/prometheus"
-      - "{{ prometheus_etc_host_dir }}/hosts://etc/hosts"
+      - "{{ prometheus_config_host_dir }}:/etc/prometheus"
+      - "{{ prometheus_config_host_dir }}/hosts:/etc/hosts"
       - "{{ prometheus_data_host_dir }}:/prometheus"
     systemd_docker_ports:
       - host_port: "{{ prometheus_port }}"

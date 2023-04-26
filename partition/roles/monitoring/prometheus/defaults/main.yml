@@ -3,21 +3,15 @@ prometheus_image_name: prom/prometheus
 prometheus_image_tag: "v2.43.0"
 prometheus_port: 9090
 
-prometheus_host_dir_path: /prometheus
-prometheus_etc_host_dir: "{{ prometheus_host_dir_path }}/etc"
-prometheus_data_host_dir: "{{ prometheus_host_dir_path }}/data"
+prometheus_config_host_dir: /etc/prometheus
+prometheus_data_host_dir: /var/lib//prometheus
 
-ping_def: {labels: {job: ping}}
-node_def: {labels: {job: node-exporter}}
-frr_def: {labels: {job: frr}}
-ipmi_def: {labels: {job: ipmi}}
-metal_core_def: {labels: {job: metal-core}}
-pixiecore_def: {labels: {job: pixiecore}}
-promtail_def: {labels: {job: promtail}}
-monitoring_lightbox_exporter_targets: []
-frr_exporter_inventory_list: []
-blackbox_exporter_inventory_list: []
-blackbox_exporter_firewall_inventory_list: []
-node_exporter_inventory_list: []
-metal_core_inventory_list: []
-promtail_inventory_list: []
+prometheus_alertmanagers: []
+prometheus_remote_write: []
+
+prometheus_frr_exporter_targets: []
+prometheus_metal_core_targets: []
+prometheus_node_exporter_targets: []
+prometheus_promtail_targets: []
+prometheus_ping_targets: []
+prometheus_tcp_connect_targets: []
