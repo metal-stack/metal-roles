@@ -25,7 +25,7 @@
 
 - name: generate metal-core list
   set_fact:
-    prometheus_metal_core_targets: "{{ prometheus_metal_core_targets|default([]) + [metal_partition_id+'-'+item+':2112'] }} "
+    prometheus_metal_core_targets: "{{ prometheus_metal_core_targets|default([]) + [item+':2112'] }} "
   with_inventory_hostnames: "{metal_core_inventory_list}"
 
 - name: create metal-core.json
@@ -36,7 +36,7 @@
 
 - name: generate node_exporter list
   set_fact:
-    node_targets: "{{ node_targets|default([]) + [metal_partition_id+'-'+item+':9100'] }} "
+    node_targets: "{{ node_targets|default([]) + [item+':9100'] }} "
   with_inventory_hostnames: "{node_exporter_inventory_list}"
 
 - name: create node.json
@@ -47,12 +47,12 @@
 
 - name: generate blackbox_exporter list
   set_fact:
-    ping_targets: "{{ ping_targets|default([]) + [metal_partition_id+'-'+item] }} "
+    ping_targets: "{{ ping_targets|default([]) + [item] }} "
   with_inventory_hostnames: "{blackbox_exporter_inventory_list}"
 
 - name: generate blackbox_exporter list (firewall)
   set_fact:
-    ping_targets: "{{ ping_targets|default([]) + [metal_partition_id+'-'+item] }} "
+    ping_targets: "{{ ping_targets|default([]) + [item] }} "
   when: hostvars[item].scrape_source == inventory_hostname
   with_inventory_hostnames: "{blackbox_exporter_firewall_inventory_list}"
 
@@ -64,7 +64,7 @@
 
 - name: generate frr_exporter list
   set_fact:
-    frr_targets: "{{ frr_targets|default([]) + [metal_partition_id+'-'+item+':9342'] }} "
+    frr_targets: "{{ frr_targets|default([]) + [item+':9342'] }} "
   with_inventory_hostnames: "{frr_exporter_inventory_list}"
 
 - name: create frr.json
@@ -90,7 +90,7 @@
 
 - name: generate promtail list
   set_fact:
-    promtail_targets: "{{ promtail_targets|default([]) + [metal_partition_id+'-'+item+':9080'] }} "
+    promtail_targets: "{{ promtail_targets|default([]) + [item+':9080'] }} "
   with_inventory_hostnames: "{promtail_inventory_list}"
 
 - name: create promtail.json

@@ -6,7 +6,7 @@ global:
   scrape_timeout: 15s
   external_labels:
     partition: '{{ metal_partition_id }}'
-    replica: '{{ metal_partition_id }}-{{ inventory_hostname }}'
+    replica: '{{ inventory_hostname }}'
 
 # Alertmanager configuration
 alerting:
@@ -76,7 +76,7 @@ scrape_configs:
 - job_name: pixiecore
   static_configs:
     - targets:
-      - '{{ metal_partition_id }}-{{ inventory_hostname }}:2113'
+      - '{{ inventory_hostname }}:2113'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
