@@ -5,9 +5,26 @@
     validate_certs: false
     state: present
 
+- name: Check if apt-transport-https is installed
+  command: dpkg-query -W apt-transport-https
+  register: apt_transport_https_deb
+  failed_when: apt_transport_https_deb.rc > 1
+  changed_when: apt_transport_https_deb.rc == 1
+
+- name: Download apt-transport-https
+  get_url: 
+    url=http://ftp.de.debian.org/debian/pool/main/a/apt/apt-transport-https_1.4.10_amd64.deb
+    dest="/tmp/apt-transport-https_1.4.10_amd64.deb"
+  when: apt_transport_https_deb.rc == 1
+
+- name: Install my_package
+  apt: deb="/tmp/apt-transport-https_1.4.10_amd64.deb"
+  sudo: true
+  when: apt_transport_https_deb.rc == 1
+
 - name: ensure dependencies are installed
   apt:
-#    update_cache: yes
+    update_cache: yes
     name:
       - apt-transport-https
       - ca-certificates
