@@ -90,8 +90,8 @@ metal_stack_release:
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
-    logging_chart_version: "helm-charts.logging.loki-stack.version"
-    logging_chart_repo: "helm-charts.logging.loki-stack.repository"
+    logging_chart_version: "helm-charts.logging.loki.version"
+    logging_chart_repo: "helm-charts.logging.loki.repository"
     prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
     # monitoring

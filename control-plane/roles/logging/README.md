@@ -3,7 +3,7 @@
 This role is designed to set up logging using Ansible.
 The role includes tasks to install and configure the following logging tools:
 
-- Loki-stack
+- Loki
 - Logging ingress for Loki
 
 ## Variables

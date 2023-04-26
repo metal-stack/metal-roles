@@ -1,0 +1,74 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/log/promtail-positions.yaml
+
+clients:
+  - url: {{ promtail_loki_push_endpoint }}/loki/api/v1/push
+    timeout: 60s
+    basic_auth:
+      username: {{ promtail_loki_basic_auth_username }}
+      password: {{ promtail_loki_basic_auth_password }}
+
+{% if metal_stack_switch_os_is_sonic %}
+scrape_configs:
+- job_name: system
+  # pipeline_stages:
+  # - cri: {}
+  # - docker: {}
+  # - regex:
+  #     expression: "(?P<level>(INFO|WARNING|ERROR|info|warning|error))"
+  # - regex:
+  #     expression: "(lvl|level)=(?P<level>[a-zA-Z]+).*(logger|component)=(?P<component>[a-zA-Z]+)"
+  # - regex:
+  #     expression: "{{ metal_partition_id }}-{{ inventory_hostname }} (?P<component>[a-zA-Z_-]+)"
+  # - regex:
+  #     expression: "\"app\": \"(?P<component>[a-zA-Z_-]+)\""
+  # - regex:
+  #     expression: "\"machineID\": \"(?P<machineID>[0-9a-f-]+)\""
+  # - labels:
+  #     level:
+  #     component:
+  #     machineID:
+  # - metrics:
+  #     log_lines_total:
+  #       type: Counter
+  #       description: "total number of log lines"
+  #       source: component
+  #       config:
+  #         action: inc
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: varlogs
+      partition: '{{ metal_partition_id }}'
+      host: '{{ inventory_hostname }}'
+      devicetype: switch
+      __path__: /var/log/**/*log
+{% else %}
+scrape_configs:
+  - job_name: journal
+    journal:
+      max_age: 12h
+      path: /var/log/journal
+      labels:
+        job: systemd-journal
+        partition: '{{ metal_partition_id }}'
+        host: '{{ inventory_hostname }}'
+    pipeline_stages:
+    - regex:
+        expression: "(lvl|level)=(?P<level>[a-zA-Z]+).*(logger|component)=(?P<component>[a-zA-Z]+)"
+    - regex:
+        expression: "(?P<level>(INFO|WARNING|ERROR|info|warning|error))"
+    - regex:
+        expression: "{{ metal_partition_id }}-{{ inventory_hostname }} (?P<component>[a-zA-Z_-]+)"
+    - labels:
+        level:
+        component:
+    relabel_configs:
+      - source_labels: ['__journal__systemd_unit']
+        target_label: 'unit'
+{% endif %}

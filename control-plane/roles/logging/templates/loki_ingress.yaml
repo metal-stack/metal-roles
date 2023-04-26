@@ -41,6 +41,6 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: loki-stack
+            name: loki
             port:
               number: 3100
