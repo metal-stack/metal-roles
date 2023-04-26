@@ -25,7 +25,7 @@
 - name: generate prometheus_metal_core_sd
   set_fact:
     prometheus_metal_core_sd:
-      labels:
+    - labels:
         job: metal-core
       targets: "{{ prometheus_metal_core_targets }}"
 
@@ -38,7 +38,7 @@
 - name: generate prometheus_node_exporter_sd
   set_fact:
     prometheus_node_exporter_sd:
-      labels:
+    - labels:
         job: node-exporter
       targets: "{{ prometheus_node_exporter_targets }}"
 
@@ -51,7 +51,7 @@
 - name: generate prometheus_ping_sd
   set_fact:
     prometheus_ping_sd:
-      labels:
+    - labels:
         job: ping
       targets: "{{ prometheus_ping_targets }}"
 
@@ -64,7 +64,7 @@
 - name: generate prometheus_frr_exporter_sd
   set_fact:
     prometheus_frr_exporter_sd:
-      labels:
+    - labels:
         job: frr
       targets: "{{ prometheus_frr_exporter_targets }}"
 
@@ -86,7 +86,7 @@
 - name: generate prometheus_ipmi_exporter_targets_sd
   set_fact:
     prometheus_ipmi_exporter_targets_sd:
-      labels:
+    - labels:
         job: ipmi
       targets: "{{ prometheus_ipmi_exporter_targets }}"
 
@@ -99,7 +99,7 @@
 - name: generate prometheus_promtail_sd
   set_fact:
     prometheus_promtail_sd:
-      labels:
+    - labels:
         job: frr
       targets: "{{ prometheus_promtail_targets }}"
 
@@ -112,7 +112,7 @@
 - name: generate prometheus_tcp_connect_sd
   set_fact:
     prometheus_tcp_connect_sd:
-      labels:
+    - labels:
         job: frr
       targets: "{{ prometheus_tcp_connect_targets }}"
 
