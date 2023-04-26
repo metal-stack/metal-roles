@@ -31,7 +31,7 @@
 
 - name: create metal-core.yml
   copy:
-    content: '{{ prometheus_metal_core_sd | to_nice_yaml(indent=2) }}]'
+    content: '{{ prometheus_metal_core_sd | to_nice_yaml(indent=2) }}'
     dest: "{{ prometheus_config_host_dir }}/file_sd/metal-core.yml"
   notify: restart prometheus
 
