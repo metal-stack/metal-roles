@@ -1,4 +1,9 @@
 ---
+- name: update cumulus repo key
+  ansible.builtin.apt_key:
+  url: http://repo3.cumulusnetworks.com/public-key/repo3-2023-key
+  state: present
+
 - name: ensure dependencies are installed
   apt:
     update_cache: yes
