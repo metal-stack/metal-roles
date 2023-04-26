@@ -20,8 +20,7 @@
 - name: Install apt-transport-https
   apt: 
     deb: "/tmp/apt-transport-https_1.4.10_amd64.deb"
-    sudo: true
-    when: apt_transport_https_deb.rc == 1
+  when: apt_transport_https_deb.rc == 1
 
 - name: ensure dependencies are installed
   apt:
