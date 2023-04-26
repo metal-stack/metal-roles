@@ -21,12 +21,12 @@ alerting:
     target_label: tenant
     regex: ()
     replacement: "CN"
-  {% prometheus_alertmanagers|length %}
+  {% if prometheus_alertmanagers|length %}
   alertmanagers:
   {{ prometheus_alertmanagers|to_yaml(indent=2) }}
   {% endif %}
 
-{% prometheus_remote_write %}
+{% if prometheus_remote_write %}
 remote_write:
 {{ prometheus_remote_write|to_yaml(indent=2) }}
 {% endif %}
