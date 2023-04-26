@@ -12,8 +12,8 @@
     - "{{ prometheus_data_host_dir }}"
 
 - name: generate /etc/hosts
-  template:
-   src: hosts.j2
+  copy:
+   content: "{{ prometheus_hosts_content }}"
    dest: "{{ prometheus_config_host_dir }}/hosts"
 
 - name: generate prometheus.yml

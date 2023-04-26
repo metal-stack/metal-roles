@@ -15,3 +15,7 @@ prometheus_node_exporter_targets: []
 prometheus_promtail_targets: []
 prometheus_ping_targets: []
 prometheus_tcp_connect_targets: []
+
+prometheus_hosts_content: |
+  127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+  ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
