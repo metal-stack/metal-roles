@@ -91,7 +91,5 @@
   notify:
   - restart caclmgrd
 
-- import_tasks: remove-neighbors.yaml
-
 - name: Flush handlers
   meta: flush_handlers
