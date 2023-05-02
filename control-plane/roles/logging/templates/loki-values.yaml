@@ -43,24 +43,23 @@ loki:
         directory: /tmp/loki/rules
 
 gateway:
-  ingress:
-    enabled: true
-    ingressClassName: "nginx"
-    annotations:
+  enabled: false
+
+ingress:
+  enabled: true
+  ingressClassName: "nginx"
+  annotations:
 {% for key, value in logging_ingress_annotations.items() %}
-      {{ key }}: "{{ value }}"
+    {{ key }}: "{{ value }}"
 {% endfor %}
 {% if logging_ingress_loki_basic_auth %}
-      nginx.ingress.kubernetes.io/auth-type: basic
-      nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
 {% endif %}
-    hosts:
-    - host: {{ logging_ingress_dns }}
-      paths:
-        - path: /
-          pathType: Prefix
+  hosts:
+    - {{ logging_ingress_dns }}
 {% if logging_ingress_loki_tls %}
-    tls:
+  tls:
     - hosts:
       - {{ logging_ingress_dns }}
       secretName: monitoring-loki-ingress-tls
