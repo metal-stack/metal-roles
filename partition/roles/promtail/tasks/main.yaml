@@ -2,9 +2,6 @@
 - name: Gather release versions
   setup_yaml:
 
-- name: Gather switch facts
-  switch_facts:
-
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
@@ -15,7 +12,7 @@
       - promtail_loki_push_endpoint is not none
       - promtail_scrape_configs is defined and (promtail_scrape_configs|length>0)
 
-- name: create promtail config directory
+- name: Create promtail config directory
   file:
     path: "{{ promtail_config_host_dir }}"
     state: directory
@@ -23,13 +20,13 @@
     group: "nogroup"
     mode: "0755"
 
-- name: template promtail configuration file
+- name: Template promtail configuration file
   template:
     src: promtail.yaml.j2
     dest: "{{ promtail_config_host_dir }}/promtail.yaml"
   notify: restart promtail
 
-- name: deploy promtail service
+- name: Deploy promtail service
   include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
