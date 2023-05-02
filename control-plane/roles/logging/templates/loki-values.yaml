@@ -1,15 +1,4 @@
 ---
-grafana:
-  enabled: false
-
-# write:
-#   replicas: 1
-#   affinity: ""
-
-# read:
-#   replicas: 1
-#   affinity: ""
-
 singleBinary:
   replicas: 1
   persistence:
