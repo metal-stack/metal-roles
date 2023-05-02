@@ -2,6 +2,9 @@
 - name: Gather release versions
   setup_yaml:
 
+- name: Gather switch facts
+  switch_facts:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
@@ -11,24 +14,18 @@
       - promtail_image_name is defined
       - promtail_loki_push_endpoint is not none
 
-- name: Gather switch facts
-  switch_facts:
-
-- name: create promtail directories
+- name: create promtail config directory
   file:
-    path: "{{ item }}"
+    path: "{{ promtail_config_host_dir }}"
     state: directory
     owner: "nobody"
     group: "nogroup"
     mode: "0755"
-  loop:
-    - "{{ promtail_etc_host_dir }}"
-    - "{{ promtail_etc_host_dir }}/promtail"
 
 - name: template promtail configuration file
   template:
     src: promtail.yaml.j2
-    dest: "{{ promtail_etc_host_dir }}/promtail/promtail.yaml"
+    dest: "{{ promtail_config_host_dir }}/promtail.yaml"
   notify: restart promtail
 
 - name: deploy promtail service
@@ -42,7 +39,7 @@
     systemd_service_requires: docker.service
     systemd_docker_network: host
     systemd_docker_volumes:
-      - "{{ promtail_etc_host_dir }}/promtail:/etc/promtail:ro"
+      - "{{ promtail_config_host_dir }}:/etc/promtail:ro"
       - "/var/log:/var/log"
     systemd_docker_command:
       - -config.file=/etc/promtail/promtail.yaml
