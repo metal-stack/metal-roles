@@ -1,0 +1,6 @@
+---
+promtail_host_dir_path: /promtail
+promtail_etc_host_dir: "{{ promtail_host_dir_path }}/etc"
+promtail_data_host_dir: "{{ promtail_host_dir_path }}/data"
+
+promtail_loki_push_endpoint:
