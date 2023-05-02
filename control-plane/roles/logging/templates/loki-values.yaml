@@ -54,13 +54,13 @@ gateway:
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
 {% endif %}
-  hosts:
+    hosts:
     - host: {{ logging_ingress_dns }}
       paths:
         - path: /
           pathType: Prefix
 {% if logging_ingress_loki_tls %}
-  tls:
+    tls:
     - hosts:
       - {{ logging_ingress_dns }}
       secretName: monitoring-loki-ingress-tls
