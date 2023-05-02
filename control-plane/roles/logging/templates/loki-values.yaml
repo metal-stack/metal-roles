@@ -58,6 +58,7 @@ gateway:
     - host: {{ logging_ingress_dns }}
       paths:
         - path: /
+          pathType: Prefix
 {% if logging_ingress_loki_tls %}
   tls:
     - hosts:
