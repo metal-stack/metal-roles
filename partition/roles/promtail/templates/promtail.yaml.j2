@@ -6,7 +6,7 @@ positions:
   filename: /var/log/promtail-positions.yaml
 
 clients:
-  - url: {{ promtail_loki_push_endpoint }}/loki/api/v1/push
+  - url: {{ promtail_loki_push_endpoint }}
     timeout: 60s
     basic_auth:
       username: {{ promtail_loki_basic_auth_username }}
