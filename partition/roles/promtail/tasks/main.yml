@@ -1,9 +1,14 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - promtail_image_tag is defined
+      - promtail_image_name is defined
       - promtail_loki_push_endpoint is not none
 
 - name: Gather switch facts
