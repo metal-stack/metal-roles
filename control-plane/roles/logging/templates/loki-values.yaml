@@ -62,3 +62,12 @@ gateway:
       - {{ logging_ingress_dns }}
       secretName: monitoring-loki-ingress-tls
 {% endif %}
+
+extraObjects:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: loki-basic-auth
+    type: Opaque
+  data:
+    auth: "{{ logging_ingress_loki_basic_auth | b64encode }}"

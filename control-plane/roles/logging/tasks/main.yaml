@@ -12,20 +12,6 @@
         labels:
           name: "{{ logging_namespace }}"
 
-- name: Deploy basic auth secret for loki
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: loki-basic-auth
-      type: Opaque
-      data:
-        auth: "{{ logging_ingress_loki_basic_auth | b64encode }}"
-    namespace: "{{ logging_namespace }}"
-    apply: true
-  when: logging_ingress_loki_basic_auth
-
 - name: Deploy loki
   include_role:
     name: ansible-common/roles/helm-chart
