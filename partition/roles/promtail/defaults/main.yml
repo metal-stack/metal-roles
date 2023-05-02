@@ -1,8 +1,4 @@
 ---
-# TODO: move to release vector
-promtail_image_name: "docker-images.third-party.partition.promtail.name"
-promtail_image_tag: "docker-images.third-party.partition.promtail.tag"
-
 promtail_host_dir_path: /promtail
 promtail_etc_host_dir: "{{ promtail_host_dir_path }}/etc"
 promtail_data_host_dir: "{{ promtail_host_dir_path }}/data"
