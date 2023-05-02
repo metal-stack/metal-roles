@@ -42,10 +42,11 @@ loki:
       local:
         directory: /tmp/loki/rules
 
-ingress:
-  enabled: true
-  ingressClassName: "nginx"
-  annotations:
+gateway:
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
 {% for key, value in logging_ingress_annotations.items() %}
       {{ key }}: "{{ value }}"
 {% endfor %}

@@ -22,5 +22,4 @@ The following variables can be set to configure the role:
 | logging_namespace                     |           | The deployment's target namespace                                         |
 | logging_ingress_dns                   |           | DNS for loki ingress                                                      |
 | logging_ingress_loki_tls              |           | If enabled, exposes loki through HTTPS on the ingress                     |
-| logging_ingress_loki_client_verify_ca |           | If enabled, verifies clients with the given CA certificate on the ingress |
 | logging_loki_size                     |           | The size of the volume that loki will use for storing logs                |
