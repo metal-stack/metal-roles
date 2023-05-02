@@ -89,6 +89,8 @@ metal_stack_release:
     image_cache_haproxy_image_name: "docker-images.third-party.partition.image-cache-haproxy.name"
     promtail_image_tag: "docker-images.third-party.partition.promtail.tag"
     promtail_image_name: "docker-images.third-party.partition.promtail.name"
+    ztp_nginx_image_tag: "docker-images.third-party.partition.ztp-nginx.tag"
+    ztp_nginx_image_name: "docker-images.third-party.partition.ztp-nginx.name"
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
@@ -101,3 +103,5 @@ metal_stack_release:
     webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"
     metal_auditing_meili_chart_repo: "helm-charts.third-party.meilisearch.repository"
     metal_auditing_meili_chart_version: "helm-charts.third-party.meilisearch.version"
+    metal_auditing_meili_image_name: "helm-charts.third-party.meilisearch.image_name"
+    metal_auditing_meili_image_tag: "helm-charts.third-party.meilisearch.image_tag"
