@@ -55,7 +55,9 @@ gateway:
       nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
 {% endif %}
   hosts:
-    - {{ logging_ingress_dns }}
+    - host: {{ logging_ingress_dns }}
+      paths:
+        - path: /
 {% if logging_ingress_loki_tls %}
   tls:
     - hosts:
