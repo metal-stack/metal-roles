@@ -1,0 +1,9 @@
+image:
+  registry:
+  repository: "{{ thanos_image_name }}"
+  tag: "{{ thanos_image_tag }}"
+
+query:
+  dnsDiscovery:
+    sidecarsService: kube-prometheus-stack-thanos-discovery
+    sidecarsNamespace: monitoring

@@ -20,6 +20,8 @@ prometheus:
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
       version: "{{ thanos_image_tag }}"
+  thanosService:
+    enabled: true
 
 grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
@@ -37,7 +39,6 @@ grafana:
         hosts:
         - {{ monitoring_grafana_ingress_dns }}
 {% endif %}
-
 {% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
     annotations:
 {% endif %}
@@ -50,6 +51,7 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+
 alertmanager:
   alertmanagerSpec:
     logLevel: debug
