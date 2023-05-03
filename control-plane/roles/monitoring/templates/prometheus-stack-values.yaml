@@ -11,15 +11,15 @@ prometheus:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-  thanos:
-    image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
-    version: "{{ thanos_image_tag }}"
 
-{% if monitoring_prometheus_image_tag is defined %}
   prometheusSpec:
+{% if monitoring_prometheus_image_tag is defined %}
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
+    thanos:
+      image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
+      version: "{{ thanos_image_tag }}"
 
 grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
