@@ -45,7 +45,7 @@
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "{{ thanos_repo }}"
+    helm_repo: "{{ thanos_chart_repo }}"
     helm_chart: thanos
     helm_target_namespace: "{{ monitoring_namespace }}"
     helm_release_name: thanos
