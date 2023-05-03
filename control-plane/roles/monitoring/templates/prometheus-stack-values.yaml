@@ -28,6 +28,9 @@ grafana:
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
   additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
+  sidecar:
+    datasources:
+      url: http://thanos-query-frontend:9090
   ingress:
     enabled: true
     ingressClassName: nginx
