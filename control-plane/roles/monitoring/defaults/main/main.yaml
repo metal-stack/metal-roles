@@ -37,3 +37,5 @@ monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28
 
 thanos_image_name: quay.io/thanos/thanos
 thanos_image_tag: v0.31.0
+
+prometheus_chart_version: 45.24.0
