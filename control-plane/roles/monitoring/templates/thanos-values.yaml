@@ -7,3 +7,14 @@ query:
   dnsDiscovery:
     sidecarsService: kube-prometheus-stack-thanos-discovery
     sidecarsNamespace: monitoring
+
+minio:
+  enabled: true
+  auth:
+    rootPassword: minio123
+    rootUser: minio
+  monitoringBuckets: thanos
+  accessKey:
+    password: minio
+  secretKey:
+    password: minio123
