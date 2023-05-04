@@ -3,11 +3,23 @@ image:
   repository: "{{ thanos_image_name }}"
   tag: "{{ thanos_image_tag }}"
 
+objstoreConfig: |-
+  type: s3
+  config:
+    bucket: thanos
+    endpoint: thanos-minio:9000
+    access_key: minio
+    secret_key: minio123
+    insecure: true
+
 query:
   dnsDiscovery:
     sidecarsService: kube-prometheus-stack-thanos-discovery
     sidecarsNamespace: monitoring
-
+compactor:
+  enabled: true
+storegateway:
+  enabled: true
 minio:
   enabled: true
   auth:
