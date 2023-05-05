@@ -12,19 +12,13 @@
         labels:
           name: "{{ logging_namespace }}"
 
-- name: Deploy loki-stack
+- name: Deploy loki
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
     helm_repo: "{{ logging_chart_repo }}"
-    helm_chart: loki-stack
+    helm_chart: loki
     helm_target_namespace: "{{ logging_namespace }}"
-    helm_release_name: loki-stack
+    helm_release_name: loki
     helm_chart_version: "{{ logging_chart_version }}"
-    helm_value_file_template: "loki-stack-values.yaml"
-
-- name: Create monitoring ingress for Loki
-  k8s:
-    definition: "{{ lookup('template', 'loki_ingress.yaml') }}"
-    namespace: "{{ logging_namespace }}"
-    apply: true
+    helm_value_file_template: "loki-values.yaml"

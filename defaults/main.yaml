@@ -87,6 +87,8 @@ metal_stack_release:
     image_cache_coredns_image_name: "docker-images.third-party.partition.image-cache-coredns.name"
     image_cache_haproxy_image_tag: "docker-images.third-party.partition.image-cache-haproxy.tag"
     image_cache_haproxy_image_name: "docker-images.third-party.partition.image-cache-haproxy.name"
+    promtail_image_tag: "docker-images.third-party.partition.promtail.tag"
+    promtail_image_name: "docker-images.third-party.partition.promtail.name"
     ztp_nginx_image_tag: "docker-images.third-party.partition.ztp-nginx.tag"
     ztp_nginx_image_name: "docker-images.third-party.partition.ztp-nginx.name"
     # third-party gardener
@@ -119,8 +121,8 @@ metal_stack_release:
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
-    logging_chart_version: "helm-charts.logging.loki-stack.version"
-    logging_chart_repo: "helm-charts.logging.loki-stack.repository"
+    logging_chart_version: "helm-charts.logging.loki.version"
+    logging_chart_repo: "helm-charts.logging.loki.repository"
     prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
     # monitoring
