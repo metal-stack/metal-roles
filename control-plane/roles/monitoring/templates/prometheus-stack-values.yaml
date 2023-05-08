@@ -18,8 +18,7 @@ prometheus:
       tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
 {% if monitoring_prometheus_storage_spec is defined %}
-    storageSpec:
-      "{{ monitoring_prometheus_storage_spec|to_yaml(indent=2) }}"
+    storageSpec: {{ monitoring_prometheus_storage_spec|to_json }}
 {% endif %}
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
