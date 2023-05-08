@@ -17,7 +17,7 @@ prometheus:
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
-{% if monitoring_prometheus_storage_spec %}
+{% if monitoring_prometheus_storage_spec is defined %}
     storageSpec:
       "{{ monitoring_prometheus_storage_spec|to_yaml(indent=2) }}"
 {% endif %}
