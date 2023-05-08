@@ -6,13 +6,14 @@ image:
 {% if monitoring_object_store_config is defined %}
 objstoreConfig: |-
   {{ monitoring_object_store_config|to_yaml(indent=2) }}
+
+compactor:
+  enabled: true
+storegateway:
+  enabled: true
 {% endif %}
 
 query:
   dnsDiscovery:
     sidecarsService: kube-prometheus-stack-thanos-discovery
     sidecarsNamespace: monitoring
-compactor:
-  enabled: true
-storegateway:
-  enabled: true
