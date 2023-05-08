@@ -17,10 +17,14 @@ prometheus:
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
+{% if monitoring_prometheus_storage_spec %}
+    storageSpec:
+      "{{ monitoring_prometheus_storage_spec|to_yaml(indent=2) }}"
+{% endif %}
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
       version: "{{ thanos_image_tag }}"
-{% if monitoring_object_store_config is defined %}
+{% if monitoring_thanos_object_store_config is defined %}
       objectStorageConfig:
         key: objstore.yml
         name: thanos-objstore-secret

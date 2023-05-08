@@ -3,9 +3,9 @@ image:
   repository: "{{ thanos_image_name }}"
   tag: "{{ thanos_image_tag }}"
 
-{% if monitoring_object_store_config is defined %}
+{% if monitoring_thanos_object_store_config is defined %}
 objstoreConfig: |-
-  {{ monitoring_object_store_config|to_yaml(indent=2) }}
+  {{ monitoring_thanos_object_store_config|to_yaml(indent=2) }}
 
 compactor:
   enabled: true
