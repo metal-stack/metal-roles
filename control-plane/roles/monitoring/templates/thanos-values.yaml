@@ -3,14 +3,10 @@ image:
   repository: "{{ thanos_image_name }}"
   tag: "{{ thanos_image_tag }}"
 
+{% if monitoring_object_store_config is defined %}
 objstoreConfig: |-
-  type: s3
-  config:
-    bucket: thanos
-    endpoint: thanos-minio:9000
-    access_key: minio
-    secret_key: minio123
-    insecure: true
+  {{ monitoring_object_store_config|to_yaml(indent=2) }}
+{% endif %}
 
 query:
   dnsDiscovery:
@@ -20,13 +16,3 @@ compactor:
   enabled: true
 storegateway:
   enabled: true
-minio:
-  enabled: true
-  auth:
-    rootPassword: minio123
-    rootUser: minio
-  monitoringBuckets: thanos
-  accessKey:
-    password: minio
-  secretKey:
-    password: minio123
