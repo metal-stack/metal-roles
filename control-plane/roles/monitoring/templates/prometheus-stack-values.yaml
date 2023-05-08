@@ -20,9 +20,11 @@ prometheus:
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
       version: "{{ thanos_image_tag }}"
+{% if monitoring_object_store_config is defined %}
       objectStorageConfig:
         key: objstore.yml
         name: thanos-objstore-secret
+{% endif %}
   thanosService:
     enabled: true
 
