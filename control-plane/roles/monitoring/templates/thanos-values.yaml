@@ -5,7 +5,7 @@ image:
 
 {% if monitoring_thanos_object_store_config is defined %}
 objstoreConfig: |-
-  {{ monitoring_thanos_object_store_config|to_yaml(indent=2) }}
+  {{ monitoring_thanos_object_store_config | to_yaml | indent(2) }}
 
 compactor:
   enabled: true
