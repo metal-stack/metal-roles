@@ -96,8 +96,10 @@ metal_stack_release:
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
     logging_chart_version: "helm-charts.logging.loki.version"
     logging_chart_repo: "helm-charts.logging.loki.repository"
-    #prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
+    prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
+    thanos_chart_version: "helm-charts.monitoring.thanos.version"
+    thanos_chart_repo: "helm-charts.monitoring.thanos.repository"
     # monitoring
     webhook_logger_image_name: "docker-images.third-party.control-plane.webhook-logger.name"
     webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"
@@ -105,3 +107,5 @@ metal_stack_release:
     metal_auditing_meili_chart_version: "helm-charts.third-party.meilisearch.version"
     metal_auditing_meili_image_name: "helm-charts.third-party.meilisearch.image_name"
     metal_auditing_meili_image_tag: "helm-charts.third-party.meilisearch.image_tag"
+    thanos_image_name: "docker-images.third-party.control-plane.thanos.name"
+    thanos_image_tag: "docker-images.third-party.control-plane.thanos.tag"
