@@ -4,7 +4,8 @@ image:
   tag: "{{ thanos_image_tag }}"
 
 {% if monitoring_thanos_object_store_config is defined %}
-objstoreConfig: {{ monitoring_thanos_object_store_config | to_json }}
+objstoreConfig: |-
+  {{ monitoring_thanos_object_store_config | to_yaml(width=-1) | indent(2) }}
 
 compactor:
   enabled: true
