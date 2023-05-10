@@ -25,7 +25,7 @@ receive:
     enabled: {{ monitoring_thanos_receive_ingress_enabled }}
     hostname: {{ monitoring_thanos_receive_ingress_dns }}
     ingressClassName: nginx
-{% if monitoring_thanos_receive_ingress_tls or monitoring_thanos_receive_ingress_annotations %}
+{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth or monitoring_thanos_receive_ingress_tls %}
     annotations:
 {% endif %}
 {% if monitoring_thanos_receive_ingress_tls %}
@@ -33,8 +33,8 @@ receive:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
 {% if monitoring_thanos_receive_ingress_basic_auth %}
-    nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: thanos-receive-basic-auth
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: thanos-receive-basic-auth
 {% endif %}
 {% if monitoring_thanos_receive_ingress_annotations %}
 {% for key, value in monitoring_thanos_receive_ingress_annotations.items() %}
@@ -42,7 +42,6 @@ receive:
 {% endfor %}
 {% endif %}
     tls: {{ monitoring_thanos_receive_ingress_tls }}
-
 
 extraDeploy:
 - apiVersion: v1
