@@ -12,17 +12,34 @@ prometheus:
 {% endfor %}
 {% endif %}
 
-{% if monitoring_prometheus_image_tag is defined %}
   prometheusSpec:
+{% if monitoring_prometheus_image_tag is defined %}
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
+{% if monitoring_prometheus_storage_spec is defined %}
+    storageSpec:
+      {{ monitoring_prometheus_storage_spec | indent(6) }}
+{% endif %}
+    thanos:
+      image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
+      version: "{{ thanos_image_tag }}"
+{% if monitoring_thanos_object_store_config is defined %}
+      objectStorageConfig:
+        key: objstore.yml
+        name: thanos-objstore-secret
+{% endif %}
+  thanosService:
+    enabled: true
 
 grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
   additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
+  sidecar:
+    datasources:
+      url: http://thanos-query-frontend:9090
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -34,7 +51,6 @@ grafana:
         hosts:
         - {{ monitoring_grafana_ingress_dns }}
 {% endif %}
-
 {% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
     annotations:
 {% endif %}
@@ -47,6 +63,7 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+
 alertmanager:
   alertmanagerSpec:
     logLevel: debug
