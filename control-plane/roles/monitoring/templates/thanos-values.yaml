@@ -17,3 +17,24 @@ query:
   dnsDiscovery:
     sidecarsService: kube-prometheus-stack-thanos-discovery
     sidecarsNamespace: monitoring
+
+receive:
+  enabled: {{ monitoring_thanos_receive_enabled }}
+
+  ingress:
+    enabled: {{ monitoring_thanos_receive_ingress_enabled }}
+    hostname: {{ monitoring_thanos_receive_ingress_dns }}
+    ingressClassName: nginx
+{% if monitoring_thanos_receive_ingress_tls or monitoring_thanos_receive_ingress_annotations %}
+    annotations:
+{% endif %}
+{% if monitoring_thanos_receive_ingress_tls %}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+{% if monitoring_thanos_receive_ingress_annotations %}
+{% for key, value in monitoring_thanos_receive_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+    tls: {{ monitoring_thanos_receive_ingress_tls }}
