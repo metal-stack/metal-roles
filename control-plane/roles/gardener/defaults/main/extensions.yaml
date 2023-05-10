@@ -1,9 +1,14 @@
 ---
+gardener_os_controller_repo_ref: "{{ gardener_os_controller_image_tag }}"
+# TODO: as soon as our changes on cilium controller are merged to upstream, we can remove the path to the fork
+gardener_networking_cilium_repo_ref: "metal-stack/gardener-extension-networking-cilium/{{ gardener_networking_cilium_image_tag }}"
+
 gardener_metal_admission_replicas: 1
 gardener_metal_admission_vpa: true
 
-gardener_extension_provider_metal_cluster_audit_enabled: false
+gardener_extension_provider_metal_repo_ref: "{{ gardener_extension_provider_metal_image_tag }}"
 
+gardener_extension_provider_metal_cluster_audit_enabled: false
 gardener_extension_provider_metal_audit_to_splunk_enabled: false
 gardener_extension_provider_metal_audit_to_splunk:
   # ...
@@ -13,9 +18,6 @@ gardener_extension_provider_metal_audit_to_splunk:
   # hecPort: 443
   # tlsEnabled: true
   # hecCAFile: ""
-
-gardener_extension_provider_metal_auth_enabled: false
-gardener_extension_provider_metal_auth_provider_tenant: "{{ metal_control_plane_provider_tenant | default(none) }}"
 
 gardener_extension_provider_metal_etcd_backup_schedule: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
 gardener_extension_provider_metal_etcd_delta_snapshot_period: "0s"
@@ -59,3 +61,5 @@ gardener_extension_provider_metal_image_pull_secret:
   #     password: ""
   #     auth: ""
   # ...
+
+gardener_cert_management_issuer_private_key: ""

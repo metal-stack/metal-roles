@@ -11,9 +11,6 @@ spec:
     metalControlPlanes:
       {{ gardener_cloud_profile_stage_name }}:
         endpoint: {{ gardener_cloud_profile_metal_api_url }}
-{% if gardener_cloud_profile_iam_config is not none %}
-        iamconfig: {{ gardener_cloud_profile_iam_config | to_json }}
-{% endif %}
 
 {% if gardener_cloud_profile_machine_images | length > 0 %}
         firewallImages:
