@@ -41,6 +41,17 @@
     helm_value_file_template: "prometheus-stack-values.yaml"
     helm_skip_crds: yes
 
+- name: Deploy thanos
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ thanos_chart_repo }}"
+    helm_chart: thanos
+    helm_target_namespace: "{{ monitoring_namespace }}"
+    helm_release_name: thanos
+    helm_chart_version: "{{ thanos_chart_version }}"
+    helm_value_file_template: "thanos-values.yaml"
+
 - name: Deploy metrics exporters
   import_tasks: exporters.yaml
 
