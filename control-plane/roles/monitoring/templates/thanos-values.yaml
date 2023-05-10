@@ -16,7 +16,7 @@ storegateway:
 query:
   dnsDiscovery:
     sidecarsService: kube-prometheus-stack-thanos-discovery
-    sidecarsNamespace: monitoring
+    sidecarsNamespace: "{{ monitoring_namespace }}"
 
 receive:
   enabled: {{ monitoring_thanos_receive_enabled }}
