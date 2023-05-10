@@ -28,7 +28,7 @@ alerting:
 
 {% if prometheus_remote_write_url %}
 remote_write:
-  url: {{ prometheus_remote_write_url }}
+- url: {{ prometheus_remote_write_url }}
   basic_auth:
     username: {{ prometheus_remote_write_basic_auth_username }}
     password: {{ prometheus_remote_write_basic_auth_password }}
