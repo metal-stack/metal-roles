@@ -16,10 +16,10 @@
    content: "{{ prometheus_hosts_content }}"
    dest: "{{ prometheus_config_host_dir }}/hosts"
 
-- name: generate prometheus.yml
+- name: generate prometheus.yaml
   template:
-    src: prometheus.yml.j2
-    dest: "{{ prometheus_config_host_dir }}/prometheus.yml"
+    src: prometheus.yaml.j2
+    dest: "{{ prometheus_config_host_dir }}/prometheus.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_metal_core_sd
@@ -29,10 +29,10 @@
         job: metal-core
       targets: "{{ prometheus_metal_core_targets }}"
 
-- name: create metal-core.yml
+- name: create metal-core.yaml
   copy:
     content: '{{ prometheus_metal_core_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/metal-core.yml"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/metal-core.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_node_exporter_sd
@@ -42,10 +42,10 @@
         job: node-exporter
       targets: "{{ prometheus_node_exporter_targets }}"
 
-- name: create node-exporter.yml
+- name: create node-exporter.yaml
   copy:
     content: '{{ prometheus_node_exporter_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/node-exporter.yml"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/node-exporter.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_ping_sd
@@ -55,10 +55,10 @@
         job: ping
       targets: "{{ prometheus_ping_targets }}"
 
-- name: create ping.yml
+- name: create ping.yaml
   copy:
     content: '{{ prometheus_ping_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/ping.yml"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/ping.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_frr_exporter_sd
@@ -68,10 +68,10 @@
         job: frr
       targets: "{{ prometheus_frr_exporter_targets }}"
 
-- name: create frr-exporter.yml
+- name: create frr-exporter.yaml
   copy:
     content: '{{ prometheus_frr_exporter_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yml"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yaml"
   notify: restart prometheus
 
 - name: get dhcp leases
@@ -90,10 +90,10 @@
         job: ipmi
       targets: "{{ prometheus_ipmi_exporter_targets }}"
 
-- name: create ipmi.yml
+- name: create ipmi.yaml
   copy:
     content: '{{ prometheus_ipmi_exporter_targets_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/ipmi.yml"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/ipmi.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_promtail_sd
@@ -103,10 +103,10 @@
         job: frr
       targets: "{{ prometheus_promtail_targets }}"
 
-- name: create promtail.yml
+- name: create promtail.yaml
   copy:
     content: '{{ prometheus_promtail_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/promtail.yml"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/promtail.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_tcp_connect_sd
@@ -116,10 +116,10 @@
         job: frr
       targets: "{{ prometheus_tcp_connect_targets }}"
 
-- name: create tcp_connect.yml
+- name: create tcp_connect.yaml
   copy:
     content: '{{ prometheus_tcp_connect_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/tcp-connect.yml"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/tcp-connect.yaml"
   notify: restart prometheus
 
 - name: copy notification rules
@@ -145,7 +145,7 @@
       - host_port: "{{ prometheus_port }}"
         target_port: "{{ prometheus_port }}"
     systemd_docker_command:
-      - --config.file=/etc/prometheus/prometheus.yml
+      - --config.file=/etc/prometheus/prometheus.yaml
       - --storage.tsdb.path=/prometheus
       - --web.console.libraries=/usr/share/prometheus/console_libraries
       - --web.console.templates=/usr/share/prometheus/consoles

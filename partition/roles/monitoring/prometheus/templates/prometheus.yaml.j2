@@ -44,7 +44,7 @@ scrape_configs:
 - job_name: 'node-exporter'
   file_sd_configs:
   - files:
-    - '/etc/prometheus/file_sd/node-exporter.yml'
+    - '/etc/prometheus/file_sd/node-exporter.yaml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -53,7 +53,7 @@ scrape_configs:
 - job_name: frr
   file_sd_configs:
   - files:
-    - '/etc/prometheus/file_sd/frr-exporter.yml'
+    - '/etc/prometheus/file_sd/frr-exporter.yaml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -62,7 +62,7 @@ scrape_configs:
 - job_name: metal-core
   file_sd_configs:
   - files:
-    - '/etc/prometheus/file_sd/metal-core.yml'
+    - '/etc/prometheus/file_sd/metal-core.yaml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -80,7 +80,7 @@ scrape_configs:
 - job_name: promtail
   file_sd_configs:
   - files:
-    - '/etc/prometheus/file_sd/promtail.json'
+    - '/etc/prometheus/file_sd/promtail.yaml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -92,7 +92,7 @@ scrape_configs:
     module: [ping]
   file_sd_configs:
   - files:
-    - '/etc/prometheus/file_sd/ping.json'
+    - '/etc/prometheus/file_sd/ping.yaml'
   relabel_configs:
     - source_labels: [__address__]
       target_label: __param_target
@@ -107,7 +107,7 @@ scrape_configs:
     module: [default]
   file_sd_configs:
   - files:
-    - '/etc/prometheus/file_sd/ipmi.yml'
+    - '/etc/prometheus/file_sd/ipmi.yaml'
     refresh_interval: 5m
   relabel_configs:
   - source_labels: [__address__]
@@ -135,7 +135,7 @@ scrape_configs:
     module: [tcp_connect]
   file_sd_configs:
   - files:
-    - '/etc/prometheus/file_sd/tcp-connect.yml'
+    - '/etc/prometheus/file_sd/tcp-connect.yaml'
   relabel_configs:
     - source_labels: [__address__]
       target_label: __param_target
