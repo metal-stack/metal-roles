@@ -19,7 +19,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_scheduler_resources                           |           | Set custom resource definitions for the gardener-scheduler                                                                    |
 | gardener_use_dns_records                               |           | Enables the feature gate for Gardener `DNSRecords`                                                                            |
 | gardener_dns_domain                                    |           | Specifies the DNS domain on which the Gardener will manage DNS entries                                                        |
-| gardener_dns_provider                                  |           | Specifies the DNS provider                                                                                                    |
+| gardener_dns_provider                                  | yes       | Specifies the DNS provider                                                                                                    |
 | gardener_backup_infrastructure                         |           | Specifies the Gardener backup infrastructure                                                                                  |
 | gardener_backup_infrastructure_secret                  |           | Specifies the secret for the backup infrastructure                                                                            |
 | gardener_soil_name                                     |           | The name of the initial `Seed` (used for spinning up shooted seeds)                                                           |
@@ -47,7 +47,7 @@ The deployment chart is taken from [garden-setup](https://github.com/gardener/ga
 | ---------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
 | gardener_virtual_api_server_svc_cluster_ip_add       |           | An integer to "guess" a free IP for the service that allows the soil to internally communicate with the virtual garden |
 | gardener_virtual_api_server_public_dns               |           | The DNS domain to reach the virtual garden API server on                                                               |
-| gardener_virtual_api_server_healthcheck_static_token |           | A static token for healthchecking the virtual garden API server                                                        |
+| gardener_virtual_api_server_healthcheck_static_token | yes       | A static token for healthchecking the virtual garden API server                                                        |
 | gardener_etcd_backup_schedule                        |           | The backup schedule for the virtual garden ETCD                                                                        |
 | gardener_etcd_snapshot_period                        |           | The snapshot period for the virtual garden ETCD                                                                        |
 | gardener_etcd_garbage_collection_period              |           | The priod for garbage collection for the virtual garden ETCD                                                           |
@@ -61,7 +61,7 @@ Variables for the metal-stack cloud profile.
 | --------------------------------------------------- | --------- | --------------------------------------------------------------------- |
 | gardener_cloud_profile_stage_name                   |           | The name of the metal-stack environment in the cloud profile          |
 | gardener_cloud_profile_metal_api_url                |           | The URL used by the Gardener to communicate with the metal-api        |
-| gardener_cloud_profile_metal_api_hmac               |           | The admin HMAC used by the Gardener to communicate with the metal-api |
+| gardener_cloud_profile_metal_api_hmac               | yes       | The admin HMAC used by the Gardener to communicate with the metal-api |
 | gardener_cloud_profile_machine_images               |           | The machine images available for shoots in the metal-api              |
 | gardener_cloud_profile_firewall_controller_versions |           | The available firewall controller versions for metal-stack shoots     |
 | gardener_cloud_profile_kubernetes                   |           | The available Kubernetes versions for metal-stack shoots              |
@@ -76,30 +76,23 @@ These variable parametrize the Gardener extension controllers.
 
 This includes the metal-stack extension provider called [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal) (GEPM).
 
-| Name                                                           | Mandatory | Description                                                                                                                                 |
-| -------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| gardener_os_controller_repo_ref                                |           | A repo reference for deploying the [os-metal-extension](https://github.com/metal-stack/os-metal-extension/)                                 |
-| gardener_networking_cilium_repo_ref                            |           | A repo reference for deploying the [gardener-extension-networking-cilium](https://github.com/gardener/gardener-extension-networking-cilium) |
-| gardener_extension_provider_metal_repo_ref                     |           | A repo reference for deploying the [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)    |
-| gardener_metal_admission_replicas                              |           | Specifies the amount of metal-admission webhook replicas                                                                                    |
-| gardener_metal_admission_vpa                                   |           | Enables the VPA for the metal-admission webhook                                                                                             |
-| gardener_extension_provider_metal_cluster_audit_enabled        |           | Enables the audit functionality of the GEPM                                                                                                 |
-| gardener_extension_provider_metal_audit_to_splunk_enabled      |           | Enables the audit to splunk feature gate of the GEPM                                                                                        |
-| gardener_extension_provider_metal_audit_to_splunk              |           | Configuration for the audit to splunk feature gate of the GEPM                                                                              |
-| gardener_extension_provider_metal_etcd_backup_schedule         |           | The ETCD backup schedule for metal-stack shoot ETCDs                                                                                        |
-| gardener_extension_provider_metal_etcd_delta_snapshot_period   |           | The ETCD delta snapshot period for metal-stack shoot ETCDs                                                                                  |
-| gardener_extension_provider_metal_accounting_enabled           |           | This feature gate will be deprecated and removed soon, do not use                                                                           |
-| gardener_extension_provider_metal_accounting_hostname          |           | -                                                                                                                                           |
-| gardener_extension_provider_metal_accounting_port              |           | -                                                                                                                                           |
-| gardener_extension_provider_metal_accounting_ca                |           | -                                                                                                                                           |
-| gardener_extension_provider_metal_accounting_cert              |           | -                                                                                                                                           |
-| gardener_extension_provider_metal_accounting_certkey           |           | -                                                                                                                                           |
-| gardener_extension_provider_metal_accounting_internal_networks |           | -                                                                                                                                           |
-| gardener_extension_provider_metal_egress_destinations          |           | Sets allowed egress destinations for the `RestrictEgress` control plane feature gate of the GEPM                                            |
-| gardener_extension_provider_metal_duros_storage_enabled        |           | Enables the duros storage integration feature gate of the GEPM (Lightbits storage)                                                          |
-| gardener_extension_provider_metal_duros_storage_config         |           | Configuration for the duros storage integration                                                                                             |
-| gardener_extension_provider_metal_image_pull_secret            |           | Provide image pull secrets for deployed containers                                                                                          |
-| gardener_cert_management_issuer_private_key                    |           | The Let's Encrypt private key used by the cert-management extension controller to setup signed certificates                                 |
+| Name                                                         | Mandatory | Description                                                                                                                                 |
+| ------------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| gardener_os_controller_repo_ref                              |           | A repo reference for deploying the [os-metal-extension](https://github.com/metal-stack/os-metal-extension/)                                 |
+| gardener_networking_cilium_repo_ref                          |           | A repo reference for deploying the [gardener-extension-networking-cilium](https://github.com/gardener/gardener-extension-networking-cilium) |
+| gardener_extension_provider_metal_repo_ref                   |           | A repo reference for deploying the [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)    |
+| gardener_metal_admission_replicas                            |           | Specifies the amount of metal-admission webhook replicas                                                                                    |
+| gardener_metal_admission_vpa                                 |           | Enables the VPA for the metal-admission webhook                                                                                             |
+| gardener_extension_provider_metal_cluster_audit_enabled      |           | Enables the audit functionality of the GEPM                                                                                                 |
+| gardener_extension_provider_metal_audit_to_splunk_enabled    |           | Enables the audit to splunk feature gate of the GEPM                                                                                        |
+| gardener_extension_provider_metal_audit_to_splunk            |           | Configuration for the audit to splunk feature gate of the GEPM                                                                              |
+| gardener_extension_provider_metal_etcd_backup_schedule       |           | The ETCD backup schedule for metal-stack shoot ETCDs                                                                                        |
+| gardener_extension_provider_metal_etcd_delta_snapshot_period |           | The ETCD delta snapshot period for metal-stack shoot ETCDs                                                                                  |
+| gardener_extension_provider_metal_egress_destinations        |           | Sets allowed egress destinations for the `RestrictEgress` control plane feature gate of the GEPM                                            |
+| gardener_extension_provider_metal_duros_storage_enabled      |           | Enables the duros storage integration feature gate of the GEPM (Lightbits storage)                                                          |
+| gardener_extension_provider_metal_duros_storage_config       |           | Configuration for the duros storage integration                                                                                             |
+| gardener_extension_provider_metal_image_pull_secret          |           | Provide image pull secrets for deployed containers                                                                                          |
+| gardener_cert_management_issuer_private_key                  |           | The Let's Encrypt private key used by the cert-management extension controller to setup signed certificates                                 |
 
 ### Certificates
 

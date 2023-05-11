@@ -52,23 +52,6 @@ providerConfig:
         encodedDockerConfigJSON: {{ gardener_extension_provider_metal_image_pull_secret | to_json | b64encode }}
 {% endif %}
 
-      accountingExporter:
-        enabled: {{ gardener_extension_provider_metal_accounting_enabled }}
-{% if gardener_extension_provider_metal_accounting_enabled %}
-        networkTraffic:
-          enabled: true
-          internalNetworks: {{ gardener_extension_provider_metal_accounting_internal_networks | to_json }}
-        clientConfig:
-          hostname: {{ gardener_extension_provider_metal_accounting_hostname }}
-          port: {{ gardener_extension_provider_metal_accounting_port }}
-          ca: |
-            {{ gardener_extension_provider_metal_accounting_ca | indent(width=12, first=false) }}
-          cert: |
-            {{ gardener_extension_provider_metal_accounting_cert | indent(width=12, first=false) }}
-          certkey: |
-            {{ gardener_extension_provider_metal_accounting_certkey | indent(width=12, first=false) }}
-{% endif %}
-
 {% if gardener_extension_provider_metal_egress_destinations %}
       # for restrictEgress control plane feature gate
       egressDestinations: {{ gardener_extension_provider_metal_egress_destinations | to_json }}
@@ -104,12 +87,6 @@ providerConfig:
         sourceRepository: github.com/metal-stack/csi-lvm-provisioner
         repository: {{ csi_lvm_provisioner_image_name }}
         tag: {{ csi_lvm_provisioner_image_tag }}
-{% if gardener_extension_provider_metal_accounting_enabled and accounting_exporter_image_tag is defined %}
-      - name: accounting-exporter
-        sourceRepository: git.f-i-ts.de/cloud-native/accounting/kube-counter
-        repository: {{ accounting_exporter_image_name }}
-        tag: {{ accounting_exporter_image_tag }}
-{% endif %}
 {% if gardener_extension_provider_metal_cluster_audit_enabled and audit_forwarder_image_tag is defined %}
       - name: auditforwarder
         sourceRepository: https://github.com/metal-stack/audit-forwarder

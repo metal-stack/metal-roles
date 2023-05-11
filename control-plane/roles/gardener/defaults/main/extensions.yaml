@@ -22,13 +22,7 @@ gardener_extension_provider_metal_audit_to_splunk:
 gardener_extension_provider_metal_etcd_backup_schedule: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
 gardener_extension_provider_metal_etcd_delta_snapshot_period: "0s"
 
-gardener_extension_provider_metal_accounting_enabled: false
-gardener_extension_provider_metal_accounting_hostname: "{{ metal_control_plane_ingress_dns | default(none) }}"
-gardener_extension_provider_metal_accounting_port: 9000
-gardener_extension_provider_metal_accounting_ca:
-gardener_extension_provider_metal_accounting_cert:
-gardener_extension_provider_metal_accounting_certkey:
-gardener_extension_provider_metal_accounting_internal_networks:
+gardener_extension_provider_metal_internal_networks:
   - 10.0.0.0/8
   - 100.64.0.0/10
 
