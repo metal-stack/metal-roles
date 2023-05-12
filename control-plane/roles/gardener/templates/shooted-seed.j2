@@ -64,22 +64,6 @@ spec:
       customDefaultStorageClass:
         className: {{ gardener_shooted_seed.storage_class_name }}
 {% endif %}
-{% if gardener_extension_provider_metal_auth_enabled %}
-      iamconfig:
-        issuerConfig:
-{% if gardener_shooted_seed.dex_address %}
-          url: "{{ gardener_shooted_seed.dex_address }}"
-{% endif %}
-{% if gardener_shooted_seed.client_id %}
-          clientId: "{{ gardener_shooted_seed.client_id }}"
-{% endif %}
-{% if gardener_shooted_seed.provider_tenant_directory_type %}
-        idmConfig:
-          idmtype: "{{ gardener_shooted_seed.provider_tenant_directory_type }}"
-{% endif %}
-        groupConfig:
-          namespaceMaxLength: 20
-{% endif %}
       featureGates: {{ gardener_shooted_seed.feature_gates | to_json }}
   networking:
     type: calico
