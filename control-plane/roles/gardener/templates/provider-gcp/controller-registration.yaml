@@ -1,0 +1,23 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerRegistration
+metadata:
+  name: provider-gcp
+spec:
+  deployment:
+    deploymentRefs:
+    - name: provider-gcp
+    policy: Always
+  resources:
+  - kind: BackupBucket
+    type: gcp
+  - kind: BackupEntry
+    type: gcp
+  - kind: ControlPlane
+    type: gcp
+  - kind: Infrastructure
+    type: gcp
+  - kind: Worker
+    type: gcp
+  - kind: DNSRecord
+    type: google-clouddns

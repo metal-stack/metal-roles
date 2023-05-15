@@ -1,0 +1,12 @@
+---
+- name: Set node cidr
+  set_fact:
+    _gardener_soil_node_cidr: "{{ (lookup('k8s', api_version='v1', kind='ConfigMap', namespace='kube-system', resource_name='shoot-info') | default({}, true)).get('data', {})['nodeNetwork'] }}"
+
+- name: Set pod cidr
+  set_fact:
+    _gardener_soil_pod_cidr: "{{ (lookup('k8s', api_version='v1', kind='ConfigMap', namespace='kube-system', resource_name='shoot-info') | default({}, true)).get('data', {})['podNetwork'] }}"
+
+- name: Set service cidr
+  set_fact:
+    _gardener_soil_service_cidr: "{{ (lookup('k8s', api_version='v1', kind='ConfigMap', namespace='kube-system', resource_name='shoot-info') | default({}, true)).get('data', {})['serviceNetwork'] }}"

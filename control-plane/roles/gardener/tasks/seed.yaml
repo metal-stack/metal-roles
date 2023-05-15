@@ -1,0 +1,101 @@
+---
+- name: Create backup infrastructure secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: backup-secret
+        namespace: garden
+      type: Opaque
+      data: "{{ gardener_backup_infrastructure_secret }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  when: gardener_backup_infrastructure_secret
+
+- name: Add service account for gardener seeds
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: gardener-seeds
+        namespace: garden
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Make seed service account cluster-admin
+  k8s:
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: gardener-seeds
+      roleRef:
+        apiGroup: ""
+        kind: ClusterRole
+        name: cluster-admin
+      subjects:
+      - kind: ServiceAccount
+        name: gardener-seeds
+        namespace: garden
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Fetch service account token name
+  set_fact:
+    gardenlet_sa_token_name: "{{ lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, kind='ServiceAccount', namespace='garden', resource_name='gardener-seeds').get('secrets')[0].get('name') }}"
+
+- name: Add seed secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: gardener-seed-kubeconfig
+        namespace: garden
+      type: Opaque
+      data:
+        kubeconfig: "{{ gardener_soil_kubeconfig_file_path | kubeconfig_for_sa(secret=lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, kind='Secret', namespace='garden', resource_name=gardenlet_sa_token_name)) | b64encode }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Clone Gardener
+  git:
+    repo: "{{ gardener_repo_url }}"
+    dest: "{{ gardener_local_tmp_dir }}/gardener"
+    depth: 1
+    version: "{{ gardener_repo_ref }}"
+
+- name: Fetch current seed cidrs
+  set_fact:
+    _gardener_current_soil_node_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('nodes', none) }}"
+    _gardener_current_soil_pod_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('pods', none) }}"
+    _gardener_current_soil_service_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('services', none) }}"
+
+- name: Set cidrs for seed
+  set_fact:
+    _gardener_gardenlet_node_cidr: "{{ _gardener_current_soil_node_cidr if _gardener_current_soil_node_cidr else _gardener_soil_node_cidr }}"
+    _gardener_gardenlet_pod_cidr: "{{ _gardener_current_soil_pod_cidr if _gardener_current_soil_pod_cidr else _gardener_soil_pod_cidr }}"
+    _gardener_gardenlet_service_cidr: "{{ _gardener_current_soil_service_cidr if _gardener_current_soil_service_cidr else _gardener_soil_service_cidr }}"
+
+- name: Deploy initial Gardenlet
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_chart: "{{ gardener_local_tmp_dir }}/gardener/charts/gardener/gardenlet"
+    helm_release_name: gardenlet
+    helm_target_namespace: garden
+    helm_value_file_template: gardenlet-values.j2
+    helm_wait: false
+
+- name: Wait until seed is ready
+  command: echo
+  changed_when: false
+  retries: 60
+  delay: 3
+  until:
+    - "'conditions' in lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name).get('status', {})"
+    - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions | length > 2
+    - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions[0].message == "Gardenlet is posting ready status."
+    - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions[2].message == "Seed cluster has been bootstrapped successfully."

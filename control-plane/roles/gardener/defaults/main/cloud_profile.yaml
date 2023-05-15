@@ -1,0 +1,30 @@
+---
+gardener_cloud_profile_stage_name: "{{ metal_control_plane_stage_name }}"
+gardener_cloud_profile_metal_api_url: https://api.{{ metal_control_plane_ingress_dns }}
+gardener_cloud_profile_metal_api_hmac:
+gardener_cloud_profile_machine_images: "{{ metal_api_images | default([]) }}"
+gardener_cloud_profile_firewall_controller_versions: []
+gardener_cloud_profile_kubernetes:
+gardener_cloud_profile_machine_types: []
+gardener_cloud_profile_regions:
+gardener_cloud_profile_partitions: {}
+  # <partition>:
+  #   default-machine-types:
+  #     firewall:
+  #       - c1-xlarge-x86
+
+gardener_os_cri_mapping:
+  ubuntu:
+    when:
+    cris:
+    - name: containerd
+      containerRuntimes: []
+    - name: docker
+      containerRuntimes: []
+  debian:
+    when:
+    cris:
+    - name: containerd
+      containerRuntimes: []
+    - name: docker
+      containerRuntimes: []
