@@ -27,6 +27,12 @@ monitoring_ingress_grafana_tls: yes
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
 
+alertmanager_ingress_enabled: true
+alertmanager_ingress_dns: "alertmanager.{{ metal_control_plane_ingress_dns }}"
+alertmanager_ingress_tls: yes
+alertmanager_ingress_basic_auth:
+alertmanager_ingress_annotations: {}
+
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_metal_api_hmac: "metal-admin"
