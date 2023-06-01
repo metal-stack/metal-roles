@@ -103,6 +103,8 @@ spec:
         - --requestheader-username-headers=X-Remote-User
         - --secure-port=443
         - --service-cluster-ip-range=100.64.0.0/13
+        - --service-account-issuer=https://kubernetes.default.svc
+        - --service-account-signing-key-file=/srv/kubernetes/service-account-key/service_account.key
         - --service-account-key-file=/srv/kubernetes/service-account-key/service_account.key
         - --tls-cert-file=/srv/kubernetes/apiserver/tls.crt
         - --tls-private-key-file=/srv/kubernetes/apiserver/tls.key
