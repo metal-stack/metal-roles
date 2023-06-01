@@ -17,7 +17,6 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_apiserver_resources                           |           | Set custom resource definitions for the gardener-apiserver                                                                    |
 | gardener_controller_manager_resources                  |           | Set custom resource definitions for the gardener-controller-manager                                                           |
 | gardener_scheduler_resources                           |           | Set custom resource definitions for the gardener-scheduler                                                                    |
-| gardener_use_dns_records                               |           | Enables the feature gate for Gardener `DNSRecords`                                                                            |
 | gardener_dns_domain                                    |           | Specifies the DNS domain on which the Gardener will manage DNS entries                                                        |
 | gardener_dns_provider                                  | yes       | Specifies the DNS provider                                                                                                    |
 | gardener_backup_infrastructure                         |           | Specifies the Gardener backup infrastructure                                                                                  |

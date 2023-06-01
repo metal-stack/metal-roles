@@ -29,7 +29,6 @@ gardener_scheduler_resources:
     cpu: 300m
     memory: 256Mi
 
-gardener_use_dns_records: true
 gardener_dns_domain:
 gardener_dns_provider:
 
