@@ -24,7 +24,6 @@ global:
     resources: {{ gardener_apiserver_resources | to_json }}
     featureGates:
       SeedChange: true
-      UseDNSRecords: {{ gardener_use_dns_records }}
       WorkerPoolKubernetesVersion: true
     image:
       repository: {{ gardener_apiserver_image_name }}
@@ -100,7 +99,6 @@ global:
 
     config:
       featureGates:
-        UseDNSRecords: {{ gardener_use_dns_records }}
         # ssh key pair rotation is removed in 1.51, but was enabled by default in 1.45
         # TODO: comment in this line prior to deploying g/g 1.45
         # RotateSSHKeypairOnMaintenance: false
