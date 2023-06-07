@@ -1,5 +1,6 @@
 .PHONY: test
 test:
+	python -m pip install mock
 	for file in $(shell find . -name test -type d); do python -m unittest discover -v -p '*_test.py' -s $$(dirname $$file); done
 
 .PHONY: test-local
