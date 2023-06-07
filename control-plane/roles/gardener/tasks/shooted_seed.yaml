@@ -42,7 +42,7 @@
 - name: Add secret binding
   k8s:
     definition:
-      apiVersion: core.gardener.cloud/v1alpha1
+      apiVersion: core.gardener.cloud/v1beta1
       kind: SecretBinding
       metadata:
         labels:
@@ -52,6 +52,8 @@
       secretRef:
         name: "{{ gardener_shooted_seed.name }}-provider-secret"
         namespace: garden
+      provider:
+        type: metal
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
 
