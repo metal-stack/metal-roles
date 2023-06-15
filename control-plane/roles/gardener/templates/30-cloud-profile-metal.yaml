@@ -12,13 +12,18 @@ spec:
       {{ gardener_cloud_profile_stage_name }}:
         endpoint: {{ gardener_cloud_profile_metal_api_url }}
 
-{% if gardener_cloud_profile_machine_images | length > 0 %}
+{% if (gardener_cloud_profile_firewall_images_from_machine_images and gardener_cloud_profile_machine_images | length > 0) or gardener_cloud_profile_firewall_images | length > 0 %}
         firewallImages:
+{% for image in gardener_cloud_profile_firewall_images %}
+          - "{{ image }}"
+{% endfor %}
+{% if gardener_cloud_profile_firewall_images_from_machine_images %}
 {% for image in gardener_cloud_profile_machine_images %}
 {% if 'firewall' in image.features %}
           - "{{ image.id }}"
 {% endif %}
 {% endfor %}
+{% endif %}
 {% endif %}
         firewallControllerVersions: {{ gardener_cloud_profile_firewall_controller_versions | to_json }}
         partitions:
