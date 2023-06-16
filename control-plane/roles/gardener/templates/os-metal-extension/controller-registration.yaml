@@ -1,0 +1,15 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerRegistration
+metadata:
+  name: os-metal
+spec:
+  deployment:
+    deploymentRefs:
+    - name: os-metal
+    policy: Always
+  resources:
+  - kind: OperatingSystemConfig
+    type: ubuntu
+  - kind: OperatingSystemConfig
+    type: debian

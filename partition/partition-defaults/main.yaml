@@ -15,4 +15,4 @@ metal_partition_metal_api_grpc_ca_cert:
 metal_partition_metal_api_grpc_client_cert:
 metal_partition_metal_api_grpc_client_key:
 
-metal_partition_mgmt_gateway:                                                                                                                                      |
+metal_partition_mgmt_gateway:

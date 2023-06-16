@@ -12,19 +12,8 @@
         labels:
           name: "{{ monitoring_namespace }}"
 
-- name: Deploy kube-prometheus-stack
-  include_role:
-    name: ansible-common/roles/helm-chart
-  vars:
-    helm_repo: "{{ prometheus_stack_repo }}"
-    helm_chart: kube-prometheus-stack
-    helm_target_namespace: "{{ monitoring_namespace }}"
-    helm_release_name: kube-prometheus-stack
-    helm_chart_version: "{{ prometheus_chart_version }}"
-    helm_value_file_template: "prometheus-stack-values.yaml"
-
 - name: Determine app version for prometheus operator CRDs
-  command: helm show chart --repo {{ prometheus_stack_repo }} kube-prometheus-stack
+  command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
   register: helm_output
 
 - name: Apply prometheus operator CRDs
@@ -39,6 +28,29 @@
     - monitoring.coreos.com_prometheusrules.yaml
     - monitoring.coreos.com_servicemonitors.yaml
     - monitoring.coreos.com_thanosrulers.yaml
+
+- name: Deploy kube-prometheus-stack
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ prometheus_stack_repo }}"
+    helm_chart: kube-prometheus-stack
+    helm_target_namespace: "{{ monitoring_namespace }}"
+    helm_release_name: kube-prometheus-stack
+    helm_chart_version: "{{ prometheus_chart_version }}"
+    helm_value_file_template: "prometheus-stack-values.yaml"
+    helm_skip_crds: yes
+
+- name: Deploy thanos
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ thanos_chart_repo }}"
+    helm_chart: thanos
+    helm_target_namespace: "{{ monitoring_namespace }}"
+    helm_release_name: thanos
+    helm_chart_version: "{{ thanos_chart_version }}"
+    helm_value_file_template: "thanos-values.yaml"
 
 - name: Deploy metrics exporters
   import_tasks: exporters.yaml
@@ -74,4 +86,3 @@
     - prometheus-alerts.yaml
     - alertmanager-rules.yaml
     - partition-rules.yaml
-

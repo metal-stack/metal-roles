@@ -1,0 +1,43 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - promtail_image_tag is defined
+      - promtail_image_name is defined
+      - promtail_loki_push_endpoint is not none
+      - promtail_scrape_configs is defined and (promtail_scrape_configs|length>0)
+
+- name: Create promtail config directory
+  file:
+    path: "{{ promtail_config_host_dir }}"
+    state: directory
+    owner: "nobody"
+    group: "nogroup"
+    mode: "0755"
+
+- name: Template promtail configuration file
+  template:
+    src: promtail.yaml.j2
+    dest: "{{ promtail_config_host_dir }}/promtail.yaml"
+  notify: restart promtail
+
+- name: Deploy promtail service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: promtail
+    systemd_docker_image_name: "{{ promtail_image_name }}"
+    systemd_docker_image_tag: "{{ promtail_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      - "{{ promtail_config_host_dir }}:/etc/promtail:ro"
+      - "/var/log:/var/log"
+    systemd_docker_command:
+      - -config.file=/etc/promtail/promtail.yaml

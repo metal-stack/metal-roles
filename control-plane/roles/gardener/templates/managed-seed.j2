@@ -1,0 +1,53 @@
+apiVersion: seedmanagement.gardener.cloud/v1alpha1
+kind: ManagedSeed
+metadata:
+  name: "{{ gardener_shooted_seed.name }}"
+  namespace: garden
+spec:
+  gardenlet:
+    bootstrap: BootstrapToken
+    config:
+      apiVersion: gardenlet.config.gardener.cloud/v1alpha1
+      kind: GardenletConfiguration
+      seedConfig:
+        spec:
+          backup:
+            provider: "{{ gardener_backup_infrastructure.provider }}"
+            region: "{{ gardener_backup_infrastructure.region }}"
+            secretRef:
+              name: "{{ gardener_shooted_seed.name }}-backup-secret"
+              namespace: garden
+          dns:
+            provider:
+              secretRef:
+                name: {{ lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}
+                namespace: garden
+              type: {{ gardener_dns_provider }}
+          ingress:
+            domain: ingress.{{ gardener_shooted_seed.name }}.{{ gardener_soil_name }}.{{ gardener_dns_domain }}
+            controller:
+              kind: nginx
+          networks:
+            pods: "{{ gardener_shooted_seed.pod_cidr }}"
+            services: "{{ gardener_shooted_seed.service_cidr }}"
+          provider:
+            region: "{{ gardener_shooted_seed.region }}"
+            type: metal
+          settings:
+            excessCapacityReservation:
+              enabled: true
+            scheduling:
+              visible: {{ gardener_shooted_seed.visible | default(true) }}
+            shootDNS:
+              enabled: true
+            verticalPodAutoscaler:
+              enabled: {{ gardener_shooted_seed.verticalPodAutoscaler | default(true) }}
+    deployment:
+      image:
+        pullPolicy: IfNotPresent
+      replicaCount: 1
+      revisionHistoryLimit: 1
+      vpa: true
+    mergeWithParent: true
+  shoot:
+    name: "{{ gardener_shooted_seed.name }}"

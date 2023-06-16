@@ -1,0 +1,11 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerDeployment
+metadata:
+  name: provider-gcp
+type: helm
+providerConfig:
+  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener-extension-provider-gcp/' + gardener_extension_provider_gcp_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+  values:
+    image:
+      tag: {{ gardener_extension_provider_gcp_image_tag }}

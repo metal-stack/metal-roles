@@ -1,0 +1,75 @@
+---
+- name: Create backup infrastructure secret for shooted seed
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ gardener_shooted_seed.name }}-backup-secret"
+        namespace: garden
+      type: Opaque
+      data: "{{ gardener_backup_infrastructure_secret }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  when: gardener_backup_infrastructure_secret
+
+- name: Create backup infrastructure config for shooted seed
+  set_fact:
+    gardener_shooted_seed_backup_infratructure:
+      provider: "{{ gardener_backup_infrastructure.provider }}"
+      region: "{{ gardener_backup_infrastructure.region }}"
+      secretRef:
+        name: "{{ gardener_shooted_seed.name }}-backup-secret"
+        namespace: garden
+  when: gardener_backup_infrastructure_secret
+
+- name: Add seed provider secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ gardener_shooted_seed.name }}-provider-secret"
+        namespace: garden
+        labels:
+          cloudprofile.garden.sapcloud.io/name: metal
+      type: Opaque
+      data:
+        metalAPIHMac: "{{ gardener_cloud_profile_metal_api_hmac | b64encode }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Add secret binding
+  k8s:
+    definition:
+      apiVersion: core.gardener.cloud/v1beta1
+      kind: SecretBinding
+      metadata:
+        labels:
+          cloudprofile.garden.sapcloud.io/name: metal
+        name: "{{ gardener_shooted_seed.name }}-provider-secret"
+        namespace: garden
+      secretRef:
+        name: "{{ gardener_shooted_seed.name }}-provider-secret"
+        namespace: garden
+      provider:
+        type: metal
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Deploy shooted seed
+  k8s:
+    definition: "{{ lookup('template', 'shooted-seed.j2') }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Deploy managed seed resource
+  k8s:
+    definition: "{{ lookup('template', 'managed-seed.j2') }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Delay shoot rollout
+  ansible.builtin.pause:
+    minutes: "{{ gardener_shooted_seed_rollout_delay_minutes }}"
+  when: gardener_shooted_seed_rollout_delay_minutes
