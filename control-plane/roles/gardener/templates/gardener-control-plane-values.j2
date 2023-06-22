@@ -24,7 +24,6 @@ global:
     resources: {{ gardener_apiserver_resources | to_json }}
     featureGates:
       SeedChange: true
-      WorkerPoolKubernetesVersion: true
     image:
       repository: {{ gardener_apiserver_image_name }}
       tag: {{ gardener_apiserver_image_tag }}
