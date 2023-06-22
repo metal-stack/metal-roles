@@ -47,6 +47,7 @@ providerConfig:
           partitionConfig: {{ gardener_extension_provider_metal_duros_storage_config | to_json }}
 {% endif %}
 
+      imagePullPolicy: {{ gardener_extension_provider_metal_image_pull_policy }}
 {% if gardener_extension_provider_metal_image_pull_secret %}
       imagePullSecret:
         encodedDockerConfigJSON: {{ gardener_extension_provider_metal_image_pull_secret | to_json | b64encode }}
