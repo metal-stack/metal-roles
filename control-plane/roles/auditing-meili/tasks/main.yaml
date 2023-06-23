@@ -24,6 +24,19 @@
         MEILI_MASTER_KEY: "{{ auditing_meili_secret }}"
   when: auditing_meili_secret
 
+- name: Create registry pull secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: metal-auditing-registry-pull-secret
+        namespace: "{{ auditing_meili_namespace }}"
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: "{{ auditing_meili_registry_auth | to_json | b64encode }}"
+  when: auditing_meili_registry_enabled
+
 - name: Deploy meilisearch
   include_role:
     name: ansible-common/roles/helm-chart

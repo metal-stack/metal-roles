@@ -2,6 +2,9 @@
 image:
   repository: "{{ metal_auditing_meili_image_name }}"
   tag: "{{ metal_auditing_meili_image_tag }}"
+{% if auditing_meili_registry_enabled %}
+  pullSecret: "metal-auditing-registry-pull-secret"
+{% endif %}
 
 readinessProbe:
   periodSeconds: 5
