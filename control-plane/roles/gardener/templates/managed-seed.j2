@@ -40,8 +40,6 @@ spec:
               visible: {{ gardener_shooted_seed.visible | default(true) }}
             shootDNS:
               enabled: true
-            verticalPodAutoscaler:
-              enabled: {{ gardener_shooted_seed.verticalPodAutoscaler | default(true) }}
     deployment:
       image:
         pullPolicy: IfNotPresent
