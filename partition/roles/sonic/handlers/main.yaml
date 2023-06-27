@@ -1,0 +1,39 @@
+---
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: write metal conf to db
+  ansible.builtin.command: sonic-cfggen --yaml /etc/sonic/metal.yaml --write-to-db
+  notify: config save
+
+- name: config save
+  ansible.builtin.command: config save -y
+
+- name: config save and reload
+  systemd:
+    name: config-save-reload
+    state: started
+
+- name: restart bgp
+  systemd:
+    name: bgp
+    state: restarted
+
+- name: restart caclmgrd
+  systemd:
+    name: caclmgrd
+    state: restarted
+
+- name: config reload
+  ansible.builtin.command: config reload -y
+  async: 120
+  poll: 0
+  notify: wait for new connection
+
+- name: wait for new connection
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 30
+    timeout: 300

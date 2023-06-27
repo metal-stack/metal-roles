@@ -1,0 +1,47 @@
+---
+sonic_mgmt_vrf: true
+sonic_ntpservers: []
+sonic_nameservers: []
+sonic_ip_masquerade: false
+sonic_timezone: Europe/Berlin
+
+## Physical settings
+sonic_breakouts: {}
+sonic_ports: []
+#- name: Ethernet50
+#  speed: 10000
+sonic_ports_default_speed: 10000
+sonic_ports_default_mtu: 9216
+sonic_ports_default_fec: none 
+
+## BGP related settings
+sonic_loopback_address:
+sonic_asn: 
+sonic_bgp_ports: []
+sonic_frr_render: true
+sonic_frr_debug_options: []
+sonic_frr_syslog_level: informational
+sonic_frr_l2vpn_evpn: false
+#sonic_frr_route_map:
+# name: LOOPBACKS
+# match: interface name Loopback0
+sonic_frr_static_routes: []
+
+# VLAN settings
+sonic_vlan_members: true
+sonic_vlans: []
+#- id: 1
+#  ip: ''
+#  untagged_ports: []
+#  dhcp_servers: []
+
+sonic_vteps: []
+
+# LLDP Hello timer is 30s by default on the switch, but metal-hammer expects 10s or so
+sonic_lldp_hello_timer: 10
+
+sonic_frr_static_routes_mgmt: []
+sonic_interconnects: {}
+
+sonic_interconnects_default_peer_group: EXTERNAL
+sonic_interconnects_default_bgp_timers: '1 3'

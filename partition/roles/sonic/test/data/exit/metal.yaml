@@ -1,0 +1,139 @@
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: split
+    hostname: "exit01"
+    type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+NTP_SERVER:
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|10.0.0.1/32: {}
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "true"
+
+INTERFACE:
+  Ethernet0:
+    vrf_name: "VrfMpls"
+  Ethernet0|10.0.0.2/32: {}
+  Ethernet3: {}
+  Ethernet3|10.1.2.2/30: {}
+  Ethernet112:
+    ipv6_use_link_local_only: enable
+  Ethernet116:
+    ipv6_use_link_local_only: enable
+
+PORT:
+  Ethernet0:
+    admin_status: up
+    speed: "10000"
+    mtu: "1500"
+    fec: "none"
+  Ethernet1:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet2:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet3:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet112:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet116:
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: "none"
+
+VLAN:
+  Vlan4000:
+    vlanid: 4000
+
+VLAN_INTERFACE:
+  Vlan4000:
+    vrf_name: "vrfMpls"
+
+VLAN_MEMBER:
+
+VXLAN_EVPN_NVO:
+  nvo:
+    source_vtep: vtep
+
+VXLAN_TUNNEL:
+  vtep:
+    src_ip: "10.0.0.1"
+
+VXLAN_TUNNEL_MAP:
+  # MPLS
+  "vtep|map_104000_4000":
+    vlan: "4000"
+    vni: "104000"
+
+VRF:
+  VrfMpls:
+    vni: "104000"
+
+LLDP:
+  Global:
+    hello_timer: 10
+
+ACL_RULE:
+  ALLOW_SSH|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+  ALLOW_SSH|RULE_1:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "91"
+    SRC_IP: "1.2.3.4/32"
+  ALLOW_SSH|RULE_2:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "92"
+    SRC_IP: "10.11.0.0/16"
+  ALLOW_NTP|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+  ALLOW_NTP|RULE_1:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "99"
+    SRC_IP: "0.0.0.0/0"
+
+ACL_TABLE:
+  ALLOW_SSH:
+    policy_desc: "Allow SSH access"
+    ports: []
+    services:
+    - "SSH"
+    stage: "ingress"
+    type: "CTRLPLANE"
+  ALLOW_NTP:
+    policy_desc: "Allow NTP"
+    ports: []
+    services:
+    - "NTP"
+    stage: "ingress"
+    type: "CTRLPLANE"

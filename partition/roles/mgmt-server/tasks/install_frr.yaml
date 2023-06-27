@@ -1,4 +1,11 @@
 ---
+- name: ensure gpg is installed to handle FRR repo key
+  apt:
+    name:
+    - gpg
+    update_cache : yes
+    force_apt_get: yes
+
 - name: add FRR apt-key to verify FRR package
   apt_key:
     url: https://deb-us.frrouting.org/frr/keys.asc
