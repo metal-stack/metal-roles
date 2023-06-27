@@ -1,5 +1,5 @@
 ---
-- include_tasks: redhat.yaml
+- import_tasks: redhat.yaml
   when: ansible_os_family == 'RedHat'
 
 - name: Enable systemd-networkd
