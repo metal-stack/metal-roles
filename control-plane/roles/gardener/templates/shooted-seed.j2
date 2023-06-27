@@ -30,6 +30,8 @@ spec:
       maxPods: {{ gardener_shooted_seed_max_pods }}
     kubeControllerManager:
       nodeCIDRMaskSize: {{ gardener_shooted_seed_node_cidr_mask_size }}
+    verticalPodAutoscaler:
+      enabled: {{ gardener_shooted_seed.verticalPodAutoscaler | default(true) }}
   provider:
     type: metal
     workers:

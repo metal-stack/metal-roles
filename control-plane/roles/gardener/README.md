@@ -56,18 +56,20 @@ The deployment chart is taken from [garden-setup](https://github.com/gardener/ga
 
 Variables for the metal-stack cloud profile.
 
-| Name                                                | Mandatory | Description                                                           |
-| --------------------------------------------------- | --------- | --------------------------------------------------------------------- |
-| gardener_cloud_profile_stage_name                   |           | The name of the metal-stack environment in the cloud profile          |
-| gardener_cloud_profile_metal_api_url                |           | The URL used by the Gardener to communicate with the metal-api        |
-| gardener_cloud_profile_metal_api_hmac               | yes       | The admin HMAC used by the Gardener to communicate with the metal-api |
-| gardener_cloud_profile_machine_images               |           | The machine images available for shoots in the metal-api              |
-| gardener_cloud_profile_firewall_controller_versions |           | The available firewall controller versions for metal-stack shoots     |
-| gardener_cloud_profile_kubernetes                   |           | The available Kubernetes versions for metal-stack shoots              |
-| gardener_cloud_profile_machine_types                |           | The machine types available for shoots in the metal-api               |
-| gardener_cloud_profile_regions                      |           | The regions available for shoots                                      |
-| gardener_cloud_profile_partitions                   |           | The partitions available for shoots                                   |
-| gardener_os_cri_mapping                             |           | A mapping to add available CRIs to the machine images                 |
+| Name                                                       | Mandatory | Description                                                                         |
+| ---------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------- |
+| gardener_cloud_profile_stage_name                          |           | The name of the metal-stack environment in the cloud profile                        |
+| gardener_cloud_profile_metal_api_url                       |           | The URL used by the Gardener to communicate with the metal-api                      |
+| gardener_cloud_profile_metal_api_hmac                      | yes       | The admin HMAC used by the Gardener to communicate with the metal-api               |
+| gardener_cloud_profile_machine_images                      |           | The machine images available for shoots in the metal-api                            |
+| gardener_cloud_profile_firewall_images                     |           | The firewall images available for shoots in the metal-api                           |
+| gardener_cloud_profile_firewall_images_from_machine_images |           | If set to true, uses the passed machine images and adds those with firewall feature |
+| gardener_cloud_profile_firewall_controller_versions        |           | The available firewall controller versions for metal-stack shoots                   |
+| gardener_cloud_profile_kubernetes                          |           | The available Kubernetes versions for metal-stack shoots                            |
+| gardener_cloud_profile_machine_types                       |           | The machine types available for shoots in the metal-api                             |
+| gardener_cloud_profile_regions                             |           | The regions available for shoots                                                    |
+| gardener_cloud_profile_partitions                          |           | The partitions available for shoots                                                 |
+| gardener_os_cri_mapping                                    |           | A mapping to add available CRIs to the machine images                               |
 
 ### Extensions
 
@@ -90,6 +92,7 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_extension_provider_metal_egress_destinations        |           | Sets allowed egress destinations for the `RestrictEgress` control plane feature gate of the GEPM                                            |
 | gardener_extension_provider_metal_duros_storage_enabled      |           | Enables the duros storage integration feature gate of the GEPM (Lightbits storage)                                                          |
 | gardener_extension_provider_metal_duros_storage_config       |           | Configuration for the duros storage integration                                                                                             |
+| gardener_extension_provider_metal_image_pull_policy          |           | Sets the image pull policy for components deployed through this extension controller.                                                       |
 | gardener_extension_provider_metal_image_pull_secret          |           | Provide image pull secrets for deployed containers                                                                                          |
 | gardener_cert_management_issuer_private_key                  |           | The Let's Encrypt private key used by the cert-management extension controller to setup signed certificates                                 |
 

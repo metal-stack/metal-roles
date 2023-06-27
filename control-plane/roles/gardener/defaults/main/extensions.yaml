@@ -48,6 +48,7 @@ gardener_extension_provider_metal_duros_storage_config:
   #     encryption: true
   # ...
 
+gardener_extension_provider_metal_image_pull_policy: "{{ metal_control_plane_image_pull_policy | default('IfNotPresent') }}"
 gardener_extension_provider_metal_image_pull_secret:
   # auths:
   #   <registry>:

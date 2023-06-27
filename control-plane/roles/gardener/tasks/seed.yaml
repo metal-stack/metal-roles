@@ -69,9 +69,9 @@
 
 - name: Fetch current seed cidrs
   set_fact:
-    _gardener_current_soil_node_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('nodes', none) }}"
-    _gardener_current_soil_pod_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('pods', none) }}"
-    _gardener_current_soil_service_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('services', none) }}"
+    _gardener_current_soil_node_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('nodes', none) }}"
+    _gardener_current_soil_pod_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('pods', none) }}"
+    _gardener_current_soil_service_cidr: "{{ (lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('services', none) }}"
 
 - name: Set cidrs for seed
   set_fact:
@@ -95,7 +95,7 @@
   retries: 60
   delay: 3
   until:
-    - "'conditions' in lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1alpha1', kind='Seed', resource_name=gardener_soil_name).get('status', {})"
+    - "'conditions' in lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {})"
     - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions | length > 2
     - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions[0].message == "Gardenlet is posting ready status."
     - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions[2].message == "Seed cluster has been bootstrapped successfully."
