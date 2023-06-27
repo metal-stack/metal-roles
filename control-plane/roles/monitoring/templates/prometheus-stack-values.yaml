@@ -37,6 +37,13 @@ grafana:
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
   additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
+{% if monitoring_grafana_github_oauth %}
+  grafana.ini:
+    auth.github: {{ monitoring_grafana_github_oauth | to_json }}
+{% endif %}
+{% if monitoring_grafana_extra_secret_mounts %}
+  extraSecretMounts: {{ monitoring_grafana_extra_secret_mounts | to_json }}
+{% endif %}
   sidecar:
     datasources:
       url: http://thanos-query-frontend:9090
