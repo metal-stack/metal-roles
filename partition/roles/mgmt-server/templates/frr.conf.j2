@@ -28,6 +28,9 @@ router bgp {{ mgmt_server_asn }}
  !
  address-family ipv4 unicast
   redistribute connected route-map LOCAL_INTERFACES
+  {% if mgmt_server_provide_default_route %}
+  network 0.0.0.0/0
+  {% endif %}
  exit-address-family
 !
 route-map LOCAL_INTERFACES permit 10

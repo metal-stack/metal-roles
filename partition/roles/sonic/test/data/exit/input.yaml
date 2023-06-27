@@ -1,0 +1,107 @@
+---
+inventory_hostname: exit01
+sonic_asn: 4200000000
+sonic_loopback_address: 10.0.0.1
+
+sonic_breakouts:
+  Ethernet0: "4x10G"
+
+sonic_ports:
+- name: Ethernet0
+  speed: 10000
+  mtu: 1500
+  vrf: VrfMpls
+  ips:
+  - 10.0.0.2/32
+# Uplink for pxe VLAN
+- name: Ethernet1
+  speed: 10000
+- name: Ethernet2
+  speed: 10000
+- name: Ethernet3
+  speed: 10000
+  ips:
+  - 10.1.2.2/30
+# spine uplinks
+- name: Ethernet112
+- name: Ethernet116
+
+sonic_bgp_ports:
+- Ethernet112
+- Ethernet116
+
+sonic_vlans:
+- id: 4000
+  vrf: vrfMpls
+
+sonic_vteps:
+- comment: MPLS
+  vlan: 4000
+  vni: 104000
+
+# Default route from PXE VLAN
+sonic_frr_static_routes:
+- "0.0.0.0/0 10.1.2.1"
+
+sonic_interconnects:
+  mpls:
+    neighbor_ip: 10.0.0.3
+    bgp_md5_password: test
+    remote_as: 65000
+    peer_group: MPLS
+    vrf: VrfMpls
+    vni: 104000
+    announcements: []
+    routemap_in:
+      name: ALLOW-MPLS-IN
+      entries:
+      - "match ip address prefix-list MPLS_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-MPLS-OUT
+      entries:
+      - "match ip address prefix-list MPLS_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list MPLS_PREFIX_IN seq 10 permit 10.0.0.0/8"
+    - "ip prefix-list MPLS_PREFIX_IN seq 20 permit 100.100.0.0/16"
+  pxe:
+    peer_group: PXE
+    neighbors:
+    - "Ethernet1 interface"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE-IN
+      entries:
+      - "match ip address prefix-list PXE_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE-OUT
+      entries:
+      - "match ip address prefix-list PXE_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list PXE_PREFIX_IN seq 10 permit 0.0.0.0/0"
+    - "ip prefix-list PXE_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+  pxe2:
+    peer_group: PXE2
+    unnumbered_interfaces:
+    - "Ethernet2"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE2-IN
+      entries:
+      - "match ip address prefix-list PXE2_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE2-OUT
+      entries:
+      - "match ip address prefix-list PXE2_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list PXE2_PREFIX_IN seq 10 permit 0.0.0.0/0"
+    - "ip prefix-list PXE2_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+
+
+sonic_frr_l2vpn_evpn: true
+sonic_frr_route_map:
+ name: LOOPBACKS
+ match: interface Loopback0
+
+sonic_ssh_sourceranges:
+- "1.2.3.4/32"
+- "10.11.0.0/16"

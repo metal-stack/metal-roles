@@ -33,3 +33,9 @@
 - name: save iptables v6 rules
   shell: ip6tables-save > /etc/iptables/rules.v6
   listen: persist iptables
+
+- name: restart sshd
+  service:
+    name: sshd
+    enabled: true
+    state: restarted
