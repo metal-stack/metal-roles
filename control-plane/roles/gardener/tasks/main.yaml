@@ -116,7 +116,7 @@
 - name: Create Gardener project for shooted seeds
   k8s:
     definition:
-      apiVersion: core.gardener.cloud/v1alpha1
+      apiVersion: core.gardener.cloud/v1beta1
       kind: Project
       metadata:
         name: "{{ gardener_soil_name }}"
