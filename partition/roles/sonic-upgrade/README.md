@@ -2,6 +2,8 @@
 
 Performs an upgrade of the SONiC OS on a device and reboots it to complete the installation.
 
+It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
+
 ## Variables
 
 | Name                     | Mandatory | Description                                                                                                         |

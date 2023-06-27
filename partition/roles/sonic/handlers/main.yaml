@@ -37,8 +37,3 @@
     sleep: 5
     delay: 30
     timeout: 300
-
-# - name: restart ssh service
-#   systemd:
-#     name: ssh
-#     state: restarted
