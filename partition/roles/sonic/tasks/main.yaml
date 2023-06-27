@@ -1,4 +1,7 @@
 ---
+- name: Gather switch facts
+  switch_facts:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
@@ -9,6 +12,7 @@
       - sonic_asn is defined
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
+      - metal_stack_switch_os_is_sonic
 
 # - name: Patch ssh service to run in the mgmt vrf
 #   blockinfile:
@@ -70,7 +74,7 @@
   notify:
   - write metal conf to db
   - config reload
-    
+
 - name: Set NTP timezone
   timezone:
     name: "{{ sonic_timezone }}"
