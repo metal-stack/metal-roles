@@ -5,6 +5,8 @@
     quiet: yes
     that:
       - frr_version is not none
+      - frr_repo is not none
+      - ansible_os_family in ['Debian', 'RedHat']
 
 - name: gather package facts
   package_facts:
@@ -12,12 +14,12 @@
 
 - name: check if frr is installed
   set_fact:
-    frr_installed: "{{ ('packages' in ansible_facts and (ansible_facts.packages['frr']|length > 0) and (frr_version|string in (ansible_facts.packages['frr'][0].version))) | bool }}"
+    frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version|string in (ansible_facts.packages['frr'][0].version))) | bool }}"
 
-- include_tasks: install/debian.yaml
+- import_tasks: install/debian.yaml
   when: not frr_installed and ansible_os_family == 'Debian'
 
-- include_tasks: install/redhat.yaml
+- import_tasks: install/redhat.yaml
   when: not frr_installed and ansible_os_family == 'RedHat'
 
 - name: copy sysctls for frr
