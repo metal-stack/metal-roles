@@ -37,8 +37,14 @@ grafana:
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
   additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
-{% if monitoring_grafana_github_oauth %}
   grafana.ini:
+    server:
+{% if monitoring_ingress_grafana_tls %}
+      root_url: https://{{ monitoring_grafana_ingress_dns }}
+{% else %}
+      root_url: http://{{ monitoring_grafana_ingress_dns }}
+{% endif %}
+{% if monitoring_grafana_github_oauth %}
     auth.github: {{ monitoring_grafana_github_oauth | to_json }}
 {% endif %}
 {% if monitoring_grafana_extra_secret_mounts %}
