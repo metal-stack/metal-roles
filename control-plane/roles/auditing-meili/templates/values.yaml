@@ -20,5 +20,5 @@ environment:
 auth:
   existingMasterKeySecret: metal-auditing-master-key
 
-persistence: {{ auditing_meili_persistence }}
-ingress: {{ auditing_meili_ingress }}
+persistence: {{ auditing_meili_persistence | to_json }}
+ingress: {{ auditing_meili_ingress | to_json }}
