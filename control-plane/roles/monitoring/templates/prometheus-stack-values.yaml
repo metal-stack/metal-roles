@@ -79,29 +79,6 @@ grafana:
 {% endif %}
 
 alertmanager:
-  # TODO: alertmanager fails with these settings, needs to be fixed
-  enabled: false
-
-  ingress:
-    enabled: {{ monitoring_alertmanager_ingress_enabled }}
-    hostname: {{ monitoring_alertmanager_ingress_dns }}
-    ingressClassName: "nginx"
-    annotations:
-{% for key, value in monitoring_alertmanager_ingress_annotations.items() %}
-      {{ key }}: "{{ value }}"
-{% endfor %}
-{% if monitoring_alertmanager_ingress_basic_auth %}
-      nginx.ingress.kubernetes.io/auth-type: basic
-      nginx.ingress.kubernetes.io/auth-secret: alertmanager-basic-auth
-{% endif %}
-    hosts:
-      - {{ monitoring_alertmanager_ingress_dns }}
-{% if monitoring_alertmanager_ingress_tls %}
-    tls:
-      - hosts:
-        - {{ monitoring_alertmanager_ingress_dns }}
-        secretName: alertmanager-ingress-tls
-{% endif %}
   alertmanagerSpec:
     logLevel: debug
   config:

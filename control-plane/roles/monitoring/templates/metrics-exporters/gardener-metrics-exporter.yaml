@@ -92,6 +92,7 @@ kind: Service
 metadata:
   name: gardener-metrics-exporter
   labels:
+    app: gardener-metrics-exporter
 spec:
   type: ClusterIP
   sessionAffinity: None

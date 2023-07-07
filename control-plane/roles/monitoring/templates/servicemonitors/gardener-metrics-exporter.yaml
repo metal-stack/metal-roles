@@ -12,7 +12,7 @@ spec:
       scrapeTimeout: 5s
   selector:
     matchLabels:
-      app: gardener
+      app: gardener-metrics-exporter
   namespaceSelector:
     matchNames:
     - {{ monitoring_namespace }}
