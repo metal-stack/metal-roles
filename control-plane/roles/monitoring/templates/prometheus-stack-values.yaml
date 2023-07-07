@@ -52,7 +52,7 @@ grafana:
 {% endif %}
   sidecar:
     datasources:
-      uid: Thanos
+      uid: prometheus
       url: http://thanos-query-frontend:9090
   ingress:
     enabled: true

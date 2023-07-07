@@ -10,12 +10,14 @@ monitoring_grafana_additional_datasources:
     orgId: 1
     version: 1
     isDefault: false
+    uid: loki
     jsonData:
       maxLines: 1000
   - name: AlertManager
     type: camptocamp-prometheus-alertmanager-datasource
     url: http://prometheus-alertmanager:9093/
     access: proxy
+    uid: alertmanager
     jsonData:
       severity_critical: "critical"
       severity_high: "high"
