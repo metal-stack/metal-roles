@@ -15,8 +15,7 @@
     systemd_docker_image_name: "{{ monitoring_node_exporter_image_name }}"
     systemd_docker_image_tag: "{{ monitoring_node_exporter_image_tag }}"
     systemd_service_after: docker.service
-    #TO DO ask Markus if we need host network
-    # systemd_docker_network: host
+    systemd_docker_network: host
     systemd_service_requires: docker.service
     systemd_docker_ports:
       - host_port: "{{ monitoring_node_exporter_port }}"
