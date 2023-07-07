@@ -1,12 +1,8 @@
 ---
-- name: set facts
-  set_fact:
-    seed: "{{ item.name }}"
-
 - name: Write seed kubeconfig
   copy:
     dest: "/tmp/kubeconfig.{{ seed }}"
-    content: "{{ lookup('k8s', kubeconfig='/tmp/kubeconfig.garden', api_version='v1', namespace='garden', kind='Secret', resource_name=seed+'.kubeconfig').get('data', {}).get('kubeconfig') | b64decode }}"
+    content: "{{ lookup('k8s', kubeconfig='/tmp/kubeconfig.garden', api_version='v1', namespace='garden', kind='Secret', resource_name=item+'.kubeconfig').get('data', {}).get('kubeconfig') | b64decode }}"
 
 - name: Create monitoring namespace
   k8s:
@@ -18,7 +14,7 @@
         labels:
           name: "{{ monitoring_namespace }}"
   environment:
-    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ seed }}"
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ item }}"
 
 - name: Deploy Promtail
   include_role:
@@ -30,4 +26,4 @@
     helm_target_namespace: "{{ monitoring_namespace }}"
     helm_chart_version: "{{ monitoring_promtail_chart_version }}"
     helm_value_file_template: "seed-promtail-values.yaml"
-    helm_kubeconfig: "/tmp/kubeconfig.{{ seed }}"
+    helm_kubeconfig: "/tmp/kubeconfig.{{ item }}"
