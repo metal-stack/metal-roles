@@ -117,6 +117,4 @@
 - name: Loop over Gardener seeds
   include_tasks: gardener-seed.yaml
   loop: "{{ monitoring_gardener_seeds }}"
-  loop_control:
-    loop_var: seed
   when: monitoring_gardener_enabled
