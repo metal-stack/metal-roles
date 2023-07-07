@@ -1,0 +1,48 @@
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: split
+    hostname: "spine01"
+    type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+NTP_SERVER:
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|10.0.0.1/32: {}
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "true"
+
+INTERFACE:
+  Ethernet50:
+    ipv6_use_link_local_only: enable
+  Ethernet51:
+    ipv6_use_link_local_only: enable
+
+PORT:
+  Ethernet50:
+    admin_status: up
+    speed: "100000"
+    mtu: "9216"
+    fec: "none"
+  Ethernet51:
+    admin_status: up
+    speed: "100000"
+    mtu: "9216"
+    fec: "none"
+
+LLDP:
+  Global:
+    hello_timer: 10

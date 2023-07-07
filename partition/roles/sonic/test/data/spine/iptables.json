@@ -1,0 +1,10 @@
+{
+    "ipv4":[
+        "-A INPUT -s 1.2.3.9/32 -p tcp -m tcp --dport 2112 -j ACCEPT",
+        "-A INPUT -s 1.2.3.13/32 -p tcp -m tcp --dport 9080 -j ACCEPT",
+        "-A INPUT -s 1.2.3.25/32 -p tcp -m tcp --dport 9100 -j ACCEPT",
+        "-A INPUT -s 1.2.3.29/32 -p tcp -m tcp --dport 9342 -j ACCEPT"
+    ],
+    "ipv6":[
+    ]
+}

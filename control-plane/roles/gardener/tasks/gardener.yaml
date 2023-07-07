@@ -1,0 +1,49 @@
+---
+- name: Clone Gardener
+  git:
+    repo: "{{ gardener_repo_url }}"
+    dest: "{{ gardener_local_tmp_dir }}/gardener"
+    depth: 1
+    version: "{{ gardener_repo_ref }}"
+
+- name: Create garden namespace (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: garden
+        labels:
+          app: gardener
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+
+- name: Deploy Gardener Control Plane (in virtual apiserver)
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_timeout: "600s"
+    helm_chart: "{{ gardener_local_tmp_dir }}/gardener/charts/gardener/controlplane/charts/application"
+    helm_release_name: controlplane
+    helm_target_namespace: garden
+    helm_value_file_template: gardener-control-plane-values.j2
+    helm_kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+
+- name: Deploy Gardener Control Plane
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_timeout: "600s"
+    helm_chart: "{{ gardener_local_tmp_dir }}/gardener/charts/gardener/controlplane/charts/runtime"
+    helm_release_name: controlplane
+    helm_target_namespace: garden
+    helm_value_file_template: gardener-control-plane-values.j2
+
+- name: Wait until gardener runtime components are ready
+  command: echo
+  changed_when: false
+  retries: 10
+  delay: 6
+  until:
+    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace='garden', resource_name='gardener-apiserver').get('status', {}).get('readyReplicas', 0) >= 1
+    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace='garden', resource_name='garden-kube-apiserver').get('status', {}).get('readyReplicas', 0) >= 3
+    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace='garden', resource_name='gardener-controller-manager').get('status', {}).get('readyReplicas', 0) >= 1

@@ -1,0 +1,85 @@
+---
+- name: Gather switch facts
+  switch_facts:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - sonic_mgmt_vrf is defined
+      - sonic_loopback_address is defined
+      - sonic_asn is defined
+      - sonic_ntpservers is defined
+      - sonic_nameservers is defined
+      - metal_stack_switch_os_is_sonic
+
+- name: render resolv.conf
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+
+- name: Activate IP MASQUERADE on eth0
+  ansible.builtin.iptables:
+    chain: POSTROUTING
+    jump: MASQUERADE
+    out_interface: eth0
+    table: nat
+  when: sonic_ip_masquerade
+
+- name: Activate ipv4 forwarding on eth0
+  ansible.posix.sysctl:
+    name: net.ipv4.conf.eth0.forwarding
+    reload: no
+    sysctl_set: yes
+    value: "1"
+  when: sonic_ip_masquerade
+
+- name: Install services
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  notify: reload systemd
+  loop:
+    - bgp-validation@.service
+    - frr-reload.service
+
+# Dependencies are returned by config.
+- name: Configure breakouts
+  command: "config interface breakout --yes {{ item.key }} '{{ item.value }}'"
+  register: breakout_result
+  changed_when: "'Breakout process got successfully completed.' in breakout_result.stdout"
+  failed_when: "breakout_result.rc != 0 or 'Dependecies Exist. No further action will be taken' in breakout_result.stdout"
+  with_dict: "{{ sonic_breakouts }}"
+  when: sonic_breakouts is defined
+
+- name: Render metal config for config_db.json
+  template:
+    src: metal.yaml.j2
+    dest: /etc/sonic/metal.yaml
+  notify:
+  - write metal conf to db
+  - config reload
+
+- name: Set NTP timezone
+  timezone:
+    name: "{{ sonic_timezone }}"
+
+- name: Render frr config
+  template:
+    src: frr.conf.j2
+    dest: /etc/sonic/frr/frr.conf
+  when: sonic_frr_render
+  notify:
+  - restart bgp
+
+- name: render iptables.json
+  template:
+    src: iptables.json.j2
+    dest: /etc/sonic/iptables.json
+  when: sonic_extended_cacl is defined
+  notify:
+  - restart caclmgrd
+
+- name: Flush handlers
+  meta: flush_handlers

@@ -1,0 +1,10 @@
+[Unit]
+Description=Reload FRR
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker exec bgp /usr/lib/frr/frr-reload
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,60 @@
+---
+gardener_os_controller_repo_ref: "{{ gardener_os_controller_image_tag }}"
+# TODO: the ref to the official controller can be used as soon as we are compatible with g/g 1.59
+gardener_networking_cilium_repo_ref: "metal-stack/gardener-extension-networking-cilium/{{ gardener_networking_cilium_image_tag }}"
+
+gardener_metal_admission_replicas: 1
+gardener_metal_admission_vpa: true
+
+gardener_extension_provider_metal_repo_ref: "{{ gardener_extension_provider_metal_image_tag }}"
+
+gardener_extension_provider_metal_cluster_audit_enabled: false
+gardener_extension_provider_metal_audit_to_splunk_enabled: false
+gardener_extension_provider_metal_audit_to_splunk:
+  # ...
+  # hecToken: ""
+  # index: ""
+  # hecHost: ""
+  # hecPort: 443
+  # tlsEnabled: true
+  # hecCAFile: ""
+
+gardener_extension_provider_metal_etcd_backup_schedule: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
+gardener_extension_provider_metal_etcd_delta_snapshot_period: "0s"
+
+gardener_extension_provider_metal_internal_networks:
+  - 10.0.0.0/8
+  - 100.64.0.0/10
+
+gardener_extension_provider_metal_egress_destinations: []
+
+gardener_extension_provider_metal_duros_storage_enabled: false
+gardener_extension_provider_metal_duros_storage_config:
+  # <partition>:
+  #   apiEndpoint:
+  #   apiCA:
+  #   apiKey:
+  #   apiCert:
+  #   endpoints: []
+  #   adminKey:
+  #   adminToken:
+  #   storageClasses:
+  #   - replicaCount: 2
+  #     name: duros-silver
+  #     compression: true
+  #   - replicaCount: 3
+  #     name: duros-gold
+  #     compression: false
+  #     encryption: true
+  # ...
+
+gardener_extension_provider_metal_image_pull_policy: "{{ metal_control_plane_image_pull_policy | default('IfNotPresent') }}"
+gardener_extension_provider_metal_image_pull_secret:
+  # auths:
+  #   <registry>:
+  #     username: ""
+  #     password: ""
+  #     auth: ""
+  # ...
+
+gardener_cert_management_issuer_private_key: ""

@@ -1,0 +1,17 @@
+---
+- name: Ensure epel is activated on RedHat derivatives
+  dnf:
+    name: epel-release
+    state: present
+
+- name: Ensure NetworkManager is deactivated on RedHat derivatives
+  systemd:
+    name: NetworkManager
+    enabled: no
+    masked: true
+    state: stopped
+
+- name: Ensure systemd-networkd is installed on RedHat derivatives
+  dnf:
+    name: systemd-networkd
+    state: present

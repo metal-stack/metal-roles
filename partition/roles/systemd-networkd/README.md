@@ -2,32 +2,36 @@
 
 Deploys network-configuration for systems using systemd-networkd.
 
+This role can deploy on bare metal machines with Debian or Almalinux. It depends on fact gathering.
+
 ## Variables
 
-| Name                                | Mandatory | Description                                                                                         |
-|-------------------------------------|-----------|-----------------------------------------------------------------------------------------------------|
-| systemd_networkd_mtu                | no        | The MTU to use for interfaces.                                                                      |
-| systemd_networkd_vrfs               | no        | An array of VRFs to be configured.                                                                  |
-| systemd_networkd_vrfs.name          | no        | The name of the VRF.                                                                                |
-| systemd_networkd_vrfs.table         | no        | The routing table id of the VRF.                                                                    |
-| systemd_networkd_nics               | no        | An array of network interfaces to be configured. Mac or Name is mandatory.                          |
-| systemd_networkd_nics.mac           | no        | The MAC of the network interface.                                                                   |
-| systemd_networkd_nics.mtu           | no        | The MTU to use for this interface.                                                                  |
-| systemd_networkd_nics.name          | no        | The name this interface will be renamed to.                                                         |
-| systemd_networkd_nics.dhcp          | no        | Configure the interface addresses with DHCP.                                                        |
-| systemd_networkd_nics.addresses     | no        | array of IP addresses for the interfaces in CIDR notation.                                          |
-| systemd_networkd_nics.vrf           | no        | The VRF to bind this interface to.                                                                  |
-| systemd_networkd_nics.vxlans        | no        | array of VXLANs to terminate on a physical interface.                                               |
-| systemd_networkd_vxlans             | no        | VXLANs to terminate on a server.                                                                    |
-| systemd_networkd_vxlans.vtep.iface  | no        | The VXLAN interface that should serve as VTEP.                                                      |
-| systemd_networkd_vxlans.vtep.vni    | no        | The network identifier of a VXLAN - should be unique within a BGP/EVPN-CLOS topology.               |
-| systemd_networkd_vxlans.vtep.ip     | no        | The IP address of the tunnel endpoint (usually the loopback address when used with bgp unnumbered). |
-| systemd_networkd_vxlans.vtep.mtu    | no        | The MTU for the VXLAN interface.                                                                    |
-| systemd_networkd_vxlans.svi.iface   | no        | The VLAN interface that should be attached to the VTEP.                                             |
-| systemd_networkd_vxlans.svi.vlanid  | no        | The local VLAN ID.                                                                                  |
-| systemd_networkd_vxlans.svi.vrf     | no        | The VRF that should be used as master device for the VLAN interface.                                |
-| systemd_networkd_vxlans.svi.address | no        | The IP address that should be configured at the VLAN interface.                                     |
-| systemd_networkd_vxlans.svi.mtu     | no        | The MTU for the VLAN interface.                                                                     |
+| Name                                     | Mandatory | Description                                                                                         |
+| ---------------------------------------- | --------- | --------------------------------------------------------------------------------------------------- |
+| systemd_networkd_mtu                     |           | The MTU to use for interfaces.                                                                      |
+| systemd_networkd_vrfs                    |           | An array of VRFs to be configured.                                                                  |
+| systemd_networkd_vrfs.name               |           | The name of the VRF.                                                                                |
+| systemd_networkd_vrfs.table              |           | The routing table id of the VRF.                                                                    |
+| systemd_networkd_nics                    |           | An array of network interfaces to be configured. Mac or Name is mandatory.                          |
+| systemd_networkd_nics.mac                |           | The MAC of the network interface.                                                                   |
+| systemd_networkd_nics.mtu                |           | The MTU to use for this interface.                                                                  |
+| systemd_networkd_nics.name               |           | The name this interface will be renamed to.                                                         |
+| systemd_networkd_nics.dhcp               |           | Configure the interface addresses with DHCP.                                                        |
+| systemd_networkd_nics.dhcpv4routemetrics |           | The metric to apply to routes learned through DHCPv4.                                               |
+| systemd_networkd_nics.addresses          |           | array of IP addresses for the interfaces in CIDR notation.                                          |
+| systemd_networkd_nics.gateways           |           | array of Gateways IPs for the interfaces.                                                           |
+| systemd_networkd_nics.vrf                |           | The VRF to bind this interface to.                                                                  |
+| systemd_networkd_nics.vxlans             |           | array of VXLANs to terminate on a physical interface.                                               |
+| systemd_networkd_vxlans                  |           | VXLANs to terminate on a server.                                                                    |
+| systemd_networkd_vxlans.vtep.iface       |           | The VXLAN interface that should serve as VTEP.                                                      |
+| systemd_networkd_vxlans.vtep.vni         |           | The network identifier of a VXLAN - should be unique within a BGP/EVPN-CLOS topology.               |
+| systemd_networkd_vxlans.vtep.ip          |           | The IP address of the tunnel endpoint (usually the loopback address when used with bgp unnumbered). |
+| systemd_networkd_vxlans.vtep.mtu         |           | The MTU for the VXLAN interface.                                                                    |
+| systemd_networkd_vxlans.svi.iface        |           | The VLAN interface that should be attached to the VTEP.                                             |
+| systemd_networkd_vxlans.svi.vlanid       |           | The local VLAN ID.                                                                                  |
+| systemd_networkd_vxlans.svi.vrf          |           | The VRF that should be used as master device for the VLAN interface.                                |
+| systemd_networkd_vxlans.svi.address      |           | The IP address that should be configured at the VLAN interface.                                     |
+| systemd_networkd_vxlans.svi.mtu          |           | The MTU for the VLAN interface.                                                                     |
 
 ## Examples
 
