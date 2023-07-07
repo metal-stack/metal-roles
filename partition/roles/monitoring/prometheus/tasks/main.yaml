@@ -139,9 +139,8 @@
     systemd_service_requires: docker.service
     systemd_docker_volumes:
       - "{{ prometheus_config_host_dir }}:/etc/prometheus"
-      - "{{ prometheus_config_host_dir }}/hosts:/etc/hosts"
+      - "/etc/hosts:/etc/hosts:ro"
       - "{{ prometheus_data_host_dir }}:/prometheus"
-    systemd_docker_network: host
     systemd_docker_ports:
       - host_port: "{{ prometheus_port }}"
         target_port: "{{ prometheus_port }}"
