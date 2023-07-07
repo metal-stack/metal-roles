@@ -108,13 +108,15 @@
     - partition-rules.yaml
     # - alertmanager.yaml
 
-- name: Deploy Promtail
-  include_role:
-    name: ansible-common/roles/helm-chart
-  vars:
-    helm_repo: "https://grafana.github.io/helm-charts"
-    helm_chart: "promtail"
-    helm_release_name: promtail
-    helm_target_namespace: "{{ monitoring_namespace }}"
-    helm_chart_version: "6.11.1" # TODO: move to release vector
-    helm_value_file_template: "promtail-values.yaml"
+- name: Write virtual garden kubeconfig
+  copy:
+    dest: "/tmp/kubeconfig.garden"
+    content: "{{ monitoring_gardener_virtual_garden_kubeconfig }}"
+  when: monitoring_gardener_enabled
+
+- name: Loop over Gardener seeds
+  include_tasks: gardener-seed.yaml
+  loop: "{{ monitoring_gardener_seeds }}"
+  loop_control:
+    loop_var: seed
+  when: monitoring_gardener_enabled

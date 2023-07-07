@@ -29,6 +29,8 @@ monitoring_ingress_grafana_tls: yes
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
 
+monitoring_thanos_receive_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
+
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alertmanager.{{ metal_control_plane_ingress_dns }}"
 monitoring_alertmanager_ingress_tls: yes
@@ -50,3 +52,6 @@ monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1
 # TODO: move into release vector
 monitoring_gardener_metrics_exporter_image_name: eu.gcr.io/gardener-project/gardener/metrics-exporter
 monitoring_gardener_metrics_exporter_image_tag: "0.20.0"
+monitoring_promtail_chart_version: "6.11.1"
+
+monitoring_gardener_seeds: []
