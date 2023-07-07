@@ -35,4 +35,4 @@ config:
               source: event
 
 extraArgs:
-  - -client.external-labels=cluster={{ seed }}
+  - -client.external-labels=cluster={{ item }}
