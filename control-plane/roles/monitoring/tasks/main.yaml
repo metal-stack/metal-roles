@@ -89,6 +89,13 @@
     - metal-db.yaml
     - metal-metrics-exporter.yaml
 
+- name: Create service monitors for Gardener
+  k8s:
+    definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop:
+    - gardener-metrics-exporter.yaml
+
 - name: Deploy alerting rules
   k8s:
     definition: "{{ lookup('template', 'monitoring_rules/' + item) }}"
