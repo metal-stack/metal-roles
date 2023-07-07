@@ -1,9 +1,4 @@
 ---
-serviceMonitor:
-  enabled: true
-  labels:
-    release: prometheus
-
 config:
   clients:
     - url: https://{{ monitoring_thanos_receive_ingress_dns }}/loki/api/v1/push
