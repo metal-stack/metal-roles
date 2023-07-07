@@ -79,6 +79,9 @@ grafana:
 {% endif %}
 
 alertmanager:
+  # TODO: alertmanager fails with these settings, needs to be fixed
+  enabled: false
+
   ingress:
     enabled: {{ monitoring_alertmanager_ingress_enabled }}
     hostname: {{ monitoring_alertmanager_ingress_dns }}
@@ -139,6 +142,7 @@ alertmanager:
 {% endif %}
     templates:
     - '/etc/alertmanager/config/*.tmpl'
+
 kubeProxy:
   enabled: false
 
