@@ -95,6 +95,7 @@
     namespace: "{{ monitoring_namespace }}"
   loop:
     - gardener-metrics-exporter.yaml
+  when: monitoring_gardener_enabled
 
 - name: Deploy alerting rules
   k8s:
