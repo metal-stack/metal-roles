@@ -83,21 +83,21 @@ alertmanager:
     hostname: {{ alertmanager_ingress_dns }}
     ingressClassName: "nginx"
     annotations:
-  {% for key, value in alertmanager_ingress_annotations.items() %}
+{% for key, value in alertmanager_ingress_annotations.items() %}
       {{ key }}: "{{ value }}"
-  {% endfor %}
-  {% if alertmanager_ingress_basic_auth %}
+{% endfor %}
+{% if alertmanager_ingress_basic_auth %}
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: alertmanager-basic-auth
-  {% endif %}
+{% endif %}
     hosts:
       - {{ alertmanager_ingress_dns }}
-  {% if alertmanager_ingress_tls %}
+{% if alertmanager_ingress_tls %}
     tls:
       - hosts:
         - {{ alertmanager_ingress_dns }}
         secretName: alertmanager-ingress-tls
-  {% endif %}
+{% endif %}
   alertmanagerSpec:
     logLevel: debug
   config:
@@ -109,7 +109,7 @@ alertmanager:
     inhibit_rules: []
     route:
       receiver: webhook-logger
-      group_by: ['severity', 'alertname', 'namespace', 'pod', 'job'] 
+      group_by: ['severity', 'alertname', 'namespace', 'pod', 'job']
       group_wait: 30s
       group_interval: 30s
       repeat_interval: 30s
@@ -118,9 +118,9 @@ alertmanager:
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
 {% if monitoring_slack_channel_url is defined %}
-      - match: 
-          team: slack 
-        receiver: slack 
+      - match:
+          team: slack
+        receiver: slack
         continue: true
 {% endif %}
     receivers:
