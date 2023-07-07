@@ -111,7 +111,7 @@
 - name: Write virtual garden kubeconfig
   copy:
     dest: "/tmp/kubeconfig.garden"
-    content: "{{ monitoring_gardener_virtual_garden_kubeconfig }}"
+    content: "{{ monitoring_gardener_virtual_garden_kubeconfig | b64decode }}"
   when: monitoring_gardener_enabled
 
 - name: Loop over Gardener seeds
