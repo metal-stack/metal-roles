@@ -107,3 +107,14 @@
     - alertmanager-rules.yaml
     - partition-rules.yaml
     # - alertmanager.yaml
+
+- name: Deploy Promtail
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "https://grafana.github.io/helm-charts"
+    helm_chart: "promtail"
+    helm_release_name: promtail
+    helm_target_namespace: "{{ monitoring_namespace }}"
+    helm_chart_version: "6.11.1" # TODO: move to release vector
+    helm_value_file_template: "promtail-values.yaml"
