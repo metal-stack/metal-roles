@@ -39,7 +39,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -116,7 +119,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -199,7 +205,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -281,7 +290,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -364,7 +376,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -443,7 +458,10 @@ data:
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "fill": 0,
           "fillGradient": 0,
@@ -538,7 +556,10 @@ data:
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "fill": 0,
           "fillGradient": 0,
@@ -634,7 +655,10 @@ data:
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "fill": 0,
           "fillGradient": 0,
@@ -734,7 +758,10 @@ data:
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "fill": 0,
           "fillGradient": 0,
@@ -832,7 +859,10 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "fill": 0,
           "fillGradient": 0,
@@ -940,7 +970,10 @@ data:
               "text": "All",
               "value": "$__all"
             },
-            "datasource": "Thanos",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
             "definition": "",
             "hide": 0,
             "includeAll": true,

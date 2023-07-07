@@ -39,7 +39,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 2,
           "fieldConfig": {
             "defaults": {
@@ -134,7 +137,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 2,
           "fieldConfig": {
             "defaults": {
@@ -229,7 +235,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 2,
           "fieldConfig": {
             "defaults": {
@@ -324,7 +333,10 @@ data:
             "rgba(237, 129, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 1,
           "fieldConfig": {
             "defaults": {
@@ -794,7 +806,10 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "description": "",
           "fieldConfig": {
@@ -952,7 +967,10 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "fieldConfig": {
             "defaults": {
@@ -1072,7 +1090,10 @@ data:
           }
         },
         {
-          "datasource": "Loki",
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -1120,7 +1141,10 @@ data:
               "text": "fel-wps101",
               "value": "fel-wps101"
             },
-            "datasource": "Thanos",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
             "definition": "label_values(garden_shoot_info, name)",
             "hide": 0,
             "includeAll": false,
@@ -1147,7 +1171,10 @@ data:
               "text": "prod",
               "value": "prod"
             },
-            "datasource": "Thanos",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
             "definition": "label_values(garden_shoot_info{name=~\"$shoot\"}, project)",
             "hide": 0,
             "includeAll": false,

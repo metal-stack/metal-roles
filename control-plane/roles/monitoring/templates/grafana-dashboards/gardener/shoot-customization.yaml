@@ -50,7 +50,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Amount of hibernated Shoots.",
           "format": "none",
@@ -136,7 +139,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Amount of Shoots which have an hibernation schedule configured.",
           "format": "none",
@@ -222,7 +228,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which allow privileged containers.",
           "format": "none",
@@ -308,7 +317,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which use a custom dns domain.",
           "format": "none",
@@ -394,7 +406,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have a maintenance window configured.",
           "format": "none",
@@ -480,7 +495,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have autoupdate for kubernetes versions configured.",
           "format": "none",
@@ -566,7 +584,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have autoupdate for machine image versions configured.",
           "format": "none",
@@ -649,7 +670,10 @@ data:
           "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "description": "Count of Shoots which have an extension(s) configured.",
           "fill": 0,
@@ -749,7 +773,10 @@ data:
           "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "description": "Count of Shoots which by proxy mode configuration for the kube proxy.",
           "fill": 0,
@@ -866,7 +893,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have basic auth enabled on the kube apiserver.",
           "format": "none",
@@ -952,7 +982,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have an audit log policy configured for the kube apiserver.",
           "format": "none",
@@ -1038,7 +1071,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have an open id connect coniguration for the kube apiserver.",
           "format": "none",
@@ -1121,7 +1157,10 @@ data:
           "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "description": "Count of Shoots with enabled kube apiserver feature gates.",
           "fill": 0,
@@ -1221,7 +1260,10 @@ data:
           "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "description": "Count of Shoots with enabled kube apiserver admission plugins.",
           "fill": 0,
@@ -1338,7 +1380,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots with multiple worker pools.",
           "format": "none",
@@ -1424,7 +1469,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots with multi zone worker pools.",
           "format": "none",
@@ -1510,7 +1558,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots with worker pool taints.",
           "format": "none",
@@ -1596,7 +1647,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots with worker pool labels.",
           "format": "none",
@@ -1682,7 +1736,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots with worker pool annotations.",
           "format": "none",
@@ -1782,7 +1839,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have node cidr mask size configured on the kube controller manager.",
           "format": "none",
@@ -1868,7 +1928,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots with horizontal pod autoscaling for the kube controller manager.",
           "format": "none",
@@ -1951,7 +2014,10 @@ data:
           "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "description": "Count of Shoots with enabled kube controller manager feature gates.",
           "fill": 0,
@@ -2064,7 +2130,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have a pod pid limit configured for the kubelet(s).",
           "format": "none",
@@ -2147,7 +2216,10 @@ data:
           "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": 0,
           "description": "Count of Shoots with enabled kube scheduler feature gates.",
           "fill": 0,
@@ -2246,7 +2318,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have nginx ingress conroller addon enabled.",
           "format": "none",
@@ -2332,7 +2407,10 @@ data:
             "rgba(40, 40, 40, 0.89)",
             "#299c46"
           ],
-          "datasource": "Thanos",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "decimals": null,
           "description": "Count of Shoots which have kubernetes dashboard addon enabled.",
           "format": "none",
