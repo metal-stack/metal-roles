@@ -49,3 +49,12 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_ingress_basic_auth  |           | Set basic authentication on the Ingress for Thanos Receive                                                                                                      |
 | monitoring_thanos_receive_ingress_dns         |           | The DNS name used for exposing Thanos Receive via Ingress                                                                                                       |
 | monitoring_thanos_receive_ingress_tls         |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                 |
+
+### Gardener
+
+| Name                                            | Mandatory | Description                                                 |
+| ----------------------------------------------- | --------- | ----------------------------------------------------------- |
+| monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
+| monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
+| monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
+| monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |
