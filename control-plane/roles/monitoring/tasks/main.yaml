@@ -65,6 +65,18 @@
      - rethinkdb.yaml
      - alertmanager.yaml
 
+- name: Deploy Grafana dashboards for Gardener
+  k8s:
+    definition: "{{ lookup('template', 'grafana-dashboards/gardener/' + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop:
+    - shoot-cluster-status.yaml
+    - gardener-usage-overview.yaml
+    - shoot-states-overview.yaml
+    - shoot-customization.yaml
+    - shoot-details.yaml
+  when: monitoring_gardener_enabled
+
 - name: Create service monitors
   k8s:
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
