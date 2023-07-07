@@ -17,6 +17,13 @@
     namespace: "{{ monitoring_namespace }}"
     apply: true
 
+- name: Deploy gardener-metrics-exporter
+  k8s:
+    definition: "{{ lookup('template', 'metrics-exporters/gardener-metrics-exporter.yaml') }}"
+    namespace: "{{ monitoring_namespace }}"
+    apply: true
+  when: monitoring_gardener_enabled
+
 - name: Add webhook-logger
   k8s:
     definition: "{{ lookup('template', item) }}"
@@ -25,4 +32,3 @@
   loop:
     - webhook-logger-Service.yaml
     - webhook-logger-Deployment.yaml
-  
