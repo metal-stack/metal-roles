@@ -8,10 +8,12 @@ metadata:
 spec:
   endpoints:
     - path: /metrics
-      port: "2718"
+      port: "metrics"
       interval: 15s
       scrapeTimeout: 5s
   selector:
     matchLabels:
       app: gardener
-      role: metrics-exporter
+  namespaceSelector:
+    matchNames:
+    - {{ monitoring_namespace }}

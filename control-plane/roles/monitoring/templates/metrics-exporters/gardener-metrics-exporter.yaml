@@ -72,7 +72,7 @@ spec:
         - --port=2718
         - --kubeconfig=/etc/seed/kubecfg.yaml
         ports:
-        - name: port
+        - name: metrics
           containerPort: 2718
         volumeMounts:
           - mountPath: /etc/seed
