@@ -65,18 +65,6 @@
      - rethinkdb.yaml
      - alertmanager.yaml
 
-- name: Deploy Grafana dashboards for Gardener
-  k8s:
-    definition: "{{ lookup('template', 'grafana-dashboards/gardener/' + item) }}"
-    namespace: "{{ monitoring_namespace }}"
-  loop:
-    - shoot-cluster-status.yaml
-    - gardener-usage-overview.yaml
-    - shoot-states-overview.yaml
-    - shoot-customization.yaml
-    - shoot-details.yaml
-  when: monitoring_gardener_enabled
-
 - name: Create service monitors
   k8s:
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
@@ -89,14 +77,6 @@
     - metal-db.yaml
     - metal-metrics-exporter.yaml
 
-- name: Create service monitors for Gardener
-  k8s:
-    definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
-    namespace: "{{ monitoring_namespace }}"
-  loop:
-    - gardener-metrics-exporter.yaml
-  when: monitoring_gardener_enabled
-
 - name: Deploy alerting rules
   k8s:
     definition: "{{ lookup('template', 'monitoring_rules/' + item) }}"
@@ -106,15 +86,4 @@
     - prometheus-alerts.yaml
     - alertmanager-rules.yaml
     - partition-rules.yaml
-    # - alertmanager.yaml
-
-- name: Write virtual garden kubeconfig
-  copy:
-    dest: "/tmp/kubeconfig.garden"
-    content: "{{ monitoring_gardener_virtual_garden_kubeconfig | b64decode }}"
-  when: monitoring_gardener_enabled
-
-- name: Loop over Gardener seeds
-  include_tasks: gardener-seed.yaml
-  loop: "{{ monitoring_gardener_seeds }}"
-  when: monitoring_gardener_enabled
+    - alertmanager.yaml
