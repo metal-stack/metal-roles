@@ -1,8 +1,9 @@
 ---
-serviceMonitor:
-  enabled: true
-  labels:
-    release: prometheus
+# this would introduce a dependency on the prometheus deployment (which typically follows after the logging stack)
+# serviceMonitor:
+#   enabled: true
+#   labels:
+#     release: prometheus
 
 config:
   clients:
