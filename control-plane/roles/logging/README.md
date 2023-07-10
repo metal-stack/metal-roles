@@ -5,6 +5,7 @@ The role includes tasks to install and configure the following logging tools:
 
 - Loki
 - Logging ingress for Loki
+- Promtail for monitoring the control plane cluster
 
 ## Variables
 

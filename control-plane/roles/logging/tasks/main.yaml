@@ -27,7 +27,7 @@
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "https://grafana.github.io/helm-charts"
+    helm_repo: "{{ logging_promtail_chart_repo }}"
     helm_chart: "promtail"
     helm_release_name: promtail
     helm_target_namespace: "{{ logging_namespace }}"
