@@ -1,10 +1,10 @@
 ---
 config:
   clients:
-    - url: https://{{ monitoring_thanos_receive_ingress_dns }}/loki/api/v1/push
+    - url: https://{{ logging_ingress_dns }}/loki/api/v1/push
       basic_auth:
         username: promtail
-        password: {{ monitoring_thanos_receive_ingress_basic_auth }}
+        password: {{ logging_thanos_receive_ingress_password }}
 
   snippets:
     pipelineStages:
