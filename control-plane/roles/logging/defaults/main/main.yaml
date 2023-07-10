@@ -6,3 +6,6 @@ logging_ingress_loki_tls: yes
 logging_ingress_loki_basic_auth:
 logging_ingress_annotations: {}
 logging_loki_size: 30Gi
+
+# TODO: move into release vector
+logging_promtail_chart_version: "6.11.1"

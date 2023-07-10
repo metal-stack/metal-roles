@@ -43,3 +43,12 @@ The following variables can be set to configure the role:
 | monitoring_metal_api_url                  |           | The URL where to reach metal-api                                                                                                                                |
 | monitoring_metal_api_hmac                 |           | The hmac to authenticate against metal-api                                                                                                                      |
 | monitoring_thanos_object_store_config     |           | Object storage used by Thanos, see [Official Documentation](https://thanos.io/tip/thanos/storage.md/#supported-clients)                                         |
+
+### Gardener
+
+| Name                                            | Mandatory | Description                                                 |
+| ----------------------------------------------- | --------- | ----------------------------------------------------------- |
+| monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
+| monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
+| monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
+| monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |

@@ -1,0 +1,29 @@
+---
+- name: Write seed kubeconfig
+  copy:
+    dest: "/tmp/kubeconfig.{{ item }}"
+    content: "{{ lookup('k8s', kubeconfig='/tmp/kubeconfig.garden', api_version='v1', namespace='garden', kind='Secret', resource_name=item+'.kubeconfig').get('data', {}).get('kubeconfig') | b64decode }}"
+
+- name: Create monitoring namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ logging_namespace }}"
+        labels:
+          name: "{{ logging_namespace }}"
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ item }}"
+
+- name: Deploy Promtail
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "https://grafana.github.io/helm-charts"
+    helm_chart: "promtail"
+    helm_release_name: promtail
+    helm_target_namespace: "{{ logging_namespace }}"
+    helm_chart_version: "{{ monitoring_promtail_chart_version }}"
+    helm_value_file_template: "seed-promtail-values.yaml"
+    helm_kubeconfig: "/tmp/kubeconfig.{{ item }}"
