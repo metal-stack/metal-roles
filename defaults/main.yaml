@@ -118,6 +118,8 @@ metal_stack_release:
     gardener_shoot_cert_service_image_name: "docker-images.third-party.gardener.shoot-cert-service.name"
     gardener_shoot_dns_service_image_tag: "docker-images.third-party.gardener.shoot-dns-service.tag"
     gardener_shoot_dns_service_image_name: "docker-images.third-party.gardener.shoot-dns-service.name"
+    gardener_dns_controller_manager_image_tag: "docker-images.third-party.gardener.dns-controller-manager.tag"
+    gardener_dns_controller_manager_image_name: "docker-images.third-party.gardener.dns-controller-manager.name"
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
