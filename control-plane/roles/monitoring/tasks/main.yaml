@@ -86,4 +86,4 @@
     - prometheus-alerts.yaml
     - alertmanager-rules.yaml
     - partition-rules.yaml
-    - alertmanager.yaml
+    - alertmanager-rules.yaml
