@@ -1,6 +1,4 @@
 ---
-prometheus_image_name: prom/prometheus
-prometheus_image_tag: "v2.43.0"
 prometheus_port: 9090
 
 prometheus_config_host_dir: /etc/prometheus

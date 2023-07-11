@@ -87,6 +87,8 @@ metal_stack_release:
     image_cache_coredns_image_name: "docker-images.third-party.partition.image-cache-coredns.name"
     image_cache_haproxy_image_tag: "docker-images.third-party.partition.image-cache-haproxy.tag"
     image_cache_haproxy_image_name: "docker-images.third-party.partition.image-cache-haproxy.name"
+    prometheus_image_tag: "docker-images.third-party.partition.prometheus.tag"
+    prometheus_image_name: "docker-images.third-party.partition.prometheus.name"
     promtail_image_tag: "docker-images.third-party.partition.promtail.tag"
     promtail_image_name: "docker-images.third-party.partition.promtail.name"
     ztp_nginx_image_tag: "docker-images.third-party.partition.ztp-nginx.tag"
