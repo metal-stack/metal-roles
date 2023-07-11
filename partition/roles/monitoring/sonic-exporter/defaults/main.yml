@@ -1,0 +1,6 @@
+---
+sonic_exporter_image_name: "stordis/sonic-exporter"
+sonic_exporter_image_tag: "latest"
+sonic_exporter_address: "0.0.0.0"
+node_exporter_dir: /sonic_exporter
+sonic_exporter_port: 9101
