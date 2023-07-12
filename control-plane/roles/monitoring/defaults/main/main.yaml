@@ -44,4 +44,8 @@ monitoring_gardener_metrics_exporter_image_name: eu.gcr.io/gardener-project/gard
 monitoring_gardener_metrics_exporter_image_tag: "0.20.0"
 monitoring_promtail_chart_version: "6.11.1"
 
+# TODO: move into release vector
+monitoring_gardener_blackbox_exporter_image_name: ""
+monitoring_gardener_blackbox_exporter_image_tag: ""
+
 monitoring_gardener_seeds: []

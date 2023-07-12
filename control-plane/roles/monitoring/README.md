@@ -51,4 +51,6 @@ The following variables can be set to configure the role:
 | monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
 | monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
 | monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
+| monitoring_gardener_blackbox_exporter_image_name|           | gardener-blackbox-exporter image name                       |
+| monitoring_gardener_blackbox_exporter_image_tag |           | gardener-blackbox-exporter image tag                        |
 | monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |
