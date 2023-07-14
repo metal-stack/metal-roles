@@ -12,3 +12,8 @@ providerConfig:
       tag: "{{ gardener_shoot_dns_service_image_tag }}"
     dnsProviderManagement:
       enabled: true
+    dnsControllerManager:
+      image:
+        tag: "{{ gardener_dns_controller_manager_image_tag }}"
+        repository: "{{ gardener_dns_controller_manager_image_name }}"
+      deploy: true
