@@ -113,35 +113,35 @@ metal_api:
 {# behaviour seems to be expected, so there we convert min/max fields manually here and assemble the entity #}
 {# https://github.com/ansible/ansible/issues/74980 #}
 {% set constraints=entity.pop('constraints') %}
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
     constraints:
 {% for constraint in constraints %}
 {% set min=constraint.pop('min') %}
 {% set max=constraint.pop('max') %}
     - min: {{ min }}
       max: {{ max }}
-      {{ constraint | to_nice_yaml | indent(width=6, first=false) }}
+      {{ constraint | to_json | indent(width=6, first=false) }}
 {% endfor %}
 {% endfor %}
   images: |
 {% for entity in metal_api_images %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   partitions: |
 {% for entity in metal_api_partitions %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   networks: |
 {% for entity in metal_api_networks %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   ips: |
 {% for entity in metal_api_ips %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   filesystemlayouts: |
 {% for entity in metal_api_filesystemlayouts %}
@@ -155,7 +155,7 @@ metal_api:
   sizeimageconstraints: |
 {% for entity in metal_api_sizeimageconstraints %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
 
 masterdata_api:
@@ -168,7 +168,7 @@ masterdata_api:
   tenants: |
 {% for entity in metal_masterdata_api_tenants %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   ca: "{{ metal_masterdata_api_tls_ca | b64encode }}"
   cert_key: "{{ metal_masterdata_api_tls_cert_key | b64encode }}"
@@ -190,7 +190,7 @@ masterdata_api:
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% for entity in metal_masterdata_api_projects %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% endfor %}
