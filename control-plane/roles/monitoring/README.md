@@ -18,11 +18,13 @@ The following variables can be set to configure the role:
 ### General
 
 | Name                                      | Mandatory | Description                                                                                                                                                     |
-|-------------------------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | rethinkdb_exporter_name                   | yes       | rethinkdb exporter image name                                                                                                                                   |
 | rethinkdb_exporter_tag                    | yes       | rethinkdb exporter image tag                                                                                                                                    |
 | event_exporter_name                       | yes       | event exporter image name                                                                                                                                       |
 | event_exporter_tag                        | yes       | event exporter image tag                                                                                                                                        |
+| gardener_metrics_exporter_image_name      | yes       | gardener metrics exporter image name                                                                                                                            |
+| gardener_metrics_exporter_image_tag       | yes       | gardener metrics exporter image tag                                                                                                                             |
 | prometheus_chart_version                  | yes       | version of the prometheus stack chart                                                                                                                           |
 | prometheus_stack_repo                     | yes       | chart of the prometheus stack                                                                                                                                   |
 | monitoring_namespace                      |           | Name of the monitoring namespace                                                                                                                                |
@@ -43,3 +45,12 @@ The following variables can be set to configure the role:
 | monitoring_metal_api_url                  |           | The URL where to reach metal-api                                                                                                                                |
 | monitoring_metal_api_hmac                 |           | The hmac to authenticate against metal-api                                                                                                                      |
 | monitoring_thanos_object_store_config     |           | Object storage used by Thanos, see [Official Documentation](https://thanos.io/tip/thanos/storage.md/#supported-clients)                                         |
+
+### Gardener
+
+| Name                                            | Mandatory | Description                                                 |
+| ----------------------------------------------- | --------- | ----------------------------------------------------------- |
+| monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
+| monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
+| monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
+| monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |
