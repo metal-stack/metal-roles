@@ -1,4 +1,10 @@
 ---
+# this would introduce a dependency on the prometheus deployment (which typically follows after the logging stack)
+# serviceMonitor:
+#   enabled: true
+#   labels:
+#     release: prometheus
+
 config:
   clients:
     - url: http://loki:3100/loki/api/v1/push

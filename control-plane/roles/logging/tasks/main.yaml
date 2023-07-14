@@ -2,6 +2,16 @@
 - name: Gather release versions
   setup_yaml:
 
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - logging_chart_version is defined
+      - logging_chart_repo is defined
+      - logging_promtail_chart_version is defined
+      - logging_promtail_chart_repo is defined
+
 - name: Create namespace {{ logging_namespace }}
   k8s:
     definition:
@@ -27,7 +37,7 @@
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "https://grafana.github.io/helm-charts"
+    helm_repo: "{{ logging_promtail_chart_repo }}"
     helm_chart: "promtail"
     helm_release_name: promtail
     helm_target_namespace: "{{ logging_namespace }}"
@@ -37,14 +47,14 @@
 - name: Write virtual garden kubeconfig
   copy:
     dest: "/tmp/kubeconfig.garden"
-    content: "{{ logging_gardener_virtual_garden_kubeconfig | b64decode }}"
   when:
-    - logging_gardener_enabled
     - logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password
+    - logging_gardener_enabled
+  when:
+  loop: "{{ logging_gardener_seeds }}"
+  include_tasks: gardener-seed.yaml
 
 - name: Loop over Gardener seeds
-  include_tasks: gardener-seed.yaml
-  loop: "{{ logging_gardener_seeds }}"
-  when:
     - logging_gardener_enabled
     - logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password
+    content: "{{ logging_gardener_virtual_garden_kubeconfig | b64decode }}"
