@@ -1,4 +1,14 @@
 ---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - logging_chart_version is defined
+      - logging_chart_repo is defined
+      - logging_promtail_chart_version is defined
+      - logging_promtail_chart_repo is defined
+
 - name: Gather release versions
   setup_yaml:
 
