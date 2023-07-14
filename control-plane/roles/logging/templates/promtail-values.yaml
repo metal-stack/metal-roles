@@ -1,9 +1,4 @@
 ---
-serviceMonitor:
-  enabled: true
-  labels:
-    release: prometheus
-
 config:
   clients:
     - url: http://loki:3100/loki/api/v1/push
