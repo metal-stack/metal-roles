@@ -73,5 +73,5 @@ extraObjects:
     name: loki-basic-auth
   type: Opaque
   stringData:
-    auth: "{{ logging_ingress_loki_basic_auth_user }}:{{ logging_ingress_loki_basic_auth_password | password_hash('bcrypt', salt=logging_ingress_loki_basic_auth_password_salt) }}"
+    auth: "{{ logging_ingress_loki_basic_auth_user }}:{{ logging_ingress_loki_basic_auth_password | string | password_hash('bcrypt', salt=logging_ingress_loki_basic_auth_password_salt) }}"
 {% endif %}
