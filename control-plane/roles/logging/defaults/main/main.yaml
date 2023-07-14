@@ -7,3 +7,7 @@ logging_ingress_loki_basic_auth_password:
 logging_ingress_loki_basic_auth_password_salt: "{{ logging_ingress_loki_basic_auth_password | hash('sha1') }}"
 logging_ingress_annotations: {}
 logging_loki_size: 30Gi
+
+logging_gardener_enabled: "{{ True if logging_gardener_seeds | length > 0 else False }}"
+logging_gardener_seeds: []
+logging_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
