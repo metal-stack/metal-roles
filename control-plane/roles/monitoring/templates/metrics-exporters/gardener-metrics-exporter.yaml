@@ -64,7 +64,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: gardener-metrics-exporter
-        image: {{ monitoring_gardener_metrics_exporter_image_name }}:{{ monitoring_gardener_metrics_exporter_image_tag }}
+        image: {{ gardener_metrics_exporter_image_name }}:{{ gardener_metrics_exporter_image_tag }}
         imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
         command:
         - /gardener-metrics-exporter

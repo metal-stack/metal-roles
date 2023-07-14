@@ -38,9 +38,4 @@ monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28
 # gardener
 monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 else False }}"
 monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
-
-# TODO: move into release vector
-monitoring_gardener_metrics_exporter_image_name: eu.gcr.io/gardener-project/gardener/metrics-exporter
-monitoring_gardener_metrics_exporter_image_tag: "0.20.0"
-
 monitoring_gardener_seeds: []
