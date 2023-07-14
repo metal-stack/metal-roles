@@ -38,9 +38,13 @@
   copy:
     dest: "/tmp/kubeconfig.garden"
     content: "{{ logging_gardener_virtual_garden_kubeconfig | b64decode }}"
-  when: logging_gardener_enabled
+  when:
+    - logging_gardener_enabled
+    - logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password
 
 - name: Loop over Gardener seeds
   include_tasks: gardener-seed.yaml
   loop: "{{ logging_gardener_seeds }}"
-  when: logging_gardener_enabled
+  when:
+    - logging_gardener_enabled
+    - logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password

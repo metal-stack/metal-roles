@@ -52,7 +52,7 @@ ingress:
 {% for key, value in logging_ingress_annotations.items() %}
     {{ key }}: "{{ value }}"
 {% endfor %}
-{% if logging_ingress_loki_basic_auth %}
+{% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
 {% endif %}
@@ -65,11 +65,13 @@ ingress:
       secretName: monitoring-loki-ingress-tls
 {% endif %}
 
+{% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
 extraObjects:
 - apiVersion: v1
   kind: Secret
   metadata:
     name: loki-basic-auth
   type: Opaque
-  data:
-    auth: "{{ logging_ingress_loki_basic_auth | b64encode }}"
+  stringData:
+    auth: "{{ logging_ingress_loki_basic_auth_user }}:{{ logging_ingress_loki_basic_auth_password | password_hash('bcrypt', salt=logging_ingress_loki_basic_auth_password_salt) }}"
+{% endif %}
