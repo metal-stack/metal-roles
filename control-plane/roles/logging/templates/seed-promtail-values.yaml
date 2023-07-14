@@ -4,7 +4,7 @@ config:
     - url: https://{{ logging_ingress_dns }}/loki/api/v1/push
       basic_auth:
         username: "{{ logging_ingress_loki_basic_auth_user }}"
-        password: {{ logging_ingress_loki_basic_auth_password }}
+        password: "{{ logging_ingress_loki_basic_auth_password }}"
 
   snippets:
     pipelineStages:
