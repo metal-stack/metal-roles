@@ -1,4 +1,6 @@
 ---
+gardener_certificate_cluster_issuer:
+
 gardener_kube_api_server_ca:
 gardener_kube_api_server_ca_key:
 gardener_kube_api_server_cert:
