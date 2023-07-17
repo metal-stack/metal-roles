@@ -113,14 +113,14 @@ metal_api:
 {# behaviour seems to be expected, so there we convert min/max fields manually here and assemble the entity #}
 {# https://github.com/ansible/ansible/issues/74980 #}
 {% set constraints=entity.pop('constraints') %}
-    {{ entity | to_json | indent(width=4, first=false) }}
+    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
     constraints:
 {% for constraint in constraints %}
 {% set min=constraint.pop('min') %}
 {% set max=constraint.pop('max') %}
     - min: {{ min }}
       max: {{ max }}
-      {{ constraint | to_json | indent(width=6, first=false) }}
+      {{ constraint | to_nice_yaml | indent(width=6, first=false) }}
 {% endfor %}
 {% endfor %}
   images: |
@@ -146,9 +146,9 @@ metal_api:
   filesystemlayouts: |
 {% for entity in metal_api_filesystemlayouts %}
     ---
-    {# 
+    {#
       Some FSL Types confuse different YAML-parsing implementations.
-      Hence we fall back to JSON to enforce quotes around literals like 8e00. 
+      Hence we fall back to JSON to enforce quotes around literals like 8e00.
     #}
     {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
