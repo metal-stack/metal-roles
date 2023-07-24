@@ -12,6 +12,7 @@ prometheus_metal_core_targets: []
 prometheus_node_exporter_targets: []
 prometheus_promtail_targets: []
 prometheus_ping_targets: []
+prometheus_sonic_exporter_targets: []
 prometheus_tcp_connect_targets: []
 
 prometheus_hosts_content: |
