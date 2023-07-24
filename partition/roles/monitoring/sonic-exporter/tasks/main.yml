@@ -1,40 +1,33 @@
 ---
-- name: create sonic_exporter directories
-  file:
-    path: "{{ sonic_exporter_dir }}/host"
-    state: directory
-    owner: "root"
-    group: "root"
-    mode: "0755"
+- name: Determine platform
+  ansible.builtin.command: sonic-cfggen -H -v DEVICE_METADATA.localhost.platform
+  register: sonic_exporter_platform
+  changed_when: false
 
-- name: deploy sonic_exporter service
+- name: Deploy sonic_exporter service
   include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: sonic_exporter
     systemd_docker_image_name: "{{ sonic_exporter_image_name }}"
     systemd_docker_image_tag: "{{ sonic_exporter_image_tag }}"
+    systemd_service_environment:
+      PLATFORM: "{{ sonic_exporter_platform }}"
+      SONIC_EXPORTER_ADDRESS: "{{ sonic_exporter_address }}"
+      SONIC_EXPORTER_PORT: "{{ sonic_exporter_port }}"
     systemd_service_after: docker.service
     systemd_docker_network: host
     systemd_service_requires: docker.service
-    systemd_docker_ports:
-      - host_port: "{{ sonic_exporter_port }}"
-        target_port: "{{ sonic_exporter_port }}"
     systemd_docker_volumes:
-      - "/:/host:ro,rslave"
       - "/var/run/redis:/var/run/redis"
       - "/usr/bin/vtysh:/usr/bin/vtysh"
       - "/usr/bin/docker:/usr/bin/docker"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/usr/bin/ntpq:/usr/bin/ntpq"
     systemd_docker_command:
-      - --path.rootfs=/host
-      - --path.procfs=/host/proc
-      - --path.sysfs=/host/sys
       - --log-opt mode=non-blocking
       - --log-opt max-buffer-size=4m
       - --log-driver json-file
       - --log-opt max-size=10m
       - --log-opt max-file=3
       - --log-opt compress=true
-
