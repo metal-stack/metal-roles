@@ -9,7 +9,7 @@ global:
       {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
     config:
       server:
-        https:
+        webhooks:
           tls:
             caBundle: |
               {{ gardener_admission_controller_ca | indent(width=14, first=false) }}
