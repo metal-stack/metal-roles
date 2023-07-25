@@ -12,7 +12,7 @@
     systemd_docker_image_name: "{{ sonic_exporter_image_name }}"
     systemd_docker_image_tag: "{{ sonic_exporter_image_tag }}"
     systemd_service_environment:
-      PLATFORM: "{{ sonic_exporter_platform }}"
+      PLATFORM: "{{ sonic_exporter_platform.stdout }}"
       SONIC_EXPORTER_ADDRESS: "{{ sonic_exporter_address }}"
       SONIC_EXPORTER_PORT: "{{ sonic_exporter_port }}"
     systemd_service_after: docker.service
