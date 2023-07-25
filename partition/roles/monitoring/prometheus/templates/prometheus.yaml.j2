@@ -86,6 +86,15 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
+- job_name: sonic-exporter
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/sonic-exporter.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
 - job_name: 'ping'
   metrics_path: /probe
   params:
