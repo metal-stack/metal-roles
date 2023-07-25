@@ -64,6 +64,7 @@
      - metal-api.yaml
      - rethinkdb.yaml
      - alertmanager.yaml
+     - sonic-exporter.yaml
 
 - name: Create service monitors
   k8s:
