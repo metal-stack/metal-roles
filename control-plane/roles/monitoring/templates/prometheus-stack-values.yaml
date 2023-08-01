@@ -94,8 +94,8 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
-{% if monitoring_slack_channel_url is defined %}
-      slack_api_url: "{{ monitoring_slack_channel_url }}"
+{% if monitoring_slack_api_url is defined %}
+      slack_api_url: "{{ monitoring_slack_api_url }}"
 {% endif %}
     inhibit_rules: []
     route:
@@ -108,7 +108,7 @@ alertmanager:
       - receiver: 'null'
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
-{% if monitoring_slack_channel_url is defined %}
+{% if monitoring_slack_api_url is defined && monitoring_slack_notification_channel is defined %}
       - receiver: slack
         continue: true
 {% endif %}
@@ -119,11 +119,20 @@ alertmanager:
         send_resolved: true
         max_alerts: 0 # 0=all alerts
     - name: 'null'
-{% if monitoring_slack_channel is defined %}
+{% if monitoring_slack_api_url is defined && monitoring_slack_notification_channel is defined %}
     - name: slack
       slack_configs:
-      - channel: "{{ monitoring_slack_channel }}"
+      - channel: "{{ monitoring_slack_notification_channel }}"
         send_resolved: true
+{% if monitoring_slack_notification_icon_url %}
+        icon_url: "{% monitoring_slack_icon_url %}"
+{% endif %}
+{% if monitoring_slack_notification_title %}
+        title: "{% monitoring_slack_notification_title %}"
+{% endif %}
+{% if monitoring_slack_notification_text }
+        text: "{% monitoring_slack_notification_text %}"
+{% endif %}
 {% endif %}
     templates:
     - '/etc/alertmanager/config/*.tmpl'
