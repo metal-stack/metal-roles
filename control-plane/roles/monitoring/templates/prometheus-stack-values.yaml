@@ -125,7 +125,7 @@ alertmanager:
       - channel: "{{ monitoring_slack_notification_channel }}"
         send_resolved: true
 {% if monitoring_slack_notification_icon_url %}
-        icon_url: "{% monitoring_slack_icon_url %}"
+        icon_url: "{% monitoring_slack_notification_icon_url %}"
 {% endif %}
 {% if monitoring_slack_notification_title %}
         title: "{% monitoring_slack_notification_title %}"
