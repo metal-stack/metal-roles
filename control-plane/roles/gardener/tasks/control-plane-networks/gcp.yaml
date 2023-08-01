@@ -34,7 +34,7 @@
 
 - name: Set pod cidr
   set_fact:
-    _gardener_soil_pod_cidr: "{{ lookup('k8s', kind='Node')[0].get('spec', {}).get('podCIDR') }}"
+    _gardener_soil_pod_cidr: "{{ (gcp_cluster.stdout | from_json)['ipAllocationPolicy']['clusterIpv4CidrBlock'] }}"
 
 - name: Set service cidr
   set_fact:

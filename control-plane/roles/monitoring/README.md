@@ -10,7 +10,8 @@ The role includes tasks to install and configure the following monitoring tools:
 
 ## Variables
 
-This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
+This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as
+well.
 
 You can look up all the default values of this role [here](defaults/main/main.yaml).
 The following variables can be set to configure the role:
@@ -23,6 +24,8 @@ The following variables can be set to configure the role:
 | rethinkdb_exporter_tag                        | yes       | rethinkdb exporter image tag                                                                                                                                    |
 | event_exporter_name                           | yes       | event exporter image name                                                                                                                                       |
 | event_exporter_tag                            | yes       | event exporter image tag                                                                                                                                        |
+| gardener_metrics_exporter_image_name          | yes       | gardener metrics exporter image name                                                                                                                            |
+| gardener_metrics_exporter_image_tag           | yes       | gardener metrics exporter image tag                                                                                                                             |
 | prometheus_chart_version                      | yes       | version of the prometheus stack chart                                                                                                                           |
 | prometheus_stack_repo                         | yes       | chart of the prometheus stack                                                                                                                                   |
 | monitoring_namespace                          |           | Name of the monitoring namespace                                                                                                                                |
@@ -49,3 +52,12 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_ingress_basic_auth  |           | Set basic authentication on the Ingress for Thanos Receive                                                                                                      |
 | monitoring_thanos_receive_ingress_dns         |           | The DNS name used for exposing Thanos Receive via Ingress                                                                                                       |
 | monitoring_thanos_receive_ingress_tls         |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                 |
+
+### Gardener
+
+| Name                                            | Mandatory | Description                                                 |
+|-------------------------------------------------|-----------|-------------------------------------------------------------|
+| monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
+| monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
+| monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
+| monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |

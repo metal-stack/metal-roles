@@ -19,8 +19,8 @@ gardener_extension_provider_metal_audit_to_splunk:
   # tlsEnabled: true
   # hecCAFile: ""
 
-gardener_extension_provider_metal_etcd_backup_schedule: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
-gardener_extension_provider_metal_etcd_delta_snapshot_period: "0s"
+gardener_extension_provider_metal_etcd_backup_schedule: "0 */2 * * *"
+gardener_extension_provider_metal_etcd_delta_snapshot_period: "5m"
 
 gardener_extension_provider_metal_internal_networks:
   - 10.0.0.0/8

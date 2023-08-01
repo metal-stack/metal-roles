@@ -93,7 +93,6 @@ spec:
         - --etcd-keyfile=/srv/kubernetes/etcd/client/tls.key
         - --etcd-servers={{ .Values.etcd.main.endpoints }}
         - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
-        - --insecure-port=0
         - --profiling=false
         - --proxy-client-cert-file=/srv/kubernetes/aggregator/tls.crt
         - --proxy-client-key-file=/srv/kubernetes/aggregator/tls.key
