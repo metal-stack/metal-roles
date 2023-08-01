@@ -125,13 +125,13 @@ alertmanager:
       - channel: "{{ monitoring_slack_notification_channel }}"
         send_resolved: true
 {% if monitoring_slack_notification_icon_url is defined %}
-        icon_url: "{% monitoring_slack_notification_icon_url %}"
+        icon_url: "{{ monitoring_slack_notification_icon_url }}"
 {% endif %}
 {% if monitoring_slack_notification_title is defined %}
-        title: "{% monitoring_slack_notification_title %}"
+        title: "{{ monitoring_slack_notification_title }}"
 {% endif %}
 {% if monitoring_slack_notification_text is defined %}
-        text: "{% monitoring_slack_notification_text %}"
+        text: "{{ monitoring_slack_notification_text }}"
 {% endif %}
 {% endif %}
     templates:
