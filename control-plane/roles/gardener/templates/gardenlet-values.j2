@@ -68,9 +68,9 @@ vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
 {% if gardener_image_vector_overwrite %}
 imageVectorOverwrite: |
   images:
-  {{ gardener_image_vector_overwrite | to_yaml | indent(width=2, first=false) }}
+    {{ gardener_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
 {% endif %}
 {% if gardener_component_image_vector_overwrite %}
 componentImageVectorOverwrites: |
-  {{ gardener_component_image_vector_overwrite | to_yaml | indent(width=2, first=false) }}
+    {{ gardener_component_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
 {% endif %}
