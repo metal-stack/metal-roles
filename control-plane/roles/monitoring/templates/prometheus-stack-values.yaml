@@ -128,10 +128,10 @@ alertmanager:
         icon_url: "{{ monitoring_slack_notification_icon_url }}"
 {% endif %}
 {% if monitoring_slack_notification_title is defined %}
-        title: "{{ monitoring_slack_notification_title }}"
+        title: "{{ monitoring_slack_notification_title | string }}"
 {% endif %}
 {% if monitoring_slack_notification_text is defined %}
-        text: "{{ monitoring_slack_notification_text }}"
+        text: "{{ monitoring_slack_notification_text | string }}"
 {% endif %}
 {% endif %}
     templates:
