@@ -13,16 +13,6 @@ monitoring_grafana_additional_datasources:
     uid: loki
     jsonData:
       maxLines: 1000
-  - name: AlertManager
-    type: camptocamp-prometheus-alertmanager-datasource
-    url: http://prometheus-alertmanager:9093/
-    access: proxy
-    uid: alertmanager
-    jsonData:
-      severity_critical: "critical"
-      severity_high: "high"
-      severity_warning: "warning"
-      severity_info: "info"
 monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
 monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
 monitoring_ingress_grafana_tls: yes
