@@ -105,10 +105,10 @@ alertmanager:
 {% endif %}
     receivers:
     - name: webhook-logger
-    webhook_configs:
-    - url: http://webhook-logger:8000/alerts
-      send_resolved: true
-      max_alerts: 0 # 0=all alerts
+      webhook_configs:
+      - url: http://localhost:8000/alerts
+        send_resolved: true
+        max_alerts: 0 # 0=all alerts
     - name: 'null'
 {% if monitoring_slack_channel is defined %}
     - name: 'slack'
@@ -118,6 +118,17 @@ alertmanager:
 {% endif %}
     templates:
     - '/etc/alertmanager/config/*.tmpl'
+  containers:
+  - name: webhook-logger
+    image: {{ webhook_logger_image_name }}:{{ webhook_logger_image_tag }}
+    ports:
+    - containerPort: 8000
+      name: webhook-logger
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: webhook-logger
+
 kubeProxy:
   enabled: false
 
