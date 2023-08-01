@@ -108,7 +108,7 @@ alertmanager:
       - receiver: 'null'
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
-{% if monitoring_slack_api_url is defined && monitoring_slack_notification_channel is defined %}
+{% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
       - receiver: slack
         continue: true
 {% endif %}
@@ -119,7 +119,7 @@ alertmanager:
         send_resolved: true
         max_alerts: 0 # 0=all alerts
     - name: 'null'
-{% if monitoring_slack_api_url is defined && monitoring_slack_notification_channel is defined %}
+{% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
     - name: slack
       slack_configs:
       - channel: "{{ monitoring_slack_notification_channel }}"
