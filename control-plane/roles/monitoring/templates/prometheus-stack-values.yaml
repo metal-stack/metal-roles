@@ -81,6 +81,16 @@ grafana:
 alertmanager:
   alertmanagerSpec:
     logLevel: debug
+    containers:
+    - name: webhook-logger
+      image: {{ webhook_logger_image_name }}:{{ webhook_logger_image_tag }}
+      ports:
+      - containerPort: 8000
+        name: webhook-logger
+      readinessProbe:
+        httpGet:
+          path: /ready
+          port: webhook-logger
   config:
     global:
       resolve_timeout: 5m
@@ -119,16 +129,6 @@ alertmanager:
 {% endif %}
     templates:
     - '/etc/alertmanager/config/*.tmpl'
-  containers:
-  - name: webhook-logger
-    image: {{ webhook_logger_image_name }}:{{ webhook_logger_image_tag }}
-    ports:
-    - containerPort: 8000
-      name: webhook-logger
-    readinessProbe:
-      httpGet:
-        path: /ready
-        port: webhook-logger
 
 kubeProxy:
   enabled: false
