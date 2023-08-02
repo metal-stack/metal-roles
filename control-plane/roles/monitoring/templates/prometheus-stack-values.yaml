@@ -137,6 +137,12 @@ alertmanager:
     templates:
     - '/etc/alertmanager/config/*.tmpl'
 
+coreDns:
+  enabled: false
+
+kubeDns:
+  enabled: true
+
 kubeProxy:
   enabled: false
 
