@@ -20,7 +20,6 @@ query:
 
 receive:
   enabled: {{ monitoring_thanos_receive_enabled }}
-
   ingress:
     enabled: {{ monitoring_thanos_receive_ingress_enabled }}
     hostname: {{ monitoring_thanos_receive_ingress_dns }}
@@ -42,6 +41,8 @@ receive:
 {% endfor %}
 {% endif %}
     tls: {{ monitoring_thanos_receive_ingress_tls }}
+  persistence:
+    size: 16Gi
 
 extraDeploy:
 - apiVersion: v1
