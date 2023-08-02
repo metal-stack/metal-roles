@@ -100,7 +100,7 @@ alertmanager:
     inhibit_rules: []
     route:
       receiver: webhook-logger
-      group_by: ['severity', 'alertname', 'namespace', 'pod', 'job'] 
+      group_by: ['severity', 'alertname', 'namespace', 'pod', 'job']
       group_wait: 30s
       group_interval: 30s
       repeat_interval: 30s
@@ -154,3 +154,77 @@ kubeEtcd:
 
 kubeControllerManager:
   enabled: false
+
+{% raw %}
+additionalPrometheusRulesMap:
+  "metal-api.rules":
+    groups:
+    - name: metal-api.rules
+      rules:
+      - alert: MetalApiErrorRate
+        expr: sum(rate(metal_api_requests_total{code!="200"}[5m])) by(pod)  / sum(rate(metal_api_requests_total[5m])) by(pod) *100 > 0.5
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          description: "{{ $value | printf `%.2f` }}% of requests to {{ $labels.pod }} have errors"
+      - alert: MetalApiSlow
+        expr: histogram_quantile(0.90, sum by(le, pod) (rate(metal_api_request_duration_seconds_bucket{route="/metal/v1/machine/{id}/event"}[5m]))) > 0.5
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          description: "Metal API has a 99th percentile latency of {{ $value | printf `%.2f` }} seconds for pod {{ $labels.pod }}"
+      - alert: MetalApiGoProcessesHigh
+        expr: avg(go_goroutines{job="metal-api"}) by(pod)>500
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          description: "Metal API pod {{ $labels.pod }} has high number of go processes {{ $value | printf `%.2f` }}"
+      - alert: MetalApiResponseCodeNotOk
+        expr: http_requests_total{job="metal_api", status!~"2..|3.."} > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Metal API response status code not OK"
+          description: "The metal_api response status code is not in the expected range."
+    - name: metal-api-recording.rules
+      rules:
+      - record: frr:instance:metal_switch_interface_info
+        expr: |2
+          label_replace(metal_switch_interface_info,"instance","$1","switchname","(.*)")
+  "partition.rules":
+    groups:
+    - name: alert.rules
+      rules:
+      - alert: DeadMachines
+        expr: avg(metal_machine_liveliness_total{status="dead"}) by (partition) > 0
+        for: 10m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "Partition {{ $labels.partition }} has {{ $value }} DEAD Machines"
+      - alert: MachineCapacityLow
+        expr: (avg(metal_partition_capacity_total{size!="unknown"})by (partition, size) - avg(metal_partition_capacity_free{size!="unknown"}) by (partition, size) ) / avg(metal_partition_capacity_total{size!="unknown"})by (partition, size)  *100 > 80
+        for: 10m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "{{ $value }}% of the {{ $labels.size }} machines in {{ $labels.partition }} are in use."
+      - alert: InternetIPCapacityLow
+        expr: avg(metal_network_ip_used{networkId=~"internet.*"}) by (partition, networkId) / avg(metal_network_ip_available{networkId=~"internet.*"}) by (partition, networkId) * 100 > 80
+        for: 10m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "{{ $value }}% of {{ $labels.networkId }} Internet IP adresses in {{ $labels.partition }} are in use."
+      - alert: NetworkPrefixCapacityLow
+        expr: avg(metal_network_prefix_used{isPrivateSuper="true"}) by (partition, networkId) / avg(metal_network_prefix_available{isPrivateSuper="true"}) by (partition, networkId)  * 100 > 80
+        for: 10m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "{{ $value }}% of {{ $labels.networkId }} network prefixes in {{ $labels.partition }} are in use."
+{% endraw %}
