@@ -44,3 +44,32 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_effective_cache_size                           |           | Allows setting effective cache size                                      |
 | postgres_backup_restore_sidecar_object_prefix           |           | The prefix to store the object in the cloud provider bucket              |
 | postgres_backup_restore_sidecar_object_max_keep         |           | The number of objects to keep at the cloud provider bucket               |
+
+## Major upgrades
+
+Postgres does require special treatment if a major version upgrade is planned. `pg_upgrade` needs to be called with the old and new binaries, also the old data directory and a already initialized data directory which was initialized with the new binary, e.g. `initdb <new directory>`.
+
+To make this process as smooth as possible, backup-restore-sidecar will detect if the version of the database files and the version of the postgres binary differ and will start the upgrade process. Strict validation to ensure all prerequisites are met is done before actually starting the upgrade process.
+
+To trigger such an update you simply raise the version of the postgres container and specify additionally the version of the previous postgres container.
+
+Configuration before the upgrade:
+
+```yaml
+...
+postgres_image_tag: 12-alpine
+...
+```
+
+Configuration to trigger the upgrade:
+
+```yaml
+...
+postgres_image_tag: 15-alpine
+postgres_old_image_tag: 12-alpine
+...
+
+```
+
+Deploy again With this new configuration and the upgrade process will start, after that the database will run with the new postgres version in place.
+You can remove the `postgres_old_image_tag` if you want, but this is not strictly required.
