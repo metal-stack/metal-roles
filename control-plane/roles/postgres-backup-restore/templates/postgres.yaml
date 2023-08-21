@@ -92,7 +92,7 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
-{% if postgres_upgrade %}
+{% if postgres_old_image_tag != "" %}
         - name: bin-provision
           mountPath: /usr/local/bin/pg-old
           subPath: pg-old
@@ -150,7 +150,7 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
-{% if postgres_upgrade %}
+{% if postgres_old_image_tag != "" %}
         - name: bin-provision
           mountPath: /usr/local/bin/pg-old
           subPath: pg-old
@@ -172,7 +172,7 @@ spec:
         volumeMounts:
         - name: bin-provision
           mountPath: /bin-provision
-{% if postgres_upgrade %}
+{% if postgres_old_image_tag != "" %}
       - command:
         - cp
         - -av
