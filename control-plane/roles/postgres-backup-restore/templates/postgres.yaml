@@ -92,7 +92,7 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
-{% if postgres_old_image_tag != "" %}
+{% if postgres_old_image_tag %}
         - name: bin-provision
           mountPath: /usr/local/bin/pg-old
           subPath: pg-old
@@ -150,7 +150,7 @@ spec:
         - name: bin-provision
           subPath: tini
           mountPath: /usr/local/bin/tini
-{% if postgres_old_image_tag != "" %}
+{% if postgres_old_image_tag %}
         - name: bin-provision
           mountPath: /usr/local/bin/pg-old
           subPath: pg-old
@@ -172,17 +172,15 @@ spec:
         volumeMounts:
         - name: bin-provision
           mountPath: /bin-provision
-{% if postgres_old_image_tag != "" %}
+{% if postgres_old_image_tag %}
       - command:
         - cp
-        - -av
+        - -a
         - /usr/local/bin
         - /bin-provision/pg-old
         image: {{ postgres_image_name }}:{{ postgres_old_image_tag }}
         imagePullPolicy: {{ postgres_image_pull_policy }}
         name: postgres-old
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /bin-provision
           name: bin-provision
