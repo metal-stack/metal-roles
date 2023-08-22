@@ -45,18 +45,8 @@ spec:
         image: {{ postgres_image_name }}:{{ postgres_image_tag }}
         imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
-        - tini
-        - --
-        args:
-        - sh
-        - -c
-        - backup-restore-sidecar wait && docker-entrypoint.sh postgres
-          {% if postgres_shared_libraries_preload %}-c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}
-          {% if postgres_maintenance_work_mem %}-c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}
-          {% if postgres_shared_buffers %}-c shared_buffers={{ postgres_shared_buffers }}{% endif %}
-          {% if postgres_effective_cache_size %}-c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}
-          {% if postgres_work_mem %}-c work_mem={{ postgres_work_mem }}{% endif %}
-          -c max_connections={{ postgres_max_connections }}
+        - backup-restore-sidecar
+        - wait
         ports:
         - containerPort: 5432
         env:
@@ -89,19 +79,12 @@ spec:
           mountPath: /usr/local/bin/backup-restore-sidecar
         - name: backup-restore-sidecar-config
           mountPath: /etc/backup-restore-sidecar
-        - name: bin-provision
-          subPath: tini
-          mountPath: /usr/local/bin/tini
       - name: backup-restore-sidecar
         image: {{ postgres_image_name }}:{{ postgres_image_tag }}
         imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
-        - tini
-        - --
-        args:
-        - sh
-        - -c
-        - mkdir -p /data/postgres && backup-restore-sidecar start
+        - backup-restore-sidecar
+        - start
         ports:
         - containerPort: 2112
         env:
@@ -142,9 +125,6 @@ spec:
           mountPath: /usr/local/bin/backup-restore-sidecar
         - name: backup-restore-sidecar-config
           mountPath: /etc/backup-restore-sidecar
-        - name: bin-provision
-          subPath: tini
-          mountPath: /usr/local/bin/tini
 {% if postgres_backup_restore_sidecar_provider == "gcp" %}
         - name: gcp-credentials
           mountPath: /gcp/credentials
@@ -157,7 +137,6 @@ spec:
         command:
         - cp
         - /backup-restore-sidecar
-        - /sbin/tini
         - /bin-provision
         volumeMounts:
         - name: bin-provision
@@ -230,6 +209,14 @@ data:
   projectID: {{ postgres_backup_restore_sidecar_gcp_project_id | b64encode }}
   serviceaccount.json: {{ postgres_backup_restore_sidecar_gcp_serviceaccount_json | to_json | b64encode }}
 {% endif %}
+  post-exec-cmds:
+    - docker-entrypoint.sh postgres
+      {% if postgres_shared_libraries_preload %}-c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}
+      {% if postgres_maintenance_work_mem %}-c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}
+      {% if postgres_shared_buffers %}-c shared_buffers={{ postgres_shared_buffers }}{% endif %}
+      {% if postgres_effective_cache_size %}-c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}
+      {% if postgres_work_mem %}-c work_mem={{ postgres_work_mem }}{% endif %}
+      -c max_connections={{ postgres_max_connections }}
 ---
 apiVersion: v1
 kind: Service
