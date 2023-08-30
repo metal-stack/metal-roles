@@ -27,8 +27,12 @@ LOOPBACK_INTERFACE:
 
 {% if sonic_mgmtif_ip is defined %}
 MGMT_INTERFACE:
+{% if sonic_mgmtif_gateway is defined %}
   eth0|{{ sonic_mgmtif_ip }}:
     gwaddr: "{{ sonic_mgmtif_gateway }}"
+{% else %}
+  eth0|{{ sonic_mgmtif_ip }}: {}
+{% endif %}
 
 {% endif %}
 MGMT_VRF_CONFIG:
