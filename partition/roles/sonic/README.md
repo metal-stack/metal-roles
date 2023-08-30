@@ -42,6 +42,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_vlans.ip                                             |           | The IP of the SVI of this VLAN.                                                                                      |
 | sonic_vlans.dhcp_servers                                   |           | DHCP servers to relay to.                                                                                            |
 | sonic_vlans.untagged_ports                                 |           | Array of untagged ports to bind to this VLAN.                                                                        |
+| sonic_vlans.tagged_ports                                   |           | Array of tagged ports to bind to this VLAN.                                                                        |
 | sonic_vlans.vrf                                            |           | The VRF to bind the VLANs SVI to.                                                                                    |
 | sonic_vteps                                                |           | VTEPs to configure. If defined FRR will automatically advertise all VNIs.                                            |
 | sonic_vteps.comment                                        |           | Description for the VTEP.                                                                                            |
