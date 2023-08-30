@@ -39,6 +39,11 @@ This role can deploy on bare metal machines with Debian or Almalinux. It depends
 | systemd_networkd_vxlans.svi.vrf             |           | The VRF that should be used as master device for the VLAN interface.                                |
 | systemd_networkd_vxlans.svi.address         |           | The IP address that should be configured at the VLAN interface.                                     |
 | systemd_networkd_vxlans.svi.mtu             |           | The MTU for the VLAN interface.                                                                     |
+| systemd_networkd_vlans                      |           | An array of VLANs to be configured.                                                                 |
+| systemd_networkd_vlans.name                 |           | The name of this VLAN.                                                                              |
+| systemd_networkd_vlans.id                   |           | The id of this VLAN.                                                                                |
+| systemd_networkd_vlans.mtu                  |           | The MTU for this VLAN.                                                                              |
+| systemd_networkd_vlans.address              |           | The network address for this VLAN.                                                                  |
 
 ## Examples
 
