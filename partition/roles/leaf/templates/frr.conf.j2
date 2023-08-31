@@ -33,7 +33,9 @@ router bgp {{ asn }}
 route-map LOOPBACKS permit 10
   match interface lo
 !
+{% if metal_partition_mgmt_gateway %}
 ip route 0.0.0.0/0 {{ metal_partition_mgmt_gateway }} nexthop-vrf mgmt
 !
+{% endif %}
 line vty
 !

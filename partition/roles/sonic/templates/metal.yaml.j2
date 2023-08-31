@@ -100,6 +100,10 @@ VLAN_MEMBER:
   Vlan{{ vlan.id }}|{{ untagged_port }}:
       tagging_mode: untagged
   {% endfor %}
+  {% for tagged_port in vlan.tagged_ports|default([]) %}
+  Vlan{{ vlan.id }}|{{ tagged_port }}:
+      tagging_mode: tagged
+  {% endfor %}
   {% endfor %}
 {% endif %}
 {% endif %}
