@@ -1,0 +1,51 @@
+---
+- name: Add ingress certificate for shooted seeds
+  k8s:
+    definition:
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: seed-ingress
+        namespace: garden
+        labels:
+          use-clouddns-solver: "true"
+      spec:
+        dnsNames:
+        - "*.{{ gardener_seeds_dns_domain }}"
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: "{{ gardener_seeds_certificate_cluster_issuer }}"
+        secretName: seed-ingress-certificate
+
+- name: Wait until ingress secret for shooted seeds is ready
+  command: echo
+  changed_when: false
+  retries: 60
+  delay: 10
+  until:
+    - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='seed-ingress-certificate')
+
+- name: Prepare seed ingress certificate secret for shooted seeds
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        labels:
+          gardener.cloud/role: controlplane-cert
+        name: seed-ingress-certificate
+        namespace: garden
+      type: kubernetes.io/tls
+
+- name: Write virtual garden kubeconfig
+  copy:
+    dest: "/tmp/kubeconfig.garden"
+    content: "{{ gardener_seeds_virtual_garden_kubeconfig | b64decode }}"
+
+- name:  Loop over Gardener seeds
+  include_tasks: deploy_cert.yaml
+  loop: "{{ gardener_seeds_shooted_seeds }}"
+  loop_control:
+    loop_var: gardener_shooted_seed
+    label: "{{ gardener_seeds_shooted_seeds.name }}"
