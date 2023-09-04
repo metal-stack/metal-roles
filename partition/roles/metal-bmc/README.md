@@ -26,3 +26,5 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_bmc_console_key        | yes       | The key for the metal-console port  as a string                                                       |
 | metal_bmc_console_cert_owner |           | user of the created certificate files                                                                 |
 | metal_bmc_console_cert_group |           | group of the created certificate files                                                                |
+| metal_bmc_ignore_macs        |           | when fetching bmc reports from the dhcp lease file, the given macs are ignored                        |
+| metal_bmc_allowed_cidrs      |           | when fetching bmc reports from the dhcp lease file, ips in the given cidrs are ignored                |
