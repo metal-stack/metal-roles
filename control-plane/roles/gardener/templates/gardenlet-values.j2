@@ -37,7 +37,15 @@ config:
         name: gardener-seed-kubeconfig
         namespace: garden
       dns:
-        ingressDomain: {{ gardener_dns_domain }}
+        provider:
+          secretRef:
+            name: {{ lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}
+            namespace: garden
+          type: {{ gardener_dns_provider }}
+      ingress:
+        controller:
+          kind: nginx
+        domain: {{ gardener_dns_domain }}
       networks:
         nodes: "{{ _gardener_gardenlet_node_cidr }}"
         pods: "{{ _gardener_gardenlet_pod_cidr }}"
