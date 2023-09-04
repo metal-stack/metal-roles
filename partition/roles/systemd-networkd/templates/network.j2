@@ -4,16 +4,30 @@ MACAddress={{ item.mac }}
 {% else %}
 Name={{ item.name }}
 {% endif %}
+{% if item.type is defined %}
+Type={{ item.type }}
+{% endif %}
 
 [Network]
 {% if item.dhcp is defined %}
 DHCP={{ item.dhcp }}
 {% endif %}
-LinkLocalAddressing=ipv6
+LinkLocalAddressing={{ item.link_local_addressing | default('ipv6') }}
+{% if item.lldp is defined %}LLDP={{ item.lldp }}{% endif %}
+
+{% if item.emit_lldp is defined %}EmitLLDP={{ item.emit_lldp }}{% endif %}
+
+{% if item.ipv6_accept_ra is defined %}IPv6AcceptRA={{ item.ipv6_accept_ra }}{% endif %}
+
+{% if item.ipv6_send_ra is defined %}IPv6SendRA={{ item.ipv6_send_ra }}{% endif %}
+
+{% for vlan in item.vlans | default([]) %}
+VLAN={{ vlan }}
+{% endfor %}
 {% if item.vrf is defined %}
 VRF={{ item.vrf }}
 {% endif %}
-{% for vxlan in item.vxlans|default([]) %}
+{% for vxlan in item.vxlans | default([]) %}
 VXLAN={{ vxlan }}
 {% endfor %}
 {% if item.dhcp is defined and item.dhcpv4routemetrics is defined %}
@@ -21,12 +35,12 @@ VXLAN={{ vxlan }}
 [DHCPv4]
 RouteMetric={{ item.dhcpv4routemetrics }}
 {% endif %}
-{% for address in item.addresses|default([]) %}
+{% for address in item.addresses | default([]) %}
 
 [Address]
 Address={{ address }}
 {% endfor %}
-{% for gateway in item.gateways|default([]) %}
+{% for gateway in item.gateways | default([]) %}
 
 [Route]
 Gateway={{ gateway}}
