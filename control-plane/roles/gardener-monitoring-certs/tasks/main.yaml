@@ -48,4 +48,4 @@
   loop: "{{ gardener_seeds_shooted_seeds }}"
   loop_control:
     loop_var: gardener_shooted_seed
-    label: "{{ gardener_seeds_shooted_seeds.name }}"
+    label: "{{ gardener_shooted_seed.name }}"
