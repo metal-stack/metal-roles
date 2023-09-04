@@ -64,7 +64,8 @@ spec:
         - backup-restore-sidecar
         - start
         ports:
-        - containerPort: 2112
+        - containerPort: 8000
+          name: grpc
         env:
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT

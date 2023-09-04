@@ -123,7 +123,8 @@ spec:
         - backup-restore-sidecar
         - start
         ports:
-        - containerPort: 2112
+        - containerPort: 8000
+          name: grpc
         env:
         - name: BACKUP_RESTORE_SIDECAR_POSTGRES_PASSWORD
           valueFrom:
