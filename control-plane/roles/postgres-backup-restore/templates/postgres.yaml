@@ -158,6 +158,9 @@ spec:
         volumeMounts:
         - name: {{ postgres_name }}
           mountPath: /data
+        - mountPath: /backup
+          name: backup
+        - mountPath: /data
         - name: bin-provision
           subPath: backup-restore-sidecar
           mountPath: /usr/local/bin/backup-restore-sidecar
@@ -183,6 +186,9 @@ spec:
       - name: {{ postgres_name }}
         persistentVolumeClaim:
           claimName: {{ postgres_name }}
+      - name: backup
+        persistentVolumeClaim:
+          claimName: backup
       - name: backup-restore-sidecar-config
         configMap:
           name: backup-restore-sidecar-config-{{ postgres_name }}
@@ -199,6 +205,17 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: {{ postgres_name }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ postgres_storage_size }}
+{% if postgres_storage_class %}
+      storageClassName: {{ postgres_storage_class }}
+{% endif %}
+  - metadata:
+      name: backup
     spec:
       accessModes:
       - ReadWriteOnce

@@ -89,6 +89,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: {{ rethinkdb_name }}
+        - mountPath: /backup
+          name: backup
         - name: rethinkdb-credentials
           mountPath: /rethinkdb-secret
         - name: backup-restore-sidecar-config
@@ -124,6 +126,9 @@ spec:
       - name: {{ rethinkdb_name }}
         persistentVolumeClaim:
           claimName: {{ rethinkdb_name }}
+      - name: backup
+        persistentVolumeClaim:
+          claimName: backup
       - name: rethinkdb-credentials
         secret:
           secretName: {{ rethinkdb_name }}
@@ -146,6 +151,17 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: {{ rethinkdb_name }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ rethinkdb_storage_size }}
+{% if rethinkdb_storage_class %}
+      storageClassName: {{ rethinkdb_storage_class }}
+{% endif %}
+  - metadata:
+      name: backup
     spec:
       accessModes:
       - ReadWriteOnce
