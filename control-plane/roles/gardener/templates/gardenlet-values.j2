@@ -1,28 +1,26 @@
-global:
-  gardenlet:
-    image:
-      repository: {{ gardener_gardenlet_image_name }}
-      tag: {{ gardener_gardenlet_image_tag }}
-      pullPolicy: {{ metal_control_plane_image_pull_policy }}
-    config:
-      gardenClientConnection:
-        gardenClusterAddress: {{ (lookup('file', gardener_kube_apiserver_kubeconfig_path) | from_yaml).get("clusters")[0]["cluster"]["server"] }}
-        gardenClusterCACert: {{ (lookup('file', gardener_kube_apiserver_kubeconfig_path) | from_yaml).get("clusters")[0]["cluster"]["certificate-authority-data"] }}
-        kubeconfig: |
-          {{ lookup('file', gardener_kube_apiserver_kubeconfig_path) | indent(width=10, first=false) }}
+image:
+  repository: {{ gardener_gardenlet_image_name }}
+  tag: {{ gardener_gardenlet_image_tag }}
+  pullPolicy: {{ metal_control_plane_image_pull_policy }}
+config:
+  gardenClientConnection:
+    gardenClusterAddress: {{ (lookup('file', gardener_kube_apiserver_kubeconfig_path) | from_yaml).get("clusters")[0]["cluster"]["server"] }}
+    gardenClusterCACert: {{ (lookup('file', gardener_kube_apiserver_kubeconfig_path) | from_yaml).get("clusters")[0]["cluster"]["certificate-authority-data"] }}
+    kubeconfig: |
+      {{ lookup('file', gardener_kube_apiserver_kubeconfig_path) | indent(width=6, first=false) }}
 
-      controllers:
-        backupEntry:
-          deletionGracePeriodHours: 72
-          deletionGracePeriodShootPurposes:
-          - evaluation
-          - infrastructure
-          - production
-        shoot:
-          concurrentSyncs: {{ gardener_gardenlet_shoot_concurrent_syncs }}
-          reconcileInMaintenanceOnly: {{ gardener_gardenlet_shoot_reconcile_in_maintenance_only }}
-          # allow setting shoot ignore annotation:
-          respectSyncPeriodOverwrite: {{ gardener_gardenlet_shoot_respect_sync_period_overwrite }}
+  controllers:
+    backupEntry:
+      deletionGracePeriodHours: 72
+      deletionGracePeriodShootPurposes:
+      - evaluation
+      - infrastructure
+      - production
+    shoot:
+      concurrentSyncs: {{ gardener_gardenlet_shoot_concurrent_syncs }}
+      reconcileInMaintenanceOnly: {{ gardener_gardenlet_shoot_reconcile_in_maintenance_only }}
+      # allow setting shoot ignore annotation:
+      respectSyncPeriodOverwrite: {{ gardener_gardenlet_shoot_respect_sync_period_overwrite }}
 
       seedConfig:
         apiVersion: core.gardener.cloud/v1beta1
@@ -68,19 +66,19 @@ global:
           - key: seed.gardener.cloud/invisible
           - key: seed.gardener.cloud/disable-capacity-reservation
 
-      featureGates:
-        ManagedIstio: true
-        HVPA: false
-        HVPAForShootedSeed: false
+  featureGates:
+    ManagedIstio: true
+    HVPA: false
+    HVPAForShootedSeed: false
 
-    vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
+vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
 
 {% if gardener_image_vector_overwrite %}
-    imageVectorOverwrite: |
-      images:
-      {{ gardener_image_vector_overwrite | to_yaml | indent(width=6, first=false) }}
+imageVectorOverwrite: |
+  images:
+    {{ gardener_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
 {% endif %}
 {% if gardener_component_image_vector_overwrite %}
-    componentImageVectorOverwrites: |
-      {{ gardener_component_image_vector_overwrite | to_yaml | indent(width=6, first=false) }}
+componentImageVectorOverwrites: |
+    {{ gardener_component_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
 {% endif %}
