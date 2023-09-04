@@ -70,6 +70,43 @@ spec:
             secretKeyRef:
               key: POSTGRES_DATA
               name: {{ postgres_name }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec
+            - pg_isready
+            - -U
+            - {{ postgres_user }}
+            - -h
+            - 127.0.0.1
+            - -p
+            - "5432"
+          failureThreshold: 6
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: postgres
+        ports:
+        - containerPort: 5432
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec
+            - pg_isready
+            - -U
+            - {{ postgres_user }}
+            - -h
+            - 127.0.0.1
+            - -p
+            - "5432"
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         resources: {{ postgres_resources | to_json }}
         volumeMounts:
         - name: {{ postgres_name }}
