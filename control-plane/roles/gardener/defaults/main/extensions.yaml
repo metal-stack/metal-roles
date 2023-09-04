@@ -57,3 +57,5 @@ gardener_extension_provider_metal_image_pull_secret:
   # ...
 
 gardener_cert_management_issuer_private_key: ""
+
+gardener_extension_dns_external_controller_registration_url:
