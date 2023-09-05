@@ -11,7 +11,7 @@ This role uses variables from [partition-defaults](/partition). So, make sure yo
 You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 | Name                                      | Mandatory | Description                                                                                                                                                                |
-|-------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | metal_core_image_name                     | yes       | Image name of metal-core                                                                                                                                                   |
 | metal_core_image_tag                      | yes       | Image tag of metal-core                                                                                                                                                    |
 | metal_core_cidr                           |           |                                                                                                                                                                            |
