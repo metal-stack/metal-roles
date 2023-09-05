@@ -1,6 +1,7 @@
 ---
 metal_bmc_ignore_macs: []
-metal_bmc_allowed_cidrs: []
+metal_bmc_allowed_cidrs:
+  - 0.0.0.0/0
 
 metal_bmc_bmc_superuser:
 metal_bmc_bmc_superuser_pwd:
