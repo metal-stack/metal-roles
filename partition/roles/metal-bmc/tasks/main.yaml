@@ -7,6 +7,7 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - metal_bmc_nsqd_addr is defined
       - metal_bmc_image_tag is defined
       - metal_bmc_image_name is defined
       - metal_bmc_bmc_superuser is defined
@@ -93,7 +94,7 @@
       METAL_BMC_ALLOWED_CIDRS: "{{ metal_bmc_allowed_cidrs | join(',') }}"
       METAL_BMC_IPMI_USER: "{{ metal_bmc_bmc_superuser }}"
       METAL_BMC_IPMI_PASSWORD: "{{ metal_bmc_bmc_superuser_pwd }}"
-      METAL_BMC_MQ_ADDRESS: "{{ metal_bmc_nsq_lookupd_addr }}"
+      METAL_BMC_MQ_ADDRESS: "{{ metal_bmc_nsqd_addr }}"
       METAL_BMC_MQ_LOGLEVEL: "{{ metal_bmc_nsq_log_level }}"
       METAL_BMC_MQ_CA_CERT_FILE: "{{metal_bmc_nsq_cert_dir }}/ca.pem"
       METAL_BMC_MQ_CLIENT_CERT_FILE: "{{ metal_bmc_nsq_cert_dir }}/client.pem"
