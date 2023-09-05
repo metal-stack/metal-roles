@@ -1,15 +1,13 @@
 # sonic
 
-Deploys a SONiC switch. It can run on all switches inside the network topology, i.e. spines, exits, leaves. It is
-supposed to run on Edgecore SONiC switches.
+Deploys a SONiC switch. It can run on all switches inside the network topology, i.e. spines, exits, leaves. It is supposed to run on Edgecore SONiC switches.
 
-It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included
-before executing this role.
+It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
 
 ## Variables
 
 | Name                                                       | Mandatory | Description                                                                                                          |
-|------------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
 | sonic_mgmt_vrf                                             | yes       | Boolean flag to enable / disable the management vrf on the switch.                                                   |
 | sonic_ntpservers                                           | yes       | The time servers to use on the switch.                                                                               |
 | sonic_nameservers                                          | yes       | The name servers to use on the switch.                                                                               |
