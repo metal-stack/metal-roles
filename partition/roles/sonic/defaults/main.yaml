@@ -4,6 +4,7 @@ sonic_ntpservers: []
 sonic_nameservers: []
 sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
+sonic_config_action: reload
 
 ## Physical settings
 sonic_breakouts: {}
