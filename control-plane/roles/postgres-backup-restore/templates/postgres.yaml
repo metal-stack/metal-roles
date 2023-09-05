@@ -160,7 +160,6 @@ spec:
           mountPath: /data
         - mountPath: /backup
           name: backup
-        - mountPath: /data
         - name: bin-provision
           subPath: backup-restore-sidecar
           mountPath: /usr/local/bin/backup-restore-sidecar
