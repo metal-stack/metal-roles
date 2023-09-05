@@ -14,6 +14,7 @@
       - metal_bmc_bmc_superuser_pwd is defined
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_ca_cert is not none)
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_client_cert is not none)
+      - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_client_cert_key is not none)
       - metal_bmc_console_ca_cert is not none
       - metal_bmc_console_cert is not none
       - metal_bmc_console_key is not none
