@@ -2,12 +2,12 @@
 DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: split
-    frr_mgmt_framework_config: "true"
     hostname: "exit01"
     hwsku: "Accton-AS7726-32X"
     mac: "e0:01:a6:e3:29:3c"
     platform: "x86_64-accton_as7726_32x-r0"
     type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
 
 FEATURE:
   dhcp_relay:

@@ -1,4 +1,7 @@
 ---
+- name: Gather switch facts
+  switch_facts:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
@@ -7,23 +10,10 @@
       - sonic_mgmt_vrf is defined
       - sonic_loopback_address is defined
       - sonic_asn is defined
+      - sonic_config_action in ['load', 'reload']
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
-      - sonic_config_action in ['load', 'reload']
-
-# - name: Patch ssh service to run in the mgmt vrf
-#   blockinfile:
-#     path: /etc/systemd/system/ssh.service.d/override.conf
-#     insertafter: "ExecStartPre=.*"
-#     block: |
-#       ExecStart=
-#       ExecStart=/bin/ip vrf exec mgmt /usr/sbin/sshd -D $SSHD_OPTS
-#       [Unit]
-#       After=sonic.target
-#   when: sonic_mgmt_vrf
-#   notify:
-#   - reload systemd
-#   - restart ssh service
+      - metal_stack_switch_os_is_sonic
 
 - name: render resolv.conf
   template:
@@ -51,11 +41,11 @@
     src: "{{ item }}"
     dest: "/etc/systemd/system/{{ item }}"
   notify: reload systemd
-  with_items:
+  loop:
     - bgp-validation@.service
     - frr-reload.service
 
-# Dependecies is returned by config.
+# Dependencies are returned by config.
 - name: Configure breakouts
   command: "config interface breakout --yes {{ item.key }} '{{ item.value }}'"
   register: breakout_result
@@ -71,9 +61,9 @@
 - name: Extract running configuration for breakouts and ports
   ansible.builtin.set_fact:
     sonic_running_cfg_breakouts: "{{ sonic_running_cfg | community.general.json_query('BREAKOUT_CFG') }}"
-    sonic_running_cfg_hwsku: "sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.hwsku')"
-    sonic_running_cfg_mac: "sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.mac')"
-    sonic_running_cfg_platform: "sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.platform')"
+    sonic_running_cfg_hwsku: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.hwsku') }}"
+    sonic_running_cfg_mac: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.mac') }}"
+    sonic_running_cfg_platform: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.platform') }}"
     sonic_running_cfg_ports: "{{ sonic_running_cfg | community.general.json_query('PORT')  }}"
 
 - name: Fail if running configuration doesn't contain required informations
@@ -120,8 +110,6 @@
   when: sonic_extended_cacl is defined
   notify:
   - restart caclmgrd
-
-- import_tasks: remove-neighbors.yaml
 
 - name: Flush handlers
   meta: flush_handlers

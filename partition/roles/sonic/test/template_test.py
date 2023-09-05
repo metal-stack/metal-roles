@@ -6,13 +6,16 @@ from test import read_template_file
 
 from ansible.template import Templar
 
+
 def readYaml(f):
     with open(os.path.join(os.path.dirname(__file__), f), "r") as stream:
         return yaml.safe_load(stream)
 
+
 def readFile(f):
     with open(os.path.join(os.path.dirname(__file__), f), "r") as stream:
         return stream.read()
+
 
 class SonicRoleTemplates(unittest.TestCase):
     def test_sonic_role_templates(self):

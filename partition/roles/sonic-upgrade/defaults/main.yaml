@@ -1,4 +1,4 @@
 ---
 sonic_upgrade_protocol: "http"
-sonic_upgrade_port: "8080"
+sonic_upgrade_port: 8080
 sonic_upgrade_vrf: "mgmt"

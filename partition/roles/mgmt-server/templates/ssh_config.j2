@@ -1,4 +1,4 @@
-{% for host in groups.all %}
+{% for host in mgmt_server_metal_ssh_groups %}
 {% if hostvars[host].ansible_host is defined %}
 {% if hostvars[host].ansible_user is defined %}
 Host {{ host }} {{ hostvars[host].host_alias|default('') }}

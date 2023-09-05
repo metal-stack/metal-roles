@@ -1,0 +1,108 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerDeployment
+metadata:
+  name: provider-metal
+type: helm
+providerConfig:
+  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/metal-stack/gardener-extension-provider-metal/' + gardener_extension_provider_metal_repo_ref + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+  values:
+    image:
+      repository: "{{ gardener_extension_provider_metal_image_name }}"
+      tag: "{{ gardener_extension_provider_metal_image_tag }}"
+    config:
+      machineImages:
+        {% for image in (gardener_cloud_profile_machine_images | machine_images_for_cloud_profile) -%}
+        {%- for image_version in image.versions -%}
+        - name: "{{ image.name }}"
+          version: "{{ image_version.version }}"
+          image: "{{ image.name }}-{{ image_version.version }}"
+        {% endfor -%}
+        {%- endfor %}
+
+      clusterAudit:
+        enabled: {{ gardener_extension_provider_metal_cluster_audit_enabled }}
+
+      auditToSplunk:
+        enabled: {{ gardener_extension_provider_metal_audit_to_splunk_enabled }}
+{% if gardener_extension_provider_metal_audit_to_splunk_enabled %}
+        hecToken: {{ gardener_extension_provider_metal_audit_to_splunk.hecToken }}
+        index: {{ gardener_extension_provider_metal_audit_to_splunk.index }}
+        hecHost: {{ gardener_extension_provider_metal_audit_to_splunk.hecHost }}
+        hecPort: {{ gardener_extension_provider_metal_audit_to_splunk.hecPort }}
+        tlsEnabled: {{ gardener_extension_provider_metal_audit_to_splunk.tlsEnabled }}
+        hecCAFile: |
+          {{ gardener_extension_provider_metal_audit_to_splunk.hecCAFile | indent(width=10, first=false) }}
+{% endif %}
+
+      etcd:
+        backup:
+          schedule: "{{ gardener_extension_provider_metal_etcd_backup_schedule }}"
+          deltaSnapshotPeriod: "{{ gardener_extension_provider_metal_etcd_delta_snapshot_period }}"
+
+      storage:
+        duros:
+          enabled: {{ gardener_extension_provider_metal_duros_storage_enabled }}
+{% if gardener_extension_provider_metal_duros_storage_enabled %}
+          partitionConfig: {{ gardener_extension_provider_metal_duros_storage_config | to_json }}
+{% endif %}
+
+      imagePullPolicy: {{ gardener_extension_provider_metal_image_pull_policy }}
+{% if gardener_extension_provider_metal_image_pull_secret %}
+      imagePullSecret:
+        encodedDockerConfigJSON: {{ gardener_extension_provider_metal_image_pull_secret | to_json | b64encode }}
+{% endif %}
+
+{% if gardener_extension_provider_metal_egress_destinations %}
+      # for restrictEgress control plane feature gate
+      egressDestinations: {{ gardener_extension_provider_metal_egress_destinations | to_json }}
+{% endif %}
+
+    imageVectorOverwrite: |
+      images:
+      - name: metalccm
+        sourceRepository: https://github.com/metal-stack/metal-ccm
+        repository: {{ metal_cloud_controller_manager_image_name }}
+        tag: {{ metal_cloud_controller_manager_image_tag }}
+      - name: droptailer
+        sourceRepository: https://github.com/metal-stack/droptailer
+        repository: {{ droptailer_image_name }}
+        tag: {{ droptailer_image_tag }}
+      - name: machine-controller-manager
+        sourceRepository: github.com/gardener/machine-controller-manager
+        repository: {{ gardener_machine_controller_manager_image_name }}
+        tag: {{ gardener_machine_controller_manager_image_tag }}
+      - name: firewall-controller-manager
+        sourceRepository: github.com/metal-stack/firewall-controller-manager
+        repository: {{ firewall_controller_manager_image_name }}
+        tag: {{ firewall_controller_manager_image_tag }}
+      - name: machine-controller-manager-provider-metal
+        sourceRepository: https://github.com/metal-stack/machine-controller-manager-provider-metal
+        repository: {{ gardener_mcm_provider_metal_image_name | default("") }}
+        tag: {{ gardener_mcm_provider_metal_image_tag | default("") }}
+      - name: csi-lvm-controller
+        sourceRepository: github.com/metal-stack/csi-lvm-controller
+        repository: {{ csi_lvm_controller_image_name }}
+        tag: {{ csi_lvm_controller_image_tag }}
+      - name: csi-lvm-provisioner
+        sourceRepository: github.com/metal-stack/csi-lvm-provisioner
+        repository: {{ csi_lvm_provisioner_image_name }}
+        tag: {{ csi_lvm_provisioner_image_tag }}
+{% if gardener_extension_provider_metal_cluster_audit_enabled and audit_forwarder_image_tag is defined %}
+      - name: auditforwarder
+        sourceRepository: https://github.com/metal-stack/audit-forwarder
+        repository: {{ audit_forwarder_image_name }}
+        tag: {{ audit_forwarder_image_tag }}
+{% endif %}
+{% if gardener_extension_provider_metal_audit_to_splunk_enabled and fluentd_splunk_audit_image_tag is defined%}
+      - name: fluentd-splunk-audit
+        sourceRepository: https://github.com/fluent/fluentd-kubernetes-daemonset
+        repository: {{ fluentd_splunk_audit_image_name }}
+        tag: {{ fluentd_splunk_audit_image_tag }}
+{% endif %}
+{% if gardener_extension_provider_metal_duros_storage_enabled and duros_controller_image_tag is defined %}
+      - name: duros-controller
+        sourceRepository: https://github.com/metal-stack/duros-controller
+        repository: {{ duros_controller_image_name }}
+        tag: {{ duros_controller_image_tag }}
+{% endif %}

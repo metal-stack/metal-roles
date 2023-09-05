@@ -1,0 +1,19 @@
+image:
+  registry:
+  repository: "{{ thanos_image_name }}"
+  tag: "{{ thanos_image_tag }}"
+
+{% if monitoring_thanos_object_store_config is defined %}
+objstoreConfig: |-
+  {{ monitoring_thanos_object_store_config | indent(2) }}
+
+compactor:
+  enabled: true
+storegateway:
+  enabled: true
+{% endif %}
+
+query:
+  dnsDiscovery:
+    sidecarsService: kube-prometheus-stack-thanos-discovery
+    sidecarsNamespace: "{{ monitoring_namespace }}"

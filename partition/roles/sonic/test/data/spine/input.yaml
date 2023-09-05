@@ -11,8 +11,8 @@ sonic_bgp_ports:
 sonic_ports_default_speed: 100000
 sonic_ports_default_mtu: 9216
 sonic_ports:
- Ethernet120:
- Ethernet124:
+  Ethernet120:
+  Ethernet124:
 
 sonic_running_cfg_breakouts:
   Ethernet120:

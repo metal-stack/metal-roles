@@ -14,11 +14,11 @@ sonic_ports:
     ips:
     - 10.0.0.2/32
 # Uplink for pxe VLAN
-Ethernet1:
-  speed: 10000
-Ethernet2:
-  speed: 10000
-Ethernet3:
+  Ethernet1:
+    speed: 10000
+  Ethernet2:
+    speed: 10000
+  Ethernet3:
   speed: 10000
   ips:
   - 10.1.2.2/30

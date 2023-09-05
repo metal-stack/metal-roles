@@ -117,7 +117,7 @@
     line: "{{ item.line }}"
     validate: /usr/sbin/sshd -t -f %s
   notify: restart sshd
-  with_items:
+  loop:
     - { regexp: "^PasswordAuthentication .+", line: "PasswordAuthentication no" }
     - { regexp: "^PermitRootLogin .+", line: "PermitRootLogin no" }
     - { regexp: "^DebianBanner .+", line: "DebianBanner no" }
@@ -132,7 +132,7 @@
     mode: 0644
   when:
     - hostvars[item].ansible_host is defined
-  with_items: "{{ groups.all }}"
+  loop: "{{ mgmt_server_metal_ssh_groups }}"
 
 - name: Create ssh configuration for easier access to mgmt components
   template:
