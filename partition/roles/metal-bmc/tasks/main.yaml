@@ -88,6 +88,7 @@
       METAL_BMC_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
       METAL_BMC_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
       METAL_BMC_IGNORE_MACS: "{{ metal_bmc_ignore_macs | join(',') }}"
+      METAL_BMC_ALLOWED_CIDRS: "{{ metal_bmc_allowed_cidrs | join(',') }}"
       METAL_BMC_IPMI_USER: "{{ metal_bmc_bmc_superuser }}"
       METAL_BMC_IPMI_PASSWORD: "{{ metal_bmc_bmc_superuser_pwd }}"
       METAL_BMC_MQ_ADDRESS: "{{ metal_bmc_nsq_lookupd_addr }}"
