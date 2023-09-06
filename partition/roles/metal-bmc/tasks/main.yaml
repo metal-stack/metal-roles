@@ -7,12 +7,14 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - metal_bmc_nsqd_addr is defined
       - metal_bmc_image_tag is defined
       - metal_bmc_image_name is defined
       - metal_bmc_bmc_superuser is defined
       - metal_bmc_bmc_superuser_pwd is defined
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_ca_cert is not none)
       - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_client_cert is not none)
+      - not metal_bmc_nsq_tls_enabled or (metal_bmc_nsq_tls_enabled and metal_bmc_nsqd_client_cert_key is not none)
       - metal_bmc_console_ca_cert is not none
       - metal_bmc_console_cert is not none
       - metal_bmc_console_key is not none
@@ -34,6 +36,8 @@
       content: "{{ metal_bmc_nsqd_ca_cert }}"
     - filename: client.pem
       content: "{{ metal_bmc_nsqd_client_cert }}"
+    - filename: client-key.pem
+      content: "{{ metal_bmc_nsqd_client_cert_key }}"
   loop_control:
     label: "{{ item.filename }}"
   when: metal_bmc_nsq_tls_enabled
@@ -91,10 +95,11 @@
       METAL_BMC_ALLOWED_CIDRS: "{{ metal_bmc_allowed_cidrs | join(',') }}"
       METAL_BMC_IPMI_USER: "{{ metal_bmc_bmc_superuser }}"
       METAL_BMC_IPMI_PASSWORD: "{{ metal_bmc_bmc_superuser_pwd }}"
-      METAL_BMC_MQ_ADDRESS: "{{ metal_bmc_nsq_lookupd_addr }}"
+      METAL_BMC_MQ_ADDRESS: "{{ metal_bmc_nsqd_addr }}"
       METAL_BMC_MQ_LOGLEVEL: "{{ metal_bmc_nsq_log_level }}"
       METAL_BMC_MQ_CA_CERT_FILE: "{{metal_bmc_nsq_cert_dir }}/ca.pem"
       METAL_BMC_MQ_CLIENT_CERT_FILE: "{{ metal_bmc_nsq_cert_dir }}/client.pem"
+      METAL_BMC_MQ_CLIENT_CERT_KEY_FILE: "{{ metal_bmc_nsq_cert_dir }}/client-key.pem"
       METAL_BMC_MACHINE_TOPIC: "{{ metal_partition_id }}-machine"
       METAL_BMC_CONSOLE_PORT: "{{ metal_bmc_console_port }}"
       METAL_BMC_CONSOLE_CA_CERT_FILE: "{{metal_bmc_console_cert_dir }}/ca.pem"

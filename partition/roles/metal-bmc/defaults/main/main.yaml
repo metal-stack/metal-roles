@@ -11,6 +11,7 @@ metal_bmc_nsq_tls_enabled: true
 metal_bmc_nsq_cert_dir: /certs/nsq
 metal_bmc_nsqd_ca_cert:
 metal_bmc_nsqd_client_cert:
+metal_bmc_nsqd_client_cert_key:
 
 metal_bmc_console_port: 3333
 metal_bmc_console_cert_owner: root
