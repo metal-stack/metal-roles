@@ -45,18 +45,8 @@ spec:
         image: {{ postgres_image_name }}:{{ postgres_image_tag }}
         imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
-        - tini
-        - --
-        args:
-        - sh
-        - -c
-        - backup-restore-sidecar wait && docker-entrypoint.sh postgres
-          {% if postgres_shared_libraries_preload %}-c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}
-          {% if postgres_maintenance_work_mem %}-c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}
-          {% if postgres_shared_buffers %}-c shared_buffers={{ postgres_shared_buffers }}{% endif %}
-          {% if postgres_effective_cache_size %}-c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}
-          {% if postgres_work_mem %}-c work_mem={{ postgres_work_mem }}{% endif %}
-          -c max_connections={{ postgres_max_connections }}
+        - backup-restore-sidecar
+        - wait
         ports:
         - containerPort: 5432
         env:
@@ -80,6 +70,43 @@ spec:
             secretKeyRef:
               key: POSTGRES_DATA
               name: {{ postgres_name }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec
+            - pg_isready
+            - -U
+            - {{ postgres_user }}
+            - -h
+            - 127.0.0.1
+            - -p
+            - "5432"
+          failureThreshold: 6
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: postgres
+        ports:
+        - containerPort: 5432
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec
+            - pg_isready
+            - -U
+            - {{ postgres_user }}
+            - -h
+            - 127.0.0.1
+            - -p
+            - "5432"
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         resources: {{ postgres_resources | to_json }}
         volumeMounts:
         - name: {{ postgres_name }}
@@ -89,21 +116,15 @@ spec:
           mountPath: /usr/local/bin/backup-restore-sidecar
         - name: backup-restore-sidecar-config
           mountPath: /etc/backup-restore-sidecar
-        - name: bin-provision
-          subPath: tini
-          mountPath: /usr/local/bin/tini
       - name: backup-restore-sidecar
         image: {{ postgres_image_name }}:{{ postgres_image_tag }}
         imagePullPolicy: {{ postgres_image_pull_policy }}
         command:
-        - tini
-        - --
-        args:
-        - sh
-        - -c
-        - mkdir -p /data/postgres && backup-restore-sidecar start
+        - backup-restore-sidecar
+        - start
         ports:
-        - containerPort: 2112
+        - containerPort: 8000
+          name: grpc
         env:
         - name: BACKUP_RESTORE_SIDECAR_POSTGRES_PASSWORD
           valueFrom:
@@ -137,14 +158,13 @@ spec:
         volumeMounts:
         - name: {{ postgres_name }}
           mountPath: /data
+        - mountPath: /backup
+          name: backup
         - name: bin-provision
           subPath: backup-restore-sidecar
           mountPath: /usr/local/bin/backup-restore-sidecar
         - name: backup-restore-sidecar-config
           mountPath: /etc/backup-restore-sidecar
-        - name: bin-provision
-          subPath: tini
-          mountPath: /usr/local/bin/tini
 {% if postgres_backup_restore_sidecar_provider == "gcp" %}
         - name: gcp-credentials
           mountPath: /gcp/credentials
@@ -157,7 +177,6 @@ spec:
         command:
         - cp
         - /backup-restore-sidecar
-        - /sbin/tini
         - /bin-provision
         volumeMounts:
         - name: bin-provision
@@ -166,6 +185,9 @@ spec:
       - name: {{ postgres_name }}
         persistentVolumeClaim:
           claimName: {{ postgres_name }}
+      - name: backup
+        persistentVolumeClaim:
+          claimName: backup
       - name: backup-restore-sidecar-config
         configMap:
           name: backup-restore-sidecar-config-{{ postgres_name }}
@@ -191,6 +213,17 @@ spec:
 {% if postgres_storage_class %}
       storageClassName: {{ postgres_storage_class }}
 {% endif %}
+  - metadata:
+      name: backup
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ postgres_storage_size }}
+{% if postgres_storage_class %}
+      storageClassName: {{ postgres_storage_class }}
+{% endif %}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -204,9 +237,12 @@ data:
     backup-provider: {{ postgres_backup_restore_sidecar_provider }}
     backup-cron-schedule: "{{ postgres_backup_restore_sidecar_backup_cron_schedule }}"
     object-prefix: {{ postgres_backup_restore_sidecar_object_prefix }}
+    compression-method: targz
 {% if postgres_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ postgres_backup_restore_sidecar_object_max_keep }}
 {% endif %}
+    post-exec-cmds:
+      - docker-entrypoint.sh postgres {% if postgres_shared_libraries_preload %} -c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}{% if postgres_maintenance_work_mem %} -c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}{% if postgres_shared_buffers %} -c shared_buffers={{ postgres_shared_buffers }}{% endif %}{% if postgres_effective_cache_size %} -c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}{% if postgres_work_mem %} -c work_mem={{ postgres_work_mem }}{% endif %} -c max_connections={{ postgres_max_connections }}
 ---
 apiVersion: v1
 kind: Secret
