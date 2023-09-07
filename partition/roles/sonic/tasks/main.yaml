@@ -54,6 +54,11 @@
   with_dict: "{{ sonic_breakouts }}"
   when: sonic_breakouts is defined
 
+- name: Delete deprecated metal.yaml
+  file:
+    path: "/etc/sonic/metal.yaml"
+    state: absent
+
 - name: Get running configuration
   ansible.builtin.command: show runningconfiguration all
   register: sonic_running_cfg
