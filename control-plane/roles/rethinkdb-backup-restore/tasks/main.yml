@@ -19,7 +19,19 @@
     that:
       - rethinkdb_backup_restore_sidecar_image_tag is defined
 
+- name: Migration to separate backup volume (since pre- and post-cmds)
+  k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ rethinkdb_name }}"
+        namespace: "{{ rethinkdb_namespace }}"
+    state: absent
+  when: "(lookup('k8s', api_version='apps/v1', kind='StatefulSet', resource_name=rethinkdb_name, namespace=rethinkdb_namespace) | default({}, true)).get('spec', {}).get('volumeClaimTemplates', []) | length == 1"
+
 - name: Deploy rethinkdb (backup-restore)
   k8s:
     definition: "{{ lookup('template', 'rethinkdb.yaml') }}"
     namespace: "{{ rethinkdb_namespace }}"
+    apply: yes

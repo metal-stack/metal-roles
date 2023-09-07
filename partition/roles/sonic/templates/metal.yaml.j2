@@ -27,8 +27,12 @@ LOOPBACK_INTERFACE:
 
 {% if sonic_mgmtif_ip is defined %}
 MGMT_INTERFACE:
+{% if sonic_mgmtif_gateway is defined %}
   eth0|{{ sonic_mgmtif_ip }}:
     gwaddr: "{{ sonic_mgmtif_gateway }}"
+{% else %}
+  eth0|{{ sonic_mgmtif_ip }}: {}
+{% endif %}
 
 {% endif %}
 MGMT_VRF_CONFIG:
@@ -95,6 +99,10 @@ VLAN_MEMBER:
   {% for untagged_port in vlan.untagged_ports|default([]) %}
   Vlan{{ vlan.id }}|{{ untagged_port }}:
       tagging_mode: untagged
+  {% endfor %}
+  {% for tagged_port in vlan.tagged_ports|default([]) %}
+  Vlan{{ vlan.id }}|{{ tagged_port }}:
+      tagging_mode: tagged
   {% endfor %}
   {% endfor %}
 {% endif %}
