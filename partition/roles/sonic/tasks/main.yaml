@@ -71,7 +71,7 @@
     sonic_running_cfg_platform: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.platform') }}"
     sonic_running_cfg_ports: "{{ sonic_running_cfg | community.general.json_query('PORT')  }}"
 
-- name: Fail if running configuration doesn't contain required informations
+- name: Fail if running configuration doesn't contain required information
   ansible.builtin.assert:
     that:
       - sonic_running_cfg_breakouts is defined and sonic_running_cfg_breakouts | length > 0
