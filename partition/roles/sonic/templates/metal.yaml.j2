@@ -37,6 +37,12 @@ MGMT_INTERFACE:
   eth0|{{ sonic_mgmtif_ip }}: {}
 {% endif %}
 
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
 {% endif %}
 MGMT_VRF_CONFIG:
   vrf_global:
