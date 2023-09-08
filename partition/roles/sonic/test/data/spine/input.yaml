@@ -8,9 +8,10 @@ sonic_bgp_ports:
 - Ethernet120
 - Ethernet124
 
-sonic_ports_default_speed: 100000
+sonic_ports_default_fec: none
 sonic_ports_default_mtu: 9216
-sonic_ports:
+sonic_ports_default_speed: 100000
+sonic_ports_dict:
   Ethernet120:
   Ethernet124:
 

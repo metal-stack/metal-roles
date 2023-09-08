@@ -37,33 +37,33 @@ MGMT_INTERFACE:
   eth0|{{ sonic_mgmtif_ip }}: {}
 {% endif %}
 
+{% endif %}
 MGMT_PORT:
   eth0:
     alias: "eth0"
     admin_status: "up"
     description: "Management Port"
 
-{% endif %}
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"
-{% if sonic_ports|length > 0 %}
+{% if sonic_ports_dict|length > 0 %}
 
 INTERFACE:
-  {% for port in sonic_ports %}
-  {% if port.name in sonic_bgp_ports|default([]) or port.vrf is defined %}
-  {{ port.name }}:
-    {% if port.name in sonic_bgp_ports|default([]) %}
+  {% for name, port in sonic_ports_dict.items() %}
+  {% if name in sonic_bgp_ports|default([]) or port.vrf is defined %}
+  {{ name }}:
+    {% if name in sonic_bgp_ports|default([]) %}
     ipv6_use_link_local_only: enable
     {% endif %}
     {% if port.vrf is defined %}
     vrf_name: "{{ port.vrf }}"
     {% endif %}
   {% elif port.ips is defined %}
-  {{ port.name }}: {}
+  {{ name }}: {}
   {% endif %}
   {% for ip in port.ips|default([]) %}
-  {{ port.name }}|{{ ip }}: {}
+  {{ name }}|{{ ip }}: {}
   {% endfor %}
   {% endfor %}
 {% endif %}

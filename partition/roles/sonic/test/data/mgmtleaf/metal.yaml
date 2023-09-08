@@ -29,6 +29,12 @@ MGMT_INTERFACE:
   eth0|10.255.255.254/30:
     gwaddr: "10.255.255.253"
 
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "true"
@@ -57,7 +63,7 @@ PORT:
     lanes: "1"
     parent_port: Ethernet0
     admin_status: up
-    speed: "25000"
+    speed: "1000"
     mtu: "9000"
     fec: "none"
   Ethernet1:
@@ -67,7 +73,7 @@ PORT:
     lanes: "2"
     parent_port: Ethernet0
     admin_status: up
-    speed: "25000"
+    speed: "1000"
     mtu: "9000"
     fec: "none"
   Ethernet2:
@@ -77,7 +83,7 @@ PORT:
     lanes: "3"
     parent_port: Ethernet0
     admin_status: up
-    speed: "25000"
+    speed: "1000"
     mtu: "9000"
     fec: "none"
   Ethernet3:
@@ -87,7 +93,7 @@ PORT:
     lanes: "4"
     parent_port: Ethernet0
     admin_status: up
-    speed: "25000"
+    speed: "1000"
     mtu: "9000"
     fec: "none"
   Ethernet4:
@@ -97,8 +103,6 @@ PORT:
     lanes: "5,6,7,8"
     parent_port: Ethernet4
     speed: "100000"
-    mtu: "9000"
-    fec: "none"
   Ethernet120:
     alias: Eth31(Port31)
     autoneg: "off"

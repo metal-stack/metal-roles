@@ -24,6 +24,12 @@ LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}
 
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "true"
@@ -32,8 +38,6 @@ INTERFACE:
   Ethernet0:
     vrf_name: "VrfMpls"
   Ethernet0|10.0.0.2/32: {}
-  Ethernet3: {}
-  Ethernet3|10.1.2.2/30: {}
   Ethernet112:
     ipv6_use_link_local_only: enable
   Ethernet116:
@@ -59,20 +63,26 @@ PORT:
     mtu: "1500"
     fec: "none"
   Ethernet1:
-    admin_status: up
+    alias: Eth1/2(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "2"
+    parent_port: Ethernet0
     speed: "10000"
-    mtu: "9216"
-    fec: "none"
   Ethernet2:
-    admin_status: up
+    alias: Eth1/3(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "3"
+    parent_port: Ethernet0
     speed: "10000"
-    mtu: "9216"
-    fec: "none"
   Ethernet3:
-    admin_status: up
+    alias: Eth1/4(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "4"
+    parent_port: Ethernet0
     speed: "10000"
-    mtu: "9216"
-    fec: "none"
   Ethernet112:
     alias: Eth29(Port29)
     autoneg: "off"

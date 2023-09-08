@@ -6,22 +6,16 @@ sonic_loopback_address: 10.0.0.1
 sonic_breakouts:
   Ethernet0: "4x10G"
 
-sonic_ports:
+sonic_ports_default_fec: none
+sonic_ports_default_mtu: 9216
+sonic_ports_default_speed: 100000
+sonic_ports_dict:
   Ethernet0:
     speed: 10000
     mtu: 1500
     vrf: VrfMpls
     ips:
     - 10.0.0.2/32
-# Uplink for pxe VLAN
-  Ethernet1:
-    speed: 10000
-  Ethernet2:
-    speed: 10000
-  Ethernet3:
-  speed: 10000
-  ips:
-  - 10.1.2.2/30
 # spine uplinks
   Ethernet112:
   Ethernet116:
@@ -43,6 +37,24 @@ sonic_running_cfg_ports:
     alias: Eth1/1(Port1)
     index: "1"
     lanes: "1"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet1:
+    alias: Eth1/2(Port1)
+    index: "1"
+    lanes: "2"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet2:
+    alias: Eth1/3(Port1)
+    index: "1"
+    lanes: "3"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet3:
+    alias: Eth1/4(Port1)
+    index: "1"
+    lanes: "4"
     parent_port: Ethernet0
     speed: "10000"
   Ethernet112:

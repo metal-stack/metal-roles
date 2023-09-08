@@ -24,6 +24,12 @@ LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}
 
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "true"
