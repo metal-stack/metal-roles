@@ -20,9 +20,8 @@
     fail_msg: "default port configuration is necessary on non-empty sonic_ports"
     quiet: yes
     that:
-      - sonic_ports_default_speed is defined
-      - sonic_ports_default_mtu is defined
-      - sonic_ports_default_fec is defined
+      - sonic_ports_default_speed
+      - sonic_ports_default_mtu
   when: sonic_ports
 
 - name: Populate sonic_ports_dict

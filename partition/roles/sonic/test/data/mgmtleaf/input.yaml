@@ -10,7 +10,6 @@ sonic_ntpservers: ['1.2.3.4']
 sonic_breakouts:
   Ethernet0: "4x25G"
 
-sonic_ports_default_fec: none
 sonic_ports_default_mtu: 9000
 sonic_ports_default_speed: 1000
 sonic_ports_dict:
