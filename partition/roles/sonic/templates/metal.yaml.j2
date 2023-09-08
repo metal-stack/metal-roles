@@ -50,20 +50,20 @@ MGMT_VRF_CONFIG:
 {% if sonic_ports|length > 0 %}
 
 INTERFACE:
-  {% for name, cfg in sonic_ports.items() %}
-  {% if name in sonic_bgp_ports|default([]) or cfg.vrf is defined %}
-  {{ name }}:
-    {% if name in sonic_bgp_ports|default([]) %}
+  {% for port in sonic_ports %}
+  {% if port.name in sonic_bgp_ports|default([]) or port.vrf is defined %}
+  {{ port.name }}:
+    {% if port.name in sonic_bgp_ports|default([]) %}
     ipv6_use_link_local_only: enable
     {% endif %}
-    {% if cfg.vrf is defined %}
-    vrf_name: "{{ cfg.vrf }}"
+    {% if port.vrf is defined %}
+    vrf_name: "{{ port.vrf }}"
     {% endif %}
   {% elif port.ips is defined %}
   {{ port.name }}: {}
   {% endif %}
-  {% for ip in cfg.ips|default([]) %}
-  {{ name }}|{{ ip }}: {}
+  {% for ip in port.ips|default([]) %}
+  {{ port.name }}|{{ ip }}: {}
   {% endfor %}
   {% endfor %}
 {% endif %}
