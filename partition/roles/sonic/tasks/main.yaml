@@ -55,13 +55,17 @@
   when: sonic_breakouts is defined
 
 - name: Delete deprecated metal.yaml
-  file:
+  ansible.builtin.file:
     path: "/etc/sonic/metal.yaml"
     state: absent
 
 - name: Get running configuration
   ansible.builtin.command: show runningconfiguration all
-  register: sonic_running_cfg
+  register: sonic_running_cfg_result
+
+- name: Parse running configuration
+  ansible.builtin.set_fact:
+    sonic_running_cfg: "{{ sonic_running_cfg_result.stdout | from_json }}"
 
 - name: Extract running configuration for breakouts and ports
   ansible.builtin.set_fact:
@@ -74,17 +78,12 @@
 - name: Fail if running configuration doesn't contain required information
   ansible.builtin.assert:
     that:
-      - sonic_running_cfg_breakouts is defined and sonic_running_cfg_breakouts | length > 0
-      - sonic_running_cfg_hwsku is defined and sonic_running_cfg_hwsku | length > 0
-      - sonic_running_cfg_mac is defined and sonic_running_cfg_mac | length > 0
-      - sonic_running_cfg_platform is defined and sonic_running_cfg_platform | length > 0
-      - sonic_running_cfg_ports is defined and sonic_running_cfg_ports | length > 0
+      - sonic_running_cfg_breakouts
+      - sonic_running_cfg_hwsku
+      - sonic_running_cfg_mac
+      - sonic_running_cfg_platform
+      - sonic_running_cfg_ports
     fail_msg: The running configuration is incomplete because it does not contain 'BREAKOUT_CFG', 'PORT', or complete 'DEVICE_METADATA'.
-
-- name: Fail if running configuration doesn't contain 'PORT'
-  ansible.builtin.fail:
-    msg: The running configuration doesn't contain 'PORT' {{ sonic_running_cfg }}
-  when: "sonic_running_cfg_ports | length == 0"
 
 - name: Render config_db
   set_fact:
