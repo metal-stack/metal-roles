@@ -75,13 +75,13 @@ BREAKOUT_CFG:
   {% endfor %}
 
 PORT:
-  {% for name, cfg in sonic_running_cfg_ports.items() %}
+  {% for name, running_cfg in sonic_running_cfg_ports.items() %}
   {{ name }}:
-    alias: {{ cfg.alias }}
+    alias: {{ running_cfg.alias }}
     autoneg: "off"
-    index: "{{ cfg.index }}"
-    lanes: "{{ cfg.lanes }}"
-    parent_port: {{ cfg.parent_port }}
+    index: "{{ running_cfg.index }}"
+    lanes: "{{ running_cfg.lanes }}"
+    parent_port: {{ running_cfg.parent_port }}
     {% if sonic_ports_dict[name] is defined %}
     {% set port = sonic_ports_dict[name] %}
     admin_status: up
@@ -89,7 +89,7 @@ PORT:
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
     fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
     {% else %}
-    speed: "{{ cfg.speed }}"
+    speed: "{{ running_cfg.speed }}"
     {% endif %}
   {% endfor %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
