@@ -19,6 +19,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_breakouts                                            |           | The breakout configuration for ports, e.g. `dict('Ethernet0'='4x25G')`                                               |
 | sonic_config_action                                        |           | Either `load` or `reload`. In the latter case all services will be restarted.                                        |
 | sonic_ports                                                |           | Configuration for ports (mtu, fec, have highest precedence). These ports will be up by default.                      |
+| sonic_ports.name                                           |           | The port name.                                                                                                       |
 | sonic_ports.speed                                          |           | Speed of the port.                                                                                                   |
 | sonic_ports.mtu                                            |           | MTU of the port.                                                                                                     |
 | sonic_ports.fec                                            |           | FEC used for the port.                                                                                               |

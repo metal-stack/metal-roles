@@ -14,6 +14,10 @@
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
+- name: Populate sonic_ports_dict
+  set_fact:
+    sonic_ports_dict: "{{ sonic_ports_dict|default({}) | combine( {item.name: item} ) }}"
+  loop: "{{ sonic_ports }}"
 
 - name: render resolv.conf
   template:
