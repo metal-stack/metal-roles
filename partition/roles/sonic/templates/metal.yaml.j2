@@ -85,13 +85,11 @@ PORT:
     {% if sonic_ports_dict[name] is defined %}
     {% set port = sonic_ports_dict[name] %}
     admin_status: up
-    speed: "{{ port.speed|default(cfg.speed) }}"
+    speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
     fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
     {% else %}
     speed: "{{ cfg.speed }}"
-    mtu: "{{ sonic_ports_default_mtu }}"
-    fec: "{{ sonic_ports_default_fec|string|lower }}"
     {% endif %}
   {% endfor %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
