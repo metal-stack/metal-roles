@@ -9,6 +9,7 @@ sonic_config_action: reload
 ## Physical settings
 sonic_breakouts: {}
 sonic_ports: []
+sonic_ports_dict: {}
 sonic_ports_default_fec: none
 
 ## BGP related settings
