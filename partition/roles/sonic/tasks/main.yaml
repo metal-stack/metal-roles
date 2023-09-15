@@ -59,7 +59,7 @@
     dest: /etc/sonic/metal.yaml
   notify:
   - write metal conf to db
-  - config reload
+  # - config reload
 
 - name: Set NTP timezone
   timezone:
