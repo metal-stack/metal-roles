@@ -12,38 +12,32 @@
         labels:
           name: "{{ auditing_meili_namespace }}"
 
-- name: Create meili secret
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: metal-auditing-master-key
-        namespace: "{{ auditing_meili_namespace }}"
-      stringData:
-        MEILI_MASTER_KEY: "{{ auditing_meili_secret }}"
-  when: auditing_meili_secret
-
-- name: Create registry pull secret
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: metal-auditing-registry-pull-secret
-        namespace: "{{ auditing_meili_namespace }}"
-      type: kubernetes.io/dockerconfigjson
-      data:
-        .dockerconfigjson: "{{ auditing_meili_registry_auth | to_json | b64encode }}"
-  when: auditing_meili_registry_enabled
-
 - name: Deploy meilisearch
   include_role:
-    name: ansible-common/roles/helm-chart
+    name: metal-roles/control-plane/roles/meili-backup-restore
   vars:
-    helm_repo: "{{ metal_auditing_meili_chart_repo }}"
-    helm_chart: meilisearch
-    helm_target_namespace: "{{ auditing_meili_namespace }}"
-    helm_chart_version: "{{ metal_auditing_meili_chart_version }}"
-    helm_release_name: auditing-meili
-    helm_value_file_template: "values.yaml"
+    meilisearch_name: "{{ auditing_meili_name }}"
+    meilisearch_namespace: "{{ auditing_meili_namespace }}"
+    meilisearch_image_pull_policy: "{{ auditing_meili_image_pull_policy }}"
+    meilisearch_image_name: "{{ auditing_meili_image_name }}"
+    meilisearch_image_tag: "{{ auditing_meili_image_tag }}"
+    meilisearch_registry_auth_enabled: "{{ auditing_meili_registry_auth_enabled }}"
+    meilisearch_registry_auth: "{{ auditing_meili_registry_auth }}"
+    meilisearch_storage_size: "{{ auditing_meili_storage_size }}"
+    meilisearch_storage_class: "{{ auditing_meili_storage_class }}"
+    meilisearch_api_key: "{{ auditing_meili_api_key }}"
+    meilisearch_env: "{{ auditing_meili_env }}"
+    meilisearch_no_analytics: "{{ auditing_meili_no_analytics }}"
+    meilisearch_backup_restore_sidecar_image_pull_policy: "{{ auditing_meili_backup_restore_sidecar_image_pull_policy }}"
+    meilisearch_backup_restore_sidecar_image_name: "{{ auditing_meili_backup_restore_sidecar_image_name }}"
+    meilisearch_backup_restore_sidecar_image_tag: "{{ auditing_meili_backup_restore_sidecar_image_tag }}"
+    meilisearch_backup_restore_sidecar_provider: "{{ auditing_meili_backup_restore_sidecar_provider }}"
+    meilisearch_backup_restore_sidecar_backup_cron_schedule: "{{ auditing_meili_backup_restore_sidecar_backup_cron_schedule }}"
+    meilisearch_backup_restore_sidecar_log_level: "{{ auditing_meili_backup_restore_sidecar_log_level }}"
+    meilisearch_backup_restore_sidecar_object_prefix: "{{ auditing_meili_backup_restore_sidecar_object_prefix }}"
+    meilisearch_backup_restore_sidecar_gcp_bucket_name: "{{ auditing_meili_backup_restore_sidecar_gcp_bucket_name }}"
+    meilisearch_backup_restore_sidecar_gcp_backup_location: "{{ auditing_meili_backup_restore_sidecar_gcp_backup_location }}"
+    meilisearch_backup_restore_sidecar_gcp_project_id: "{{ auditing_meili_backup_restore_sidecar_gcp_project_id }}"
+    meilisearch_backup_restore_sidecar_gcp_serviceaccount_json: "{{ auditing_meili_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    meilisearch_resources: "{{ auditing_meili_resources }}"
+    meilisearch_backup_restore_sidecar_object_max_keep: "{{ auditing_meili_backup_restore_sidecar_object_max_keep }}"
