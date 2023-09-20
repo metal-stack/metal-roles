@@ -26,7 +26,7 @@
     meilisearch_storage_size: "{{ auditing_meili_storage_size }}"
     meilisearch_storage_class: "{{ auditing_meili_storage_class }}"
     meilisearch_api_key: "{{ auditing_meili_api_key }}"
-    meilisearch_env: "{{ auditing_meili_env }}"
+    meilisearch_environment: "{{ auditing_meili_environment }}"
     meilisearch_no_analytics: "{{ auditing_meili_no_analytics }}"
     meilisearch_backup_restore_sidecar_image_pull_policy: "{{ auditing_meili_backup_restore_sidecar_image_pull_policy }}"
     meilisearch_backup_restore_sidecar_image_name: "{{ auditing_meili_backup_restore_sidecar_image_name }}"

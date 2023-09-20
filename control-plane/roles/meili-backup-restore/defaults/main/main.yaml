@@ -8,7 +8,7 @@ meilisearch_storage_size: 5Gi
 meilisearch_storage_class:
 
 meilisearch_api_key: change-me-at-least-16-chars
-meilisearch_env: production
+meilisearch_environment: production
 meilisearch_no_analytics: true
 
 meilisearch_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"

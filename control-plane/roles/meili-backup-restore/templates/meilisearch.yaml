@@ -213,7 +213,7 @@ kind: ConfigMap
 metadata:
   name: {{ meilisearch_name }}
 data:
-  MEILI_ENV: {{ meilisearch_env }}
+  MEILI_ENV: {{ meilisearch_environment }}
   MEILI_NO_ANALYTICS: "{{ meilisearch_no_analytics | lower }}"
 ---
 apiVersion: v1
