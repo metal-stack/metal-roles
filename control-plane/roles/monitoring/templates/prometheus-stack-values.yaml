@@ -127,9 +127,6 @@ alertmanager:
         color: '{{ template "slack.color" . }}'
         title: '{{ template "slack.title" . }}'
         text: '{{ template "slack.text" . }}'
-{% if monitoring_slack_notification_icon_url is defined %}
-        icon_url: "{{ monitoring_slack_notification_icon_url }}"
-{% endif %}
         send_resolved: true
         actions:
           - type: button
@@ -146,9 +143,9 @@ alertmanager:
             url: '{{ template "__alert_silence_link" . }}'
 {% endif %}
 
+{% raw %}
   templateFiles:
     slack.tmpl: |-
-      {% raw %}
       {{/* taken from https://hodovi.cc/blog/creating-awesome-alertmanager-templates-for-slack/ */}}
       {{/* Alertmanager Silence link */}}
       {{ define "__alert_silence_link" -}}
@@ -221,7 +218,8 @@ alertmanager:
           {{- end }}
 
       {{- end }}
-      {% raw %}
+{% endraw %}
+
 coreDns:
   enabled: false
 
