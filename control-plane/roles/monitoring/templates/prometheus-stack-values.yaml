@@ -297,7 +297,7 @@ additionalPrometheusRulesMap:
         labels:
           severity: "warning"
         annotations:
-          description: "Running out of machines. Less than 10% free machines of size {{ $labels.size }} in {{ $labels.partition }}. (only {{ $value }}% are free)"
+          description: "Running out of machines. Less than 10% free machines of size {{ $labels.size }} in {{ $labels.partition }}. (only {{ $value }}% left)"
       - alert: InternetIPCapacityLow
         expr: avg(metal_network_ip_used{networkId=~"internet.*"}) by (partition, networkId) / avg(metal_network_ip_available{networkId=~"internet.*"}) by (partition, networkId) * 100 > 80
         for: 10m
