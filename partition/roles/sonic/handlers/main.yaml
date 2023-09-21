@@ -3,11 +3,6 @@
   systemd:
     daemon_reload: yes
 
-- name: restart bgp
-  systemd:
-    name: bgp
-    state: restarted
-
 - name: restart caclmgrd
   systemd:
     name: caclmgrd
@@ -28,3 +23,8 @@
     sleep: 5
     delay: 30
     timeout: 300
+
+- name: restart bgp
+  systemd:
+    name: bgp
+    state: restarted
