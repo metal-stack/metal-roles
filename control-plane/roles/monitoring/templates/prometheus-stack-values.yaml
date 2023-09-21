@@ -123,6 +123,7 @@ alertmanager:
     - name: slack
       repeat_interval: 1h
       slack_configs:
+{% raw %}
       - channel: "{{ monitoring_slack_notification_channel }}"
         color: '{{ template "slack.color" . }}'
         title: '{{ template "slack.title" . }}'
@@ -141,6 +142,7 @@ alertmanager:
           - type: button
             text: 'Silence :no_bell:'
             url: '{{ template "__alert_silence_link" . }}'
+{% endraw %}
 {% endif %}
 
 {% raw %}
