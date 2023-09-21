@@ -148,6 +148,7 @@ alertmanager:
 
   templateFiles:
     slack.tmpl: |-
+      {% raw %}
       {{/* taken from https://hodovi.cc/blog/creating-awesome-alertmanager-templates-for-slack/ */}}
       {{/* Alertmanager Silence link */}}
       {{ define "__alert_silence_link" -}}
@@ -220,7 +221,7 @@ alertmanager:
           {{- end }}
 
       {{- end }}
-
+      {% raw %}
 coreDns:
   enabled: false
 
