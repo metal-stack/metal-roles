@@ -110,6 +110,7 @@ alertmanager:
           - alertname=~"Watchdog|InfoInhibitor"
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
       - receiver: slack
+        repeat_interval: 1h
         continue: true
 {% endif %}
     receivers:
@@ -121,7 +122,6 @@ alertmanager:
     - name: 'null'
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
     - name: slack
-      repeat_interval: 1h
       slack_configs:
 {% raw %}
       - channel: "{{ monitoring_slack_notification_channel }}"
