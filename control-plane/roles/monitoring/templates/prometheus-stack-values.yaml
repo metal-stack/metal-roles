@@ -123,8 +123,8 @@ alertmanager:
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
     - name: slack
       slack_configs:
-{% raw %}
       - channel: "{{ monitoring_slack_notification_channel }}"
+{% raw %}
         color: '{{ template "slack.color" . }}'
         title: '{{ template "slack.title" . }}'
         text: '{{ template "slack.text" . }}'
