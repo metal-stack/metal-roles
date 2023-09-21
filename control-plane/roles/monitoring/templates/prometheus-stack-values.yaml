@@ -291,7 +291,7 @@ additionalPrometheusRulesMap:
         annotations:
           description: "Partition {{ $labels.partition }} has {{ $value }} DEAD Machines"
       - alert: MachineCapacityLow
-        expr: avg(metal_partition_capacity_free{size!="unknown"} > 10) by (partition, size) / avg(metal_partition_capacity_total{size!="unknown"} > 10) by (partition, size) < 0.10
+        expr: avg(metal_partition_capacity_free{size!="unknown"} > 5) by (partition, size) / avg(metal_partition_capacity_total{size!="unknown"} > 5) by (partition, size) < 0.10
         for: 10m
         labels:
           severity: "warning"
