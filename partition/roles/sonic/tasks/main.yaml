@@ -76,6 +76,7 @@
 - name: Get running configuration
   ansible.builtin.command: show runningconfiguration all
   register: sonic_running_cfg_result
+  changed_when: false
 
 - name: Parse running configuration
   ansible.builtin.set_fact:
