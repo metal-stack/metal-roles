@@ -78,7 +78,7 @@ PORT:
   {% for name, running_cfg in sonic_running_cfg_ports.items() %}
   {{ name }}:
     alias: {{ running_cfg.alias }}
-    autoneg: "off"
+    autoneg: "{{ running_cfg.autoneg|default("off")|string|lower }}"
     index: "{{ running_cfg.index }}"
     lanes: "{{ running_cfg.lanes }}"
     parent_port: {{ running_cfg.parent_port }}
