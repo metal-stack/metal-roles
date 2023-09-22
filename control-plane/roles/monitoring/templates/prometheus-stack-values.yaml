@@ -344,13 +344,13 @@ additionalPrometheusRulesMap:
     groups:
     - name: sonic.rules
       rules:
-      - alert: SonicSwitchDown
+      - alert: SonicSwitchNotScrapable
         expr: sum(up{job="sonic-exporter"}) by (instance) == 0
         for: 20m
         labels:
           severity: critical
         annotations:
-          description: "Switch {{ $labels.instance }} has been unavailable / unreachable for more than 20 minutes."
+          description: "Sonic switch {{ $labels.instance }} could not be scraped for more than 20 minutes."
 {% endraw %}
 {% if monitoring_gardener_enabled %}
 {% raw %}
