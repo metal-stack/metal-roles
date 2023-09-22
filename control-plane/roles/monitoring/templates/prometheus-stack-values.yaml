@@ -364,12 +364,12 @@ additionalPrometheusRulesMap:
       rules:
       - alert: ShootOperationError
         expr: garden_shoot_operation_states + on(name, project) group_left(seed) avg(garden_shoot_info) by (name,project,seed) > 1
-        for: 6h
+        for: 30m
         labels:
           severity: critical
         annotations:
           summary: "{{ $labels.operation }} for cluster {{ $labels.name }} in project {{ $labels.project }} did not succeed."
-          description: "Gardener could not {{ $labels.operation }} cluster {{ $labels.name }} for 6 hours"
+          description: "Gardener could not {{ $labels.operation }} cluster {{ $labels.name }} for 30 minutes"
     - name: garden_shoot_condition_states.rules
       rules:
       - alert: ShootConditionError
