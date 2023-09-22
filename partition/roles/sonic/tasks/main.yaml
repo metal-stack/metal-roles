@@ -10,9 +10,24 @@
       - sonic_mgmt_vrf is defined
       - sonic_loopback_address is defined
       - sonic_asn is defined
+      - sonic_config_action in ['load', 'reload']
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
+
+- name: Check mandatory variables on non-empty sonic_ports are set
+  assert:
+    fail_msg: "default port configuration is necessary on non-empty sonic_ports"
+    quiet: yes
+    that:
+      - sonic_ports_default_speed
+      - sonic_ports_default_mtu
+  when: sonic_ports
+
+- name: Populate sonic_ports_dict
+  set_fact:
+    sonic_ports_dict: "{{ sonic_ports_dict|default({}) | combine( {item.name: item} ) }}"
+  loop: "{{ sonic_ports }}"
 
 - name: render resolv.conf
   template:
@@ -53,13 +68,47 @@
   with_dict: "{{ sonic_breakouts }}"
   when: sonic_breakouts is defined
 
-- name: Render metal config for config_db.json
-  template:
-    src: metal.yaml.j2
-    dest: /etc/sonic/metal.yaml
-  notify:
-  - write metal conf to db
-  - config reload
+- name: Delete deprecated metal.yaml
+  ansible.builtin.file:
+    path: "/etc/sonic/metal.yaml"
+    state: absent
+
+- name: Get running configuration
+  ansible.builtin.command: show runningconfiguration all
+  register: sonic_running_cfg_result
+  changed_when: false
+
+- name: Parse running configuration
+  ansible.builtin.set_fact:
+    sonic_running_cfg: "{{ sonic_running_cfg_result.stdout | from_json }}"
+
+- name: Extract running configuration for breakouts and ports
+  ansible.builtin.set_fact:
+    sonic_running_cfg_breakouts: "{{ sonic_running_cfg | community.general.json_query('BREAKOUT_CFG') }}"
+    sonic_running_cfg_hwsku: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.hwsku') }}"
+    sonic_running_cfg_mac: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.mac') }}"
+    sonic_running_cfg_platform: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.platform') }}"
+    sonic_running_cfg_ports: "{{ sonic_running_cfg | community.general.json_query('PORT')  }}"
+
+- name: Fail if running configuration doesn't contain required information
+  ansible.builtin.assert:
+    that:
+      - sonic_running_cfg_breakouts
+      - sonic_running_cfg_hwsku
+      - sonic_running_cfg_mac
+      - sonic_running_cfg_platform
+      - sonic_running_cfg_ports
+    fail_msg: The running configuration is incomplete because it does not contain 'BREAKOUT_CFG', 'PORT', or complete 'DEVICE_METADATA'.
+
+- name: Render config_db
+  set_fact:
+    config_db: "{{ lookup('template', 'metal.yaml.j2') }}"
+
+- name: Save config_db as JSON file
+  copy:
+    content: "{{ config_db | from_yaml | to_nice_json }}"
+    dest: /etc/sonic/config_db.json
+  notify: "config {{ sonic_config_action }}"
 
 - name: Set NTP timezone
   timezone:

@@ -3,6 +3,9 @@ DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: split
     hostname: "spine01"
+    hwsku: "Accton-AS7726-32X"
+    mac: "e0:01:a6:e3:29:3c"
+    platform: "x86_64-accton_as7726_32x-r0"
     type: "LeafRouter"
     frr_mgmt_framework_config: "true"
 
@@ -21,23 +24,45 @@ LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}
 
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "true"
 
 INTERFACE:
-  Ethernet50:
+  Ethernet120:
     ipv6_use_link_local_only: enable
-  Ethernet51:
+  Ethernet124:
     ipv6_use_link_local_only: enable
 
+BREAKOUT_CFG:
+  Ethernet120:
+    brkout_mode: "1x100G[40G]"
+  Ethernet124:
+    brkout_mode: "1x100G[40G]"
+
 PORT:
-  Ethernet50:
+  Ethernet120:
+    alias: Eth31(Port31)
+    autoneg: "off"
+    index: "31"
+    lanes: "121,122,123,124"
+    parent_port: Ethernet120
     admin_status: up
     speed: "100000"
     mtu: "9216"
     fec: "none"
-  Ethernet51:
+  Ethernet124:
+    alias: Eth32(Port32)
+    autoneg: "off"
+    index: "32"
+    lanes: "125,126,127,128"
+    parent_port: Ethernet124
     admin_status: up
     speed: "100000"
     mtu: "9216"
