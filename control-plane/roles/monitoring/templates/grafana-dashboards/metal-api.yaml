@@ -38,72 +38,24 @@ data:
       "liveNow": false,
       "panels": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
+          "collapsed": false,
           "gridPos": {
-            "h": 4,
-            "w": 6,
+            "h": 1,
+            "w": 24,
             "x": 0,
             "y": 0
           },
-          "id": 16,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "9.5.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "exemplar": false,
-              "expr": "sum(metal_partition_capacity_total{job=\"metal-metrics-exporter\"})",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "title": "Total Machines",
-          "type": "stat"
+          "id": 25,
+          "panels": [],
+          "title": "API",
+          "type": "row"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "description": "The number of metal-api replicas.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -116,68 +68,10 @@ data:
                   {
                     "color": "green",
                     "value": null
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 6,
-            "x": 6,
-            "y": 0
-          },
-          "id": 19,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "9.5.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "exemplar": false,
-              "expr": "sum(metal_partition_capacity_free{job=\"metal-metrics-exporter\"})",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "title": "Free Machines",
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
+                  },
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "red",
+                    "value": 80
                   }
                 ]
               }
@@ -185,15 +79,15 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 4,
-            "w": 6,
-            "x": 12,
-            "y": 0
+            "h": 3,
+            "w": 24,
+            "x": 0,
+            "y": 1
           },
-          "id": 17,
+          "id": 26,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
@@ -205,84 +99,21 @@ data:
             },
             "textMode": "auto"
           },
-          "pluginVersion": "9.5.1",
+          "pluginVersion": "10.0.1",
           "targets": [
             {
               "datasource": {
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "exemplar": false,
-              "expr": "sum(metal_partition_capacity_allocated{job=\"metal-metrics-exporter\"})",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "",
+              "editorMode": "code",
+              "expr": "kube_deployment_spec_replicas{deployment=\"metal-api\"}",
+              "instant": false,
+              "range": true,
               "refId": "A"
             }
           ],
-          "title": "Allocated",
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 6,
-            "x": 18,
-            "y": 0
-          },
-          "id": 18,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "9.5.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "exemplar": false,
-              "expr": "sum(metal_partition_capacity_faulty{job=\"metal-metrics-exporter\"})",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "title": "Faulty",
+          "title": "Replicas",
           "type": "stat"
         },
         {
@@ -345,7 +176,7 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 5,
+            "h": 6,
             "w": 12,
             "x": 0,
             "y": 4
@@ -454,7 +285,7 @@ data:
             "alertThreshold": true
           },
           "percentage": false,
-          "pluginVersion": "9.5.1",
+          "pluginVersion": "10.0.1",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -512,6 +343,7 @@ data:
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "description": "Return codes of the HTTP responses of the metal-api.",
           "fieldConfig": {
             "defaults": {
               "links": []
@@ -524,7 +356,7 @@ data:
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 9
+            "y": 10
           },
           "hiddenSeries": false,
           "id": 9,
@@ -545,7 +377,7 @@ data:
             "alertThreshold": true
           },
           "percentage": false,
-          "pluginVersion": "9.5.1",
+          "pluginVersion": "10.0.1",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -568,7 +400,7 @@ data:
           ],
           "thresholds": [],
           "timeRegions": [],
-          "title": "API HTTP Code",
+          "title": "HTTP Codes",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -614,7 +446,7 @@ data:
           "fill": 0,
           "fillGradient": 0,
           "gridPos": {
-            "h": 6,
+            "h": 7,
             "w": 12,
             "x": 12,
             "y": 10
@@ -638,7 +470,7 @@ data:
             "alertThreshold": true
           },
           "percentage": false,
-          "pluginVersion": "9.5.1",
+          "pluginVersion": "10.0.1",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -659,7 +491,7 @@ data:
           ],
           "thresholds": [],
           "timeRegions": [],
-          "title": "API HTTP duration",
+          "title": "HTTP duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -696,7 +528,7 @@ data:
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 17
           },
           "id": 21,
           "options": {
@@ -719,8 +551,608 @@ data:
               "refId": "A"
             }
           ],
-          "title": "metal-api log",
+          "title": "Logs",
           "type": "logs"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 25
+          },
+          "id": 22,
+          "panels": [],
+          "title": "Machines",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 26
+          },
+          "id": 16,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "10.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "exemplar": false,
+              "expr": "sum(metal_partition_capacity_total{job=\"metal-metrics-exporter\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Total Machines",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 6,
+            "y": 26
+          },
+          "id": 19,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "10.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "exemplar": false,
+              "expr": "sum(metal_partition_capacity_free{job=\"metal-metrics-exporter\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Free Machines",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 12,
+            "y": 26
+          },
+          "id": 17,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "10.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "exemplar": false,
+              "expr": "sum(metal_partition_capacity_allocated{job=\"metal-metrics-exporter\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Allocated",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 18,
+            "y": 26
+          },
+          "id": 18,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "10.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "exemplar": false,
+              "expr": "sum(metal_partition_capacity_faulty{job=\"metal-metrics-exporter\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Faulty",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 30
+          },
+          "id": 24,
+          "panels": [],
+          "title": "Switches",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "metal-core instances that are up.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 12,
+            "x": 0,
+            "y": 31
+          },
+          "id": 27,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "10.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(metal_switch_metal_core_up != 0)",
+              "instant": false,
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "metal-core up",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "noValue": "0",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 12,
+            "x": 12,
+            "y": 31
+          },
+          "id": 28,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "10.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(metal_switch_metal_core_up) == 0",
+              "instant": false,
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "metal-core down",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Sync durations of metal-core in milliseconds.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Milliseconds",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 35
+          },
+          "id": 23,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(metal_switch_sync_durations_ms) by (switchname)",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Sync Durations",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Sync failures of metal-core.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 1,
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 35
+          },
+          "id": 29,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(metal_switch_sync_failed) by (switchname)",
+              "instant": false,
+              "legendFormat": "{{switchname}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Sync Failed",
+          "type": "timeseries"
         }
       ],
       "refresh": "",
@@ -731,7 +1163,7 @@ data:
         "list": []
       },
       "time": {
-        "from": "now-5m",
+        "from": "now-1h",
         "to": "now"
       },
       "timepicker": {
