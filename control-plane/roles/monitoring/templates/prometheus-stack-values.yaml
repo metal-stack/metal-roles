@@ -323,7 +323,7 @@ additionalPrometheusRulesMap:
           severity: critical
         annotations:
           summary: "metal-core is down on {{ $labels.switchname }}"
-          description: "No syncs happening by metal-core on {{ $labels.switchname }} in partition {{ $labels.partition } for more than 10 minutes."
+          description: "No syncs happening by metal-core on {{ $labels.switchname }} in partition {{ $labels.partition }} for more than 10 minutes."
       - alert: SwitchSyncFailing
         expr: metal_switch_sync_failed != 0
         for: 10m
