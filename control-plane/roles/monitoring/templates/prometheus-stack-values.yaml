@@ -333,3 +333,55 @@ additionalPrometheusRulesMap:
           summary: "Switch sync is slow on {{ $labels.switchname }}"
           description: "Average sync duration of {{ $labels.switchname }} in partition {{ $labels.partition }} is exceeding two seconds for more than 5 minutes."
 {% endraw %}
+{% if monitoring_gardener_enabled %}
+{% raw %}
+  "gardener.rules":
+    groups:
+    - name: garden_seed_operation_states.rules
+      rules:
+      - alert: SeedConditionError
+        expr: garden_seed_condition == 0
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          description: "Seed {{ $labels.name }} condition {{ $labels.condition }} is in FAILED state"
+      - alert: SeedEveryNodeReady
+        expr: avg(garden_shoot_condition{condition="EveryNodeReady",purpose="infrastructure"}) by (name, condition) == 0
+        for: 20m
+        labels:
+          severity: critical
+        annotations:
+          description: "Seed {{ $labels.name }} condition {{ $labels.condition }} is in FAILED state"
+      - alert: SeedSystemComponentsHealthy
+        expr: avg(garden_shoot_condition{condition="SystemComponentsHealthy",purpose="infrastructure"}) by (name, condition) == 0
+        for: 20m
+        labels:
+          severity: critical
+        annotations:
+          description: "Seed {{ $labels.name }} condition {{ $labels.condition }} is in FAILED state"
+    - name: garden_shoot_operation_states.rules
+      rules:
+      - alert: ShootOperationError
+        expr: garden_shoot_operation_states + on(name, project) group_left(seed) avg(garden_shoot_info) by (name,project,seed) > 1
+        for: 6h
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.operation }} for cluster {{ $labels.name }} in project {{ $labels.project }} did not succeed."
+          description: "Gardener could not {{ $labels.operation }} cluster {{ $labels.name }} for 6 hours"
+    - name: garden_shoot_condition_states.rules
+      rules:
+      - alert: ShootConditionError
+        expr: garden_shoot_condition{operation="Reconcile"} == 0
+        for: 30m
+        labels:
+          severity: warning
+          type: shoot
+        annotations:
+          summary: "{{ $labels.condition }} for cluster {{ $labels.name }} in project {{ $labels.project }} is in FAILED state"
+          description: "{{ $labels.condition }} for cluster {{ $labels.name }} in project {{ $labels.project }} is in FAILED state"
+      - record: garden_shoot_condition:namespaced
+        expr: label_join(label_replace(garden_shoot_condition,"namespace1","shoot--$1--","project","(.*)"),"namespace","","namespace1","name")
+{% endraw %}
+{% endif %}
