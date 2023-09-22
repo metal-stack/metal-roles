@@ -340,6 +340,17 @@ additionalPrometheusRulesMap:
         annotations:
           summary: "Switch sync is slow on {{ $labels.switchname }}"
           description: "Average sync duration of {{ $labels.switchname }} in partition {{ $labels.partition }} is exceeding two seconds for more than 5 minutes."
+  "sonic.rules":
+    groups:
+    - name: sonic.rules
+      rules:
+      - alert: SonicSwitchDown
+        expr: sum(up{job="sonic-exporter"}) by (instance) == 0
+        for: 20m
+        labels:
+          severity: critical
+        annotations:
+          description: "Switch {{ $labels.instance }} has been unavailable / unreachable for more than 20 minutes."
 {% endraw %}
 {% if monitoring_gardener_enabled %}
 {% raw %}
