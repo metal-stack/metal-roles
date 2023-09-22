@@ -1,4 +1,7 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: create prometheus directories
   file:
     path: "{{ item }}"
