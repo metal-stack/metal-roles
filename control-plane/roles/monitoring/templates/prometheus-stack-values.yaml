@@ -312,4 +312,24 @@ additionalPrometheusRulesMap:
           severity: "warning"
         annotations:
           description: "{{ $value }}% of {{ $labels.networkId }} network prefixes in {{ $labels.partition }} are in use."
+  "switch.rules":
+    groups:
+    - name: switch.rules
+      rules:
+      - alert: SwitchSyncFailing
+        expr: metal_switch_sync_failed != 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Switch sync failing on {{ $labels.switchname }}"
+          description: "{{ $labels.switchname }} in partition {{ $labels.partition }} is failing for more than 10 minutes."
+      - alert: SwitchSyncSlow
+        expr: avg by (switchname) (metal_switch_sync_durations_ms) > 2000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Switch sync is slow on {{ $labels.switchname }}"
+          description: "Average sync duration of {{ $labels.switchname }} in partition {{ $labels.partition }} is exceeding two seconds for more than 5 minutes."
 {% endraw %}
