@@ -51,19 +51,6 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/node-exporter.yaml"
   notify: restart prometheus
 
-- name: generate prometheus_ping_sd
-  set_fact:
-    prometheus_ping_sd:
-    - labels:
-        job: ping
-      targets: "{{ prometheus_ping_targets }}"
-
-- name: create ping.yaml
-  copy:
-    content: '{{ prometheus_ping_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/ping.yaml"
-  notify: restart prometheus
-
 - name: generate prometheus_frr_exporter_sd
   set_fact:
     prometheus_frr_exporter_sd:
@@ -123,19 +110,6 @@
   copy:
     content: '{{ prometheus_sonic_exporter_sd | to_nice_yaml(indent=2) }}'
     dest: "{{ prometheus_config_host_dir }}/file_sd/sonic-exporter.yaml"
-  notify: restart prometheus
-
-- name: generate prometheus_tcp_connect_sd
-  set_fact:
-    prometheus_tcp_connect_sd:
-    - labels:
-        job: frr
-      targets: "{{ prometheus_tcp_connect_targets }}"
-
-- name: create tcp_connect.yaml
-  copy:
-    content: '{{ prometheus_tcp_connect_sd | to_nice_yaml(indent=2) }}'
-    dest: "{{ prometheus_config_host_dir }}/file_sd/tcp-connect.yaml"
   notify: restart prometheus
 
 - name: copy notification rules

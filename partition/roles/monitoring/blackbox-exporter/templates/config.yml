@@ -1,0 +1,31 @@
+modules:
+  metal_api_http:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      headers:
+        Host: "{{ metal_partition_metal_api_addr }}"
+        Accept: application/json
+        Accept-Encoding: gzip
+      follow_redirects: true
+      fail_if_body_not_matches_regexp:
+        - metal-api
+      tls_config:
+        insecure_skip_verify: false
+      preferred_ip_protocol: "ip4"
+
+  dns_resolution:
+    prober: dns
+    timeout: 5s
+    dns:
+      query_name: "{{ metal_partition_metal_api_addr }}"
+      query_type: "A"
+      valid_rcodes:
+        - NOERROR
+
+  ping:
+    prober: icmp
+    timeout: 2s
+    icmp:
+      preferred_ip_protocol: "ip4"

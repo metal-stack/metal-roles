@@ -1,0 +1,5 @@
+---
+monitoring_blackbox_exporter_etc_host_dir: "/blackbox_exporter"
+monitoring_blackbox_exporter_image_name: "quay.io/prometheus/blackbox-exporter"
+monitoring_blackbox_exporter_image_tag: "v0.24.0"
+monitoring_blackbox_exporter_port: 9115

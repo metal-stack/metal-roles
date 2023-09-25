@@ -95,20 +95,65 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
-- job_name: 'ping'
+- job_name: blackbox-exporter
+  metrics_path: /metrics
+  static_configs:
+  - labels:
+      job: blackbox-exporter
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/blackbox-exporter.yaml'
+
+- job_name: blackbox-dns-cloudflare
+  metrics_path: /probe
+  params:
+    module: [dns_resolution]
+    target: [1.1.1.1]
+  static_configs:
+  - labels:
+      job: blackbox-dns-cloudflare
+      dns_query: "{{ metal_partition_metal_api_addr }}"
+      dns_resolver: "1.1.1.1"
+    targets: "{{ prometheus_blackbox_exporter_targets }}"
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: blackbox-metal-api-http
+  metrics_path: /probe
+  params:
+    module: [metal_api_http]
+    target: [{{ prometheus_blackbox_exporter_metal_api_probe_url }}]
+  static_configs:
+  - labels:
+      job: blackbox-metal-api-http
+      api_url: "{{ prometheus_blackbox_exporter_metal_api_probe_url }}"
+    targets: "{{ prometheus_blackbox_exporter_targets }}"
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+{% for group in prometheus_blackbox_exporter_icmp_groups %}
+{% for host in groups[group] %}
+- job_name: blackbox-ping-{{ host }}
   metrics_path: /probe
   params:
     module: [ping]
-  file_sd_configs:
-  - files:
-    - '/etc/prometheus/file_sd/ping.yaml'
+    target: [{{ hostvars[host]['ansible_host'] }}]
+  static_configs:
+  - labels:
+      job: blackbox-ping-{{ host }}
+      ping_to_ip: "{{ hostvars[host]['ansible_host'] }}"
+      ping_to_hostname: "{{ host }}"
+    targets: "{{ prometheus_blackbox_exporter_targets }}"
   relabel_configs:
     - source_labels: [__address__]
-      target_label: __param_target
-    - source_labels: [__param_target]
+      regex: (.*):\d+
       target_label: instance
-    - target_label: __address__
-      replacement: 172.17.0.1:9115  # The blackbox exporter's real hostname:port.
+{% endfor %}
+{% endfor %}
 
 - job_name: 'ipmi'
   metrics_path: /ipmi
@@ -137,52 +182,6 @@ scrape_configs:
     replacement: 172.17.0.1:9290
     action: replace
 
-- job_name: 'tcp_connect'
-  metrics_path: /probe
-  scrape_interval: 10s
-  params:
-    module: [tcp_connect]
-  file_sd_configs:
-  - files:
-    - '/etc/prometheus/file_sd/tcp-connect.yaml'
-  relabel_configs:
-    - source_labels: [__address__]
-      target_label: __param_target
-    - source_labels: [__param_target]
-      target_label: instance
-    - target_label: __address__
-      replacement: 172.17.0.1:9115
-
-- job_name: 'https'
-  metrics_path: /probe
-  scrape_interval: 10s
-  params:
-    module: [https_2xx]
-  static_configs:
-    - targets:
-  relabel_configs:
-    - source_labels: [__address__]
-      target_label: __param_target
-    - source_labels: [__param_target]
-      target_label: instance
-    - target_label: __address__
-      replacement: 172.17.0.1:9115
-
-- job_name: 'https_critical'
-  metrics_path: /probe
-  scrape_interval: 10s
-  params:
-    module: [https_2xx]
-  static_configs:
-    - targets:
-  relabel_configs:
-    - source_labels: [__address__]
-      target_label: __param_target
-    - source_labels: [__param_target]
-      target_label: instance
-    - target_label: __address__
-      replacement: 172.17.0.1:9115
-
 - job_name: 'haproxy'
   metrics_path: /metrics
   static_configs:
@@ -195,18 +194,3 @@ scrape_configs:
   honor_timestamps: True
   static_configs:
   - targets:
-
-- job_name: 'internet_uplink'
-  metrics_path: /probe
-  params:
-    module: [ping]
-  static_configs:
-    - targets:
-      - 8.8.8.8
-  relabel_configs:
-    - source_labels: [__address__]
-      target_label: __param_target
-    - source_labels: [__param_target]
-      target_label: instance
-    - target_label: __address__
-      replacement: 172.17.0.1:9115  # The blackbox exporter's real hostname:port.

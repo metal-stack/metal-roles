@@ -13,8 +13,11 @@ prometheus_node_exporter_targets: []
 prometheus_promtail_targets: []
 prometheus_ping_targets: []
 prometheus_sonic_exporter_targets: []
-prometheus_tcp_connect_targets: []
+prometheus_blackbox_exporter_targets: []
 
 prometheus_hosts_content: |
   127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
   ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+prometheus_blackbox_exporter_icmp_groups: []
+prometheus_blackbox_exporter_metal_api_probe_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}v1/version"
