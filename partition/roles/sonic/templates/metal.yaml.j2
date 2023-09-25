@@ -4,6 +4,9 @@ DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: split
     hostname: "{{ inventory_hostname }}"
+    hwsku: "{{ sonic_running_cfg_hwsku }}"
+    mac: "{{ sonic_running_cfg_mac }}"
+    platform: "{{ sonic_running_cfg_platform }}"
     type: "LeafRouter"
     frr_mgmt_framework_config: "true"
 
@@ -35,40 +38,60 @@ MGMT_INTERFACE:
 {% endif %}
 
 {% endif %}
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
 MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"
-{% if sonic_ports|length > 0 %}
+{% if sonic_ports_dict|length > 0 %}
 
 INTERFACE:
-  {% for port in sonic_ports %}
-  {% if port.name in sonic_bgp_ports|default([]) or port.vrf is defined %}
-  {{ port.name }}:
-    {% if port.name in sonic_bgp_ports|default([]) %}
+  {% for name, port in sonic_ports_dict.items() %}
+  {% if name in sonic_bgp_ports|default([]) or port.vrf is defined %}
+  {{ name }}:
+    {% if name in sonic_bgp_ports|default([]) %}
     ipv6_use_link_local_only: enable
     {% endif %}
     {% if port.vrf is defined %}
     vrf_name: "{{ port.vrf }}"
     {% endif %}
   {% elif port.ips is defined %}
-  {{ port.name }}: {}
+  {{ name }}: {}
   {% endif %}
   {% for ip in port.ips|default([]) %}
-  {{ port.name }}|{{ ip }}: {}
+  {{ name }}|{{ ip }}: {}
   {% endfor %}
   {% endfor %}
 {% endif %}
-{% if sonic_ports|length > 0 %}
+
+BREAKOUT_CFG:
+  {% for name, cfg in sonic_running_cfg_breakouts.items() %}
+  {{ name }}:
+    brkout_mode: "{{ cfg.brkout_mode }}"
+  {% endfor %}
 
 PORT:
-  {% for port in sonic_ports %}
-  {{ port.name }}:
+  {% for name, running_cfg in sonic_running_cfg_ports.items() %}
+  {{ name }}:
+    alias: {{ running_cfg.alias }}
+    autoneg: "{{ running_cfg.autoneg|default("off")|string|lower }}"
+    index: "{{ running_cfg.index }}"
+    lanes: "{{ running_cfg.lanes }}"
+    parent_port: {{ running_cfg.parent_port }}
+    {% if sonic_ports_dict[name] is defined %}
+    {% set port = sonic_ports_dict[name] %}
     admin_status: up
     speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
     fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
+    {% else %}
+    speed: "{{ running_cfg.speed }}"
+    {% endif %}
   {% endfor %}
-{% endif %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
 
 VLAN:
