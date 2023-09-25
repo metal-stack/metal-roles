@@ -145,6 +145,7 @@ scrape_configs:
   static_configs:
   - labels:
       job: blackbox-ping-{{ host }}
+      kind: mututal-partition-ping
       ping_to_ip: "{{ hostvars[host]['ansible_host'] }}"
       ping_to_hostname: "{{ host }}"
     targets: {{ prometheus_blackbox_exporter_targets | to_json }}
