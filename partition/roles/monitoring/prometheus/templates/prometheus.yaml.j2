@@ -114,7 +114,7 @@ scrape_configs:
       job: blackbox-dns-cloudflare
       dns_query: "{{ metal_partition_metal_api_addr }}"
       dns_resolver: "1.1.1.1"
-    targets: "{{ prometheus_blackbox_exporter_targets }}"
+    targets: {{ prometheus_blackbox_exporter_targets | to_json }}
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -129,7 +129,7 @@ scrape_configs:
   - labels:
       job: blackbox-metal-api-http
       api_url: "{{ prometheus_blackbox_exporter_metal_api_probe_url }}"
-    targets: "{{ prometheus_blackbox_exporter_targets }}"
+    targets: {{ prometheus_blackbox_exporter_targets | to_json }}
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -147,7 +147,7 @@ scrape_configs:
       job: blackbox-ping-{{ host }}
       ping_to_ip: "{{ hostvars[host]['ansible_host'] }}"
       ping_to_hostname: "{{ host }}"
-    targets: "{{ prometheus_blackbox_exporter_targets }}"
+    targets: {{ prometheus_blackbox_exporter_targets | to_json }}
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
