@@ -1,9 +1,0 @@
-
-extraObjects:
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: alertmanager-basic-auth
-  type: Opaque
-  data:
-    auth: "{{ alertmanager_ingress_basic_auth | b64encode }}"

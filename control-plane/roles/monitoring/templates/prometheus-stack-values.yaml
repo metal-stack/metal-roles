@@ -79,6 +79,36 @@ grafana:
 {% endif %}
 
 alertmanager:
+  ingress:
+    enabled: {{ monitoring_alertmanager_ingress_enabled }}
+    ingressClassName: nginx
+    hosts:
+      - {{ monitoring_alertmanager_ingress_dns }}
+
+{% if monitoring_alertmanager_ingress_tls %}
+    tls:
+      - secretName: monitoring-ingress-tls
+        hosts:
+        - {{ monitoring_alertmanager_ingress_dns }}
+{% endif %}
+
+    annotations:
+{% if monitoring_alertmanager_ingress_tls %}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+
+{% if monitoring_alertmanager_ingress_basic_auth_password %}
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: alertmanager-basic-auth
+
+  extraSecret:
+    name: alertmanager-basic-auth
+    data:
+      auth: |
+        {{ monitoring_alertmanager_ingress_basic_auth_user }}:{{ monitoring_alertmanager_ingress_basic_auth_password | string | password_hash('bcrypt', salt=monitoring_alertmanager_ingress_basic_auth_password_salt) }}
+{% endif %}
+
   alertmanagerSpec:
     logLevel: debug
     containers:
