@@ -4,7 +4,10 @@ prometheus_port: 9090
 prometheus_config_host_dir: /etc/prometheus
 prometheus_data_host_dir: /var/lib//prometheus
 
-prometheus_alertmanagers: []
+prometheus_alertmanager_url:
+prometheus_alertmanager_basic_auth_username:
+prometheus_alertmanager_basic_auth_password:
+
 prometheus_remote_write: []
 
 prometheus_frr_exporter_targets: []
