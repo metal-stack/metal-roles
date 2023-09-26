@@ -98,6 +98,12 @@ alertmanager:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
 
+{% if monitoring_additional_ingress_annotations %}
+{% for key, value in monitoring_additional_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+
 {% if monitoring_alertmanager_ingress_basic_auth_password %}
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: alertmanager-basic-auth
