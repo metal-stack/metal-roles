@@ -33,7 +33,7 @@
         name: metal-auditing-meili-api-key
         namespace: "{{ metal_control_plane_namespace }}"
       stringData:
-        MEILI_MASTER_KEY: "{{ auditing_meili_secret }}"
+        MEILI_MASTER_KEY: "{{ metal_auditing_meili_api_key }}"
   when: metal_auditing_meili_api_key
 
 - name: Deploy metal control plane

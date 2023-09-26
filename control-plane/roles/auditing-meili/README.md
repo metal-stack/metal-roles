@@ -1,13 +1,9 @@
 # auditing-meili
 
-This role deploys a helm chart for [MeiliSearch](https://github.com/meilisearch/meilisearch-kubernetes) for auditing purposes.
+This role provides a database for the metal-api that can be used for storing audit traces. The auditing feature has to be explicitly enabled in the metal-api in order to make use of this database.
+
+This role just wraps the [meili-backup-restore](/control-plane/roles/meili-backup-restore) role. Refer to this role for further documentation.
 
 ## Variables
 
-| Name                       | Mandatory | Description                                                                                    |
-| -------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
-| auditing_meili_secret      |           | The content of the auth secret. If empty or not provided, the secret must be created manually. |
-| auditing_meili_ingress     |           | Configuratrion for ingress, check example or helm chart for details                            |
-| auditing_meili_persistence |           | Configuration for persistence, check example or helm chart for details                         |
-| auditing_meili_environment |           | Sets Meilisearch environment to development/production                                         |
-| auditing_meili_namespace   |           | Namespace to deploy MeiliSearch                                                                |
+The role should take the same variables as the wrapped role, but prefixed with `auditing_meili_` instead of `meilisearch_`.

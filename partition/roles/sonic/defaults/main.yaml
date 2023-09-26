@@ -4,15 +4,13 @@ sonic_ntpservers: []
 sonic_nameservers: []
 sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
+sonic_config_action: load
 
 ## Physical settings
 sonic_breakouts: {}
 sonic_ports: []
-#- name: Ethernet50
-#  speed: 10000
-sonic_ports_default_speed: 10000
-sonic_ports_default_mtu: 9216
-sonic_ports_default_fec: none 
+sonic_ports_dict: {}
+sonic_ports_default_fec: none
 
 ## BGP related settings
 sonic_loopback_address:

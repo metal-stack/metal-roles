@@ -17,7 +17,8 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_mgmtif_gateway                                       |           | If using a fixed management IP, the default gateway for the management interface.                                    |
 | sonic_ip_masquerade                                        |           | Enable ip masquerading on eth0.                                                                                      |
 | sonic_breakouts                                            |           | The breakout configuration for ports, e.g. `dict('Ethernet0'='4x25G')`                                               |
-| sonic_ports                                                |           | Special configuration for ports (mtu, fec, have highest precedence)                                                  |
+| sonic_config_action                                        |           | Either `load` or `reload`. In the latter case all services will be restarted. If not given, defaults to `load`       |
+| sonic_ports                                                |           | Configuration for ports (mtu, fec, have highest precedence). These ports will be up by default.                      |
 | sonic_ports.name                                           |           | The port name.                                                                                                       |
 | sonic_ports.speed                                          |           | Speed of the port.                                                                                                   |
 | sonic_ports.mtu                                            |           | MTU of the port.                                                                                                     |
@@ -42,7 +43,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_vlans.ip                                             |           | The IP of the SVI of this VLAN.                                                                                      |
 | sonic_vlans.dhcp_servers                                   |           | DHCP servers to relay to.                                                                                            |
 | sonic_vlans.untagged_ports                                 |           | Array of untagged ports to bind to this VLAN.                                                                        |
-| sonic_vlans.tagged_ports                                   |           | Array of tagged ports to bind to this VLAN.                                                                        |
+| sonic_vlans.tagged_ports                                   |           | Array of tagged ports to bind to this VLAN.                                                                          |
 | sonic_vlans.vrf                                            |           | The VRF to bind the VLANs SVI to.                                                                                    |
 | sonic_vteps                                                |           | VTEPs to configure. If defined FRR will automatically advertise all VNIs.                                            |
 | sonic_vteps.comment                                        |           | Description for the VTEP.                                                                                            |

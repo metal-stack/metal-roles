@@ -1,32 +1,37 @@
 ---
+auditing_meili_name: auditing-meili
 auditing_meili_namespace: "{{ metal_control_plane_namespace }}"
-auditing_meili_secret: ""
+
+auditing_meili_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
+auditing_meili_storage_size: 10Gi
+auditing_meili_storage_class:
+
+auditing_meili_api_key: change-me-at-least-16-chars
 auditing_meili_environment: production
+auditing_meili_no_analytics: true
 
-# possible parametrization can be found at the helm-chart repo
-# https://github.com/meilisearch/meilisearch-kubernetes
+auditing_meili_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+auditing_meili_backup_restore_sidecar_provider: local
+auditing_meili_backup_restore_sidecar_backup_cron_schedule: "0 * * * *"
+auditing_meili_backup_restore_sidecar_log_level: debug
+auditing_meili_backup_restore_sidecar_object_prefix: "{{ auditing_meili_name }}-{{ metal_control_plane_stage_name }}"
+auditing_meili_backup_restore_sidecar_object_max_keep:
 
-auditing_meili_ingress: {}
-# enabled: false
-# className: nginx
-# annotations: {}
-# path: /
-# hosts:
-#   - meilisearch-example.local
-# tls: []
+auditing_meili_backup_restore_sidecar_gcp_bucket_name:
+auditing_meili_backup_restore_sidecar_gcp_backup_location:
+auditing_meili_backup_restore_sidecar_gcp_project_id:
+auditing_meili_backup_restore_sidecar_gcp_serviceaccount_json:
 
-auditing_meili_persistence:
-  {}
-  # enabled: false
-  # accessMode: ReadWriteOnce
-  # storageClass: "-"
-  # size: 10Gi
-  # annotations: {}
-  # volume:
-  #   name: data
-  #   mountPath: /meili_data
+auditing_meili_resources:
+  requests:
+    memory: "256Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1"
 
-auditing_meili_registry_enabled: "{{ metal_registry_auth_enabled }}"
+auditing_meili_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 auditing_meili_registry_auth:
   auths:
     https://index.docker.io/v1/:
