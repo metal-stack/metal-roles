@@ -41,6 +41,8 @@ metal_stack_release:
     masterdata_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     headscale_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     headscale_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
+    auditing_meili_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
+    auditing_meili_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     # gardener
     firewall_controller_manager_image_tag: "docker-images.metal-stack.gardener.firewall-controller-manager.tag"
     firewall_controller_manager_image_name: "docker-images.metal-stack.gardener.firewall-controller-manager.name"
@@ -83,6 +85,8 @@ metal_stack_release:
     headscale_image_name: "docker-images.third-party.control-plane.headscale.name"
     headscale_db_image_tag: "docker-images.third-party.control-plane.headscale-db.tag"
     headscale_db_image_name: "docker-images.third-party.control-plane.headscale-db.name"
+    auditing_meili_image_name: "docker-images.third-party.control-plane.meilisearch.name"
+    auditing_meili_image_tag: "docker-images.third-party.control-plane.meilisearch.tag"
     image_cache_coredns_image_tag: "docker-images.third-party.partition.image-cache-coredns.tag"
     image_cache_coredns_image_name: "docker-images.third-party.partition.image-cache-coredns.name"
     image_cache_haproxy_image_tag: "docker-images.third-party.partition.image-cache-haproxy.tag"
@@ -136,14 +140,10 @@ metal_stack_release:
     # monitoring
     webhook_logger_image_name: "docker-images.third-party.control-plane.webhook-logger.name"
     webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"
-    metal_auditing_meili_chart_repo: "helm-charts.third-party.meilisearch.repository"
-    metal_auditing_meili_chart_version: "helm-charts.third-party.meilisearch.version"
     # repositories
     gardener_repo_url: "repositories.third-party.gardener.gardener.url"
     gardener_repo_ref: "repositories.third-party.gardener.gardener.ref"
     gardener_etcd_repo_url: "repositories.third-party.gardener.etcd-backup-restore.url"
     gardener_etcd_repo_ref: "repositories.third-party.gardener.etcd-backup-restore.ref"
-    metal_auditing_meili_image_name: "helm-charts.third-party.meilisearch.image_name"
-    metal_auditing_meili_image_tag: "helm-charts.third-party.meilisearch.image_tag"
     thanos_image_name: "docker-images.third-party.control-plane.thanos.name"
     thanos_image_tag: "docker-images.third-party.control-plane.thanos.tag"

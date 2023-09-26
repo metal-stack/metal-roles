@@ -1,0 +1,19 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - meilisearch_image_name is defined
+      - meilisearch_image_tag is defined
+      - meilisearch_backup_restore_sidecar_image_name is defined
+      - meilisearch_backup_restore_sidecar_image_tag is defined
+
+- name: Deploy meilisearch (backup-restore)
+  k8s:
+    definition: "{{ lookup('template', 'meilisearch.yaml') }}"
+    namespace: "{{ meilisearch_namespace }}"
+    apply: yes
