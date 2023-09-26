@@ -87,7 +87,7 @@ alertmanager:
 
 {% if monitoring_alertmanager_ingress_tls %}
     tls:
-      - secretName: monitoring-ingress-tls
+      - secretName: monitoring-alertmanager-ingress-tls
         hosts:
         - {{ monitoring_alertmanager_ingress_dns }}
 {% endif %}
