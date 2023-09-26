@@ -21,15 +21,15 @@ alerting:
     target_label: tenant
     regex: ()
     replacement: "CN"
-  {% if prometheus_alertmanager_url %}
+{% if prometheus_alertmanager_target %}
   alertmanagers:
     - scheme: https
       basic_auth:
         username: {{ prometheus_alertmanager_basic_auth_username }}
         password: {{ prometheus_alertmanager_basic_auth_password }}
       static_configs:
-        targets: [{{ prometheus_alertmanager_url }}]
-  {% endif %}
+        - targets: [{{ prometheus_alertmanager_target }}]
+{% endif %}
 
 {% if prometheus_remote_write_url %}
 remote_write:

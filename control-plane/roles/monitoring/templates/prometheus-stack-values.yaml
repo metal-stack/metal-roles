@@ -117,6 +117,7 @@ alertmanager:
 
   alertmanagerSpec:
     logLevel: debug
+    externalUrl: {{ monitoring_alertmanager_ingress_dns }}
     containers:
     - name: webhook-logger
       image: {{ webhook_logger_image_name }}:{{ webhook_logger_image_tag }}
