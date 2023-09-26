@@ -20,7 +20,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | meilisearch_storage_size                                   |           | The size of the PVC                                                     |
 | meilisearch_storage_class                                  |           | The storage class of the PVC                                            |
 | meilisearch_api_key                                        |           | The api key for meilisearch                                             |
-| meilisearch_env                                            |           | Sets the environment configuration for meilisearch                      |
+| meilisearch_environment                                    |           | Sets the environment configuration for meilisearch                      |
 | meilisearch_no_analytics                                   |           | Sets the no analytics configuration for meilisearch                     |
 | meilisearch_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                             |
 | meilisearch_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                 |
