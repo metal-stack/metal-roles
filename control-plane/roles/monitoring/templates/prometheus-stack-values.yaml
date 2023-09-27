@@ -420,7 +420,7 @@ additionalPrometheusRulesMap:
       rules:
       - alert: ShootOperationError
         expr: garden_shoot_operation_states + on(name, project) group_left(seed) avg(garden_shoot_info) by (name,project,seed) > 1
-        for: 30m
+        for: 15m
         labels:
           severity: critical
         annotations:
@@ -430,7 +430,7 @@ additionalPrometheusRulesMap:
       rules:
       - alert: ShootConditionError
         expr: garden_shoot_condition{operation="Reconcile"} == 0
-        for: 30m
+        for: 15m
         labels:
           severity: warning
           type: shoot
