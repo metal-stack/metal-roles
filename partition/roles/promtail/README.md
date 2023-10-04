@@ -6,6 +6,7 @@ Deploys promtail in a systemd-managed Docker container.
 
 | Name                        | Mandatory | Description                          |
 |-----------------------------|-----------|--------------------------------------|
+| promtail_listen_address     |           | The listen address for promtail      |
 | promtail_config_host_dir    |           | The location of the promtail config  |
 | promtail_image_name         | yes       | Image version of the promtail        |
 | promtail_image_tag          | yes       | Image tag of the promtail            |
