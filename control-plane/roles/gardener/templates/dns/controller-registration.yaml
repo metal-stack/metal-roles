@@ -8,6 +8,4 @@ spec:
     policy: Always
     deploymentRefs:
     - name: dns-external
-  resources:
-  - kind: DNSProvider
-    type: "{{ gardener_dns_provider }}"
+  resources: []
