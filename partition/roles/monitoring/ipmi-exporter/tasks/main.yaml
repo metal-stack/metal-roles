@@ -1,0 +1,45 @@
+---
+- name: create ipmi_exporter directories
+  file:
+    path: "{{ monitoring_ipmi_exporter_etc_host_dir }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: copy ipmi_exporter config
+  template:
+    src: config.yml
+    dest: "{{ monitoring_ipmi_exporter_etc_host_dir }}/config.yml"
+  register: ipmi_config
+
+- name: deploy ipmi_exporter service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: ipmi_exporter
+    systemd_docker_image_name: "{{ monitoring_ipmi_exporter_image_name }}"
+    systemd_docker_image_tag: "{{ monitoring_ipmi_exporter_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_volumes:
+      - "{{ monitoring_ipmi_exporter_etc_host_dir }}://etc/ipmi_exporter"
+    systemd_docker_ports:
+      - host_port: "{{ monitoring_ipmi_exporter_port }}"
+        target_port: "{{ monitoring_ipmi_exporter_port }}"
+    systemd_docker_command:
+      - --config.file=/etc/ipmi_exporter/config.yml
+
+- name: wait for ipmi_exporter to listen on port
+  wait_for:
+    port: "{{ monitoring_ipmi_exporter_port }}"
+    timeout: 300
+    msg: "ipmi_exporter did not come up"
+
+- name: restart ipmi_exporter
+  systemd:
+    name: "ipmi_exporter"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  when: ipmi_config is changed

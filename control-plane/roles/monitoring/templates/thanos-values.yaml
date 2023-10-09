@@ -17,3 +17,38 @@ query:
   dnsDiscovery:
     sidecarsService: kube-prometheus-stack-thanos-discovery
     sidecarsNamespace: "{{ monitoring_namespace }}"
+
+receive:
+  enabled: {{ monitoring_thanos_receive_enabled }}
+  ingress:
+    enabled: {{ monitoring_thanos_receive_ingress_enabled }}
+    hostname: {{ monitoring_thanos_receive_ingress_dns }}
+    ingressClassName: nginx
+{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth or monitoring_thanos_receive_ingress_tls %}
+    annotations:
+{% endif %}
+{% if monitoring_thanos_receive_ingress_tls %}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+{% if monitoring_thanos_receive_ingress_basic_auth %}
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: thanos-receive-basic-auth
+{% endif %}
+{% if monitoring_thanos_receive_ingress_annotations %}
+{% for key, value in monitoring_thanos_receive_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+    tls: {{ monitoring_thanos_receive_ingress_tls }}
+  persistence:
+    size: 16Gi
+
+extraDeploy:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: thanos-receive-basic-auth
+  type: Opaque
+  data:
+    auth: "{{ monitoring_thanos_receive_ingress_basic_auth | b64encode }}"
