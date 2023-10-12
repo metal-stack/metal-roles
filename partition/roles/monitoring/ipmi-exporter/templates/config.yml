@@ -1,0 +1,10 @@
+modules:
+  default:
+    user: root
+    pass: "{{ metal_api_bmc_superuser_pwd }}"
+    collectors:
+    - ipmi
+    - bmc
+    - chassis
+    - sel
+    - dcmi

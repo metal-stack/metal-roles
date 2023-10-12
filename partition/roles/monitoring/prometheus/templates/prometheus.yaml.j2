@@ -1,0 +1,202 @@
+
+# global config
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+  scrape_timeout: 15s
+  external_labels:
+    partition: '{{ metal_partition_id }}'
+    replica: '{{ inventory_hostname }}'
+
+# Alertmanager configuration
+alerting:
+  alert_relabel_configs:
+  - source_labels: [replica]
+    regex: (.+)-.+
+    target_label: replica
+  - source_labels: [mc_tool_rule]
+    target_label: mc_tool_rule
+    regex: ()
+  - source_labels: [tenant]
+    target_label: tenant
+    regex: ()
+    replacement: "CN"
+{% if prometheus_alertmanager_target %}
+  alertmanagers:
+    - scheme: https
+      basic_auth:
+        username: {{ prometheus_alertmanager_basic_auth_username }}
+        password: {{ prometheus_alertmanager_basic_auth_password }}
+      static_configs:
+        - targets: [{{ prometheus_alertmanager_target }}]
+{% endif %}
+
+{% if prometheus_remote_write_url %}
+remote_write:
+- url: {{ prometheus_remote_write_url }}
+  basic_auth:
+    username: {{ prometheus_remote_write_basic_auth_username }}
+    password: {{ prometheus_remote_write_basic_auth_password }}
+{% endif %}
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+- /etc/prometheus/rules/*.yaml
+
+
+# A scrape configuration containing exactly one endpoint to scrape:
+scrape_configs:
+- job_name: 'node-exporter'
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/node-exporter.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: frr
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/frr-exporter.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: metal-core
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/metal-core.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: pixiecore
+  static_configs:
+    - targets:
+      - '{{ inventory_hostname }}:2113'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: promtail
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/promtail.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: sonic-exporter
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/sonic-exporter.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: blackbox-exporter
+  metrics_path: /metrics
+  static_configs:
+  - labels:
+      job: blackbox-exporter
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/blackbox-exporter.yaml'
+
+- job_name: blackbox-dns-cloudflare
+  metrics_path: /probe
+  params:
+    module: [dns_resolution]
+    target: [1.1.1.1]
+  static_configs:
+  - labels:
+      job: blackbox-dns-cloudflare
+      dns_query: "{{ metal_partition_metal_api_addr }}"
+      dns_resolver: "1.1.1.1"
+    targets: {{ prometheus_blackbox_exporter_targets | to_json }}
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: blackbox-metal-api-http
+  metrics_path: /probe
+  params:
+    module: [metal_api_http]
+    target: [{{ prometheus_blackbox_exporter_metal_api_probe_url }}]
+  static_configs:
+  - labels:
+      job: blackbox-metal-api-http
+      api_url: "{{ prometheus_blackbox_exporter_metal_api_probe_url }}"
+    targets: {{ prometheus_blackbox_exporter_targets | to_json }}
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+{% for group in prometheus_blackbox_exporter_icmp_groups %}
+{% for host in groups[group] %}
+- job_name: blackbox-ping-{{ host }}
+  metrics_path: /probe
+  params:
+    module: [ping]
+    target: [{{ hostvars[host]['ansible_host'] }}]
+  static_configs:
+  - labels:
+      job: blackbox-ping-{{ host }}
+      kind: mututal-partition-ping
+      ping_to_ip: "{{ hostvars[host]['ansible_host'] }}"
+      ping_to_hostname: "{{ host }}"
+    targets: {{ prometheus_blackbox_exporter_targets | to_json }}
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+{% endfor %}
+{% endfor %}
+
+- job_name: 'ipmi'
+  metrics_path: /ipmi
+  params:
+    module: [default]
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/ipmi.yaml'
+    refresh_interval: 5m
+  relabel_configs:
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*)
+    target_label: __param_target
+    replacement: ${1}
+    action: replace
+  - source_labels: [__param_target]
+    separator: ;
+    regex: (.*)
+    target_label: instance
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: .*
+    target_label: __address__
+    replacement: 172.17.0.1:9290
+    action: replace
+
+- job_name: 'haproxy'
+  metrics_path: /metrics
+  static_configs:
+  - targets: ['172.17.0.1:65534']
+
+- job_name: 'lightbox-exporter'
+  metrics_path: /metrics
+  scrape_timeout: 25s
+  scrape_interval: 30s
+  honor_timestamps: True
+  static_configs:
+  - targets:

@@ -1,0 +1,5 @@
+---
+monitoring_ipmi_exporter_etc_host_dir: "/ipmi_exporter/etc/ipmi_exporter"
+monitoring_ipmi_exporter_image_name: "prometheuscommunity/ipmi-exporter"
+monitoring_ipmi_exporter_image_tag: "v1.6.1"
+monitoring_ipmi_exporter_port: 9290

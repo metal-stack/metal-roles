@@ -76,6 +76,7 @@
      - metal-api.yaml
      - rethinkdb.yaml
      - alertmanager.yaml
+     - sonic-exporter.yaml
 
 - name: Deploy Grafana dashboards for Gardener
   k8s:
@@ -108,13 +109,3 @@
   loop:
     - gardener-metrics-exporter.yaml
   when: monitoring_gardener_enabled
-
-- name: Deploy alerting rules
-  k8s:
-    definition: "{{ lookup('template', 'monitoring_rules/' + item) }}"
-    namespace: "{{ monitoring_namespace }}"
-  loop:
-    - metal-api-rules.yaml
-    - prometheus-alerts.yaml
-    - alertmanager-rules.yaml
-    - partition-rules.yaml
