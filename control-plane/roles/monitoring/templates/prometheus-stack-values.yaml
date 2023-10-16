@@ -279,6 +279,26 @@ kubeControllerManager:
 
 {% raw %}
 additionalPrometheusRulesMap:
+  "alertmanager.rules":
+    groups:
+    - name: metal-api.rules
+      rules:
+      - alert: PrometheusErrorSendingAlertsToAlertmanager
+        annotations:
+          description: '{{ printf "%.1f" $value }}% errors while sending alerts from Prometheus
+            {{ $labels.instance }} to Alertmanager {{ $labels.alertmanager }}.'
+          summary: Prometheus has encountered more than 1% errors sending alerts to a specific Alertmanager.
+        expr: |
+          (
+            rate(prometheus_notifications_errors_total{job="prometheus"}[5m])
+          /
+            rate(prometheus_notifications_sent_total{job="prometheus"}[5m])
+          )
+          * 100
+          > 1
+        for: 15m
+        labels:
+          severity: critical
   "metal-api.rules":
     groups:
     - name: metal-api.rules
