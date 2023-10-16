@@ -312,53 +312,53 @@ additionalPrometheusRulesMap:
         annotations:
           summary: "Metal API response status code not OK"
           description: "The metal_api response status code is not in the expected range."
+      - alert: MetalFailedMachineReclaim
+        expr: (metal_machine_issues{issueid="failed-machine-reclaim"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} did not go back into waiting machine pool after freeing the machine. Use `metalctl machine issues` for further inspection."
+      - alert: MetalMachineHasNoEventContainer
+        expr: (metal_machine_issues{issueid="no-event-container"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} has no event container. Use `metalctl machine issues` for further inspection."
+      - alert: MetalBmcInfoOutdated
+        expr: (metal_machine_issues{issueid="bmc-info-outdated"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} does not receive BMC updates. Use `metalctl machine issues` for further inspection."
+      - alert: MetalBmcNoDistinctIP
+        expr: (metal_machine_issues{issueid="bmc-no-distinct-ip"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} has no distinct BMC address. Use `metalctl machine issues` for further inspection."
+      - alert: MetalMachineCrashloop
+        expr: (metal_machine_issues{issueid="crashloop"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} is in a provisioning crashloop. Use `metalctl machine issues` for further inspection."
+      - alert: MetalMachineDead
+        expr: (metal_machine_issues{issueid="liveliness-dead"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} is dead. Use `metalctl machine issues` for further inspection."
     - name: metal-api-recording.rules
       rules:
       - record: frr:instance:metal_switch_interface_info
         expr: |2
           label_replace(metal_switch_interface_info,"instance","$1","switchname","(.*)")
-    - alert: MetalFailedMachineReclaim
-      expr: (metal_machine_issues{issueid="failed-machine-reclaim"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} did not go back into waiting machine pool after freeing the machine. Use `metalctl machine issues` for further inspection."
-    - alert: MetalMachineHasNoEventContainer
-      expr: (metal_machine_issues{issueid="no-event-container"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} has no event container. Use `metalctl machine issues` for further inspection."
-    - alert: MetalBmcInfoOutdated
-      expr: (metal_machine_issues{issueid="bmc-info-outdated"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} does not receive BMC updates. Use `metalctl machine issues` for further inspection."
-    - alert: MetalBmcNoDistinctIP
-      expr: (metal_machine_issues{issueid="bmc-no-distinct-ip"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} has no distinct BMC address. Use `metalctl machine issues` for further inspection."
-    - alert: MetalMachineCrashloop
-      expr: (metal_machine_issues{issueid="crashloop"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} is in a provisioning crashloop. Use `metalctl machine issues` for further inspection."
-    - alert: MetalMachineDead
-      expr: (metal_machine_issues{issueid="liveliness-dead"} == 1) * on (machineid) group_left(partition) metal_machine_allocation_info
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        description: "Machine {{ $labels.machineid }} in partition {{ $labels.partition }} is dead. Use `metalctl machine issues` for further inspection."
   "partition.rules":
     groups:
     - name: alert.rules
