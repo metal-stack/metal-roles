@@ -8,8 +8,6 @@
     quiet: yes
     that:
       - sonic_mgmt_vrf is defined
-      - sonic_loopback_address is defined
-      - sonic_asn is defined
       - sonic_config_action in ['load', 'reload']
       - sonic_ntpservers is defined
       - sonic_nameservers is defined

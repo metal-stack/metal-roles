@@ -1,0 +1,34 @@
+---
+inventory_hostname: mgmtoob
+
+sonic_breakouts:
+  Ethernet0: "1x1G"
+
+sonic_frr_static_routes:
+- "0.0.0.0/0 10.1.2.1"
+
+sonic_ports_default_mtu: 9000
+sonic_ports_default_speed: 1000
+sonic_ports_dict:
+  Ethernet0:
+
+sonic_running_cfg_breakouts:
+  Ethernet0:
+    brkout_mode: "1x1G"
+
+sonic_running_cfg_hwsku: Accton-AS4630-54TE
+sonic_running_cfg_mac: e0:01:a6:e3:29:3c
+sonic_running_cfg_platform: x86_64-accton_as4630_54te-r0
+
+sonic_running_cfg_ports:
+  Ethernet0:
+    alias: Eth1/1(Port1)
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
+    speed: "1000"
+
+sonic_vlans:
+- id: 10
+  untagged_ports:
+  - Ethernet0

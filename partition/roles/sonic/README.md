@@ -11,8 +11,8 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_mgmt_vrf                                             | yes       | Boolean flag to enable / disable the management vrf on the switch.                                                   |
 | sonic_ntpservers                                           | yes       | The time servers to use on the switch.                                                                               |
 | sonic_nameservers                                          | yes       | The name servers to use on the switch.                                                                               |
-| sonic_loopback_address                                     | yes       | The loopback address use for this router. Is used to identify routers with bgp unnumbered.                           |
-| sonic_asn                                                  | yes       | The autonomous system number of the router.                                                                          |
+| sonic_loopback_address                                     |           | The loopback address use for this router. Is used to identify routers with bgp unnumbered.                           |
+| sonic_asn                                                  |           | The autonomous system number of the router.                                                                          |
 | sonic_mgmtif_ip                                            |           | The fixed IP address of the management interface in `IP/netmask` format. If not given, defaults to DHCP.             |
 | sonic_mgmtif_gateway                                       |           | If using a fixed management IP, the default gateway for the management interface.                                    |
 | sonic_ip_masquerade                                        |           | Enable ip masquerading on eth0.                                                                                      |

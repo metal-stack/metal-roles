@@ -31,6 +31,9 @@ class SonicRoleTemplates(unittest.TestCase):
     def test_mgmtleaf(self):
         self._sonic_role_templates("mgmtleaf")
 
+    def test_mgmtoob(self):
+        self._sonic_role_templates("mgmtoob")
+
     def test_spine(self):
         self._sonic_role_templates("spine")
 

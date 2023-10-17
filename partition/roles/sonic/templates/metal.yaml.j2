@@ -25,10 +25,12 @@ NTP_SERVER:
   {{ ntpserver }}: {}
   {% endfor %}
 {% endif %}
+{% if sonic_loopback_address %}
 
 LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|{{ sonic_loopback_address }}/32: {}
+{% endif %}
 
 {% if sonic_mgmtif_ip is defined %}
 MGMT_INTERFACE:
@@ -137,10 +139,12 @@ VLAN_MEMBER:
 VXLAN_EVPN_NVO:
   nvo:
     source_vtep: vtep
+{% if sonic_loopback_address %}
 
 VXLAN_TUNNEL:
   vtep:
     src_ip: "{{ sonic_loopback_address }}"
+{% endif %}
 
 VXLAN_TUNNEL_MAP:
 {% for vtep in sonic_vteps %}

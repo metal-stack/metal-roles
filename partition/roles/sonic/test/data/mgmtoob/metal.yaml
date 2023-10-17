@@ -1,0 +1,62 @@
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: split
+    hostname: "mgmtoob"
+    hwsku: "Accton-AS4630-54TE"
+    mac: "e0:01:a6:e3:29:3c"
+    platform: "x86_64-accton_as4630_54te-r0"
+    type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "true"
+
+INTERFACE:
+
+BREAKOUT_CFG:
+  Ethernet0:
+    brkout_mode: "1x1G"
+
+PORT:
+  Ethernet0:
+    alias: Eth1/1(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
+    admin_status: up
+    speed: "1000"
+    mtu: "9000"
+    fec: "none"
+
+VLAN:
+  Vlan10:
+    vlanid: 10
+
+VLAN_INTERFACE:
+  Vlan10: {}
+
+VLAN_MEMBER:
+  Vlan10|Ethernet0:
+      tagging_mode: untagged
+
+LLDP:
+  Global:
+    hello_timer: 10
