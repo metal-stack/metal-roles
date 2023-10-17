@@ -1,0 +1,63 @@
+router bgp {{ sonic_asn }}
+ bgp router-id {{ sonic_loopback_address }}
+ bgp bestpath as-path multipath-relax
+ neighbor FABRIC peer-group
+ neighbor FABRIC remote-as external
+ neighbor FABRIC timers 1 3
+{% for port in sonic_bgp_ports %}
+ neighbor {{ port }} interface peer-group FABRIC
+{% endfor %}
+{% for k, i in sonic_interconnects.items() %}
+{% if i.vrf is not defined %}
+ neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} peer-group
+ neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} remote-as external
+ neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} timers {{ i.bgp_timers | default(sonic_interconnects_default_bgp_timers) }}
+ {% if i.bfd_parameters is defined %}
+ neighbor {{ i.peer_group }} bfd {{ i.bfd_parameters }}
+ {% endif %}
+ {% if i.neighbor_ip is defined %}
+ neighbor {{ i.neighbor_ip }} peer-group {{ i.peer_group | default(sonic_interconnects_default_peer_group) }}
+ {% if i.bgp_md5_password is defined %}
+ neighbor {{ i.neighbor_ip }} password {{ i.bgp_md5_password }}
+ {% endif %}
+ {% endif %}
+ {% for n in i.neighbors|default([]) %}
+ neighbor {{ n }} peer-group {{ i.peer_group | default(sonic_interconnects_default_peer_group) }}
+ {% endfor %}
+ {% for n in i.unnumbered_interfaces|default([]) %}
+ neighbor {{ n }} interface peer-group {{ i.peer_group | default(sonic_interconnects_default_peer_group) }}
+ {% endfor %}
+{% endif %}
+{% endfor %}
+ !
+ address-family ipv4 unicast
+  redistribute connected route-map {{ sonic_frr_route_map.name | default("DENY_MGMT") }}
+{% if sonic_frr_static_routes|length > 0 %}
+  redistribute static
+{% endif %}
+{% for k, i in sonic_interconnects.items() %}
+{% if i.vrf is not defined %}
+    {% if i.announcements is defined %}
+    {% for a in i.announcements %}
+  {{ a }}
+    {% endfor %}
+    {% endif %}
+    {% if i.routemap_in is defined %}
+  neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} route-map {{ i.routemap_in.name }} in
+    {% endif %}
+    {% if i.routemap_out is defined %}
+  neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} route-map {{ i.routemap_out.name }} out
+    {% endif %}
+{% endif %}
+{% endfor %}
+ exit-address-family
+{% if sonic_frr_l2vpn_evpn %}
+ !
+ address-family l2vpn evpn
+{% if sonic_vteps is defined and sonic_vteps|length > 0 %}
+  advertise-all-vni
+{% endif %}
+  neighbor FABRIC activate
+  neighbor FABRIC allowas-in 2
+ exit-address-family
+{% endif %}

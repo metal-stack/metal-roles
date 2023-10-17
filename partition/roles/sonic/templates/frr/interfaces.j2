@@ -1,0 +1,22 @@
+{% for k, i in sonic_interconnects.items() %}
+{% if i.vrf is defined %}
+!
+vrf {{ i.vrf }}
+ vni {{ i.vni }}
+exit-vrf
+{% endif %}
+{% endfor %}
+{% for port in sonic_bgp_ports %}
+!
+interface {{ port }}
+ ipv6 nd ra-interval 6
+ no ipv6 nd suppress-ra
+{% endfor %}
+{% for k, i in sonic_interconnects.items() %}
+{% for n in i.unnumbered_interfaces|default([]) %}
+!
+interface {{ n }}
+ ipv6 nd ra-interval 6
+ no ipv6 nd suppress-ra
+{% endfor %}
+{% endfor %}

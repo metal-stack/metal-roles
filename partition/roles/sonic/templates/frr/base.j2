@@ -1,0 +1,43 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+frr defaults datacenter
+hostname {{ inventory_hostname }}
+!
+service integrated-vtysh-config
+!
+log syslog {{ sonic_frr_syslog_level }}
+{% if sonic_frr_debug_options is defined %}
+{% for option in sonic_frr_debug_options %}
+{{ option }}
+{% endfor %}
+{% endif %}
+{% include 'frr/interfaces.j2' %}
+!
+{% include 'frr/bgp.j2' %}
+{% include 'frr/vrf.j2' %}
+{% if sonic_frr_route_map is defined %}
+!
+route-map {{ sonic_frr_route_map.name }} permit 10
+  match {{ sonic_frr_route_map.match }}
+{% else %}
+!
+route-map DENY_MGMT deny 10
+  match interface eth0
+route-map DENY_MGMT permit 20
+{% endif %}
+{% if sonic_frr_static_routes_mgmt is defined and sonic_frr_static_routes_mgmt|length > 0 %}
+!
+vrf mgmt
+ {% for route in sonic_frr_static_routes_mgmt %}
+ ip route {{ route }}
+ {% endfor %}
+exit-vrf
+{% endif %}
+{% if sonic_frr_static_routes|length > 0 %}
+!
+{% for route in sonic_frr_static_routes %}
+ip route {{ route }}
+{% endfor %}
+{% endif %}
+!
+line vty
+!

@@ -116,7 +116,7 @@
 
 - name: Render frr config
   template:
-    src: frr.conf.j2
+    src: frr/base.j2
     dest: /etc/sonic/frr/frr.conf
   when: sonic_frr_render
   notify:
