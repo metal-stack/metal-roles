@@ -11,6 +11,7 @@ log syslog {{ sonic_frr_syslog_level }}
 {% endfor %}
 {% endif %}
 {% include 'frr/interfaces.j2' %}
+{% if sonic_asn and sonic_loopback_address %}
 !
 {% include 'frr/bgp.j2' %}
 {% include 'frr/vrf.j2' %}
@@ -23,6 +24,7 @@ route-map {{ sonic_frr_route_map.name }} permit 10
 route-map DENY_MGMT deny 10
   match interface eth0
 route-map DENY_MGMT permit 20
+{% endif %}
 {% endif %}
 {% if sonic_frr_static_routes_mgmt is defined and sonic_frr_static_routes_mgmt|length > 0 %}
 !

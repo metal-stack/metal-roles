@@ -18,8 +18,6 @@ NTP:
   global:
     src_intf: "eth0"
 
-NTP_SERVER:
-
 LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}

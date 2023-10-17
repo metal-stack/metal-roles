@@ -18,11 +18,13 @@ FEATURE:
 NTP:
   global:
     src_intf: "eth0"
+{% if sonic_ntpservers|length > 0 %}
 
 NTP_SERVER:
   {% for ntpserver in sonic_ntpservers %}
   {{ ntpserver }}: {}
   {% endfor %}
+{% endif %}
 
 LOOPBACK_INTERFACE:
   Loopback0: {}
