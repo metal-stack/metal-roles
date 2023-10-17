@@ -8,46 +8,57 @@ from ansible.template import Templar
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
 
 
-def readYaml(f):
-    with open(os.path.join(os.path.dirname(__file__), f), "r") as stream:
-        return yaml.safe_load(stream)
+def read_yaml(filename):
+    with open(os.path.join(os.path.dirname(__file__), filename), "r") as f:
+        return yaml.safe_load(f)
 
 
-def readFile(f):
-    with open(os.path.join(os.path.dirname(__file__), f), "r") as stream:
-        return stream.read()
+def read_file(filename):
+    with open(os.path.join(os.path.dirname(__file__), filename), "r") as f:
+        return f.read()
 
 
-def read_template_file(name):
-    with open(os.path.join(TEMPLATE_DIR, name), 'r') as f:
+def read_template(filename):
+    with open(os.path.join(TEMPLATE_DIR, filename), 'r') as f:
         return f.read()
 
 
 class SonicRoleTemplates(unittest.TestCase):
-    def test_sonic_role_templates(self):
-        self.maxDiff = None
-        defaults = readYaml('../defaults/main.yaml')
-        metal_t = read_template_file('metal.yaml.j2')
-        frr_t = read_template_file('frr/base.j2')
-        iptables_t = read_template_file('iptables.json.j2')
 
-        for tc in next(os.walk(os.path.join(os.path.dirname(__file__), 'data')))[1]:
-            if tc.startswith("."):
-                continue
+    def test_exit(self):
+        self._sonic_role_templates("exit")
 
-            vars = defaults | readYaml(f'./data/{tc}/input.yaml')
-            templar = Templar(loader=None, variables=vars)
+    def test_mgmtleaf(self):
+        self._sonic_role_templates("mgmtleaf")
 
-            metal_exp = readFile(f'./data/{tc}/metal.yaml')
-            metal_res = templar.template(metal_t)
-            self.assertEqual(metal_exp.strip(), metal_res.strip(), 'detected a diff for metal.yaml rendering - tc ' + tc)
+    def test_spine(self):
+        self._sonic_role_templates("spine")
 
-            frr_exp = readFile(f'./data/{tc}/frr.conf')
-            with templar.set_temporary_context(searchpath=[TEMPLATE_DIR]):
-                frr_res = templar.template(frr_t)
-            self.assertEqual(frr_exp.strip(), frr_res.strip(), 'detected a diff for frr.conf rendering - tc ' + tc)
+    def _sonic_role_templates(self, directory):
+        vars = read_yaml('../defaults/main.yaml') | read_yaml(f'./data/{directory}/input.yaml')
+        templar = Templar(loader=None, variables=vars)
 
-            if 'sonic_extended_cacl' in vars:
-                iptables_exp = readFile(f'./data/{tc}/iptables.json')
-                iptables_res = templar.template(iptables_t, convert_data=False)
-                self.assertEqual(iptables_exp.strip(), iptables_res.strip(), 'detected a diff for iptables.json rendering - tc ' + tc)
+        self._test_metal_yaml(directory, templar)
+        self._test_frr_conf(directory, templar)
+
+        if 'sonic_extended_cacl' in vars:
+            self._test_iptables_json(directory, templar)
+
+    def _test_metal_yaml(self, directory, templar):
+        expected = read_file(f'./data/{directory}/metal.yaml')
+        actual = templar.template(read_template('metal.yaml.j2'))
+
+        self.assertEqual(expected.strip(), actual.strip(), 'detected a diff for metal.yaml rendering')
+
+    def _test_frr_conf(self, directory, templar):
+        expected = read_file(f'./data/{directory}/frr.conf')
+        with templar.set_temporary_context(searchpath=[TEMPLATE_DIR]):
+            actual = templar.template(read_template('frr/base.j2'))
+
+        self.assertEqual(expected.strip(), actual.strip(), 'detected a diff for frr.conf rendering')
+
+    def _test_iptables_json(self, directory, templar):
+        expected = read_file(f'./data/{directory}/iptables.json')
+        actual = templar.template(read_template('iptables.json.j2'), convert_data=False)
+
+        self.assertEqual(expected.strip(), actual.strip(), 'detected a diff for iptables.json rendering')
