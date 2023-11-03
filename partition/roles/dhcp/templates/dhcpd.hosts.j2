@@ -3,6 +3,9 @@
 host {{ host.name }} {
   hardware ethernet {{ host.mac }};
   fixed-address {{ host.ip }};
+  {% if host.filename is defined %}
+  filename "{{ host.filename }}";
+  {% endif %}
   {% if host.options is defined and host.options|length > 0 %}
   {% for option in host.options %}
   option {{ option }};
