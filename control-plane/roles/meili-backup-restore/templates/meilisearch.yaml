@@ -229,6 +229,9 @@ data:
     backup-cron-schedule: "{{ meilisearch_backup_restore_sidecar_backup_cron_schedule }}"
     object-prefix: {{ meilisearch_backup_restore_sidecar_object_prefix }}
     compression-method: targz
+{% if meilisearch_backup_restore_sidecar_object_max_keep %}
+    object-max-keep: {{ meilisearch_backup_restore_sidecar_object_max_keep }}
+{% endif %}
     post-exec-cmds:
       - meilisearch --db-path=/data/data.ms/ --dump-dir=/backup/upload/files
 ---
