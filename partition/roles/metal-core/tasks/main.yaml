@@ -14,6 +14,10 @@
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
 
+- name: SONiC specific configurations
+  ansible.builtin.import_tasks: sonic.yaml
+  when: metal_stack_switch_os_is_sonic
+
 - name: create gRPC certs directory
   file:
     path: "{{ metal_core_grpc_cert_dir }}"

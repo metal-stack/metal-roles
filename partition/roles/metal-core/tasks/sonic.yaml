@@ -1,0 +1,25 @@
+---
+- name: Check that /etc/sonic/frr/frr.conf exists
+  ansible.builtin.stat:
+    path: /etc/sonic/frr/frr.conf
+  register: stat_result
+
+- name: Create initial frr.conf
+  ansible.builtin.template:
+    src: frr.conf.j2
+    dest: /etc/sonic/frr/frr.conf
+    mode: '0644'
+    owner: frr
+    group: frr
+  when: not stat_result.stat.exists
+  notify: restart bgp
+
+# Cannot be configured in a running frr instance
+- name: Ensure agentx is configured
+  ansible.builtin.lineinfile:
+    path: /etc/sonic/frr/frr.conf
+    firstmatch: true
+    insertafter: "^!$"
+    line: agentx
+  when: stat_result.stat.exists
+  notify: restart bgp
