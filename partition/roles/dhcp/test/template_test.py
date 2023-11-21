@@ -51,8 +51,6 @@ class DHCPD(unittest.TestCase):
           option domain-name-servers 1.1.1.1, 8.8.8.8;
           deny unknown-clients;
         }
-        
-        
         """), result)
 
     def test_dhcpd_hosts_config_template(self):
