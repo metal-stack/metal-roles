@@ -42,6 +42,8 @@ class DHCPD(unittest.TestCase):
         default-lease-time 600;
         max-lease-time 600;
         
+        use-host-decl-names on;
+        
         log-facility local7;
         
         # testing
