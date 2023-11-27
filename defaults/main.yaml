@@ -128,6 +128,9 @@ metal_stack_release:
     gardener_dns_controller_manager_image_name: "docker-images.third-party.gardener.dns-controller-manager.name"
     gardener_metrics_exporter_image_tag: "docker-images.third-party.gardener.metrics-exporter.tag"
     gardener_metrics_exporter_image_name: "docker-images.third-party.gardener.metrics-exporter.name"
+    gardener_extension_acl_image_name: "docker-images.third-party.gardener.acl-extension.name"
+    gardener_extension_acl_webhook_image_name: "docker-images.third-party.gardener.acl-extension.webhook"
+    gardener_extension_acl_image_tag: "docker-images.third-party.gardener.acl-extension.tag"
     # helm-charts
     metal_helm_chart_version: "helm-charts.metal-stack.metal-control-plane.version"
     metal_helm_chart_repo: "helm-charts.metal-stack.metal-control-plane.repository"
