@@ -11,7 +11,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### General
 
 | Name                            | Mandatory | Description                                                                                              |
-| ------------------------------- | --------- | -------------------------------------------------------------------------------------------------------- |
+|---------------------------------|-----------|----------------------------------------------------------------------------------------------------------|
 | metal_check_api_available       |           | Checks whether the metal-api is reachable from the outside after deployment                              |
 | metal_check_api_health_endpoint |           | The endpoint to call if the metal-api is reachable from the outside after deployment                     |
 | metal_set_resource_limits       |           | Deploys metal components with or without resource limits (possibly disable for development environments) |
@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Images
 
 | Name                                   | Mandatory | Description                             |
-| -------------------------------------- | --------- | --------------------------------------- |
+|----------------------------------------|-----------|-----------------------------------------|
 | metal_api_image_name                   | yes       | Image version of the metal-api          |
 | metal_api_image_tag                    | yes       | Image tag of the metal-api              |
 | metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
@@ -42,7 +42,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Service Ports
 
 | Name                              | Mandatory | Description                                       |
-| --------------------------------- | --------- | ------------------------------------------------- |
+|-----------------------------------|-----------|---------------------------------------------------|
 | metal_api_port                    |           | Service port of the metal-api                     |
 | metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
 | metal_masterdata_api_port         |           | Service port of the masterdata-api                |
@@ -52,7 +52,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### metal-api
 
 | Name                                | Mandatory | Description                                                                                    |
-| ----------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+|-------------------------------------|-----------|------------------------------------------------------------------------------------------------|
 | metal_api_replicas                  |           | The number of deployed replicas of the metal-api                                               |
 | metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
 | metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
@@ -96,11 +96,12 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_s3_secret                 |           | The secret of the S3 server that serves firmwares                                              |
 | metal_api_s3_firmware_bucket        |           | The S3 bucket name that contains the firmwares                                                 |
 | metal_api_password_reason_minlength |           | If machine console password is requested this defines if and how long the given reason must be |
+| minimum_client_version              |           | minimum metalctl version which is required to talk to this metal-api instance                  |
 
 ### masterdata-api
 
 | Name                                 | Mandatory | Description                                                      |
-| ------------------------------------ | --------- | ---------------------------------------------------------------- |
+|--------------------------------------|-----------|------------------------------------------------------------------|
 | metal_masterdata_api_db_address      |           | The URL to the masterdata database                               |
 | metal_masterdata_api_db_port         |           | The port of the masterdata database                              |
 | metal_masterdata_api_db_name         |           | The database name of the masterdata database                     |
@@ -120,7 +121,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### metal-console
 
 | Name                                      | Mandatory | Description                                                        |
-| ----------------------------------------- | --------- | ------------------------------------------------------------------ |
+|-------------------------------------------|-----------|--------------------------------------------------------------------|
 | metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console               |
 | metal_console_replicas                    |           | The number of deployed replicas of the metal-console               |
 | metal_console_resources                   |           | Sets the given container resources                                 |
@@ -133,7 +134,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Ingress
 
 | Name                 | Mandatory | Description                                                                |
-| -------------------- | --------- | -------------------------------------------------------------------------- |
+|----------------------|-----------|----------------------------------------------------------------------------|
 | metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
 | metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
 | metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
@@ -141,7 +142,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Auditing
 
 | Name                             | Mandatory | Description                                                                  |
-| -------------------------------- | --------- | ---------------------------------------------------------------------------- |
+|----------------------------------|-----------|------------------------------------------------------------------------------|
 | metal_auditing_enabled           |           | Whether to deploy or not to deploy the auditing. Default false.              |
 | metal_auditing_url               |           | The URL of the auditing server (required if enabled)                         |
 | metal_auditing_index_prefix      |           | auditing index prefix.                                                       |
