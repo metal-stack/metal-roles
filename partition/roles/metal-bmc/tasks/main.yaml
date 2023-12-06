@@ -78,6 +78,7 @@
     systemd_external_config_changed: "{{ nsq_certs is changed }}"
     systemd_docker_image_name: "{{ metal_bmc_image_name }}"
     systemd_docker_image_tag: "{{ metal_bmc_image_tag }}"
+    systemd_docker_host_to_ip_mapping: "{{ metal_bmc_host_to_ip_mapping }}"
     systemd_docker_ports:
       - host_port: "{{ metal_bmc_console_port }}"
         target_port: "{{ metal_bmc_console_port }}"

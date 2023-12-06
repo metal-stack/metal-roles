@@ -6,6 +6,8 @@ metal_bmc_allowed_cidrs:
 metal_bmc_bmc_superuser:
 metal_bmc_bmc_superuser_pwd:
 
+metal_bmc_host_to_ip_mapping: []
+
 metal_bmc_nsq_log_level: info
 metal_bmc_nsq_tls_enabled: true
 metal_bmc_nsq_cert_dir: /certs/nsq
