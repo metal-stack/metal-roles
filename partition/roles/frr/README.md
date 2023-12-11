@@ -6,7 +6,8 @@ This role can deploy on bare metal machines with Debian or Almalinux. It depends
 
 ## Variables
 
-| Name        | Mandatory | Description                         |
-| ----------- | --------- | ----------------------------------- |
-| frr_version |           | The version of FRR to be installed. |
-| frr_repo    |           | The repository that contains FRR.   |
+| Name        | Mandatory | Description                               |
+|-------------|-----------|-------------------------------------------|
+| frr_version |           | The version of FRR to be installed.       |
+| frr_repo    |           | The repository that contains FRR.         |
+| frr_conf    |           | The configuration of FRR to be installed. |
