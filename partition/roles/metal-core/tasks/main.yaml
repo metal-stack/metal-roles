@@ -40,7 +40,7 @@
   copy:
     src: "{{ item }}"
     dest: "/etc/systemd/system/{{ item }}"
-  notify: reload systemd
+  notify: Reload systemd daemon
   loop:
     - bgp-validation@.service
     - frr-reload.service
