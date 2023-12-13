@@ -16,6 +16,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_apiserver_vpa                                 |           | Enables the VPA for the gardener-apiserver                                                                                    |
 | gardener_apiserver_resources                           |           | Set custom resource definitions for the gardener-apiserver                                                                    |
 | gardener_apiserver_feature_gates                       |           | Sets features gates for the gardener-apiserver                                                                                |
+| gardener_apiserver_shoot_kubeconfig_max_expiration     |           | Max shoot kubeconfig expiration for the gardener-apiserver                                                                    |
 | gardener_controller_manager_resources                  |           | Set custom resource definitions for the gardener-controller-manager                                                           |
 | gardener_scheduler_resources                           |           | Set custom resource definitions for the gardener-scheduler                                                                    |
 | gardener_dns_domain                                    |           | Specifies the DNS domain on which the Gardener will manage DNS entries                                                        |
@@ -36,6 +37,8 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_api_server_kubeconfig                    |           | The kubeconfig for the Gardener Kubernetes API (virtual garden apiserver)                                                     |
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                     |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral) |
+
+
 
 ### Virtual Garden
 
