@@ -1,0 +1,5 @@
+---
+- name: restart bgp
+  systemd:
+    name: bgp
+    state: restarted
