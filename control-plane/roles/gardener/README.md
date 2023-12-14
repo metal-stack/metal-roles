@@ -38,8 +38,6 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                     |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral) |
 
-
-
 ### Virtual Garden
 
 These variables are related to spinning up the virtual garden, a dedicated kube-apiserver, kube-controller-manager and ETCD to host all Gardener resources. This one will have no worker nodes and cannot schedule pods.
