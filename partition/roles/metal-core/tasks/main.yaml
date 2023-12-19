@@ -36,6 +36,16 @@
     label: "{{ item.filename }}"
   register: grpc_certs
 
+- name: Install services
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  notify: Reload systemd daemon
+  loop:
+    - bgp-validation@.service
+    - frr-reload.service
+  when: metal_stack_switch_os_is_sonic
+
 - name: deploy metal-core
   include_role:
     name: ansible-common/roles/systemd-docker-service

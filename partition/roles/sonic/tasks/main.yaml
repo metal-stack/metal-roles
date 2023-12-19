@@ -50,15 +50,6 @@
     value: "1"
   when: sonic_ip_masquerade
 
-- name: Install services
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/systemd/system/{{ item }}"
-  notify: reload systemd
-  loop:
-    - bgp-validation@.service
-    - frr-reload.service
-
 # Dependencies are returned by config.
 - name: Configure breakouts
   command: "config interface breakout --yes {{ item.key }} '{{ item.value }}'"
