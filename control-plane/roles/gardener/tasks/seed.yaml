@@ -50,6 +50,7 @@
       type: kubernetes.io/service-account-token
       metadata:
         name: gardener-seeds-token
+        namespace: garden
         annotations:
           kubernetes.io/service-account.name: “gardener-seeds”
 
