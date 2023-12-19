@@ -76,7 +76,12 @@
   fail:
     msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
   when:
-    - metal_control_plane_host_provider not in ["gcp", "metal"]
+    - metal_control_plane_host_provider not in ["gcp", "metal", "none"]
+
+- name: control plane service cidr from variable
+  import_tasks: control-plane-networks/variable.yaml
+  when:
+    - metal_control_plane_host_provider == "none"
 
 - name: GCP control plane service cidr
   import_tasks: control-plane-networks/gcp.yaml
@@ -112,6 +117,8 @@
 
 - name: Register control plane as seed
   import_tasks: seed.yaml
+  when:
+    - metal_control_plane_host_provider != "none"
 
 - name: Create Gardener project for shooted seeds
   k8s:

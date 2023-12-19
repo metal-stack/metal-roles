@@ -1,0 +1,10 @@
+---
+- name: Fail when provider gardener_soil_service_cidr is empty
+  fail:
+    msg: "gardener_soil_service_cidr is mandatory"
+  when:
+    - gardener_soil_service_cidr is not defined
+
+- name: Set service cidr
+  set_fact:
+    _gardener_soil_service_cidr: "{{ gardener_soil_service_cidr }}"
