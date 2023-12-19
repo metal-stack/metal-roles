@@ -31,3 +31,5 @@ dhcp_service_name: "{{ 'dhcpd' if metal_stack_switch_os_is_cumulus | default(fal
 #- name: r01mgmtleaf01
 #  mac: ""
 #  ip: 10.1.2.3
+
+dhcp_use_host_decl_names: false

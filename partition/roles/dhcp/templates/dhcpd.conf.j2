@@ -4,6 +4,10 @@ authoritative;
 default-lease-time {{ dhcp_default_lease_time }};
 max-lease-time {{ dhcp_max_lease_time }};
 
+{% if dhcp_use_host_decl_names %}
+use-host-decl-names on;
+{% endif -%}
+
 log-facility local7;
 
 {% for option in dhcp_global_options %}
