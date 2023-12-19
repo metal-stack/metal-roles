@@ -31,6 +31,7 @@ class DHCPD(unittest.TestCase):
             dhcp_global_deny_list=[],
             groups=dict(mgmt_servers=["mgmt01", "mgmt02"]),
             hostvars=dict(mgmt01=dict(switch_mgmt_ip="3.3.3.3"), mgmt02=dict(switch_mgmt_ip="4.4.4.4")),
+            dhcp_use_host_decl_names=False,
         ))
 
         result = templar.template(t)
@@ -41,8 +42,6 @@ class DHCPD(unittest.TestCase):
         
         default-lease-time 600;
         max-lease-time 600;
-        
-        use-host-decl-names on;
         
         log-facility local7;
         
