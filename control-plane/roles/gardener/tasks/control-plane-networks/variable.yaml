@@ -1,9 +1,19 @@
 ---
-- name: Fail when provider gardener_soil_service_cidr is empty
+- name: Fail when mandatory for metal_control_plane_host_provider = "none" are missing
   fail:
     msg: "gardener_soil_service_cidr is mandatory"
   when:
+    - gardener_soil_node_cidr is not defined
+    - gardener_soil_pod_cidr is not defined
     - gardener_soil_service_cidr is not defined
+
+- name: Set node cidr
+  set_fact:
+    _gardener_soil_node_cidr: "{{ gardener_soil_node_cidr }}"
+
+- name: Set pod cidr
+  set_fact:
+    _gardener_soil_pod_cidr: "{{ gardener_soil_pod_cidr }}"
 
 - name: Set service cidr
   set_fact:

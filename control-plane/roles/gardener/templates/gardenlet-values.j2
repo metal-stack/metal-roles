@@ -30,9 +30,11 @@ config:
       labels:
         name: {{ gardener_soil_name }}
     spec:
+{% if metal_control_plane_host_provider != "none" %}
       provider:
         type: {{ metal_control_plane_host_provider }}
         region: local
+{% endif %}
       secretRef:
         name: gardener-seed-kubeconfig
         namespace: garden

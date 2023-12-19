@@ -117,8 +117,6 @@
 
 - name: Register control plane as seed
   import_tasks: seed.yaml
-  when:
-    - metal_control_plane_host_provider != "none"
 
 - name: Create Gardener project for shooted seeds
   k8s:
