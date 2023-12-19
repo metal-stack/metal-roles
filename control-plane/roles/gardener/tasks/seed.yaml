@@ -53,6 +53,8 @@
         namespace: garden
         annotations:
           kubernetes.io/service-account.name: “gardener-seeds”
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
 
 #- name: Fetch service account token name
 #  set_fact:
