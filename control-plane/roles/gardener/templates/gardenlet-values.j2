@@ -31,7 +31,7 @@ config:
         name: {{ gardener_soil_name }}
     spec:
       provider:
-        type: {{ metal_control_plane_host_provider }}
+        type: gcp
         region: local
       secretRef:
         name: gardener-seed-kubeconfig
