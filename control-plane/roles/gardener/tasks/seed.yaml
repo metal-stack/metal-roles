@@ -47,18 +47,14 @@
     definition:
       apiVersion: v1
       kind: Secret
-      type: kubernetes.io/service-account-token
       metadata:
         name: gardener-seeds-token
         namespace: garden
         annotations:
-          kubernetes.io/service-account.name: “gardener-seeds”
+          kubernetes.io/service-account.name: gardener-seeds
+      type: kubernetes.io/service-account-token
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
-
-#- name: Fetch service account token name
-#  set_fact:
-#    gardenlet_sa_token_name: "{{ lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, kind='ServiceAccount', namespace='garden', resource_name='gardener-seeds').get('secrets')[0].get('name') }}"
 
 - name: Add seed secret
   k8s:
