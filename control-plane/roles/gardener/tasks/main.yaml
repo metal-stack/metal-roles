@@ -76,17 +76,17 @@
   fail:
     msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
   when:
-    - metal_control_plane_host_provider not in ["gcp", "metal", "none"]
-
-- name: control plane service cidr from variable
-  import_tasks: control-plane-networks/variable.yaml
-  when:
-    - metal_control_plane_host_provider == "none"
+    - metal_control_plane_host_provider not in ["gcp", "local", "metal"]
 
 - name: GCP control plane service cidr
   import_tasks: control-plane-networks/gcp.yaml
   when:
     - metal_control_plane_host_provider == "gcp"
+
+- name: control plane service cidr
+  import_tasks: control-plane-networks/local.yaml
+  when:
+    - metal_control_plane_host_provider == "local"
 
 - name: metal control plane service cidr
   import_tasks: control-plane-networks/metal.yaml
