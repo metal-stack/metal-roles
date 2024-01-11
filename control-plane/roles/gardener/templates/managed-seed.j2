@@ -11,12 +11,6 @@ spec:
       kind: GardenletConfiguration
       seedConfig:
         spec:
-          backup:
-            provider: "{{ gardener_backup_infrastructure.provider }}"
-            region: "{{ gardener_backup_infrastructure.region }}"
-            secretRef:
-              name: "{{ gardener_shooted_seed.name }}-backup-secret"
-              namespace: garden
           dns:
             provider:
               secretRef:
