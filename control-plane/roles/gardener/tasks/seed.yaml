@@ -89,13 +89,28 @@
     helm_value_file_template: gardenlet-values.j2
     helm_wait: false
 
-- name: Wait until seed is ready
-  command: echo
-  changed_when: false
-  retries: 60
-  delay: 3
-  until:
-    - "'conditions' in lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {})"
-    - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions | length > 2
-    - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions[0].message == "Gardenlet is posting ready status."
-    - lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name).get('status', {}).conditions[2].message == "Seed cluster has been bootstrapped successfully."
+- name: Wait until Gardenlet is posting ready status
+  kubernetes.core.k8s_info:
+    api_version: "core.gardener.cloud/v1beta1"
+    kind: Seed
+    name: "{{ gardener_soil_name }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    wait: yes
+    wait_condition:
+      reason: GardenletReady
+      status: "True"
+      type: GardenletReady
+    wait_timeout: 180
+
+- name: Wait until Seed cluster has been bootstrapped successfully
+  kubernetes.core.k8s_info:
+    api_version: "core.gardener.cloud/v1beta1"
+    kind: Seed
+    name: "{{ gardener_soil_name }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    wait: yes
+    wait_condition:
+      reason: BootstrappingSucceeded
+      status: "True"
+      type: Bootstrapped
+    wait_timeout: 180
