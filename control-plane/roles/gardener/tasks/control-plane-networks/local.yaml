@@ -18,3 +18,15 @@
 - name: Set service cidr
   set_fact:
     _gardener_soil_service_cidr: "{{ gardener_soil_service_cidr }}"
+
+- name: Deploy seed-api-server config map
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: seed-api-server
+        namespace: garden
+      data:
+        url: "{{ seed_api_server }}"
+    apply: yes
