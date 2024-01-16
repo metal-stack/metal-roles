@@ -16,6 +16,7 @@ config:
       - evaluation
       - infrastructure
       - production
+    networkPolicy: null
     shoot:
       concurrentSyncs: {{ gardener_gardenlet_shoot_concurrent_syncs }}
       reconcileInMaintenanceOnly: {{ gardener_gardenlet_shoot_reconcile_in_maintenance_only }}
