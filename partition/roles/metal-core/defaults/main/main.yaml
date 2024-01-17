@@ -4,7 +4,8 @@ metal_core_hmac_key: change-me
 metal_core_rack_id:
 
 metal_core_reconfigure_switch: true
-metal_core_reconfigure_switch_interval: 10s
+metal_core_sync_cron_schedule: "*/20 * * * * *"
+metal_core_sync_delay: 0s
 
 metal_core_grpc_address: "{{ metal_partition_metal_api_grpc_address }}"
 metal_core_grpc_cert_dir: "{{ metal_partition_metal_api_grpc_cert_dir }}"
