@@ -23,6 +23,8 @@ apiServer:
   hostname: 127.0.0.1
   serviceName: garden-kube-apiserver
 
+podLabels: {}
+
 tls:
   kubeAPIServer:
     ca:
