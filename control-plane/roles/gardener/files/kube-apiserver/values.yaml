@@ -21,6 +21,8 @@ replicas: 3
 apiServer:
   hostname: 127.0.0.1
 
+podLabels: {}
+
 service:
   annotations: {}
   name: garden-kube-apiserver
