@@ -37,9 +37,6 @@ spec:
         checksum/secret-kube-apiserver-static-token: {{ include (print $.Template.BasePath "/secret-kube-apiserver-static-token.yaml") . | sha256sum }}
         checksum/secret-kube-controller-manager-client: {{ include (print $.Template.BasePath "/secret-kube-controller-manager-tls.yaml") . | sha256sum }}
         checksum/secret-service-account-key: {{ include (print $.Template.BasePath "/secret-service-account-key.yaml") . | sha256sum }}
-        {{- if .Values.tls.identity.ca }}
-        checksum/secret-identity-ca: {{ include (print $.Template.BasePath "/secret-identity-ca.yaml") . | sha256sum }}
-        {{- end }}
       labels:
         app: garden
         component: kube-apiserver
@@ -158,10 +155,6 @@ spec:
           mountPath: /srv/kubernetes/token
         - name: kube-aggregator
           mountPath: /srv/kubernetes/aggregator
-        {{- if .Values.tls.identity.ca }}
-        - name: ca-identity
-          mountPath: /srv/kubernetes/identity-ca
-        {{- end }}
       - name: kube-controller-manager
         image: {{ index .Values.images "controllermanager" }}
         imagePullPolicy: IfNotPresent
@@ -211,11 +204,6 @@ spec:
       - name: ca-kube-apiserver
         secret:
           secretName: garden-kube-apiserver-ca
-      {{- if .Values.tls.identity.ca }}
-      - name: ca-identity
-        secret:
-          secretName: identity-ca
-      {{- end }}
       - name: ca-etcd
         secret:
           secretName: {{ .Values.etcd.secretNames.ca | default "garden-etcd-ca" }}

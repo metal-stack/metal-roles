@@ -46,8 +46,6 @@ tls:
       {{ gardener_admin_client_key | indent(width=6, first=false) }}
   serviceAccountKey: |
     {{ gardener_service_account_client_key | indent(width=4, first=false) }}
-  identity:
-    ca:
 
 etcd:
   main:
