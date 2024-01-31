@@ -17,6 +17,9 @@ kind: Service
 metadata:
   name: {{ .Values.service.name }}
   namespace: {{ .Release.Namespace }}
+  {{- if .Values.service.annotations }}
+  annotations: {{ toYaml .Values.service.annotations | nindent 4 }}
+  {{- end}}
   labels:
     app: garden
     component: kube-apiserver

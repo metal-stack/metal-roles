@@ -22,6 +22,7 @@ apiServer:
   hostname: 127.0.0.1
 
 service:
+  annotations: {}
   name: garden-kube-apiserver
 
 tls:
