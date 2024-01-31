@@ -17,6 +17,9 @@ global:
               {{ gardener_admission_controller_cert | indent(width=14, first=false) }}
             key: |
               {{ gardener_admission_controller_key | indent(width=14, first=false) }}
+    podLabels:
+      networking.gardener.cloud/to-dns: allowed
+      networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
 
   apiserver:
     replicaCount: {{ gardener_apiserver_replicas }}
@@ -46,6 +49,11 @@ global:
         {{ gardener_api_server_key | indent(width=8, first=false) }}
     kubeconfig: |
       {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+    podLabels:
+      networking.gardener.cloud/to-dns: allowed
+      networking.resources.gardener.cloud/to-etcd-{{ metal_control_plane_stage_name }}-etcd-client-tcp-2379: allowed
+      networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
+      networking.resources.gardener.cloud/to-gardener-extension-admission-metal-tcp-443: allowed
 
     shootAdminKubeconfigMaxExpiration: {{ gardener_apiserver_shoot_kubeconfig_max_expiration }}
     shootViewerKubeconfigMaxExpiration: {{ gardener_apiserver_shoot_kubeconfig_max_expiration }}
@@ -91,6 +99,9 @@ global:
       tag: {{ gardener_scheduler_image_tag }}
     kubeconfig: |
       {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+    podLabels:
+      networking.gardener.cloud/to-dns: allowed
+      networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
 
   controller:
     resources: {{ gardener_controller_manager_resources | to_json }}
@@ -117,6 +128,9 @@ global:
           enableShootCoreAddonRestarter: false
     kubeconfig: |
       {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+    podLabels:
+      networking.gardener.cloud/to-dns: allowed
+      networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
 
   internalDomain:
     provider: "{{ gardener_dns_provider }}"

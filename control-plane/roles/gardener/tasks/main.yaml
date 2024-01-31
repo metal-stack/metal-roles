@@ -88,6 +88,16 @@
   when:
     - metal_control_plane_host_provider == "metal"
 
+- name: Add egress network policies
+  kubernetes.core.k8s:
+    template:
+      - path: network-policies/to-dns.yaml
+      - path: network-policies/to-etcd.yaml.j2
+      - path: network-policies/to-virtual-garden-kube-apiserver.yaml
+      - path: network-policies/to-gardener-admission-controller.yaml
+      - path: network-policies/to-gardener-apiserver.yaml
+      - path: network-policies/to-gardener-extension-admission-metal.yaml
+
 - name: Deploy virtual garden
   import_tasks: virtual_garden.yaml
 
