@@ -18,6 +18,14 @@ vrf {{ i.vrf }}
 exit-vrf
 {% endif %}
 {% endfor %}
+{% if sonic_vrfs is defined and sonic_vrfs|length > 0 %}
+{% for vrf in sonic_vrfs %}
+!
+vrf Vrf{{ vrf.id }}
+ vni {{ vrf.vni }}
+exit-vrf
+{% endfor %}
+{% endif %}
 {% for port in sonic_bgp_ports %}
 !
 interface {{ port }}

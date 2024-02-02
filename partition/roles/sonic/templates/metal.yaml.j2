@@ -28,6 +28,24 @@ LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|{{ sonic_loopback_address }}/32: {}
 
+{% if sonic_mclag is defined and sonic_mclag|length > 0 %}
+MCLAG_DOMAIN:
+  "1":
+    peer_ip: {{ sonic_mclag.peerlink.peer_ip }}
+    peer_link: {{ sonic_mclag.peerlink.interface }}
+    source_ip: {{ sonic_mclag.peerlink.source_ip }}
+
+MCLAG_INTERFACE:
+{% for po in sonic_mclag.member_port_channels %}
+  "1|PortChannel{{ po }}":
+    if_type: "PortChannel"
+{% endfor %}
+
+MCLAG_UNIQUE_IP:
+  "Vlan{{ sonic_mclag.peerlink.keepalive_vlan }}":
+    unique_ip: "enable"
+
+{% endif %}
 {% if sonic_mgmtif_ip is defined %}
 MGMT_INTERFACE:
 {% if sonic_mgmtif_gateway is defined %}
@@ -92,6 +110,26 @@ PORT:
     speed: "{{ running_cfg.speed }}"
     {% endif %}
   {% endfor %}
+{% if sonic_portchannels is defined and sonic_portchannels|length > 0 %}
+
+PORTCHANNEL:
+{% for po in sonic_portchannels %}
+  Portchannel{{ po.number }}:
+    admin_status: "up"
+    fast_rate: "false"
+    lacp_key: "auto"
+    min_links: "1"
+    mix_speed: "false"
+    mtu: "{{ po.mtu|default(sonic_portchannels_default_mtu) }}"
+{% endfor %}
+
+PORTCHANNEL_MEMBER:
+{% for po in sonic_portchannels %}
+{% for member in po.members %}
+  PortChannel{{ po.number }}|{{ member }}:  {}
+{% endfor %}
+{% endfor %}
+{% endif %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
 
 VLAN:
@@ -150,9 +188,11 @@ VXLAN_TUNNEL_MAP:
     vni: "{{ vtep.vni }}"
 {% endfor %}
 {% endif %}
-{% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
+{% if ( sonic_interconnects is defined and sonic_interconnects|length > 0 ) or ( sonic_vrfs is defined and sonic_vrfs|length > 0 )%}
 
 VRF:
+{% endif %}
+{% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
 {% for k, i in sonic_interconnects.items() %}
   {% if i.vrf is defined %}
   {% if i.vni is defined %}
@@ -162,6 +202,12 @@ VRF:
   {{ i.vrf }}: {}
   {% endif %}
   {% endif %}
+{% endfor %}
+{% endif %}
+{% if sonic_vrfs is defined and sonic_vrfs|length > 0 %}
+{% for vrf in sonic_vrfs %}
+  Vrf{{ vrf.id }}:
+    vni: "{{ vrf.vni }}"
 {% endfor %}
 {% endif %}
 {% if sonic_lldp_hello_timer is defined %}
