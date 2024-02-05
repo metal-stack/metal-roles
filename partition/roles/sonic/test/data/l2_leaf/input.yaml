@@ -148,9 +148,16 @@ sonic_vteps:
   vni: 46
 
   
-sonic_vrfs:
-- id: 46
-  vni: 46
+# sonic_vrfs: # TODO figure out if we need this or whether we can create the routing info for l2 leaves with sonic_interconnects
+# - id: 46
+#   vni: 46
+
+sonic_interconnects:
+  croit:
+    vrf: Vrf46
+    vni: 46
+    announcements:
+    - redistribute connected
 
 sonic_mclag:
   peerlink:
