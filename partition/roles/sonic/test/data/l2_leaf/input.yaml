@@ -160,11 +160,11 @@ sonic_interconnects:
     - redistribute connected
 
 sonic_mclag:
-  peerlink:
-    peer_ip: 192.168.255.2
-    interface: PortChannel01
-    source_ip: 192.168.255.1
-    keepalive_vlan: "1000"
+  system_mac: 00:11:22:33:44:55
+  peer_ip: "192.168.255.2"
+  peer_link: PortChannel01
+  source_ip: "192.168.255.1"
+  keepalive_vlan: "1000"
   member_port_channels:
   - "11"
   - "12"

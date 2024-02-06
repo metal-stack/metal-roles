@@ -26,9 +26,10 @@ LOOPBACK_INTERFACE:
 
 MCLAG_DOMAIN:
   "1":
-    peer_ip: 192.168.255.2
-    peer_link: PortChannel01
-    source_ip: 192.168.255.1
+    mclag_system_id: "00:11:22:33:44:55"
+    peer_ip: "192.168.255.2"
+    peer_link: "PortChannel01"
+    source_ip: "192.168.255.1"
 
 MCLAG_INTERFACE:
   "1|PortChannel11":

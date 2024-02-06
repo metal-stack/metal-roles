@@ -31,9 +31,10 @@ LOOPBACK_INTERFACE:
 {% if sonic_mclag is defined and sonic_mclag|length > 0 %}
 MCLAG_DOMAIN:
   "1":
-    peer_ip: {{ sonic_mclag.peerlink.peer_ip }}
-    peer_link: {{ sonic_mclag.peerlink.interface }}
-    source_ip: {{ sonic_mclag.peerlink.source_ip }}
+    mclag_system_id: "{{ sonic_mclag.system_mac }}"
+    peer_ip: "{{ sonic_mclag.peer_ip }}"
+    peer_link: "{{ sonic_mclag.peer_link }}"
+    source_ip: "{{ sonic_mclag.source_ip }}"
 
 MCLAG_INTERFACE:
 {% for po in sonic_mclag.member_port_channels %}
@@ -42,7 +43,7 @@ MCLAG_INTERFACE:
 {% endfor %}
 
 MCLAG_UNIQUE_IP:
-  "Vlan{{ sonic_mclag.peerlink.keepalive_vlan }}":
+  "Vlan{{ sonic_mclag.keepalive_vlan }}":
     unique_ip: "enable"
 
 {% endif %}
