@@ -180,15 +180,19 @@ sonic_portchannels:
   - Ethernet112
   - Ethernet116
 - number: "11"
+  fallback: true
   members:
   - Ethernet4
 - number: "12"
+  fallback: "true"
   members:
   - Ethernet5
 - number: "21"
+  fallback: "True"
   members:
   - Ethernet0
 - number: "22"
+  fallback: false
   members:
   - Ethernet1
 - number: "23"

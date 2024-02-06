@@ -117,6 +117,9 @@ PORTCHANNEL:
 {% for po in sonic_portchannels %}
   Portchannel{{ po.number }}:
     admin_status: "up"
+{% if po.fallback is defined %}
+    fallback: "{{ po.fallback|bool }}"
+{% endif %}
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"

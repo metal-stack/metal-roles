@@ -200,6 +200,7 @@ PORTCHANNEL:
     mtu: "9216"
   Portchannel11:
     admin_status: "up"
+    fallback: "True"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -207,6 +208,7 @@ PORTCHANNEL:
     mtu: "9000"
   Portchannel12:
     admin_status: "up"
+    fallback: "True"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -214,6 +216,7 @@ PORTCHANNEL:
     mtu: "9000"
   Portchannel21:
     admin_status: "up"
+    fallback: "True"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -221,6 +224,7 @@ PORTCHANNEL:
     mtu: "9000"
   Portchannel22:
     admin_status: "up"
+    fallback: "False"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
