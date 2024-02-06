@@ -247,6 +247,16 @@ PORTCHANNEL_MEMBER:
   PortChannel22|Ethernet1:  {}
   PortChannel23|Ethernet2:  {}
 
+SAG:
+  "Vlan1001|IPv4":
+    gwip:
+    - "10.3.2.1/27"
+
+SAG_GLOBAL:
+  IP:
+    IPv4: "enable"
+    gwmac: "00:11:22:33:44:66"
+
 VLAN:
   Vlan1000:
     vlanid: 1000

@@ -199,6 +199,12 @@ sonic_portchannels:
   members:
   - Ethernet2
 
+sonic_sag:
+  mac: 00:11:22:33:44:66
+  vlans:
+  - id: 1001
+    ip: 10.3.2.1/27
+
 sonic_frr_l2vpn_evpn: true
 sonic_frr_route_map:
  name: LOOPBACKS
