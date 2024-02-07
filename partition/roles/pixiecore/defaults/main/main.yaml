@@ -1,7 +1,7 @@
 ---
 pixiecore_dns_servers: []
 pixiecore_partition_id: "{{ metal_partition_id }}"
-
+pixiecore_debug: false
 pixiecore_api_port: 4242
 
 pixiecore_grpc_address: "{{ metal_partition_metal_api_grpc_address }}"
@@ -12,3 +12,10 @@ pixiecore_grpc_client_key: "{{ metal_partition_metal_api_grpc_client_key }}"
 
 pixiecore_metal_api_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
 pixiecore_metal_api_hmac_view_key: "{{ metal_partition_metal_api_hmac_view_key }}"
+
+pixiecore_metal_hammer_logging_endpoint:
+pixiecore_metal_hammer_logging_user:
+pixiecore_metal_hammer_logging_password:
+pixiecore_metal_hammer_logging_cert:
+pixiecore_metal_hammer_logging_key:
+pixiecore_metal_hammer_logging_tls_insecure: false
