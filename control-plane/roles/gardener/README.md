@@ -15,6 +15,8 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_apiserver_replicas                            |           | Specifies the amount of gardener-apiserver replicas                                                                           |
 | gardener_apiserver_vpa                                 |           | Enables the VPA for the gardener-apiserver                                                                                    |
 | gardener_apiserver_resources                           |           | Set custom resource definitions for the gardener-apiserver                                                                    |
+| gardener_apiserver_feature_gates                       |           | Sets features gates for the gardener-apiserver                                                                                |
+| gardener_apiserver_shoot_kubeconfig_max_expiration     |           | Max shoot kubeconfig expiration for the gardener-apiserver                                                                    |
 | gardener_controller_manager_resources                  |           | Set custom resource definitions for the gardener-controller-manager                                                           |
 | gardener_scheduler_resources                           |           | Set custom resource definitions for the gardener-scheduler                                                                    |
 | gardener_dns_domain                                    |           | Specifies the DNS domain on which the Gardener will manage DNS entries                                                        |

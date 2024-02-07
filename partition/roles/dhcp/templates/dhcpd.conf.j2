@@ -4,7 +4,18 @@ authoritative;
 default-lease-time {{ dhcp_default_lease_time }};
 max-lease-time {{ dhcp_max_lease_time }};
 
+{% if dhcp_use_host_decl_names %}
+use-host-decl-names on;
+{% endif -%}
+
 log-facility local7;
+
+{% for option in dhcp_global_options %}
+option {{ option }};
+{% endfor %}
+{% for deny in dhcp_global_deny_list %}
+  deny {{ deny }};
+{% endfor -%}
 
 {% for subnet in dhcp_subnets %}
 {% if subnet.comment | default("") %}
@@ -21,14 +32,7 @@ subnet {{ subnet.network }} netmask {{ subnet.netmask }} {
   deny {{ deny }};
 {% endfor %}
 }
-{% endfor %}
-
-{% for option in dhcp_global_options %}
-option {{ option }};
-{% endfor %}
-{% for deny in dhcp_global_deny_list %}
-  deny {{ deny }};
-{% endfor %}
+{% endfor -%}
 
 {% if dhcp_static_hosts is defined %}
 include "/etc/dhcp/dhcpd.hosts";

@@ -4,6 +4,8 @@ gardener_component_image_vector_overwrite:
 
 gardener_apiserver_replicas: 1
 gardener_apiserver_vpa: true
+gardener_apiserver_feature_gates: {}
+gardener_apiserver_shoot_kubeconfig_max_expiration: "8760h"
 
 gardener_apiserver_resources:
   requests:

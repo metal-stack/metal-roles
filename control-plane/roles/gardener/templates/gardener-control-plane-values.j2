@@ -22,8 +22,7 @@ global:
     replicaCount: {{ gardener_apiserver_replicas }}
     clusterIdentity: gardener-soil-{{ metal_control_plane_stage_name }}
     resources: {{ gardener_apiserver_resources | to_json }}
-    featureGates:
-      SeedChange: true
+    featureGates: {{ gardener_apiserver_feature_gates | to_json }}
     image:
       repository: {{ gardener_apiserver_image_name }}
       tag: {{ gardener_apiserver_image_tag }}
@@ -47,6 +46,9 @@ global:
         {{ gardener_api_server_key | indent(width=8, first=false) }}
     kubeconfig: |
       {{ gardener_kube_api_server_kubeconfig | indent(width=6, first=false) }}
+
+    shootAdminKubeconfigMaxExpiration: {{ gardener_apiserver_shoot_kubeconfig_max_expiration }}
+    shootViewerKubeconfigMaxExpiration: {{ gardener_apiserver_shoot_kubeconfig_max_expiration }}
 
     vpa: {{ gardener_apiserver_vpa }}
     # this requires the Hvpa resource in autoscaling.k8s.io/v1alpha1, which is not in the GKE cluster... how to actually use this?
