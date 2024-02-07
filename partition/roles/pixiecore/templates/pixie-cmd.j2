@@ -1,5 +1,7 @@
 - "grpc"
+{% if pixiecore_debug | lower %}
 - "--debug"
+{% endif %}
 - "--dhcp-no-bind"
 - "--port={{ pixiecore_api_port }}"
 - "--pixie-api-url={{ pixiecore_api_host }}:{{ pixiecore_api_port }}/certs"

@@ -8,6 +8,7 @@ Deploys pixiecore in a systemd-managed Docker container.
 |---------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------|
 | pixiecore_image_name                        | yes       | Image version of the pixiecore                                                                                |
 | pixiecore_image_tag                         | yes       | Image tag of the pixiecore                                                                                    |
+| pixiecore_debug                             |           | Enable debugging                                                                                              |
 | pixiecore_api_host                          | yes       | The host on which the metal-hammer can reach the pixiecore to ask for metal-api communication credentials.    |
 | pixiecore_api_port                          |           | The port on which the pixiecore api is listening                                                              |
 | pixiecore_dns_servers                       |           | Alternative DNS servers to be used by the pixiecore (can be used for configuring kernel and boot image cache) |
