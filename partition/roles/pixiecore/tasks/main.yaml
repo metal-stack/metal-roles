@@ -36,6 +36,22 @@
     label: "{{ item.filename }}"
   register: grpc_certs
 
+- name: copy logging certificates
+  copy:
+    dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
+    mode: 0640
+    content: "{{ item.content }}"
+  no_log: yes
+  loop:
+    - filename: logging-client.crt
+      content: "{{  pixiecore_metal-hammer-logging-cert }}"
+    - filename: logging-client.key
+      content: "{{  pixiecore_metal-hammer-logging-key }}"
+  loop_control:
+    label: "{{ item.filename }}"
+  register: loki_certs
+  when: "{{ pixiecore_metal-hammer-logging-endpoint }}"
+
 - name: deploy pixiecore
   include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -70,4 +86,7 @@
       - "--metal-api-url={{ pixiecore_metal_api_url }}"
       - "--metal-api-view-hmac={{ pixiecore_metal_api_hmac_view_key }}"
       - "--partition={{ pixiecore_partition_id }}"
+TODO: add parametes conditionally
+
+
     systemd_external_config_changed: "{{ grpc_certs is changed }}"
