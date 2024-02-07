@@ -1,0 +1,28 @@
+- "grpc"
+- "--debug"
+- "--dhcp-no-bind"
+- "--port={{ pixiecore_api_port }}"
+- "--pixie-api-url={{ pixiecore_api_host }}:{{ pixiecore_api_port }}/certs"
+- "--grpc-address={{ pixiecore_grpc_address }}"
+- "--grpc-ca-cert=/certs/grpc/ca.pem"
+- "--grpc-cert=/certs/grpc/client.pem"
+- "--grpc-key=/certs/grpc/client-key.pem"
+- "--metal-api-url={{ pixiecore_metal_api_url }}"
+- "--metal-api-view-hmac={{ pixiecore_metal_api_hmac_view_key }}"
+- "--partition={{ pixiecore_partition_id }}"
+{% if pixiecore_metal_hammer_logging_endpoint %}
+- "--metal-hammer-logging-endpoint={{ pixiecore_metal_hammer_logging_endpoint }}"
+{% endif %}
+{% if pixiecore_metal_hammer_logging_user %}
+- "--metal-hammer-logging-user={{ pixiecore_metal_hammer_logging_user }}"
+{% endif %}
+{% if pixiecore_metal_hammer_logging_password %}
+- "--metal-hammer-logging-password={{ pixiecore_metal_hammer_logging_password }}"
+{% endif %}
+{% if pixiecore_metal_hammer_logging_cert and pixiecore_metal_hammer_logging_key %}
+- "--metal-hammer-logging-cert=/certs/grpc/logging-client.crt"
+- "--metal-hammer-logging-key=/certs/grpc/logging-client.key"
+{% endif %}
+{% if pixiecore_metal_hammer_logging_tls_insecure %}
+- "--metal-hammer-logging-tls-insecure={{ pixiecore_metal_hammer_logging_tls_insecure | lower }}"
+{% endif %}

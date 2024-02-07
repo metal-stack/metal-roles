@@ -19,10 +19,9 @@ Deploys pixiecore in a systemd-managed Docker container.
 | pixiecore_grpc_address                      |           | The address of metal-api grpc endpoint in the form (ip or hostname:port)                                      |
 | pixiecore_metal_api_url                     |           | The URL where to reach metal-api                                                                              |
 | pixiecore_metal_api_hmac_view_key           |           | A view hmac to authenticate against metal-api (given to the metal-hammer)                                     |
-| pixiecore_metal-hammer-logging-endpoint     |           | set metal-hammer to send logs to this endpoint                                                                |
-| pixiecore_metal-hammer-logging-user         |           | set metal-hammer to send logs to a remote endpoint and authenticate with this user for basic auth             |
-| pixiecore_metal-hammer-logging-password     |           | set metal-hammer to send logs to a remote endpoint and authenticate with this password for basic auth         |
-| pixiecore_metal-hammer-logging-cert         |           | set metal-hammer to send logs to a remote endpoint and authenticate with this cert for mtls auth              |
-| pixiecore_metal-hammer-logging-key          |           | set metal-hammer to send logs to a remote endpoint and authenticate with this key for mtls auth               |
-| pixiecore_metal-hammer-logging-tls-insecure |           | set metal-hammer to send logs to a remote endpoint without verifying the tls certificate for mtls auth        |
-| pixiecore_metal-hammer-logging-type         |           | set metal-hammer to send logs to a remote endpoint with this logging type, only loki at the moment            |
+| pixiecore_metal_hammer_logging_endpoint     |           | set metal-hammer to send logs to this endpoint                                                                |
+| pixiecore_metal_hammer_logging_user         |           | set metal-hammer to send logs to a remote endpoint and authenticate with this user for basic auth             |
+| pixiecore_metal_hammer_logging_password     |           | set metal-hammer to send logs to a remote endpoint and authenticate with this password for basic auth         |
+| pixiecore_metal_hammer_logging_cert         |           | set metal-hammer to send logs to a remote endpoint and authenticate with this cert for mtls auth              |
+| pixiecore_metal_hammer_logging_key          |           | set metal-hammer to send logs to a remote endpoint and authenticate with this key for mtls auth               |
+| pixiecore_metal_hammer_logging_tls_insecure |           | set metal-hammer to send logs to a remote endpoint without verifying the tls certificate for mtls auth        |

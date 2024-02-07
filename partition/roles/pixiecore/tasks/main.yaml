@@ -44,13 +44,15 @@
   no_log: yes
   loop:
     - filename: logging-client.crt
-      content: "{{  pixiecore_metal-hammer-logging-cert }}"
+      content: "{{ pixiecore_metal_hammer_logging_cert }}"
     - filename: logging-client.key
-      content: "{{  pixiecore_metal-hammer-logging-key }}"
+      content: "{{ pixiecore_metal_hammer_logging_key }}"
   loop_control:
     label: "{{ item.filename }}"
   register: loki_certs
-  when: "{{ pixiecore_metal-hammer-logging-endpoint }}"
+  when:
+    - pixiecore_metal_hammer_logging_cert
+    - pixiecore_metal_hammer_logging_key
 
 - name: deploy pixiecore
   include_role:
@@ -73,20 +75,5 @@
     systemd_docker_network: host
     # With the flag --dhcp-no-bind Pixiecore does not bind to the DHCP port and only listens for Pixie-Requests
     # This enables to use an existing DHCP server
-    systemd_docker_command:
-      - "grpc"
-      - "--debug"
-      - "--dhcp-no-bind"
-      - "--port={{ pixiecore_api_port }}"
-      - "--pixie-api-url={{ pixiecore_api_host }}:{{ pixiecore_api_port }}/certs"
-      - "--grpc-address={{ pixiecore_grpc_address }}"
-      - "--grpc-ca-cert=/certs/grpc/ca.pem"
-      - "--grpc-cert=/certs/grpc/client.pem"
-      - "--grpc-key=/certs/grpc/client-key.pem"
-      - "--metal-api-url={{ pixiecore_metal_api_url }}"
-      - "--metal-api-view-hmac={{ pixiecore_metal_api_hmac_view_key }}"
-      - "--partition={{ pixiecore_partition_id }}"
-TODO: add parametes conditionally
-
-
+    systemd_docker_command: "{{ lookup('template', 'pixie-cmd.j2') | from_yaml }}"
     systemd_external_config_changed: "{{ grpc_certs is changed }}"
