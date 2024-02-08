@@ -191,14 +191,14 @@ PORT:
     fec: "none"
 
 PORTCHANNEL:
-  Portchannel01:
+  PortChannel01:
     admin_status: "up"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
     mix_speed: "false"
     mtu: "9216"
-  Portchannel11:
+  PortChannel11:
     admin_status: "up"
     fallback: "True"
     fast_rate: "false"
@@ -206,7 +206,7 @@ PORTCHANNEL:
     min_links: "1"
     mix_speed: "false"
     mtu: "9000"
-  Portchannel12:
+  PortChannel12:
     admin_status: "up"
     fallback: "True"
     fast_rate: "false"
@@ -214,7 +214,7 @@ PORTCHANNEL:
     min_links: "1"
     mix_speed: "false"
     mtu: "9000"
-  Portchannel21:
+  PortChannel21:
     admin_status: "up"
     fallback: "True"
     fast_rate: "false"
@@ -222,7 +222,7 @@ PORTCHANNEL:
     min_links: "1"
     mix_speed: "false"
     mtu: "9000"
-  Portchannel22:
+  PortChannel22:
     admin_status: "up"
     fallback: "False"
     fast_rate: "false"
@@ -230,7 +230,7 @@ PORTCHANNEL:
     min_links: "1"
     mix_speed: "false"
     mtu: "9000"
-  Portchannel23:
+  PortChannel23:
     admin_status: "up"
     fast_rate: "false"
     lacp_key: "auto"
