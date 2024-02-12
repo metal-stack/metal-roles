@@ -3,8 +3,18 @@ images:
   apiserver: {{ gardener_virtual_api_server_image_name }}:{{ gardener_virtual_api_server_image_tag }}
   controllermanager: {{ gardener_virtual_controller_manager_image_name }}:{{ gardener_virtual_controller_manager_image_tag }}
 
+podLabels:
+  networking.gardener.cloud/to-dns: allowed
+  networking.resources.gardener.cloud/to-etcd-{{ metal_control_plane_stage_name }}-etcd-client-tcp-2379: allowed
+  networking.resources.gardener.cloud/to-gardener-admission-controller-tcp-2719: allowed
+  networking.resources.gardener.cloud/to-gardener-apiserver-tcp-8443: allowed
+
 apiServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
+
+service:
+  annotations:
+    networking.resources.gardener.cloud/namespace-selectors: '[{"matchLabels":{"kubernetes.io/metadata.name":"ingress-nginx"}}]'
 
 tls:
   kubeAPIServer:
