@@ -5,7 +5,6 @@ images:
 
 apiServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
-  serviceName: garden-kube-apiserver
 
 tls:
   kubeAPIServer:
@@ -44,8 +43,6 @@ tls:
       {{ gardener_admin_client_key | indent(width=6, first=false) }}
   serviceAccountKey: |
     {{ gardener_service_account_client_key | indent(width=4, first=false) }}
-  identity:
-    ca:
 
 etcd:
   main:
@@ -53,5 +50,3 @@ etcd:
   secretNames:
     ca: etcd-{{ metal_control_plane_stage_name }}-etcd-ca
     client: etcd-{{ metal_control_plane_stage_name }}-etcd-tls
-
-networkPolicies: false

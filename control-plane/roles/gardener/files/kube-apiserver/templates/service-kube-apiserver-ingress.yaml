@@ -29,7 +29,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Values.serviceName }}
+            name: {{ .Values.service.name }}
             port:
               number: 443
   tls:
