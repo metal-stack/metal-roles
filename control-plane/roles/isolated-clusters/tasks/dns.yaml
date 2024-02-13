@@ -1,0 +1,27 @@
+- name: Get kubeconfig
+  copy:
+    src: "files/kubeconfigs/kubeconfig.{{ cluster }}"
+    dest: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Create namespace {{ isolated_clusters_dns_namespace }}
+  k8s:
+    definition:
+      api_version: v1
+      kind: Namespace
+      metadata:
+        name: "{{ isolated_clusters_dns_namespace }}"
+        labels:
+          group: "{{ isolated_clusters_group_label }}"
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Deploy DNS service
+  k8s:
+    definition: "{{ lookup('template', 'dns/' + item) }}"
+    namespace: "{{ isolated_clusters_dns_namespace }}"
+  loop:
+    - coredns-configmap.yaml
+    - coredns-deployment.yaml
+    - coredns-service.yaml
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"

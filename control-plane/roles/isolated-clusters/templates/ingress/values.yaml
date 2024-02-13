@@ -1,0 +1,26 @@
+controller:
+  image:
+    chroot: {{ isolated_clusters_ingress_ingress_controller_chroot | default(false) }}
+
+  replicaCount: {{ isolated_clusters_ingress_ingress_controller_replicas | default(1) }}
+  extraArgs:
+    enable-ssl-passthrough: ""
+
+  service:
+    enabled: true
+    type: LoadBalancer
+    loadBalancerIP: {{ isolated_clusters_ingress_ingress_controller_load_balancer_ip }}
+    externalTrafficPolicy: "Local"
+    loadBalancerSourceRanges: {{ isolated_clusters_ingress_ingress_controller_load_balancer_source_ranges }}
+
+  config:
+    allow-snippet-annotations: true
+
+  metrics:
+    enabled: true
+
+tcp:
+  53: "{{ isolated_clusters_dns_namespace }}/coredns:53"
+udp:
+  53: "{{ isolated_clusters_dns_namespace }}/coredns:53"
+  123: "{{ isolated_clusters_ntp_namespace }}/chrony:123"

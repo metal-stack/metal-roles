@@ -1,0 +1,28 @@
+- name: Get kubeconfig
+  copy:
+    src: "files/kubeconfigs/kubeconfig.{{ cluster }}"
+    dest: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Create namespace {{ isolated_clusters_registry_namespace }}
+  k8s:
+    definition:
+      api_version: v1
+      kind: Namespace
+      metadata:
+        name: "{{ isolated_clusters_registry_namespace }}"
+        labels:
+          group: "{{ isolated_clusters_group_label }}"
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Deploy registry
+  k8s:
+    definition: "{{ lookup('template', 'registry/' + item) }}"
+    namespace: "{{ isolated_clusters_registry_namespace }}"
+  loop:
+    - registry-sts.yaml
+    - registry-service.yaml
+    - registry-ingress.yaml
+    - registry-oci-mirror.yaml
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"

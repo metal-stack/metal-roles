@@ -1,0 +1,27 @@
+- name: Get kubeconfig
+  copy:
+    src: "files/kubeconfigs/kubeconfig.{{ cluster }}"
+    dest: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Create namespace {{ isolated_clusters_ntp_namespace }}
+  k8s:
+    definition:
+      api_version: v1
+      kind: Namespace
+      metadata:
+        name: "{{ isolated_clusters_ntp_namespace }}"
+        labels:
+          group: "{{ isolated_clusters_group_label }}"
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Deploy NTP service
+  k8s:
+    definition: "{{ lookup('template', 'ntp/' + item) }}"
+    namespace: "{{ isolated_clusters_ntp_namespace }}"
+  loop:
+    - chrony-configmap.yaml
+    - chrony-deployment.yaml
+    - chrony-service.yaml
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"

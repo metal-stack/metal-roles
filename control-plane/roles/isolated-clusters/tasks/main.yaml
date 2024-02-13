@@ -1,0 +1,24 @@
+---
+- name: Loop over clusters for nginx-ingress
+  include_tasks: ingress.yaml
+  loop: "{{ isolated_clusters_partition_services_cluster }}"
+  loop_control:
+    loop_var: cluster
+
+- name: Loop over clusters for ntp
+  include_tasks: ntp.yaml
+  loop: "{{ isolated_clusters_partition_services_cluster }}"
+  loop_control:
+    loop_var: cluster
+
+- name: Loop over clusters for dns
+  include_tasks: dns.yaml
+  loop: "{{ isolated_clusters_partition_services_cluster }}"
+  loop_control:
+    loop_var: cluster
+
+- name: Loop over clusters for registry deployment
+  include_tasks: registry.yaml
+  loop: "{{ isolated_clusters_partition_services_cluster }}"
+  loop_control:
+    loop_var: cluster

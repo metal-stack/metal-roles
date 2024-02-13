@@ -1,0 +1,82 @@
+- name: Get kubeconfig
+  copy:
+    src: "files/kubeconfigs/kubeconfig.{{ cluster }}"
+    dest: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Create namespace for ingress-controller
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ isolated_clusters_ingress_ingress_controller_namespace }}"
+    apply: yes
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Deploy ingress-controller
+  include_role:
+    name: ansible-common/roles/helm-chart
+    apply:
+      environment:
+        KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+  vars:
+    helm_repo: https://kubernetes.github.io/ingress-nginx
+    helm_chart_version: "{{ isolated_clusters_ingress_ingress_controller_chart_version }}"
+    helm_chart: ingress-nginx
+    helm_release_name: ingress-nginx
+    helm_target_namespace: "{{ isolated_clusters_ingress_ingress_controller_namespace }}"
+    helm_value_file_template: ingress/values.yaml
+
+- name: Deploy Cert Manager for Registry
+  include_role:
+    name: cert-manager
+    apply:
+      tags: cert-manager
+      environment:
+        KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+      vars:
+        cert_manager_version: "{{ isolated_clusters_ingress_cert_manager_version }}"
+        cert_manager_cluster_issuer: "{{ isolated_clusters_ingress_cert_manager_cluster_issuer }}"
+        cert_manager_lets_encrypt_expiry_mail_address: "{{ isolated_clusters_ingress_cert_manager_lets_encrypt_expiry_mail_address }}"
+        cert_manager_psp_enabled: false
+
+- name: Create dns secret for gcp cluster issuer
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: clouddns-serviceaccount-secret
+        namespace: cert-manager
+      type: Opaque
+      data: "{{ gardener_dns_credentials }}"
+    apply: yes
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+
+- name: Deploy letsencrypt-gcp-dns cluster issuer
+  k8s:
+    definition:
+      apiVersion: cert-manager.io/v1
+      kind: ClusterIssuer
+      metadata:
+        name: letsencrypt-gcp-dns
+      spec:
+        acme:
+          server: https://acme-v02.api.letsencrypt.org/directory
+          email: "{{ isolated_clusters_cert_manager_lets_encrypt_expiry_mail_address }}"
+          privateKeySecretRef:
+            name: letsencrypt-gcp-dns
+          solvers:
+          - dns01:
+              cloudDNS:
+                project: "{{ gcp_project }}"
+                serviceAccountSecretRef:
+                  name: clouddns-serviceaccount-secret
+                  key: serviceaccount.json
+            selector:
+              dnsNames:
+              - "{{ isolated_clusters_registry_ingress_fqdn }}"
+  environment:
+    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
