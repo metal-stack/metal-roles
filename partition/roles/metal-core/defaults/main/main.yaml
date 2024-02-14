@@ -1,4 +1,5 @@
 ---
+metal_core_log_driver: journald
 metal_core_log_level: warn
 metal_core_hmac_key: change-me
 metal_core_rack_id:
