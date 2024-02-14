@@ -1,17 +1,17 @@
 controller:
   image:
-    chroot: {{ isolated_clusters_ingress_ingress_controller_chroot | default(false) }}
+    chroot: {{ isolated_clusters_ingress_controller_chroot | default(false) }}
 
-  replicaCount: {{ isolated_clusters_ingress_ingress_controller_replicas | default(1) }}
+  replicaCount: {{ isolated_clusters_ingress_controller_replicas | default(1) }}
   extraArgs:
     enable-ssl-passthrough: ""
 
   service:
     enabled: true
     type: LoadBalancer
-    loadBalancerIP: {{ isolated_clusters_ingress_ingress_controller_load_balancer_ip }}
+    loadBalancerIP: {{ isolated_clusters_ingress_controller_load_balancer_ip }}
     externalTrafficPolicy: "Local"
-    loadBalancerSourceRanges: {{ isolated_clusters_ingress_ingress_controller_load_balancer_source_ranges }}
+    loadBalancerSourceRanges: {{ isolated_clusters_ingress_controller_load_balancer_source_ranges }}
 
   config:
     allow-snippet-annotations: true
