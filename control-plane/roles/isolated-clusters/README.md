@@ -1,4 +1,4 @@
-# partition services
+# isolated clusters
 
 Contains roles for deploying addtional services for the partition.
 
