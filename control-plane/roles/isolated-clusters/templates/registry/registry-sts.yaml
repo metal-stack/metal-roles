@@ -7,19 +7,27 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: registry
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
   name: registry
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: registry
+      app.kubernetes.io/name: registry
+      app.kubernetes.io/component: registry
   serviceName: registry
   template:
     metadata:
       labels:
-        app: registry
-        name: registry
+        app.kubernetes.io/name: registry
+        app.kubernetes.io/component: registry
+        app.kubernetes.io/part-of: isolated-clusters
+        app.kubernetes.io/managed-by: ansible
+        app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     spec:
       containers:
       - name: registry

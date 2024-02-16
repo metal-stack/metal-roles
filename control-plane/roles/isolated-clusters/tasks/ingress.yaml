@@ -10,6 +10,8 @@
       kind: Namespace
       metadata:
         name: "{{ isolated_clusters_ingress_controller_namespace }}"
+        labels:
+          app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     apply: yes
   environment:
     K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"

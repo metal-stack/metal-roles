@@ -12,7 +12,11 @@ metadata:
           return 403;
         }
   labels:
-    app: registry
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
   name: registry
 spec:
   ingressClassName: nginx

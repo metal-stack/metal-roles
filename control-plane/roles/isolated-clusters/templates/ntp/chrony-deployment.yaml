@@ -2,19 +2,30 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: chrony
+  labels:
+    app.kubernetes.io/name: chrony
+    app.kubernetes.io/component: ntp
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: chrony
+    app.kubernetes.io/name: chrony
+    app.kubernetes.io/component: ntp
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
   name: chrony
 spec:
   progressDeadlineSeconds: 600
   replicas: 2
   selector:
     matchLabels:
-      k8s-app: chrony
+      app.kubernetes.io/name: chrony
+      app.kubernetes.io/component: ntp
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -23,7 +34,11 @@ spec:
   template:
     metadata:
       labels:
-        k8s-app: chrony
+        app.kubernetes.io/name: chrony
+        app.kubernetes.io/component: ntp
+        app.kubernetes.io/part-of: isolated-clusters
+        app.kubernetes.io/managed-by: ansible
+        app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     spec:
       containers:
       - name: chrony

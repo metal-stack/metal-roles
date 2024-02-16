@@ -2,11 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: registry
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
   name: registry
 spec:
   selector:
-    app: registry
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
   ports:
   - name: registry
     port: 5000

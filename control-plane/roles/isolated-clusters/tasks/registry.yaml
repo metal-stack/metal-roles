@@ -11,7 +11,7 @@
       metadata:
         name: "{{ isolated_clusters_registry_namespace }}"
         labels:
-          group: "{{ isolated_clusters_group_label }}"
+          app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
   environment:
     K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
 
