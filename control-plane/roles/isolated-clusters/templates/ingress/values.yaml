@@ -3,8 +3,7 @@ controller:
     chroot: {{ isolated_clusters_ingress_controller_chroot | default(false) }}
 
   replicaCount: {{ isolated_clusters_ingress_controller_replicas | default(1) }}
-  extraArgs:
-    enable-ssl-passthrough: ""
+  extraArgs: {}
 
   service:
     enabled: true
