@@ -58,5 +58,7 @@ spec:
       resources:
         requests:
           storage: {{ isolated_clusters_registry_storage_size }}
-      storageClassName: partition-gold
+      {% if isolated_clusters_registry_storage_class_name %}
+      storageClassName: {{ isolated_clusters_registry_storage_class_name }}
+      {% endif %}
       volumeMode: Filesystem

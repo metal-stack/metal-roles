@@ -16,6 +16,7 @@ isolated_clusters_registry_namespace: registry
 isolated_clusters_registry_version:
 isolated_clusters_registry_oci_mirror_version:
 isolated_clusters_registry_storage_size: "100Gi"
+isolated_clusters_registry_storage_class_name:
 isolated_clusters_registry_ingress_fqdn:
 isolated_clusters_registry_ingress_annotations: {}
 

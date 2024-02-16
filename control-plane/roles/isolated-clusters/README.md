@@ -22,5 +22,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | isolated_clusters_registry_version                               | yes       | The version of the registry used for isolated clusters.                                          |
 | isolated_clusters_registry_oci_mirror_version                    | yes       | The OCI mirror version of the registry used for isolated clusters.                               |
 | isolated_clusters_registry_storage_size                          |           | The storage size of the registry used for isolated clusters.                                     |
+| isolated_clusters_registry_storage_class_name                    |           | The storageClassName of the registry used for isolated clusters.                                 |
 | isolated_clusters_registry_ingress_fqdn                          | yes       | The full name of the registry used for isolated clusters.                                        |
+| isolated_clusters_registry_ingress_annotations                   |           | Optional ingress annotations for the registry used for isolated clusters.                        |
 | isolated_clusters_partition_services_cluster                     |           | The cluster to deploy the services like ntp, dns, ingress, cert manager and the OCI registry to. |
