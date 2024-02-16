@@ -10,9 +10,6 @@ isolated_clusters_dns_namespace: dns-service
 isolated_clusters_ingress_controller_namespace: ingress
 isolated_clusters_ingress_controller_chart_version:
 isolated_clusters_ingress_controller_chroot: true
-isolated_clusters_ingress_cert_manager_version:
-isolated_clusters_ingress_cert_manager_cluster_issuer: letsencrypt-gcp-dns
-isolated_clusters_ingress_cert_manager_lets_encrypt_expiry_mail_address:
 isolated_clusters_ingress_controller_load_balancer_source_ranges:
 
 isolated_clusters_registry_namespace: registry
@@ -20,6 +17,7 @@ isolated_clusters_registry_version:
 isolated_clusters_registry_oci_mirror_version:
 isolated_clusters_registry_storage_size: "100Gi"
 isolated_clusters_registry_ingress_fqdn:
+isolated_clusters_registry_ingress_annotations: {}
 
 isolated_clusters_group_label: "{{ metal_control_plane_stage_name }}"
 isolated_clusters_partition_services_cluster: []
