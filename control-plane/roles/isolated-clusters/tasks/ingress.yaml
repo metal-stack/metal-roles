@@ -13,18 +13,20 @@
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     apply: yes
-    kubeconfig: {{ virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
+    kubeconfig: {{ isolated_clusters_virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
 
-- name: Deploy ingress-controller
-  include_role:
-    name: ansible-common/roles/helm-chart
-    apply:
-      environment:
-        KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}" # TODO
-  vars:
-    helm_repo: https://kubernetes.github.io/ingress-nginx
-    helm_chart_version: "{{ isolated_clusters_ingress_controller_chart_version }}"
-    helm_chart: ingress-nginx
-    helm_release_name: ingress-nginx
-    helm_target_namespace: "{{ isolated_clusters_ingress_controller_namespace }}"
-    helm_value_file_template: ingress/values.yaml
+- name: Add ingress nginx repository
+  kubernetes.core.helm_repository:
+    repo_url: ""
+    repo_name: "ingress-nginx"
+    kubeconfig: {{ isolated_clusters_virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
+
+- name: Deploy ingress nginx controller
+  kubernetes.core.helm:
+    name: ingress-nginx
+    chart_ref: https://kubernetes.github.io/ingress-nginx
+    chart_version: "{{ isolated_clusters_ingress_controller_chart_version }}"
+    namespace: "{{ isolated_clusters_ingress_controller_namespace }}"
+    values_files:
+      - ingress/values.yaml
+    kubeconfig: {{ isolated_clusters_virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
