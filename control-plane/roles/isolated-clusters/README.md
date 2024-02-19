@@ -18,6 +18,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | isolated_clusters_ingress_controller_namespace                   |           | The namespace where the ingress controller should be deployed to.                                |
 | isolated_clusters_ingress_controller_chart_version               | yes       | The version of the ingress controller chart.                                                     |
 | isolated_clusters_ingress_controller_chroot                      |           | Indicates if the image should have a changed root.                                               |
+| isolated_clusters_ingress_controller_load_balancer_ip            | yes       | The load balancer source ip of the ingress controller.                                           |
 | isolated_clusters_ingress_controller_load_balancer_source_ranges | yes       | The load balancer source ranges of the ingress controller.                                       |
 | isolated_clusters_registry_namespace                             |           | The namespace for the registry used for isolated clusters.                                       |
 | isolated_clusters_registry_oci_mirror_image_name                 |           | The OCI mirror image of the registry used for isolated clusters.                                 |

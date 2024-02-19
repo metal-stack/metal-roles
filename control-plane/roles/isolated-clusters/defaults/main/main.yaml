@@ -1,5 +1,6 @@
 ---
-gardener_seeds_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') | b64decode }}"
+isolated_clusters_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') | b64decode }}"
+
 isolated_clusters_ntp_image_name: ghcr.io/mwennrich/chrony
 isolated_clusters_ntp_image_tag:
 isolated_clusters_ntp_namespace: ntp-service
@@ -11,6 +12,7 @@ isolated_clusters_dns_namespace: dns-service
 isolated_clusters_ingress_controller_namespace: ingress
 isolated_clusters_ingress_controller_chart_version:
 isolated_clusters_ingress_controller_chroot: true
+isolated_clusters_ingress_controller_load_balancer_ip:
 isolated_clusters_ingress_controller_load_balancer_source_ranges:
 
 isolated_clusters_group_label: "{{ metal_control_plane_stage_name }}"
