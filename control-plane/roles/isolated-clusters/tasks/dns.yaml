@@ -1,8 +1,3 @@
-- name: Get kubeconfig
-  copy:
-    src: "files/kubeconfigs/kubeconfig.{{ cluster }}"
-    dest: "/tmp/kubeconfig.{{ cluster }}"
-
 - name: Create namespace {{ isolated_clusters_dns_namespace }}
   k8s:
     definition:

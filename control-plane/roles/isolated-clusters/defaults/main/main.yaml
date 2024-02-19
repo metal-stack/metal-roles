@@ -17,6 +17,8 @@ isolated_clusters_ingress_controller_load_balancer_source_ranges:
 
 isolated_clusters_group_label: "{{ metal_control_plane_stage_name }}"
 isolated_clusters_partition_services_cluster: []
+  # - namespace: garden-xxx-yyy
+  #   shoot: somename
 
 isolated_clusters_registry_namespace: registry
 isolated_clusters_registry_oci_mirror_image_name: "ghcr.io/metal-stack/oci-mirror"
