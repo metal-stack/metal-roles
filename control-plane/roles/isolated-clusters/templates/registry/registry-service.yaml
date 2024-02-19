@@ -13,6 +13,6 @@ spec:
     app.kubernetes.io/name: registry
     app.kubernetes.io/component: registry
   ports:
-  - name: registry
+  - name: http
     port: 5000
-    targetPort: registry
+    targetPort: http

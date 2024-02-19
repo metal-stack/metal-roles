@@ -17,11 +17,8 @@
 
 - name: Deploy DNS service
   k8s:
-    definition: "{{ lookup('template', 'dns/' + item) }}"
-    namespace: "{{ isolated_clusters_dns_namespace }}"
-  loop:
-    - coredns-configmap.yaml
-    - coredns-deployment.yaml
-    - coredns-service.yaml
-  environment:
-    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+    kubeconfig: "/tmp/kubeconfig.{{ cluster }}"
+    template:
+    - path: dns/coredns-configmap.yaml
+    - path: dns/coredns-deployment.yaml
+    - path: dns/coredns-service.yaml
