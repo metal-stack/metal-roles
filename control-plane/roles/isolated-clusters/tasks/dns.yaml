@@ -12,8 +12,7 @@
         name: "{{ isolated_clusters_dns_namespace }}"
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-  environment:
-    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+    kubeconfig: {{ virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
 
 - name: Deploy DNS service
   k8s:

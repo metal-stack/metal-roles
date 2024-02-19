@@ -13,15 +13,14 @@
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     apply: yes
-  environment:
-    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+    kubeconfig: {{ virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
 
 - name: Deploy ingress-controller
   include_role:
     name: ansible-common/roles/helm-chart
     apply:
       environment:
-        KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+        KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}" # TODO
   vars:
     helm_repo: https://kubernetes.github.io/ingress-nginx
     helm_chart_version: "{{ isolated_clusters_ingress_controller_chart_version }}"

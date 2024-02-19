@@ -12,17 +12,15 @@
         name: "{{ isolated_clusters_registry_namespace }}"
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-  environment:
-    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
+    kubeconfig: {{ virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
 
 - name: Deploy registry
   k8s:
     definition: "{{ lookup('template', 'registry/' + item) }}"
     namespace: "{{ isolated_clusters_registry_namespace }}"
+    kubeconfig: {{ virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
   loop:
     - registry-sts.yaml
     - registry-service.yaml
     - registry-ingress.yaml
     - registry-oci-mirror.yaml
-  environment:
-    K8S_AUTH_KUBECONFIG: "/tmp/kubeconfig.{{ cluster }}"
