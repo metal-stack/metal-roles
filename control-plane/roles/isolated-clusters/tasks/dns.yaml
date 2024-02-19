@@ -7,11 +7,10 @@
         name: "{{ isolated_clusters_dns_namespace }}"
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-    kubeconfig: {{ isolated_clusters_virtual_garden_kubeconfig | shoot_admin_kubeconfig(shoot.project_namespace, shoot_name) }}
-
+    kubeconfig: "{{ isolated_clusters_partition_services_cluster_kubeconfig }}"
 - name: Deploy DNS service
   k8s:
-    kubeconfig: "/tmp/kubeconfig.{{ cluster }}"
+    kubeconfig: "{{ isolated_clusters_partition_services_cluster_kubeconfig }}"
     template:
     - path: dns/coredns-configmap.yaml
     - path: dns/coredns-deployment.yaml
