@@ -46,7 +46,7 @@ spec:
         - /etc/coredns/Corefile
         env:
         image: "{{ isolated_clusters_dns_image_name }}:{{ isolated_clusters_dns_image_tag }}"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
         livenessProbe:
           failureThreshold: 5
           httpGet:

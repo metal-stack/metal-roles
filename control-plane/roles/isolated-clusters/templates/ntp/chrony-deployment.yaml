@@ -47,6 +47,7 @@ spec:
           name: ntp
           protocol: UDP
         image: "{{ isolated_clusters_ntp_image_name }}:{{ isolated_clusters_ntp_image_tag }}"
+        imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
         livenessProbe:
           exec:
             command:

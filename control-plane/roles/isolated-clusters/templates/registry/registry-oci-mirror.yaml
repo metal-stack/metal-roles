@@ -29,6 +29,7 @@ spec:
             - mirror
             - --mirror-config=/config/oci-mirror.yaml
             image: "{{ isolated_clusters_registry_oci_mirror_image_name }}:{{ isolated_clusters_registry_oci_mirror_image_tag }}"
+            imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
             name: oci-mirror
             volumeMounts:
             - mountPath: /config

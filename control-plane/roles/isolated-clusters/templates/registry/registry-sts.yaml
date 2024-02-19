@@ -27,7 +27,7 @@ spec:
       containers:
       - name: registry
         image: "{{ isolated_clusters_registry_image_name }}:{{ isolated_clusters_registry_image_tag }}"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
         env:
         - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
           value: "/var/lib/registry"
