@@ -2,13 +2,13 @@
 # called with loop_var cluster
 
 - name: Install nginx-ingress
-  include_tasks: ingress.yaml
+  import_tasks: ingress.yaml
 
 - name: Install ntp
-  include_tasks: ntp.yaml
+  import_tasks: ntp.yaml
 
 - name: Install dns
-  include_tasks: dns.yaml
+  import_tasks: dns.yaml
 
 - name: Install deployment
-  include_tasks: registry.yaml
+  import_tasks: registry.yaml

@@ -9,12 +9,14 @@
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
+    apply: yes
 
 - name: Deploy DNS service
   k8s:
     definition: "{{ lookup('template', 'dns/' + item) }}"
     namespace: "{{ isolated_clusters_dns_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
+    apply: yes
   loop:
     - coredns-configmap.yaml
     - coredns-deployment.yaml

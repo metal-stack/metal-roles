@@ -114,7 +114,7 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchExpressions:
-                - key: k8s-app
+                - key: app.kubernetes.io/name
                   operator: In
                   values:
                   - coredns
