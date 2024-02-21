@@ -20,6 +20,8 @@ isolated_clusters_partition_services_cluster: []
   # - name: somename
   #   kubeconfig: "{{ isolated_clusters_virtual_garden_kubeconfig | shoot_admin_kubeconfig('garden-...', 'somename') | from_yaml }}"
 
+isolated_clusters_registry_image_name: docker.io/registry
+isolated_clusters_registry_image_tag:
 isolated_clusters_registry_namespace: registry
 isolated_clusters_registry_oci_mirror_image_name: "ghcr.io/metal-stack/oci-mirror"
 isolated_clusters_registry_oci_mirror_image_tag:

@@ -1,4 +1,18 @@
 ---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - isolated_clusters_ntp_image_tag is not none
+      - isolated_clusters_dns_image_tag is not none
+      - isolated_clusters_registry_image_tag is not none
+      - isolated_clusters_registry_oci_mirror_image_tag is not none
+      - isolated_clusters_ingress_controller_chart_version is not none
+      - isolated_clusters_ingress_controller_load_balancer_ip is not none
+      - isolated_clusters_ingress_controller_load_balancer_source_ranges is not none
+      - isolated_clusters_registry_ingress_fqdn is not none
+
 - name: Loop over clusters to install services
   include_tasks: services.yaml
   loop: "{{ isolated_clusters_partition_services_cluster }}"
