@@ -12,8 +12,10 @@
 
 - name: Deploy DNS service
   k8s:
-    template:
-    - path: dns/coredns-configmap.yaml
-    - path: dns/coredns-deployment.yaml
-    - path: dns/coredns-service.yaml
+    definition: "{{ lookup('template', 'dns/' + item) }}"
+    namespace: "{{ dns_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
+  loop:
+    - coredns-configmap.yaml
+    - coredns-deployment.yaml
+    - coredns-service.yaml
