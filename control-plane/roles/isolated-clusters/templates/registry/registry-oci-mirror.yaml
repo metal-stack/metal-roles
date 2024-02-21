@@ -56,4 +56,4 @@ metadata:
     app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
 stringData:
   oci-mirror.yaml: |
-      {{ isolated_clusters_registry_oci_mirror_config | indent(width=6, first=false) }}
+      {{ isolated_clusters_registry_oci_mirror_config | to_nice_yaml | indent(width=6, first=false) }}
