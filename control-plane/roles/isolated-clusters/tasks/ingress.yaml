@@ -14,7 +14,8 @@
 - name: Deploy ingress nginx controller
   kubernetes.core.helm:
     name: ingress-nginx
-    chart_ref: https://kubernetes.github.io/ingress-nginx
+    chart_repo_url: https://kubernetes.github.io/ingress-nginx
+    chart_ref: ingress-nginx
     chart_version: "{{ isolated_clusters_ingress_controller_chart_version }}"
     namespace: "{{ isolated_clusters_ingress_controller_namespace }}"
     values_files:
