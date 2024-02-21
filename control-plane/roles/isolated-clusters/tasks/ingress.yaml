@@ -18,6 +18,5 @@
     chart_ref: ingress-nginx
     chart_version: "{{ isolated_clusters_ingress_controller_chart_version }}"
     namespace: "{{ isolated_clusters_ingress_controller_namespace }}"
-    values_files:
-      - ingress/values.yaml
+    values: "{{ lookup('template', 'ingress/values.yaml') | from_yaml }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
