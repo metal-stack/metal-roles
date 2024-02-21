@@ -51,7 +51,7 @@ spec:
       resources:
         requests:
           storage: {{ isolated_clusters_registry_storage_size }}
-      {% if isolated_clusters_registry_storage_class_name %}
+{% if isolated_clusters_registry_storage_class_name %}
       storageClassName: {{ isolated_clusters_registry_storage_class_name }}
-      {% endif %}
+{% endif %}
       volumeMode: Filesystem
