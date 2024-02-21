@@ -1,3 +1,4 @@
+---
 - name: Create namespace {{ isolated_clusters_dns_namespace }}
   k8s:
     definition:
@@ -7,11 +8,12 @@
         name: "{{ isolated_clusters_dns_namespace }}"
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-    kubeconfig: "{{ isolated_clusters_partition_services_cluster_kubeconfig }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
+
 - name: Deploy DNS service
   k8s:
-    kubeconfig: "{{ isolated_clusters_partition_services_cluster_kubeconfig }}"
     template:
     - path: dns/coredns-configmap.yaml
     - path: dns/coredns-deployment.yaml
     - path: dns/coredns-service.yaml
+    kubeconfig: "{{ cluster.kubeconfig }}"

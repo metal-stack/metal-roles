@@ -1,6 +1,15 @@
 # isolated clusters
 
-Contains roles for deploying addtional services for the partition.
+Contains roles for deploying addtional services for the isolated cluster feature as described [here](https://docs.metal-stack.io/stable/overview/isolated-kubernetes/).
+
+It contains the services:
+
+- oci-mirror
+- Registry
+- DNS
+- NTP
+
+A cert-manager is expected to be deployed by the user beforehand.
 
 ## Variables
 

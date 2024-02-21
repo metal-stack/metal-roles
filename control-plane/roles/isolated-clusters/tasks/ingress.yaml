@@ -1,3 +1,4 @@
+---
 - name: Create namespace for ingress-controller
   k8s:
     definition:
@@ -8,7 +9,7 @@
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     apply: yes
-    kubeconfig: "{{ isolated_clusters_partition_services_cluster_kubeconfig }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
 
 - name: Deploy ingress nginx controller
   kubernetes.core.helm:
@@ -18,5 +19,4 @@
     namespace: "{{ isolated_clusters_ingress_controller_namespace }}"
     values_files:
       - ingress/values.yaml
-    kubeconfig: "{{ isolated_clusters_partition_services_cluster_kubeconfig }}"
-    
+    kubeconfig: "{{ cluster.kubeconfig }}"

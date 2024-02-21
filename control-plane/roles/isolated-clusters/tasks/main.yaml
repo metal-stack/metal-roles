@@ -4,3 +4,4 @@
   loop: "{{ isolated_clusters_partition_services_cluster }}"
   loop_control:
     loop_var: cluster
+    label: "{{ cluster.name }}"

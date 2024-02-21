@@ -1,10 +1,6 @@
 ---
 # called with loop_var cluster
 
-- name: Prepare kubeconfig fact
-  set_fact:
-    isolated_clusters_partition_services_cluster_kubeconfig: "{{ lookup('file', isolated_clusters_virtual_garden_kubeconfig) | shoot_admin_kubeconfig(cluster.namespace, cluster.shoot) | from_yaml }}"
-
 - name: Install nginx-ingress
   include_tasks: ingress.yaml
 
