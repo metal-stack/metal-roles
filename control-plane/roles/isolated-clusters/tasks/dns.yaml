@@ -13,7 +13,7 @@
 - name: Deploy DNS service
   k8s:
     definition: "{{ lookup('template', 'dns/' + item) }}"
-    namespace: "{{ dns_namespace }}"
+    namespace: "{{ isolated_clusters_dns_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
   loop:
     - coredns-configmap.yaml
