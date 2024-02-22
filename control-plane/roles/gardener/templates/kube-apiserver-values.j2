@@ -13,10 +13,6 @@ apiServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
   serviceName: garden-kube-apiserver
 
-service:
-  annotations:
-    networking.resources.gardener.cloud/namespace-selectors: '[{"matchLabels":{"kubernetes.io/metadata.name":"ingress-nginx"}}]'
-
 tls:
   kubeAPIServer:
     ca:
