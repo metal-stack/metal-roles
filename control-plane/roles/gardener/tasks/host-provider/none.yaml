@@ -1,0 +1,35 @@
+---
+- name: Check mandatory variables for metal_control_plane_host_provider = "none" are set
+  assert:
+    fail_msg: "not all mandatory variables for given, check role documentation"
+    quiet: yes
+    that:
+- name: Fail when mandatory for  are missing
+    - metal_control_plane_api_server
+    - metal_control_plane_node_cidr
+    - metal_control_plane_pod_cidr
+    - metal_control_plane_service_cidr
+
+- name: Set node cidr
+  set_fact:
+    _gardener_soil_node_cidr: "{{ metal_control_plane_node_cidr }}"
+
+- name: Set pod cidr
+  set_fact:
+    _gardener_soil_pod_cidr: "{{ metal_control_plane_pod_cidr }}"
+
+- name: Set service cidr
+  set_fact:
+    _gardener_soil_service_cidr: "{{ metal_control_plane_service_cidr }}"
+
+- name: Deploy seed-api-server config map
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: seed-api-server
+        namespace: garden
+      data:
+        url: "{{ metal_control_plane_api_server }}"
+    apply: yes
