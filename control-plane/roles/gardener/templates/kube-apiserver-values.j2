@@ -5,6 +5,7 @@ images:
 
 kubeAPIServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
+  ingress: {{ gardener_virtual_api_server_ingress }}
 {%- if gardener_virtual_api_server_public_ip %}
   loadBalancerIP: {{ gardener_virtual_api_server_public_ip }}
 {%- endif %}

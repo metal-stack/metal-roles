@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{- if .Values.kubeAPIServer.ingress }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -35,3 +36,4 @@ spec:
   tls:
   - hosts:
     - {{ .Values.kubeAPIServer.hostname }}
+{{- end }}
