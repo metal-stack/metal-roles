@@ -3,8 +3,11 @@ images:
   apiserver: {{ gardener_virtual_api_server_image_name }}:{{ gardener_virtual_api_server_image_tag }}
   controllermanager: {{ gardener_virtual_controller_manager_image_name }}:{{ gardener_virtual_controller_manager_image_tag }}
 
-apiServer:
+kubeAPIServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
+{%- if gardener_virtual_api_server_public_ip %}
+  loadBalancerIP: {{ gardener_virtual_api_server_public_ip }}
+{%- endif %}
   serviceName: garden-kube-apiserver
 
 tls:

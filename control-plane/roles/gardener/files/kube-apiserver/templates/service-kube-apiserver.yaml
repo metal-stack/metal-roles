@@ -15,13 +15,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.serviceName }}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.kubeAPIServer.hostname }}
+  name: {{ .Values.kubeAPIServer.serviceName }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: garden
     component: kube-apiserver
 spec:
-  type: ClusterIP
+  {{- if .Values.kubeAPIServer.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.kubeAPIServer.loadBalancerIP }}
+  {{- endif }}
+  type: LoadBalancer
   selector:
     app: garden
     component: kube-apiserver
