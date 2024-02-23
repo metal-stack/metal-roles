@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{- if .Values.kubeAPIServer.ingress }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -22,16 +23,17 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ .Values.apiServer.hostname }}
+  - host: {{ .Values.kubeAPIServer.hostname }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: {{ .Values.service.name }}
+            name: {{ .Values.kubeAPIServer.serviceName }}
             port:
               number: 443
   tls:
   - hosts:
-    - {{ .Values.apiServer.hostname }}
+    - {{ .Values.kubeAPIServer.hostname }}
+{{- end }}

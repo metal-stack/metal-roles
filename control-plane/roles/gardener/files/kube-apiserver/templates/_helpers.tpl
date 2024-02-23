@@ -45,7 +45,7 @@ contexts:
 clusters:
 - cluster:
     certificate-authority-data: {{ .Values.tls.kubeAPIServer.ca.crt | b64enc }}
-    server: https://{{ .Values.apiServer.hostname }}:443
+    server: https://{{ .Values.kubeAPIServer.hostname }}:443
   name: garden
 users:
 - name: admin

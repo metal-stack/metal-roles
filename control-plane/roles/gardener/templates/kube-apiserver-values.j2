@@ -3,18 +3,19 @@ images:
   apiserver: {{ gardener_virtual_api_server_image_name }}:{{ gardener_virtual_api_server_image_tag }}
   controllermanager: {{ gardener_virtual_controller_manager_image_name }}:{{ gardener_virtual_controller_manager_image_tag }}
 
+kubeAPIServer:
+  hostname: {{ gardener_virtual_api_server_public_dns }}
+  ingress: {{ gardener_virtual_api_server_ingress }}
+{%- if gardener_virtual_api_server_public_ip %}
+  loadBalancerIP: {{ gardener_virtual_api_server_public_ip }}
+{%- endif %}
+  serviceName: garden-kube-apiserver
+
 podLabels:
   networking.gardener.cloud/to-dns: allowed
   networking.resources.gardener.cloud/to-etcd-{{ metal_control_plane_stage_name }}-etcd-client-tcp-2379: allowed
   networking.resources.gardener.cloud/to-gardener-admission-controller-tcp-2719: allowed
   networking.resources.gardener.cloud/to-gardener-apiserver-tcp-8443: allowed
-
-apiServer:
-  hostname: {{ gardener_virtual_api_server_public_dns }}
-
-service:
-  annotations:
-    networking.resources.gardener.cloud/namespace-selectors: '[{"matchLabels":{"kubernetes.io/metadata.name":"ingress-nginx"}}]'
 
 tls:
   kubeAPIServer:
@@ -53,6 +54,8 @@ tls:
       {{ gardener_admin_client_key | indent(width=6, first=false) }}
   serviceAccountKey: |
     {{ gardener_service_account_client_key | indent(width=4, first=false) }}
+  identity:
+    ca:
 
 etcd:
   main:

@@ -47,7 +47,9 @@ The deployment chart is taken from [garden-setup](https://github.com/gardener/ga
 | Name                                                 | Mandatory | Description                                                                                                            |
 | ---------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
 | gardener_virtual_api_server_svc_cluster_ip_add       |           | An integer to "guess" a free IP for the service that allows the soil to internally communicate with the virtual garden |
+| gardener_virtual_api_server_ingress                  |           | Create Ingress to expose virutal garden API server. Default is true.                                                   |
 | gardener_virtual_api_server_public_dns               |           | The DNS domain to reach the virtual garden API server on                                                               |
+| gardener_virtual_api_server_public_ip                |           | The static public IP to reach the virtual garden API server                                                            |
 | gardener_virtual_api_server_healthcheck_static_token | yes       | A static token for healthchecking the virtual garden API server                                                        |
 | gardener_etcd_backup_schedule                        |           | The backup schedule for the virtual garden ETCD                                                                        |
 | gardener_etcd_snapshot_period                        |           | The snapshot period for the virtual garden ETCD                                                                        |
