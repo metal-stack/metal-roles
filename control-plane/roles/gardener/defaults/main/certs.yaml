@@ -35,3 +35,5 @@ gardener_etcd_cert:
 gardener_etcd_cert_key:
 gardener_etcd_client_cert:
 gardener_etcd_client_key:
+
+gardener_virtual_api_oidc_ca:
