@@ -21,12 +21,8 @@ replicas: 3
 
 kubeAPIServer:
   hostname: 127.0.0.1
-
-podLabels: {}
-
-service:
-  annotations: {}
-  name: garden-kube-apiserver
+  loadBalancerIP:
+  serviceName: garden-kube-apiserver
 
 podLabels: {}
 
