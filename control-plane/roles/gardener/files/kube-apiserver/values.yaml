@@ -22,7 +22,7 @@ replicas: 3
 kubeAPIServer:
   hostname: 127.0.0.1
   loadBalancerIP:
-  serviceName: garden-kube-apiserver
+  serviceName: virtual-garden-kube-apiserver
 
 podLabels: {}
 
