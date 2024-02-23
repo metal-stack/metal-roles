@@ -38,6 +38,18 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                     |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral) |
 
+### Metal Control Plane Network
+
+These variables are related to determine the network configuration of the metal control plane.
+
+| Name                              | Mandatory | Description                                                                                                                  |
+|-----------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------|
+| metal_control_plane_host_provider | yes       | The underlaying host provider of the metal control plane. Use "none" on unsupported host providers                           |
+| metal_control_plane_api_server    |           | The URL to the Kubernetes API of the Gardener Soil, only used for metal_control_plane_host_provider equal to "none"          |
+| metal_control_plane_node_cidr     |           | The node CIDR of the Gardener Soil, only used for metal_control_plane_host_provider equal to "none"                          |
+| metal_control_plane_pod_cidr      |           | The pod CIDR of the Gardener Soil, only used for metal_control_plane_host_provider equal to "none"                           |
+| metal_control_plane_service_cidr  |           | The serivce CIDR to the Kubernetes API of the Gardener Soil, only used for metal_control_plane_host_provider equal to "none" |
+
 ### Virtual Garden
 
 These variables are related to spinning up the virtual garden, a dedicated kube-apiserver, kube-controller-manager and ETCD to host all Gardener resources. This one will have no worker nodes and cannot schedule pods.

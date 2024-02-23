@@ -76,22 +76,22 @@
   fail:
     msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
   when:
-    - metal_control_plane_host_provider not in ["gcp", "local", "metal"]
+    - metal_control_plane_host_provider not in ["gcp", "metal", "none"]
 
-- name: GCP control plane service cidr
-  import_tasks: control-plane-networks/gcp.yaml
+- name: Determine network of GCP hosted control plane
+  import_tasks: host-provider/gcp.yaml
   when:
     - metal_control_plane_host_provider == "gcp"
 
-- name: control plane service cidr
-  import_tasks: control-plane-networks/local.yaml
-  when:
-    - metal_control_plane_host_provider == "local"
-
-- name: metal control plane service cidr
-  import_tasks: control-plane-networks/metal.yaml
+- name: Determine network of metal hosted control plane
+  import_tasks: host-provider/metal.yaml
   when:
     - metal_control_plane_host_provider == "metal"
+
+- name: Configure network of non-hosted control plane
+  import_tasks: host-provider/none.yaml
+  when:
+    - metal_control_plane_host_provider == "none"
 
 - name: Add egress network policies
   kubernetes.core.k8s:
