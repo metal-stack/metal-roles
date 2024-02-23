@@ -23,6 +23,14 @@ apiServer:
   hostname: 127.0.0.1
   serviceName: garden-kube-apiserver
 
+oidc:
+  issuerURL:
+  clientID:
+  usernameClaim:
+  usernamePrefix:
+  groupsClaim:
+  groupsPrefix:
+
 tls:
   kubeAPIServer:
     ca:
