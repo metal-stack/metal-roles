@@ -4,7 +4,6 @@
     fail_msg: "not all mandatory variables for given, check role documentation"
     quiet: yes
     that:
-- name: Fail when mandatory for  are missing
     - metal_control_plane_api_server
     - metal_control_plane_node_cidr
     - metal_control_plane_pod_cidr
