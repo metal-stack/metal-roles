@@ -13,7 +13,7 @@
 # limitations under the License.
 
 namespace: xxx
-serviceName: garden-kube-apiserver
+serviceName: virtual-garden-kube-apiserver
 images:
   apiserver: k8s.gcr.io/kube-apiserver:v1.19.16
   controllermanager: k8s.gcr.io/kube-controller-manager:v1.19.16
@@ -21,7 +21,7 @@ images:
 replicas: 3
 apiServer:
   hostname: 127.0.0.1
-  serviceName: garden-kube-apiserver
+  serviceName: virtual-garden-kube-apiserver
 
 podLabels: {}
 
