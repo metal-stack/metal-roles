@@ -11,9 +11,13 @@ oidc:
   issuerURL: {{ gardener_virtual_api_oidc_issuer_url }}
   clientID: {{ gardener_virtual_api_oidc_client_id }}
   usernameClaim: {{ gardener_virtual_api_oidc_username_claim }}
-  usernamePrefix: {{ gardener_virtual_api_oidc_username_prefix }}
+{%- if gardener_virtual_api_oidc_username_prefix %}
+  usernamePrefix: "{{ gardener_virtual_api_oidc_username_prefix }}"
+{%- endif %}
   groupsClaim: {{ gardener_virtual_api_oidc_groups_claim }}
-  groupsPrefix: {{ gardener_virtual_api_oidc_groups_prefix }}
+{%- if gardener_virtual_api_oidc_groups_prefix %}
+  groupsPrefix: "{{ gardener_virtual_api_oidc_groups_prefix }}"
+{%- endif %}
 
 tls:
   kubeAPIServer:
