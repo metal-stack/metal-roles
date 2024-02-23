@@ -51,3 +51,5 @@ tls:
     crt: client-certificate
     key: client-key
   serviceAccountKey: key
+  oidc:
+    ca:
