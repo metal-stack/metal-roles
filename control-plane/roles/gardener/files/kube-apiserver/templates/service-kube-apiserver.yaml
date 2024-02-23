@@ -25,7 +25,7 @@ metadata:
 spec:
   {{- if .Values.kubeAPIServer.loadBalancerIP }}
   loadBalancerIP: {{ .Values.kubeAPIServer.loadBalancerIP }}
-  {{- endif }}
+  {{- end }}
   type: LoadBalancer
   selector:
     app: garden
