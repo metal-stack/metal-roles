@@ -97,10 +97,10 @@ spec:
         {{- end}}
         {{- if .Values.oidc.groupsClaim }}
         - --oidc-groups-claim={{ .Values.oidc.groupsClaim }}
-        {{- end }}}
+        {{- end }}
         {{- if .Values.oidc.groupsPrefix }}
         - --oidc-groups-prefix={{ .Values.oidc.groupsPrefix | quote }}
-        {{- end}}
+        {{- end }}
         {{- if .Values.tls.oidc.ca }}
         - --oidc-ca-file=/srv/kubernetes/oidc-ca/ca.crt
         {{- end }}
