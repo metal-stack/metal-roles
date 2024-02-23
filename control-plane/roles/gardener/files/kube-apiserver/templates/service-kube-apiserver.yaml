@@ -17,10 +17,9 @@ kind: Service
 metadata:
   annotations:
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.kubeAPIServer.hostname }}
+    networking.resources.gardener.cloud/from-world-to-ports: '[{"protocol":"TCP","port":443}]'
   name: {{ .Values.kubeAPIServer.serviceName }}
   namespace: {{ .Release.Namespace }}
-  annotations:
-    networking.resources.gardener.cloud/from-world-to-ports: '[{"protocol":"TCP","port":443}]'
   labels:
     app: garden
     component: kube-apiserver
