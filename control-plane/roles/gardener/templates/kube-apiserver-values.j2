@@ -20,11 +20,15 @@ podLabels:
 oidc:
   issuerURL: {{ gardener_virtual_api_oidc_issuer_url }}
   clientID: {{ gardener_virtual_api_oidc_client_id }}
+{% if gardener_virtual_api_oidc_username_claim %}
   usernameClaim: {{ gardener_virtual_api_oidc_username_claim }}
+{% endif %}
 {% if gardener_virtual_api_oidc_username_prefix %}
   usernamePrefix: "{{ gardener_virtual_api_oidc_username_prefix }}"
 {% endif %}
+{% if gardener_virtual_api_oidc_groups_claim %}
   groupsClaim: {{ gardener_virtual_api_oidc_groups_claim }}
+{% endif %}
 {% if gardener_virtual_api_oidc_groups_prefix %}
   groupsPrefix: "{{ gardener_virtual_api_oidc_groups_prefix }}"
 {% endif %}
