@@ -62,9 +62,11 @@ tls:
       {{ gardener_admin_client_key | indent(width=6, first=false) }}
   serviceAccountKey: |
     {{ gardener_service_account_client_key | indent(width=4, first=false) }}
+{%- if gardener_virtual_api_oidc_ca %}
   oidc:
     ca: |
       {{ gardener_virtual_api_oidc_ca | indent(width=6, first=false) }}
+{%- endif %}
 
 etcd:
   main:
