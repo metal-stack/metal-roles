@@ -28,6 +28,8 @@ service:
   annotations: {}
   name: garden-kube-apiserver
 
+podLabels: {}
+
 tls:
   kubeAPIServer:
     ca:
