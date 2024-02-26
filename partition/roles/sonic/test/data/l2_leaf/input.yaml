@@ -158,6 +158,10 @@ sonic_interconnects:
     vni: 46
     announcements:
     - redistribute connected
+  xconnect:
+    peer_group: XCONNECT
+    neighbor_ip: "192.168.255.2"
+    remote_as: "4200000000"
 
 sonic_mclag:
   system_mac: 00:11:22:33:44:55
