@@ -102,6 +102,14 @@ router bgp {{ sonic_asn }}
 {% endif %}
   neighbor FABRIC activate
   neighbor FABRIC allowas-in 2
+{% for k, i in sonic_interconnects.items() %}
+{% if i.vrf is not defined %}
+{% if i.peer_group is defined and i.evpn_peer|default(false) %}
+  neighbor {{ i.peer_group }} activate
+  neighbor {{ i.peer_group }} allowas-in 2
+{% endif %}
+{% endif %}
+{% endfor %}
  exit-address-family
 {% endif %}
 {% for k, i in sonic_interconnects.items() %}

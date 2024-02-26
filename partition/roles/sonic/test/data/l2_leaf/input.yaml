@@ -160,6 +160,7 @@ sonic_interconnects:
     - redistribute connected
   xconnect:
     peer_group: XCONNECT
+    evpn_peer: true
     neighbor_ip: "192.168.255.2"
     remote_as: "4200000000"
 
