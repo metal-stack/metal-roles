@@ -19,7 +19,7 @@ controller:
     enabled: true
 
 tcp:
-  53: "{{ isolated_clusters_dns_namespace }}/coredns:53"
+  53: "{{ isolated_clusters_dns_namespace }}/coredns-tcp:53"
 udp:
-  53: "{{ isolated_clusters_dns_namespace }}/coredns:53"
+  53: "{{ isolated_clusters_dns_namespace }}/coredns-udp:53"
   123: "{{ isolated_clusters_ntp_namespace }}/chrony:123"
