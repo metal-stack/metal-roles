@@ -54,6 +54,6 @@ metadata:
     app.kubernetes.io/part-of: isolated-clusters
     app.kubernetes.io/managed-by: ansible
     app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-stringData:
+data:
   oci-mirror.yaml: |
       {{ isolated_clusters_registry_oci_mirror_config | to_nice_yaml | indent(width=6, first=false) }}
