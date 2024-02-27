@@ -44,17 +44,24 @@ These variables are related to spinning up the virtual garden, a dedicated kube-
 
 The deployment chart is taken from [garden-setup](https://github.com/gardener/garden-setup) and follows the same deployment approach.
 
-| Name                                                 | Mandatory | Description                                                                                                            |
-| ---------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| gardener_virtual_api_server_svc_cluster_ip_add       |           | An integer to "guess" a free IP for the service that allows the soil to internally communicate with the virtual garden |
-| gardener_virtual_api_server_ingress                  |           | Create Ingress to expose virutal garden API server. Default is true.                                                   |
-| gardener_virtual_api_server_public_dns               |           | The DNS domain to reach the virtual garden API server on                                                               |
-| gardener_virtual_api_server_public_ip                |           | The static public IP to reach the virtual garden API server                                                            |
-| gardener_virtual_api_server_healthcheck_static_token | yes       | A static token for healthchecking the virtual garden API server                                                        |
-| gardener_etcd_backup_schedule                        |           | The backup schedule for the virtual garden ETCD                                                                        |
-| gardener_etcd_snapshot_period                        |           | The snapshot period for the virtual garden ETCD                                                                        |
-| gardener_etcd_garbage_collection_period              |           | The priod for garbage collection for the virtual garden ETCD                                                           |
-| gardener_etcd_resources                              |           | Set custom resource definitions for the virtual garden ETCD                                                            |
+| Name                                                 | Mandatory | Description                                                                                                                                                                                  |
+| ---------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| gardener_virtual_api_server_svc_cluster_ip_add       |           | An integer to "guess" a free IP for the service that allows the soil to internally communicate with the virtual garden                                                                       |
+| gardener_virtual_api_server_ingress                  |           | Create Ingress to expose virutal garden API server. Default is true.                                                                                                                         |
+| gardener_virtual_api_server_public_dns               |           | The DNS domain to reach the virtual garden API server on                                                                                                                                     |
+| gardener_virtual_api_server_public_ip                |           | The static public IP to reach the virtual garden API server                                                                                                                                  |
+| gardener_virtual_api_server_healthcheck_static_token | yes       | A static token for healthchecking the virtual garden API server                                                                                                                              |
+| gardener_etcd_backup_schedule                        |           | The backup schedule for the virtual garden ETCD                                                                                                                                              |
+| gardener_etcd_snapshot_period                        |           | The snapshot period for the virtual garden ETCD                                                                                                                                              |
+| gardener_etcd_garbage_collection_period              |           | The priod for garbage collection for the virtual garden ETCD                                                                                                                                 |
+| gardener_etcd_resources                              |           | Set custom resource definitions for the virtual garden ETCD                                                                                                                                  |
+| gardener_virtual_api_oidc_issuer_url                 |           | [Corresponds to the `--oidc-issuer-url` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-issuer-url) in the Kubernetes API server configuration.           |
+| gardener_virtual_api_oidc_client_id                  |           | [Corresponds to the `--oidc-client-id` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-client-id) in the Kubernetes API server configuration.             |
+| gardener_virtual_api_oidc_username_claim             |           | [Corresponds to the `--oidc-username-claim` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-username-claim) in the Kubernetes API server configuration.   |
+| gardener_virtual_api_oidc_username_prefix            |           | [Corresponds to the `--oidc-username-prefix` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-username-prefix) in the Kubernetes API server configuration. |
+| gardener_virtual_api_oidc_groups_claim               |           | [Corresponds to the `--oidc-groups-claim` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-groups-claim) in the Kubernetes API server configuration.       |
+| gardener_virtual_api_oidc_groups_prefix              |           | [Corresponds to the `--oidc-groups-prefix` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-groups-prefix) in the Kubernetes API server configuration.     |
+| gardener_virtual_api_oidc_ca                         |           | [Corresponds to the `--oidc-ca-file` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-groups-prefix) in the Kubernetes API server configuration.           |
 
 ### Cloud Profile
 

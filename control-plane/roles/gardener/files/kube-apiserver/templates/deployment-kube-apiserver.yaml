@@ -37,8 +37,8 @@ spec:
         checksum/secret-kube-apiserver-static-token: {{ include (print $.Template.BasePath "/secret-kube-apiserver-static-token.yaml") . | sha256sum }}
         checksum/secret-kube-controller-manager-client: {{ include (print $.Template.BasePath "/secret-kube-controller-manager-tls.yaml") . | sha256sum }}
         checksum/secret-service-account-key: {{ include (print $.Template.BasePath "/secret-service-account-key.yaml") . | sha256sum }}
-        {{- if .Values.tls.identity.ca }}
-        checksum/secret-identity-ca: {{ include (print $.Template.BasePath "/secret-identity-ca.yaml") . | sha256sum }}
+        {{- if .Values.tls.oidc.ca }}
+        checksum/secret-oidc-ca: {{ include (print $.Template.BasePath "/secret-oidc-ca.yaml") . | sha256sum }}
         {{- end }}
       labels:
         app: garden
@@ -93,6 +93,25 @@ spec:
         - --etcd-keyfile=/srv/kubernetes/etcd/client/tls.key
         - --etcd-servers={{ .Values.etcd.main.endpoints }}
         - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
+{{ if and .Values.oidc.issuerURL .Values.oidc.clientID }}
+        - --oidc-issuer-url={{ .Values.oidc.issuerURL }}
+        - --oidc-client-id={{ .Values.oidc.clientID }}
+        {{- if .Values.oidc.usernameClaim }}
+        - --oidc-username-claim={{ .Values.oidc.usernameClaim }}
+        {{- end }}
+        {{- if .Values.oidc.usernamePrefix }}
+        - --oidc-username-prefix={{ .Values.oidc.usernamePrefix | quote }}
+        {{- end}}
+        {{- if .Values.oidc.groupsClaim }}
+        - --oidc-groups-claim={{ .Values.oidc.groupsClaim }}
+        {{- end }}
+        {{- if .Values.oidc.groupsPrefix }}
+        - --oidc-groups-prefix={{ .Values.oidc.groupsPrefix | quote }}
+        {{- end }}
+        {{- if .Values.tls.oidc.ca }}
+        - --oidc-ca-file=/srv/kubernetes/oidc-ca/ca.crt
+        {{- end }}
+{{ end }}
         - --profiling=false
         - --proxy-client-cert-file=/srv/kubernetes/aggregator/tls.crt
         - --proxy-client-key-file=/srv/kubernetes/aggregator/tls.key
@@ -165,9 +184,9 @@ spec:
           mountPath: /srv/kubernetes/token
         - name: kube-aggregator
           mountPath: /srv/kubernetes/aggregator
-        {{- if .Values.tls.identity.ca }}
-        - name: ca-identity
-          mountPath: /srv/kubernetes/identity-ca
+        {{- if .Values.tls.oidc.ca }}
+        - name: ca-oidc
+          mountPath: /srv/kubernetes/oidc-ca
         {{- end }}
       - name: kube-controller-manager
         image: {{ index .Values.images "controllermanager" }}
@@ -218,10 +237,10 @@ spec:
       - name: ca-kube-apiserver
         secret:
           secretName: garden-kube-apiserver-ca
-      {{- if .Values.tls.identity.ca }}
-      - name: ca-identity
+      {{- if .Values.tls.oidc.ca }}
+      - name: ca-oidc
         secret:
-          secretName: identity-ca
+          secretName: oidc-ca
       {{- end }}
       - name: ca-etcd
         secret:

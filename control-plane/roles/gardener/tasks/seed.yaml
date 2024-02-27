@@ -42,9 +42,29 @@
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
 
-- name: Fetch service account token name
-  set_fact:
-    gardenlet_sa_token_name: "{{ lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, kind='ServiceAccount', namespace='garden', resource_name='gardener-seeds').get('secrets')[0].get('name') }}"
+- name: Create service account token for service account gardener-seeds
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: gardener-seeds-token
+        namespace: garden
+        annotations:
+          kubernetes.io/service-account.name: gardener-seeds
+      type: kubernetes.io/service-account-token
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Get service account token
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: gardener-seeds-token
+    namespace: garden
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+  register: token_result
+  until: "'token' in token_result.resources[0].get('data', {})"
 
 - name: Add seed secret
   k8s:
@@ -56,7 +76,7 @@
         namespace: garden
       type: Opaque
       data:
-        kubeconfig: "{{ gardener_soil_kubeconfig_file_path | kubeconfig_for_sa(secret=lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, kind='Secret', namespace='garden', resource_name=gardenlet_sa_token_name)) | b64encode }}"
+        kubeconfig: "{{ gardener_soil_kubeconfig_file_path | kubeconfig_for_sa(secret=token_result.resources[0]) | b64encode }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
 
