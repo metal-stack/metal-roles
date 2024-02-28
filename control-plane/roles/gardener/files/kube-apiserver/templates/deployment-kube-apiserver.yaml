@@ -93,13 +93,13 @@ spec:
         - --oidc-username-claim={{ .Values.oidc.usernameClaim }}
         {{- end }}
         {{- if .Values.oidc.usernamePrefix }}
-        - --oidc-username-prefix={{ .Values.oidc.usernamePrefix | quote }}
+        - --oidc-username-prefix={{ .Values.oidc.usernamePrefix }}
         {{- end}}
         {{- if .Values.oidc.groupsClaim }}
         - --oidc-groups-claim={{ .Values.oidc.groupsClaim }}
         {{- end }}
         {{- if .Values.oidc.groupsPrefix }}
-        - --oidc-groups-prefix={{ .Values.oidc.groupsPrefix | quote }}
+        - --oidc-groups-prefix={{ .Values.oidc.groupsPrefix }}
         {{- end }}
         {{- if .Values.tls.oidc.ca }}
         - --oidc-ca-file=/srv/kubernetes/oidc-ca/ca.crt
