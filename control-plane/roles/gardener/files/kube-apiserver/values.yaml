@@ -25,6 +25,14 @@ apiServer:
 
 podLabels: {}
 
+oidc:
+  issuerURL:
+  clientID:
+  usernameClaim:
+  usernamePrefix:
+  groupsClaim:
+  groupsPrefix:
+
 tls:
   kubeAPIServer:
     ca:
@@ -42,3 +50,5 @@ tls:
     crt: client-certificate
     key: client-key
   serviceAccountKey: key
+  oidc:
+    ca:

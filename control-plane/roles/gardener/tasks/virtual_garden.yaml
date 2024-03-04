@@ -42,3 +42,9 @@
   copy:
     dest: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     content: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') | b64decode }}"
+
+- name: Wait for garden-kube-apiserver
+  wait_for:
+    host: "{{ gardener_virtual_api_server_public_dns }}"
+    port: "443"
+    timeout: 60

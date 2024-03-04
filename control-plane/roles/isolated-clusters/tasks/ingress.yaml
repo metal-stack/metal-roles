@@ -1,0 +1,22 @@
+---
+- name: Create namespace for ingress-controller
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ isolated_clusters_ingress_controller_namespace }}"
+        labels:
+          app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+    apply: yes
+    kubeconfig: "{{ cluster.kubeconfig }}"
+
+- name: Deploy ingress nginx controller
+  kubernetes.core.helm:
+    name: ingress-nginx
+    chart_repo_url: https://kubernetes.github.io/ingress-nginx
+    chart_ref: ingress-nginx
+    chart_version: "{{ isolated_clusters_ingress_controller_chart_version }}"
+    namespace: "{{ isolated_clusters_ingress_controller_namespace }}"
+    values: "{{ lookup('template', 'ingress/values.yaml') | from_yaml }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
