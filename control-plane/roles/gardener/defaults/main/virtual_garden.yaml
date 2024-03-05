@@ -1,5 +1,6 @@
 ---
 gardener_virtual_api_server_svc_cluster_ip_add: 20
+gardener_virtual_api_server_service_type: ClusterIP
 gardener_virtual_api_server_ingress: true
 gardener_virtual_api_server_public_dns: gardener-kube-apiserver.{{ metal_control_plane_ingress_dns }}
 gardener_virtual_api_server_public_ip:

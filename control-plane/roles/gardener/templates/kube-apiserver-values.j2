@@ -6,10 +6,11 @@ images:
 kubeAPIServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
   ingress: {{ gardener_virtual_api_server_ingress }}
+  serviceType: {{ gardener_virtual_api_server_service_type }}
+  serviceName: garden-kube-apiserver
 {% if gardener_virtual_api_server_public_ip %}
   loadBalancerIP: {{ gardener_virtual_api_server_public_ip }}
 {% endif %}
-  serviceName: garden-kube-apiserver
 
 oidc:
   issuerURL: {{ gardener_virtual_api_oidc_issuer_url }}

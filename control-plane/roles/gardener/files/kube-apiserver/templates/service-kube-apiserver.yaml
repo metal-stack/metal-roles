@@ -23,10 +23,10 @@ metadata:
     app: garden
     component: kube-apiserver
 spec:
+  type: {{ .Values.kubeAPIServer.type }}
   {{- if .Values.kubeAPIServer.loadBalancerIP }}
   loadBalancerIP: {{ .Values.kubeAPIServer.loadBalancerIP }}
   {{- end }}
-  type: LoadBalancer
   selector:
     app: garden
     component: kube-apiserver
