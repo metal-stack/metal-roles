@@ -36,6 +36,7 @@
       data:
         serviceaccount.json: "{{ gardener_dns_credentials | to_json | b64encode }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: true
   loop:
     - internal-domain
     - default-domain
