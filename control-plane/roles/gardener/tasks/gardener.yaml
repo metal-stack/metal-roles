@@ -33,8 +33,7 @@
           gardener.cloud/role: "{{ item }}"
         name: "{{ item }}-cluster-metal-stack-dev"
       type: Opaque
-      data:
-        serviceaccount.json: "{{ gardener_dns_credentials | to_json | b64encode }}"
+      data: "{{ gardener_dns_credentials | to_json }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: true
   loop:
