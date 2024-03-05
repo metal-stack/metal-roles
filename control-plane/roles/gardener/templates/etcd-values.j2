@@ -2,15 +2,12 @@ images:
   etcdBackupRestore:
     tag: "{{ gardener_etcd_repo_ref }}"
 
-{% if gardener_backup_infrastructure_secret %}
+{% if gardener_backup_infrastructure.ecs %}
 backup:
   storageContainer: {{ gardener_backup_infrastructure.bucket }}
-{% if metal_control_plane_host_provider == "gcp" %}
-  storageProvider: "GCS"
-  gcs:
-    serviceAccountJson: {{ gardener_backup_infrastructure_service_account_json | to_json }}
-{% endif %}
-{% endif %}
+  storageProvider: "ECS"
+  ecs:
+    {{ gardener_backup_infrastructure.ecs | to_nice_yaml | indent(width=4) }}
 
   schedule: {{ gardener_etcd_backup_schedule }}
   deltaSnapshotPeriod: {{ gardener_etcd_snapshot_period }}
