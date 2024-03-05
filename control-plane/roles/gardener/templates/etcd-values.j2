@@ -12,6 +12,7 @@ backup:
   schedule: {{ gardener_etcd_backup_schedule }}
   deltaSnapshotPeriod: {{ gardener_etcd_snapshot_period }}
   garbageCollectionPeriod: {{ gardener_etcd_garbage_collection_period }}
+{% endif %}
 
 etcdTLS:
   caBundle: |
