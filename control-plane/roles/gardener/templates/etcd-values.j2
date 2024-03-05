@@ -9,7 +9,7 @@ backup:
   ecs:
     endpoint: "{{ gardener_backup_infrastructure.ecs.endpoint }}"
     accessKeyID: "{{ gardener_backup_infrastructure.ecs.accessKeyID }}"
-    secretAccessKey: {{ gardener_backup_infrastructure.ecs.secretAccessKey }}"
+    secretAccessKey: "{{ gardener_backup_infrastructure.ecs.secretAccessKey }}"
     insecureSkipVerify: "{{ gardener_backup_infrastructure.ecs.insecureSkipVerify }}"
 
   schedule: {{ gardener_etcd_backup_schedule }}
