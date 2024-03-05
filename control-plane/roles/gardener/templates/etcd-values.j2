@@ -7,10 +7,10 @@ backup:
   storageContainer: {{ gardener_backup_infrastructure.bucket }}
   storageProvider: "ECS"
   ecs:
-    endpoint: {{ gardener_backup_infrastructure.endpoint }}
-    accessKeyID: {{ gardener_backup_infrastructure.accessKeyID }}
-    secretAccessKey: {{ gardener_backup_infrastructure.secretAccessKey }}
-    insecureSkipVerify: {{ gardener_backup_infrastructure.insecureSkipVerify }}
+    endpoint: {{ gardener_backup_infrastructure.ecs.endpoint }}
+    accessKeyID: {{ gardener_backup_infrastructure.ecs.accessKeyID }}
+    secretAccessKey: {{ gardener_backup_infrastructure.ecs.secretAccessKey }}
+    insecureSkipVerify: {{ gardener_backup_infrastructure.ecs.insecureSkipVerify }}
 
   schedule: {{ gardener_etcd_backup_schedule }}
   deltaSnapshotPeriod: {{ gardener_etcd_snapshot_period }}
