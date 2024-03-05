@@ -31,7 +31,7 @@
         labels:
           app: gardener
           gardener.cloud/role: "{{ item }}"
-        name: "{{ item }}-cluster-{{ gardener_dns_domain | regex_replace('\\.', '-') }}"
+        name: "{{ item }}-{{ gardener_dns_domain | regex_replace('\\.', '-') }}"
       type: Opaque
       data: "{{ gardener_dns_credentials }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
