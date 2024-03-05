@@ -34,7 +34,7 @@
         name: "{{ item }}-cluster-metal-stack-dev"
       type: Opaque
       data:
-        serviceaccount.json: "{{ gardener_dns_credentials | to_json }}"
+        serviceaccount.json: "{{ gardener_dns_credentials | to_json | b64encode }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
   loop:
     - internal-domain
