@@ -17,7 +17,7 @@
           app: gardener
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
 
-- name: Deploy internal domain secret (in virtual apiserver)
+- name: Deploy domain secrets (in virtual apiserver)
   k8s:
     definition:
       apiVersion: v1
@@ -30,32 +30,15 @@
           dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
         labels:
           app: gardener
-          gardener.cloud/role: internal-domain
-        name: internal-domain-cluster-metal-stack-dev
+          gardener.cloud/role: "{{ item }}"
+        name: "{{ item }}-cluster-metal-stack-dev"
       type: Opaque
       data:
         serviceaccount.json: "{{ gardener_dns_credentials | to_json }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-
-- name: Deploy default domain secret (in virtual apiserver)
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        namespace: garden
-        annotations:
-          helm.sh/resource-policy: keep
-          dns.gardener.cloud/domain: "{{ gardener_dns_domain }}"
-          dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
-        labels:
-          app: gardener
-          gardener.cloud/role: default-domain
-        name: default-domain-cluster-metal-stack-dev
-      type: Opaque
-      data:
-        serviceaccount.json: "{{ gardener_dns_credentials | to_json }}"
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+  loop:
+    - internal-domain
+    - default-domain
 
 - name: Deploy Gardener Control Plane (in virtual apiserver)
   include_role:
