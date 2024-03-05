@@ -25,12 +25,13 @@
       metadata:
         namespace: garden
         annotations:
+          helm.sh/resource-policy: keep
           dns.gardener.cloud/domain: "{{ gardener_dns_domain }}"
           dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
         labels:
           app: gardener
           gardener.cloud/role: "{{ item }}"
-        name: "{{ item }}-cluster-metal-stack"
+        name: "{{ item }}-cluster-{{ gardener_dns_domain | regex_replace('\\.', '-') }}"
       type: Opaque
       data: "{{ gardener_dns_credentials }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
