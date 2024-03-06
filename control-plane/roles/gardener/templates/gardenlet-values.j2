@@ -50,7 +50,6 @@ config:
         nodes: "{{ _gardener_gardenlet_node_cidr }}"
         pods: "{{ _gardener_gardenlet_pod_cidr }}"
         services: "{{ _gardener_gardenlet_service_cidr }}"
-      backup: {{ gardener_backup_infrastructure | to_json }}
       blockCIDRs: []
       settings:
         excessCapacityReservation:
