@@ -121,16 +121,3 @@
       status: "True"
       type: GardenletReady
     wait_timeout: 180
-
-- name: Wait until Seed cluster has been bootstrapped successfully
-  kubernetes.core.k8s_info:
-    api_version: "core.gardener.cloud/v1beta1"
-    kind: Seed
-    name: "{{ gardener_soil_name }}"
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-    wait: yes
-    wait_condition:
-      reason: BootstrappingSucceeded
-      status: "True"
-      type: Bootstrapped
-    wait_timeout: 180
