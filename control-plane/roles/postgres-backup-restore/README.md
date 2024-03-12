@@ -32,6 +32,11 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | postgres_backup_restore_sidecar_gcp_backup_location     |           | Location of the GCP bucket                                               |
 | postgres_backup_restore_sidecar_gcp_project_id          |           | GCP project name                                                         |
 | postgres_backup_restore_sidecar_gcp_serviceaccount_json |           | GCP Serviceaccount JSON string (service account requires bucket access)  |
+| postgres_backup_restore_sidecar_s3_bucket_name          |           | The name of the S3 bucket                                                |
+| postgres_backup_restore_sidecar_s3_region               |           | The region where the S3 bucket is located                                |
+| postgres_backup_restore_sidecar_s3_endpoint             |           | The endpoint URL for the S3 storage service                              |
+| postgres_backup_restore_sidecar_s3_access_key           |           | The access key for authenticating with S3                                |
+| postgres_backup_restore_sidecar_s3_secret_key           |           | The secret key for authenticating with S3                                |
 | postgres_expose_frontend                                |           | Exposes the postgres over ingress (only use for dev environments)        |
 | postgres_ingress_dns                                    |           | The virtual host to reach the postgres frontend when exposed via ingress |
 | postgres_resources                                      |           | The kubernetes resources for the actual postgres container               |
