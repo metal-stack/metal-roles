@@ -132,16 +132,6 @@ global:
       networking.gardener.cloud/to-dns: allowed
       networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
 
-  internalDomain:
-    provider: "{{ gardener_dns_provider }}"
-    domain: "{{ gardener_dns_domain }}"
-    credentials: {{ gardener_dns_credentials | to_json }}
-
-  defaultDomains:
-  - provider: "{{ gardener_dns_provider }}"
-    domain: "{{ gardener_dns_domain }}"
-    credentials: {{ gardener_dns_credentials | to_json }}
-
   deployment:
    virtualGarden:
      enabled: true
