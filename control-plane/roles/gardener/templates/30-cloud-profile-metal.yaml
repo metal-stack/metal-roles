@@ -30,6 +30,9 @@ spec:
 {% for id, partition_config in gardener_cloud_profile_partitions.items() %}
           {{ id }}:
             firewallTypes: {{ partition_config.get('default-machine-types', {}).get('firewall', []) | to_json }}
+{% if 'network-isolation' in gardener_cloud_profile.get('partition_configuration', {}).get(id, {}) %}
+            networkIsolation: {{ partition_config.get('default-machine-types', {}).get('network-isolation', []) | to_json }}
+{% endif %}
 {% endfor %}
   kubernetes: {{ gardener_cloud_profile_kubernetes | to_json }}
   machineImages: {{ gardener_cloud_profile_machine_images | machine_images_for_cloud_profile(cris=gardener_os_cri_mapping) | to_json }}
