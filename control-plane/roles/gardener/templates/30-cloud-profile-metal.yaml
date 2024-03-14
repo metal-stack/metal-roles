@@ -31,8 +31,7 @@ spec:
           {{ id }}:
             firewallTypes: {{ partition_config.get('default-machine-types', {}).get('firewall', []) | to_json }}
 {% if 'network-isolation' in partition_config %}
-            networkIsolation: |
-              {{ partition_config.get('network-isolation') | to_yaml | indent(width=14, first=false) }}
+            networkIsolation: {{ partition_config.get('network-isolation') | to_json }}
 {% endif %}
 {% endfor %}
   kubernetes: {{ gardener_cloud_profile_kubernetes | to_json }}
