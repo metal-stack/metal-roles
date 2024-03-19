@@ -117,11 +117,15 @@ metal_api:
     {{ entity | to_nice_yaml | indent(width=4, first=false) }}
     constraints:
 {% for constraint in constraints %}
+{% if 'min' in constraint and 'max' in constraint %}
 {% set min=constraint.pop('min') %}
 {% set max=constraint.pop('max') %}
     - min: {{ min }}
       max: {{ max }}
       {{ constraint | to_nice_yaml | indent(width=6, first=false) }}
+{% else %}
+    - {{ constraint | to_nice_yaml | indent(width=6, first=false) }}
+{% endif %}
 {% endfor %}
 {% endfor %}
   images: |
