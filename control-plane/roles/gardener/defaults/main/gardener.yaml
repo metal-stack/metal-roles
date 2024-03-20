@@ -83,6 +83,6 @@ gardener_shooted_seed_node_cidr_mask_size: 23
 # can be useful for rollouts where the shooted seed or managed seed resource changes:
 gardener_shooted_seed_rollout_delay_minutes:
 
-gardener_kube_api_server_kubeconfig: "{{ 'garden-kube-apiserver' | kubeconfig_from_cert(gardener_kube_api_server_ca, gardener_kube_api_server_client_cert, gardener_kube_api_server_client_key, prepend_https=true) }}"
+gardener_kube_api_server_kubeconfig: "{{ 'virtual-garden-kube-apiserver' | kubeconfig_from_cert(gardener_kube_api_server_ca, gardener_kube_api_server_client_cert, gardener_kube_api_server_client_key, prepend_https=true) }}"
 gardener_kube_apiserver_kubeconfig_path: "{{ gardener_local_tmp_dir }}/garden-kube-apiserver-kubeconfig"
 gardener_local_tmp_dir: "{{ playbook_dir }}/.ansible/tmp"

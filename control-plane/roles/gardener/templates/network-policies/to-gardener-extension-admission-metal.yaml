@@ -1,0 +1,21 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: to-gardener-extension-admission-metal
+  namespace: garden
+spec:
+  egress:
+  - ports:
+    - port: 443
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: admission-metal
+          app.kubernetes.io/name: gardener-extension-admission-metal
+  podSelector:
+    matchLabels:
+      networking.resources.gardener.cloud/to-gardener-extension-admission-metal-tcp-443: allowed
+  policyTypes:
+  - Egress
