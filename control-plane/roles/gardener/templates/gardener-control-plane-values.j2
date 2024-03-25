@@ -51,38 +51,8 @@ global:
     shootViewerKubeconfigMaxExpiration: {{ gardener_apiserver_shoot_kubeconfig_max_expiration }}
 
     vpa: {{ gardener_apiserver_vpa }}
-    # this requires the Hvpa resource in autoscaling.k8s.io/v1alpha1, which is not in the GKE cluster... how to actually use this?
-    # hvpa:
-    #   enabled: true
-    #   maxReplicas: 4
-    #   minReplicas: 1
-    #   targetAverageUtilizationCpu: 400
-    #   targetAverageUtilizationMemory: 400
-    #   vpaScaleUpStabilization:
-    #     stabilizationDuration: "3m"
-    #     minChange:
-    #       cpu:
-    #         value: 300m
-    #         percentage: 80
-    #       memory:
-    #         value: 600M
-    #         percentage: 80
-    #   vpaScaleDownStabilization:
-    #     stabilizationDuration: "15m"
-    #     minChange:
-    #       cpu:
-    #         value: 200m
-    #         percentage: 80
-    #       memory:
-    #         value: 300M
-    #         percentage: 80
-    #   limitsRequestsGapScaleParams:
-    #     cpu:
-    #       value: "1"
-    #       percentage: 40
-    #     memory:
-    #       value: "2G"
-    #       percentage: 40
+    hvpa:
+      enabled: true
 
   scheduler:
     resources: {{ gardener_scheduler_resources | to_json }}
