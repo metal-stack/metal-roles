@@ -59,11 +59,16 @@
 
 - name: Deploy required Seed CRDs
   k8s:
-    definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/' + item, split_lines=False) | from_yaml_all | list)[0] }}"
+    definition: "{{ item.definition }}"
     apply: yes
   loop:
-    - 10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml
-    - 10-crd-autoscaling.k8s.io_hvpas.yaml
+    - name: hvpas
+      definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/10-crd-autoscaling.k8s.io_hvpas.yaml', split_lines=False) | from_yaml_all | list)[0] }}"
+    # TODO: starting from g/g 1.82, this resource will be located in seed-crds, too
+    - name: vpas
+      definition: "{{ lookup('file', '10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml') }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Create garden namespace
   k8s:
