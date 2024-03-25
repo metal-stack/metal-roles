@@ -56,13 +56,14 @@
       - gardener_dns_provider is not none
       - gardener_cloud_profile_metal_api_url is not none
       - gardener_cloud_profile_metal_api_hmac is not none
-# Gardener expects a VPA to be present, otherwise VPA enabled and soil bootstrapping do not work
-# maybe this can be removed in a future version of Gardener?
-- name: Deploy VerticalPodAutoscaler CRD if required
+
+- name: Deploy required Seed CRDs
   k8s:
-    definition: "{{ lookup('template', 'vpa.yaml') }}"
+    definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/' + item, split_lines=False) | from_yaml_all | list)[0] }}"
     apply: yes
-  when: not lookup('k8s', api_version='apiextensions.k8s.io/v1', kind='CustomResourceDefinition', resource_name='verticalpodautoscalers.autoscaling.k8s.io')
+  loop:
+    - 10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml
+    - 10-crd-autoscaling.k8s.io_hvpas.yaml
 
 - name: Create garden namespace
   k8s:
