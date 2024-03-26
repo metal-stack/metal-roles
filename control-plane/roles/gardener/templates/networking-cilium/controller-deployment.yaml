@@ -6,11 +6,11 @@ metadata:
 type: helm
 providerConfig:
   chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/' + gardener_networking_cilium_repo_ref + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
-#  values:
-#    image:
-#      repository: "{{ gardener_networking_cilium_image_name }}"
-#      tag: "{{ gardener_networking_cilium_image_tag }}"
-#      pullPolicy: Always
+  values:
+    image:
+      repository: "{{ gardener_networking_cilium_image_name }}"
+      tag: "{{ gardener_networking_cilium_image_tag }}"
+      pullPolicy: Always
 #    imageVectorOverwrite: |
 #      images:
 #        - name: cilium-agent
