@@ -25,7 +25,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_backup_infrastructure_secret                  |           | Specifies the secret for the backup infrastructure                                                                            |
 | gardener_soil_name                                     |           | The name of the initial `Seed` (used for spinning up shooted seeds)                                                           |
 | gardener_soil_kubeconfig_file_path                     |           | The kubeconfig path to the initial seed cluster                                                                               |
-| gardener_soil_vertical_pod_autoscaler_enabled          |           | Enables the VPA for the intial seed cluster                                                                                   |
+| gardener_soil_vertical_pod_autoscaler_enabled          |           | Enables the VPA for the initial seed cluster                                                                                   |
 | gardener_soil_project_owner_name                       |           | Specifies the owner name for the project that the initial seed uses to set up shooted seeds                                   |
 | gardener_gardenlet_shoot_concurrent_syncs              |           | Specifies the amount of concurrent shoot syncs for the Gardenlet                                                              |
 | gardener_gardenlet_shoot_reconcile_in_maintenance_only |           | Specifies whether to reconcile shoots only in their maintenance time windows for the Gardenlet                                |
