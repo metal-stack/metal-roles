@@ -86,7 +86,7 @@ PORT:
     {% if 'parent_port' in running_cfg %}
     parent_port: {{ running_cfg.parent_port }}
     {% endif %}
-    {% if 'name' in sonic_ports_dict %}
+    {% if sonic_ports_dict[name] is defined %}
     {% set port = sonic_ports_dict[name] %}
     admin_status: up
     speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
