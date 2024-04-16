@@ -69,8 +69,8 @@ INTERFACE:
   {% endfor %}
   {% endfor %}
 {% endif %}
-
 {% if sonic_running_cfg_breakouts %}
+
 BREAKOUT_CFG:
   {% for name, cfg in sonic_running_cfg_breakouts.items() %}
   {{ name }}:
