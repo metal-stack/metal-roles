@@ -2,13 +2,15 @@
 ---
 DEVICE_METADATA:
   localhost:
-    docker_routing_config_mode: split
+    docker_routing_config_mode: "{{ sonic_docker_routing_config_mode }}"
     hostname: "{{ inventory_hostname }}"
     hwsku: "{{ sonic_running_cfg_hwsku }}"
     mac: "{{ sonic_running_cfg_mac }}"
     platform: "{{ sonic_running_cfg_platform }}"
     type: "LeafRouter"
+    {% if sonic_frr_mgmt_framework_config %}
     frr_mgmt_framework_config: "true"
+    {% endif %}
 
 FEATURE:
   dhcp_relay:
