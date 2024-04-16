@@ -68,11 +68,13 @@ INTERFACE:
   {% endfor %}
 {% endif %}
 
+{% if sonic_running_cfg_breakouts %}
 BREAKOUT_CFG:
   {% for name, cfg in sonic_running_cfg_breakouts.items() %}
   {{ name }}:
     brkout_mode: "{{ cfg.brkout_mode }}"
   {% endfor %}
+{% endif %}
 
 PORT:
   {% for name, running_cfg in sonic_running_cfg_ports.items() %}
