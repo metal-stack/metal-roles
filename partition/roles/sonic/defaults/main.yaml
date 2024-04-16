@@ -7,7 +7,6 @@ sonic_timezone: Europe/Berlin
 sonic_config_action: load
 
 ## Physical settings
-sonic_breakouts: {}
 sonic_ports: []
 sonic_ports_dict: {}
 sonic_ports_default_fec: none
