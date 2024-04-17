@@ -66,9 +66,7 @@ config:
       - key: seed.gardener.cloud/invisible
       - key: seed.gardener.cloud/disable-capacity-reservation
 
-  featureGates:
-    HVPA: false
-    HVPAForShootedSeed: false
+  featureGates: {{ gardener_gardenlet_feature_gates | to_json }}
 
 vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
 

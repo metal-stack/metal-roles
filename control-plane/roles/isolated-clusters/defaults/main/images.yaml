@@ -117,6 +117,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/coredns/coredns
       match:
         semver: ">= v1.10.0"
+    - source: registry.k8s.io/dns/k8s-dns-node-cache
+      destination: http://registry:5000/dns/k8s-dns-node-cache
+      match:
+        semver: ">= 1.22.23"
     - source: r.metal-stack.io/csi-lvm-controller
       destination: http://registry:5000/csi-lvm-controller
       match:
