@@ -8,12 +8,14 @@ providerConfig:
   chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener-extension-shoot-dns-service/' + gardener_shoot_dns_service_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
   values:
     image:
+      imagePullPolicy: Always
       repository: "{{ gardener_shoot_dns_service_image_name }}"
       tag: "{{ gardener_shoot_dns_service_image_tag }}"
     dnsProviderManagement:
       enabled: true
     dnsControllerManager:
       image:
+        imagePullPolicy: Always
         tag: "{{ gardener_dns_controller_manager_image_tag }}"
         repository: "{{ gardener_dns_controller_manager_image_name }}"
       deploy: true
