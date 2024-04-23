@@ -135,8 +135,8 @@ PORTCHANNEL_MEMBER:
 {% endfor %}
 {% endif %}
 {% if sonic_sag is defined and sonic_sag|length > 0 %}
-
 {% if sonic_sag.vlans is defined and sonic_sag.vlans|length > 0 %}
+
 SAG:
 {% for vlan in sonic_sag.vlans %}
   "Vlan{{ vlan.id }}|IPv4":
