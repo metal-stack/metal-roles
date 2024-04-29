@@ -8,6 +8,7 @@
       - ca-certificates
       - curl
       - gnupg2
+      - libltdl7
   when: ansible_distribution_major_version == "3"
 
 - name: setup key for docker
