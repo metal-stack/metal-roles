@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    {{ isolated_clusters_registry_ingress_annotations | to_nice_yaml | indent(width=4, first=false) }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+        if ($request_method !~ (GET|HEAD)$) {
+          return 403;
+        }
+  labels:
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+  name: registry
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{ isolated_clusters_registry_ingress_fqdn }}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: registry
+            port:
+              name: http
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - "{{ isolated_clusters_registry_ingress_fqdn }}"
+    secretName: registry-tls-secret

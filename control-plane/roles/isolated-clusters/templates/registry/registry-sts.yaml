@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+  name: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: registry
+      app.kubernetes.io/component: registry
+  serviceName: registry
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: registry
+        app.kubernetes.io/component: registry
+        app.kubernetes.io/part-of: isolated-clusters
+        app.kubernetes.io/managed-by: ansible
+        app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+    spec:
+      containers:
+      - name: registry
+        image: "{{ isolated_clusters_registry_image_name }}:{{ isolated_clusters_registry_image_tag }}"
+        imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+        env:
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: "/var/lib/registry"
+        - name: REGISTRY_STORAGE_DELETE_ENABLED
+          value: "true"
+        ports:
+        - containerPort: 5000
+          name: http
+        volumeMounts:
+        - mountPath: /var/lib/registry
+          name: storage
+          subPath: registry
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ isolated_clusters_registry_storage_size }}
+{% if isolated_clusters_registry_storage_class_name %}
+      storageClassName: {{ isolated_clusters_registry_storage_class_name }}
+{% endif %}
+      volumeMode: Filesystem

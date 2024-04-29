@@ -2,6 +2,7 @@
 - name: ensure dependencies are installed
   apt:
     update_cache: yes
+    allow_unauthenticated: yes
     name:
       - apt-transport-https
       - ca-certificates

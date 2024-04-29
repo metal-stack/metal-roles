@@ -7,6 +7,24 @@ apiServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
   serviceName: garden-kube-apiserver
 
+oidc:
+  issuerURL: {% if gardener_virtual_api_oidc_issuer_url %}{{ gardener_virtual_api_oidc_issuer_url }}{% endif %}
+
+  clientID: {% if gardener_virtual_api_oidc_client_id %}{{ gardener_virtual_api_oidc_client_id }}{% endif %}
+
+{% if gardener_virtual_api_oidc_username_claim %}
+  usernameClaim: {{ gardener_virtual_api_oidc_username_claim }}
+{% endif %}
+{% if gardener_virtual_api_oidc_username_prefix %}
+  usernamePrefix: "{{ gardener_virtual_api_oidc_username_prefix }}"
+{% endif %}
+{% if gardener_virtual_api_oidc_groups_claim %}
+  groupsClaim: {{ gardener_virtual_api_oidc_groups_claim }}
+{% endif %}
+{% if gardener_virtual_api_oidc_groups_prefix %}
+  groupsPrefix: "{{ gardener_virtual_api_oidc_groups_prefix }}"
+{% endif %}
+
 tls:
   kubeAPIServer:
     ca:
@@ -44,8 +62,11 @@ tls:
       {{ gardener_admin_client_key | indent(width=6, first=false) }}
   serviceAccountKey: |
     {{ gardener_service_account_client_key | indent(width=4, first=false) }}
-  identity:
-    ca:
+{% if gardener_virtual_api_oidc_ca %}
+  oidc:
+    ca: |
+      {{ gardener_virtual_api_oidc_ca | indent(width=6, first=false) }}
+{% endif %}
 
 etcd:
   main:
