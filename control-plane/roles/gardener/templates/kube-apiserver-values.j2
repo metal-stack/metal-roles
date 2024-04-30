@@ -8,12 +8,10 @@ apiServer:
   serviceName: garden-kube-apiserver
 
 oidc:
-{% if gardener_virtual_api_oidc_issuer_url %}
-  issuerURL: {{ gardener_virtual_api_oidc_issuer_url }}
-{% endif %}
-{% if gardener_virtual_api_oidc_client_id %}
-  clientID: {{ gardener_virtual_api_oidc_client_id }}
-{% endif %}
+  issuerURL: {% if gardener_virtual_api_oidc_issuer_url %}{{ gardener_virtual_api_oidc_issuer_url }}{% endif %}
+
+  clientID: {% if gardener_virtual_api_oidc_client_id %}{{ gardener_virtual_api_oidc_client_id }}{% endif %}
+
 {% if gardener_virtual_api_oidc_username_claim %}
   usernameClaim: {{ gardener_virtual_api_oidc_username_claim }}
 {% endif %}
