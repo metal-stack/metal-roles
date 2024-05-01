@@ -1,0 +1,111 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - rethinkdb_exporter_name is defined
+      - rethinkdb_exporter_tag is defined
+      - event_exporter_name is defined
+      - event_exporter_tag is defined
+      - gardener_metrics_exporter_image_name is defined
+      - gardener_metrics_exporter_image_tag is defined
+
+- name: Create namespace {{ monitoring_namespace }}
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ monitoring_namespace }}"
+        labels:
+          name: "{{ monitoring_namespace }}"
+
+- name: Determine app version for prometheus operator CRDs
+  command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
+  register: helm_output
+
+- name: Apply prometheus operator CRDs
+  k8s:
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ (helm_output.stdout | from_yaml).get('appVersion') + '/example/prometheus-operator-crd/' + item , split_lines=False) | regex_replace('- =\n', '- \"=\"\n') }}"
+  loop:
+    - monitoring.coreos.com_alertmanagerconfigs.yaml
+    - monitoring.coreos.com_alertmanagers.yaml
+    - monitoring.coreos.com_podmonitors.yaml
+    - monitoring.coreos.com_probes.yaml
+    - monitoring.coreos.com_prometheuses.yaml
+    - monitoring.coreos.com_prometheusrules.yaml
+    - monitoring.coreos.com_servicemonitors.yaml
+    - monitoring.coreos.com_thanosrulers.yaml
+
+- name: Deploy kube-prometheus-stack
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ prometheus_stack_repo }}"
+    helm_chart: kube-prometheus-stack
+    helm_target_namespace: "{{ monitoring_namespace }}"
+    helm_release_name: kube-prometheus-stack
+    helm_chart_version: "{{ prometheus_chart_version }}"
+    helm_value_file_template: "prometheus-stack-values.yaml"
+    helm_skip_crds: yes
+
+- name: Deploy thanos
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ thanos_chart_repo }}"
+    helm_chart: thanos
+    helm_target_namespace: "{{ monitoring_namespace }}"
+    helm_release_name: thanos
+    helm_chart_version: "{{ thanos_chart_version }}"
+    helm_value_file_template: "thanos-values.yaml"
+
+- name: Deploy metrics exporters
+  import_tasks: exporters.yaml
+
+- name: Deploy Grafana dashboards
+  k8s:
+    definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop:
+     - machine-capacity.yaml
+     - metal-api.yaml
+     - rethinkdb.yaml
+     - alertmanager.yaml
+     - sonic-exporter.yaml
+
+- name: Deploy Grafana dashboards for Gardener
+  k8s:
+    definition: "{{ lookup('template', 'grafana-dashboards/gardener/' + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop:
+    - shoot-cluster-status.yaml
+    - gardener-usage-overview.yaml
+    - shoot-states-overview.yaml
+    - shoot-customization.yaml
+    - shoot-details.yaml
+  when: monitoring_gardener_enabled
+
+- name: Create service monitors
+  k8s:
+    definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop:
+    - ipam-db.yaml
+    - masterdata-api.yaml
+    - masterdata-db.yaml
+    - metal-api.yaml
+    - metal-db.yaml
+    - metal-metrics-exporter.yaml
+
+- name: Create service monitors for Gardener
+  k8s:
+    definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop:
+    - gardener-metrics-exporter.yaml
+  when: monitoring_gardener_enabled

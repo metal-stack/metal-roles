@@ -1,0 +1,50 @@
+---
+- name: Clone Gardener etcd (with backup restore)
+  git:
+    repo: "{{ gardener_etcd_repo_url }}"
+    dest: "{{ gardener_local_tmp_dir }}/etcd-backup-restore"
+    depth: 1
+    version: "{{ gardener_etcd_repo_ref }}"
+
+- name: Deploy Gardener etcd (with backup restore)
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_timeout: "600s"
+    helm_chart: "{{ gardener_local_tmp_dir }}/etcd-backup-restore/chart/etcd-backup-restore"
+    helm_release_name: etcd-{{ metal_control_plane_stage_name }}
+    helm_target_namespace: garden
+    helm_value_file_template: etcd-values.j2
+
+# The virtual garden setup requires one service through which the soil and the garden-apiserver can communicate
+# This needs to have the same, static ip address, which needs to be chosen randomly from the service network
+- name: Determine current gardener-apiserver service cluster ip
+  set_fact:
+    _gardener_api_server_current_service_ip: "{{ (lookup('k8s', api_version='v1', kind='Service', namespace='garden', resource_name='gardener-apiserver') | default({}, true)).get('spec', {}).get('clusterIP', none) }}"
+
+- name: Calculate gardener-kube-apiserver service cluster IP
+  set_fact:
+    gardener_virtual_api_server_svc_cluster_ip: "{{ _gardener_api_server_current_service_ip if _gardener_api_server_current_service_ip else _gardener_soil_service_cidr | network_cidr_add(add=gardener_virtual_api_server_svc_cluster_ip_add) }}"
+
+- name: Deploy kube-apiserver for virtual garden
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_timeout: "600s"
+    helm_chart_custom_folder: "{{ ansible_parent_role_paths[0] }}/files/kube-apiserver"
+    helm_chart: "./kube-apiserver"
+    helm_release_name: virtual-garden
+    helm_target_namespace: garden
+    helm_value_file_template: kube-apiserver-values.j2
+    helm_chart_inject_config_hash: yes
+
+- name: Read admin kubeconfig for garden-kube-apiserver
+  copy:
+    dest: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    content: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') | b64decode }}"
+
+- name: Wait for garden-kube-apiserver
+  wait_for:
+    host: "{{ gardener_virtual_api_server_public_dns }}"
+    port: "443"
+    timeout: 60

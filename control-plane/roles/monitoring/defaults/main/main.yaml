@@ -1,0 +1,42 @@
+---
+monitoring_namespace: monitoring
+monitoring_grafana_admin_password: admin
+monitoring_grafana_dashboard_timezone: Europe/Berlin
+monitoring_grafana_additional_datasources:
+  - name: Loki
+    type: loki
+    url: http://loki:3100/
+    access: proxy
+    orgId: 1
+    version: 1
+    isDefault: false
+    uid: loki
+    jsonData:
+      maxLines: 1000
+monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
+monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
+monitoring_ingress_grafana_tls: yes
+monitoring_prometheus_ingress_enabled: false
+monitoring_additional_ingress_annotations: {}
+
+monitoring_thanos_receive_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
+
+monitoring_alertmanager_ingress_enabled: true
+monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
+monitoring_alertmanager_ingress_tls: yes
+monitoring_alertmanager_ingress_basic_auth_user: alertmanager
+monitoring_alertmanager_ingress_basic_auth_password:
+monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertmanager_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
+
+# metal metrics exporter
+monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
+monitoring_metal_api_hmac: "metal-admin"
+
+# rethinkdb exporter
+monitoring_rethinkdb_exporter_metal_db_password: "change-me"
+monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28015
+
+# gardener
+monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 else False }}"
+monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
+monitoring_gardener_seeds: []

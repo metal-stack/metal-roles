@@ -1,0 +1,28 @@
+---
+- name: create node_exporter directories
+  file:
+    path: "{{ monitoring_node_exporter_dir }}/host"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: deploy node_exporter service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: node_exporter
+    systemd_docker_image_name: "{{ monitoring_node_exporter_image_name }}"
+    systemd_docker_image_tag: "{{ monitoring_node_exporter_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_docker_network: host
+    systemd_service_requires: docker.service
+    systemd_docker_ports:
+      - host_port: "{{ monitoring_node_exporter_port }}"
+        target_port: "{{ monitoring_node_exporter_port }}"
+    systemd_docker_volumes:
+      - "/:/host:ro,rslave"
+    systemd_docker_command:
+      - --path.rootfs=/host
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys

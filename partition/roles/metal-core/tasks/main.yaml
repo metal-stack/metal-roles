@@ -2,6 +2,9 @@
 - name: Gather release versions
   setup_yaml:
 
+- name: Gather switch facts
+  switch_facts:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
@@ -21,7 +24,7 @@
     dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
     mode: 0640
     content: "{{ item.content }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: ca.pem
       content: "{{ metal_core_grpc_ca_cert }}"
@@ -32,6 +35,16 @@
   loop_control:
     label: "{{ item.filename }}"
   register: grpc_certs
+
+- name: Install services
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  notify: Reload systemd daemon
+  loop:
+    - bgp-validation@.service
+    - frr-reload.service
+  when: metal_stack_switch_os_is_sonic
 
 - name: deploy metal-core
   include_role:
@@ -44,13 +57,18 @@
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 1024m
+    systemd_docker_log_driver: "{{ metal_core_log_driver }}"
     # metal-core needs to figure out the switch ports, this is only possible from host network
     systemd_docker_network: host
     systemd_docker_volumes: "{{ lookup('template', 'metal-core-volumes.j2') | from_yaml }}"
     systemd_docker_cap_add:
       - sys_admin
+      - net_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
     systemd_external_config_changed: "{{ grpc_certs is changed }}"
+    systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
+    systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
+    systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
 
 - name: wait for metal-core to listen on metrics port
   wait_for:

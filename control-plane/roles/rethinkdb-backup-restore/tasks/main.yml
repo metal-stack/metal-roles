@@ -23,3 +23,4 @@
   k8s:
     definition: "{{ lookup('template', 'rethinkdb.yaml') }}"
     namespace: "{{ rethinkdb_namespace }}"
+    apply: yes

@@ -1,0 +1,26 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerDeployment
+metadata:
+  name: dns-external
+type: helm
+providerConfig:
+{% if gardener_extension_dns_external_controller_registration_url %}
+  chart: "{{ (lookup('url', gardener_extension_dns_external_controller_registration_url, split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+{% else %}
+  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/external-dns-management/' + gardener_external_dns_image_tag + '/examples/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+{% endif %}
+  values:
+    createCRDs: false
+    image:
+      repository: "{{ gardener_external_dns_image_name }}"
+      tag: "{{ gardener_external_dns_image_tag }}"
+    configuration:
+      serverPortHttp: 8080
+      controllers: compound
+      providerTypes: "{{ gardener_dns_provider }}"
+      leaseDuration: 30s
+    vpa:
+      minAllowed:
+        cpu: 50m
+        memory: 50Mi

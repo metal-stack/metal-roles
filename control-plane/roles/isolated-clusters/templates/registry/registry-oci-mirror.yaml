@@ -1,0 +1,59 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: oci-mirror
+  labels:
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+spec:
+  concurrencyPolicy: Forbid
+  schedule: 20 4 * * *
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: registry
+            app.kubernetes.io/component: registry
+            app.kubernetes.io/part-of: isolated-clusters
+            app.kubernetes.io/managed-by: ansible
+            app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+        spec:
+          containers:
+          - args:
+            - mirror
+            - --mirror-config=/config/oci-mirror.yaml
+            image: "{{ isolated_clusters_registry_oci_mirror_image_name }}:{{ isolated_clusters_registry_oci_mirror_image_tag }}"
+            imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+            name: oci-mirror
+            volumeMounts:
+            - mountPath: /config
+              name: oci-mirror-config
+          restartPolicy: OnFailure
+          volumes:
+          - name: oci-mirror-config
+            configMap:
+              defaultMode: 420
+              items:
+              - key: oci-mirror.yaml
+                path: oci-mirror.yaml
+              name: oci-mirror-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oci-mirror-config
+  labels:
+    app.kubernetes.io/name: registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: isolated-clusters
+    app.kubernetes.io/managed-by: ansible
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+data:
+  oci-mirror.yaml: |
+      {{ isolated_clusters_registry_oci_mirror_config | to_nice_yaml | indent(width=6, first=false) }}

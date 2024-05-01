@@ -1,0 +1,216 @@
+#jinja2: lstrip_blocks: "False", trim_blocks: "False"
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: "{{ sonic_docker_routing_config_mode }}"
+    hostname: "{{ inventory_hostname }}"
+    hwsku: "{{ sonic_running_cfg_hwsku }}"
+    mac: "{{ sonic_running_cfg_mac }}"
+    platform: "{{ sonic_running_cfg_platform }}"
+    type: "LeafRouter"
+    {% if sonic_frr_mgmt_framework_config %}
+    frr_mgmt_framework_config: "true"
+    {% endif %}
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+NTP_SERVER:
+  {% for ntpserver in sonic_ntpservers %}
+  {{ ntpserver }}: {}
+  {% endfor %}
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|{{ sonic_loopback_address }}/32: {}
+
+{% if sonic_mgmtif_ip is defined %}
+MGMT_INTERFACE:
+{% if sonic_mgmtif_gateway is defined %}
+  eth0|{{ sonic_mgmtif_ip }}:
+    gwaddr: "{{ sonic_mgmtif_gateway }}"
+{% else %}
+  eth0|{{ sonic_mgmtif_ip }}: {}
+{% endif %}
+
+{% endif %}
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"
+{% if sonic_ports_dict|length > 0 %}
+
+INTERFACE:
+  {% for name, port in sonic_ports_dict.items() %}
+  {% if name in sonic_bgp_ports|default([]) or port.vrf is defined %}
+  {{ name }}:
+    {% if name in sonic_bgp_ports|default([]) %}
+    ipv6_use_link_local_only: enable
+    {% endif %}
+    {% if port.vrf is defined %}
+    vrf_name: "{{ port.vrf }}"
+    {% endif %}
+  {% elif port.ips is defined %}
+  {{ name }}: {}
+  {% endif %}
+  {% for ip in port.ips|default([]) %}
+  {{ name }}|{{ ip }}: {}
+  {% endfor %}
+  {% endfor %}
+{% endif %}
+{% if sonic_running_cfg_breakouts %}
+
+BREAKOUT_CFG:
+  {% for name, cfg in sonic_running_cfg_breakouts.items() %}
+  {{ name }}:
+    brkout_mode: "{{ cfg.brkout_mode }}"
+  {% endfor %}
+{% endif %}
+
+PORT:
+  {% for name, running_cfg in sonic_running_cfg_ports.items() %}
+  {{ name }}:
+    alias: {{ running_cfg.alias }}
+    autoneg: "{{ running_cfg.autoneg|default("off")|string|lower }}"
+    index: "{{ running_cfg.index }}"
+    lanes: "{{ running_cfg.lanes }}"
+    {% if 'parent_port' in running_cfg %}
+    parent_port: {{ running_cfg.parent_port }}
+    {% endif %}
+    {% if sonic_ports_dict[name] is defined %}
+    {% set port = sonic_ports_dict[name] %}
+    admin_status: up
+    speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
+    mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
+    fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
+    {% else %}
+    speed: "{{ running_cfg.speed }}"
+    {% endif %}
+  {% endfor %}
+{% if sonic_vlans is defined and sonic_vlans|length > 0 %}
+
+VLAN:
+  {% for vlan in sonic_vlans %}
+  Vlan{{ vlan.id }}:
+    {% if vlan.dhcp_servers is defined and vlan.dhcp_servers|length > 0 %}
+    dhcp_servers: {{ vlan.dhcp_servers }}
+    {% endif %}
+    vlanid: {{ vlan.id }}
+  {% endfor %}
+
+VLAN_INTERFACE:
+  {% for vlan in sonic_vlans %}
+  {% if vlan.vrf is defined %}
+  Vlan{{ vlan.id }}:
+    vrf_name: "{{ vlan.vrf }}"
+  {% else %}
+  Vlan{{ vlan.id }}: {}
+  {% endif %}
+  {% if vlan.ip is defined %}
+  Vlan{{ vlan.id }}|{{ vlan.ip }}: {}
+  {% endif %}
+  {% endfor %}
+
+{% if sonic_vlan_members %}
+VLAN_MEMBER:
+  {% for vlan in sonic_vlans %}
+  {% for untagged_port in vlan.untagged_ports|default([]) %}
+  Vlan{{ vlan.id }}|{{ untagged_port }}:
+      tagging_mode: untagged
+  {% endfor %}
+  {% for tagged_port in vlan.tagged_ports|default([]) %}
+  Vlan{{ vlan.id }}|{{ tagged_port }}:
+      tagging_mode: tagged
+  {% endfor %}
+  {% endfor %}
+{% endif %}
+{% endif %}
+{% if sonic_vteps is defined and sonic_vteps|length > 0 %}
+
+VXLAN_EVPN_NVO:
+  nvo:
+    source_vtep: vtep
+
+VXLAN_TUNNEL:
+  vtep:
+    src_ip: "{{ sonic_loopback_address }}"
+
+VXLAN_TUNNEL_MAP:
+{% for vtep in sonic_vteps %}
+  {% if vtep.comment is defined %}
+  # {{ vtep.comment }}
+  {% endif %}
+  "vtep|map_{{ vtep.vni }}_{{ vtep.vlan }}":
+    vlan: "{{ vtep.vlan }}"
+    vni: "{{ vtep.vni }}"
+{% endfor %}
+{% endif %}
+{% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
+
+VRF:
+{% for k, i in sonic_interconnects.items() %}
+  {% if i.vrf is defined %}
+  {% if i.vni is defined %}
+  {{ i.vrf }}:
+    vni: "{{ i.vni }}"
+  {% else %}
+  {{ i.vrf }}: {}
+  {% endif %}
+  {% endif %}
+{% endfor %}
+{% endif %}
+{% if sonic_lldp_hello_timer is defined %}
+
+LLDP:
+  Global:
+    hello_timer: {{ sonic_lldp_hello_timer }}
+{% endif %}
+
+{% if sonic_ssh_sourceranges is defined %}
+ACL_RULE:
+  ALLOW_SSH|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+{% for sourcerange in sonic_ssh_sourceranges %}
+  ALLOW_SSH|RULE_{{ loop.index }}:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "9{{ loop.index }}"
+    SRC_IP: "{{ sourcerange }}"
+{% endfor %}
+  ALLOW_NTP|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+  ALLOW_NTP|RULE_1:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "99"
+    SRC_IP: "0.0.0.0/0"
+
+ACL_TABLE:
+  ALLOW_SSH:
+    policy_desc: "Allow SSH access"
+    ports: []
+    services:
+    - "SSH"
+    stage: "ingress"
+    type: "CTRLPLANE"
+  ALLOW_NTP:
+    policy_desc: "Allow NTP"
+    ports: []
+    services:
+    - "NTP"
+    stage: "ingress"
+    type: "CTRLPLANE"
+{% endif %}

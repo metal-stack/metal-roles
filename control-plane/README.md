@@ -10,8 +10,7 @@ Contains roles for deploying the metal-control-plane.
 
     | Port  | Protocol | Service Name  | Description                   |
     | ----- | -------- | ------------- | ----------------------------- |
-    | 4150  | TCP      | nsqd          | nsq Daemon (HTTPS)            |
-    | 4161  | TCP      | nsq-lookupd   | nsqlookup Damon (HTTP)        |
+    | 4150  | TCP      | nsqd          | nsq Daemon (TLS)              |
     | 5222  | TCP      | metal-console | Console forwarding (SSH)      |
     | 50051 | TCP      | metal-api     | metal-api gRPC API (protobuf) |
 
@@ -19,19 +18,21 @@ Contains roles for deploying the metal-control-plane.
 
 The `control-plane-defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all the default values [here](control-plane-defaults/main.yaml).
 
-| Name                                  | Mandatory | Description                                                                                                              |
-| ------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------ |
-| metal_control_plane_provider_tenant   |           | The name of the provider tenant, has extended privileges                                                                 |
-| metal_control_plane_ingress_dns       | yes       | The dns name used for exposing services via ingress                                                                      |
-| metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                                                 |
-| metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                                     |
-| metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                                            |
+| Name                                           | Mandatory | Description                                                                          |
+| ---------------------------------------------- | --------- | ------------------------------------------------------------------------------------ |
+| metal_control_plane_provider_tenant            |           | The name of the provider tenant, has extended privileges                             |
+| metal_control_plane_ingress_dns                | yes       | The dns name used for exposing services via ingress                                  |
+| metal_control_plane_stage_name                 |           | The name of the current stage, can be used for prefixing                             |
+| metal_control_plane_namespace                  |           | The target namespace of all deployed kubernetes resources of the metal-control-plane |
+| metal_control_plane_image_pull_policy          |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities        |
 
 ## Roles
 
 | Role Name                                                  | Description                                                                                                                     |
 | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [headscale](roles/headscale)                               | Deploys headscale                                                                                                               |
 | [ipam-db](roles/ipam-db)                                   | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                      |
+| [isolated-clusters](roles/isolated-clusters)               | Deploys services for isolated clusters                                                                                          |
 | [masterdata-db](roles/masterdata-db)                       | Deploys a database for the masterdata-api                                                                                       |
 | [metal](roles/metal)                                       | Deploys all metal-stack components of the metal-control-plane via Helm                                                          |
 | [metal-db](roles/metal-db)                                 | Deploys a database for the metal-api                                                                                            |

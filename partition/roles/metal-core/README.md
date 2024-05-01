@@ -2,6 +2,8 @@
 
 Deploys metal-core in a systemd-managed Docker container.
 
+This role can deploy on switches running Cumulus Linux or SONiC. It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
+
 ## Variables
 
 This role uses variables from [partition-defaults](/partition). So, make sure you define them adequately as well.
@@ -9,10 +11,11 @@ This role uses variables from [partition-defaults](/partition). So, make sure yo
 You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 | Name                                      | Mandatory | Description                                                                                                                                                                |
-|-------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | metal_core_image_name                     | yes       | Image name of metal-core                                                                                                                                                   |
 | metal_core_image_tag                      | yes       | Image tag of metal-core                                                                                                                                                    |
 | metal_core_cidr                           |           |                                                                                                                                                                            |
+| metal_core_log_driver                      |           | The log driver used for the metal-core container log                                                                                                                                                  |
 | metal_core_log_level                      |           | The metal-core log level                                                                                                                                                   |
 | metal_core_rack_id                        | yes       | The rack id describing the rack in which the leaf switches are contained. Can be a logical rack name and is used by the metal-api to identify the switch pair              |
 | metal_core_reconfigure_switch             |           | If set to true, metal-core will automatically reconfigure files on the switch                                                                                              |

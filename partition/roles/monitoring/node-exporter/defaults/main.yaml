@@ -1,0 +1,5 @@
+---
+monitoring_node_exporter_image_name: "prom/node-exporter"
+monitoring_node_exporter_image_tag: latest
+monitoring_node_exporter_port: 9100
+monitoring_node_exporter_dir: /node_exporter

@@ -1,0 +1,11 @@
+[Match]
+{% if item.mac is defined %}
+PermanentMACAddress={{ item.mac }}
+{% else %}
+Name={{ item.name }}
+{% endif %}
+
+[Link]
+Name={{ item.name }}
+NamePolicy=
+MTUBytes={{ item.mtu | default(systemd_networkd_mtu) }}

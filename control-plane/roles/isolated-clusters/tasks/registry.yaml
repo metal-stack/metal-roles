@@ -1,0 +1,24 @@
+---
+- name: Create namespace {{ isolated_clusters_registry_namespace }}
+  k8s:
+    definition:
+      api_version: v1
+      kind: Namespace
+      metadata:
+        name: "{{ isolated_clusters_registry_namespace }}"
+        labels:
+          app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
+    apply: yes
+
+- name: Deploy registry
+  k8s:
+    definition: "{{ lookup('template', 'registry/' + item) }}"
+    namespace: "{{ isolated_clusters_registry_namespace }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
+    apply: yes
+  loop:
+    - registry-sts.yaml
+    - registry-service.yaml
+    - registry-ingress.yaml
+    - registry-oci-mirror.yaml

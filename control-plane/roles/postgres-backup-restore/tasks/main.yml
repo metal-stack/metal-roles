@@ -16,3 +16,4 @@
   k8s:
     definition: "{{ lookup('template', 'postgres.yaml') }}"
     namespace: "{{ postgres_namespace }}"
+    apply: yes

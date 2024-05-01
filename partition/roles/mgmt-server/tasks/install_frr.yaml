@@ -1,0 +1,32 @@
+---
+- name: ensure gpg is installed to handle FRR repo key
+  apt:
+    name:
+    - gpg
+    update_cache : yes
+    force_apt_get: yes
+
+- name: add FRR apt-key to verify FRR package
+  apt_key:
+    url: https://deb-us.frrouting.org/frr/keys.asc
+    state: present
+
+- name: add mainline FRR repository to install FRR
+  apt_repository:
+    repo: deb https://deb-us.frrouting.org/frr {{ ansible_distribution_release }} {{ mgmt_server_frr_repo }}
+    state: present
+    filename: frr.list
+
+- name: install required packages to have the network stack in place
+  apt:
+    name:
+    - frr={{ mgmt_server_frr_version }}*
+    - frr-pythontools={{ mgmt_server_frr_version }}*
+    update_cache : yes
+    force_apt_get: yes
+
+- name: enable bgp daemons required to run bgp
+  copy:
+    src: daemons
+    dest: /etc/frr/daemons
+  notify: restart frr

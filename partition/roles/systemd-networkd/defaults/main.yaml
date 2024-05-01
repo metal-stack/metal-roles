@@ -1,0 +1,6 @@
+---
+systemd_networkd_mtu: 9000
+systemd_networkd_nics: []
+systemd_networkd_vrfs: []
+systemd_networkd_vlans: []
+systemd_networkd_vxlans: []

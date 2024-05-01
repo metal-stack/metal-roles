@@ -37,13 +37,8 @@ spec:
         image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}
         imagePullPolicy: {{ rethinkdb_image_pull_policy }}
         command:
-        - tini
-        - --
-        args:
-        - sh
-        - -c
-        # IMPORTANT: the --directory needs to point to the exact sidecar data dir, otherwise the database will be restored to the wrong location
-        - backup-restore-sidecar wait && rethinkdb --bind all --directory /data/rethinkdb --initial-password ${RETHINKDB_PASSWORD}
+        - backup-restore-sidecar
+        - wait
         env:
         - name: RETHINKDB_PASSWORD
           valueFrom:
@@ -62,21 +57,15 @@ spec:
           mountPath: /usr/local/bin/backup-restore-sidecar
         - name: backup-restore-sidecar-config
           mountPath: /etc/backup-restore-sidecar
-        - name: bin-provision
-          subPath: tini
-          mountPath: /usr/local/bin/tini
       - name: backup-restore-sidecar
         image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}
         imagePullPolicy: {{ rethinkdb_image_pull_policy }}
         command:
-        - tini
-        - --
-        args:
-        - sh
-        - -c
-        - mkdir -p /data/rethinkdb && backup-restore-sidecar start
+        - backup-restore-sidecar
+        - start
         ports:
-        - containerPort: 2112
+        - containerPort: 8000
+          name: grpc
         env:
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
@@ -100,6 +89,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: {{ rethinkdb_name }}
+        - mountPath: /backup
+          name: backup
         - name: rethinkdb-credentials
           mountPath: /rethinkdb-secret
         - name: backup-restore-sidecar-config
@@ -107,9 +98,6 @@ spec:
         - name: bin-provision
           subPath: backup-restore-sidecar
           mountPath: /usr/local/bin/backup-restore-sidecar
-        - name: bin-provision
-          subPath: tini
-          mountPath: /usr/local/bin/tini
         - name: bin-provision
           subPath: rethinkdb-dump
           mountPath: /usr/local/bin/rethinkdb-dump
@@ -128,7 +116,6 @@ spec:
         command:
         - cp
         - /backup-restore-sidecar
-        - /ubuntu/tini
         - /rethinkdb/rethinkdb-dump
         - /rethinkdb/rethinkdb-restore
         - /bin-provision
@@ -139,6 +126,9 @@ spec:
       - name: {{ rethinkdb_name }}
         persistentVolumeClaim:
           claimName: {{ rethinkdb_name }}
+      - name: backup
+        persistentVolumeClaim:
+          claimName: backup
       - name: rethinkdb-credentials
         secret:
           secretName: {{ rethinkdb_name }}
@@ -170,6 +160,17 @@ spec:
 {% if rethinkdb_storage_class %}
       storageClassName: {{ rethinkdb_storage_class }}
 {% endif %}
+  - metadata:
+      name: backup
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ rethinkdb_storage_size }}
+{% if rethinkdb_storage_class %}
+      storageClassName: {{ rethinkdb_storage_class }}
+{% endif %}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -184,6 +185,9 @@ data:
     rethinkdb-passwordfile: /rethinkdb-secret/rethinkdb-password.txt
     backup-cron-schedule: "{{ rethinkdb_backup_restore_sidecar_backup_cron_schedule }}"
     object-prefix: rethinkdb-{{ metal_control_plane_stage_name }}
+    post-exec-cmds:
+      # IMPORTANT: the --directory needs to point to the exact sidecar data dir, otherwise the database will be restored to the wrong location
+      - rethinkdb --bind all --directory /data/rethinkdb --initial-password ${RETHINKDB_PASSWORD}
 {% if rethinkdb_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ rethinkdb_backup_restore_sidecar_object_max_keep }}
 {% endif %}
@@ -237,10 +241,10 @@ kind: Ingress
 metadata:
   name: {{ rethinkdb_name }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
   - host: {{ rethinkdb_ingress_dns }}
     http:

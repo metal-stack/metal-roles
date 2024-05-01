@@ -1,0 +1,24 @@
+---
+# mgmt_server_asn:
+# mgmt_server_router_id:
+# mgmt_server_spine_facing_interface:
+# mgmt_server_firewall_facing_interface:
+# mgmt_server_firewall_ip:
+
+mgmt_server_registry_mirror: https://mirror.gcr.io
+
+mgmt_server_nameservers:
+- 193.110.81.0#dns0.eu
+- 2a0f:fc80::#dns0.eu
+- 185.253.5.0#dns0.eu
+- 2a0f:fc81::#dns0.eu
+mgmt_server_dns_over_tls: true
+
+mgmt_server_frr_match_interfaces:
+- lo
+
+mgmt_server_frr_version: 8.5-0
+mgmt_server_frr_repo: frr-8
+mgmt_server_provide_default_route: false
+
+mgmt_server_metal_ssh_groups: "{{ groups.all }}"

@@ -1,0 +1,78 @@
+---
+images:
+  apiserver: {{ gardener_virtual_api_server_image_name }}:{{ gardener_virtual_api_server_image_tag }}
+  controllermanager: {{ gardener_virtual_controller_manager_image_name }}:{{ gardener_virtual_controller_manager_image_tag }}
+
+apiServer:
+  hostname: {{ gardener_virtual_api_server_public_dns }}
+  serviceName: garden-kube-apiserver
+
+oidc:
+  issuerURL: {% if gardener_virtual_api_oidc_issuer_url %}{{ gardener_virtual_api_oidc_issuer_url }}{% endif %}
+
+  clientID: {% if gardener_virtual_api_oidc_client_id %}{{ gardener_virtual_api_oidc_client_id }}{% endif %}
+
+{% if gardener_virtual_api_oidc_username_claim %}
+  usernameClaim: {{ gardener_virtual_api_oidc_username_claim }}
+{% endif %}
+{% if gardener_virtual_api_oidc_username_prefix %}
+  usernamePrefix: "{{ gardener_virtual_api_oidc_username_prefix }}"
+{% endif %}
+{% if gardener_virtual_api_oidc_groups_claim %}
+  groupsClaim: {{ gardener_virtual_api_oidc_groups_claim }}
+{% endif %}
+{% if gardener_virtual_api_oidc_groups_prefix %}
+  groupsPrefix: "{{ gardener_virtual_api_oidc_groups_prefix }}"
+{% endif %}
+
+tls:
+  kubeAPIServer:
+    ca:
+      crt: |
+        {{ gardener_kube_api_server_ca | indent(width=8, first=false) }}
+      key: |
+        {{ gardener_kube_api_server_ca_key | indent(width=8, first=false) }}
+    server:
+      crt: |
+        {{ gardener_kube_api_server_cert | indent(width=8, first=false) }}
+      key: |
+        {{ gardener_kube_api_server_key | indent(width=8, first=false) }}
+    staticTokens:
+      healthCheck: {{ gardener_virtual_api_server_healthcheck_static_token }}
+  kubeAggregator:
+    ca:
+      crt: |
+        {{ gardener_kube_api_server_ca | indent(width=8, first=false) }}
+      key: |
+        {{ gardener_kube_api_server_ca_key | indent(width=8, first=false) }}
+    client:
+      crt: |
+        {{ gardener_kube_aggregator_client_cert | indent(width=8, first=false) }}
+      key: |
+        {{ gardener_kube_aggregator_client_key | indent(width=8, first=false) }}
+  kubeControllerManager:
+    crt: |
+      {{ gardener_kube_controller_manager_client_cert | indent(width=6, first=false) }}
+    key: |
+      {{ gardener_kube_controller_manager_client_key | indent(width=6, first=false) }}
+  admin:
+    crt: |
+      {{ gardener_admin_client_cert | indent(width=6, first=false) }}
+    key: |
+      {{ gardener_admin_client_key | indent(width=6, first=false) }}
+  serviceAccountKey: |
+    {{ gardener_service_account_client_key | indent(width=4, first=false) }}
+{% if gardener_virtual_api_oidc_ca %}
+  oidc:
+    ca: |
+      {{ gardener_virtual_api_oidc_ca | indent(width=6, first=false) }}
+{% endif %}
+
+etcd:
+  main:
+    endpoints: https://etcd-{{ metal_control_plane_stage_name }}-etcd-client:2379
+  secretNames:
+    ca: etcd-{{ metal_control_plane_stage_name }}-etcd-ca
+    client: etcd-{{ metal_control_plane_stage_name }}-etcd-tls
+
+networkPolicies: false

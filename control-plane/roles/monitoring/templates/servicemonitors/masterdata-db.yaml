@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: kube-prometheus-stack
+  name: masterdata-db
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: masterdata-db
+  namespaceSelector:
+    matchNames:
+    - {{ metal_control_plane_namespace }}
+  endpoints:
+  - port: "metrics"
+    interval: 60s

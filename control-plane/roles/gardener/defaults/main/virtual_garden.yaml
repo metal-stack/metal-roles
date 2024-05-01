@@ -1,0 +1,23 @@
+---
+gardener_virtual_api_server_svc_cluster_ip_add: 20
+gardener_virtual_api_server_public_dns: gardener-kube-apiserver.{{ metal_control_plane_ingress_dns }}
+gardener_virtual_api_server_healthcheck_static_token:
+
+gardener_etcd_backup_schedule: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
+gardener_etcd_snapshot_period: "0"
+gardener_etcd_garbage_collection_period: "12h"
+
+gardener_etcd_resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 800m
+    memory: 8Gi
+
+gardener_virtual_api_oidc_issuer_url:
+gardener_virtual_api_oidc_client_id:
+gardener_virtual_api_oidc_username_claim:
+gardener_virtual_api_oidc_username_prefix:
+gardener_virtual_api_oidc_groups_claim:
+gardener_virtual_api_oidc_groups_prefix:

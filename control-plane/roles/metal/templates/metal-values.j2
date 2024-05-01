@@ -90,6 +90,11 @@ metal_api:
     key: {{ metal_api_s3_key }}
     secret: {{ metal_api_s3_secret }}
     firmware_bucket: {{ metal_api_s3_firmware_bucket }}
+  headscale:
+    enabled: {{ metal_api_headscale_enabled }}
+    api_key: "{{ metal_api_headscale_api_key }}"
+    control_plane_address: "{{ metal_api_headscale_control_plane_address }}"
+    internal_api_address: "{{ metal_api_headscale_internal_api_address }}"
   replicas: "{{ metal_api_replicas }}"
   base_path: "{{ metal_api_base_path }}"
   dex_address: "{{ metal_api_dex_address }}"
@@ -97,6 +102,7 @@ metal_api:
   view_key: "{{ metal_api_view_key }}"
   edit_key: "{{ metal_api_edit_key }}"
   admin_key: "{{ metal_api_admin_key }}"
+  minimum_client_version: "{{ metalctl_version }}"
 {% if metal_api_password_reason_minlength %}
   password_reason_minlength: "{{ metal_api_password_reason_minlength }}"
 {% endif %}
@@ -121,32 +127,36 @@ metal_api:
   images: |
 {% for entity in metal_api_images %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   partitions: |
 {% for entity in metal_api_partitions %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   networks: |
 {% for entity in metal_api_networks %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   ips: |
 {% for entity in metal_api_ips %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   filesystemlayouts: |
 {% for entity in metal_api_filesystemlayouts %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {#
+      Some FSL Types confuse different YAML-parsing implementations.
+      Hence we fall back to JSON to enforce quotes around literals like 8e00.
+    #}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   sizeimageconstraints: |
 {% for entity in metal_api_sizeimageconstraints %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
 
 masterdata_api:
@@ -159,7 +169,7 @@ masterdata_api:
   tenants: |
 {% for entity in metal_masterdata_api_tenants %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   ca: "{{ metal_masterdata_api_tls_ca | b64encode }}"
   cert_key: "{{ metal_masterdata_api_tls_cert_key | b64encode }}"
@@ -181,7 +191,7 @@ masterdata_api:
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% for entity in metal_masterdata_api_projects %}
     ---
-    {{ entity | to_nice_yaml | indent(width=4, first=false) }}
+    {{ entity | to_json | indent(width=4, first=false) }}
 
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% endfor %}
@@ -189,3 +199,10 @@ masterdata_api:
 ingress_public_dns: "{{ metal_ingress_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
+
+auditing:
+  enabled: {{ metal_auditing_enabled }}
+  index_prefix: "{{ metal_auditing_index_prefix }}"
+  index_interval: "{{ metal_auditing_index_interval }}"
+  existingMasterKeySecret: "metal-auditing-meili-api-key"
+  url: "{{ metal_auditing_url }}"

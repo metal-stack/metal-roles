@@ -57,7 +57,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
 | metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
 | metal_api_hpa_min                   |           | Min amount of replicas for the HPA of the metal-api                                            |
-| metal_api_hpa_cpu_percentage        |           | Target CPU utilization percentage  for the HPA of the metal-api                                |
+| metal_api_hpa_cpu_percentage        |           | Target CPU utilization percentage for the HPA of the metal-api                                 |
 | metal_api_base_path                 |           | The base path of the HTTP server                                                               |
 | metal_api_dex_address               |           | The URL to the dex server                                                                      |
 | metal_api_dex_clientid              |           | The trusted dex clientid                                                                       |
@@ -92,6 +92,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_s3_secret                 |           | The secret of the S3 server that serves firmwares                                              |
 | metal_api_s3_firmware_bucket        |           | The S3 bucket name that contains the firmwares                                                 |
 | metal_api_password_reason_minlength |           | If machine console password is requested this defines if and how long the given reason must be |
+| minimum_client_version              |           | minimum metalctl version which is required to talk to this metal-api instance                  |
 
 ### masterdata-api
 
@@ -143,3 +144,14 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
 | metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
 | metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
+
+### Auditing
+
+| Name                             | Mandatory | Description                                                                  |
+|----------------------------------|-----------|------------------------------------------------------------------------------|
+| metal_auditing_enabled           |           | Whether to deploy or not to deploy the auditing. Default false.              |
+| metal_auditing_url               |           | The URL of the auditing server (required if enabled)                         |
+| metal_auditing_index_prefix      |           | auditing index prefix.                                                       |
+| metal_auditing_index_interval    |           | auditing index creation interval, can be one of @hourly / @daily / @monthly. |
+| metal_auditing_meili_secret_name |           | Secret name that holds the API key for meilisearch                           |
+| metal_auditing_meili_api_key     |           | API key for meilisearch                                                      |

@@ -1,0 +1,152 @@
+---
+- name: check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - mgmt_server_asn is not none
+      - mgmt_server_router_id is not none
+      - mgmt_server_spine_facing_interface is not none
+      - mgmt_server_metal_ssh_privkey is not none
+      - mgmt_server_metal_ssh_pubkey is not none
+
+- name: gather package facts
+  package_facts:
+    manager: auto
+
+- name: set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+# Note: systemd timedatectl does not modify /etc/timezone but /etc/localtime. This is "ok"!
+- name: apply timezone to align with the global setting
+  timezone:
+    name: UTC
+
+- name: set name servers to resolve dns
+  template:
+    src: resolved.conf.j2
+    dest: /etc/systemd/resolved.conf
+  notify:
+    - restart systemd-resolved
+
+- name: install required packages to have the network stack in place
+  apt:
+    name:
+    - net-tools
+    - ipmitool
+    - docker.io
+    - iptables-persistent
+    update_cache : yes
+    force_apt_get: yes
+
+- name: copy docker daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: reload docker
+
+- name: enable ipv4 forward to route packages as required
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+  loop:
+    - key: "net.ipv6.conf.{{ mgmt_server_spine_facing_interface }}.disable_ipv6"
+      value: '0'
+    - key: net.ipv4.ip_forward
+      value: '1'
+
+- name: configure forward chain to accept to route packages
+  iptables:
+    chain: FORWARD
+    policy: ACCEPT
+  notify: persist iptables
+
+- name: configure forward chain of docker-user to accept
+  iptables:
+    chain: DOCKER-USER
+    jump: ACCEPT
+  notify: persist iptables
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: check if FRR is installed
+  set_fact:
+    frr_installed: "{{ ('frr' in ansible_facts and ansible_facts.packages['frr'] == mgmt_server_frr_version) | bool }}"
+
+- include_tasks: install_frr.yaml
+  when: not frr_installed
+
+- name: render FRR conf to apply the required BGP setup
+  template:
+    src: frr.conf.j2
+    dest: /etc/frr/frr.conf
+    validate: '/usr/bin/vtysh --dryrun --inputfile %s'
+  notify:
+    - reload frr
+
+- name: Copy ssh key pair for metal user
+  copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode}}"
+    owner: metal
+    group: metal
+  loop:
+  - content: "{{ mgmt_server_metal_ssh_privkey }}"
+    dest: /home/metal/.ssh/id_rsa
+    mode: "0600"
+  - content: "{{ mgmt_server_metal_ssh_pubkey }}"
+    dest: /home/metal/.ssh/id_rsa.pub
+    mode: "0644"
+
+# This is so that self connect and cross connect to the other mgmtserver is possible
+- name: Add own ssh key to authorized_keys
+  lineinfile:
+    path: /home/metal/.ssh/authorized_keys
+    regexp: '^{{ mgmt_server_metal_ssh_pubkey }}$'
+    line: '{{ mgmt_server_metal_ssh_pubkey }}'
+
+- name: configure sshd to avoid root login and password authentication, hide OS information
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: restart sshd
+  loop:
+    - { regexp: "^PasswordAuthentication .+", line: "PasswordAuthentication no" }
+    - { regexp: "^PermitRootLogin .+", line: "PermitRootLogin no" }
+    - { regexp: "^DebianBanner .+", line: "DebianBanner no" }
+
+- name: Add IP's of all hosts to /etc/hosts to use those hostnames for connections
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*\s{{ item }}$'
+    line: "{{ hostvars[item].ansible_host }} {{ item }} {{ hostvars[item].host_alias|default('') }}"
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - hostvars[item].ansible_host is defined
+  loop: "{{ mgmt_server_metal_ssh_groups }}"
+
+- name: Create ssh configuration for easier access to mgmt components
+  template:
+    src: ssh_config.j2
+    dest: /home/metal/.ssh/config
+    mode: 0644
+    owner: metal
+    group: metal
+
+- name: flush handlers to complete the mgmt-server setup
+  meta: flush_handlers
+
+- name: flush dhcp routes if we have a bgp session to the firewall
+  command: ip route flush proto dhcp
+  when:
+    - mgmt_server_firewall_ip is defined
+    - mgmt_server_preserve_dhcp_route is undefined or not mgmt_server_preserve_dhcp_route

@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rethinkdb-exporter
+  namespace: {{ monitoring_namespace }}
+  labels:
+    app: rethinkdb-exporter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rethinkdb-exporter
+  namespace: {{ monitoring_namespace }}
+  labels:
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rethinkdb-exporter
+  template:
+    metadata:
+      labels:
+        app: rethinkdb-exporter
+    spec:
+      serviceAccountName: rethinkdb-exporter
+      containers:
+      - name: rethinkdb-exporter
+        image: {{ rethinkdb_exporter_name }}:{{ rethinkdb_exporter_tag }}
+        imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+        env:
+        - name: DB_PASSWORD
+          value: {{ monitoring_rethinkdb_exporter_metal_db_password }}
+        - name: DB_ADDRESSES
+          value: {{ monitoring_rethinkdb_exporter_metal_db_endpoint }}
+        - name: STATS_TABLE_ESTIMATES
+          value: "true"
+        - name: LOG_JSON_OUTPUT
+          value: "true"
+        ports:
+        - name: metrics
+          containerPort: 9055
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rethinkdb-exporter
+  namespace: {{ monitoring_namespace }}
+  labels:
+    app: rethinkdb-exporter
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    app: rethinkdb-exporter
+  ports:
+  - name: metrics
+    protocol: TCP
+    port: 9055
+    targetPort: 9055

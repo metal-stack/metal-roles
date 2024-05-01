@@ -60,6 +60,7 @@ metal_api_s3_key:
 metal_api_s3_secret:
 metal_api_s3_firmware_bucket:
 metal_api_password_reason_minlength:
+minimum_client_version: "{{ metalctl_version }}"
 
 # masterdata-api
 metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -98,3 +99,17 @@ metal_console_bmc_proxy_certs_ca_cert:
 metal_deploy_ingress: true
 metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
+
+# headscale
+metal_api_headscale_enabled: false
+metal_api_headscale_tls: yes
+metal_api_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data', {}).get('key') | b64decode if metal_api_headscale_enabled else '' }}"
+metal_api_headscale_control_plane_address: "http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_ingress_dns }}"
+metal_api_headscale_internal_api_address: "headscale:50443"
+
+# auditing
+metal_auditing_enabled: false
+metal_auditing_index_prefix: "auditing"
+metal_auditing_index_interval: "@daily"
+metal_auditing_url: "http://auditing-meili.{{ auditing_meili_namespace if auditing_meili_namespace is defined else metal_control_plane_namespace }}.svc.cluster.local:7700"
+metal_auditing_meili_api_key: "{{ lookup('k8s', api_version='v1', namespace=auditing_meili_namespace if auditing_meili_namespace is defined else metal_control_plane_namespace, kind='Secret', resource_name='auditing-meili').get('data', {}).get('MEILI_MASTER_KEY') | b64decode if metal_auditing_enabled else '' }}"

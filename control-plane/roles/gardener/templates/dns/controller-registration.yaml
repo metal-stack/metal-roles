@@ -1,0 +1,11 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerRegistration
+metadata:
+  name: dns-external
+spec:
+  deployment:
+    policy: Always
+    deploymentRefs:
+    - name: dns-external
+  resources: []

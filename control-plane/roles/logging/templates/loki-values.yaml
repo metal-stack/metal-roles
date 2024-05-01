@@ -1,0 +1,77 @@
+---
+singleBinary:
+  replicas: 1
+  persistence:
+    size: 30Gi
+
+loki:
+  auth_enabled: false
+
+  ingester:
+    lifecycler:
+      address: 127.0.0.1
+      ring:
+        kvstore:
+          store: inmemory
+        replication_factor: 1
+    chunk_idle_period: 1h
+    chunk_retain_period: 30s
+
+  storage_config:
+    boltdb:
+      directory: /tmp/loki/index
+
+    filesystem:
+      directory: /tmp/loki/chunks
+
+  storage:
+    type: 'filesystem'
+
+  limits_config:
+    enforce_metric_name: false
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    ingestion_rate_mb: 32
+    ingestion_burst_size_mb: 64
+    per_stream_rate_limit: "16MB"
+    per_stream_rate_limit_burst: "32MB"
+
+  ruler:
+    storage:
+      type: local
+      local:
+        directory: /tmp/loki/rules
+
+gateway:
+  enabled: false
+
+ingress:
+  enabled: true
+  ingressClassName: "nginx"
+  annotations:
+{% for key, value in logging_ingress_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+{% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
+{% endif %}
+  hosts:
+    - {{ logging_ingress_dns }}
+{% if logging_ingress_loki_tls %}
+  tls:
+    - hosts:
+      - {{ logging_ingress_dns }}
+      secretName: monitoring-loki-ingress-tls
+{% endif %}
+
+{% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
+extraObjects:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: loki-basic-auth
+  type: Opaque
+  stringData:
+    auth: "{{ logging_ingress_loki_basic_auth_user }}:{{ logging_ingress_loki_basic_auth_password | string | password_hash('bcrypt', salt=logging_ingress_loki_basic_auth_password_salt) }}"
+{% endif %}

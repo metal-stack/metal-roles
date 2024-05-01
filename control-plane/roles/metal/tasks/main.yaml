@@ -26,6 +26,18 @@
       - metal_helm_chart_local_path is not none or metal_helm_chart_version is defined
       - not metal_api_s3_enabled or metal_api_s3_address is not none
 
+- name: Create meili secret for control plane
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: metal-auditing-meili-api-key
+        namespace: "{{ metal_control_plane_namespace }}"
+      stringData:
+        MEILI_MASTER_KEY: "{{ metal_auditing_meili_api_key }}"
+  when: metal_auditing_meili_api_key
+
 - name: Deploy metal control plane
   include_role:
     name: ansible-common/roles/helm-chart

@@ -1,13 +1,39 @@
-default-lease-time 600;
-max-lease-time 600;
+# indicate that the DHCP server should send DHCPNAK messages to misconfigured client
+authoritative;
+
+default-lease-time {{ dhcp_default_lease_time }};
+max-lease-time {{ dhcp_max_lease_time }};
+
+{% if dhcp_use_host_decl_names %}
+use-host-decl-names on;
+{% endif -%}
 
 log-facility local7;
 
-subnet {{ dhcp_net }} netmask {{ dhcp_netmask }} {
-    range {{ dhcp_range_min }} {{ dhcp_range_max }};
-    # Provide routers to set up default gateway for clients.
-    option routers {{ dhcp_server_ip }};
-    # In case of Vagrant DNS must not be resolved via mgmt servers.
-    # This is because the setup to provide e.g. metal images via mgmt servers exceeds resources in Vagrant case.
-    option domain-name-servers {{ dhcp_dns_servers | join(', ') }};
+{% for option in dhcp_global_options %}
+option {{ option }};
+{% endfor %}
+{% for deny in dhcp_global_deny_list %}
+  deny {{ deny }};
+{% endfor -%}
+
+{% for subnet in dhcp_subnets %}
+{% if subnet.comment | default("") %}
+# {{ subnet.comment }}
+{% endif %}
+subnet {{ subnet.network }} netmask {{ subnet.netmask }} {
+{% if subnet.range is defined %}
+  range {{ subnet.range.begin }} {{ subnet.range.end }};
+{% endif %}
+{% for option in subnet.options | default([]) %}
+  option {{ option }};
+{% endfor %}
+{% for deny in subnet.deny_list | default([]) %}
+  deny {{ deny }};
+{% endfor %}
 }
+{% endfor -%}
+
+{% if dhcp_static_hosts is defined %}
+include "/etc/dhcp/dhcpd.hosts";
+{% endif %}

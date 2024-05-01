@@ -1,0 +1,25 @@
+---
+- name: Deploy metal-metrics-exporter
+  k8s:
+    definition: "{{ lookup('template', 'metrics-exporters/metal-metrics-exporter.yaml') }}"
+    namespace: "{{ monitoring_namespace }}"
+    apply: true
+
+- name: Deploy rethinkdb-exporter
+  k8s:
+    definition: "{{ lookup('template', 'metrics-exporters/rethinkdb-exporter.yaml') }}"
+    namespace: "{{ monitoring_namespace }}"
+    apply: true
+
+- name: Deploy event-exporter
+  k8s:
+    definition: "{{ lookup('template', 'metrics-exporters/event-exporter.yaml') }}"
+    namespace: "{{ monitoring_namespace }}"
+    apply: true
+
+- name: Deploy gardener-metrics-exporter
+  k8s:
+    definition: "{{ lookup('template', 'metrics-exporters/gardener-metrics-exporter.yaml') }}"
+    namespace: "{{ monitoring_namespace }}"
+    apply: true
+  when: monitoring_gardener_enabled
