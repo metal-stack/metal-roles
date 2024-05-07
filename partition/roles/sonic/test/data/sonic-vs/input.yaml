@@ -1,0 +1,46 @@
+---
+inventory_hostname: sonic-vs
+sonic_asn: 4200000000
+sonic_loopback_address: 10.0.0.1
+
+sonic_mgmtif_ip: 172.17.0.2/16
+sonic_mgmtif_gateway: 172.17.0.1
+sonic_mgmt_vrf: false
+
+sonic_docker_routing_config_mode: split-unified
+sonic_frr_mgmt_framework_config: false
+
+sonic_ports_default_mtu: 9000
+sonic_ports_default_speed: 40000
+sonic_ports_dict:
+  Ethernet0:
+
+sonic_running_cfg_breakouts:
+sonic_running_cfg_hwsku: Force10-S6000
+sonic_running_cfg_mac: e0:01:a6:e3:29:3c
+sonic_running_cfg_platform: x86_64-kvm_x86_64-r0
+
+sonic_running_cfg_ports:
+  Ethernet0:
+    alias: fortyGigE0/0
+    index: "0"
+    lanes: "25,26,27,28"
+    speed: "40000"
+  Ethernet4:
+    alias: fortyGigE0/4
+    index: "1"
+    lanes: "29,30,31,32"
+    speed: "40000"
+
+sonic_bgp_ports:
+  Ethernet0:
+
+sonic_vlans:
+  - id: 4000
+    ip: 10.0.1.1/25
+
+# Dummy VTEP so that basic VXLAN config will be deployed by sonic role:
+sonic_vteps:
+- comment: Dummy
+  vlan: Vlan3999
+  vni: 103999

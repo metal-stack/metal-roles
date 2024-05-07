@@ -84,12 +84,18 @@
 - name: Fail if running configuration doesn't contain required information
   ansible.builtin.assert:
     that:
-      - sonic_running_cfg_breakouts
       - sonic_running_cfg_hwsku
       - sonic_running_cfg_mac
       - sonic_running_cfg_platform
       - sonic_running_cfg_ports
-    fail_msg: The running configuration is incomplete because it does not contain 'BREAKOUT_CFG', 'PORT', or complete 'DEVICE_METADATA'.
+    fail_msg: The running configuration is incomplete because it does not contain 'PORT' or complete 'DEVICE_METADATA'.
+
+- name: Fail if running configuration doesn't contain breakout configuration
+  ansible.builtin.assert:
+    that:
+      - sonic_running_cfg_breakouts
+    fail_msg: The running configuration is incomplete because it does not contain 'BREAKOUT_CFG'.
+  when: sonic_breakouts is defined
 
 - name: Render config_db
   set_fact:

@@ -2,13 +2,15 @@
 ---
 DEVICE_METADATA:
   localhost:
-    docker_routing_config_mode: split
+    docker_routing_config_mode: "{{ sonic_docker_routing_config_mode }}"
     hostname: "{{ inventory_hostname }}"
     hwsku: "{{ sonic_running_cfg_hwsku }}"
     mac: "{{ sonic_running_cfg_mac }}"
     platform: "{{ sonic_running_cfg_platform }}"
     type: "LeafRouter"
+    {% if sonic_frr_mgmt_framework_config %}
     frr_mgmt_framework_config: "true"
+    {% endif %}
 
 FEATURE:
   dhcp_relay:
@@ -67,12 +69,14 @@ INTERFACE:
   {% endfor %}
   {% endfor %}
 {% endif %}
+{% if sonic_running_cfg_breakouts %}
 
 BREAKOUT_CFG:
   {% for name, cfg in sonic_running_cfg_breakouts.items() %}
   {{ name }}:
     brkout_mode: "{{ cfg.brkout_mode }}"
   {% endfor %}
+{% endif %}
 
 PORT:
   {% for name, running_cfg in sonic_running_cfg_ports.items() %}
@@ -81,7 +85,9 @@ PORT:
     autoneg: "{{ running_cfg.autoneg|default("off")|string|lower }}"
     index: "{{ running_cfg.index }}"
     lanes: "{{ running_cfg.lanes }}"
+    {% if 'parent_port' in running_cfg %}
     parent_port: {{ running_cfg.parent_port }}
+    {% endif %}
     {% if sonic_ports_dict[name] is defined %}
     {% set port = sonic_ports_dict[name] %}
     admin_status: up
