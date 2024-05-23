@@ -85,9 +85,6 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_sag.vlans                                            |           | A list of VLANs that use SAG                                                                                         |
 | sonic_sag.vlans.id                                         |           | The VLAN ID of this VLAN                                                                                             |
 | sonic_sag.vlans.ip                                         |           | The SAG IP of this VLAN                                                                                              |
-| sonic_vrfs                                                 |           | Static vrf configuration                                                                                             |
-| sonic_vrfs.id                                              |           | The id of this vrf                                                                                                   |
-| sonic_vrfs.vni                                             |           | The vni number of this vrf                                                                                           |
 | sonic_ssh_sourceranges                                     |           | The source ranges from which the switch should be reachable over SSH on its prod (non-management) addresses          |
 | sonic_extended_cacl.ipv4                                   |           | Iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
 | sonic_extended_cacl.ipv6                                   |           | Iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |

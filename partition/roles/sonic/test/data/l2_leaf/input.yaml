@@ -147,11 +147,6 @@ sonic_vteps:
   vlan: Vlan1001
   vni: 46
 
-  
-# sonic_vrfs: # TODO figure out if we need this or whether we can create the routing info for l2 leaves with sonic_interconnects
-# - id: 46
-#   vni: 46
-
 sonic_interconnects:
   croit:
     vrf: Vrf46

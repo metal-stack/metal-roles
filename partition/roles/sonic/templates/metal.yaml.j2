@@ -214,7 +214,7 @@ VXLAN_TUNNEL_MAP:
     vni: "{{ vtep.vni }}"
 {% endfor %}
 {% endif %}
-{% if ( sonic_interconnects is defined and sonic_interconnects|length > 0 ) or ( sonic_vrfs is defined and sonic_vrfs|length > 0 )%}
+{% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
 
 VRF:
 {% endif %}
@@ -228,12 +228,6 @@ VRF:
   {{ i.vrf }}: {}
   {% endif %}
   {% endif %}
-{% endfor %}
-{% endif %}
-{% if sonic_vrfs is defined and sonic_vrfs|length > 0 %}
-{% for vrf in sonic_vrfs %}
-  Vrf{{ vrf.id }}:
-    vni: "{{ vrf.vni }}"
 {% endfor %}
 {% endif %}
 {% if sonic_lldp_hello_timer is defined %}
