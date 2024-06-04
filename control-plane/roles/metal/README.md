@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Images
 
 | Name                                   | Mandatory | Description                             |
-|----------------------------------------|-----------|-----------------------------------------|
+| -------------------------------------- | --------- | --------------------------------------- |
 | metal_api_image_name                   | yes       | Image version of the metal-api          |
 | metal_api_image_tag                    | yes       | Image tag of the metal-api              |
 | metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
@@ -38,6 +38,8 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_image_name        | yes       | Image version of the masterdata-api     |
 | metal_masterdata_api_image_tag         | yes       | Image tag of the masterdata-api         |
 | metal_masterdata_api_image_pull_policy |           | Image pull policy of the masterdata-api |
+| metal_ipam_image_name                  | yes       | Image version of the ipam               |
+| metal_ipam_image_tag                   | yes       | Image tag of the ipam                   |
 
 ### Service Ports
 

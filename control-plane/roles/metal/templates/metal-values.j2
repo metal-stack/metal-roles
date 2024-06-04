@@ -21,6 +21,10 @@ images:
     image: "{{ metal_masterdata_api_image_name }}"
     imagePullPolicy: "{{ metal_masterdata_api_image_pull_policy }}"
     tag: "{{ metal_masterdata_api_image_tag }}"
+  ipam:
+    image: "{{ metal_ipam_image_name }}"
+    imagePullPolicy: "{{ metal_console_image_pull_policy }}"
+    tag: "{{ metal_ipam_image_tag }}"
 
 resources:
 {% if metal_api_resources %}
