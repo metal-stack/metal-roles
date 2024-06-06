@@ -23,6 +23,12 @@ ipam_db_backup_restore_sidecar_gcp_backup_location:
 ipam_db_backup_restore_sidecar_gcp_project_id:
 ipam_db_backup_restore_sidecar_gcp_serviceaccount_json:
 
+ipam_db_backup_restore_sidecar_s3_bucket_name:
+ipam_db_backup_restore_sidecar_s3_region:
+ipam_db_backup_restore_sidecar_s3_endpoint:
+ipam_db_backup_restore_sidecar_s3_access_key:
+ipam_db_backup_restore_sidecar_s3_secret_key:
+
 ipam_db_resources:
   requests:
     memory: "128Mi"
