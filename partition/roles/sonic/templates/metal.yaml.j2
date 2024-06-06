@@ -117,7 +117,7 @@ PORT:
     speed: "{{ running_cfg.speed }}"
     {% endif %}
   {% endfor %}
-{% if sonic_portchannels is defined and sonic_portchannels|length > 0 %}
+{% if sonic_portchannels %}
 
 PORTCHANNEL:
 {% for po in sonic_portchannels %}
