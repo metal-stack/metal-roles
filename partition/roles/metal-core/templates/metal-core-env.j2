@@ -13,7 +13,8 @@ METAL_CORE_METAL_API_BASEPATH: "{{ metal_partition_metal_api_basepath }}"
 METAL_CORE_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
 METAL_CORE_LOG_LEVEL: "{{ metal_core_log_level }}"
 METAL_CORE_RECONFIGURE_SWITCH: "{{ metal_core_reconfigure_switch }}"
-METAL_CORE_RECONFIGURE_SWITCH_INTERVAL: "{{ metal_core_reconfigure_switch_interval }}"
+METAL_CORE_SYNC_SCHEDULE: "{{ metal_core_sync_cron_schedule }}"
+METAL_CORE_SYNC_DELAY: "{{ metal_core_sync_delay }}"
 {% if metal_partition_mgmt_gateway %}
 METAL_CORE_MANAGEMENT_GATEWAY: "{{ metal_partition_mgmt_gateway }}"
 {% endif %}
