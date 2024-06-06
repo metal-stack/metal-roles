@@ -1,0 +1,215 @@
+---
+inventory_hostname: l2leaf01
+sonic_asn: 4200000000
+sonic_loopback_address: 10.0.0.1
+
+sonic_breakouts:
+  Ethernet0: "4x25G"
+  Ethernet4: "4x25G"
+
+sonic_ports_default_mtu: 9000
+sonic_ports_default_speed: 25000
+sonic_ports_dict:
+  Ethernet0:
+  Ethernet1:
+  Ethernet2:
+  Ethernet4:
+  Ethernet5:
+# L2 interconnects
+  Ethernet112:
+    speed: 100000
+    mtu: 9216
+  Ethernet116:
+    speed: 100000
+    mtu: 9216
+# Spine uplinks
+  Ethernet120:
+    speed: 100000
+    mtu: 9216
+  Ethernet124:
+    speed: 100000
+    mtu: 9216
+
+sonic_running_cfg_breakouts:
+  Ethernet0:
+    brkout_mode: "4x25G"
+  Ethernet4:
+    brkout_mode: "4x25G"
+  Ethernet112:
+    brkout_mode: "1x100G[40G]"
+  Ethernet116:
+    brkout_mode: "1x100G[40G]"
+  Ethernet120:
+    brkout_mode: "1x100G[40G]"
+  Ethernet124:
+    brkout_mode: "1x100G[40G]"
+
+sonic_running_cfg_hwsku: Accton-AS7726-32X
+sonic_running_cfg_mac: e0:01:a6:e3:29:3c
+sonic_running_cfg_platform: x86_64-accton_as7726_32x-r0
+
+sonic_running_cfg_ports:
+  Ethernet0:
+    alias: Eth1/1(Port1)
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
+    speed: "25000"
+  Ethernet1:
+    alias: Eth1/2(Port1)
+    index: "1"
+    lanes: "2"
+    parent_port: Ethernet0
+    speed: "25000"
+  Ethernet2:
+    alias: Eth1/3(Port1)
+    index: "1"
+    lanes: "3"
+    parent_port: Ethernet0
+    speed: "25000"
+  Ethernet3:
+    alias: Eth1/4(Port1)
+    index: "1"
+    lanes: "4"
+    parent_port: Ethernet0
+    speed: "25000"
+  Ethernet4:
+    alias: Eth2/1(Port2)
+    index: "2"
+    lanes: "1"
+    parent_port: Ethernet4
+    speed: "25000"
+  Ethernet5:
+    alias: Eth2/2(Port2)
+    index: "2"
+    lanes: "2"
+    parent_port: Ethernet4
+    speed: "25000"
+  Ethernet6:
+    alias: Eth2/3(Port2)
+    index: "2"
+    lanes: "3"
+    parent_port: Ethernet4
+    speed: "25000"
+  Ethernet7:
+    alias: Eth2/4(Port2)
+    index: "2"
+    lanes: "4"
+    parent_port: Ethernet4
+    speed: "25000"  
+  Ethernet112:
+    alias: Eth29(Port29)
+    index: "29"
+    lanes: "113,114,115,116"
+    parent_port: Ethernet112
+    speed: "100000"
+  Ethernet116:
+    alias: Eth30(Port30)
+    index: "30"
+    lanes: "117,118,119,120"
+    parent_port: Ethernet116
+    speed: "100000"
+  Ethernet120:
+    alias: Eth31(Port31)
+    index: "31"
+    lanes: "121,122,123,124"
+    parent_port: Ethernet120
+    speed: "100000"
+  Ethernet124:
+    alias: Eth32(Port32)
+    index: "32"
+    lanes: "125,126,127,128"
+    parent_port: Ethernet124
+    speed: "100000"
+
+sonic_bgp_ports:
+- Ethernet120
+- Ethernet124
+
+sonic_vlans:
+- id: 1000
+  ip: "192.168.255.1/24"
+  tagged_ports:
+  - PortChannel01
+- id: 1001
+  vrf: Vrf46
+  tagged_ports:
+  - PortChannel01
+  untagged_ports:
+  - PortChannel11
+  - PortChannel12
+  - PortChannel21
+  - PortChannel22
+  - PortChannel23
+
+sonic_vteps:
+- comment: "Croit storage"
+  vlan: Vlan1001
+  vni: 46
+
+sonic_interconnects:
+  croit:
+    vrf: Vrf46
+    vni: 46
+    announcements:
+    - redistribute connected
+  xconnect:
+    peer_group: XCONNECT
+    evpn_peer: true
+    neighbor_ip: "192.168.255.2"
+    remote_as: "4200000000"
+
+sonic_mclag:
+  system_mac: 00:11:22:33:44:55
+  peer_ip: "192.168.255.2"
+  peer_link: PortChannel01
+  source_ip: "192.168.255.1"
+  keepalive_vlan: "1000"
+  member_port_channels:
+  - "11"
+  - "12"
+  - "21"
+  - "22"
+  - "23"
+
+sonic_portchannels_default_mtu: 9000
+sonic_portchannels:
+- number: "01"
+  mtu: "9216"
+  members:
+  - Ethernet112
+  - Ethernet116
+- number: "11"
+  fallback: true
+  members:
+  - Ethernet4
+- number: "12"
+  fallback: "true"
+  members:
+  - Ethernet5
+- number: "21"
+  fallback: "True"
+  members:
+  - Ethernet0
+- number: "22"
+  fallback: false
+  members:
+  - Ethernet1
+- number: "23"
+  members:
+  - Ethernet2
+
+sonic_sag:
+  mac: 00:11:22:33:44:66
+  vlans:
+  - id: 1001
+    ip: 10.3.2.1/27
+
+sonic_frr_l2vpn_evpn: true
+sonic_frr_route_map:
+ name: LOOPBACKS
+ match: interface Loopback0
+
+sonic_ssh_sourceranges:
+- "1.2.3.4/32"
+- "10.11.0.0/16"
