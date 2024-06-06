@@ -17,6 +17,8 @@ kind: Service
 metadata:
   name: {{ .Values.serviceName }}
   namespace: {{ .Release.Namespace }}
+  annotations:
+    networking.resources.gardener.cloud/from-world-to-ports: '[{"protocol":"TCP","port":443}]'
   labels:
     app: garden
     component: kube-apiserver
