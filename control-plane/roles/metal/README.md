@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Images
 
 | Name                                   | Mandatory | Description                             |
-|----------------------------------------|-----------|-----------------------------------------|
+| -------------------------------------- | --------- | --------------------------------------- |
 | metal_api_image_name                   | yes       | Image version of the metal-api          |
 | metal_api_image_tag                    | yes       | Image tag of the metal-api              |
 | metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
@@ -38,6 +38,8 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_masterdata_api_image_name        | yes       | Image version of the masterdata-api     |
 | metal_masterdata_api_image_tag         | yes       | Image tag of the masterdata-api         |
 | metal_masterdata_api_image_pull_policy |           | Image pull policy of the masterdata-api |
+| metal_ipam_image_name                  | yes       | Image version of the ipam               |
+| metal_ipam_image_tag                   | yes       | Image tag of the ipam                   |
 
 ### Service Ports
 
@@ -52,7 +54,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### metal-api
 
 | Name                                | Mandatory | Description                                                                                    |
-|-------------------------------------|-----------|------------------------------------------------------------------------------------------------|
+| ----------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
 | metal_api_replicas                  |           | The number of deployed replicas of the metal-api                                               |
 | metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
 | metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
@@ -63,11 +65,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_dex_clientid              |           | The trusted dex clientid                                                                       |
 | metal_api_db_address                |           | The URL of the metal-db                                                                        |
 | metal_api_db_password               |           | The password of the metal-db                                                                   |
-| metal_api_ipam_db_address           |           | The URL to the ipam database                                                                   |
-| metal_api_ipam_db_port              |           | The port of the ipam database                                                                  |
-| metal_api_ipam_db_name              |           | The database name of the ipam database                                                         |
-| metal_api_ipam_db_user              |           | The user of the ipam database                                                                  |
-| metal_api_ipam_db_password          |           | The password of the ipam database                                                              |
+| metal_api_ipam_grpc_server_endpoint |           | The grpc endpoint address of the ipam grpc service (requires scheme)                           |
 | metal_api_nsq_lookupd_address       |           | The http address of nsqlookupd (only used for in-cluster traffic)                              |
 | metal_api_nsq_tcp_address           |           | The tcp address of nsqd                                                                        |
 | metal_api_nsq_http_address          |           | The http address of nsqd (only used for in-cluster traffic)                                    |
@@ -130,6 +128,17 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_console_bmc_proxy_certs_server_pub  |           | The bmc-proxy server public key as a string (required if enabled)  |
 | metal_console_bmc_proxy_certs_client_cert |           | The bmc-proxy client certificate as a string (required if enabled) |
 | metal_console_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string (required if enabled)         |
+
+### ipam
+
+| Name                   | Mandatory | Description                                                                       |
+| ---------------------- | --------- | --------------------------------------------------------------------------------- |
+| metal_ipam_db_address  |           | The hostname of the ipam service                                                  |
+| metal_ipam_db_port     |           | The port of the ipam service                                                      |
+| metal_ipam_db_name     |           | The database name of the ipam service                                             |
+| metal_ipam_db_user     |           | The user of the ipam service                                                      |
+| metal_ipam_db_password |           | The password of the ipam service                                                  |
+| metal_ipam_log_level   |           | The log level for the ipam service (metal_log_level is not used for this service) |
 
 ### Ingress
 
