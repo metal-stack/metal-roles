@@ -1,0 +1,32 @@
+apiVersion: core.gardener.cloud/v1beta1
+kind: Project
+metadata:
+  name: "{{ gardener_soil_name }}"
+  labels:
+    gardener.cloud/role: "project"
+    project.gardener.cloud/name: "{{ gardener_soil_name }}"
+spec:
+  namespace: garden
+  tolerations:
+    defaults:
+      - key: seed.gardener.cloud/protected
+      - key: seed.gardener.cloud/invisible
+      - key: seed.gardener.cloud/disable-capacity-reservation
+    whitelist:
+      - key: seed.gardener.cloud/protected
+      - key: seed.gardener.cloud/invisible
+      - key: seed.gardener.cloud/disable-capacity-reservation
+  owner:
+    apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: "{{ gardener_soil_project_owner_name }}"
+  members:
+    apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: "{{ user.name }}"
+    role: "{{ user.role }}"
+    roles:
+      loop: "{{ user.roles }}"
+    loop: "{{ gardener_soil_project_members }}"
+    loop_control:
+      loop_var: user
