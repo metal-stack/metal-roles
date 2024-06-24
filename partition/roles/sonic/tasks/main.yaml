@@ -24,6 +24,14 @@
       - sonic_ports_default_mtu
   when: sonic_ports
 
+- name: Check mandatory variables on non-empty sonic_portchannels are set
+  assert:
+    fail_msg: "default configuration is necessary on non-empty sonic_portchannels"
+    quiet: yes
+    that:
+      - sonic_portchannels_default_mtu
+  when: sonic_portchannels
+
 - name: Populate sonic_ports_dict
   set_fact:
     sonic_ports_dict: "{{ sonic_ports_dict|default({}) | combine( {item.name: item} ) }}"

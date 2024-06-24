@@ -36,6 +36,10 @@ providerConfig:
 {% endif %}
 
       etcd:
+{% if gardener_extension_provider_metal_etcd_storage_class_name is not none %}
+        storage:
+          className: {{ gardener_extension_provider_metal_etcd_storage_class_name }}
+{% endif %}
         backup:
           schedule: "{{ gardener_extension_provider_metal_etcd_backup_schedule }}"
           deltaSnapshotPeriod: "{{ gardener_extension_provider_metal_etcd_delta_snapshot_period }}"
