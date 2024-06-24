@@ -121,36 +121,9 @@
 
 - name: Create Gardener project for shooted seeds
   k8s:
-    definition:
-      apiVersion: core.gardener.cloud/v1beta1
-      kind: Project
-      metadata:
-        name: "{{ gardener_soil_name }}"
-        labels:
-          gardener.cloud/role: "project"
-          project.gardener.cloud/name: "{{ gardener_soil_name }}"
-      spec:
-        namespace: garden
-        tolerations:
-          defaults:
-            - key: seed.gardener.cloud/protected
-            - key: seed.gardener.cloud/invisible
-            - key: seed.gardener.cloud/disable-capacity-reservation
-          whitelist:
-            - key: seed.gardener.cloud/protected
-            - key: seed.gardener.cloud/invisible
-            - key: seed.gardener.cloud/disable-capacity-reservation
-        owner:
-          apiGroup: rbac.authorization.k8s.io
-          kind: User
-          name: "{{ gardener_soil_project_owner_name }}"
-        members:
-        - apiGroup: rbac.authorization.k8s.io
-          kind: User
-          name: "{{ gardener_soil_project_owner_name }}"
-          role: admin
+    definition: "{{ lookup('template', 'gardener-soil-project.yaml.j2') }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-  when: not lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Project', resource_name=gardener_soil_name)
+    apply: true
 
 - name: Add project labels to garden namespace
   k8s:
