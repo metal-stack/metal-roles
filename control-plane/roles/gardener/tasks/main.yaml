@@ -123,7 +123,7 @@
   k8s:
     definition: "{{ lookup('template', 'gardener-soil-project.yaml.j2') }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-  when: not lookup('k8s', kubeconfig=gardener_kube_apiserver_kubeconfig_path, api_version='core.gardener.cloud/v1beta1', kind='Project', resource_name=gardener_soil_name)
+    apply: true
 
 - name: Add project labels to garden namespace
   k8s:
