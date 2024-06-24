@@ -1,13 +1,10 @@
 # gardener
 
-Deploys Gardener into a virtual garden along with a dedicated ETCD and a set of
-extension controllers.
+Deploys Gardener into a virtual garden along with a dedicated ETCD and a set of extension controllers.
 
-Please refer to the metal-stack gardener integration in our
-[documentation](https://docs.metal-stack.io/stable/overview/kubernetes/).
+Please refer to the metal-stack gardener integration in our [documentation](https://docs.metal-stack.io/stable/overview/kubernetes/).
 
-Check out the Gardener project for further documentation on
-[gardener.cloud](https://gardener.cloud/).
+Check out the Gardener project for further documentation on [gardener.cloud](https://gardener.cloud/).
 
 ## Variables
 
@@ -44,13 +41,9 @@ Check out the Gardener project for further documentation on
 
 ### Virtual Garden
 
-These variables are related to spinning up the virtual garden, a dedicated
-kube-apiserver, kube-controller-manager and ETCD to host all Gardener resources.
-This one will have no worker nodes and cannot schedule pods.
+These variables are related to spinning up the virtual garden, a dedicated kube-apiserver, kube-controller-manager and ETCD to host all Gardener resources. This one will have no worker nodes and cannot schedule pods.
 
-The deployment chart is taken from
-[garden-setup](https://github.com/gardener/garden-setup) and follows the same
-deployment approach.
+The deployment chart is taken from [garden-setup](https://github.com/gardener/garden-setup) and follows the same deployment approach.
 
 | Name                                                 | Mandatory | Description                                                                                                                                                                                  |
 | ---------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -92,9 +85,7 @@ Variables for the metal-stack cloud profile.
 
 These variable parametrize the Gardener extension controllers.
 
-This includes the metal-stack extension provider called
-[gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)
-(GEPM).
+This includes the metal-stack extension provider called [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal) (GEPM).
 
 | Name                                                         | Mandatory | Description                                                                                                                                 |
 | ------------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -119,12 +110,9 @@ This includes the metal-stack extension provider called
 
 ### Certificates
 
-Gardener requires quite a lot of certificates, which should be self-signed and
-have to be generated before the deployment.
+Gardener requires quite a lot of certificates, which should be self-signed and have to be generated before the deployment.
 
-We use a small shell script as in the
-[mini-lab](https://github.com/metal-stack/mini-lab/blob/master/files/certs/roll_certs.sh)
-to generate the certificates.
+We use a small shell script as in the [mini-lab](https://github.com/metal-stack/mini-lab/blob/master/files/certs/roll_certs.sh) to generate the certificates.
 
 | Name                                         | Mandatory | Description |
 | -------------------------------------------- | --------- | ----------- |
