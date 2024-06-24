@@ -1,51 +1,59 @@
 # gardener
 
-Deploys Gardener into a virtual garden along with a dedicated ETCD and a set of extension controllers.
+Deploys Gardener into a virtual garden along with a dedicated ETCD and a set of
+extension controllers.
 
-Please refer to the metal-stack gardener integration in our [documentation](https://docs.metal-stack.io/stable/overview/kubernetes/).
+Please refer to the metal-stack gardener integration in our
+[documentation](https://docs.metal-stack.io/stable/overview/kubernetes/).
 
-Check out the Gardener project for further documentation on [gardener.cloud](https://gardener.cloud/).
+Check out the Gardener project for further documentation on
+[gardener.cloud](https://gardener.cloud/).
 
 ## Variables
 
-| Name                                                   | Mandatory | Description                                                                                                                   |
-| ------------------------------------------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| gardener_image_vector_overwrite                        |           | Allows overriding the image vector to set custom image versions for gardener                                                  |
-| gardener_component_image_vector_overwrite              |           | Allows overriding the image vector to set custom image versions for gardenlet components                                      |
-| gardener_apiserver_replicas                            |           | Specifies the amount of gardener-apiserver replicas                                                                           |
-| gardener_apiserver_vpa                                 |           | Enables the VPA for the gardener-apiserver                                                                                    |
-| gardener_apiserver_resources                           |           | Set custom resource definitions for the gardener-apiserver                                                                    |
-| gardener_apiserver_feature_gates                       |           | Sets features gates for the gardener-apiserver                                                                                |
-| gardener_apiserver_shoot_kubeconfig_max_expiration     |           | Max shoot kubeconfig expiration for the gardener-apiserver                                                                    |
-| gardener_controller_manager_resources                  |           | Set custom resource definitions for the gardener-controller-manager                                                           |
-| gardener_scheduler_resources                           |           | Set custom resource definitions for the gardener-scheduler                                                                    |
-| gardener_dns_domain                                    |           | Specifies the DNS domain on which the Gardener will manage DNS entries                                                        |
-| gardener_dns_provider                                  | yes       | Specifies the DNS provider                                                                                                    |
-| gardener_backup_infrastructure                         |           | Specifies the Gardener backup infrastructure                                                                                  |
-| gardener_backup_infrastructure_secret                  |           | Specifies the secret for the backup infrastructure                                                                            |
-| gardener_soil_name                                     |           | The name of the initial `Seed` (used for spinning up shooted seeds)                                                           |
-| gardener_soil_kubeconfig_file_path                     |           | The kubeconfig path to the initial seed cluster                                                                               |
-| gardener_soil_vertical_pod_autoscaler_enabled          |           | Enables the VPA for the intial seed cluster                                                                                   |
-| gardener_soil_project_owner_name                       |           | Specifies the owner name for the project that the initial seed uses to set up shooted seeds                                   |
-| gardener_gardenlet_shoot_concurrent_syncs              |           | Specifies the amount of concurrent shoot syncs for the Gardenlet                                                              |
-| gardener_gardenlet_shoot_reconcile_in_maintenance_only |           | Specifies whether to reconcile shoots only in their maintenance time windows for the Gardenlet                                |
-| gardener_gardenlet_shoot_respect_sync_period_overwrite |           | Specifies whether to allow sync period overwrites for shoot resources                                                         |
-| gardener_shooted_seeds                                 |           | A list of definitions for shooted seeds reconcile by the initial seed cluster, will be turned into `ManagedSeeds`             |
-| gardener_shooted_seed_max_pods                         |           | The max pods amount for the shooted seeds                                                                                     |
-| gardener_shooted_seed_node_cidr_mask_size              |           | The node CIDR mask size used for the kubelets of the shooted seeds                                                            |
-| gardener_shooted_seed_rollout_delay_minutes            |           | An optional delay between shooted seed rollouts (can be used to calm down bigger environments during an update)               |
-| gardener_kube_api_server_kubeconfig                    |           | The kubeconfig for the Gardener Kubernetes API (virtual garden apiserver)                                                     |
-| gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                     |
-| gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral) |
+| Name                                                   | Mandatory | Description                                                                                                                                                                                                |
+| ------------------------------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| gardener_image_vector_overwrite                        |           | Allows overriding the image vector to set custom image versions for gardener                                                                                                                               |
+| gardener_component_image_vector_overwrite              |           | Allows overriding the image vector to set custom image versions for gardenlet components                                                                                                                   |
+| gardener_apiserver_replicas                            |           | Specifies the amount of gardener-apiserver replicas                                                                                                                                                        |
+| gardener_apiserver_vpa                                 |           | Enables the VPA for the gardener-apiserver                                                                                                                                                                 |
+| gardener_apiserver_resources                           |           | Set custom resource definitions for the gardener-apiserver                                                                                                                                                 |
+| gardener_apiserver_feature_gates                       |           | Sets features gates for the gardener-apiserver                                                                                                                                                             |
+| gardener_apiserver_shoot_kubeconfig_max_expiration     |           | Max shoot kubeconfig expiration for the gardener-apiserver                                                                                                                                                 |
+| gardener_controller_manager_resources                  |           | Set custom resource definitions for the gardener-controller-manager                                                                                                                                        |
+| gardener_scheduler_resources                           |           | Set custom resource definitions for the gardener-scheduler                                                                                                                                                 |
+| gardener_dns_domain                                    |           | Specifies the DNS domain on which the Gardener will manage DNS entries                                                                                                                                     |
+| gardener_dns_provider                                  | yes       | Specifies the DNS provider                                                                                                                                                                                 |
+| gardener_backup_infrastructure                         |           | Specifies the Gardener backup infrastructure                                                                                                                                                               |
+| gardener_backup_infrastructure_secret                  |           | Specifies the secret for the backup infrastructure                                                                                                                                                         |
+| gardener_soil_name                                     |           | The name of the initial `Seed` (used for spinning up shooted seeds)                                                                                                                                        |
+| gardener_soil_kubeconfig_file_path                     |           | The kubeconfig path to the initial seed cluster                                                                                                                                                            |
+| gardener_soil_vertical_pod_autoscaler_enabled          |           | Enables the VPA for the intial seed cluster                                                                                                                                                                |
+| gardener_soil_project_owner_name                       |           | Specifies the owner name for the project that the initial seed uses to set up shooted seeds                                                                                                                |
+| gardener_soil_project_members                          |           | Specifies the members of the soil project. Each member requires a `name` and a `role`. Optionally and array of `roles` can be specified. Example: `{"name": "admin", "role": "admin", "roles": ["owner"]}` |
+| gardener_gardenlet_shoot_concurrent_syncs              |           | Specifies the amount of concurrent shoot syncs for the Gardenlet                                                                                                                                           |
+| gardener_gardenlet_shoot_reconcile_in_maintenance_only |           | Specifies whether to reconcile shoots only in their maintenance time windows for the Gardenlet                                                                                                             |
+| gardener_gardenlet_shoot_respect_sync_period_overwrite |           | Specifies whether to allow sync period overwrites for shoot resources                                                                                                                                      |
+| gardener_shooted_seeds                                 |           | A list of definitions for shooted seeds reconcile by the initial seed cluster, will be turned into `ManagedSeeds`                                                                                          |
+| gardener_shooted_seed_max_pods                         |           | The max pods amount for the shooted seeds                                                                                                                                                                  |
+| gardener_shooted_seed_node_cidr_mask_size              |           | The node CIDR mask size used for the kubelets of the shooted seeds                                                                                                                                         |
+| gardener_shooted_seed_rollout_delay_minutes            |           | An optional delay between shooted seed rollouts (can be used to calm down bigger environments during an update)                                                                                            |
+| gardener_kube_api_server_kubeconfig                    |           | The kubeconfig for the Gardener Kubernetes API (virtual garden apiserver)                                                                                                                                  |
+| gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                                                                                                  |
+| gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral)                                                                              |
 
 ### Virtual Garden
 
-These variables are related to spinning up the virtual garden, a dedicated kube-apiserver, kube-controller-manager and ETCD to host all Gardener resources. This one will have no worker nodes and cannot schedule pods.
+These variables are related to spinning up the virtual garden, a dedicated
+kube-apiserver, kube-controller-manager and ETCD to host all Gardener resources.
+This one will have no worker nodes and cannot schedule pods.
 
-The deployment chart is taken from [garden-setup](https://github.com/gardener/garden-setup) and follows the same deployment approach.
+The deployment chart is taken from
+[garden-setup](https://github.com/gardener/garden-setup) and follows the same
+deployment approach.
 
 | Name                                                 | Mandatory | Description                                                                                                                                                                                  |
-|------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | gardener_virtual_api_server_svc_cluster_ip_add       |           | An integer to "guess" a free IP for the service that allows the soil to internally communicate with the virtual garden                                                                       |
 | gardener_virtual_api_server_public_dns               |           | The DNS domain to reach the virtual garden API server on                                                                                                                                     |
 | gardener_virtual_api_server_healthcheck_static_token | yes       | A static token for healthchecking the virtual garden API server                                                                                                                              |
@@ -84,7 +92,9 @@ Variables for the metal-stack cloud profile.
 
 These variable parametrize the Gardener extension controllers.
 
-This includes the metal-stack extension provider called [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal) (GEPM).
+This includes the metal-stack extension provider called
+[gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)
+(GEPM).
 
 | Name                                                         | Mandatory | Description                                                                                                                                 |
 | ------------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -109,9 +119,12 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 
 ### Certificates
 
-Gardener requires quite a lot of certificates, which should be self-signed and have to be generated before the deployment.
+Gardener requires quite a lot of certificates, which should be self-signed and
+have to be generated before the deployment.
 
-We use a small shell script as in the [mini-lab](https://github.com/metal-stack/mini-lab/blob/master/files/certs/roll_certs.sh) to generate the certificates.
+We use a small shell script as in the
+[mini-lab](https://github.com/metal-stack/mini-lab/blob/master/files/certs/roll_certs.sh)
+to generate the certificates.
 
 | Name                                         | Mandatory | Description |
 | -------------------------------------------- | --------- | ----------- |
