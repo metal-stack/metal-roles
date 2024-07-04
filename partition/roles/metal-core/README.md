@@ -31,4 +31,3 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_core_consider_hosts_file_resolution |           | If set to true mounts `/etc/nsswitch.conf` into the container to enable dns resolution with the hosts file (see [go#22846](https://github.com/golang/go/issues/22846))     |
 | metal_core_interfaces_tpl_file            |           | The golang template file to use for rendering `/etc/network/interfaces`. If this is left blank the default template shipped with metal-core will be used.                  |
 | metal_core_frr_tpl_file                   |           | The golang template file to use for rendering `/etc/frr/frr.conf`. If this is left blank the default template shipped with metal-core will be used.                        |
-| metal_core_vlan                           |           | Defaults to `4000`.                        |

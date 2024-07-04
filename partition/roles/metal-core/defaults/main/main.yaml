@@ -20,5 +20,3 @@ metal_core_consider_hosts_file_resolution: false
 
 metal_core_interfaces_tpl_file: ""
 metal_core_frr_tpl_file: ""
-
-metal_core_vlan: 966
