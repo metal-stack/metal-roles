@@ -28,20 +28,19 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | metal_partition_metal_api_grpc_ca_cert     | yes       | The ca certificate file content                                                                  |
 | metal_partition_metal_api_grpc_client_cert | yes       | The client certificate file content                                                              |
 | metal_partition_metal_api_grpc_client_key  | yes       | The client certificate key file content                                                          |
-| metal_core_pxe_vlan_id                     |           | The VLAN ID for the PXE machines. Defaults to `4000`.                                            |
 
 ## Roles
 
-| Role Name                                    | Description                                 |
-| -------------------------------------------- | ------------------------------------------- |
-| [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy                         |
-| [dhcp](roles/dhcp)                           | Deploys a dhcp server                       |
-| [dhcp-relay](roles/dhcp-relay)               | Deploys a dhcp-relay                        |
-| [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus                   |
-| [metal-bmc](roles/metal-bmc)                 | Deploys metal-bmc                           |
-| [metal-core](roles/metal-core)               | Deploys metal-core                          |
-| [pixiecore](roles/pixiecore)                 | Deploys pixiecore                           |
-| [promtail](roles/promtail)                   | Deploys promtail                            |
+| Role Name                                    | Description               |
+| -------------------------------------------- | ------------------------- |
+| [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy       |
+| [dhcp](roles/dhcp)                           | Deploys a dhcp server     |
+| [dhcp-relay](roles/dhcp-relay)               | Deploys a dhcp-relay      |
+| [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus |
+| [metal-bmc](roles/metal-bmc)                 | Deploys metal-bmc         |
+| [metal-core](roles/metal-core)               | Deploys metal-core        |
+| [pixiecore](roles/pixiecore)                 | Deploys pixiecore         |
+| [promtail](roles/promtail)                   | Deploys promtail          |
 
 ## Examples
 
