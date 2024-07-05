@@ -28,7 +28,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | metal_partition_metal_api_grpc_ca_cert     | yes       | The ca certificate file content                                                                  |
 | metal_partition_metal_api_grpc_client_cert | yes       | The client certificate file content                                                              |
 | metal_partition_metal_api_grpc_client_key  | yes       | The client certificate key file content                                                          |
-| metal_core_pxe_vlan                        |           | The VLAN for the PXE machines. Defaults to `4000`.                                               |
+| metal_core_pxe_vlan_id                     |           | The VLAN ID for the PXE machines. Defaults to `4000`.                                            |
 
 ## Roles
 
