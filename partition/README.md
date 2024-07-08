@@ -31,16 +31,16 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 
 ## Roles
 
-| Role Name                                    | Description               |
-| -------------------------------------------- | ------------------------- |
-| [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy       |
-| [dhcp](roles/dhcp)                           | Deploys a dhcp server     |
-| [dhcp-relay](roles/dhcp-relay)               | Deploys a dhcp-relay      |
-| [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus |
-| [metal-bmc](roles/metal-bmc)                 | Deploys metal-bmc         |
-| [metal-core](roles/metal-core)               | Deploys metal-core        |
-| [pixiecore](roles/pixiecore)                 | Deploys pixiecore         |
-| [promtail](roles/promtail)                   | Deploys promtail          |
+| Role Name                                    | Description                                 |
+| -------------------------------------------- | ------------------------------------------- |
+| [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy                         |
+| [dhcp](roles/dhcp)                           | Deploys a dhcp server                       |
+| [dhcp-relay](roles/dhcp-relay)               | Deploys a dhcp-relay                        |
+| [docker-on-cumulus](roles/docker-on-cumulus) | Deploys docker on cumulus                   |
+| [metal-bmc](roles/metal-bmc)                 | Deploys metal-bmc                           |
+| [metal-core](roles/metal-core)               | Deploys metal-core                          |
+| [pixiecore](roles/pixiecore)                 | Deploys pixiecore                           |
+| [promtail](roles/promtail)                   | Deploys promtail                            |
 
 ## Examples
 
