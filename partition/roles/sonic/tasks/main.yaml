@@ -42,6 +42,11 @@
     src: resolv.conf.j2
     dest: /etc/resolv.conf
 
+- name: render docker daemon.json
+  template:
+    src: docker-daemon.json
+    dest: /etc/docker/daemon.json
+  
 - name: Activate IP MASQUERADE on eth0
   ansible.builtin.iptables:
     chain: POSTROUTING
