@@ -46,6 +46,8 @@
   template:
     src: docker-daemon.json
     dest: /etc/docker/daemon.json
+  notify:
+  - restart docker
   
 - name: Activate IP MASQUERADE on eth0
   ansible.builtin.iptables:
