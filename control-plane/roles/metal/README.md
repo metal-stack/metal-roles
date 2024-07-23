@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### Images
 
 | Name                                   | Mandatory | Description                             |
-| -------------------------------------- | --------- | --------------------------------------- |
+|----------------------------------------|-----------|-----------------------------------------|
 | metal_api_image_name                   | yes       | Image version of the metal-api          |
 | metal_api_image_tag                    | yes       | Image tag of the metal-api              |
 | metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
@@ -54,7 +54,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### metal-api
 
 | Name                                | Mandatory | Description                                                                                    |
-| ----------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+|-------------------------------------|-----------|------------------------------------------------------------------------------------------------|
 | metal_api_replicas                  |           | The number of deployed replicas of the metal-api                                               |
 | metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
 | metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
@@ -133,13 +133,14 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### ipam
 
 | Name                   | Mandatory | Description                                                                       |
-| ---------------------- | --------- | --------------------------------------------------------------------------------- |
+|------------------------|-----------|-----------------------------------------------------------------------------------|
 | metal_ipam_db_address  |           | The hostname of the ipam service                                                  |
 | metal_ipam_db_port     |           | The port of the ipam service                                                      |
 | metal_ipam_db_name     |           | The database name of the ipam service                                             |
 | metal_ipam_db_user     |           | The user of the ipam service                                                      |
 | metal_ipam_db_password |           | The password of the ipam service                                                  |
 | metal_ipam_log_level   |           | The log level for the ipam service (metal_log_level is not used for this service) |
+| metal_ipam_resources   |           | Sets the given container resources                                                |
 
 ### Ingress
 

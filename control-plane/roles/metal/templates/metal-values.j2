@@ -36,6 +36,9 @@ resources:
 {% if metal_console_resources %}
   metal_console: {{ metal_console_resources | to_json }}
 {% endif %}
+{% if metal_ipam_resources %}
+  ipam: {{ metal_ipam_resources | to_json }}
+{% endif %}
 
 hpa:
   metal_api:
