@@ -23,12 +23,16 @@
   timezone:
     name: UTC
 
+- name: collect facts about system services
+  service_facts:
+
 - name: set name servers to resolve dns
   template:
     src: resolved.conf.j2
     dest: /etc/systemd/resolved.conf
   notify:
     - restart systemd-resolved
+  when: "'systemd-resolved.service' in services"
 
 - name: install required packages to have the network stack in place
   apt:
