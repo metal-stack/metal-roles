@@ -22,6 +22,15 @@
     dest: "{{ ztp_host_dir_path }}/config/ztp.sh"
     mode: 0644
 
+- name: copy additional contents
+  copy:
+    dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
+    content: "{{ item.data }}"
+    mode: 0644
+  loop: "{{ ztp_additional_files }}"
+  loop_control:
+    label: "{{ item.name }}"
+
 - name: deploy server for serving ztp.sh
   include_role:
     name: ansible-common/roles/systemd-docker-service
