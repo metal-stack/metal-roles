@@ -24,7 +24,6 @@ defaults
 
 listen stats
   bind :65534
-  option http-use-htx
   http-request use-service prometheus-exporter if { path /metrics }
   mode http
   stats enable
