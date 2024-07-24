@@ -83,7 +83,7 @@ backend partition_local_image_cache
   http-check send meth GET uri /health ver HTTP/1.1 hdr host www
   http-check expect status 200
   balance roundrobin
-{% for host in play_hosts %}
+{% for host in image_cache_backend_hosts %}
   server {{ hostvars[host]['inventory_hostname'] }} {{ hostvars[host]['image_cache_internal_ip'] if 'image_cache_internal_ip' in hostvars[host] else hostvars[host]['ansible_host'] }}:{{ image_cache_sync_port }} check {{ 'backup' if inventory_hostname != hostvars[host]['inventory_hostname'] else '' }}
 {% endfor %}
 
@@ -93,7 +93,7 @@ backend partition_local_kernel_cache
   http-check send meth GET uri /health ver HTTP/1.1 hdr host www
   http-check expect status 200
   balance roundrobin
-{% for host in play_hosts %}
+{% for host in image_cache_backend_hosts %}
   server {{ hostvars[host]['inventory_hostname'] }} {{ hostvars[host]['image_cache_internal_ip'] if 'image_cache_internal_ip' in hostvars[host] else hostvars[host]['ansible_host'] }}:{{ image_cache_sync_kernel_port }} check {{ 'backup' if inventory_hostname != hostvars[host]['inventory_hostname'] else '' }}
 {% endfor %}
 {% endif %}
@@ -104,7 +104,7 @@ backend partition_local_boot_image_cache
   http-check send meth GET uri /health ver HTTP/1.1 hdr host www
   http-check expect status 200
   balance roundrobin
-{% for host in play_hosts %}
+{% for host in image_cache_backend_hosts %}
   server {{ hostvars[host]['inventory_hostname'] }} {{ hostvars[host]['image_cache_internal_ip'] if 'image_cache_internal_ip' in hostvars[host] else hostvars[host]['ansible_host'] }}:{{ image_cache_sync_boot_image_port }} check {{ 'backup' if inventory_hostname != hostvars[host]['inventory_hostname'] else '' }}
 {% endfor %}
 {% endif %}
