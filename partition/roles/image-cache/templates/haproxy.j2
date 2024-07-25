@@ -112,6 +112,6 @@ backend partition_local_boot_image_cache
 {% for domain in image_cache_intercept_domains %}
 backend global_https_passthrough_{{ loop.index }}
   mode tcp
-  server {{ domain }} {{ domain}}:443
+  server {{ domain }} {{ domain }}:443
 
 {% endfor %}
