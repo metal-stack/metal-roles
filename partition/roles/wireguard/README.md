@@ -11,7 +11,7 @@ Configures a wireguard-server.
 | wireguard_cert_group         |           | the group that should own the cert.                                                                       |
 | wireguard_ip                 | yes       | the ip where wireguard should bind to. e.g. (`100.1.2.1/24`)                                              |
 | wireguard_listen_port        |           | the port wireguard should listen on (default is 51820)                                                    |
-| wireguard_clients            | yes       | array of clients to be configured at the server side                                                      |
+| wireguard_clients            |           | array of clients to be configured at the server side                                                      |
 | wireguard_clients.name       | yes       | a speaking name for this client as description.                                                           |
 | wireguard_clients.public_key | yes       | the public key that identifies this client.                                                               |
 | wireguard_clients.client_id  | yes       | a unique id for this client - is used to automatically generate client IP out of the `wireguard_ip` CIDR. |
