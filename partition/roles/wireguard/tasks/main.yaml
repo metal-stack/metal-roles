@@ -54,8 +54,8 @@
         dest: "{{ _private_key_file_path }}"
         mode: 0600
   when:
-    - wireguard_public_key != ""
-    - wireguard_private_key != ""
+    - wireguard_public_key
+    - wireguard_private_key
 
 - name: register if private key already exists
   stat:
