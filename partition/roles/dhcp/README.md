@@ -7,7 +7,7 @@ This role can deploy on switches running Cumulus Linux or SONiC. It depends on t
 ## Variables
 
 | Name                      | Mandatory | Description                                                                  |
-|---------------------------|-----------|------------------------------------------------------------------------------|
+| ------------------------- | --------- | ---------------------------------------------------------------------------- |
 | dhcp_subnets              |           | An array of subnets for which dhcp should lease addresses from               |
 | dhcp_subnets.comment      |           | The comment for this dhcp subnet                                             |
 | dhcp_subnets.network      | yes       | The dhcp network address in which dhcp addresses will be leased              |
@@ -24,3 +24,4 @@ This role can deploy on switches running Cumulus Linux or SONiC. It depends on t
 | dhcp_static_hosts.ip      |           | The ip for this sstatic mapping.                                             |
 | dhcp_static_hosts.options |           | The options to pass to the client with DHCP responses.                       |
 | dhcp_use_host_decl_names  |           | The name of the host declaration will be send to the client as its hostname. |
+| dhcp_nameservers          |           | An array of nameservers to use in the dhcpd.conf file                        |
