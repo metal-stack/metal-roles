@@ -43,6 +43,9 @@
 
 - name: use pre-generated keys if defined
   block:
+    - name: print public key
+      debug:
+        msg: "copy wireguard keys with public key: {{ wireguard_public_key }}"
     - name: store public key file
       copy:
         content: "{{ wireguard_public_key }}"
