@@ -45,9 +45,6 @@
 
 - name: use pre-generated keys if defined
   block:
-    - name: print public key
-      debug:
-        msg: "copy wireguard keys with public key: {{ wireguard_public_key }}"
     - name: store public key file
       copy:
         content: "{{ wireguard_public_key }}"
@@ -59,8 +56,8 @@
         dest: "{{ _private_key_file_path }}"
         mode: 0600
   when:
-    - wireguard_public_key is defined
-    - wireguard_private_key is defined
+    - wireguard_public_key != ""
+    - wireguard_private_key != ""
 
 - name: register if private key already exists
   stat:
