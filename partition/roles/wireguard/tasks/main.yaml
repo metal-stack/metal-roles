@@ -55,7 +55,7 @@
         mode: 0600
   when:
     - wireguard_public_key is defined
-    - wireguarrd_private_key is defined
+    - wireguard_private_key is defined
 
 - name: register if private key already exists
   stat:
