@@ -43,6 +43,22 @@
     public_key_file_path: "{{ wireguard_cert_directory }}/{{ inventory_hostname }}.public.key"
   tags: wg-generate-keys
 
+- name: use pre-generated keys if defined
+  block:
+    - name: store public key file
+      copy:
+        content: "{{ wireguard_public_key }}"
+        dest: "{{ _public_key_file_path }}"
+        mode: 0600
+    - name: store private key file
+      copy:
+        content: "{{ wireguard_private_key }}"
+        dest: "{{ _private_key_file_path }}"
+        mode: 0600
+  when:
+    - wireguard_public_key is defined
+    - wireguarrd_private_key is defined
+
 - name: register if private key already exists
   stat:
     path: "{{ private_key_file_path }}"
