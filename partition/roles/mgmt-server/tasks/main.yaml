@@ -94,6 +94,7 @@
     mode: "{{ item.mode}}"
     owner: metal
     group: metal
+  no_log: true
   loop:
   - content: "{{ mgmt_server_metal_ssh_privkey }}"
     dest: /home/metal/.ssh/id_rsa
@@ -101,6 +102,8 @@
   - content: "{{ mgmt_server_metal_ssh_pubkey }}"
     dest: /home/metal/.ssh/id_rsa.pub
     mode: "0644"
+  loop_control:
+    label: "{{ item.dest }}"
 
 # This is so that self connect and cross connect to the other mgmtserver is possible
 - name: Add own ssh key to authorized_keys
