@@ -7,7 +7,7 @@ This role can deploy on switches running Cumulus Linux or SONiC. It depends on t
 ## Variables
 
 | Name                      | Mandatory | Description                                                                  |
-| ------------------------- | --------- | ---------------------------------------------------------------------------- |
+|---------------------------|-----------|------------------------------------------------------------------------------|
 | dhcp_subnets              |           | An array of subnets for which dhcp should lease addresses from               |
 | dhcp_subnets.comment      |           | The comment for this dhcp subnet                                             |
 | dhcp_subnets.network      | yes       | The dhcp network address in which dhcp addresses will be leased              |
