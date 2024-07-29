@@ -1,0 +1,22 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: to-gardener-apiserver
+  namespace: garden
+spec:
+  egress:
+  - ports:
+    - port: 8443
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: gardener
+          release: controlplane
+          role: apiserver
+  podSelector:
+    matchLabels:
+      networking.resources.gardener.cloud/to-gardener-apiserver-tcp-8443: allowed
+  policyTypes:
+  - Egress

@@ -1,0 +1,21 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: to-etcd-{{ metal_control_plane_stage_name }}-etcd-client
+  namespace: garden
+spec:
+  egress:
+  - ports:
+    - port: 2379
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: etcd-{{ metal_control_plane_stage_name }}
+          app.kubernetes.io/name: etcd
+  podSelector:
+    matchLabels:
+      networking.resources.gardener.cloud/to-etcd-{{ metal_control_plane_stage_name }}-etcd-client-tcp-2379: allowed
+  policyTypes:
+  - Egress
