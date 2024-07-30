@@ -91,7 +91,7 @@
   notify:
     - reload frr
 
-- name: Copy ssh key pair for metal user
+- name: Copy ssh key pairs for metal and ansible users
   copy:
     content: "{{ item.content }}"
     dest: "{{ item.dest }}"
@@ -105,6 +105,12 @@
     mode: "0600"
   - content: "{{ mgmt_server_metal_ssh_pubkey }}"
     dest: /home/metal/.ssh/id_rsa.pub
+    mode: "0644"
+  - content: "{{ mgmt_server_ansible_ssh_privkey }}"
+    dest: "{{ gitlab_runner.hostpath }}/ssh/id_rsa"
+    mode: "0600"
+  - content: "{{ mgmt_server_ansible_ssh_pubkey }}"
+    dest: "{{ gitlab_runner.hostpath }}/ssh/id_rsa.pub"
     mode: "0644"
   loop_control:
     label: "{{ item.dest }}"
