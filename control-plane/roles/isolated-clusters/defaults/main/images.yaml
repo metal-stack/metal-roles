@@ -41,10 +41,6 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/3rd/coredns/coredns
       match:
         semver: ">= 1.10.0"
-    - source: registry.k8s.io/coredns/coredns
-      destination: http://registry:5000/coredns/coredns
-      match:
-        semver: ">= 1.11.0"
     - source: eu.gcr.io/gardener-project/3rd/envoyproxy/envoy-distroless
       destination: http://registry:5000/gardener-project/3rd/envoyproxy/envoy-distroless
       match:
