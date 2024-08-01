@@ -47,12 +47,12 @@
   block:
     - name: add docker gpg key
       get_url:
-        url: "https://download.docker.com/linux/{{ ansible_distribution }}/gpg"
+        url: "https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg"
         dest: /etc/apt/keyrings/docker.asc
 
     - name: add docker repository
       apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution }} {{ ansible_distribution_release }} stable"
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release|lower }} stable"
 
     - name: install docker
       apt:
