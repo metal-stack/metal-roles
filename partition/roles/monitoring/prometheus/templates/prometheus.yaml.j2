@@ -197,7 +197,17 @@ scrape_configs:
   metrics_path: /metrics
   scrape_timeout: 25s
   scrape_interval: 30s
-  honor_timestamps: True
+  params:
+    collect[]:
+    - clustering
+    - datapath
+    - duroslight
+    - meminfo
+    - textfile
+    - lightfield
+    - netstat
+    - netdev
+    - cpufreq
   static_configs:
   - targets: {{ prometheus_lightbox_exporter_targets | to_json }}
 
@@ -205,8 +215,6 @@ scrape_configs:
   metrics_path: /metrics
   scrape_timeout: 10s
   scrape_interval: 5m
-  honor_timestamps: True
-  scheme: http
   params:
     collect[]:
       - smart
