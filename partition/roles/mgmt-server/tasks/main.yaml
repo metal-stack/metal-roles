@@ -116,10 +116,10 @@
   no_log: true
   loop:
   - content: "{{ mgmt_server_metal_ssh_privkey }}"
-    dest: /home/metal/.ssh/id_rsa
+    dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}"
     mode: "0600"
   - content: "{{ mgmt_server_metal_ssh_pubkey }}"
-    dest: /home/metal/.ssh/id_rsa.pub
+    dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}.pub"
     mode: "0644"
   loop_control:
     label: "{{ item.dest }}"
