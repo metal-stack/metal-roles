@@ -43,11 +43,6 @@
     update_cache : yes
     force_apt_get: yes
 
-- name: check if docker is installed
-  shell: which docher
-  register: docker_path
-  changed_when: false
-
 - name: install docker
   block:
     - name: add docker gpg key
@@ -63,7 +58,7 @@
       apt:
         name:
           - docker-ce
-  when: docker_path == ""
+  when: "'docker.service' in services"
 
 - name: copy docker daemon.json
   template:
