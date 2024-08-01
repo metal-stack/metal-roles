@@ -94,6 +94,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_s3_secret                 |           | The secret of the S3 server that serves firmwares                                              |
 | metal_api_s3_firmware_bucket        |           | The S3 bucket name that contains the firmwares                                                 |
 | metal_api_password_reason_minlength |           | If machine console password is requested this defines if and how long the given reason must be |
+| metal_api_release_version           |           | The release version of metal-stack                                                             |
 | minimum_client_version              |           | minimum metalctl version which is required to talk to this metal-api instance                  |
 
 ### masterdata-api
