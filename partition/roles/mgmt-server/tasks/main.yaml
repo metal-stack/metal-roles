@@ -58,7 +58,7 @@
       apt:
         name:
           - docker-ce
-  when: "'docker.service' in services"
+  when: "'docker.service' not in services"
 
 - name: copy docker daemon.json
   template:
