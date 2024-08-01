@@ -56,9 +56,9 @@
 
     - name: install docker
       apt:
-        name:
+        name: 
           - docker-ce
-
+      
 - name: copy docker daemon.json
   template:
     src: daemon.json.j2
