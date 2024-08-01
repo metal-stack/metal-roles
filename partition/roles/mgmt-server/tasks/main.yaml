@@ -43,6 +43,11 @@
     update_cache : yes
     force_apt_get: yes
 
+- name: check if docker is installed
+  shell: which docher
+  register: docker_path
+  changed_when: false
+
 - name: install docker
   block:
     - name: add docker gpg key
@@ -58,6 +63,7 @@
       apt:
         name:
           - docker-ce
+  when: docker_path == ""
 
 - name: copy docker daemon.json
   template:
@@ -116,10 +122,10 @@
   no_log: true
   loop:
   - content: "{{ mgmt_server_metal_ssh_privkey }}"
-    dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}"
+    dest: /home/metal/.ssh/id_rsa
     mode: "0600"
   - content: "{{ mgmt_server_metal_ssh_pubkey }}"
-    dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}.pub"
+    dest: /home/metal/.ssh/id_rsa.pub
     mode: "0644"
   loop_control:
     label: "{{ item.dest }}"
