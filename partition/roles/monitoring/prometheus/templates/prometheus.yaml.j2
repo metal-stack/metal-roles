@@ -217,6 +217,6 @@ scrape_configs:
   scrape_interval: 5m
   params:
     collect[]:
-      - smart
+    - smart
   static_configs:
   - targets: {{ prometheus_lightos_smart_targets | to_json }}
