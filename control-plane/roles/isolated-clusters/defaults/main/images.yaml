@@ -52,7 +52,7 @@ isolated_clusters_registry_oci_mirror_config:
     - source: europe-docker.pkg.dev/gardener-project/releases/3rd/envoyproxy/envoy-distroless
       destination: http://registry:5000/gardener-project/releases/3rd/envoyproxy/envoy-distroless
       match:
-        semver: ">= v1.31.0"
+        semver: ">= v1.26.4"
     - source: eu.gcr.io/gardener-project/gardener/apiserver-proxy
       destination: http://registry:5000/gardener-project/gardener/apiserver-proxy
       match:
