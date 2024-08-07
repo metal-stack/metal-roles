@@ -138,9 +138,6 @@ We use a small shell script as in the [mini-lab](https://github.com/metal-stack/
 | gardener_controller_manager_ca               | yes       | -           |
 | gardener_controller_manager_cert             | yes       | -           |
 | gardener_controller_manager_key              | yes       | -           |
-| gardener_metal_admission_controller_ca       | yes       | -           |
-| gardener_metal_admission_controller_cert     | yes       | -           |
-| gardener_metal_admission_controller_key      | yes       | -           |
 | gardener_etcd_ca_cert                        | yes       | -           |
 | gardener_etcd_cert                           | yes       | -           |
 | gardener_etcd_cert_key                       | yes       | -           |
