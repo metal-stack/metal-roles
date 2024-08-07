@@ -12,3 +12,4 @@ Configures a server for providing zero-touch-provisioning scripts for switches.
 | ztp_port             |           | the port to serve ztp scripts on.                           |
 | ztp_authorized_keys  | yes       | the authorized keys that should be installed by ztp.        |
 | ztp_admin_user       |           | the user for which the authorized keys will be provisioned. |
+| ztp_additional_files |           | puts additional files into serve directory.                 |

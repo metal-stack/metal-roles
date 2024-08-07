@@ -85,6 +85,7 @@ metal_ipam_db_name: ipam
 metal_ipam_db_user: postgres
 metal_ipam_db_password: change-me
 metal_ipam_log_level: debug
+metal_ipam_resources:
 
 # metal-console
 metal_console_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"

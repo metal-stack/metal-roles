@@ -16,6 +16,8 @@ image_cache_external_dns_servers:
   - name: cloudflare02
     ip: 1.0.0.1
 
+image_cache_backend_hosts: "{{ play_hosts }}"
+
 # coredns
 image_cache_coredns_host_dir_path: /coredns
 

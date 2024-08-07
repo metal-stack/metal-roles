@@ -5,3 +5,7 @@ ztp_authorized_keys:
 ztp_admin_user: admin
 
 ztp_port: 8080
+
+ztp_additional_files: []
+# - name: foo.sh
+#   data: echo

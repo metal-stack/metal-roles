@@ -72,6 +72,7 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_coredns_host_dir_path                                      |           | The host path for CoreDNS configuration                                                                                   |
 | image_cache_kernel_route_prefix                                        |           | The route prefix to distinguish whether the kernel cache backend is used or not                                           |
 | image_cache_boot_image_route_prefix                                    |           | The route prefix to distinguish whether the boot image cache backend is used or not                                       |
+| image_cache_backend_hosts                                              |           | The hosts that are considered for load balancing, defaults to matched play hosts                                          |
 | image_cache_haproxy_host_dir_path                                      |           | The host path for haproxy configuration                                                                                   |
 | image_cache_haproxy_fallback_backend_server                            |           | The domain name of the "global image store" (internet, must have valid HTTPS)                                             |
 | image_cache_haproxy_fallback_backend_server_health_endpoint            |           | The health endpoint which is expected to return 200 of the "global image store"                                           |
