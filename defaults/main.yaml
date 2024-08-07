@@ -119,8 +119,6 @@ metal_stack_release:
     gardener_virtual_controller_manager_image_name: "docker-images.third-party.gardener.virtual-controller-manager.name"
     gardener_extension_provider_gcp_image_tag: "docker-images.third-party.gardener.extension-provider-gcp.tag"
     gardener_extension_provider_gcp_image_name: "docker-images.third-party.gardener.extension-provider-gcp.name"
-    gardener_external_dns_image_tag: "docker-images.third-party.gardener.external-dns.tag"
-    gardener_external_dns_image_name: "docker-images.third-party.gardener.external-dns.name"
     gardener_networking_calico_image_tag: "docker-images.third-party.gardener.networking-calico.tag"
     gardener_networking_calico_image_name: "docker-images.third-party.gardener.networking-calico.name"
     gardener_networking_cilium_image_tag: "docker-images.third-party.gardener.networking-cilium.tag"
