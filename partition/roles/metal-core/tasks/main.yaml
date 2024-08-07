@@ -36,11 +36,6 @@
     label: "{{ item.filename }}"
   register: grpc_certs
 
-- name: copy CA certificate
-  copy:
-    src: "{{ metal_core_ca_file }}"
-    dest: "/usr/local/share/ca-certificates/ca.crt"
-
 - name: Install services
   copy:
     src: "{{ item }}"
