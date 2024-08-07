@@ -39,7 +39,7 @@
 - name: copy CA certificate
   copy:
     src: "{{ metal_core_ca_file }}"
-    dest: "/usr/local/share/ca-certificates/{{ metal_core_ca_file }}"
+    dest: "/usr/local/share/ca-certificates/ca.crt"
   when: metal_core_ca_files is defined
 
 - name: Install services
