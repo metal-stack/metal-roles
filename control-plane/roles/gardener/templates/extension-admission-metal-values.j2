@@ -4,14 +4,7 @@ global:
     tag: "{{ gardener_extension_provider_metal_image_tag }}"
     pullPolicy: {{ metal_control_plane_image_pull_policy }}
   webhookConfig:
-    caBundle: |
-      {{ gardener_metal_admission_controller_ca | indent(width=6, first=false) }}
     serverPort: 443
-    tls:
-      crt: |
-        {{ gardener_metal_admission_controller_cert | indent(width=8, first=false) }}
-      key: |
-        {{ gardener_metal_admission_controller_key | indent(width=8, first=false) }}
   kubeconfig: |
     {{ gardener_kube_api_server_kubeconfig | indent(width=4, first=false) }}
   virtualGarden:
