@@ -66,8 +66,7 @@
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
     systemd_docker_dns: "{{ pixiecore_dns_servers }}"
-    systemd_docker_volumes:
-      - "{{ pixiecore_grpc_cert_dir }}:/certs/grpc:ro"
+    systemd_docker_volumes: "{{ lookup('template', 'pixie-volumes.j2') | from_yaml }}"
     # Because Pixiecore needs to listen for DHCP traffic,
     # it has to run with access to the host's networking stack.
     # Both Rkt and Docker do this with the --net=host commandline flag.
