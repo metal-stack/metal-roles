@@ -26,4 +26,4 @@ Deploys pixiecore in a systemd-managed Docker container.
 | pixiecore_metal_hammer_logging_cert         |           | set metal-hammer to send logs to a remote endpoint and authenticate with this cert for mtls auth              |
 | pixiecore_metal_hammer_logging_key          |           | set metal-hammer to send logs to a remote endpoint and authenticate with this key for mtls auth               |
 | pixiecore_metal_hammer_logging_tls_insecure |           | set metal-hammer to send logs to a remote endpoint without verifying the tls certificate for mtls auth        |
-| pixiecore_additional_volume_mounts          |           |                                                                                                               |
+| pixiecore_additional_volume_mounts          |           | Volumes to mount into the pixiecore, besides the default ones                                                 |
