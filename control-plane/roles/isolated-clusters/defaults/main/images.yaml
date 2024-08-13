@@ -163,6 +163,6 @@ isolated_clusters_registry_oci_mirror_config:
         semver: ">= v0.1.4"
     # TODO: this can be removed after g/g v1.94 when we do not rely on our fork build anymore
     - source: r.metal-stack.io/gardener/node-agent
-      destination: http://registry:5000/node-agent
+      destination: http://registry:5000/gardener/node-agent
       match:
         all_tags: true
