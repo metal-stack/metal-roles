@@ -171,6 +171,13 @@ VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
   Vlan{{ vlan.id }}:
+    {% if sonic_sag is defined and sonic_sag.vlans is defined %}
+    {% for sag_vlan in sonic_sag.vlans %}
+    {% if vlan.id == sag_vlan.id %}
+    "grat_arp_force_override": "enabled"
+    {% endif %}
+    {% endfor %}
+    {% endif %}
     vrf_name: "{{ vlan.vrf }}"
   {% else %}
   Vlan{{ vlan.id }}: {}
