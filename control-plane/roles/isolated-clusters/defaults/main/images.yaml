@@ -29,6 +29,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/hyperkube
       match:
         semver: ">= v1.27.10"
+    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/node-agent
+      destination: http://registry:5000/gardener-project/releases/gardener/node-agent
+      match:
+        semver: ">= v1.89.0"
     - source: eu.gcr.io/gardener-project/3rd/alpine
       destination: http://registry:5000/gardener-project/3rd/alpine
       match:
@@ -157,3 +161,8 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/node-init
       match:
         semver: ">= v0.1.4"
+    # TODO: this can be removed after g/g v1.94 when we do not rely on our fork build anymore
+    - source: r.metal-stack.io/gardener/node-agent
+      destination: http://registry:5000/node-agent
+      match:
+        all_tags: true
