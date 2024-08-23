@@ -1,0 +1,54 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - auditing_timescaledb_image_name is defined
+      - auditing_timescaledb_image_tag is defined
+      - auditing_timescaledb_backup_restore_sidecar_image_name is defined
+      - auditing_timescaledb_backup_restore_sidecar_image_tag is defined
+
+- name: Create namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ auditing_timescaledb_namespace }}"
+        labels:
+          name: "{{ auditing_timescaledb_namespace }}"
+
+- name: Deploy auditing timescale db
+  include_role:
+    name: metal-roles/control-plane/roles/postgres-backup-restore
+  vars:
+    postgres_name: "{{ auditing_timescaledb_name }}"
+    postgres_namespace: "{{ auditing_timescaledb_namespace }}"
+    postgres_image_pull_policy: "{{ auditing_timescaledb_image_pull_policy }}"
+    postgres_image_name: "{{ auditing_timescaledb_image_name }}"
+    postgres_image_tag: "{{ auditing_timescaledb_image_tag }}"
+    postgres_registry_auth_enabled: "{{ auditing_timescaledb_registry_auth_enabled }}"
+    postgres_registry_auth: "{{ auditing_timescaledb_registry_auth }}"
+    postgres_storage_size: "{{ auditing_timescaledb_storage_size }}"
+    postgres_storage_class: "{{ auditing_timescaledb_storage_class }}"
+    postgres_db: "{{ auditing_timescaledb_db }}"
+    postgres_user: "{{ auditing_timescaledb_user }}"
+    postgres_password: "{{ auditing_timescaledb_password }}"
+    postgres_max_connections: "{{ auditing_timescaledb_max_connections }}"
+    postgres_backup_restore_sidecar_image_pull_policy: "{{ auditing_timescaledb_backup_restore_sidecar_image_pull_policy }}"
+    postgres_backup_restore_sidecar_image_name: "{{ auditing_timescaledb_backup_restore_sidecar_image_name }}"
+    postgres_backup_restore_sidecar_image_tag: "{{ auditing_timescaledb_backup_restore_sidecar_image_tag }}"
+    postgres_backup_restore_sidecar_provider: "{{ auditing_timescaledb_backup_restore_sidecar_provider }}"
+    postgres_backup_restore_sidecar_backup_cron_schedule: "{{ auditing_timescaledb_backup_restore_sidecar_backup_cron_schedule }}"
+    postgres_backup_restore_sidecar_log_level: "{{ auditing_timescaledb_backup_restore_sidecar_log_level }}"
+    postgres_backup_restore_sidecar_object_prefix: "{{ auditing_timescaledb_backup_restore_sidecar_object_prefix }}"
+    postgres_backup_restore_sidecar_gcp_bucket_name: "{{ auditing_timescaledb_backup_restore_sidecar_gcp_bucket_name }}"
+    postgres_backup_restore_sidecar_gcp_backup_location: "{{ auditing_timescaledb_backup_restore_sidecar_gcp_backup_location }}"
+    postgres_backup_restore_sidecar_gcp_project_id: "{{ auditing_timescaledb_backup_restore_sidecar_gcp_project_id }}"
+    postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ auditing_timescaledb_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    postgres_resources: "{{ auditing_timescaledb_resources }}"
+    postgres_backup_restore_sidecar_object_max_keep: "{{ auditing_timescaledb_backup_restore_sidecar_object_max_keep }}"
