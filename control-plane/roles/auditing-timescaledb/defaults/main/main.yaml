@@ -11,6 +11,10 @@ auditing_timescaledb_user: postgres
 auditing_timescaledb_password: change-me
 auditing_timescaledb_max_connections: 100
 
+auditing_timescaledb_shared_libraries_preload:
+  - pg_stat_statements
+  - timescaledb
+
 auditing_timescaledb_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 auditing_timescaledb_backup_restore_sidecar_provider: local
 auditing_timescaledb_backup_restore_sidecar_backup_cron_schedule: "0 * * * *"

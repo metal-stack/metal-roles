@@ -39,6 +39,7 @@
     postgres_user: "{{ auditing_timescaledb_user }}"
     postgres_password: "{{ auditing_timescaledb_password }}"
     postgres_max_connections: "{{ auditing_timescaledb_max_connections }}"
+    postgres_shared_libraries_preload: "{{ auditing_timescaledb_shared_libraries_preload }}"
     postgres_backup_restore_sidecar_image_pull_policy: "{{ auditing_timescaledb_backup_restore_sidecar_image_pull_policy }}"
     postgres_backup_restore_sidecar_image_name: "{{ auditing_timescaledb_backup_restore_sidecar_image_name }}"
     postgres_backup_restore_sidecar_image_tag: "{{ auditing_timescaledb_backup_restore_sidecar_image_tag }}"
