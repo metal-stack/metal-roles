@@ -1,6 +1,6 @@
 ---
 inventory_hostname: r01mgmtleaf
-
+ansible_host: "{{ inventory_hostname }}"
 sonic_mgmtif_ip: '10.255.255.254/30'
 sonic_mgmtif_gateway: 10.255.255.253
 

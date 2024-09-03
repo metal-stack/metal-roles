@@ -1,5 +1,6 @@
 ---
 inventory_hostname: exit01
+ansible_host: "{{ inventory_hostname }}"
 sonic_asn: 4200000000
 sonic_loopback_address: 10.0.0.1
 

@@ -1,6 +1,6 @@
 ---
 inventory_hostname: spine01
-
+ansible_host: "{{ inventory_hostname }}"
 sonic_loopback_address: 10.0.0.1
 sonic_asn: 420000000
 
