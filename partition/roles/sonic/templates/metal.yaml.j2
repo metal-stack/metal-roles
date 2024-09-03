@@ -3,7 +3,7 @@
 DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: "{{ sonic_docker_routing_config_mode }}"
-    hostname: "{{ inventory_hostname }}"
+    hostname: "{{ ansible_host }}"
     hwsku: "{{ sonic_running_cfg_hwsku }}"
     mac: "{{ sonic_running_cfg_mac }}"
     platform: "{{ sonic_running_cfg_platform }}"
