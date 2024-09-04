@@ -7,5 +7,5 @@ ListenPort = {{ wireguard_listen_port }}
 [Peer]
 # {{ peer.name }}
 PublicKey = {{ peer.public_key }}
-AllowedIPs = {{ wireguard_ip | next_nth_usable(peer.client_id-1) }}/32
+AllowedIPs = {{ wireguard_ip | ansible.utils.next_nth_usable(peer.client_id-1) }}/32
 {% endfor %}

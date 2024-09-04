@@ -1,5 +1,13 @@
 ---
+wireguard_ip:
+wireguard_public_key:
+wireguard_private_key:
 wireguard_cert_directory: /etc/pki/wireguard
 wireguard_cert_owner: root
 wireguard_cert_group: root
 wireguard_listen_port: 51820
+
+wireguard_clients: []
+# - name: my-name
+#   public_key: my-pub-key
+#   client_id: id
