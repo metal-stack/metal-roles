@@ -33,6 +33,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/3rd/alpine
       match:
         semver: ">= 3.15.8"
+    - source: europe-docker.pkg.dev/gardener-project/releases/3rd/alpine
+      destination: http://registry:5000/gardener-project/releases/3rd/alpine
+      match:
+        semver: ">= 3.19.0"
     - source: eu.gcr.io/gardener-project/3rd/coredns/coredns
       destination: http://registry:5000/gardener-project/3rd/coredns/coredns
       match:
@@ -41,14 +45,26 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/3rd/envoyproxy/envoy-distroless
       match:
         semver: ">= v1.24.1"
+    - source: europe-docker.pkg.dev/gardener-project/releases/3rd/envoyproxy/envoy-distroless
+      destination: http://registry:5000/gardener-project/releases/3rd/envoyproxy/envoy-distroless
+      match:
+        semver: ">= v1.31.0"
     - source: eu.gcr.io/gardener-project/gardener/apiserver-proxy
       destination: http://registry:5000/gardener-project/gardener/apiserver-proxy
       match:
         semver: ">= v0.12.0"
+    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/apiserver-proxy
+      destination: http://registry:5000/gardener-project/releases/gardener/apiserver-proxy
+      match:
+        semver: ">= v0.16.0"
     - source: eu.gcr.io/gardener-project/gardener/vpn-shoot-client
       destination: http://registry:5000/gardener-project/gardener/vpn-shoot-client
       match:
         semver: ">= 0.16.0"
+    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/vpn-shoot-client
+      destination: http://registry:5000/gardener-project/releases/gardener/vpn-shoot-client
+      match:
+        semver: ">= 0.22.0"
     - source: ghcr.io/metal-stack/metallb-health-sidecar
       destination: http://registry:5000/metal-stack/metallb-health-sidecar
       match:
