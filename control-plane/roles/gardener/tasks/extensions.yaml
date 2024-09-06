@@ -27,32 +27,6 @@
     - controller-deployment.yaml
     - controller-registration.yaml
 
-- name: "Register controller: backup-s3"
-  k8s:
-    definition: "{{ lookup('template', 'backup-s3/{{ item }}', split_lines=False) }}"
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-    apply: yes
-  register: result
-  until: result is success
-  retries: 10
-  delay: 6
-  loop:
-    - controller-deployment.yaml
-    - controller-registration.yaml
-
-- name: "Register controller: dns-powerdns"
-  k8s:
-    definition: "{{ lookup('template', 'dns-powerdns/{{ item }}', split_lines=False) }}"
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-    apply: yes
-  register: result
-  until: result is success
-  retries: 10
-  delay: 6
-  loop:
-    - controller-deployment.yaml
-    - controller-registration.yaml
-
 #- name: "Register controller: external-dns"
 #  k8s:
 #    definition: "{{ lookup('template', 'dns/{{ item }}', split_lines=False) }}"
