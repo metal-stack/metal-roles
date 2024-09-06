@@ -89,6 +89,12 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 
 | Name                                                         | Mandatory | Description                                                                                                                                 |
 | ------------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| gardener_extension_provider_gcp_enabled                      |           | If enabled, deployes the gardener-extension-provider-metal                                                                                  |
+| gardener_extension_os_metal_enabled                          |           | If enabled, deployes the os-metal-extension                                                                                                 |
+| gardener_extension_networking_calico_enabled                 |           | If enabled, deployes the gardener-networking-extension-calico                                                                               |
+| gardener_extension_networking_cilium_enabled                 |           | If enabled, deployes the gardener-networking-extension-cilium                                                                               |
+| gardener_extension_shoot_cert_service_enabled                |           | If enabled, deployes the gardener-extension-shoot-cert-service                                                                              |
+| gardener_extension_shoot_dns_service_enabled                 |           | If enabled, deployes the gardener-extension-shoot-dns-service                                                                               |
 | gardener_os_controller_repo_ref                              |           | A repo reference for deploying the [os-metal-extension](https://github.com/metal-stack/os-metal-extension/)                                 |
 | gardener_networking_cilium_repo_ref                          |           | A repo reference for deploying the [gardener-extension-networking-cilium](https://github.com/gardener/gardener-extension-networking-cilium) |
 | gardener_extension_provider_metal_repo_ref                   |           | A repo reference for deploying the [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)    |
