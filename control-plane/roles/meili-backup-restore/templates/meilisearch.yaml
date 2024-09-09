@@ -130,6 +130,32 @@ spec:
               name: backup-restore-sidecar-backup-provider-config-{{ meilisearch_name }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /gcp/credentials/serviceaccount.json
+{% elif meilisearch_backup_restore_sidecar_provider == "s3" %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              key: bucketName
+              name: backup-restore-sidecar-backup-provider-config-{{ meilisearch_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: backup-restore-sidecar-backup-provider-config-{{ meilisearch_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              key: endpoint
+              name: backup-restore-sidecar-backup-provider-config-{{ meilisearch_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: accessKey
+              name: backup-restore-sidecar-backup-provider-config-{{ meilisearch_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secretKey
+              name: backup-restore-sidecar-backup-provider-config-{{ meilisearch_name }}
 {% endif %}
         volumeMounts:
         - name: data
@@ -246,6 +272,12 @@ data:
   bucketLocation: {{ meilisearch_backup_restore_sidecar_gcp_backup_location | b64encode }}
   projectID: {{ meilisearch_backup_restore_sidecar_gcp_project_id | b64encode }}
   serviceaccount.json: {{ meilisearch_backup_restore_sidecar_gcp_serviceaccount_json | to_json | b64encode }}
+{% elif meilisearch_backup_restore_sidecar_provider == "s3" %}
+  bucketName: {{ meilisearch_backup_restore_sidecar_s3_bucket_name | b64encode }}
+  region: {{ meilisearch_backup_restore_sidecar_s3_region | b64encode }}
+  endpoint: {{ meilisearch_backup_restore_sidecar_s3_endpoint | b64encode }}
+  accessKey: {{ meilisearch_backup_restore_sidecar_s3_access_key | b64encode }}
+  secretKey: {{ meilisearch_backup_restore_sidecar_s3_secret_key | b64encode }}
 {% endif %}
 ---
 apiVersion: v1

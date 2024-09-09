@@ -20,6 +20,12 @@ metal_db_backup_restore_sidecar_gcp_backup_location:
 metal_db_backup_restore_sidecar_gcp_project_id:
 metal_db_backup_restore_sidecar_gcp_serviceaccount_json:
 
+metal_db_backup_restore_sidecar_s3_bucket_name:
+metal_db_backup_restore_sidecar_s3_region:
+metal_db_backup_restore_sidecar_s3_endpoint:
+metal_db_backup_restore_sidecar_s3_access_key:
+metal_db_backup_restore_sidecar_s3_secret_key:
+
 metal_db_expose_frontend: no
 metal_db_ingress_dns: rethinkdb.{{ metal_control_plane_ingress_dns }}
 
