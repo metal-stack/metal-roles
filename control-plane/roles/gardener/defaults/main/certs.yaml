@@ -26,10 +26,6 @@ gardener_controller_manager_ca:
 gardener_controller_manager_cert:
 gardener_controller_manager_key:
 
-gardener_metal_admission_controller_ca:
-gardener_metal_admission_controller_cert:
-gardener_metal_admission_controller_key:
-
 gardener_etcd_ca_cert:
 gardener_etcd_cert:
 gardener_etcd_cert_key:

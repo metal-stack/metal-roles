@@ -21,12 +21,8 @@ gardener_os_cri_mapping:
     cris:
     - name: containerd
       containerRuntimes: []
-    - name: docker
-      containerRuntimes: []
   debian:
     when:
     cris:
     - name: containerd
-      containerRuntimes: []
-    - name: docker
       containerRuntimes: []
