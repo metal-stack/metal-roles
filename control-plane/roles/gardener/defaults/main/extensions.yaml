@@ -1,6 +1,7 @@
 ---
 gardener_extension_networking_calico_enabled: true
 gardener_extension_networking_cilium_enabled: true
+gardener_extension_networking_cilium_vector_overwrite_image_tag: v1.12.1
 gardener_extension_os_metal_enabled: true
 gardener_extension_provider_gcp_enabled: true
 gardener_extension_provider_metal_enabled: true
