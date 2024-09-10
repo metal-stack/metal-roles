@@ -8,9 +8,11 @@ positions:
 clients:
   - url: {{ promtail_loki_push_endpoint }}
     timeout: 60s
+    {% if promtail_loki_basic_auth_username and promtail_loki_basic_auth_password %}
     basic_auth:
       username: {{ promtail_loki_basic_auth_username }}
       password: {{ promtail_loki_basic_auth_password }}
+    {% endif %}
 
 scrape_configs:
 {{ promtail_scrape_configs|to_yaml(indent=2) }}
