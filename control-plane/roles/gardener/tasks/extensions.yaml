@@ -69,7 +69,9 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
-  when: gardener_extension_networking_cilium_enabled
+  when:
+    - gardener_extension_networking_cilium_enabled
+    - gardener_cert_management_issuer_email is defined
 
 - name: "Register controller: shoot-cert-service"
   k8s:
