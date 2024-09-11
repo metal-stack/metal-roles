@@ -13,16 +13,6 @@
     apply: yes
   when: gardener_backup_infrastructure_secret
 
-- name: Create backup infrastructure config for shooted seed
-  set_fact:
-    gardener_shooted_seed_backup_infratructure:
-      provider: "{{ gardener_backup_infrastructure.provider }}"
-      region: "{{ gardener_backup_infrastructure.region }}"
-      secretRef:
-        name: "{{ gardener_shooted_seed.name }}-backup-secret"
-        namespace: garden
-  when: gardener_backup_infrastructure_secret
-
 - name: Add seed provider secret
   k8s:
     definition:

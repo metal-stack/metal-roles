@@ -65,5 +65,13 @@ gardener_extension_provider_metal_image_pull_secret:
   # ...
 
 gardener_cert_management_issuer_private_key: ""
+gardener_cert_management_issuer_server: https://acme-v02.api.letsencrypt.org/directory
+gardener_cert_management_issuer_email:
 
 gardener_extension_dns_external_controller_registration_url:
+
+gardener_extension_networking_cilium_image_vector_overwrite: []
+  # - name: <image-name>
+  #   sourceRepository: /source/repository
+  #   repository: /repository
+  #   tag: <tag>
