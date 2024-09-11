@@ -11,21 +11,10 @@ providerConfig:
       repository: "{{ gardener_networking_cilium_image_name }}"
       tag: "{{ gardener_networking_cilium_image_tag }}"
       pullPolicy: Always
+{% if gardener_extension_networking_cilium_image_vector_overwrite %}
     imageVectorOverwrite: |
       images:
-        - name: cilium-agent
-          sourceRepository: github.com/cilium/cilium
-          repository: quay.io/cilium/cilium
-          tag: "{{ gardener_extension_networking_cilium_vector_overwrite_image_tag }}"
-        - name: cilium-preflight
-          sourceRepository: github.com/cilium/cilium
-          repository: quay.io/cilium/cilium
-          tag: "{{ gardener_extension_networking_cilium_vector_overwrite_image_tag }}"
-        - name: cilium-operator
-          sourceRepository: github.com/cilium/cilium
-          repository: quay.io/cilium/operator
-          tag: "{{ gardener_extension_networking_cilium_vector_overwrite_image_tag }}"
-        - name: hubble-relay
-          sourceRepository: github.com/cilium/hubble-ui
-          repository: quay.io/cilium/hubble-relay
-          tag: "{{ gardener_extension_networking_cilium_vector_overwrite_image_tag }}"
+{% for imageOverwrite in gardener_extension_networking_cilium_image_vector_overwrite %}
+          - "{{ imageOverwrite }}"
+{% endfor %}
+{% endif %}
