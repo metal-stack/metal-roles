@@ -14,7 +14,5 @@ providerConfig:
 {% if gardener_extension_networking_cilium_image_vector_overwrite %}
     imageVectorOverwrite: |
       images:
-{% for imageOverwrite in gardener_extension_networking_cilium_image_vector_overwrite %}
-          - "{{ imageOverwrite }}"
-{% endfor %}
+        {{ gardener_extension_networking_cilium_image_vector_overwrite | to_nice_yaml(indent=2) | indent(width=8, first=false) }}
 {% endif %}
