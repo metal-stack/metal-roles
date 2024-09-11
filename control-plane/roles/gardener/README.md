@@ -112,6 +112,7 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_extension_provider_metal_image_pull_policy          |           | Sets the image pull policy for components deployed through this extension controller.                                                       |
 | gardener_extension_provider_metal_image_pull_secret          |           | Provide image pull secrets for deployed containers                                                                                          |
 | gardener_cert_management_issuer_private_key                  |           | The Let's Encrypt private key used by the cert-management extension controller to setup signed certificates                                 |
+| gardener_extension_networking_cilium_image_vector_overwrite  |           | Allows overriding the image vector for the networking cilium extension                                                                      |
 | gardener_cert_management_issuer_email                        |           | The issuer email used by the cert-management extension                                                                                      |
 | gardener_cert_management_issuer_server                       |           | The issuer server used by the cert-management extension                                                                                     |
 
