@@ -35,7 +35,26 @@ gardener_dns_domain:
 gardener_dns_provider:
 
 gardener_backup_infrastructure:
+  # provider: gcp
+  # region:
+  # secretRef:
+  #  name: backup-secret
+  #  namespace: garden
+  # bucket:
+  #
+  # provider: S3
+  # endpoint: "{{ gardener_backup_infrastructure_secret.endpoint | b64decode }}"
+  # accessKeyID: "{{ gardener_backup_infrastructure_secret.accessKeyID | b64decode }}"
+  # secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode}}"
+
 gardener_backup_infrastructure_secret:
+  # for gcp:
+  # serviceaccount.json: "{{ gardener_backup_infrastructure_service_account_json | b64encode }}"
+  #
+  # for S3:
+  # endpoint:
+  # accessKeyID:
+  # secretAccessKey:
 
 gardener_soil_name: "{{ metal_control_plane_stage_name }}"
 gardener_soil_kubeconfig_file_path: "{{ lookup('env', 'KUBECONFIG') }}"

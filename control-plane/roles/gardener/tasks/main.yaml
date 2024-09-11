@@ -55,6 +55,7 @@
       - gardener_dns_provider is not none
       - gardener_cloud_profile_metal_api_url is not none
       - gardener_cloud_profile_metal_api_hmac is not none
+      - gardener_backup_infrastructure_secret is none or (gardener_backup_infrastructure is not none and gardener_backup_infrastructure.provider in ["gcp", "S3"])
       - gardener_cert_management_issuer_email is not none
 
 - name: Deploy required Seed CRDs
