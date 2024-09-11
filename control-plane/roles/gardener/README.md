@@ -21,7 +21,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_scheduler_resources                           |           | Set custom resource definitions for the gardener-scheduler                                                                                                                                                  |
 | gardener_dns_domain                                    |           | Specifies the DNS domain on which the Gardener will manage DNS entries                                                                                                                                      |
 | gardener_dns_provider                                  | yes       | Specifies the DNS provider                                                                                                                                                                                  |
-| gardener_backup_infrastructure                         |           | Specifies the Gardener backup infrastructure                                                                                                                                                                |
+| gardener_backup_infrastructure                         |           | Specifies the Gardener backup infrastructure, required when `gardener_backup_infrastructure_secret` is set                                                                                                  |
 | gardener_backup_infrastructure_secret                  |           | Specifies the secret for the backup infrastructure                                                                                                                                                          |
 | gardener_soil_name                                     |           | The name of the initial `Seed` (used for spinning up shooted seeds)                                                                                                                                         |
 | gardener_soil_kubeconfig_file_path                     |           | The kubeconfig path to the initial seed cluster                                                                                                                                                             |
@@ -113,6 +113,8 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_extension_provider_metal_image_pull_secret          |           | Provide image pull secrets for deployed containers                                                                                          |
 | gardener_cert_management_issuer_private_key                  |           | The Let's Encrypt private key used by the cert-management extension controller to setup signed certificates                                 |
 | gardener_extension_networking_cilium_image_vector_overwrite  |           | Allows overriding the image vector for the networking cilium extension                                                                      |
+| gardener_cert_management_issuer_email                        |           | The issuer email used by the cert-management extension                                                                                      |
+| gardener_cert_management_issuer_server                       |           | The issuer server used by the cert-management extension                                                                                     |
 
 ### Certificates
 

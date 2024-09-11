@@ -5,10 +5,16 @@ images:
 {% if gardener_backup_infrastructure_secret %}
 backup:
   storageContainer: {{ gardener_backup_infrastructure.bucket }}
-{% if metal_control_plane_host_provider == "gcp" %}
+{% if gardener_backup_infrastructure.provider == "gcp" %}
   storageProvider: "GCS"
   gcs:
     serviceAccountJson: {{ gardener_backup_infrastructure_service_account_json | to_json }}
+{% elif gardener_backup_infrastructure.provider == "S3" %}
+  storageProvider: "ECS"
+  ecs:
+    endpoint: "{{ gardener_backup_infrastructure_secret.endpoint | b64decode }}"
+    accessKeyID: "{{ gardener_backup_infrastructure_secret.accessKeyID | b64decode }}"
+    secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode}}"
 {% endif %}
 {% endif %}
 
