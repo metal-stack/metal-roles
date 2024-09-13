@@ -1,23 +1,11 @@
-# monitoring
+# prometheus
 
-Deploys exporter in systemd-managed Docker containers.
+Deploys prometheus in a systemd-managed Docker container.
 
 ## Variables
 
 | Name                                             | Mandatory | Description                                                 |
 | ------------------------------------------------ | --------- | ----------------------------------------------------------- |
-| monitoring_blackbox_exporter_etc_host_dir        |           | The host directory for the blackbox exporter                |
-| monitoring_blackbox_exporter_image_name          |           | Image name of the blackblox exporter                        |
-| monitoring_blackbox_exporter_image_tag           |           | Image tag of the blackbox exporter                          |
-| monitoring_blackbox_exporter_port                |           | Port for the blackblox exporter                             |
-| monitoring_ipmi_exporter_etc_host_dir            |           | The host directory for the IPMI exporter                    |
-| monitoring_ipmi_exporter_image_name              |           | Image name of the IPMI exporter                             |
-| monitoring_ipmi_exporter_image_tag               |           | Image tag of the IPMI exporter                              |
-| monitoring_ipmi_exporter_port                    |           | Port for the IPMI exporter                                  |
-| monitoring_node_exporter_dir                     |           | The host directory for the node exporter                    |
-| monitoring_node_exporter_image_name              |           | Image name of the IPMI exporter                             |
-| monitoring_node_exporter_image_tag               |           | Image tag of the IPMI exporter                              |
-| monitoring_node_exporter_port                    |           | Port for the IPMI exporter                                  |
 | prometheus_port                                  |           | Port for prometheus                                         |
 | prometheus_config_host_dir                       |           | The host directory for prometheus configurations            |
 | prometheus_data_host_dir                         |           | The host directory for prometheus data                      |
@@ -39,7 +27,3 @@ Deploys exporter in systemd-managed Docker containers.
 | prometheus_blackbox_exporter_metal_api_probe_url |           | metal-api probe URL for the blackbox exporter               |
 | prometheus_remote_write_basic_auth_username      |           | The username for the prometheus remote write authentication |
 | prometheus_remote_write_basic_auth_password      |           | The password for the prometheus remote write authentication |
-| sonic_exporter_image_name                        |           | Image name of the sonic exporter                            |
-| sonic_exporter_image_tag                         |           | Image tag of the sonic exporter                             |
-| sonic_exporter_address                           |           | Address for the sonic exporter                              |
-| sonic_exporter_port                              |           | Port for the sonic exporter                                 |
