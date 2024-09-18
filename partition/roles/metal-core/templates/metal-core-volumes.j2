@@ -12,3 +12,6 @@
 - /etc/nsswitch.conf:/etc/nsswitch.conf
 {% endif %}
 - "{{ metal_core_grpc_cert_dir }}:/certs/grpc:ro"
+{% for volume_mount in metal_core_additional_volume_mounts %}
+- {{ volume_mount }}
+{% endfor %}

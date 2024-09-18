@@ -81,10 +81,7 @@
     systemd_docker_ports:
       - host_port: "{{ metal_bmc_console_port }}"
         target_port: "{{ metal_bmc_console_port }}"
-    systemd_docker_volumes:
-      - /var/lib/dhcp:/var/lib/dhcp:ro
-      - /certs/nsq:/certs/nsq:ro
-      - /certs/console:/certs/console:ro
+    systemd_docker_volumes: "{{ lookup('template', 'metal-bmc-volumes.j2') | from_yaml }}"
     systemd_service_environment:
       TZ: "{{ metal_partition_timezone }}"
       METAL_BMC_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
@@ -104,4 +101,4 @@
       METAL_BMC_CONSOLE_PORT: "{{ metal_bmc_console_port }}"
       METAL_BMC_CONSOLE_CA_CERT_FILE: "{{metal_bmc_console_cert_dir }}/ca.pem"
       METAL_BMC_CONSOLE_CERT_FILE: "{{metal_bmc_console_cert_dir }}/cert.pem"
-      METAL_BMC_CONSOLE_KEY_FILE:  "{{metal_bmc_console_cert_dir }}/key.pem"
+      METAL_BMC_CONSOLE_KEY_FILE: "{{metal_bmc_console_cert_dir }}/key.pem"

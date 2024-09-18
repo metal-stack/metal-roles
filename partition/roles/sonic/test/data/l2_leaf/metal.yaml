@@ -267,6 +267,7 @@ VLAN_INTERFACE:
   Vlan1000: {}
   Vlan1000|192.168.255.1/24: {}
   Vlan1001:
+    "grat_arp_force_override": "enabled"
     vrf_name: "Vrf46"
 
 VLAN_MEMBER:

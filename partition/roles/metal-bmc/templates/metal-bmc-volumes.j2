@@ -1,0 +1,6 @@
+- /var/lib/dhcp:/var/lib/dhcp:ro
+- /certs/nsq:/certs/nsq:ro
+- /certs/console:/certs/console:ro
+{% for volume_mount in metal_bmc_additional_volume_mounts %}
+- {{ volume_mount }}
+{% endfor %}

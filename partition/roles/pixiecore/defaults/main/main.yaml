@@ -19,3 +19,5 @@ pixiecore_metal_hammer_logging_password:
 pixiecore_metal_hammer_logging_cert:
 pixiecore_metal_hammer_logging_key:
 pixiecore_metal_hammer_logging_tls_insecure: false
+
+pixiecore_additional_volume_mounts: []
