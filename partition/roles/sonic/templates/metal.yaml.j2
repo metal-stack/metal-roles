@@ -114,7 +114,9 @@ PORT:
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
     fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
     {% else %}
-    speed: "{{ running_cfg.speed }}"
+    speed: "{{ sonic_ports_default_speed|default(running_cfg.speed) }}"
+    mtu: "{{ sonic_ports_default_mtu|default(running_cfg.mtu) }}"
+    fec: "{{ sonic_ports_default_fec|default(running_cfg.fec) }}"
     {% endif %}
   {% endfor %}
 {% if sonic_portchannels %}
