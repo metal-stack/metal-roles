@@ -200,7 +200,7 @@ PORTCHANNEL:
     mtu: "9216"
   PortChannel11:
     admin_status: "up"
-    fallback: "True"
+    fallback: "true"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -208,7 +208,7 @@ PORTCHANNEL:
     mtu: "9000"
   PortChannel12:
     admin_status: "up"
-    fallback: "True"
+    fallback: "true"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -216,7 +216,7 @@ PORTCHANNEL:
     mtu: "9000"
   PortChannel21:
     admin_status: "up"
-    fallback: "True"
+    fallback: "true"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -224,7 +224,6 @@ PORTCHANNEL:
     mtu: "9000"
   PortChannel22:
     admin_status: "up"
-    fallback: "False"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -261,7 +260,7 @@ VLAN_INTERFACE:
   Vlan1000: {}
   Vlan1000|192.168.255.1/24: {}
   Vlan1001:
-    static_anycast_gateway: "True"
+    static_anycast_gateway: "true"
     vrf_name: "Vrf46"
 
 VLAN_MEMBER:

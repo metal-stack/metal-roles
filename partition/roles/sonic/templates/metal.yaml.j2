@@ -123,8 +123,8 @@ PORTCHANNEL:
 {% for po in sonic_portchannels %}
   PortChannel{{ po.number }}:
     admin_status: "up"
-{% if po.fallback is defined %}
-    fallback: "{{ po.fallback|bool }}"
+{% if po.fallback is defined and po.fallback %}
+    fallback: "true"
 {% endif %}
     fast_rate: "false"
     lacp_key: "auto"
@@ -161,8 +161,8 @@ VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
   Vlan{{ vlan.id }}:
-  {% if vlan.sag is defined %}
-    static_anycast_gateway: "{{ vlan.sag|bool }}"
+  {% if vlan.sag is defined and vlan.sag %}
+    static_anycast_gateway: "true"
   {% endif %}
     vrf_name: "{{ vlan.vrf }}"
   {% else %}
