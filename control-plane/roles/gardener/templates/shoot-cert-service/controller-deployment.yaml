@@ -19,3 +19,5 @@ providerConfig:
           server: "{{ gardener_cert_management_issuer_server }}"
           privateKey: |
             {{ gardener_cert_management_issuer_private_key | indent(width=12, first=false) }}
+        shootIssuers:
+          enabled: true # if true, allows to specify issuers in the shoot clusters
