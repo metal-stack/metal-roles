@@ -19,5 +19,9 @@ providerConfig:
           server: "{{ gardener_cert_management_issuer_server }}"
           privateKey: |
             {{ gardener_cert_management_issuer_private_key | indent(width=12, first=false) }}
+{% if gardener_cert_management_precheck_nameservers %}
+        precheckNameservers:
+          {{ gardener_cert_management_precheck_nameservers | to_nice_yaml(indent=2) | indent(width=10, first=false) }}
+{% endif %}
         shootIssuers:
-          enabled: true # if true, allows to specify issuers in the shoot clusters
+          enabled: {{ gardener_cert_management_shoot_issuers_enabled | bool }} # if true, allows to specify issuers in the shoot clusters
