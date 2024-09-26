@@ -189,7 +189,7 @@ PORTCHANNEL:
     mtu: "9216"
   PortChannel11:
     admin_status: "up"
-    fallback: "True"
+    fallback: "true"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -197,7 +197,7 @@ PORTCHANNEL:
     mtu: "9000"
   PortChannel12:
     admin_status: "up"
-    fallback: "True"
+    fallback: "true"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -205,7 +205,7 @@ PORTCHANNEL:
     mtu: "9000"
   PortChannel21:
     admin_status: "up"
-    fallback: "True"
+    fallback: "true"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -213,7 +213,6 @@ PORTCHANNEL:
     mtu: "9000"
   PortChannel22:
     admin_status: "up"
-    fallback: "False"
     fast_rate: "false"
     lacp_key: "auto"
     min_links: "1"
@@ -237,14 +236,8 @@ PORTCHANNEL_MEMBER:
   PortChannel23|Ethernet2:  {}
 
 SAG:
-  "Vlan1001|IPv4":
-    gwip:
-    - "10.3.2.1/27"
-
-SAG_GLOBAL:
-  IP:
-    IPv4: "enable"
-    gwmac: "00:11:22:33:44:66"
+  GLOBAL:
+    gateway_mac: "00:11:22:33:44:66"
 
 VLAN:
   Vlan1000:
@@ -256,7 +249,7 @@ VLAN_INTERFACE:
   Vlan1000: {}
   Vlan1000|192.168.255.1/24: {}
   Vlan1001:
-    "grat_arp_force_override": "enabled"
+    static_anycast_gateway: "true"
     vrf_name: "Vrf46"
 
 VLAN_MEMBER:

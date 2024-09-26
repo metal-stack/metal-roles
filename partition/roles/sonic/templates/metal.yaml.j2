@@ -125,8 +125,8 @@ PORTCHANNEL:
 {% for po in sonic_portchannels %}
   PortChannel{{ po.number }}:
     admin_status: "up"
-{% if po.fallback is defined %}
-    fallback: "{{ po.fallback|bool }}"
+{% if po.fallback is defined and po.fallback %}
+    fallback: "true"
 {% endif %}
     fast_rate: "false"
     lacp_key: "auto"
@@ -142,21 +142,11 @@ PORTCHANNEL_MEMBER:
 {% endfor %}
 {% endfor %}
 {% endif %}
-{% if sonic_sag is defined and sonic_sag|length > 0 %}
-{% if sonic_sag.vlans is defined and sonic_sag.vlans|length > 0 %}
+{% if sonic_sag.mac is defined %}
 
 SAG:
-{% for vlan in sonic_sag.vlans %}
-  "Vlan{{ vlan.id }}|IPv4":
-    gwip:
-    - "{{ vlan.ip }}"
-{% endfor %}
-{% endif %}
-
-SAG_GLOBAL:
-  IP:
-    IPv4: "enable"
-    gwmac: "{{ sonic_sag.mac }}"
+  GLOBAL:
+    gateway_mac: "{{ sonic_sag.mac }}"
 {% endif %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
 
@@ -173,13 +163,9 @@ VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
   Vlan{{ vlan.id }}:
-    {% if sonic_sag is defined and sonic_sag.vlans is defined %}
-    {% for sag_vlan in sonic_sag.vlans %}
-    {% if vlan.id == sag_vlan.id %}
-    "grat_arp_force_override": "enabled"
-    {% endif %}
-    {% endfor %}
-    {% endif %}
+  {% if vlan.sag is defined and vlan.sag %}
+    static_anycast_gateway: "true"
+  {% endif %}
     vrf_name: "{{ vlan.vrf }}"
   {% else %}
   Vlan{{ vlan.id }}: {}
