@@ -8,7 +8,7 @@ positions:
 clients:
   - url: {{ promtail_loki_push_endpoint }}
     timeout: 60s
-    {% if promtail_loki_basic_auth_username and promtail_loki_basic_auth_password %}
+    {% if promtail_loki_basic_auth_username is defined and promtail_loki_basic_auth_password is defined %}
     basic_auth:
       username: {{ promtail_loki_basic_auth_username }}
       password: {{ promtail_loki_basic_auth_password }}

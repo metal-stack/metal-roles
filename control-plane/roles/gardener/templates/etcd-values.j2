@@ -5,7 +5,7 @@ images:
 {% if gardener_backup_infrastructure_secret %}
 backup:
   storageContainer: {{ gardener_backup_infrastructure.bucket }}
-{% if metal_control_plane_host_provider == "gcp" %}
+{% if gardener_backup_infrastructure.provider == "gcp" %}
   storageProvider: "GCS"
   gcs:
     serviceAccountJson: {{ gardener_backup_infrastructure_service_account_json | to_json }}

@@ -34,7 +34,7 @@ alerting:
 {% if prometheus_remote_write_url %}
 remote_write:
 - url: {{ prometheus_remote_write_url }}
-  {% if prometheus_remote_write_basic_auth_username and prometheus_remote_write_basic_auth_password %}
+  {% if prometheus_remote_write_basic_auth_username is defined and prometheus_remote_write_basic_auth_password is defined %}
   basic_auth:
     username: {{ prometheus_remote_write_basic_auth_username }}
     password: {{ prometheus_remote_write_basic_auth_password }}
@@ -201,15 +201,15 @@ scrape_configs:
   scrape_interval: 30s
   params:
     collect[]:
-      - clustering
-      - datapath
-      - duroslightscrape
-      - meminfo
-      - textfile
-      - lightfield
-      - netstat
-      - netdev
-      - cpufreq
+    - clustering
+    - datapath
+    - duroslight
+    - meminfo
+    - textfile
+    - lightfield
+    - netstat
+    - netdev
+    - cpufreq
   static_configs:
   - targets: {{ prometheus_lightbox_exporter_targets | to_json }}
 
@@ -219,6 +219,6 @@ scrape_configs:
   scrape_interval: 5m
   params:
     collect[]:
-      - smart
+    - smart
   static_configs:
   - targets: {{ prometheus_lightos_smart_targets | to_json }}

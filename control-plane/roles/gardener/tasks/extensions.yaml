@@ -12,6 +12,7 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: gardener_extension_provider_metal_enabled
 
 - name: "Register controller: provider gcp (backups only)"
   k8s:
@@ -26,6 +27,7 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: gardener_extension_provider_gcp_enabled
 
 - name: "Register controller: os extension provider metal"
   k8s:
@@ -39,6 +41,7 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: gardener_extension_os_metal_enabled
 
 - name: "Register controller: networking calico"
   k8s:
@@ -52,6 +55,7 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: gardener_extension_networking_calico_enabled
 
 - name: "Register controller: networking cilium"
   k8s:
@@ -65,6 +69,7 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: gardener_extension_networking_cilium_enabled
 
 - name: "Register controller: shoot-cert-service"
   k8s:
@@ -79,6 +84,7 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: gardener_extension_shoot_cert_service_enabled
 
 - name: "Register controller: shoot-dns-service"
   k8s:
@@ -93,3 +99,4 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
+  when: gardener_extension_shoot_dns_service_enabled
