@@ -6,8 +6,6 @@ sonic_loopback_address: 10.0.0.1
 sonic_breakouts:
   Ethernet0: "4x10G"
 
-sonic_ports_default_mtu: 9216
-sonic_ports_default_speed: 100000
 sonic_ports_dict:
   Ethernet0:
     speed: 10000

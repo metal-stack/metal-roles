@@ -10,8 +10,6 @@ sonic_mgmt_vrf: false
 sonic_docker_routing_config_mode: split-unified
 sonic_frr_mgmt_framework_config: false
 
-sonic_ports_default_mtu: 9000
-sonic_ports_default_speed: 40000
 sonic_ports_dict:
   Ethernet0:
 

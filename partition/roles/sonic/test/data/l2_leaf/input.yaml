@@ -7,8 +7,6 @@ sonic_breakouts:
   Ethernet0: "4x25G"
   Ethernet4: "4x25G"
 
-sonic_ports_default_mtu: 9000
-sonic_ports_default_speed: 25000
 sonic_ports_dict:
   Ethernet0:
   Ethernet1:

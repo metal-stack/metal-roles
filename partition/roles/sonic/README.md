@@ -25,9 +25,6 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_ports.fec                                            |           | FEC used for the port.                                                                                               |
 | sonic_ports.vrf                                            |           | VRF where the port should bind to.                                                                                   |
 | sonic_ports.ips                                            |           | IPs to assign to the interface directly.                                                                             |
-| sonic_ports_default_mtu                                    |           | MTU default value for ports                                                                                          |
-| sonic_ports_default_fec                                    |           | FEC default value for ports                                                                                          |
-| sonic_ports_default_speed                                  |           | Speed default value for ports                                                                                        |
 | sonic_bgp_ports                                            |           | Ports for the underlay BGP sessions                                                                                  |
 | sonic_frr_render                                           |           | Render the frr config                                                                                                |
 | sonic_frr_debug_options                                    |           | Debugging options for FRR.                                                                                           |

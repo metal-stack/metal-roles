@@ -9,7 +9,6 @@ sonic_config_action: load
 ## Physical settings
 sonic_ports: []
 sonic_ports_dict: {}
-sonic_ports_default_fec: none
 
 ## Layer 2
 sonic_portchannels: []

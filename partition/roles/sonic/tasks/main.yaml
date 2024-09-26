@@ -15,15 +15,6 @@
       - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
 
-- name: Check mandatory variables on non-empty sonic_ports are set
-  assert:
-    fail_msg: "default port configuration is necessary on non-empty sonic_ports"
-    quiet: yes
-    that:
-      - sonic_ports_default_speed
-      - sonic_ports_default_mtu
-  when: sonic_ports
-
 - name: Check mandatory variables on non-empty sonic_portchannels are set
   assert:
     fail_msg: "default configuration is necessary on non-empty sonic_portchannels"

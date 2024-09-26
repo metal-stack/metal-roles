@@ -63,9 +63,7 @@ PORT:
     lanes: "1"
     parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
-    mtu: "9000"
-    fec: "none"
+    speed: "25000"
   Ethernet1:
     alias: Eth1/2(Port1)
     autoneg: "off"
@@ -73,9 +71,7 @@ PORT:
     lanes: "2"
     parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
-    mtu: "9000"
-    fec: "none"
+    speed: "25000"
   Ethernet2:
     alias: Eth1/3(Port1)
     autoneg: "off"
@@ -83,9 +79,7 @@ PORT:
     lanes: "3"
     parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
-    mtu: "9000"
-    fec: "none"
+    speed: "25000"
   Ethernet3:
     alias: Eth1/4(Port1)
     autoneg: "off"
@@ -93,15 +87,14 @@ PORT:
     lanes: "4"
     parent_port: Ethernet0
     admin_status: up
-    speed: "1000"
-    mtu: "9000"
-    fec: "none"
+    speed: "25000"
   Ethernet4:
     alias: Eth2(Port2)
     autoneg: "off"
     index: "2"
     lanes: "5,6,7,8"
     parent_port: Ethernet4
+    admin_status: up
     speed: "100000"
   Ethernet120:
     alias: Eth31(Port31)
@@ -121,8 +114,6 @@ PORT:
     parent_port: Ethernet124
     admin_status: up
     speed: "100000"
-    mtu: "9000"
-    fec: "none"
 
 VLAN:
   Vlan1:

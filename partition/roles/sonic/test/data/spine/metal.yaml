@@ -55,8 +55,6 @@ PORT:
     parent_port: Ethernet120
     admin_status: up
     speed: "100000"
-    mtu: "9216"
-    fec: "none"
   Ethernet124:
     alias: Eth32(Port32)
     autoneg: "off"
@@ -65,8 +63,6 @@ PORT:
     parent_port: Ethernet124
     admin_status: up
     speed: "100000"
-    mtu: "9216"
-    fec: "none"
 
 LLDP:
   Global:
