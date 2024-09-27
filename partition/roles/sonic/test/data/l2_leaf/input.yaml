@@ -72,7 +72,9 @@ sonic_running_cfg_ports:
     index: "1"
     lanes: "4"
     parent_port: Ethernet0
-    speed: "25000"
+    speed: "10000"
+    fec: "rs"
+    mtu: "9100"
   Ethernet4:
     alias: Eth2/1(Port2)
     index: "2"

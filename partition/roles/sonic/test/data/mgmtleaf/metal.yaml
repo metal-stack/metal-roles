@@ -102,6 +102,7 @@ PORT:
     index: "2"
     lanes: "5,6,7,8"
     parent_port: Ethernet4
+    admin_status: up
     speed: "100000"
   Ethernet120:
     alias: Eth31(Port31)

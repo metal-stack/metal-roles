@@ -56,6 +56,7 @@ PORT:
     autoneg: "off"
     index: "1"
     lanes: "29,30,31,32"
+    admin_status: up
     speed: "40000"
 
 VLAN:
