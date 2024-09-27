@@ -75,3 +75,14 @@
     port: 2112
     timeout: 300
     msg: "metal-core did not come up"
+
+- name: check if bgp session is up
+  ansible.builtin.command: vtysh -c 'show bgp summary'
+  register: bgp_summary
+  changed_when: false
+
+- name: restart bgp if necessary
+  systemd:
+    name: bgp
+    state: restarted
+  when: "'BGP instance not found' in bgp_summary.stdout"
