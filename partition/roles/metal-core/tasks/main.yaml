@@ -75,5 +75,3 @@
     port: 2112
     timeout: 300
     msg: "metal-core did not come up"
-  notify:
-  - restart bgp
