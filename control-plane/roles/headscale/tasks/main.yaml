@@ -13,7 +13,6 @@
       - headscale_db_image_tag is defined
       - headscale_db_backup_restore_sidecar_image_name is defined
       - headscale_db_backup_restore_sidecar_image_tag is defined
-      - headscale_private_key is defined
       - headscale_noise_private_key is defined
       - headscale_ingress_dns is not none
 
