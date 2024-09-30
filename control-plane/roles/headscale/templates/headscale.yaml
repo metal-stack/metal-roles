@@ -11,18 +11,23 @@ data:
     listen_addr: 0.0.0.0:8080
     grpc_allow_insecure: true
     ephemeral_node_inactivity_timeout: 30m
-    private_key_path: /vol/data/private.key
     noise:
       private_key_path: /vol/data/noise_private.key
     derp:
       urls:
         - https://controlplane.tailscale.com/derpmap/default
-    ip_prefixes: {{ headscale_ip_prefixes | to_json }}
 
-    db_type: postgres
-    db_host: headscale-db
-    db_name: {{ headscale_db_db }}
-    db_user: {{ headscale_db_user }}
+    database:
+      type: postgres
+      postgres:
+        host: headscale-db
+        port: 5432
+        name: {{ headscale_db_db }}
+        user: {{ headscale_db_user }}
+
+    v4: {{ headscale_ipv4_prefix }}
+    v6: {{ headscale_ipv6_prefix }}
+
 ---
 apiVersion: v1
 kind: Secret
@@ -94,8 +99,6 @@ spec:
         - containerPort: 50443
           name: grpc
         env:
-        - name: HEADSCALE_DB_PORT
-          value: "5432"
         - name: HEADSCALE_DB_PASS
           valueFrom:
             secretKeyRef:
