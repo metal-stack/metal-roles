@@ -29,6 +29,9 @@ data:
       v4: {{ headscale_ipv4_prefix }}
       v6: {{ headscale_ipv6_prefix }}
 
+    dns:
+      magic_dns: false
+
 ---
 apiVersion: v1
 kind: Secret
@@ -100,7 +103,7 @@ spec:
         - containerPort: 50443
           name: grpc
         env:
-        - name: HEADSCALE_DB_PASS
+        - name: HEADSCALE_DATABASE_POSTGRES_PASS
           valueFrom:
             secretKeyRef:
               key: password
