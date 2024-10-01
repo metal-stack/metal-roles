@@ -61,7 +61,7 @@ PORT:
     admin_status: up
     speed: "10000"
     mtu: "1500"
-    fec: "none"
+    fec: none
   Ethernet1:
     alias: Eth1/2(Port1)
     autoneg: "off"
@@ -95,7 +95,7 @@ PORT:
     admin_status: up
     speed: "100000"
     mtu: "9216"
-    fec: "none"
+    fec: none
   Ethernet116:
     alias: Eth30(Port30)
     autoneg: "off"
@@ -105,7 +105,7 @@ PORT:
     admin_status: up
     speed: "100000"
     mtu: "9216"
-    fec: "none"
+    fec: none
 
 VLAN:
   Vlan4000:

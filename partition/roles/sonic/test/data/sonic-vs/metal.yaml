@@ -50,7 +50,7 @@ PORT:
     admin_status: up
     speed: "40000"
     mtu: "9000"
-    fec: "none"
+    fec: none
   Ethernet4:
     alias: fortyGigE0/4
     autoneg: "off"

@@ -107,13 +107,14 @@ PORT:
     {% if 'parent_port' in running_cfg %}
     parent_port: {{ running_cfg.parent_port }}
     {% endif %}
-    admin_status: up
     {% if sonic_ports_dict[name] is defined %}
     {% set port = sonic_ports_dict[name] %}
+    admin_status: {{ port.admin_status|default('up') }}
     speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
-    fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
+    fec: {{ port.fec|default(sonic_ports_default_fec)|string|lower }}
     {% else %}
+    admin_status: up
     {% if running_cfg.speed is defined %}
     speed: "{{ running_cfg.speed }}"
     {% endif %}
@@ -121,7 +122,7 @@ PORT:
     mtu: "{{ running_cfg.mtu }}"
     {% endif %}
     {% if running_cfg.fec is defined %}
-    fec: "{{ running_cfg.fec }}"
+    fec: {{ running_cfg.fec }}
     {% endif %}
     {% endif %}
   {% endfor %}
