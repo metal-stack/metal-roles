@@ -15,7 +15,6 @@
 
 - name: Boot into ONIE
   reboot:
-    post_reboot_delay: 60
 
 - name: Wait until ZTP has completed
   shell: "show ztp status"
