@@ -17,7 +17,7 @@
   reboot:
 
 - name: Wait until ZTP has completed
-  shell: "show ztp status"
+  command: "show ztp status"
   register: result
   until: "'SUCCESS' in result.stdout"
   retries: 30
