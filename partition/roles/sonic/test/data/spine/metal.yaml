@@ -56,7 +56,7 @@ PORT:
     admin_status: up
     speed: "100000"
     mtu: "9216"
-    fec: "none"
+    fec: none
   Ethernet124:
     alias: Eth32(Port32)
     autoneg: "off"
@@ -66,7 +66,7 @@ PORT:
     admin_status: up
     speed: "100000"
     mtu: "9216"
-    fec: "none"
+    fec: none
 
 LLDP:
   Global:
