@@ -18,7 +18,7 @@
 
     - name: Setup BGP
       ansible.builtin.raw: |
-        uci set bgp.bgp.enable='1'
+        uci set bgp.bgp.enabled='1'
         uci set bgp.bgp.enabled_vty='1'
         uci set bgp.general.enabled='1'
         uci add_list bgp.general.redistribute='static' 
