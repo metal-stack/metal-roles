@@ -1,0 +1,15 @@
+lan_interfaces:
+  - name: mgmtsrv
+    ipaddr: 10.9.253.17
+    device: eth0.3
+  - name: usersrv
+    ipaddr: 10.9.253.18
+    device: eth0.4
+  - name: guestsrv
+    ipaddr: 10.9.253.19
+    device: eth0.5
+
+bgp_general_ip: 10.9.253.17
+bgp_mgmtsrv_ipaddr: 10.9.253.25
+
+location_name: Felbach
