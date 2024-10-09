@@ -28,3 +28,6 @@
 {% if pixiecore_metal_hammer_logging_tls_insecure %}
 - "--metal-hammer-logging-tls-insecure={{ pixiecore_metal_hammer_logging_tls_insecure | lower }}"
 {% endif %}
+{% if pixiecore_metal_hammer_ntp_servers %}
+- "--ntp-servers={{ pixiecore_metal_hammer_ntp_servers | join(',') }}"
+{% endif %}
