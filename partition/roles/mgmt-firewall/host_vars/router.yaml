@@ -1,15 +1,90 @@
+# host_vars/router1.yaml
 lan_interfaces:
   - name: mgmtsrv
     ipaddr: 10.9.253.17
     device: eth0.3
+    firewall_network: 2
+    dhcp_options:
+      - { option: '3', value: '10.9.253.17' }
+      - { option: '6', value: '1.1.1.1,1.0.1.1' }
+
   - name: usersrv
     ipaddr: 10.9.253.18
     device: eth0.4
+    firewall_network: 2
+    dhcp_options:
+      - { option: '3', value: '10.9.253.18' }
+      - { option: '6', value: '8.8.8.8,8.8.4.4' }
+
   - name: guestsrv
     ipaddr: 10.9.253.19
     device: eth0.5
+    firewall_network: 3
+    dhcp_options:
+      - { option: '3', value: '10.9.253.19' }
+      - { option: '6', value: '9.9.9.9,149.112.112.112' }
+
+port_forwards:
+  - src_dport: '22'
+    dest_ip: '192.168.1.1'
+    dest_port: '22'
+    src: 'wan'
+    name: 'ssh_mgmtsrv'
+    target: 'DNAT'
+    priority: '1'
+    dest: 'lan'
+    reflection: '0'
+    src_ip: ['212.34.66.73', '212.34.83.194']
+    enabled: '1'
+    proto: ['tcp']
+
+  - src_dport: '623'
+    dest_ip: '192.168.1.1'
+    dest_port: '623'
+    src: 'wan'
+    name: 'rmcp_mgmtsrv_ipmi'
+    target: 'DNAT'
+    priority: '2'
+    dest: 'lan'
+    proto: ['tcp', 'udp']
+    src_ip: ['192.168.1.1']
+    src_dip: '212.34.83.203'
+    enabled: '1'
+
+wan_default:
+  ipaddr: '212.34.83.202'
+  netmask: '255.255.255.248'
+  dns: ['1.1.1.1', '2.2.2.2']
+  gateway: '212.34.83.201'
+
+wan_interfaces:
+  - name: wan_mgtm
+    device: eth1
+    metric: '1'
+    area_type: 'wan'
+    ipaddr: '212.34.83.202'
+    netmask: '255.255.255.248'
+    delegate: '1'
+    force_link: '0'
+    dns: ['1.1.1.1', '1.0.0.1']
+    peerdns: '0'
+    proto: 'static'
+    gateway: '212.34.83.201'
+
+  - name: wan_servc
+    device: eth2
+    metric: '2'
+    area_type: 'wan'
+    ipaddr: '212.34.83.203'
+    netmask: '255.255.255.248'
+    delegate: '1'
+    force_link: '0'
+    dns: ['8.8.8.8', '8.8.4.4']
+    peerdns: '0'
+    proto: 'static'
+    gateway: '212.34.83.201'
 
 bgp_general_ip: 10.9.253.17
 bgp_mgmtsrv_ipaddr: 10.9.253.25
-
 location_name: Felbach
+device_name: mgmtfrwl
