@@ -55,8 +55,8 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_ingress_basic_auth  |           | Set basic authentication on the Ingress for Thanos Receive                                                                                                                                                                      |
 | monitoring_thanos_receive_ingress_dns         |           | The DNS name used for exposing Thanos Receive via Ingress                                                                                                                                                                       |
 | monitoring_thanos_receive_ingress_tls         |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                                                                                 |
-| monitoring_prometheus_operator_crds_enabled   |           | If enabled, deploys CRDs for the Prometheus Operator. Consider disabling when using Gardener.                                                                                                                                   |
-| monitoring_prometheus_operator_enabled        |           | If enabled, deploys the Prometheus Operator. Consider disabling when using Gardener.                                                                                                                                            |
+| monitoring_prometheus_operator_crds_enabled   |           | If disabled, prevents deploying CRDs for the Prometheus Operator. Consider disabling when using Gardener.                                                                                                                       |
+| monitoring_prometheus_operator_enabled        |           | If disabled, prevents deploying the Prometheus Operator. Consider disabling when using Gardener.                                                                                                                                |
 
 ### Gardener
 
