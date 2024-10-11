@@ -19,7 +19,7 @@ The following variables can be set to configure the role:
 ### General
 
 | Name                                          | Mandatory | Description                                                                                                                                                                                                                     |
-|-----------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | rethinkdb_exporter_name                       | yes       | rethinkdb exporter image name                                                                                                                                                                                                   |
 | rethinkdb_exporter_tag                        | yes       | rethinkdb exporter image tag                                                                                                                                                                                                    |
 | event_exporter_name                           | yes       | event exporter image name                                                                                                                                                                                                       |
@@ -55,11 +55,13 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_ingress_basic_auth  |           | Set basic authentication on the Ingress for Thanos Receive                                                                                                                                                                      |
 | monitoring_thanos_receive_ingress_dns         |           | The DNS name used for exposing Thanos Receive via Ingress                                                                                                                                                                       |
 | monitoring_thanos_receive_ingress_tls         |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                                                                                 |
+| monitoring_prometheus_operator_crds_enabled   |           | If enabled, deploys CRDs for the Prometheus Operator. Consider disabling when using Gardener.                                                                                                                                   |
+| monitoring_prometheus_operator_enabled        |           | If enabled, deploys the Prometheus Operator. Consider disabling when using Gardener.                                                                                                                                            |
 
 ### Gardener
 
 | Name                                            | Mandatory | Description                                                 |
-|-------------------------------------------------|-----------|-------------------------------------------------------------|
+| ----------------------------------------------- | --------- | ----------------------------------------------------------- |
 | monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
 | monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
 | monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
