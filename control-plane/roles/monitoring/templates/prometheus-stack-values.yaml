@@ -1,4 +1,7 @@
 ---
+crds:
+  enabled: {{ monitoring_prometheus_operator_crds_enabled }}
+
 prometheus:
   ingress:
     enabled: {{ monitoring_prometheus_ingress_enabled | lower }}
@@ -90,6 +93,9 @@ grafana:
 {% endif %}
   plugins:
     - camptocamp-prometheus-alertmanager-datasource
+
+prometheusOperator:
+  enabled: {{ monitoring_prometheus_operator_enabled }}
 
 alertmanager:
   ingress:
