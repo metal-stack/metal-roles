@@ -182,41 +182,26 @@
         section_id=$(uci add network interface)
         uci set network.$section_id.device='{{ item.device }}'
         uci set network.$section_id.metric='{{ item.metric }}'
-        uci set network.$section_id.area_type='{{ item.area_type }}'
+        uci set network.$section_id.area_type='wan'
         uci set network.$section_id.ipaddr='{{ item.ipaddr }}'
         uci set network.$section_id.netmask='{{ item.netmask }}'
-        uci set network.$section_id.delegate='{{ item.delegate }}'
-        uci set network.$section_id.force_link='{{ item.force_link }}'
-        uci set network.$section_id.peerdns='{{ item.peerdns }}'
-        uci set network.$section_id.proto='{{ item.proto }}'
+        uci set network.$section_id.delegate='1'
+        uci set network.$section_id.force_link='0'
+        uci set network.$section_id.peerdns='0'
+        uci set network.$section_id.proto='static'
         uci set network.$section_id.gateway='{{ item.gateway }}'
         uci set network.$section_id.name='{{ item.name }}'
         {% for dns_server in item.dns %}
         uci add_list network.$section_id.dns='{{ dns_server }}'
         {% endfor %}
 
+        uci add_list firewall.3.network="$section_id"
+        uci commit firewall
+        /etc/init.d/firewall restart
+
         uci commit network
         /etc/init.d/network restart
       loop: '{{ wan_interfaces }}'
-
-    - name: Add WAN interfaces to firewall.3.network
-      ansible.builtin.raw: |
-        current_network=$(uci get firewall.3.network 2>/dev/null || echo "")
-        if [ -z "$current_network" ]; then
-          uci set firewall.3.network="{{ item.name }}"
-        else
-          uci set firewall.3.network="$current_network {{ item.name }}"
-        fi
-        uci commit firewall
-        /etc/init.d/firewall restart
-      loop: '{{ wan_interfaces }}'
-
-    - name: Update firewall configuration based on the interface's firewall_network value
-      ansible.builtin.raw: |
-        uci add_list firewall.{{ item.firewall_network }}.network='{{ item.name }}' 
-        uci commit firewall
-        /etc/init.d/firewall restart
-      loop: '{{ lan_interfaces }}'
 
     - name: Apply Port-Forwards
       ansible.builtin.raw: |
@@ -229,7 +214,7 @@
         uci set firewall.@redirect[-1].target='{{ item.target }}'
         uci set firewall.@redirect[-1].priority='{{ item.priority }}'
         uci set firewall.@redirect[-1].dest='{{ item.dest }}'
-        uci set firewall.@redirect[-1].enabled='{{ item.enabled }}'
+        uci set firewall.@redirect[-1].enabled='1'
         {% if item.reflection is defined %}
         uci set firewall.@redirect[-1].reflection='{{ item.reflection }}'
         {% endif %}

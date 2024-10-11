@@ -35,7 +35,6 @@ port_forwards:
     dest: 'lan'
     reflection: '0'
     src_ip: ['212.34.66.73', '212.34.83.194']
-    enabled: '1'
     proto: ['tcp']
 
   - src_dport: '623'
@@ -49,7 +48,6 @@ port_forwards:
     proto: ['tcp', 'udp']
     src_ip: ['192.168.1.1']
     src_dip: '212.34.83.203'
-    enabled: '1'
 
 wan_default:
   ipaddr: '212.34.83.202'
@@ -61,27 +59,17 @@ wan_interfaces:
   - name: wan_mgtm
     device: eth1
     metric: '1'
-    area_type: 'wan'
     ipaddr: '212.34.83.202'
     netmask: '255.255.255.248'
-    delegate: '1'
-    force_link: '0'
     dns: ['1.1.1.1', '1.0.0.1']
-    peerdns: '0'
-    proto: 'static'
     gateway: '212.34.83.201'
 
   - name: wan_servc
     device: eth2
     metric: '2'
-    area_type: 'wan'
     ipaddr: '212.34.83.203'
     netmask: '255.255.255.248'
-    delegate: '1'
-    force_link: '0'
     dns: ['8.8.8.8', '8.8.4.4']
-    peerdns: '0'
-    proto: 'static'
     gateway: '212.34.83.201'
 
 bgp_general_ip: 10.9.253.17
