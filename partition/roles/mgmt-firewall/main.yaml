@@ -1,6 +1,6 @@
 ---
 - name: Configure LAN interfaces dynamically without overwriting existing ones
-  hosts: router
+  hosts: example
   gather_facts: no
 
   tasks:
@@ -16,26 +16,29 @@
       delegate_to: localhost
       ignore_errors: yes
 
-    - name: Setup BGP
-      ansible.builtin.raw: |
-        uci set bgp.bgp.enabled='1'
-        uci set bgp.bgp.enabled_vty='1'
-        uci set bgp.general.enabled='1'
-        uci add_list bgp.general.redistribute='static' 
-        uci add_list bgp.general.redistribute='connected'
-        uci add_list bgp.general.redistribute='kernel'
-        uci set bgp.general.id={{bgp_general_ip}} 
-        uci set bgp.general.deterministic_med='0'
-        uci set bgp.general.as='4200000101'
-        uci set bgp.general.ebgp_requires_policy='1'
-        uci set bgp.mgmtsrv=bgp_peer
-        uci set bgp.mgmtsrv.instance='general'
-        uci set bgp.mgmtsrv.default_originate='0'
-        uci set bgp.mgmtsrv.ipaddr={{ bgp_mgmtsrv_ipaddr }}
-        uci set bgp.mgmtsrv.as='4200000001'
-        uci set bgp.mgmtsrv.enabled='1'
-        uci commit bgp
-        /etc/init.d/frr restart
+    - name: Setup BGP if enabled
+      block:
+        - name: Setup BGP configuration
+          ansible.builtin.raw: |
+            uci set bgp.bgp.enabled='1'
+            uci set bgp.bgp.enabled_vty='1'
+            uci set bgp.general.enabled='1'
+            uci add_list bgp.general.redistribute='static' 
+            uci add_list bgp.general.redistribute='connected'
+            uci add_list bgp.general.redistribute='kernel'
+            uci set bgp.general.id={{ config.bgp.general_ip }}
+            uci set bgp.general.deterministic_med='0'
+            uci set bgp.general.as='{{ config.bgp.general_as }}'
+            uci set bgp.general.ebgp_requires_policy='1'
+            uci set bgp.mgmtsrv=bgp_peer
+            uci set bgp.mgmtsrv.instance='general'
+            uci set bgp.mgmtsrv.default_originate='0'
+            uci set bgp.mgmtsrv.ipaddr='{{ config.bgp.mgmtsrv_ipaddr }}'
+            uci set bgp.mgmtsrv.as='{{ config.bgp.mgmtsrv_as }}'
+            uci set bgp.mgmtsrv.enabled='1'
+            uci commit bgp
+            /etc/init.d/frr restart
+      when: bgp_enabled | default(false) | bool
 
     - name: Setup dropbear
       ansible.builtin.raw: |
@@ -90,9 +93,9 @@
 
     - name: Change location Name
       ansible.builtin.raw: |
-        uci set snmpd.@system[0].sysName={{location_name}}  
-        uci set system.system.devicename={{device_name}}
-        uci set system.system.hostname={{location_name}} 
+        uci set snmpd.@system[0].sysName={{config.location_name}}  
+        uci set system.system.devicename={{config.device_name}}
+        uci set system.system.hostname={{config.location_name}} 
         uci set system.system.zoneName='Europe/Berlin'
         uci set system.system.timezone='CET-1CEST,M3.5.0,M10.5.0/3'
         uci commit snmpd
@@ -115,7 +118,8 @@
 
     - name: Create authorized keys file in /etc/dropbear
       ansible.builtin.raw: |
-        echo 'INSERT UR PUBLIC KEY HERE' > ../etc/dropbear/authorized_keys
+        echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFL03ZFRTvPkGf4csFnVbwBEQD7BJT7eiTdpuvNtRPXbfrpeNqA4VrVg9LEuTl1pd8KmzkNLMIMFPuZlZB6Y3cW/s6D9nV43Mqb7UAAG8p0F6douRFu9mdN0uK7WXeif1la7x8QpbA+sdUfhiurx3nr53fAvl+WEnyySdqSFlUIHNFSeJvU53MO4utHkh3yLJEre7i13HoJjZyxA6zePclHBdvpAXeiNwALipg8scWBABFIey3vpFvxbuDnTdUlTBymBCXUex5XevkFR9uWJ5lrhyyzKe5QNu+eqfyWlE650sdPStWSvdP4Cuw0IPfvOfRWkaFFMFimb9Zfw21fBwgm6hBD9ttBWduIe1wi0BEl3K4WwGclpLoauPt+mzLS5CDI/kuGzoK2HqcOUBEorOQ+1X73F/+0IZvvdBLAgyzKTablP2/TkMXyr6BLsbXO6uoT59cZNcm561OKEfMNvgmPHx5u2tP5+C7331gQcEQYUAevbwhP0mINfEGWGSQxFU= ebubekir@ebubekir-XPS-15-9500
+        ' > ../etc/dropbear/authorized_keys
 
     - name: Adjust Lan Bridge
       ansible.builtin.raw: |
@@ -155,7 +159,7 @@
         {% endfor %}
         uci commit dhcp
         /etc/init.d/dnsmasq restart
-      loop: '{{ lan_interfaces }}'
+      loop: '{{ interfaces.lan }}'
 
     - name: Update default WAN interface with dynamic values
       ansible.builtin.raw: |
@@ -163,17 +167,16 @@
         uci set network.wan.device='eth1'
         uci set network.wan.metric='1'
         uci set network.wan.area_type='wan'
-        uci set network.wan.ipaddr='{{ wan_default.ipaddr }}'
-        uci set network.wan.netmask='{{ wan_default.netmask }}'
+        uci set network.wan.ipaddr='{{ interfaces.wan.defaults.ipaddr }}'
+        uci set network.wan.netmask='{{ interfaces.wan.defaults.netmask }}'
         uci set network.wan.delegate='1'
         uci set network.wan.force_link='0'
-        {% for dns_server in wan_default.dns %}
+        {% for dns_server in interfaces.wan.defaults.dns %}
         uci add_list network.wan.dns='{{ dns_server }}'
         {% endfor %}
         uci set network.wan.peerdns='0'
         uci set network.wan.proto='static'
-        uci set network.wan.gateway='{{ wan_default.gateway }}'
-
+        uci set network.wan.gateway='{{ interfaces.wan.defaults.gateway }}'
         uci commit network
         /etc/init.d/network restart
 
@@ -201,7 +204,7 @@
 
         uci commit network
         /etc/init.d/network restart
-      loop: '{{ wan_interfaces }}'
+      loop: '{{ interfaces.wan.interfaces }}'
 
     - name: Apply Port-Forwards
       ansible.builtin.raw: |
@@ -231,24 +234,19 @@
         /etc/init.d/firewall restart
       loop: '{{ port_forwards }}'
 
-    - name: Setup network
+    - name: Setup static VLANs (VLAN 1 and 2)
       ansible.builtin.raw: |
         uci set network.@switch_vlan[0].ports='0t 4'
         uci set network.@switch_vlan[1].ports='0t 5'
+        uci commit network
+
+    - name: Setup dynamic VLANs
+      ansible.builtin.raw: |
         uci add network switch_vlan
         uci set network.@switch_vlan[-1].device='switch0'
-        uci set network.@switch_vlan[-1].vlan='3'
-        uci set network.@switch_vlan[-1].vid='3'
-        uci set network.@switch_vlan[-1].ports='0t 1'
-        uci add network switch_vlan
-        uci set network.@switch_vlan[-1].device='switch0'
-        uci set network.@switch_vlan[-1].vlan='4'
-        uci set network.@switch_vlan[-1].vid='4'
-        uci set network.@switch_vlan[-1].ports='0t 2'
-        uci add network switch_vlan
-        uci set network.@switch_vlan[-1].device='switch0'
-        uci set network.@switch_vlan[-1].vlan='5'
-        uci set network.@switch_vlan[-1].vid='5'
-        uci set network.@switch_vlan[-1].ports='0t 3'
+        uci set network.@switch_vlan[-1].vlan='{{ item.vlan }}'
+        uci set network.@switch_vlan[-1].vid='{{ item.vid }}'
+        uci set network.@switch_vlan[-1].ports='{{ item.ports }}'
         uci commit network
         /etc/init.d/network restart
+      loop: '{{ vlans }}'

@@ -1,0 +1,83 @@
+config:
+  location_name: metro
+  device_name: mgmtfrwl
+  bgp:
+    enabled: false
+    general_ip: ''
+    general_as:
+    mgmtsrv_ipaddr: ''
+    mgmtsrv_as:
+
+interfaces:
+  lan:
+    - name: mgmtsrv
+      ipaddr: ''
+      device: eth0.3
+      firewall_network: 2
+      dhcp_options:
+        - { option: '3', value: '' }
+        - { option: '6', value: '' }
+    - name: usersrv
+      ipaddr: ''
+      device: eth0.4
+      firewall_network: 2
+      dhcp_options:
+        - { option: '3', value: '' }
+        - { option: '6', value: '' }
+
+  wan:
+    defaults:
+      ipaddr: ''
+      netmask: '255.255.255.248'
+      dns: ['', '']
+      gateway: ''
+    interfaces:
+      - name: wan_mgtm
+        device: eth1
+        metric: '1'
+        ipaddr: ''
+        netmask: '255.255.255.248'
+        dns: ['', '']
+        gateway: ''
+      - name: wan_servc
+        device: eth2
+        metric: '2'
+        ipaddr: ''
+        netmask: '255.255.255.248'
+        dns: ['', '']
+        gateway: ''
+
+port_forwards:
+  - src_dport: '22'
+    dest_ip: ''
+    dest_port: '22'
+    src: 'wan'
+    name: 'ssh_mgmtsrv'
+    target: 'DNAT'
+    priority: '1'
+    dest: 'lan'
+    reflection: '0'
+    src_ip: ['', '']
+    proto: ['tcp']
+  - src_dport: '623'
+    dest_ip: ''
+    dest_port: '623'
+    src: 'wan'
+    name: 'rmcp_mgmtsrv_ipmi'
+    target: 'DNAT'
+    priority: '2'
+    dest: 'lan'
+    proto: ['tcp', 'udp']
+    src_ip: ['']
+    src_dip: ''
+
+vlans:
+  - vlan: '3'
+    vid: '3'
+    ports: '0t 1'
+  - vlan: '4'
+    vid: '4'
+    ports: '0t 2'
+  - vlan: '5'
+    vid: '5'
+    ports: '0t 3'
