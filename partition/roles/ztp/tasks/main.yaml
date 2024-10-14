@@ -23,6 +23,18 @@
     dest: "{{ ztp_host_dir_path }}/config/ztp.sh"
     mode: 0644
 
+- name: render config_db.json
+  template:
+    src: "config_db.json.j2"
+    dest: "{{ ztp_host_dir_path }}/config/config_db.json"
+    mode: 0644
+
+- name: render ztp.json
+  template:
+    src: "ztp.json.j2"
+    dest: "{{ ztp_host_dir_path }}/config/ztp.json"
+    mode: 0644
+
 - name: copy additional contents
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
