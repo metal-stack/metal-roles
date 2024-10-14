@@ -16,7 +16,6 @@
       - gardener_controller_manager_image_tag is defined
       - gardener_scheduler_image_tag is defined
       - gardener_extension_provider_metal_image_tag is defined
-      - gardener_machine_controller_manager_image_tag is defined
       - gardener_os_controller_image_tag is defined
       - metal_cloud_controller_manager_image_tag is defined
       - gardener_networking_calico_image_tag is defined
