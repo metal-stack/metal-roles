@@ -121,12 +121,12 @@
         echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFL03ZFRTvPkGf4csFnVbwBEQD7BJT7eiTdpuvNtRPXbfrpeNqA4VrVg9LEuTl1pd8KmzkNLMIMFPuZlZB6Y3cW/s6D9nV43Mqb7UAAG8p0F6douRFu9mdN0uK7WXeif1la7x8QpbA+sdUfhiurx3nr53fAvl+WEnyySdqSFlUIHNFSeJvU53MO4utHkh3yLJEre7i13HoJjZyxA6zePclHBdvpAXeiNwALipg8scWBABFIey3vpFvxbuDnTdUlTBymBCXUex5XevkFR9uWJ5lrhyyzKe5QNu+eqfyWlE650sdPStWSvdP4Cuw0IPfvOfRWkaFFMFimb9Zfw21fBwgm6hBD9ttBWduIe1wi0BEl3K4WwGclpLoauPt+mzLS5CDI/kuGzoK2HqcOUBEorOQ+1X73F/+0IZvvdBLAgyzKTablP2/TkMXyr6BLsbXO6uoT59cZNcm561OKEfMNvgmPHx5u2tP5+C7331gQcEQYUAevbwhP0mINfEGWGSQxFU= ebubekir@ebubekir-XPS-15-9500
         ' > ../etc/dropbear/authorized_keys
 
-    - name: Adjust Lan Bridge
+    - name: Adjust Lan Default to not Bridge
       ansible.builtin.raw: |
-        uci delete network.lan.igmp_snooping
-        uci set network.lan.device='eth0'
-        uci set network.lan.delegate='1'
-        uci set network.lan.force_link='1'
+        uci set network.br_lan=device
+        uci set network.br_lan.name='br-lan'
+        uci set network.br_lan.type='bridge'
+        uci set network.br_lan.ports='eth0'
         uci commit network
         /etc/init.d/network restart
 
@@ -159,26 +159,10 @@
         {% endfor %}
         uci commit dhcp
         /etc/init.d/dnsmasq restart
+        uci add_list firewall.{{ item.firewall_network }}.network='{{ item.name }}' 
+        uci commit firewall
+        /etc/init.d/firewall restart
       loop: '{{ interfaces.lan }}'
-
-    - name: Update default WAN interface with dynamic values
-      ansible.builtin.raw: |
-        uci set network.wan=interface
-        uci set network.wan.device='eth1'
-        uci set network.wan.metric='1'
-        uci set network.wan.area_type='wan'
-        uci set network.wan.ipaddr='{{ interfaces.wan.defaults.ipaddr }}'
-        uci set network.wan.netmask='{{ interfaces.wan.defaults.netmask }}'
-        uci set network.wan.delegate='1'
-        uci set network.wan.force_link='0'
-        {% for dns_server in interfaces.wan.defaults.dns %}
-        uci add_list network.wan.dns='{{ dns_server }}'
-        {% endfor %}
-        uci set network.wan.peerdns='0'
-        uci set network.wan.proto='static'
-        uci set network.wan.gateway='{{ interfaces.wan.defaults.gateway }}'
-        uci commit network
-        /etc/init.d/network restart
 
     - name: Configure WAN interfaces
       ansible.builtin.raw: |
@@ -233,6 +217,7 @@
         uci commit firewall
         /etc/init.d/firewall restart
       loop: '{{ port_forwards }}'
+      when: port_forwards | length > 0
 
     - name: Setup static VLANs (VLAN 1 and 2)
       ansible.builtin.raw: |
