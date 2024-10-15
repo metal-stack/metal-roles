@@ -123,10 +123,12 @@
 
     - name: Adjust Lan Default to not Bridge
       ansible.builtin.raw: |
-        uci set network.br_lan=device
-        uci set network.br_lan.name='br-lan'
-        uci set network.br_lan.type='bridge'
-        uci set network.br_lan.ports='eth0'
+        uci delete network.br_lan
+        uci delete network.br_lan.name
+        uci delete network.br_lan.type
+        uci delete network.br_lan.ports
+        uci delete network.lan.device
+        uci set network.lan.device='eth0'
         uci commit network
         /etc/init.d/network restart
 
@@ -159,7 +161,7 @@
         {% endfor %}
         uci commit dhcp
         /etc/init.d/dnsmasq restart
-        uci add_list firewall.{{ item.firewall_network }}.network='{{ item.name }}' 
+        uci add_list firewall.2.network='{{ item.name }}' 
         uci commit firewall
         /etc/init.d/firewall restart
       loop: '{{ interfaces.lan }}'
