@@ -22,3 +22,5 @@ providerConfig:
 {% if gardener_cert_management_precheck_nameservers %}
       precheckNameservers: "{{ gardener_cert_management_precheck_nameservers | join(',') }}"
 {% endif %}
+      shootIssuers:
+        enabled: {{ gardener_cert_management_shoot_issuers_enabled | bool }} # if true, allows to specify issuers in the shoot clusters
