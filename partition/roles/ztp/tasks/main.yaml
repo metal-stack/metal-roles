@@ -29,6 +29,12 @@
     dest: "{{ ztp_host_dir_path }}/config/config_db.json"
     mode: 0644
 
+- name: copy reload script
+  copy: 
+    src: "reload.sh"
+    dest: "{{ ztp_host_dir_path }}/config/reload.sh"
+    mode: 0644
+
 - name: render ztp.json
   template:
     src: "ztp.json.j2"
