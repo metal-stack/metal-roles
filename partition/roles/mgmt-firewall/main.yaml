@@ -132,6 +132,21 @@
         uci commit network
         /etc/init.d/network restart
 
+    - name: Configure Default wan
+      ansible.builtin.raw: |
+        uci set network.wan.ipaddr='{{interfaces.wan.default.ip_adress}}'
+        uci set network.wan.netmask='{{interfaces.wan.default.net_mask}}'
+        uci set network.wan.dns='1.1.1.1' '1.0.0.1'
+        uci set network.wan.peerdns='0'
+        uci set network.wan.proto='static'
+        uci set network.wan.gateway='{{interfaces.wan.default.gateway}}'
+        uci commit network
+        /etc/init.d/network
+        uci set firewall.3.network='' # Setting empty before adding wan firewall rules, bc we set the firewall rules
+        uci add_list firewall.3.network=wan
+        uci commit firewall 
+        /etc/init.d/firewall
+
     - name: Configure new LAN interfaces and DHCP settings
       ansible.builtin.raw: |
         section_id=$(uci add network interface)
@@ -195,31 +210,30 @@
     - name: Apply Port-Forwards
       ansible.builtin.raw: |
         uci add firewall redirect
-        uci set firewall.@redirect[-1].src_dport='{{ item.src_dport }}'
+        uci set firewall.@redirect[-1].src_dport='{{ item.src_dport }}' # External port
         uci set firewall.@redirect[-1].dest_ip='{{ item.dest_ip }}'
         uci set firewall.@redirect[-1].dest_port='{{ item.dest_port }}'
         uci set firewall.@redirect[-1].src='{{ item.src }}'
         uci set firewall.@redirect[-1].name='{{ item.name }}'
         uci set firewall.@redirect[-1].target='{{ item.target }}'
-        uci set firewall.@redirect[-1].priority='{{ item.priority }}'
-        uci set firewall.@redirect[-1].dest='{{ item.dest }}'
-        uci set firewall.@redirect[-1].enabled='1'
-        {% if item.reflection is defined %}
-        uci set firewall.@redirect[-1].reflection='{{ item.reflection }}'
+        uci set firewall.@redirect[-1].priority='{{ item.priority }}' # Order of rule
+        {% if item.dest is defined %}
+        uci set firewall.@redirect[-1].dest='{{ item.dest }}' # Internal Zone
         {% endif %}
+        uci set firewall.@redirect[-1].enabled='1'
+        uci set firewall.@redirect[-1].reflection='{{ item.reflection }}' # Enable Nat Loopback 
         {% if item.src_ip is defined %}
         uci set firewall.@redirect[-1].src_ip="{{ item.src_ip | join(' ') }}"
         {% endif %}
         {% if item.src_dip is defined %}
-        uci set firewall.@redirect[-1].src_dip='{{ item.src_dip }}'
+        uci set firewall.@redirect[-1].src_dip='{{ item.src_dip }}' # External IP, defaults to Any
         {% endif %}
         {% if item.proto is defined %}
-        uci set firewall.@redirect[-1].proto="{{ item.proto | join(' ') }}"
+        uci set firewall.@redirect[-1].proto="{{ item.proto | join(' ') }}" # Protocol setter (TCP, UDP)
         {% endif %}
         uci commit firewall
         /etc/init.d/firewall restart
       loop: '{{ port_forwards }}'
-      when: port_forwards | length > 0
 
     - name: Setup static VLANs (VLAN 1 and 2)
       ansible.builtin.raw: |
@@ -235,5 +249,8 @@
         uci set network.@switch_vlan[-1].vid='{{ item.vid }}'
         uci set network.@switch_vlan[-1].ports='{{ item.ports }}'
         uci commit network
-        /etc/init.d/network restart
       loop: '{{ vlans }}'
+
+    - name: Restart Network
+      ansible.builtin.raw: |
+        /etc/init.d/network restart
