@@ -118,8 +118,7 @@
 
     - name: Create authorized keys file in /etc/dropbear
       ansible.builtin.raw: |
-        echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFL03ZFRTvPkGf4csFnVbwBEQD7BJT7eiTdpuvNtRPXbfrpeNqA4VrVg9LEuTl1pd8KmzkNLMIMFPuZlZB6Y3cW/s6D9nV43Mqb7UAAG8p0F6douRFu9mdN0uK7WXeif1la7x8QpbA+sdUfhiurx3nr53fAvl+WEnyySdqSFlUIHNFSeJvU53MO4utHkh3yLJEre7i13HoJjZyxA6zePclHBdvpAXeiNwALipg8scWBABFIey3vpFvxbuDnTdUlTBymBCXUex5XevkFR9uWJ5lrhyyzKe5QNu+eqfyWlE650sdPStWSvdP4Cuw0IPfvOfRWkaFFMFimb9Zfw21fBwgm6hBD9ttBWduIe1wi0BEl3K4WwGclpLoauPt+mzLS5CDI/kuGzoK2HqcOUBEorOQ+1X73F/+0IZvvdBLAgyzKTablP2/TkMXyr6BLsbXO6uoT59cZNcm561OKEfMNvgmPHx5u2tP5+C7331gQcEQYUAevbwhP0mINfEGWGSQxFU= ebubekir@ebubekir-XPS-15-9500
-        ' > ../etc/dropbear/authorized_keys
+        echo 'INSERT PUBLIC KEY' > ../etc/dropbear/authorized_keys
 
     - name: Adjust Lan Default to not Bridge
       ansible.builtin.raw: |
