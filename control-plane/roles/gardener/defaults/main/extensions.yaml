@@ -68,6 +68,8 @@ gardener_extension_provider_metal_image_pull_secret:
 gardener_cert_management_issuer_private_key: ""
 gardener_cert_management_issuer_server: https://acme-v02.api.letsencrypt.org/directory
 gardener_cert_management_issuer_email:
+gardener_cert_management_precheck_nameservers: []
+gardener_cert_management_shoot_issuers_enabled: false
 
 gardener_extension_dns_external_controller_registration_url:
 
