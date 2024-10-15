@@ -2,12 +2,12 @@
   "ztp": {
     "02-user": {
       "plugin": {
-        "url": "http://{{ ztp_host_dir_path }}/ztp.sh"
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp.sh"
       }
     },
     "03-configdb-json": {
       "url": {
-        "source": "http://{{ ztp_host_dir_path }}/config_db.json"
+        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/config_db.json"
       },
       "clear-config": false
     }
