@@ -1,3 +1,5 @@
+# ⚠️ This repository has been archived. Please migrate to [metal-ansible-collections](https://github.com/metal-stack/metal-ansible-collections)!
+
 # metal-roles
 
 This repository contains Ansible roles for deploying metal-stack. It does not contain any specific playbooks.
