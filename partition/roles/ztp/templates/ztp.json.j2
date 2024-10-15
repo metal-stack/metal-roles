@@ -2,14 +2,15 @@
   "ztp": {
     "02-user": {
       "plugin": {
-        "url": "http://{{ ansible_host }}:{{ ztp_port }}/ztp.sh"
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp.sh"
       }
     },
     "03-configdb-json": {
       "url": {
-        "source": "http://{{ ansible_host }}:{{ ztp_port }}/config_db.json"
+        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/config_db.json"
       },
-      "clear-config": false
+      "clear-config": false,
+      "save-config": true
     }
   }
 }
