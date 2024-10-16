@@ -3,8 +3,8 @@ mgmt_firewall_location_name:
 mgmt_firewall_device_name:
 
 mgmt_firewall_config:
-  location_name: "{{ mgmt_firewall_location_name }}"
-  device_name: "{{ mgmt_firewall_device_name }}"
+  location_name: '{{ mgmt_firewall_location_name }}'
+  device_name: '{{ mgmt_firewall_device_name }}'
   bgp:
     enabled: false
     general_ip: ''
@@ -15,7 +15,7 @@ mgmt_firewall_config:
 mgmt_firewall_wireless_disabled: true
 
 mgmt_firewall_interfaces:
-  lan:
+  mgmt_firewall_lan:
     - name: mgmtsrv
       ipaddr: ''
       device: eth0.3

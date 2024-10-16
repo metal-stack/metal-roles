@@ -1,7 +1,7 @@
 ---
 - name: Check mandatory variables for this role are set
   assert:
-    fail_msg: "not all mandatory variables given, check role documentation"
+    fail_msg: 'not all mandatory variables given, check role documentation'
     quiet: yes
     that:
       - mgmt_firewall_location_name is not none
@@ -104,7 +104,7 @@
     uci set wireless.default_radio0.disabled='1'
     uci commit wireless
     /etc/init.d/network restart
-  when: mgmt_firewall_wireless_disabled
+  when: mgmt_firewall_wireless_disabled | default(true)
 
 - name: Create authorized keys file in /etc/dropbear
   ansible.builtin.raw: |
@@ -121,7 +121,7 @@
     uci commit network
     /etc/init.d/network restart
 
-- name: Configure Default wan
+- name: Configure Default wan # Add Check if Default is defined
   ansible.builtin.raw: |
     uci set network.wan.ipaddr='{{interfaces.wan.default.ip_adress}}'
     uci set network.wan.netmask='{{interfaces.wan.default.net_mask}}'
@@ -135,6 +135,7 @@
     uci add_list firewall.3.network=wan
     uci commit firewall
     /etc/init.d/firewall
+  when: mgmt_firewall_default_wan_enabled | default(false)
 
 - name: Configure new LAN interfaces and DHCP settings
   ansible.builtin.raw: |
