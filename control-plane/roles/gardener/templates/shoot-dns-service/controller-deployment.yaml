@@ -13,7 +13,7 @@ providerConfig:
 {% if gardener_shoot_dns_service_image_vector_overwrite %}
     imageVectorOverwrite:
       images:
-        "{{ gardener_shoot_dns_service_image_vector_overwrite | to_nice_yaml(indent=2) | indent(width=8, first=false) }}"
+        {{ gardener_shoot_dns_service_image_vector_overwrite | to_nice_yaml(indent=2) | indent(width=8, first=false) }}
   {% endif %}
     dnsProviderManagement:
       enabled: true
