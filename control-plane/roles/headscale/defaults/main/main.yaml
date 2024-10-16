@@ -15,6 +15,5 @@ headscale_resources:
 
 headscale_api_key_expiration: 365d
 
-headscale_ip_prefixes:
-  - fd7a:115c:a1e0::/48
-  - 100.64.0.0/1
+headscale_ipv4_prefix: 100.64.0.0/1
+headscale_ipv6_prefix: fd7a:115c:a1e0::/48
