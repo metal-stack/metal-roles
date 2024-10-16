@@ -11,10 +11,10 @@ providerConfig:
       repository: "{{ gardener_shoot_dns_service_image_name }}"
       tag: "{{ gardener_shoot_dns_service_image_tag }}"
 {% if gardener_shoot_dns_service_image_vector_overwrite %}
-    imageVectorOverwrite:
+    imageVectorOverwrite: |
       images:
         {{ gardener_shoot_dns_service_image_vector_overwrite | to_nice_yaml(indent=2) | indent(width=8, first=false) }}
-  {% endif %}
+{% endif %}
     dnsProviderManagement:
       enabled: true
     dnsControllerManager:
