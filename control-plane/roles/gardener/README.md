@@ -118,6 +118,7 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_cert_management_issuer_server                       |           | The issuer server used by the cert-management extension                                                                                     |
 | gardener_cert_management_precheck_nameservers                |           | To provide special set of nameservers to be used for prechecking DNSChallenges for an issuer                                                |
 | gardener_cert_management_shoot_issuers_enabled               |           | If enabled, allows to specify issuers in the shoot clusters                                                                                 |
+| gardener_shoot_dns_service_image_vector_overwrite            |           | Allows overriding the image vector for the shoot-dns-service extension                                                                      |
 
 ### Certificates
 
