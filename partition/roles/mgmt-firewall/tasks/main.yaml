@@ -168,7 +168,7 @@
     uci set dhcp.{{ item.name }}.interface='{{ item.name }}'
     uci set dhcp.{{ item.name }}=dhcp
     uci set dhcp.{{ item.name }}.leasetime='12h'
-    uci set dhcp.{{ item.name }}.start='100'
+    uci set dhcp.{{ item.name }}.start='0'
     uci set dhcp.{{ item.name }}.limit='150'
     uci set dhcp.{{ item.name }}.netmask='{{item.netmask}}'
     uci set dhcp.{{ item.name }}.ra='server'
@@ -228,11 +228,11 @@
     {% endfor %}
     {% endif %}
     {% if item.src_dip is defined %}
-    uci set firewall.@redirect[-1].src_dip='{{ src_dip }}' # External IP, defaults to Any
+    uci set firewall.@redirect[-1].src_dip='{{ item.src_dip }}' # External IP, defaults to Any
     {% endif %}
     {% if item.proto is defined %}
-    {% for src_ip in item.src_ip %}
-    uci add_list firewall.@redirect[-1].proto="{{ item.proto }}" # Protocol setter (TCP, UDP)
+    {% for proto in item.proto %}
+    uci add_list firewall.@redirect[-1].proto="{{ proto }}" # Protocol setter (TCP, UDP)
     {% endfor %}
     {% endif %}
     uci commit firewall
