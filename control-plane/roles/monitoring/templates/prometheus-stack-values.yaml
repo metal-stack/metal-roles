@@ -1,4 +1,7 @@
 ---
+crds:
+  enabled: {{ monitoring_prometheus_operator_crds_enabled }}
+
 prometheus:
   ingress:
     enabled: {{ monitoring_prometheus_ingress_enabled }}
@@ -77,6 +80,14 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+
+prometheusOperator:
+  enabled: {{ monitoring_prometheus_operator_enabled }}
+
+  alertmanagerInstanceNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
+  alertmanagerConfigNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
+  prometheusInstanceNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
+  thanosRulerInstanceNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
 
 alertmanager:
   ingress:
