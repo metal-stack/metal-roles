@@ -231,7 +231,7 @@
     uci set firewall.@redirect[-1].src_dip='{{ src_dip }}' # External IP, defaults to Any
     {% endif %}
     {% if item.proto is defined %}
-    {% for src_ip in item.src_ip}
+    {% for src_ip in item.src_ip %}
     uci add_list firewall.@redirect[-1].proto="{{ item.proto }}" # Protocol setter (TCP, UDP)
     {% endfor %}
     {% endif %}
