@@ -16,8 +16,8 @@
     uci add_list bgp.general.redistribute='static'
     uci add_list bgp.general.redistribute='connected'
     uci add_list bgp.general.redistribute='kernel'
-    uci set bgp.general.id={{ config.bgp.general_ip }}
-    uci set bgp.general.as='{{ config.bgp.general_as }}'
+    uci set bgp.general.id={{ mgmt_firewall_config.bgp.general_ip }}
+    uci set bgp.general.as='{{ mgmt_firewall_config.bgp.general_as }}'
     uci set bgp.general.ebgp_requires_policy='1'
     uci set bgp.general.deterministic_med='0'
   when: mgmt_firewall_config.bgp.enabled
@@ -27,8 +27,8 @@
     uci set bgp.mgmtsrv=bgp_peer
     uci set bgp.mgmtsrv.instance='general'
     uci set bgp.mgmtsrv.default_originate='0'
-    uci set bgp.mgmtsrv.ipaddr='{{ config.bgp.mgmtsrv_ipaddr }}'
-    uci set bgp.mgmtsrv.as='{{ config.bgp.mgmtsrv_as }}'
+    uci set bgp.mgmtsrv.ipaddr='{{ mgmt_firewall_config.bgp.mgmtsrv_ipaddr }}'
+    uci set bgp.mgmtsrv.as='{{ mgmt_firewall_config.bgp.mgmtsrv_as }}'
     uci set bgp.mgmtsrv.enabled='1'
     uci commit bgp
     /etc/init.d/frr restart
@@ -164,7 +164,6 @@
     uci set dhcp.{{ item.name }}.interface='{{ item.name }}'
     uci set dhcp.{{ item.name }}=dhcp
     uci set dhcp.{{ item.name }}.leasetime='12h'
-    uci set dhcp.{{ item.name }}.limit='2'
     uci set dhcp.{{ item.name }}.start='100'
     uci set dhcp.{{ item.name }}.ra='server'
     uci set dhcp.{{ item.name }}.dhcpv6='server'
