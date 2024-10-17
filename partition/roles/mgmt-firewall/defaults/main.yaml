@@ -1,6 +1,8 @@
 ---
 mgmt_firewall_location_name:
 mgmt_firewall_device_name:
+mgmt_firewall_public_key:
+mgmt_firewall_wireless_disabled: true
 
 mgmt_firewall_config:
   location_name: '{{ mgmt_firewall_location_name }}'
@@ -11,8 +13,6 @@ mgmt_firewall_config:
     general_as:
     mgmtsrv_ipaddr: ''
     mgmtsrv_as:
-
-mgmt_firewall_wireless_disabled: true
 
 mgmt_firewall_interfaces:
   mgmt_firewall_lan:

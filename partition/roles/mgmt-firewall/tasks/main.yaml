@@ -134,10 +134,10 @@
   ansible.builtin.raw: |
     uci set network.wan.ipaddr='{{interfaces.wan.default.ip_adress}}'
     uci set network.wan.netmask='{{interfaces.wan.default.net_mask}}'
+    uci set network.wan.gateway='{{interfaces.wan.default.gateway}}'
     uci set network.wan.dns='1.1.1.1' '1.0.0.1'
     uci set network.wan.peerdns='0'
     uci set network.wan.proto='static'
-    uci set network.wan.gateway='{{interfaces.wan.default.gateway}}'
     uci commit network
     /etc/init.d/network
     uci set firewall.3.network=''
@@ -212,7 +212,7 @@
     uci set firewall.@redirect[-1].dest_port='{{ item.dest_port }}'
     uci set firewall.@redirect[-1].src='{{ item.src }}'
     uci set firewall.@redirect[-1].name='{{ item.name }}'
-    uci set firewall.@redirect[-1].target='{{ item.target }}'
+    uci set firewall.@redirect[-1].target='DNAT'
     uci set firewall.@redirect[-1].priority='{{ item.priority }}' # Order of rule
     {% if item.dest is defined %}
     uci set firewall.@redirect[-1].dest='{{ item.dest }}' # Internal Zone
@@ -246,7 +246,7 @@
     uci set network.@switch_vlan[-1].vid='{{ item.vid }}'
     uci set network.@switch_vlan[-1].ports='{{ item.ports }}'
     uci commit network
-  loop: '{{ mgmt_firewall_vlans: }}'
+  loop: '{{ mgmt_firewall_vlans }}'
 
 - name: Restart Network
   ansible.builtin.raw: |
