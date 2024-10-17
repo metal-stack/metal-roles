@@ -132,9 +132,9 @@
 
 - name: Configure Default wan
   ansible.builtin.raw: |
-    uci set network.wan.ipaddr='{{interfaces.wan.default.ip_adress}}'
-    uci set network.wan.netmask='{{interfaces.wan.default.net_mask}}'
-    uci set network.wan.gateway='{{interfaces.wan.default.gateway}}'
+    uci set network.wan.ipaddr='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.ip_adress}}'
+    uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default_mask}}'
+    uci set network.wan.gateway='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway}}'
     uci set network.wan.dns='1.1.1.1' '1.0.0.1'
     uci set network.wan.peerdns='0'
     uci set network.wan.proto='static'
@@ -178,7 +178,7 @@
     uci add_list firewall.2.network='{{ item.name }}'
     uci commit firewall
     /etc/init.d/firewall restart
-  loop: '{{ interfaces.lan }}'
+  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
 
 - name: Configure WAN interfaces
   ansible.builtin.raw: |
@@ -202,7 +202,7 @@
 
     uci commit network
     /etc/init.d/network restart
-  loop: '{{ interfaces.wan.interfaces }}'
+  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_wan.interfaces }}'
 
 - name: Apply Port-Forwards
   ansible.builtin.raw: |
