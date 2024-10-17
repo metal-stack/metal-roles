@@ -149,37 +149,37 @@
 - name: Configure new LAN interfaces and DHCP settings
   ansible.builtin.raw: |
     section_id=$(uci add network interface)
-    uci rename network.$section_id="{{ item.name }}"
-    uci set network."{{ item.name }}".proto='static'
-    uci set network."{{ item.name }}".ipaddr="{{ item.ipaddr }}"
-    uci set network."{{ item.name }}".netmask="{{ item.netmask }}"
-    uci set network."{{ item.name }}".device="{{ item.device }}"
-    uci set network."{{ item.name }}".delegate='1'
-    uci set network."{{ item.name }}".force_link='1'
-    uci set network."{{ item.name }}".area_type='lan'
+    uci set network.$section_id.proto='static'
+    uci set network.$section_id.ipaddr='{{ item.ipaddr }}'
+    uci set network.$section_id.netmask='{{ item.netmask }}'
+    uci set network.$section_id.device='{{ item.device }}'
+    uci set network.$section_id.delegate='1'
+    uci set network.$section_id.force_link='1'
+    uci set network.$section_id.area_type='lan'
     uci commit network
     /etc/init.d/network restart
 
-    uci add_list firewall.2.network="{{ item.name }}"
+    uci add_list firewall.2.network="$section_id"
     uci commit firewall
     /etc/init.d/firewall restart
 
     # Configuring DHCP for the new interface, no need to limit
-    uci set dhcp."{{ item.name }}".interface="{{ item.name }}"
-    uci set dhcp."{{ item.name }}"=dhcp
-    uci set dhcp."{{ item.name }}".start='2'
-    uci set dhcp."{{ item.name }}".limit='2'
-    uci set dhcp."{{ item.name }}".leasetime='12h'
-    uci set dhcp."{{ item.name }}".netmask='255.255.255.252'  # This is hardcoded right now
-    uci set dhcp."{{ item.name }}".ra='server'
-    uci set dhcp."{{ item.name }}".dhcpv6='server'
-    uci set dhcp."{{ item.name }}".ignore_ipv6='1'
-    uci set dhcp."{{ item.name }}".force='0'
+    uci set dhcp.$section_id.interface="$section_id"
+    uci set dhcp.$section_id=dhcp
+    uci set dhcp.$section_id.start='2'
+    uci set dhcp.$section_id.limit='2'
+    uci set dhcp.$section_id.leasetime='12h'
+    uci set dhcp.$section_id.netmask='255.255.255.252' # This is hardcoded right now, because limit has to be changed according to the netmask 
+    uci set dhcp.$section_id.ra='server'
+    uci set dhcp.$section_id.dhcpv6='server'
+    uci set dhcp.$section_id.ignore_ipv6='1'
+    uci set dhcp.$section_id.force='0'
     {% for option in item.dhcp_options %}
-    uci add_list dhcp."{{ item.name }}".dhcp_option_force="{{ option.option }},{{ option.value }}"
+    uci add_list dhcp.$section_id.dhcp_option_force="{{ option.option }},{{ option.value }}"
     {% endfor %}
     uci commit dhcp
     /etc/init.d/dnsmasq restart
+
   loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
 
 - name: Configure WAN interfaces
