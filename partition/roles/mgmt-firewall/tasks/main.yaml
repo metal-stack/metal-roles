@@ -133,7 +133,7 @@
 - name: Configure Default wan
   ansible.builtin.raw: |
     uci set network.wan.ipaddr='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.ip_adress}}'
-    uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default_mask}}'
+    uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.net_mask}}'
     uci set network.wan.gateway='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway}}'
     uci set network.wan.dns='1.1.1.1' '1.0.0.1'
     uci set network.wan.peerdns='0'
