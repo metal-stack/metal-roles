@@ -223,7 +223,7 @@
     uci set firewall.@redirect[-1].enabled='1'
     uci set firewall.@redirect[-1].reflection='{{ item.reflection }}' # Enable Nat Loopback
     {% if item.src_ip is defined %}
-    {% for src_ip in item.src_ip}
+    {% for src_ip in item.src_ip %}
     uci add_list firewall.@redirect[-1].src_ip="{{ item.src_ip }}"
     {% endfor %}
     {% endif %}
