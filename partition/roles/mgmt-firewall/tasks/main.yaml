@@ -160,11 +160,17 @@
     uci commit network
     /etc/init.d/network restart
 
+    uci add_list firewall.2.network='{{ item.name }}'
+    uci commit firewall
+    /etc/init.d/firewall restart
+
     # Configuring DHCP for the new interface, no need to limit
     uci set dhcp.{{ item.name }}.interface='{{ item.name }}'
     uci set dhcp.{{ item.name }}=dhcp
     uci set dhcp.{{ item.name }}.leasetime='12h'
     uci set dhcp.{{ item.name }}.start='100'
+    uci set dhcp.{{ item.name }}.limit='150'
+    uci set dhcp.{{ item.name }}.netmask='{{item.netmask}}'
     uci set dhcp.{{ item.name }}.ra='server'
     uci set dhcp.{{ item.name }}.dhcpv6='server'
     uci set dhcp.{{ item.name }}.ignore_ipv6='1'
@@ -174,9 +180,7 @@
     {% endfor %}
     uci commit dhcp
     /etc/init.d/dnsmasq restart
-    uci add_list firewall.2.network='{{ item.name }}'
-    uci commit firewall
-    /etc/init.d/firewall restart
+
   loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
 
 - name: Configure WAN interfaces
@@ -219,13 +223,17 @@
     uci set firewall.@redirect[-1].enabled='1'
     uci set firewall.@redirect[-1].reflection='{{ item.reflection }}' # Enable Nat Loopback
     {% if item.src_ip is defined %}
-    uci set firewall.@redirect[-1].src_ip="{{ item.src_ip | join(' ') }}"
+    {% for src_ip in item.src_ip}
+    uci add_list firewall.@redirect[-1].src_ip="{{ item.src_ip }}"
+    {% endfor %}
     {% endif %}
     {% if item.src_dip is defined %}
     uci set firewall.@redirect[-1].src_dip='{{ item.src_dip }}' # External IP, defaults to Any
     {% endif %}
     {% if item.proto is defined %}
-    uci set firewall.@redirect[-1].proto="{{ item.proto | join(' ') }}" # Protocol setter (TCP, UDP)
+    {% for src_ip in item.src_ip}
+    uci add_list firewall.@redirect[-1].proto="{{ item.proto }}" # Protocol setter (TCP, UDP)
+    {% endfor %}
     {% endif %}
     uci commit firewall
     /etc/init.d/firewall restart
