@@ -149,7 +149,7 @@
 - name: Configure new LAN interfaces and DHCP settings
   ansible.builtin.raw: |
     section_id=$(uci add network interface)
-    uci rename network.$section_id='{{ item.name }}'
+    uci rename network.$section_id="{{ item.name }}"
     uci set network.{{ item.name }}.proto='static'
     uci set network.{{ item.name }}.ipaddr='{{ item.ipaddr }}'
     uci set network.{{ item.name }}.netmask='{{ item.netmask }}'
@@ -159,22 +159,23 @@
     uci set network.{{ item.name }}.area_type='lan'
     uci commit network
     /etc/init.d/network restart
-
-    uci add_list firewall.2.network='{{ item.name }}'
+    uci add_list firewall.2.network="{{ item.name }}""
     uci commit firewall
     /etc/init.d/firewall restart
 
-    # Configuring DHCP for the new interface, no need to limit
-    uci set dhcp.{{ item.name }}.interface='{{ item.name }}'
+  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
+
+- name: Configure DHCP
+  ansible.builtin.raw: |
     uci set dhcp.{{ item.name }}=dhcp
+    uci set dhcp.{{ item.name }}.ignore_ipv6='1'
+    uci set dhcp.{{ item.name }}.interface="{{ item.name }}""
+    uci set dhcp.{{ item.name }}.ra='server'
+    uci set dhcp.{{ item.name }}.dhcpv6='server'
     uci set dhcp.{{ item.name }}.leasetime='12h'
     uci set dhcp.{{ item.name }}.start='2'
     uci set dhcp.{{ item.name }}.limit='2'
     uci set dhcp.{{ item.name }}.netmask='255.255.255.252'
-    uci set dhcp.{{ item.name }}.ra='server'
-    uci set dhcp.{{ item.name }}.dhcpv6='server'
-    uci set dhcp.{{ item.name }}.ignore_ipv6='1'
-    uci set dhcp.{{ item.name }}.force='0'
     {% for option in item.dhcp_options %}
     uci add_list dhcp.{{ item.name }}.dhcp_option_force="{{ option.option }},{{ option.value }}"
     {% endfor %}
