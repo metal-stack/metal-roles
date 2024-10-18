@@ -159,7 +159,7 @@
     uci set network.{{ item.name }}.area_type='lan'
     uci commit network
     /etc/init.d/network restart
-    uci add_list firewall.2.network="{{ item.name }}""
+    uci add_list firewall.2.network="{{ item.name }}"
     uci commit firewall
     /etc/init.d/firewall restart
 
@@ -169,7 +169,7 @@
   ansible.builtin.raw: |
     uci set dhcp.{{ item.name }}=dhcp
     uci set dhcp.{{ item.name }}.ignore_ipv6='1'
-    uci set dhcp.{{ item.name }}.interface="{{ item.name }}""
+    uci set dhcp.{{ item.name }}.interface="{{ item.name }}"
     uci set dhcp.{{ item.name }}.ra='server'
     uci set dhcp.{{ item.name }}.dhcpv6='server'
     uci set dhcp.{{ item.name }}.leasetime='12h'
