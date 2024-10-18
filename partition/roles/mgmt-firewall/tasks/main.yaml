@@ -146,7 +146,7 @@
     /etc/init.d/firewall
   when: mgmt_firewall_default_wan_enabled | default(false)
 
-- name: Configure new LAN interfaces and DHCP settings
+- name: Configure new LAN interfaces
   ansible.builtin.raw: |
     section_id=$(uci add network interface)
     uci rename network.$section_id="{{ item.name }}"
