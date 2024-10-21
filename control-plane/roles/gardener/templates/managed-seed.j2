@@ -49,7 +49,7 @@ spec:
 {% if gardener_shoots_prometheus_remote_write_keep_metrics }
 {% for metric in gardener_shoots_prometheus_remote_write_keep_metrics %}
             keep:
-            - {{ metric }}
+            - "{{ metric }}"
 {% endfor %}
 {% endif %}
 {% endif %}
