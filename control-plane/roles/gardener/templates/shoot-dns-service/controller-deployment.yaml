@@ -11,7 +11,7 @@ providerConfig:
       repository: "{{ gardener_shoot_dns_service_image_name }}"
       tag: "{{ gardener_shoot_dns_service_image_tag }}"
 {% if gardener_shoot_dns_service_image_vector_overwrite %}
-    imageVectorOverwrite:
+    imageVectorOverwrite: |
       images: "{{ gardener_shoot_dns_service_image_vector_overwrite | to_json }}"
 {% endif %}
     dnsProviderManagement:
