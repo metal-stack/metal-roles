@@ -243,12 +243,12 @@
 
 - name: Setup Static Routes
   ansible.builtin.raw: |
-    network.1=route
-    network.1.table='254'
-    network.1.netmask='0.0.0.0'
-    network.1.target='0.0.0.0'
-    network.1.gateway='{{ item.gateway }}'
-    network.1.interface='wan'
+    uci set network.{{ item.network }}=route
+    uci set network.{{ item.network }}.table='254'
+    uci set network.{{ item.network }}.netmask='0.0.0.0'
+    uci set network.{{ item.network }}.target='0.0.0.0'
+    uci set network.{{ item.network }}.gateway='{{ item.gateway }}'
+    uci set network.{{ item.network }}.interface='wan'
   loop: '{{ mgmt_firewall_static_routes }}'
   when: mgmt_firewall_static_routes_enabled | default(false)
 
