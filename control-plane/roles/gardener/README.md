@@ -39,7 +39,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                                                                                                   |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral)                                                                               |
 | gardener_shoots_prometheus_remote_write_url | | Prometheus remoteWrite URL where all shoots push their metrics to |
-| gardener_shoots_prometheus_remote_write_tenant | | Prometheus remoteWrite tenant header |
+| gardener_shoots_prometheus_remote_write_keep_metrics | | Prometheus remoteWrite metrics that should be forwarded to the external write endpoint |
 
 ### Virtual Garden
 

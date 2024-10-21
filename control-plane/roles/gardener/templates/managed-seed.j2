@@ -46,8 +46,12 @@ spec:
           enabled: true
           remoteWrite:
             url: {{ gardener_shoots_prometheus_remote_write_url }}
-            headers:
-              X-Scope-OrgID: {{ gardener_shoots_prometheus_remote_write_tenant }}
+{% if gardener_shoots_prometheus_remote_write_keep_metrics }
+{% for metric in gardener_shoots_prometheus_remote_write_keep_metrics %}
+            keep:
+            - {{ metric }}
+{% endfor %}
+{% endif %}
 {% endif %}
     deployment:
       image:
