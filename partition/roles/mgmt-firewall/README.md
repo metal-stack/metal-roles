@@ -45,6 +45,13 @@ Drop invalid packets On
    - Masquerading: on
    - MSS clamping: on
 
+### VLAN
+
+Vlan 1 is tagged the port 4
+Vlan 2 is tagged the port 5 (WAN)
+
+Other Vlans can be configured dynamically.
+
 ### BGP
 
 BGP peer is hardcoded right now to be named mgmtsrv, the IP and AS can be configured dynamically.

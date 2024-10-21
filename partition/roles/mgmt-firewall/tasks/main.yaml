@@ -135,7 +135,8 @@
     uci set network.wan.ipaddr='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.ip_adress}}'
     uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.net_mask}}'
     uci set network.wan.gateway='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway}}'
-    uci set network.wan.dns='1.1.1.1' '1.0.0.1'
+    uci add_list network.wan.dns='1.1.1.1' 
+    uci add_list network.wan.dns='1.0.0.1'
     uci set network.wan.peerdns='0'
     uci set network.wan.proto='static'
     uci commit network
@@ -242,7 +243,7 @@
 
 - name: Setup static VLANs (VLAN 1 and 2)
   ansible.builtin.raw: |
-    uci set network.@switch_vlan[0].ports='0t 4t'
+    uci set network.@switch_vlan[0].ports='0t 4'
     uci set network.@switch_vlan[1].ports='0t 5t'
     uci commit network
 
