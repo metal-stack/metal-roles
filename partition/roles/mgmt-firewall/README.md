@@ -1,112 +1,119 @@
-# Automatic Setup of Firewalls
+# Automated Firewall Setup with Ansible
 
-This role is meant to setup the management firewalls in an automated fashion through Ansible. Typically, this is executed through a local notebook before mounting the device into the rack of the data center.
+This role automates the configuration of management firewalls using Ansible. It is designed to streamline the process of setting up firewalls for consistent deployment before mounting devices in the data center. By utilizing default configurations and flexible variables, this role simplifies the setup across multiple devices.
 
-The basic setup of the config is always the same so this can be used for every firewall.
+**Note**: This role is intended to be run on devices reset to factory defaults.
 
-For easier setup, a main.yaml file in the defaults folder contains all default configuration values.
-
-**The role is meant to be run on devices that were reset to factory defaults.**
-
-## List of Supported Devices
+## Supported Devices
 
 | Manufacturer | Model  |
 | ------------ | ------ |
 | Teltonika    | RUTXR1 |
 
-## Known limitations:
+## Key Features
 
-There needs to be an inital login to change the root password to the one given in the routers.yaml
+- **Automated firewall setup** using default configurations
+- **VLAN and BGP** configuration support
+- **Dynamic port forwarding** setup
+- **Pre-configured firewall rules** for LAN, WAN, and global settings
+- **Device-specific customization** via `routers.yaml`
 
-### Firewall
+## Prerequisites
 
-The firewall is configured the following way:
+- The device must be **reset to factory defaults** before running this role.
+- An initial login is required to change the root password using credentials defined in the `routers.yaml` file.
 
-Drop invalid packets On
+## Configuration Details
 
-1. Default Settings
+### Firewall Rules
 
-   - Input: Drop
-   - Output: Accept
-   - Forward: Drop
-   - Offloading: on
+The firewall is configured with the following settings by default:
 
-2. Lan:
+1. **Global Settings:**
 
-   - input, output, forward: Accept
-   - Masquerading: on
-   - MSS clamping: on
+   - Drop invalid packets: **Enabled**
+   - Input: **Drop**
+   - Output: **Accept**
+   - Forward: **Drop**
+   - Offloading: **On**
 
-3. Wan:
+2. **LAN Configuration:**
 
-   - input: Drop
-   - output: Accept
-   - forward: Drop
-   - Masquerading: on
-   - MSS clamping: on
+   - Input, Output, Forward: **Accept**
+   - Masquerading: **On**
+   - MSS Clamping: **On**
 
-### VLAN
+3. **WAN Configuration:**
+   - Input: **Drop**
+   - Output: **Accept**
+   - Forward: **Drop**
+   - Masquerading: **On**
+   - MSS Clamping: **On**
 
-Vlan 1 is tagged the port 4
-Vlan 2 is tagged the port 5 (WAN)
+### VLAN Configuration
 
-Other Vlans can be configured dynamically.
+- **VLAN 1:** Tagged to port 4
+- **VLAN 2:** Tagged to port 5 (WAN)
+- Other VLANs can be configured dynamically.
 
-### BGP
+### BGP Configuration
 
-BGP peer is hardcoded right now to be named mgmtsrv, the IP and AS can be configured dynamically.
+- The BGP peer is **hardcoded** as `mgmtsrv`.
+- The IP address and AS number can be configured dynamically.
 
 ## Interfaces
 
-The following fields are shared between both LAN and WAN interfaces. All of these fields are mandatory unless otherwise specified:
+Both LAN and WAN interfaces share the following mandatory fields:
 
-### Common interface fields
+| Field          | Description    |
+| -------------- | -------------- |
+| `name`         | Interface name |
+| `ipaddr`       | IP address     |
+| `netmask`      | Subnet mask    |
+| `device`       | Router port    |
+| `dhcp_options` | (LAN Only)     |
+| `metric`       | (WAN Only)     |
+| `gateway`      | (WAN Only)     |
+| `dns` (List)   | (WAN Only)     |
 
-| Name         | Description        |
-| ------------ | ------------------ |
-| name         |                    |
-| ipaddr       |                    |
-| netmask      |                    |
-| device       | Port on the router |
-| dhcp_options | (LAN ONLY)         |
-| metric       | (WAN ONLY)         |
-| gateway      | (WAN ONLY)         |
-| dns (List)   | (WAN ONLY)         |
+### Default WAN Interface
 
-### The Default WAN interface
+To enable configuration of the default WAN interface, set `mgmt_firewall_default_wan_enabled` to `true`.
 
-It's also possible to edit the Default interface, for that set mgmt_firewall_default_wan_enabled to true
+| Field     | Description     |
+| --------- | --------------- |
+| `name`    | Interface name  |
+| `ipaddr`  | IP address      |
+| `netmask` | Subnet mask     |
+| `device`  | Router port     |
+| `gateway` | Default gateway |
 
-| Name    | Description        |
-| ------- | ------------------ |
-| name    |                    |
-| ipaddr  |                    |
-| netmask |                    |
-| device  | Port on the router |
-| gateway |                    |
+## Port Forwarding Configuration
 
-## Port Forwards
+The following fields define port forwarding rules:
 
-| Name          | Description                                  |
-| ------------- | -------------------------------------------- |
-| name          |                                              |
-| src_dport     | External Port                                |
-| dest_ip       | Internal Ip Adress                           |
-| dest_port     | Internal Port                                |
-| src           | Source Zone                                  |
-| priority      | Order when rule applies, start with 1        |
-| dest          | Target zone                                  |
-| reflection    | Enable NAT Loopback (0 means off,1 means on) |
-| src_ip (List) | Source Ip Adresses                           |
-| proto (List)  | Protocols (TCP,UDP...)                       |
-| src_dip       | External Ip Adress                           |
+| Field           | Description                    |
+| --------------- | ------------------------------ |
+| `name`          | Rule name                      |
+| `src_dport`     | External port                  |
+| `dest_ip`       | Internal IP address            |
+| `dest_port`     | Internal port                  |
+| `src`           | Source zone                    |
+| `priority`      | Rule priority (start with 1)   |
+| `dest`          | Destination zone               |
+| `reflection`    | NAT Loopback (0 = off, 1 = on) |
+| `src_ip` (List) | Source IP addresses            |
+| `proto` (List)  | Protocols (e.g., TCP, UDP)     |
+| `src_dip`       | External IP address            |
 
 ## Variables
 
-| Name                              | Mandatory | Description       |
-| --------------------------------- | --------- | ----------------- |
-| mgmt_firewall_location_name       | yes       |                   |
-| mgmt_firewall_device_name         | yes       |                   |
-| mgmt_firewall_public_key          | yes       |                   |
-| mgmt_firewall_default_wan_enabled |           | Defaults to false |
-| mgmt_firewall_wireless_disabled   |           | Defaults to true  |
+The following variables can be customized for each firewall:
+
+| Variable                            | Mandatory | Description                 |
+| ----------------------------------- | --------- | --------------------------- |
+| `mgmt_firewall_location_name`       | yes       | Location of the firewall    |
+| `mgmt_firewall_device_name`         | yes       | Device name                 |
+| `mgmt_firewall_public_key`          | yes       | Public key for the firewall |
+| `mgmt_firewall_default_wan_enabled` |           | Default: false              |
+| `mgmt_firewall_wireless_disabled`   |           | Default: true               |

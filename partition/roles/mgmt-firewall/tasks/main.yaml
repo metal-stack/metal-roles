@@ -244,7 +244,7 @@
 - name: Setup static VLANs (VLAN 1 and 2)
   ansible.builtin.raw: |
     uci set network.@switch_vlan[0].ports='0t 4'
-    uci set network.@switch_vlan[1].ports='0t 5t'
+    uci set network.@switch_vlan[1].ports='0t 5'
     uci commit network
 
 - name: Setup dynamic VLANs
