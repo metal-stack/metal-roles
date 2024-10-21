@@ -127,8 +127,6 @@
     uci delete network.br_lan.ports
     uci delete network.lan.device
     uci set network.lan.device='eth0'
-    uci commit network
-    /etc/init.d/network restart
 
 - name: Configure Default wan
   ansible.builtin.raw: |
@@ -139,12 +137,8 @@
     uci add_list network.wan.dns='1.0.0.1'
     uci set network.wan.peerdns='0'
     uci set network.wan.proto='static'
-    uci commit network
-    /etc/init.d/network
     uci set firewall.3.network=''
     uci add_list firewall.3.network=wan
-    uci commit firewall
-    /etc/init.d/firewall
   when: mgmt_firewall_default_wan_enabled | default(false)
 
 - name: Configure new LAN interfaces
@@ -158,11 +152,7 @@
     uci set network.{{ item.name }}.delegate='1'
     uci set network.{{ item.name }}.force_link='1'
     uci set network.{{ item.name }}.area_type='lan'
-    uci commit network
-    /etc/init.d/network restart
     uci add_list firewall.2.network="{{ item.name }}"
-    uci commit firewall
-    /etc/init.d/firewall restart
 
   loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
 
@@ -180,8 +170,6 @@
     {% for option in item.dhcp_options %}
     uci add_list dhcp.{{ item.name }}.dhcp_option_force="{{ option.option }},{{ option.value }}"
     {% endfor %}
-    uci commit dhcp
-    /etc/init.d/dnsmasq restart
 
   loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
 
@@ -205,8 +193,6 @@
     uci commit firewall
     /etc/init.d/firewall restart
 
-    uci commit network
-    /etc/init.d/network restart
   loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_wan.interfaces }}'
 
 - name: Apply Port-Forwards
@@ -237,15 +223,12 @@
     uci add_list firewall.@redirect[-1].proto="{{ proto }}" # Protocol setter (TCP, UDP)
     {% endfor %}
     {% endif %}
-    uci commit firewall
-    /etc/init.d/firewall restart
   loop: '{{ mgmt_firewall_port_forwards }}'
 
 - name: Setup static VLANs (VLAN 1 and 2)
   ansible.builtin.raw: |
     uci set network.@switch_vlan[0].ports='0t 4'
     uci set network.@switch_vlan[1].ports='0t 5t'
-    uci commit network
 
 - name: Setup dynamic VLANs
   ansible.builtin.raw: |
@@ -254,9 +237,14 @@
     uci set network.@switch_vlan[-1].vlan='{{ item.vlan }}'
     uci set network.@switch_vlan[-1].vid='{{ item.vid }}'
     uci set network.@switch_vlan[-1].ports='{{ item.ports }}'
-    uci commit network
   loop: '{{ mgmt_firewall_vlans }}'
 
-- name: Restart Network
+- name: Commit and Restart Network, Firewall and DHCP
   ansible.builtin.raw: |
+
+    uci commit network
     /etc/init.d/network restart
+    uci commit firewall
+    /etc/init.d/firewall
+    uci commit dhcp
+    /etc/init.d/dnsmasq restart
