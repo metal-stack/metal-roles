@@ -15,6 +15,10 @@
       - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
 
+- name: set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
 - name: Check mandatory variables on non-empty sonic_ports are set
   assert:
     fail_msg: "default port configuration is necessary on non-empty sonic_ports"
