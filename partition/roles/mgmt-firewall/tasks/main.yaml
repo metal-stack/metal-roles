@@ -175,7 +175,7 @@
     uci set dhcp.{{ item.name }}.dhcpv6='server'
     uci set dhcp.{{ item.name }}.leasetime='12h'
     uci set dhcp.{{ item.name }}.start='2'
-    uci set dhcp.{{ item.name }}.limit='2'
+    uci set dhcp.{{ item.name }}.limit='1'
     uci set dhcp.{{ item.name }}.netmask='255.255.255.252'
     {% for option in item.dhcp_options %}
     uci add_list dhcp.{{ item.name }}.dhcp_option_force="{{ option.option }},{{ option.value }}"
