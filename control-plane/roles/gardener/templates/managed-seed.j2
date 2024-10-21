@@ -40,6 +40,15 @@ spec:
               visible: {{ gardener_shooted_seed.visible | default(true) }}
             shootDNS:
               enabled: true
+{% if gardener_shoots_prometheus_remote_write_url %}
+      monitoring:
+        shoot:
+          enabled: true
+          remoteWrite:
+            url: {{ gardener_shoots_prometheus_remote_write_url }}
+            headers:
+              X-Scope-OrgID: {{ gardener_shoots_prometheus_remote_write_tenant }}
+{% endif %}
     deployment:
       image:
         pullPolicy: IfNotPresent
