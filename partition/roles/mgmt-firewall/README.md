@@ -110,10 +110,11 @@ The following fields define port forwarding rules:
 
 The following variables can be customized for each firewall:
 
-| Variable                            | Mandatory | Description                 |
-| ----------------------------------- | --------- | --------------------------- |
-| `mgmt_firewall_location_name`       | yes       | Location of the firewall    |
-| `mgmt_firewall_device_name`         | yes       | Device name                 |
-| `mgmt_firewall_public_key`          | yes       | Public key for the firewall |
-| `mgmt_firewall_default_wan_enabled` |           | Default: false              |
-| `mgmt_firewall_wireless_disabled`   |           | Default: true               |
+| Variable                              | Mandatory | Description                                    |
+| ------------------------------------- | --------- | ---------------------------------------------- |
+| `mgmt_firewall_location_name`         | yes       | Location of the firewall                       |
+| `mgmt_firewall_device_name`           | yes       | Device name                                    |
+| `mgmt_firewall_public_key`            | yes       | Public key for the firewall                    |
+| `mgmt_firewall_default_wan_enabled`   |           | Default: false                                 |
+| `mgmt_firewall_wireless_disabled`     |           | Default: true                                  |
+| `mgmt_firewall_static_routes_enabled` |           | Set up static routes, by specifying a gateway. |

@@ -241,6 +241,17 @@
     /etc/init.d/firewall restart
   loop: '{{ mgmt_firewall_port_forwards }}'
 
+- name: Setup Static Routes
+  ansible.builtin.raw: |
+    network.1=route
+    network.1.table='254'
+    network.1.netmask='0.0.0.0'
+    network.1.target='0.0.0.0'
+    network.1.gateway='{{ item.gateway }}'
+    network.1.interface='wan'
+  loop: '{{ mgmt_firewall_static_routes }}'
+  when: mgmt_firewall_static_routes_enabled | default(false)
+
 - name: Setup static VLANs (VLAN 1 and 2)
   ansible.builtin.raw: |
     uci set network.@switch_vlan[0].ports='0t 4'
