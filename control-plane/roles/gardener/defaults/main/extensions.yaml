@@ -84,3 +84,5 @@ gardener_shoot_dns_service_image_vector_overwrite: []
   #   sourceRepository: github.com/gardener/external-dns-management
   #   repository: europe-docker.pkg.dev/gardener-project/public/dns-controller-manager
   #   tag: "0.7.1"
+gardener_shoot_dns_service_dns_controller_manager_image_name:
+gardener_shoot_dns_service_dns_controller_manager_image_tag:
