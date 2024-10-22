@@ -40,19 +40,6 @@ spec:
               visible: {{ gardener_shooted_seed.visible | default(true) }}
             shootDNS:
               enabled: true
-{% if gardener_shoots_prometheus_remote_write_url %}
-      monitoring:
-        shoot:
-          enabled: true
-          remoteWrite:
-            url: {{ gardener_shoots_prometheus_remote_write_url }}
-{% if gardener_shoots_prometheus_remote_write_keep_metrics %}
-          keep:
-{% for metric in gardener_shoots_prometheus_remote_write_keep_metrics %}
-          - "{{ metric }}"
-{% endfor %}
-{% endif %}
-{% endif %}
     deployment:
       image:
         pullPolicy: IfNotPresent
