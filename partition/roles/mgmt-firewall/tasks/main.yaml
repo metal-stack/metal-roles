@@ -136,7 +136,7 @@
     uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.net_mask}}'
     uci set network.wan.gateway='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway}}'
     uci add_list network.wan.dns='1.1.1.1' 
-    uci add_list network.wan.dns='1.0.0.1'
+    uci add_list network.wan.dns='1.0.0.1' # Hardcoded for now
     uci set network.wan.peerdns='0'
     uci set network.wan.proto='static'
     uci commit network
