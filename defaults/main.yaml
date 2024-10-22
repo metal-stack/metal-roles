@@ -125,8 +125,6 @@ metal_stack_release:
     gardener_shoot_cert_service_image_name: "docker-images.third-party.gardener.shoot-cert-service.name"
     gardener_shoot_dns_service_image_tag: "docker-images.third-party.gardener.shoot-dns-service.tag"
     gardener_shoot_dns_service_image_name: "docker-images.third-party.gardener.shoot-dns-service.name"
-    gardener_dns_controller_manager_image_tag: "docker-images.third-party.gardener.dns-controller-manager.tag"
-    gardener_dns_controller_manager_image_name: "docker-images.third-party.gardener.dns-controller-manager.name"
     gardener_metrics_exporter_image_tag: "docker-images.third-party.gardener.metrics-exporter.tag"
     gardener_metrics_exporter_image_name: "docker-images.third-party.gardener.metrics-exporter.name"
     gardener_extension_acl_image_name: "docker-images.third-party.gardener.acl-extension.name"

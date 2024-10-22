@@ -10,10 +10,21 @@ providerConfig:
     image:
       repository: "{{ gardener_shoot_dns_service_image_name }}"
       tag: "{{ gardener_shoot_dns_service_image_tag }}"
+{% if gardener_shoot_dns_service_image_vector_overwrite %}
+    imageVectorOverwrite: |
+      images:
+        {{ gardener_shoot_dns_service_image_vector_overwrite | to_nice_yaml(indent=2) | indent(width=8, first=false) }}
+{% endif %}
     dnsProviderManagement:
       enabled: true
     dnsControllerManager:
-      image:
-        tag: "{{ gardener_dns_controller_manager_image_tag }}"
-        repository: "{{ gardener_dns_controller_manager_image_name }}"
       deploy: true
+{% if gardener_shoot_dns_service_dns_controller_manager_image_name or gardener_shoot_dns_service_dns_controller_manager_image_tag %}
+      image:
+{% if gardener_shoot_dns_service_dns_controller_manager_image_tag %}
+        tag: "{{ gardener_shoot_dns_service_dns_controller_manager_image_tag }}"
+{% endif %}
+{% if gardener_shoot_dns_service_dns_controller_manager_image_name %}
+        repository: "{{ gardener_shoot_dns_service_dns_controller_manager_image_name }}"
+{% endif %}
+{% endif %}
