@@ -47,9 +47,9 @@ spec:
           remoteWrite:
             url: {{ gardener_shoots_prometheus_remote_write_url }}
 {% if gardener_shoots_prometheus_remote_write_keep_metrics %}
+          keep:
 {% for metric in gardener_shoots_prometheus_remote_write_keep_metrics %}
-            keep:
-            - "{{ metric }}"
+          - "{{ metric }}"
 {% endfor %}
 {% endif %}
 {% endif %}
