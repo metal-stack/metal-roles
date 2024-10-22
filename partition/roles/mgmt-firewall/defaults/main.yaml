@@ -1,14 +1,14 @@
----
 mgmt_firewall_location_name:
 mgmt_firewall_device_name:
-mgmt_firewall_public_key:
-mgmt_firewall_wireless_disabled: true
+
+mgmt_firewall_default_wan_enabled: true
+mgmt_firewall_static_routes_enabled: true
 
 mgmt_firewall_config:
-  location_name: '{{ mgmt_firewall_location_name }}'
-  device_name: '{{ mgmt_firewall_device_name }}'
+  location_name: ''
+  device_name: ''
   bgp:
-    enabled: false
+    enabled: true
     general_ip: ''
     general_as:
     mgmtsrv_ipaddr: ''
@@ -16,74 +16,48 @@ mgmt_firewall_config:
 
 mgmt_firewall_interfaces:
   mgmt_firewall_lan:
-    - name: mgmtsrv
+    - name: ''
       ipaddr: ''
-      device: eth0.3
-      firewall_network: 2
+      netmask: ''
+      device: ''
       dhcp_options:
         - { option: '3', value: '' }
         - { option: '6', value: '' }
-    - name: usersrv
-      ipaddr: ''
-      device: eth0.4
-      firewall_network: 2
-      dhcp_options:
-        - { option: '3', value: '' }
-        - { option: '6', value: '' }
-
+        - { option: '12', value: '' }
   mgmt_firewall_wan:
-    defaults:
-      ipaddr: ''
-      netmask: '255.255.255.248'
-      dns: ['', '']
+    default:
+      ip_adress: ''
       gateway: ''
+      net_mask: ''
     interfaces:
-      - name: wan_mgtm
+      - name: wan_mgmtsrv
         device: eth1
-        metric: '1'
+        metric: '5'
         ipaddr: ''
-        netmask: '255.255.255.248'
-        dns: ['', '']
-        gateway: ''
-      - name: wan_servc
-        device: eth2
-        metric: '2'
-        ipaddr: ''
-        netmask: '255.255.255.248'
-        dns: ['', '']
+        netmask: ''
+        dns:
+          - '1.1.1.1'
+          - '1.0.0.1'
         gateway: ''
 
 mgmt_firewall_port_forwards:
-  - src_dport: '22'
+  - name: 'ssh_mgmtsrv'
+    src_dport: '22'
     dest_ip: ''
     dest_port: '22'
     src: 'wan'
-    name: 'ssh_mgmtsrv'
-    target: 'DNAT'
     priority: '1'
     dest: 'lan'
     reflection: '0'
-    src_ip: ['', '']
-    proto: ['tcp']
-  - src_dport: '623'
-    dest_ip: ''
-    dest_port: '623'
-    src: 'wan'
-    name: 'rmcp_mgmtsrv_ipmi'
-    target: 'DNAT'
-    priority: '2'
-    dest: 'lan'
-    proto: ['tcp', 'udp']
     src_ip: ['']
+    proto: ['tcp']
     src_dip: ''
 
 mgmt_firewall_vlans:
   - vlan: '3'
     vid: '3'
     ports: '0t 1'
-  - vlan: '4'
-    vid: '4'
-    ports: '0t 2'
-  - vlan: '5'
-    vid: '5'
-    ports: '0t 3'
+
+mgmt_firewall_static_routes:
+  - gateway: ''
+    network: 1
