@@ -16,7 +16,6 @@
       - gardener_controller_manager_image_tag is defined
       - gardener_scheduler_image_tag is defined
       - gardener_extension_provider_metal_image_tag is defined
-      - gardener_machine_controller_manager_image_tag is defined
       - gardener_os_controller_image_tag is defined
       - metal_cloud_controller_manager_image_tag is defined
       - gardener_networking_calico_image_tag is defined
@@ -65,9 +64,8 @@
   loop:
     - name: hvpas
       definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/10-crd-autoscaling.k8s.io_hvpas.yaml', split_lines=False) | from_yaml_all | list)[0] }}"
-    # TODO: starting from g/g 1.82, this resource will be located in seed-crds, too
     - name: vpas
-      definition: "{{ lookup('file', '10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml') }}"
+      definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml', split_lines=False) | from_yaml_all | list)[0] }}"
   loop_control:
     label: "{{ item.name }}"
 
