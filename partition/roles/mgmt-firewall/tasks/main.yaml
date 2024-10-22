@@ -91,9 +91,9 @@
 
 - name: Change location Name
   ansible.builtin.raw: |
-    uci set snmpd.@system[0].sysName={{mgmt_firewall_location_name}}
-    uci set system.system.devicename={{mgmt_firewall_device_name}}
-    uci set system.system.hostname={{mgmt_firewall_location_name}}
+    uci set snmpd.@system[0].sysName='{{ mgmt_firewall_location_name }}'
+    uci set system.system.devicename='{{ mgmt_firewall_device_name }}'
+    uci set system.system.hostname='{{ mgmt_firewall_location_name }}'
     uci set system.system.zoneName='Europe/Berlin'
     uci set system.system.timezone='CET-1CEST,M3.5.0,M10.5.0/3'
     uci commit snmpd
