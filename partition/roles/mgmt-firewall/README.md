@@ -65,46 +65,46 @@ The firewall is configured with the following settings by default:
 
 Both LAN and WAN interfaces share the following mandatory fields:
 
-| Field          | Description    |
-| -------------- | -------------- |
-| `name`         | Interface name |
-| `ipaddr`       | IP address     |
-| `netmask`      | Subnet mask    |
-| `device`       | Router port    |
-| `dhcp_options` | (LAN Only)     |
-| `metric`       | (WAN Only)     |
-| `gateway`      | (WAN Only)     |
-| `dns` (List)   | (WAN Only)     |
+| Field                                                     | Description    |
+| --------------------------------------------------------- | -------------- |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.name`         | Interface name |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.ipaddr`       | IP address     |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.netmask`      | Subnet mask    |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.device`       | Router port    |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.dhcp_options` | (LAN Only)     |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.metric`       | (WAN Only)     |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.gateway`      | (WAN Only)     |
+| `mgmt_firewall_interfaces.mgmt_firewall_lan.dns` (List)   | (WAN Only)     |
 
 ### Default WAN Interface
 
 To enable configuration of the default WAN interface, set `mgmt_firewall_default_wan_enabled` to `true`.
 
-| Field     | Description     |
-| --------- | --------------- |
-| `name`    | Interface name  |
-| `ipaddr`  | IP address      |
-| `netmask` | Subnet mask     |
-| `device`  | Router port     |
-| `gateway` | Default gateway |
+| Field                                                        | Description     |
+| ------------------------------------------------------------ | --------------- |
+| `mgmt_firewall_interfaces.mgmt_firewall_wan.default.name`    | Interface name  |
+| `mgmt_firewall_interfaces.mgmt_firewall_wan.default.ipaddr`  | IP address      |
+| `mgmt_firewall_interfaces.mgmt_firewall_wan.default.netmask` | Subnet mask     |
+| `mgmt_firewall_interfaces.mgmt_firewall_wan.default.device`  | Router port     |
+| `mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway` | Default gateway |
 
 ## Port Forwarding Configuration
 
 The following fields define port forwarding rules:
 
-| Field           | Description                    |
-| --------------- | ------------------------------ |
-| `name`          | Rule name                      |
-| `src_dport`     | External port                  |
-| `dest_ip`       | Internal IP address            |
-| `dest_port`     | Internal port                  |
-| `src`           | Source zone                    |
-| `priority`      | Rule priority (start with 1)   |
-| `dest`          | Destination zone               |
-| `reflection`    | NAT Loopback (0 = off, 1 = on) |
-| `src_ip` (List) | Source IP addresses            |
-| `proto` (List)  | Protocols (e.g., TCP, UDP)     |
-| `src_dip`       | External IP address            |
+| Field                                       | Description                    |
+| ------------------------------------------- | ------------------------------ |
+| `mgmt_firewall_port_forwards.name`          | Rule name                      |
+| `mgmt_firewall_port_forwards.src_dport`     | External port                  |
+| `mgmt_firewall_port_forwards.dest_ip`       | Internal IP address            |
+| `mgmt_firewall_port_forwards.dest_port`     | Internal port                  |
+| `mgmt_firewall_port_forwards.src`           | Source zone                    |
+| `mgmt_firewall_port_forwards.priority`      | Rule priority (start with 1)   |
+| `mgmt_firewall_port_forwards.dest`          | Destination zone               |
+| `mgmt_firewall_port_forwards.reflection`    | NAT Loopback (0 = off, 1 = on) |
+| `mgmt_firewall_port_forwards.src_ip` (List) | Source IP addresses            |
+| `mgmt_firewall_port_forwards.proto` (List)  | Protocols (e.g., TCP, UDP)     |
+| `mgmt_firewall_port_forwards.src_dip`       | External IP address            |
 
 ## Variables
 
