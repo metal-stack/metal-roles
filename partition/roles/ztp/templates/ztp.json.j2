@@ -1,0 +1,21 @@
+{
+  "ztp": {
+    "02-user": {
+      "plugin": {
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp.sh"
+      }
+    },
+    "03-configdb-json": {
+      "url": {
+        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/config_db.json"
+      },
+      "clear-config": false
+    },
+    "04-reload": {
+      "plugin": {
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/reload.sh"
+      }
+    },
+    "restart-ztp-no-config": false
+  }
+}
