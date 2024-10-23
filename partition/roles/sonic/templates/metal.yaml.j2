@@ -2,13 +2,15 @@
 ---
 DEVICE_METADATA:
   localhost:
-    docker_routing_config_mode: split
+    docker_routing_config_mode: "{{ sonic_docker_routing_config_mode }}"
     hostname: "{{ inventory_hostname }}"
     hwsku: "{{ sonic_running_cfg_hwsku }}"
     mac: "{{ sonic_running_cfg_mac }}"
     platform: "{{ sonic_running_cfg_platform }}"
     type: "LeafRouter"
+    {% if sonic_frr_mgmt_framework_config %}
     frr_mgmt_framework_config: "true"
+    {% endif %}
 
 FEATURE:
   dhcp_relay:
@@ -28,6 +30,25 @@ LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|{{ sonic_loopback_address }}/32: {}
 
+{% if sonic_mclag is defined and sonic_mclag|length > 0 %}
+MCLAG_DOMAIN:
+  "1":
+    mclag_system_id: "{{ sonic_mclag.system_mac }}"
+    peer_ip: "{{ sonic_mclag.peer_ip }}"
+    peer_link: "{{ sonic_mclag.peer_link }}"
+    source_ip: "{{ sonic_mclag.source_ip }}"
+
+MCLAG_INTERFACE:
+{% for po in sonic_mclag.member_port_channels %}
+  "1|PortChannel{{ po }}":
+    if_type: "PortChannel"
+{% endfor %}
+
+MCLAG_UNIQUE_IP:
+  "Vlan{{ sonic_mclag.keepalive_vlan }}":
+    unique_ip: "enable"
+
+{% endif %}
 {% if sonic_mgmtif_ip is defined %}
 MGMT_INTERFACE:
 {% if sonic_mgmtif_gateway is defined %}
@@ -67,12 +88,14 @@ INTERFACE:
   {% endfor %}
   {% endfor %}
 {% endif %}
+{% if sonic_running_cfg_breakouts %}
 
 BREAKOUT_CFG:
   {% for name, cfg in sonic_running_cfg_breakouts.items() %}
   {{ name }}:
     brkout_mode: "{{ cfg.brkout_mode }}"
   {% endfor %}
+{% endif %}
 
 PORT:
   {% for name, running_cfg in sonic_running_cfg_ports.items() %}
@@ -81,17 +104,57 @@ PORT:
     autoneg: "{{ running_cfg.autoneg|default("off")|string|lower }}"
     index: "{{ running_cfg.index }}"
     lanes: "{{ running_cfg.lanes }}"
+    {% if 'parent_port' in running_cfg %}
     parent_port: {{ running_cfg.parent_port }}
+    {% endif %}
     {% if sonic_ports_dict[name] is defined %}
     {% set port = sonic_ports_dict[name] %}
-    admin_status: up
+    admin_status: {{ port.admin_status|default('up') }}
     speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
-    fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
+    fec: {{ port.fec|default(sonic_ports_default_fec)|string|lower }}
     {% else %}
+    admin_status: up
+    {% if running_cfg.speed is defined %}
     speed: "{{ running_cfg.speed }}"
     {% endif %}
+    {% if running_cfg.mtu is defined %}
+    mtu: "{{ running_cfg.mtu }}"
+    {% endif %}
+    {% if running_cfg.fec is defined %}
+    fec: {{ running_cfg.fec }}
+    {% endif %}
+    {% endif %}
   {% endfor %}
+{% if sonic_portchannels %}
+
+PORTCHANNEL:
+{% for po in sonic_portchannels %}
+  PortChannel{{ po.number }}:
+    admin_status: "up"
+{% if po.fallback is defined and po.fallback %}
+    fallback: "true"
+{% endif %}
+    fast_rate: "false"
+    lacp_key: "auto"
+    min_links: "1"
+    mix_speed: "false"
+    mtu: "{{ po.mtu|default(sonic_portchannels_default_mtu) }}"
+{% endfor %}
+
+PORTCHANNEL_MEMBER:
+{% for po in sonic_portchannels %}
+{% for member in po.members %}
+  PortChannel{{ po.number }}|{{ member }}:  {}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% if sonic_sag.mac is defined %}
+
+SAG:
+  GLOBAL:
+    gateway_mac: "{{ sonic_sag.mac }}"
+{% endif %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
 
 VLAN:
@@ -107,6 +170,9 @@ VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
   Vlan{{ vlan.id }}:
+  {% if vlan.sag is defined and vlan.sag %}
+    static_anycast_gateway: "true"
+  {% endif %}
     vrf_name: "{{ vlan.vrf }}"
   {% else %}
   Vlan{{ vlan.id }}: {}
@@ -153,6 +219,8 @@ VXLAN_TUNNEL_MAP:
 {% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
 
 VRF:
+{% endif %}
+{% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
 {% for k, i in sonic_interconnects.items() %}
   {% if i.vrf is defined %}
   {% if i.vni is defined %}

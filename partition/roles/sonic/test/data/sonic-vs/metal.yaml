@@ -1,0 +1,88 @@
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: "split-unified"
+    hostname: "sonic-vs"
+    hwsku: "Force10-S6000"
+    mac: "e0:01:a6:e3:29:3c"
+    platform: "x86_64-kvm_x86_64-r0"
+    type: "LeafRouter"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+NTP_SERVER:
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|10.0.0.1/32: {}
+
+MGMT_INTERFACE:
+  eth0|172.17.0.2/16:
+    gwaddr: "172.17.0.1"
+
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "false"
+
+INTERFACE:
+  Ethernet0:
+    ipv6_use_link_local_only: enable
+
+PORT:
+  Ethernet0:
+    alias: fortyGigE0/0
+    autoneg: "off"
+    index: "0"
+    lanes: "25,26,27,28"
+    admin_status: up
+    speed: "40000"
+    mtu: "9000"
+    fec: none
+  Ethernet4:
+    alias: fortyGigE0/4
+    autoneg: "off"
+    index: "1"
+    lanes: "29,30,31,32"
+    admin_status: up
+    speed: "40000"
+
+VLAN:
+  Vlan4000:
+    vlanid: 4000
+
+VLAN_INTERFACE:
+  Vlan4000: {}
+  Vlan4000|10.0.1.1/25: {}
+
+VLAN_MEMBER:
+
+VXLAN_EVPN_NVO:
+  nvo:
+    source_vtep: vtep
+
+VXLAN_TUNNEL:
+  vtep:
+    src_ip: "10.0.0.1"
+
+VXLAN_TUNNEL_MAP:
+  # Dummy
+  "vtep|map_103999_Vlan3999":
+    vlan: "Vlan3999"
+    vni: "103999"
+
+LLDP:
+  Global:
+    hello_timer: 10

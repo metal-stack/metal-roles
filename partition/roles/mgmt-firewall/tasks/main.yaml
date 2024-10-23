@@ -1,0 +1,273 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: 'not all mandatory variables given, check role documentation'
+    quiet: yes
+    that:
+      - mgmt_firewall_location_name is not none
+      - mgmt_firewall_device_name is not none
+      - mgmt_firewall_public_key is not none
+
+- name: Setup BGP configuration
+  ansible.builtin.raw: |
+    uci set bgp.bgp.enabled='1'
+    uci set bgp.bgp.enabled_vty='1'
+    uci set bgp.general.enabled='1'
+    uci add_list bgp.general.redistribute='static'
+    uci add_list bgp.general.redistribute='connected'
+    uci add_list bgp.general.redistribute='kernel'
+    uci set bgp.general.id={{ mgmt_firewall_config.bgp.general_ip }}
+    uci set bgp.general.as='{{ mgmt_firewall_config.bgp.general_as }}'
+    uci set bgp.general.ebgp_requires_policy='1'
+    uci set bgp.general.deterministic_med='0'
+  when: mgmt_firewall_config.bgp.enabled
+
+- name: Setup BGP Peer
+  ansible.builtin.raw: |
+    uci set bgp.mgmtsrv=bgp_peer
+    uci set bgp.mgmtsrv.instance='general'
+    uci set bgp.mgmtsrv.default_originate='0'
+    uci set bgp.mgmtsrv.ipaddr='{{ mgmt_firewall_config.bgp.mgmtsrv_ipaddr }}'
+    uci set bgp.mgmtsrv.as='{{ mgmt_firewall_config.bgp.mgmtsrv_as }}'
+    uci set bgp.mgmtsrv.enabled='1'
+    uci commit bgp
+    /etc/init.d/frr restart
+  when: mgmt_firewall_config.bgp.enabled
+
+- name: Setup SSH
+  ansible.builtin.raw: |
+    uci set dropbear.@dropbear[0]._sshWanAccess='1'
+    uci set dropbear.@dropbear[0].enable_key_ssh='1'
+    uci set dropbear.@dropbear[0].RootPasswordAuth='0'
+    uci commit dropbear
+    /etc/init.d/dropbear restart
+    uci set firewall.15.enabled='1' # Enable SSH Wan
+    uci commit firewall
+    /etc/init.d/firewall
+
+- name: Setup firewall default settings
+  ansible.builtin.raw: |
+    uci set firewall.1.input='DROP'
+    uci set firewall.1.forward='DROP'
+    uci set firewall.1.drop_invalid='1'
+    uci set firewall.2.masq='1'
+    uci set firewall.2.mtu_fix='1'
+    uci set firewall.3.input='DROP'
+    uci set firewall.3.forward='DROP'
+    {% if mgmt_firewall_config.bgp.enabled is true %}
+    uci set firewall.A_BGP=rule
+    uci set firewall.A_BGP.enabled='1'
+    uci set firewall.A_BGP.src='wan'
+    uci set firewall.A_BGP.name='Allow-BGP-WAN-traffic'
+    uci set firewall.A_BGP.target='ACCEPT'
+    uci set firewall.A_BGP.dest_port='179'
+    uci add_list firewall.A_BGP.proto='tcp' 
+    uci add_list firewall.A_BGP.proto='udp'
+    {% endif %}
+    uci commit firewall
+    /etc/init.d/firewall restart
+
+- name: Get the total number of sms_utils rules
+  ansible.builtin.raw: |
+    uci show sms_utils | grep -o '@rule\[[0-9]\+\]' | sort -u | wc -l
+  register: rule_count
+
+- name: Disable all sms_utils rules
+  ansible.builtin.raw: |
+    uci set sms_utils.@rule[{{ item }}].enabled='0'
+  loop: '{{ range(0, rule_count.stdout | int) }}'
+  register: disable_output
+
+- name: Commit and restart sms_utils after disabling rules
+  ansible.builtin.raw: |
+    uci commit sms_utils
+    /etc/init.d/sms_utils restart
+
+- name: Disable rms_connect
+  ansible.builtin.raw: |
+    uci set rms_mqtt.rms_connect_mqtt.enable='0'
+    uci commit rms_mqtt
+    /etc/init.d/rms_mqtt restart
+
+- name: Change location Name
+  ansible.builtin.raw: |
+    uci set snmpd.@system[0].sysName='{{ mgmt_firewall_location_name }}'
+    uci set system.system.devicename='{{ mgmt_firewall_device_name }}'
+    uci set system.system.hostname='{{ mgmt_firewall_location_name }}'
+    uci set system.system.zoneName='Europe/Berlin'
+    uci set system.system.timezone='CET-1CEST,M3.5.0,M10.5.0/3'
+    uci commit snmpd
+    uci commit system
+    /etc/init.d/system restart
+
+- name: Enable Remote Https Access
+  ansible.builtin.raw: |
+    uci set uhttpd.main._httpsWanAccess='1'
+    uci set uhttpd.main.redirect_https='0'
+    uci commit uhttpd
+    /etc/init.d/uhttpd restart
+
+- name: Disable wireless
+  ansible.builtin.raw: |
+    uci set wireless.default_radio1.disabled='1'
+    uci set wireless.default_radio0.disabled='1'
+    uci commit wireless
+    /etc/init.d/network restart
+  when: mgmt_firewall_wireless_disabled | default(true)
+
+- name: Create authorized keys file in /etc/dropbear
+  ansible.builtin.raw: |
+    echo '{{mgmt_firewall_public_key}}' > ../etc/dropbear/authorized_keys
+
+- name: Adjust Lan Default to not Bridge
+  ansible.builtin.raw: |
+    uci delete network.br_lan
+    uci delete network.br_lan.name
+    uci delete network.br_lan.type
+    uci delete network.br_lan.ports
+    uci delete network.lan.device
+    uci set network.lan.device='eth0'
+    uci commit network
+    /etc/init.d/network restart
+
+- name: Configure Default wan
+  ansible.builtin.raw: |
+    uci set network.wan.ipaddr='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.ip_adress}}'
+    uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.net_mask}}'
+    uci set network.wan.gateway='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway}}'
+    uci add_list network.wan.dns='1.1.1.1' 
+    uci add_list network.wan.dns='1.0.0.1' # Hardcoded for now
+    uci set network.wan.peerdns='0'
+    uci set network.wan.proto='static'
+    uci commit network
+    /etc/init.d/network
+    uci set firewall.3.network=''
+    uci add_list firewall.3.network=wan
+    uci commit firewall
+    /etc/init.d/firewall
+  when: mgmt_firewall_default_wan_enabled | default(false)
+
+- name: Configure new LAN interfaces
+  ansible.builtin.raw: |
+    section_id=$(uci add network interface)
+    uci rename network.$section_id="{{ item.name }}"
+    uci set network.{{ item.name }}.proto='static'
+    uci set network.{{ item.name }}.ipaddr='{{ item.ipaddr }}'
+    uci set network.{{ item.name }}.netmask='{{ item.netmask }}'
+    uci set network.{{ item.name }}.device='{{ item.device }}'
+    uci set network.{{ item.name }}.delegate='1'
+    uci set network.{{ item.name }}.force_link='1'
+    uci set network.{{ item.name }}.area_type='lan'
+    uci commit network
+    /etc/init.d/network restart
+    uci add_list firewall.2.network="{{ item.name }}"
+    uci commit firewall
+    /etc/init.d/firewall restart
+
+  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
+
+- name: Configure DHCP
+  ansible.builtin.raw: |
+    uci set dhcp.{{ item.name }}=dhcp
+    uci set dhcp.{{ item.name }}.ignore_ipv6='1'
+    uci set dhcp.{{ item.name }}.interface="{{ item.name }}"
+    uci set dhcp.{{ item.name }}.ra='server'
+    uci set dhcp.{{ item.name }}.dhcpv6='server'
+    uci set dhcp.{{ item.name }}.leasetime='12h'
+    uci set dhcp.{{ item.name }}.start='2'
+    uci set dhcp.{{ item.name }}.limit='1'
+    uci set dhcp.{{ item.name }}.netmask='255.255.255.252'
+    {% for option in item.dhcp_options %}
+    uci add_list dhcp.{{ item.name }}.dhcp_option_force="{{ option.option }},{{ option.value }}"
+    {% endfor %}
+    uci commit dhcp
+    /etc/init.d/dnsmasq restart
+
+  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
+
+- name: Configure WAN interfaces
+  ansible.builtin.raw: |
+    section_id=$(uci add network interface)
+    uci set network.$section_id.proto='static'
+    uci set network.$section_id.area_type='wan'
+    uci set network.$section_id.peerdns='0'
+    uci set network.$section_id.device='{{ item.device }}'
+    uci set network.$section_id.metric='{{ item.metric }}'
+    uci set network.$section_id.ipaddr='{{ item.ipaddr }}'
+    uci set network.$section_id.netmask='{{ item.netmask }}'
+    uci set network.$section_id.gateway='{{ item.gateway }}'
+    uci set network.$section_id.name='{{ item.name }}'
+    {% for dns_server in item.dns %}
+    uci add_list network.$section_id.dns='{{ dns_server }}'
+    {% endfor %}
+
+    uci add_list firewall.3.network="$section_id"
+    uci commit firewall
+    /etc/init.d/firewall restart
+
+    uci commit network
+    /etc/init.d/network restart
+  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_wan.interfaces }}'
+
+- name: Apply Port-Forwards
+  ansible.builtin.raw: |
+    uci add firewall redirect
+    uci set firewall.@redirect[-1].src_dport='{{ item.src_dport }}' # External port
+    uci set firewall.@redirect[-1].dest_ip='{{ item.dest_ip }}'
+    uci set firewall.@redirect[-1].dest_port='{{ item.dest_port }}'
+    uci set firewall.@redirect[-1].src='{{ item.src }}'
+    uci set firewall.@redirect[-1].name='{{ item.name }}'
+    uci set firewall.@redirect[-1].target='DNAT'
+    uci set firewall.@redirect[-1].priority='{{ item.priority }}' # Order of rule
+    {% if item.dest is defined %}
+    uci set firewall.@redirect[-1].dest='{{ item.dest }}' # Internal Zone
+    {% endif %}
+    uci set firewall.@redirect[-1].enabled='1'
+    uci set firewall.@redirect[-1].reflection='{{ item.reflection }}' # Enable Nat Loopback
+    {% if item.src_ip is defined %}
+    {% for src_ip in item.src_ip %}
+    uci add_list firewall.@redirect[-1].src_ip="{{ src_ip }}"
+    {% endfor %}
+    {% endif %}
+    {% if item.src_dip is defined %}
+    uci set firewall.@redirect[-1].src_dip='{{ item.src_dip }}' # External IP, defaults to Any
+    {% endif %}
+    {% if item.proto is defined %}
+    {% for proto in item.proto %}
+    uci add_list firewall.@redirect[-1].proto="{{ proto }}" # Protocol setter (TCP, UDP)
+    {% endfor %}
+    {% endif %}
+    uci commit firewall
+    /etc/init.d/firewall restart
+  loop: '{{ mgmt_firewall_port_forwards }}'
+
+- name: Setup Static Routes
+  ansible.builtin.raw: |
+    uci set network.{{ item.network }}=route
+    uci set network.{{ item.network }}.table='254'
+    uci set network.{{ item.network }}.netmask='0.0.0.0'
+    uci set network.{{ item.network }}.target='0.0.0.0'
+    uci set network.{{ item.network }}.gateway='{{ item.gateway }}'
+    uci set network.{{ item.network }}.interface='wan'
+  loop: '{{ mgmt_firewall_static_routes }}'
+  when: mgmt_firewall_static_routes_enabled | default(false)
+
+- name: Setup static VLANs (VLAN 1 and 2)
+  ansible.builtin.raw: |
+    uci set network.@switch_vlan[0].ports='0t 4'
+    uci set network.@switch_vlan[1].ports='0t 5'
+    uci commit network
+
+- name: Setup dynamic VLANs
+  ansible.builtin.raw: |
+    uci add network switch_vlan
+    uci set network.@switch_vlan[-1].device='switch0'
+    uci set network.@switch_vlan[-1].vlan='{{ item.vlan }}'
+    uci set network.@switch_vlan[-1].vid='{{ item.vid }}'
+    uci set network.@switch_vlan[-1].ports='{{ item.ports }}'
+    uci commit network
+  loop: '{{ mgmt_firewall_vlans }}'
+
+- name: Restart Network
+  ansible.builtin.raw: |
+    /etc/init.d/network restart

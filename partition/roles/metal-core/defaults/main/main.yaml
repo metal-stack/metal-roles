@@ -15,8 +15,11 @@ metal_core_grpc_client_key: "{{ metal_partition_metal_api_grpc_client_key }}"
 
 metal_core_additional_bridge_vids: []
 metal_core_additional_bridge_ports: []
+metal_core_additional_volume_mounts: []
 
 metal_core_consider_hosts_file_resolution: false
 
 metal_core_interfaces_tpl_file: ""
 metal_core_frr_tpl_file: ""
+
+metal_core_pxe_vlan_id: 4000

@@ -2,11 +2,13 @@
 - name: ensure dependencies are installed
   apt:
     update_cache: yes
+    allow_unauthenticated: yes
     name:
       - apt-transport-https
       - ca-certificates
       - curl
       - gnupg2
+      - libltdl7
   when: ansible_distribution_major_version == "3"
 
 - name: setup key for docker

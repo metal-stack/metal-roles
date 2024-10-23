@@ -10,6 +10,7 @@
       - ztp_nginx_image_name is defined
       - ztp_nginx_image_tag is defined
       - ztp_authorized_keys is not none
+      - "'ztp.sh' not in ztp_additional_files | map(attribute='name')"
 
 - name: create ztp config directory
   file:
@@ -21,6 +22,33 @@
     src: "ztp.sh.j2"
     dest: "{{ ztp_host_dir_path }}/config/ztp.sh"
     mode: 0644
+
+- name: copy config_db.json
+  copy:
+    src: "config_db.json"
+    dest: "{{ ztp_host_dir_path }}/config/config_db.json"
+    mode: 0644
+
+- name: copy reload script
+  copy: 
+    src: "reload.sh"
+    dest: "{{ ztp_host_dir_path }}/config/reload.sh"
+    mode: 0644
+
+- name: render ztp.json
+  template:
+    src: "ztp.json.j2"
+    dest: "{{ ztp_host_dir_path }}/config/ztp.json"
+    mode: 0644
+
+- name: copy additional contents
+  copy:
+    dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
+    content: "{{ item.data }}"
+    mode: 0644
+  loop: "{{ ztp_additional_files }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: deploy server for serving ztp.sh
   include_role:

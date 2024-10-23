@@ -34,9 +34,11 @@ alerting:
 {% if prometheus_remote_write_url %}
 remote_write:
 - url: {{ prometheus_remote_write_url }}
+  {% if prometheus_remote_write_basic_auth_username is defined and prometheus_remote_write_basic_auth_password is defined %}
   basic_auth:
     username: {{ prometheus_remote_write_basic_auth_username }}
     password: {{ prometheus_remote_write_basic_auth_password }}
+  {% endif %}
 {% endif %}
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
@@ -197,6 +199,26 @@ scrape_configs:
   metrics_path: /metrics
   scrape_timeout: 25s
   scrape_interval: 30s
-  honor_timestamps: True
+  params:
+    collect[]:
+    - clustering
+    - datapath
+    - duroslight
+    - meminfo
+    - textfile
+    - lightfield
+    - netstat
+    - netdev
+    - cpufreq
   static_configs:
-  - targets:
+  - targets: {{ prometheus_lightbox_exporter_targets | to_json }}
+
+- job_name: 'lightos-smart'
+  metrics_path: /metrics
+  scrape_timeout: 10s
+  scrape_interval: 5m
+  params:
+    collect[]:
+    - smart
+  static_configs:
+  - targets: {{ prometheus_lightos_smart_targets | to_json }}

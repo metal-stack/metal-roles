@@ -45,6 +45,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_vlans.untagged_ports                                 |           | Array of untagged ports to bind to this VLAN.                                                                        |
 | sonic_vlans.tagged_ports                                   |           | Array of tagged ports to bind to this VLAN.                                                                          |
 | sonic_vlans.vrf                                            |           | The VRF to bind the VLANs SVI to.                                                                                    |
+| sonic_vlans.sag                                            |           | Whether to enable Static Anycast Gateway for this VLAN. Defaults to false in SONIC.                                  |
 | sonic_vteps                                                |           | VTEPs to configure. If defined FRR will automatically advertise all VNIs.                                            |
 | sonic_vteps.comment                                        |           | Description for the VTEP.                                                                                            |
 | sonic_vteps.vlan                                           |           | The local VLAN interface.                                                                                            |
@@ -60,12 +61,28 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_interconnects.neighbors                              |           | Connect to this BGP neighbors - supports multiple neighbors and also BGP unnumbered by giving `Ethernet0 interface`. |
 | sonic_interconnects.unnumbered_interfaces                  |           | Connect with BGP unnumbered on these interfaces - also sets IPv6 options to make unnumbered work right.              |
 | sonic_interconnects.peer_group                             |           | Put the neighbor in this peer group.                                                                                 |
+| sonic_interconnects.evpn_peer                              |           | Whether the peer should take part in evpn routing (address-family l2vpn evpn)                                        |
 | sonic_interconnects.prefixlists                            |           | BGP prefix lists to configure.                                                                                       |
 | sonic_interconnects.remote_as                              |           | The AS of the BGP neighbor.                                                                                          |
 | sonic_interconnects.routemap_in                            |           | Apply an incoming routemap for this BGP session.                                                                     |
 | sonic_interconnects.routemap_out                           |           | Apply an outgoing routemap for this BGP session.                                                                     |
 | sonic_interconnects.vni                                    |           | This BGP session will connect the specified VNI within the CLOS topology with the given peer.                        |
 | sonic_interconnects.vrf                                    |           | Use a dedicated BGP session fenced with an VRF for this connection. Also it declares the virtual network as layer-3. |
+| sonic_mclag                                                |           | MCLAG (Multi-Chassis LAG / VPC) configuration for a switch connecting a machine with a LAG bond interface            |
+| sonic_mclag.system_mac                                     |           | The shared virtual MAC address used for MCLAG connections                                                            |
+| sonic_mclag.peer_ip                                        |           | The IP of the remote switch on the MCLAG peer-link. Corresponds to source_ip.                                        |
+| sonic_mclag.peer_link                                      |           | The PortChannel interface connecting the switch pair.                                                                |
+| sonic_mclag.source_ip                                      |           | The IP of this switch on the MCLAG peer-link. Corresponds to peer_ip.                                                |
+| sonic_mclag.keepalive_vlan                                 |           | The VLAN used for keepalive messages between the MCLAG pair over the peer-link.                                      |
+| sonic_mclag.member_port_channels                           |           | A list of the PortChannel numbers that take part in the MCLAG domain.                                                |
+| sonic_portchannels_default_mtu                             |           | MTU default value for portchannels                                                                                   |
+| sonic_portchannels                                         |           | Configuration for portchannels. These will be up by default.                                                         |
+| sonic_portchannels.number                                  |           | The portchannel number                                                                                               |
+| sonic_portchannels.mtu                                     |           | The MTU of the portchannel. Must match the MTU of the member ports.                                                  |
+| sonic_portchannels.fallback                                |           | Whether to fallback to single port when LAG negotiation fails. Defaults to false in Sonic; does not work with MCLAG. |
+| sonic_portchannels.members                                 |           | The list of the interfaces taking part in the portchannel.                                                           |
+| sonic_sag                                                  |           | Configuration for SAG (Static Anycast Gateway)                                                                       |
+| sonic_sag.mac                                              |           | The virtual MAC used for the SAG address                                                                             |
 | sonic_ssh_sourceranges                                     |           | The source ranges from which the switch should be reachable over SSH on its prod (non-management) addresses          |
 | sonic_extended_cacl.ipv4                                   |           | Iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
 | sonic_extended_cacl.ipv6                                   |           | Iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |

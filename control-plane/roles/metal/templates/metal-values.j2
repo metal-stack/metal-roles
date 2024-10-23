@@ -21,6 +21,10 @@ images:
     image: "{{ metal_masterdata_api_image_name }}"
     imagePullPolicy: "{{ metal_masterdata_api_image_pull_policy }}"
     tag: "{{ metal_masterdata_api_image_tag }}"
+  ipam:
+    image: "{{ metal_ipam_image_name }}"
+    imagePullPolicy: "{{ metal_console_image_pull_policy }}"
+    tag: "{{ metal_ipam_image_tag }}"
 
 resources:
 {% if metal_api_resources %}
@@ -31,6 +35,9 @@ resources:
 {% endif %}
 {% if metal_console_resources %}
   metal_console: {{ metal_console_resources | to_json }}
+{% endif %}
+{% if metal_ipam_resources %}
+  ipam: {{ metal_ipam_resources | to_json }}
 {% endif %}
 
 hpa:
@@ -59,14 +66,19 @@ ports:
   masterdata_api_metrics: {{ metal_masterdata_api_metrics_port }}
   metal_console: {{ metal_console_port }}
 
+ipam:
+  db_host: "{{ metal_ipam_db_address }}"
+  db_port: "{{ metal_ipam_db_port }}"
+  db_name: "{{ metal_ipam_db_name }}"
+  db_user: "{{ metal_ipam_db_user }}"
+  db_password: "{{ metal_ipam_db_password }}"
+  log_level: "{{ metal_ipam_log_level }}"
+
 metal_api:
   db_address: "{{ metal_api_db_address }}"
   db_password: "{{ metal_api_db_password }}"
-  ipam_db_address: "{{ metal_api_ipam_db_address }}"
-  ipam_db_port: "{{ metal_api_ipam_db_port }}"
-  ipam_db_name: "{{ metal_api_ipam_db_name }}"
-  ipam_db_user: "{{ metal_api_ipam_db_user }}"
-  ipam_db_password: "{{ metal_api_ipam_db_password }}"
+  ipam_grpc_server_endpoint: "{{ metal_api_ipam_grpc_server_endpoint }}"
+
   nsq:
     lookupd_address: "{{ metal_api_nsq_lookupd_address }}"
     tcp_address: "{{ metal_api_nsq_tcp_address }}"
@@ -102,6 +114,7 @@ metal_api:
   view_key: "{{ metal_api_view_key }}"
   edit_key: "{{ metal_api_edit_key }}"
   admin_key: "{{ metal_api_admin_key }}"
+  release_version: "{{ metal_api_release_version }}"
   minimum_client_version: "{{ metalctl_version }}"
 {% if metal_api_password_reason_minlength %}
   password_reason_minlength: "{{ metal_api_password_reason_minlength }}"
@@ -147,14 +160,15 @@ metal_api:
   filesystemlayouts: |
 {% for entity in metal_api_filesystemlayouts %}
     ---
-    {#
-      Some FSL Types confuse different YAML-parsing implementations.
-      Hence we fall back to JSON to enforce quotes around literals like 8e00.
-    #}
     {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   sizeimageconstraints: |
 {% for entity in metal_api_sizeimageconstraints %}
+    ---
+    {{ entity | to_json | indent(width=4, first=false) }}
+{% endfor %}
+  size_reservations: |
+{% for entity in metal_api_size_reservations %}
     ---
     {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}

@@ -20,3 +20,5 @@ metal_bmc_console_cert_dir: /certs/console
 metal_bmc_console_ca_cert:
 metal_bmc_console_cert:
 metal_bmc_console_key:
+
+metal_bmc_additional_volume_mounts: []

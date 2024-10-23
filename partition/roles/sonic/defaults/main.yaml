@@ -7,14 +7,16 @@ sonic_timezone: Europe/Berlin
 sonic_config_action: load
 
 ## Physical settings
-sonic_breakouts: {}
 sonic_ports: []
 sonic_ports_dict: {}
 sonic_ports_default_fec: none
 
+## Layer 2
+sonic_portchannels: []
+
 ## BGP related settings
 sonic_loopback_address:
-sonic_asn: 
+sonic_asn:
 sonic_bgp_ports: []
 sonic_frr_render: true
 sonic_frr_debug_options: []
@@ -37,6 +39,10 @@ sonic_vteps: []
 
 # LLDP Hello timer is 30s by default on the switch, but metal-hammer expects 10s or so
 sonic_lldp_hello_timer: 10
+
+# BGP container configuration
+sonic_docker_routing_config_mode: split
+sonic_frr_mgmt_framework_config: true
 
 sonic_frr_static_routes_mgmt: []
 sonic_interconnects: {}

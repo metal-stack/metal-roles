@@ -15,7 +15,12 @@ providerConfig:
       defaultIssuer:
         restricted: true # restrict default issuer to any sub-domain of shoot.spec.dns.domain
         acme:
-          email: cert-expiry@metal-pod.io
-          server: https://acme-v02.api.letsencrypt.org/directory
+          email: "{{ gardener_cert_management_issuer_email }}"
+          server: "{{ gardener_cert_management_issuer_server }}"
           privateKey: |
             {{ gardener_cert_management_issuer_private_key | indent(width=12, first=false) }}
+{% if gardener_cert_management_precheck_nameservers %}
+      precheckNameservers: "{{ gardener_cert_management_precheck_nameservers | join(',') }}"
+{% endif %}
+      shootIssuers:
+        enabled: {{ gardener_cert_management_shoot_issuers_enabled | bool }} # if true, allows to specify issuers in the shoot clusters

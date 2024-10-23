@@ -1,7 +1,7 @@
 ---
 DEVICE_METADATA:
   localhost:
-    docker_routing_config_mode: split
+    docker_routing_config_mode: "split"
     hostname: "r01mgmtleaf"
     hwsku: "Accton-AS7726-32X"
     mac: "e0:01:a6:e3:29:3c"
@@ -65,7 +65,7 @@ PORT:
     admin_status: up
     speed: "1000"
     mtu: "9000"
-    fec: "none"
+    fec: none
   Ethernet1:
     alias: Eth1/2(Port1)
     autoneg: "off"
@@ -75,7 +75,7 @@ PORT:
     admin_status: up
     speed: "1000"
     mtu: "9000"
-    fec: "none"
+    fec: none
   Ethernet2:
     alias: Eth1/3(Port1)
     autoneg: "off"
@@ -85,7 +85,7 @@ PORT:
     admin_status: up
     speed: "1000"
     mtu: "9000"
-    fec: "none"
+    fec: none
   Ethernet3:
     alias: Eth1/4(Port1)
     autoneg: "off"
@@ -95,13 +95,14 @@ PORT:
     admin_status: up
     speed: "1000"
     mtu: "9000"
-    fec: "none"
+    fec: none
   Ethernet4:
     alias: Eth2(Port2)
     autoneg: "off"
     index: "2"
     lanes: "5,6,7,8"
     parent_port: Ethernet4
+    admin_status: up
     speed: "100000"
   Ethernet120:
     alias: Eth31(Port31)
@@ -112,7 +113,7 @@ PORT:
     admin_status: up
     speed: "100000"
     mtu: "9216"
-    fec: "rs"
+    fec: rs
   Ethernet124:
     alias: Eth32(Port32)
     autoneg: "off"
@@ -122,7 +123,7 @@ PORT:
     admin_status: up
     speed: "100000"
     mtu: "9000"
-    fec: "none"
+    fec: none
 
 VLAN:
   Vlan1:
