@@ -12,6 +12,7 @@ headscale_db_backup_restore_sidecar_provider: local
 headscale_db_backup_restore_sidecar_backup_cron_schedule: "0 0 * * *"
 headscale_db_backup_restore_sidecar_log_level: debug
 headscale_db_backup_restore_sidecar_object_prefix: "{{ headscale_db_name }}"
+headscale_db_backup_restore_sidecar_encryption_key:
 
 headscale_db_backup_restore_sidecar_gcp_bucket_name:
 headscale_db_backup_restore_sidecar_gcp_backup_location:

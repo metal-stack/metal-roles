@@ -50,6 +50,7 @@
     postgres_backup_restore_sidecar_gcp_backup_location: "{{ headscale_db_backup_restore_sidecar_gcp_backup_location }}"
     postgres_backup_restore_sidecar_gcp_project_id: "{{ headscale_db_backup_restore_sidecar_gcp_project_id }}"
     postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ headscale_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    postgres_backup_restore_sidecar_encryption_key: "{{ headscale_db_backup_restore_sidecar_encryption_key }}"
     postgres_resources: "{{ headscale_db_resources }}"
 
 - name: Deploy headscale
