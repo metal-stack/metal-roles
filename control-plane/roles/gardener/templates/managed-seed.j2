@@ -40,6 +40,8 @@ spec:
               visible: {{ gardener_shooted_seed.visible | default(true) }}
             shootDNS:
               enabled: true
+      logging:
+        enabled: true
     deployment:
       image:
         pullPolicy: IfNotPresent
