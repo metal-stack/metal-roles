@@ -241,6 +241,9 @@ data:
 {% if postgres_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ postgres_backup_restore_sidecar_object_max_keep }}
 {% endif %}
+{% if postgres_backup_restore_sidecar_encryption_key %}
+    encryption-key: {{ postgres_backup_restore_sidecar_encryption_key }}
+{% endif %}
     post-exec-cmds:
       - docker-entrypoint.sh postgres {% if postgres_shared_libraries_preload %} -c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}{% if postgres_maintenance_work_mem %} -c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}{% if postgres_shared_buffers %} -c shared_buffers={{ postgres_shared_buffers }}{% endif %}{% if postgres_effective_cache_size %} -c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}{% if postgres_work_mem %} -c work_mem={{ postgres_work_mem }}{% endif %} -c max_connections={{ postgres_max_connections }}
 ---
