@@ -1,5 +1,6 @@
 #jinja2: lstrip_blocks: "False", trim_blocks: "False"
 ---
+{% set vrfs = [] %}
 DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: "{{ sonic_docker_routing_config_mode }}"
@@ -78,6 +79,7 @@ INTERFACE:
     ipv6_use_link_local_only: enable
     {% endif %}
     {% if port.vrf is defined %}
+    {% set vrfs = vrfs.append(port.vrf) %}
     vrf_name: "{{ port.vrf }}"
     {% endif %}
   {% elif port.ips is defined %}
@@ -169,6 +171,7 @@ VLAN:
 VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
+  {% set vrfs = vrfs.append(vlan.vrf) %}
   Vlan{{ vlan.id }}:
   {% if vlan.sag is defined and vlan.sag %}
     static_anycast_gateway: "true"
@@ -220,9 +223,11 @@ VXLAN_TUNNEL_MAP:
 
 VRF:
 {% endif %}
+{% set defined_vrfs = [] %}
 {% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
 {% for k, i in sonic_interconnects.items() %}
   {% if i.vrf is defined %}
+  {% set defined_vrfs = defined_vrfs.append(i.vrf) %}
   {% if i.vni is defined %}
   {{ i.vrf }}:
     vni: "{{ i.vni }}"
@@ -232,6 +237,10 @@ VRF:
   {% endif %}
 {% endfor %}
 {% endif %}
+{% set vrfs_to_add = vrfs | difference(defined_vrfs) | unique %}
+{% for vrf in vrfs_to_add %}
+  {{ vrf }}: {}
+{% endfor %}
 {% if sonic_lldp_hello_timer is defined %}
 
 LLDP:

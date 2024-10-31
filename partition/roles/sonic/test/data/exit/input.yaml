@@ -15,6 +15,9 @@ sonic_ports_dict:
     vrf: VrfMpls
     ips:
     - 10.0.0.2/32
+  Ethernet1:
+    speed: 10000
+    vrf: VrfStorage
 # spine uplinks
   Ethernet112:
   Ethernet116:
@@ -75,7 +78,9 @@ sonic_bgp_ports:
 
 sonic_vlans:
 - id: 4000
-  vrf: vrfMpls
+  vrf: VrfMpls
+- id: 4001
+  vrf: VrfTest
 
 sonic_vteps:
 - comment: MPLS
