@@ -1,0 +1,168 @@
+---
+inventory_hostname: exit02
+sonic_asn: 4200000000
+sonic_loopback_address: 10.0.0.1
+
+sonic_breakouts:
+  Ethernet0: "4x10G"
+
+sonic_ports_default_mtu: 9216
+sonic_ports_default_speed: 100000
+sonic_ports_dict:
+  Ethernet0:
+    speed: 10000
+    mtu: 1500
+    vrf: VrfMpls
+    ips:
+    - 10.0.0.2/32
+  Ethernet1:
+    speed: 10000
+    vrf: VrfStorage
+# spine uplinks
+  Ethernet112:
+  Ethernet116:
+
+sonic_running_cfg_breakouts:
+  Ethernet0:
+    brkout_mode: "4x10G"
+  Ethernet112:
+    brkout_mode: "1x100G[40G]"
+  Ethernet116:
+    brkout_mode: "1x100G[40G]"
+
+sonic_running_cfg_hwsku: Accton-AS7726-32X
+sonic_running_cfg_mac: e0:01:a6:e3:29:3c
+sonic_running_cfg_platform: x86_64-accton_as7726_32x-r0
+
+sonic_running_cfg_ports:
+  Ethernet0:
+    alias: Eth1/1(Port1)
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet1:
+    alias: Eth1/2(Port1)
+    index: "1"
+    lanes: "2"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet2:
+    alias: Eth1/3(Port1)
+    index: "1"
+    lanes: "3"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet3:
+    alias: Eth1/4(Port1)
+    index: "1"
+    lanes: "4"
+    parent_port: Ethernet0
+    speed: "10000"
+  Ethernet112:
+    alias: Eth29(Port29)
+    index: "29"
+    lanes: "113,114,115,116"
+    parent_port: Ethernet112
+    speed: "100000"
+  Ethernet116:
+    alias: Eth30(Port30)
+    index: "30"
+    lanes: "117,118,119,120"
+    parent_port: Ethernet116
+    speed: "100000"
+
+sonic_bgp_ports:
+- Ethernet112
+- Ethernet116
+
+sonic_vlans:
+- id: 4000
+  vrf: VrfMpls
+- id: 4001
+  vrf: VrfTest
+- id: 1001
+  vrf: Vrf123
+
+sonic_vteps:
+- comment: MPLS
+  vlan: 4000
+  vni: 104000
+- comment: Croit
+  vlan: 1001
+  vni: 123
+
+# Default route from PXE VLAN
+sonic_frr_static_routes:
+- "0.0.0.0/0 10.1.2.1"
+- "10.5.0.0/16 10.5.253.33"
+- "10.88.132.0/22 Vrf123 nexthop-vrf Vrf123"
+
+sonic_interconnects:
+  mpls:
+    neighbor_ip: 10.0.0.3
+    bgp_md5_password: test
+    remote_as: 65000
+    peer_group: MPLS
+    vrf: VrfMpls
+    vni: 104000
+    announcements: []
+    routemap_in:
+      name: ALLOW-MPLS-IN
+      entries:
+      - "match ip address prefix-list MPLS_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-MPLS-OUT
+      entries:
+      - "match ip address prefix-list MPLS_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list MPLS_PREFIX_IN seq 10 permit 10.0.0.0/8"
+    - "ip prefix-list MPLS_PREFIX_IN seq 20 permit 100.100.0.0/16"
+  pxe:
+    peer_group: PXE
+    neighbors:
+    - "Ethernet1 interface"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE-IN
+      entries:
+      - "match ip address prefix-list PXE_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE-OUT
+      entries:
+      - "match ip address prefix-list PXE_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list PXE_PREFIX_IN seq 10 permit 0.0.0.0/0"
+    - "ip prefix-list PXE_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+  pxe2:
+    peer_group: PXE2
+    unnumbered_interfaces:
+    - "Ethernet2"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE2-IN
+      entries:
+      - "match ip address prefix-list PXE2_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE2-OUT
+      entries:
+      - "match ip address prefix-list PXE2_PREFIX_OUT"
+    prefixlists:
+    - "ip prefix-list PXE2_PREFIX_IN seq 10 permit 0.0.0.0/0"
+    - "ip prefix-list PXE2_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+  croit_pxe:
+    peer_group: "CROIT"
+    vrf: Vrf123
+    vni: 123
+    static_routes:
+    - "10.5.0.0/16 10.5.253.33 nexthop-vrf default"
+
+
+sonic_frr_l2vpn_evpn: true
+sonic_frr_route_map:
+ name: LOOPBACKS
+ match: interface Loopback0
+
+sonic_ssh_sourceranges:
+- "1.2.3.4/32"
+- "10.11.0.0/16"

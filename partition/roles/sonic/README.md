@@ -68,6 +68,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_interconnects.routemap_out                           |           | Apply an outgoing routemap for this BGP session.                                                                     |
 | sonic_interconnects.vni                                    |           | This BGP session will connect the specified VNI within the CLOS topology with the given peer.                        |
 | sonic_interconnects.vrf                                    |           | Use a dedicated BGP session fenced with an VRF for this connection. Also it declares the virtual network as layer-3. |
+| sonic_interconnects.static_routes                          |           | Static routes to be injected into the interconnect's VRF.                                                            |
 | sonic_mclag                                                |           | MCLAG (Multi-Chassis LAG / VPC) configuration for a switch connecting a machine with a LAG bond interface            |
 | sonic_mclag.system_mac                                     |           | The shared virtual MAC address used for MCLAG connections                                                            |
 | sonic_mclag.peer_ip                                        |           | The IP of the remote switch on the MCLAG peer-link. Corresponds to source_ip.                                        |

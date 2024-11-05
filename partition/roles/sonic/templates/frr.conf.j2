@@ -15,6 +15,11 @@ log syslog {{ sonic_frr_syslog_level }}
 !
 vrf {{ i.vrf }}
  vni {{ i.vni }}
+{% if i.static_routes is defined and i.static_routes|length > 0 %}
+{% for route in i.static_routes %}
+ ip route {{ route }}
+{% endfor %}
+{% endif %}
 exit-vrf
 {% endif %}
 {% endfor %}
@@ -130,6 +135,9 @@ router bgp {{ sonic_asn }} vrf {{ i.vrf }}
  {% endfor %}
  !
  address-family ipv4 unicast
+    {% if i.static_routes is defined and i.static_routes|length > 0 %}
+  redistribute static
+    {% endif %}
     {% if i.announcements is defined %}
     {% for a in i.announcements %}
   {{ a }}
