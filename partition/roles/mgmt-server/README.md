@@ -16,6 +16,7 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_nameservers               |           | the nameservers to use (default is dns0.eu).                                         |
 | mgmt_server_router_id                 | yes       | the router-id to use for routing.                                                    |
 | mgmt_server_spine_facing_interface    | yes       | the interface where the management spine is connected at the management server.      |
+| mgmt_server_metal_ssh_key_filename    |           | the filename of the private ssh key                                                  |
 | mgmt_server_metal_ssh_groups          |           | the ansible group to include into the ssh config                                     |
 | mgmt_server_metal_ssh_options         |           | the options to add globally to the ssh config                                        |
 | mgmt_server_metal_ssh_privkey         | yes       | the private SSH key of the `metal` admin user for connecting to the other components |
