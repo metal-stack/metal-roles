@@ -70,8 +70,13 @@ MGMT_VRF_CONFIG:
   vrf_global:
     mgmtVrfEnabled: "{{ sonic_mgmt_vrf | lower }}"
 {% if sonic_ports_dict|length > 0 %}
+{% set ports_with_vrf_exist = sonic_ports_dict.items() | map('last') | map(attribute="vrf", default="") | select('regex', '.+') | length > 0 %}
+{% set ports_with_ips_exist = sonic_ports_dict.items() | map('last') | map(attribute="ips", default="") | select('regex', '.+') | length > 0 %}
+{% set ports_intersect_with_bgp_ports = sonic_ports_dict.items() | map('first') | intersect(sonic_bgp_ports) | length > 0 %}
+{% if ports_with_vrf_exist or ports_with_ips_exist or ports_intersect_with_bgp_ports %}
 
 INTERFACE:
+{% endif %}
   {% for name, port in sonic_ports_dict.items() %}
   {% if name in sonic_bgp_ports|default([]) or port.vrf is defined %}
   {{ name }}:
