@@ -117,15 +117,9 @@ PORT:
     fec: {{ port.fec|default(sonic_ports_default_fec)|string|lower }}
     {% else %}
     admin_status: up
-    {% if running_cfg.speed is defined %}
-    speed: "{{ running_cfg.speed }}"
-    {% endif %}
-    {% if running_cfg.mtu is defined %}
-    mtu: "{{ running_cfg.mtu }}"
-    {% endif %}
-    {% if running_cfg.fec is defined %}
-    fec: {{ running_cfg.fec }}
-    {% endif %}
+    speed: "{{ running_cfg.speed|default(sonic_ports_default_speed) }}"
+    mtu: "{{ running_cfg.mtu|default(sonic_ports_default_mtu) }}"
+    fec: {{ running_cfg.fec|default(sonic_ports_default_fec)|string|lower }}
     {% endif %}
   {% endfor %}
 {% if sonic_portchannels %}
