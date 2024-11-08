@@ -3,7 +3,6 @@ apiVersion: core.gardener.cloud/v1
 kind: ControllerDeployment
 metadata:
   name: os-metal
-type: helm
 helm:
   rawChart: "{{ (lookup('url', 'https://raw.githubusercontent.com/metal-stack/os-metal-extension/' + gardener_os_controller_repo_ref + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].helm.rawChart }}"
   values:
