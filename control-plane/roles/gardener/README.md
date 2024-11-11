@@ -38,7 +38,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_api_server_kubeconfig                    |           | The kubeconfig for the Gardener Kubernetes API (virtual garden apiserver)                                                                                                                                   |
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                                                                                                   |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral)                                                                               |
-| gardener_logging_enabled | | Specifies whether the logging Gardener logging stack should be activated in the Gardenlet |
+| gardener_logging_enabled                               |           | Specifies whether the logging Gardener logging stack should be activated in the Gardenlet                                                                                                                   |
 
 ### Virtual Garden
 
