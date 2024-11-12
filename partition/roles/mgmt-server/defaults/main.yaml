@@ -22,4 +22,5 @@ mgmt_server_frr_repo: frr-8
 mgmt_server_provide_default_route: false
 
 mgmt_server_metal_ssh_groups: "{{ groups.all }}"
+mgmt_server_metal_ssh_options: []
 mgmt_server_metal_ssh_key_filename: id_rsa

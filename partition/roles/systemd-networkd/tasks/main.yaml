@@ -52,6 +52,13 @@
   loop_control:
     index_var: i
 
+- name: Update ansible facts
+  setup:
+
+- name: Reboot if interfaces were not renamed successfully
+  reboot:
+  when: "(systemd_networkd_nics | map(attribute='name')) is not subset(ansible_facts.interfaces)"
+
 - name: Render systemd-networkd vlan netdev config
   template:
     src: vlan.netdev.j2

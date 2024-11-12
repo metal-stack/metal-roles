@@ -1,8 +1,7 @@
 ---
 - name: Get seed kubeconfig
-  copy:
-    dest: "/tmp/kubeconfig.{{ gardener_shooted_seed.name }}"
-    content: "{{ lookup('k8s', kubeconfig='/tmp/kubeconfig.garden', api_version='v1', namespace='garden', kind='Secret', resource_name=gardener_shooted_seed.name+'.kubeconfig').get('data', {}).get('kubeconfig') | b64decode }}"
+  set_fact:
+    _seed_kubeconfig: "{{ gardener_seeds_virtual_garden_kubeconfig | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
 
 - name: Add seed ingress certificate
   k8s:
@@ -19,15 +18,21 @@
         secretRef:
           name: seed-ingress-certificate
           namespace: garden
-    kubeconfig: "/tmp/kubeconfig.{{ gardener_shooted_seed.name }}"
+    kubeconfig: "{{ _seed_kubeconfig }}"
+    apply: true
 
 - name: Wait until ingress secret is ready
-  command: echo
+  k8s_info:
+    api_version: v1
+    kind: Secret
+    name: seed-ingress-certificate
+    namespace: garden
+    kubeconfig: "{{ _seed_kubeconfig }}"
   changed_when: false
-  retries: 60
+  register: result
   delay: 10
-  until:
-    - lookup('k8s', kubeconfig='/tmp/kubeconfig.'+gardener_shooted_seed.name, api_version='v1', namespace='garden', kind='Secret', resource_name='seed-ingress-certificate')
+  retries: 60
+  until: result.resources | length > 0
 
 - name: Prepare seed ingress certificate secret
   k8s:
@@ -40,4 +45,5 @@
         name: seed-ingress-certificate
         namespace: garden
       type: kubernetes.io/tls
-    kubeconfig: "/tmp/kubeconfig.{{ gardener_shooted_seed.name }}"
+    kubeconfig: "{{ _seed_kubeconfig }}"
+    apply: true

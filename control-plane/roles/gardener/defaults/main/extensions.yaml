@@ -10,6 +10,7 @@ gardener_extension_shoot_dns_service_enabled: true
 gardener_extension_provider_metal_repo_ref: "{{ gardener_extension_provider_metal_image_tag }}"
 gardener_networking_cilium_repo_ref: "gardener/gardener-extension-networking-cilium/{{ gardener_networking_cilium_image_tag }}"
 gardener_os_controller_repo_ref: "{{ gardener_os_controller_image_tag }}"
+gardener_shoot_dns_service_repo_ref: "gardener/gardener-extension-shoot-dns-service/{{ gardener_shoot_dns_service_image_tag }}"
 
 gardener_metal_admission_replicas: 1
 gardener_metal_admission_vpa: true
@@ -67,6 +68,8 @@ gardener_extension_provider_metal_image_pull_secret:
 gardener_cert_management_issuer_private_key: ""
 gardener_cert_management_issuer_server: https://acme-v02.api.letsencrypt.org/directory
 gardener_cert_management_issuer_email:
+gardener_cert_management_precheck_nameservers: []
+gardener_cert_management_shoot_issuers_enabled: false
 
 gardener_extension_dns_external_controller_registration_url:
 
@@ -75,3 +78,11 @@ gardener_extension_networking_cilium_image_vector_overwrite: []
   #   sourceRepository: /source/repository
   #   repository: /repository
   #   tag: <tag>
+
+gardener_shoot_dns_service_image_vector_overwrite: []
+  # - name: dns-controller-manager
+  #   sourceRepository: github.com/gardener/external-dns-management
+  #   repository: europe-docker.pkg.dev/gardener-project/public/dns-controller-manager
+  #   tag: "0.7.1"
+gardener_shoot_dns_service_dns_controller_manager_image_name:
+gardener_shoot_dns_service_dns_controller_manager_image_tag:

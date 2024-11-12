@@ -54,7 +54,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 ### metal-api
 
 | Name                                | Mandatory | Description                                                                                    |
-|-------------------------------------|-----------|------------------------------------------------------------------------------------------------|
+| ----------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
 | metal_api_replicas                  |           | The number of deployed replicas of the metal-api                                               |
 | metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
 | metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
@@ -85,6 +85,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_ips                       |           | Creates ips (as masterdata) to the metal-api after deployment                                  |
 | metal_api_filesystemlayouts         |           | Creates filesystemlayouts to the metal-api after deployment                                    |
 | metal_api_sizeimageconstraints      |           | Creates sizeimageconstraints to the metal-api after deployment                                 |
+| metal_api_size_reservations         |           | Creates size reservations to the metal-api after deployment                                    |
 | metal_api_resources                 |           | Sets the given container resources                                                             |
 | metal_api_bmc_superuser_enabled     |           | Enables creating the BMC superuser and disabling the default one                               |
 | metal_api_bmc_superuser_pwd         |           | If enabled use this password for the new BMC superuser                                         |

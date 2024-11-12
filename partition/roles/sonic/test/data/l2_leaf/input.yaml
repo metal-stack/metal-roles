@@ -72,7 +72,9 @@ sonic_running_cfg_ports:
     index: "1"
     lanes: "4"
     parent_port: Ethernet0
-    speed: "25000"
+    speed: "10000"
+    fec: rs
+    mtu: "9100"
   Ethernet4:
     alias: Eth2/1(Port2)
     index: "2"
@@ -133,6 +135,7 @@ sonic_vlans:
   - PortChannel01
 - id: 1001
   vrf: Vrf46
+  sag: "true"
   tagged_ports:
   - PortChannel01
   untagged_ports:
@@ -201,9 +204,6 @@ sonic_portchannels:
 
 sonic_sag:
   mac: 00:11:22:33:44:66
-  vlans:
-  - id: 1001
-    ip: 10.3.2.1/27
 
 sonic_frr_l2vpn_evpn: true
 sonic_frr_route_map:
