@@ -6,14 +6,20 @@
       }
     },
     "03-additional-files": {
-      "url": {
-        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/resolv.conf",
-        "destination": "/etc/resolv.conf"
-      },
-      "url": {
-        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/iptables.json",
-        "destination": "/etc/sonic/iptables.json"
-      }
+      "files": [
+        {
+          "url": {
+            "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/resolv.conf",
+            "destination": "/etc/resolv.conf"
+          },
+        },
+        {
+          "url": {
+            "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/iptables.json",
+            "destination": "/etc/sonic/iptables.json"
+          }
+        }
+      ]
     },
     "04-configdb-json": {
       "dynamic-url": {
@@ -23,13 +29,16 @@
           "suffix": "_config_db.json"
         }
       },
-      "clear-config": false
+      "clear-config": true
     },
 {% if ztp_additional_files | selectattr('name', 'equalto', 'ztp-additional-script.sh') %}
     "05-ztp-additional-script": {
-      "plugin": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-additional-script.sh"
+      "plugin": {
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-additional-script.sh"
+      }
     },
 {% endif %}
+    "reboot-on-success": true,
     "restart-ztp-no-config": false
   }
 }
