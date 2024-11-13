@@ -36,6 +36,7 @@
       data: "{{ gardener_dns_credentials }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: true
+  when: gardener_dns_provider != 'local'
   loop:
     - internal-domain
     - default-domain
