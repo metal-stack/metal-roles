@@ -26,7 +26,7 @@
     },
 {% if ztp_additional_files | selectattr('name', 'equalto', 'ztp-additional-script.sh') %}
     "05-ztp-additional-script": {
-      "plugin": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-additional-script.sh",
+      "plugin": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-additional-script.sh"
     },
 {% endif %}
     "restart-ztp-no-config": false
