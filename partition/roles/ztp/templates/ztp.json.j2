@@ -21,7 +21,8 @@
           "prefix": "http://{{ ztp_listen_address }}:{{ ztp_port }}/",
           "identifier": "hostname",
           "suffix": "_config_db.json"
-        },
+        }
+      },
       "clear-config": false
     },
 {% if ztp_additional_files | selectattr('name', 'equalto', 'ztp-additional-script.sh') %}
