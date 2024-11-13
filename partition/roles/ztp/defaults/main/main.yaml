@@ -10,3 +10,8 @@ ztp_port: 8080
 ztp_additional_files: []
 # - name: foo.sh
 #   data: echo
+
+ztp_sonic_nameservers: []
+ztp_sonic_extended_cacl:
+  ipv4: []
+  ipv6: []
