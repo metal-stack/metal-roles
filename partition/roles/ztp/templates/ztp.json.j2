@@ -31,12 +31,15 @@
       },
       "clear-config": true
     },
-{% if ztp_additional_files | selectattr('name', 'equalto', 'ztp-additional-script.sh') %}
-    "05-plugin": {
-      "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-additional-script.sh"
+{% if ztp_additional_files | selectattr('name', 'equalto', 'ztp-provisioning-script.sh') %}
+    "05-provisioning-script": {
+      "plugin": {
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-provisioning-script.sh"
+      },
+      "shell": true,
+      "reboot-on-success": true,
     },
 {% endif %}
-    "reboot-on-success": true,
     "restart-ztp-no-config": false
   }
 }
