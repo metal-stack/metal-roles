@@ -1,0 +1,6 @@
+[Unit]
+Description=Docker System Prune
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bgp-neighbor-stats.sh
