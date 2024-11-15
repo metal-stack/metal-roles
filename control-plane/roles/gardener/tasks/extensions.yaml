@@ -100,3 +100,15 @@
     - controller-deployment.yaml
     - controller-registration.yaml
   when: gardener_extension_shoot_dns_service_enabled
+
+- name: Register controller for dns-powerdns
+  kubernetes.core.k8s:
+    template:
+      - path: dns-powerdns/controller-deployment.yaml.j2
+      - path: dns-powerdns/controller-registration.yaml.j2
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
