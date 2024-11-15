@@ -17,9 +17,8 @@ apiVersion: core.gardener.cloud/v1beta1
 kind: ControllerDeployment
 metadata:
   name: extension-shoot-dns-service
-type: helm
-providerConfig:
-  chart: a-chart
+helm:
+  rawChart: a-chart
   values:
     image:
       tag: v1.48.0
@@ -54,9 +53,8 @@ apiVersion: core.gardener.cloud/v1beta1
 kind: ControllerDeployment
 metadata:
   name: extension-shoot-dns-service
-type: helm
-providerConfig:
-  chart: "a-chart"
+helm:
+  rawChart: "a-chart"
   values:
     image:
       repository: "extension-image"
