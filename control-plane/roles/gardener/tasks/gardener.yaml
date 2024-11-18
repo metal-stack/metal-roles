@@ -38,7 +38,7 @@
     apply: true
   loop:
     - internal-domain
-    - default-domain
+#    - default-domain
 
 - name: Deploy Gardener Control Plane (in virtual apiserver)
   include_role:
