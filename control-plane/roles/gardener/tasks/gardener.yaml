@@ -38,7 +38,28 @@
     apply: true
   loop:
     - internal-domain
-#    - default-domain
+
+- name: Deploy domain secrets (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        namespace: garden
+        annotations:
+          helm.sh/resource-policy: keep
+          dns.gardener.cloud/domain: "external.{{ gardener_dns_domain }}"
+          dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
+        labels:
+          app: gardener
+          gardener.cloud/role: "{{ item }}"
+        name: "{{ item }}-{{ gardener_dns_domain | regex_replace('\\.', '-') }}"
+      type: Opaque
+      data: "{{ gardener_dns_credentials }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: true
+  loop:
+    - default-domain
 
 - name: Deploy Gardener Control Plane (in virtual apiserver)
   include_role:
