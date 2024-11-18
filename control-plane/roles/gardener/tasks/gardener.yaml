@@ -26,7 +26,7 @@
         namespace: garden
         annotations:
           helm.sh/resource-policy: keep
-          dns.gardener.cloud/domain: "{{ gardener_dns_domain }}"
+          dns.gardener.cloud/domain: "internal.{{ gardener_dns_domain }}"
           dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
         labels:
           app: gardener
@@ -48,7 +48,7 @@
         namespace: garden
         annotations:
           helm.sh/resource-policy: keep
-          dns.gardener.cloud/domain: "external.{{ gardener_dns_domain }}"
+          dns.gardener.cloud/domain: "{{ gardener_dns_domain }}"
           dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
         labels:
           app: gardener
