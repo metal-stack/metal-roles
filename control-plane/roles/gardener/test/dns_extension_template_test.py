@@ -13,7 +13,7 @@ class ShootDnsExtensionControllerDeploymentTemplate(unittest.TestCase):
         cm.getcode.return_value = 200
         cm.read.return_value = '''
 ---
-apiVersion: core.gardener.cloud/v1beta1
+apiVersion: core.gardener.cloud/v1
 kind: ControllerDeployment
 metadata:
   name: extension-shoot-dns-service
@@ -49,7 +49,7 @@ helm:
 
         expected = '''
 ---
-apiVersion: core.gardener.cloud/v1beta1
+apiVersion: core.gardener.cloud/v1
 kind: ControllerDeployment
 metadata:
   name: extension-shoot-dns-service
