@@ -100,3 +100,32 @@
     - controller-deployment.yaml
     - controller-registration.yaml
   when: gardener_extension_shoot_dns_service_enabled
+
+- name: "Register controller: dns powerdns"
+  k8s:
+    definition: "{{ lookup('template', 'powerdns/{{ item }}', split_lines=False) }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
+  loop:
+    - controller-deployment.yaml
+    - controller-registration.yaml
+  when: gardener_extension_dns_powerdns_enabled
+
+- name: "Register controller: backup s3"
+  k8s:
+    definition: "{{ lookup('template', 'backup-s3/{{ item }}', split_lines=False) }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  tags: shoot-dns-service
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
+  loop:
+    - controller-deployment.yaml
+    - controller-registration.yaml
+  when: gardener_extension_backup_s3_enabled

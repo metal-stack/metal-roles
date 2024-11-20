@@ -1,4 +1,11 @@
 ---
+# TODO: move to image vector
+gardener_extension_backup_s3_image_tag: gardener-v1.100
+gardener_extension_backup_s3_image_name: ghcr.io/metal-stack/gardener-extension-backup-s3
+gardener_extension_dns_powerdns_image_tag: gardener-v1.100
+gardener_extension_dns_powerdns_image_name: ghcr.io/metal-stack/gardener-extension-dns-powerdns
+# END TODO
+
 gardener_extension_networking_calico_enabled: true
 gardener_extension_networking_cilium_enabled: true
 gardener_extension_os_metal_enabled: true
@@ -6,11 +13,15 @@ gardener_extension_provider_gcp_enabled: true
 gardener_extension_provider_metal_enabled: true
 gardener_extension_shoot_cert_service_enabled: true
 gardener_extension_shoot_dns_service_enabled: true
+gardener_extension_dns_powerdns_enabled: false
+gardener_extension_backup_s3_enabled: false
 
 gardener_extension_provider_metal_repo_ref: "{{ gardener_extension_provider_metal_image_tag }}"
 gardener_networking_cilium_repo_ref: "gardener/gardener-extension-networking-cilium/{{ gardener_networking_cilium_image_tag }}"
 gardener_os_controller_repo_ref: "{{ gardener_os_controller_image_tag }}"
 gardener_shoot_dns_service_repo_ref: "gardener/gardener-extension-shoot-dns-service/{{ gardener_shoot_dns_service_image_tag }}"
+gardener_extension_backup_s3_repo_ref: "metal-stack/gardener-extension-backup-s3/{{ gardener_extension_backup_s3_image_tag }}"
+gardener_extension_dns_powerdns_repo_ref: "metal-stack/gardener-extension-dns-powerdns/{{ gardener_extension_dns_powerdns_image_tag }}"
 
 gardener_metal_admission_replicas: 1
 gardener_metal_admission_vpa: true
