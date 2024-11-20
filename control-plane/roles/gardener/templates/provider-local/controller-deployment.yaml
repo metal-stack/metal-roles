@@ -1,9 +1,0 @@
----
-apiVersion: core.gardener.cloud/v1
-kind: ControllerDeployment
-metadata:
-  name: provider-local
-helm:
-  rawChart: "{{ gardener_provider_local_raw_chart }}"
-  values:
-    image: provider-local:latest

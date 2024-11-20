@@ -29,45 +29,6 @@
     - controller-registration.yaml
   when: gardener_extension_provider_gcp_enabled
 
-- name: "Register controller: provider-local"
-  k8s:
-    definition: "{{ lookup('template', 'provider-local/{{ item }}', split_lines=False) }}"
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-    apply: yes
-  tags: provider-local
-  register: result
-  until: result is success
-  retries: 10
-  delay: 6
-  loop:
-    - controller-deployment.yaml
-    - controller-registration.yaml
-  when: gardener_extension_provider_local_enabled
-
-- name: Create provider-local domain secrets
-  k8s:
-    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
-    apply: yes
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: "{{ item.role }}-{{ item.name }}-local-gardener-cloud"
-        namespace: garden
-        labels:
-          app: gardener
-          gardener.cloud/role: "{{ item.role }}"
-        annotations:
-          dns.gardener.cloud/provider: local
-          dns.gardener.cloud/domain: "{{ item.name }}.local.gardener.cloud"
-      type: Opaque
-  loop:
-    - name: external
-      role: default-domain
-    - name: internal
-      role: internal-domain
-  when: gardener_extension_provider_local_enabled
-
 - name: "Register controller: os extension provider metal"
   k8s:
     definition: "{{ lookup('template', 'os-metal-extension/{{ item }}', split_lines=False) }}"
