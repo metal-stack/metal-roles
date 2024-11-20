@@ -1,11 +1,4 @@
 ---
-# TODO: move to image vector
-gardener_extension_backup_s3_image_tag: gardener-v1.100
-gardener_extension_backup_s3_image_name: ghcr.io/metal-stack/gardener-extension-backup-s3
-gardener_extension_dns_powerdns_image_tag: gardener-v1.100
-gardener_extension_dns_powerdns_image_name: ghcr.io/metal-stack/gardener-extension-dns-powerdns
-# END TODO
-
 gardener_extension_networking_calico_enabled: true
 gardener_extension_networking_cilium_enabled: true
 gardener_extension_os_metal_enabled: true
