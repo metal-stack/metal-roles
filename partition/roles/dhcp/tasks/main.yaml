@@ -17,12 +17,6 @@
   loop_control:
     label: "{{ item.network }}"
 
-- name: install isc-dhcp-server
-  apt:
-    name:
-    - isc-dhcp-server
-    update_cache : yes
-
 - name: render dhcpd conf
   template:
     src: dhcpd.conf.j2
@@ -41,6 +35,12 @@
     dest: /etc/dhcp/dhcpd.hosts
   when: dhcp_static_hosts is defined
   register: _hosts_conf
+
+- name: install isc-dhcp-server
+  apt:
+    name:
+    - isc-dhcp-server
+    update_cache : yes
 
 - name: restart isc-dhcp-server on config change
   service:
