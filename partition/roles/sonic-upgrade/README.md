@@ -8,7 +8,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 
 | Name                     | Mandatory | Description                                                                                                         |
 | ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------- |
-| sonic_upgrade_host       | yes       | The host from which to dowload the image.                                                                           |
+| sonic_upgrade_host       | yes       | The host from which to download the image.                                                                           |
 | sonic_upgrade_image_path |           | The path to the image. If this is given and not `sonic_upgrade_host`, the image is pushed to the device by ansible. |
 | sonic_upgrade_vrf        |           | The vrf used for pulling the upgrade image.                                                                         |
 | sonic_upgrade_protocol   |           | The protocol (http or https) to use when downloading the sonic image.                                               |
