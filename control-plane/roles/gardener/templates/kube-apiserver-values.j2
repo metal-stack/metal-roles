@@ -7,9 +7,9 @@ apiServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
   serviceName: garden-kube-apiserver
 
-{% if gardener_virtual_api_authentication_config %}
+{% if gardener_virtual_api_server_authentication_config %}
 authenticationConfig: |
-    {{ gardener_virtual_api_authentication_config | indent(width=4, first=false) }}
+    {{ gardener_virtual_api_server_authentication_config | indent(width=4, first=false) }}
 {% endif %}
 
 oidc:
