@@ -30,6 +30,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if .Values.authenticationConfig }}
+        checksum/configmap-authentication-config: {{ include (print $.Template.BasePath "/configmap-authentication-config.yaml") . | sha256sum }}
+        {{- end }}
         checksum/secret-kube-aggregator-ca: {{ include (print $.Template.BasePath "/secret-kube-aggregator-ca.yaml") . | sha256sum }}
         checksum/secret-kube-aggregator-client: {{ include (print $.Template.BasePath "/secret-kube-aggregator-client-tls.yaml") . | sha256sum }}
         checksum/secret-kube-apiserver-ca: {{ include (print $.Template.BasePath "/secret-kube-apiserver-ca.yaml") . | sha256sum }}
