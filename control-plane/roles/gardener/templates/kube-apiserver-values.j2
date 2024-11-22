@@ -9,7 +9,7 @@ apiServer:
 
 {% if gardener_virtual_api_server_authentication_config %}
 authenticationConfig: |
-    {{ gardener_virtual_api_server_authentication_config | indent(width=4, first=false) }}
+    {{ gardener_virtual_api_server_authentication_config | to_nice_yaml(indent=2) | indent(width=4, first=false) }}
 {% endif %}
 
 oidc:
