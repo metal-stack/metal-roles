@@ -6,5 +6,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 type: Opaque
 data:
-  config.yaml: {{ .Values.authenticationConfig }}
+  config.yaml: |-
+    {{ .Values.authenticationConfig | indent 4}}
 {{- end }}
