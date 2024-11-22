@@ -441,7 +441,7 @@ data:
             }
           ],
           "thresholds": "",
-          "title": "Maximum Node Cound ($iaas)",
+          "title": "Maximum Node Count ($iaas)",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [

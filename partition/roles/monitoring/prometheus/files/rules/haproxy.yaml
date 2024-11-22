@@ -7,4 +7,4 @@ groups:
     labels:
       severity: critical
     annotations:
-      descritption: "HAProxy reports all servers are unhealthy for {{ $labels.proxy }}"
+      description: "HAProxy reports all servers are unhealthy for {{ $labels.proxy }}"

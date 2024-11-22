@@ -1,6 +1,6 @@
 # isolated clusters
 
-Contains roles for deploying addtional services for the isolated cluster feature as described [here](https://docs.metal-stack.io/stable/overview/isolated-kubernetes/).
+Contains roles for deploying additional services for the isolated cluster feature as described [here](https://docs.metal-stack.io/stable/overview/isolated-kubernetes/).
 
 It contains the services:
 
@@ -17,7 +17,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 
 | Name                                                             | Mandatory | Description                                                                                      |
 | ---------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------ |
-| isolated_clusters_virtual_garden_kubeconfig                      |           | The kubeconfig to access the virutal garden as a string value.                                              |
+| isolated_clusters_virtual_garden_kubeconfig                      |           | The kubeconfig to access the virtual garden as a string value.                                              |
 | isolated_clusters_ntp_image_name                                 |           | The image name of the ntp service for the partition.                                             |
 | isolated_clusters_ntp_image_tag                                  | yes       | The tag or version of the ntp service container image.                                           |
 | isolated_clusters_ntp_namespace                                  |           | The namespace to deploy the ntp server to.                                                       |
