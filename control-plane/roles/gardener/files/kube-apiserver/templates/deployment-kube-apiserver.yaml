@@ -93,6 +93,9 @@ spec:
         - --etcd-keyfile=/srv/kubernetes/etcd/client/tls.key
         - --etcd-servers={{ .Values.etcd.main.endpoints }}
         - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
+{{ if .Values.authenticationConfig }}
+        - --authentication-config=/src/kubernetes/authentication-config/config.yaml
+{{ end }}
 {{ if and .Values.oidc.issuerURL .Values.oidc.clientID }}
         - --oidc-issuer-url={{ .Values.oidc.issuerURL }}
         - --oidc-client-id={{ .Values.oidc.clientID }}
@@ -188,6 +191,10 @@ spec:
         - name: ca-oidc
           mountPath: /srv/kubernetes/oidc-ca
         {{- end }}
+        {{- if .Values.authenticationConfig}}
+        - name: authentication-config
+          mountPath: /srv/kubernetes/authentication-config
+        {{- end }}
       - name: kube-controller-manager
         image: {{ index .Values.images "controllermanager" }}
         imagePullPolicy: IfNotPresent
@@ -266,3 +273,8 @@ spec:
       - name: kube-aggregator
         secret:
           secretName: garden-kube-aggregator
+      {{- if .Values.authenticationConfig}}
+      - name: authentication-config
+        configMap:
+          name: authentication-config
+      {{- end }}

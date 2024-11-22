@@ -1,0 +1,10 @@
+{{- if .Values.authenticationConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentication-config
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  config.yaml: {{ .Values.authenticationConfig }}
+{{- end }}

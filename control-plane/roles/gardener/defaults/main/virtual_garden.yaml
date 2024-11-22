@@ -15,6 +15,7 @@ gardener_etcd_resources:
     cpu: 800m
     memory: 8Gi
 
+gardener_virtual_api_authentication_config:
 gardener_virtual_api_oidc_issuer_url:
 gardener_virtual_api_oidc_client_id:
 gardener_virtual_api_oidc_username_claim:
