@@ -11,13 +11,11 @@
       data: "{{ gardener_backup_infrastructure_secret }}"
     apply: yes
 
-- name: Create backup directory for local deployment
-  import_tasks: local_backup.yaml
-  when:  gardener_backup_infrastructure.provider == "local"
-
 # TODO: prepare migration here
 # - label existing secrets like CA, ETCD encryption key, accordingly
 # - scale down existing components (gardener control plane + virtual garden with ETCD)
+#
+# https://github.com/gardener/gardener/blob/v1.100.2/docs/concepts/operator.md#migrating-an-existing-gardener-landscape-to-gardener-operator
 
 - name: Deploy Gardener Operator
   include_role:
@@ -120,7 +118,7 @@
             name: virtual-garden-user
             namespace: kube-system
 
-- name: Create virtual garden access managed resource secret
+- name: Create virtual garden access managed resource
   k8s:
     apply: yes
     definition:
@@ -132,3 +130,14 @@
       spec:
         secretRefs:
         - name: managedresource-virtual-garden-access
+
+- name: Create kubeconfig for accessing the virtual garden
+  copy:
+    dest: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    content: "{{ (gardener_virtual_api_server_public_dns + ':' + gardener_virtual_api_server_public_wait_port | string) | kubeconfig_from_token(gardener_kube_api_server_ca, lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='shoot-access-virtual-garden').get('data', {}).get('token') | b64decode, prepend_https=true) }}"
+
+- name: Wait for garden-kube-apiserver
+  wait_for:
+    host: "{{ gardener_virtual_api_server_public_dns }}"
+    port: "{{ gardener_virtual_api_server_public_wait_port }}"
+    timeout: 60

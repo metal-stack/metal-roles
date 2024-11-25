@@ -175,6 +175,43 @@ def kubeconfig_from_cert(server, ca, cert, key, prepend_https=False):
     })
 
 
+def kubeconfig_from_token(server, ca, token, prepend_https=False):
+    if prepend_https and not server.startswith("https"):
+        server = "https://" + server
+
+    return yaml.safe_dump({
+        "apiVersion": "v1",
+        "kind": "Config",
+        "clusters": [
+            {
+                "name": "default-cluster",
+                "cluster": {
+                    "certificate-authority-data": b64encode(ca),
+                    "server": server,
+                }
+            }
+        ],
+        "current-context": "default-context",
+        "contexts": [
+            {
+                "name": "default-context",
+                "context": {
+                    "cluster": "default-cluster",
+                    "user": "default-user",
+                }
+            }
+        ],
+        "users": [
+            {
+                "name": "default-user",
+                "user": {
+                    "token": token,
+                }
+            }
+        ],
+    })
+
+
 def machine_images_for_cloud_profile(image_list, cris=None):
     images = dict()
     for image in image_list:
@@ -241,6 +278,7 @@ class FilterModule(object):
         return {
             'network_cidr_add': network_cidr_add,
             'kubeconfig_from_cert': kubeconfig_from_cert,
+            'kubeconfig_from_token': kubeconfig_from_token,
             'machine_images_for_cloud_profile': machine_images_for_cloud_profile,
             'kubeconfig_for_sa': kubeconfig_for_sa,
             'extract_gcp_node_network': extract_gcp_node_network,
