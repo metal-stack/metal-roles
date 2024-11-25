@@ -1,5 +1,5 @@
 [Unit]
-Description=Docker System Prune
+Description=Collect BGP Neighbor statistics
 
 [Service]
 Type=simple

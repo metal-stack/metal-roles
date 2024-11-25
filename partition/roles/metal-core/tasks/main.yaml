@@ -50,6 +50,9 @@
   file:
     path: /var/run/bgp-neighbors
     state: directory
+    owner: root
+    group: root
+    mode: "0755"
 
 - name: create bgp-neighbor-stats.sh
   copy:
@@ -66,6 +69,7 @@
     owner: root
     group: root
     mode: "0644"
+  notify: Reload systemd daemon
 
 - name: create bgp-neighbor-stats.timer
   copy:
@@ -74,6 +78,7 @@
     owner: root
     group: root
     mode: "0644"
+  notify: Reload systemd daemon
 
 - name: bgp-neighbor-stats.timer must be enabled and running
   systemd:
