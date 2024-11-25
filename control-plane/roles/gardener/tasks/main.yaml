@@ -54,7 +54,7 @@
       - gardener_dns_provider is not none
       - gardener_cloud_profile_metal_api_url is not none
       - gardener_cloud_profile_metal_api_hmac is not none
-      - gardener_backup_infrastructure_secret is none or (gardener_backup_infrastructure is not none and gardener_backup_infrastructure.provider in ["gcp", "S3"])
+      - gardener_backup_infrastructure is not none and gardener_backup_infrastructure.provider in ["local", "gcp", "S3"]
       - gardener_cert_management_issuer_email is not none
 
 - name: Deploy required Seed CRDs
@@ -93,11 +93,58 @@
   when:
     - metal_control_plane_host_provider == "metal"
 
-- name: Deploy virtual garden
-  import_tasks: virtual_garden.yaml
+- name: Clone Gardener
+  git:
+    repo: "{{ gardener_repo_url }}"
+    dest: "{{ gardener_local_tmp_dir }}/gardener"
+    depth: 1
+    version: "{{ gardener_repo_ref }}"
 
-- name: Deploy Gardener
-  import_tasks: gardener.yaml
+- name: Deploy Gardener Operator
+  import_tasks: gardener_operator.yaml
+  when: gardener_operator_enabled
+
+- name: Deploy virtual garden (old way without operator)
+  import_tasks: virtual_garden.yaml
+  when: not gardener_operator_enabled
+
+- name: Create garden namespace (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: garden
+        labels:
+          app: gardener
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+
+- name: Deploy domain secrets (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        namespace: garden
+        annotations:
+          helm.sh/resource-policy: keep
+          dns.gardener.cloud/domain: "{{ gardener_dns_domain }}"
+          dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
+        labels:
+          app: gardener
+          gardener.cloud/role: "{{ item }}"
+        name: "{{ item }}-{{ gardener_dns_domain | regex_replace('\\.', '-') }}"
+      type: Opaque
+      data: "{{ gardener_dns_credentials }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: true
+  loop:
+    - internal-domain
+    - default-domain
+
+- name: Deploy Gardener Control Plane (old way without operator)
+  import_tasks: gardener_control_plane_obsolete.yaml
+  when: not gardener_operator_enabled
 
 - name: Register admission controllers
   import_tasks: admission_controllers.yaml

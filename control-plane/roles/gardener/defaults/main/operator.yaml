@@ -1,0 +1,4 @@
+---
+# TODO: move to image vector:
+gardener_operator_image_name: europe-docker.pkg.dev/gardener-project/releases/gardener/operator
+gardener_operator_image_tag: "{{ gardener_gardenlet_image_tag }}"

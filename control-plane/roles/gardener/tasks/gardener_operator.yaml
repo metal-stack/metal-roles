@@ -1,0 +1,134 @@
+---
+- name: Create backup infrastructure secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: virtual-garden-etcd-main-backup-secret
+        namespace: garden
+      type: Opaque
+      data: "{{ gardener_backup_infrastructure_secret }}"
+    apply: yes
+
+- name: Create backup directory for local deployment
+  import_tasks: local_backup.yaml
+  when:  gardener_backup_infrastructure.provider == "local"
+
+# TODO: prepare migration here
+# - label existing secrets like CA, ETCD encryption key, accordingly
+# - scale down existing components (gardener control plane + virtual garden with ETCD)
+
+- name: Deploy Gardener Operator
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_timeout: "600s"
+    helm_chart: "{{ gardener_local_tmp_dir }}/gardener/charts/gardener/operator"
+    helm_release_name: operator
+    helm_target_namespace: garden
+    helm_value_file_template: gardener-operator-values.j2
+
+- name: Create Garden
+  k8s:
+    definition: "{{ lookup('template', 'garden.yaml') }}"
+    apply: yes
+
+- name: Wait until Garden is ready
+  kubernetes.core.k8s_info:
+    api_version: "operator.gardener.cloud/v1alpha1"
+    kind: Garden
+    name: "local"
+    wait: yes
+    wait_condition:
+      status: "True"
+      type: "{{ item }}"
+    wait_timeout: 900
+  loop:
+    - VirtualComponentsHealthy
+    - RuntimeComponentsHealthy
+
+# TODO: we should expose through istio and Gardener Operator in the future?
+- name: Create ingress for virtual kube-apiserver
+  k8s:
+    definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        name: apiserver-ingress
+        namespace: garden
+      spec:
+        ingressClassName: nginx
+        rules:
+        - host: "{{ gardener_virtual_api_server_public_dns }}"
+          http:
+            paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: virtual-garden-kube-apiserver
+                  port:
+                    number: 443
+        tls:
+        - hosts:
+          - "{{ gardener_virtual_api_server_public_dns }}"
+      apply: yes
+
+- name: Create virtual garden access secret
+  k8s:
+    apply: yes
+    definition:
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      metadata:
+        name: shoot-access-virtual-garden
+        namespace: garden
+        labels:
+          resources.gardener.cloud/purpose: token-requestor
+          resources.gardener.cloud/class: shoot
+        annotations:
+          serviceaccount.resources.gardener.cloud/name: virtual-garden-user
+          serviceaccount.resources.gardener.cloud/namespace: kube-system
+          serviceaccount.resources.gardener.cloud/token-expiration-duration: 3h
+
+- name: Create virtual garden access managed resource secret
+  k8s:
+    apply: yes
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: managedresource-virtual-garden-access
+        namespace: garden
+      type: Opaque
+      stringData:
+        clusterrolebinding____gardener.cloud.virtual-garden-access.yaml: |
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRoleBinding
+          metadata:
+            name: gardener.cloud.sap:virtual-garden
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            name: cluster-admin
+          subjects:
+          - kind: ServiceAccount
+            name: virtual-garden-user
+            namespace: kube-system
+
+- name: Create virtual garden access managed resource secret
+  k8s:
+    apply: yes
+    definition:
+      apiVersion: resources.gardener.cloud/v1alpha1
+      kind: ManagedResource
+      metadata:
+        name: virtual-garden-access
+        namespace: garden
+      spec:
+        secretRefs:
+        - name: managedresource-virtual-garden-access

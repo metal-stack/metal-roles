@@ -1,0 +1,33 @@
+---
+# this is only intended to used when running this on local kind setups
+- name: Create local backup directory
+  k8s:
+    definition:
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: create-local-backup-dir
+      spec:
+        completions: 1
+        parallelism: 1
+        backoffLimit: 0
+        template:
+          spec:
+            containers:
+            - image: alpine
+              imagePullPolicy: IfNotPresent
+              name: create
+              command:
+                - mkdir
+                - -p
+                - "{{ gardener_backup_infrastructure_secret.hostPath | b64decode }}"
+            restartPolicy: Never
+    namespace: "garden"
+    wait: yes
+    apply: yes
+    wait_timeout: 30
+    wait_condition:
+      type: Complete
+      status: "True"
+  when:
+    - not lookup('k8s', api_version='batch/v1', namespace='garden', kind='Job', resource_name='create-local-backup-dir')

@@ -2,6 +2,8 @@
 gardener_image_vector_overwrite:
 gardener_component_image_vector_overwrite:
 
+gardener_operator_enabled: false
+
 gardener_apiserver_replicas: 1
 gardener_apiserver_vpa: true
 gardener_apiserver_feature_gates: {}
@@ -35,6 +37,9 @@ gardener_dns_domain:
 gardener_dns_provider:
 
 gardener_backup_infrastructure:
+  provider: local
+  bucket: gardener-operator
+
   # provider: gcp
   # region:
   # secretRef:
@@ -48,6 +53,8 @@ gardener_backup_infrastructure:
   # secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode}}"
 
 gardener_backup_infrastructure_secret:
+  hostPath: "{{ '/etc/gardener/local-backupbuckets' | b64encode }}"
+
   # for gcp:
   # serviceaccount.json: "{{ gardener_backup_infrastructure_service_account_json | b64encode }}"
   #

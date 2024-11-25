@@ -1,0 +1,106 @@
+---
+# replicaCount: 1
+# revisionHistoryLimit: 2
+# serviceAccountName: gardener-operator
+# invalidateServiceAccountToken: true
+image:
+  repository: {{ gardener_operator_image_name }}
+  tag: {{ gardener_operator_image_tag }}
+  pullPolicy: {{ metal_control_plane_image_pull_policy }}
+# resources:
+#   requests:
+#     cpu: 100m
+#     memory: 100Mi
+# # podAnnotations: # YAML formated annotations used for pod template
+# # podLabels: # YAML formated labels used for pod template
+# additionalVolumes: []
+# additionalVolumeMounts: []
+# hostAliases: []
+# env: []
+# # imageVectorOverwrite: |
+# #  Please find documentation in /docs/deployment/image_vector.md#overwriting-image-vector
+# # componentImageVectorOverwrites: |
+# #  Please find documentation in /docs/deployment/image_vector.md#image-vectors-for-dependent-components
+# # chartsImageVectorOverwrite: |
+# #  Please find documentation in /docs/deployment/image_vector.md#helm-chart-image-vector
+# # nodeToleration:
+# #   defaultNotReadyTolerationSeconds: 60
+# #   defaultUnreachableTolerationSeconds: 60
+config:
+#   runtimeClientConnection:
+#     qps: 100
+#     burst: 130
+#   virtualClientConnection:
+#     qps: 100
+#     burst: 130
+#   leaderElection:
+#     leaderElect: true
+#     leaseDuration: 15s
+#     renewDeadline: 10s
+#     retryPeriod: 2s
+#     resourceLock: leases
+#     resourceNamespace: garden
+#     resourceName: gardener-operator-leader-election
+#   logLevel: info
+#   logFormat: json
+#   server:
+#     webhooks:
+#       port: 2750
+#     healthProbes:
+#       # health probes should be disabled for debugging purposes only
+#       enable: true
+#       port: 2751
+#     metrics:
+#       port: 2752
+#   debugging:
+#     enableProfiling: false
+#     enableContentionProfiling: false
+  featureGates:
+    HVPA: false
+#   controllers:
+#     garden:
+#       concurrentSyncs: 1
+#       syncPeriod: 1h
+#       etcdConfig:
+#         etcdController:
+#           workers: 3
+#         custodianController:
+#           workers: 3
+#         backupCompactionController:
+#           workers: 3
+#           enableBackupCompaction: false
+#           eventsThreshold: 1000000
+#           activeDeadlineDuration: "3h"
+#           metricsScrapeWaitDuration: "60s"
+#       # backupLeaderElection:
+#       #   reelectionPeriod: 5s
+#       #   etcdConnectionTimeout: 5s
+#       # featureGates:
+#       #   UseEtcdWrapper: true
+#     gardenCare:
+#       syncPeriod: 1m
+#       conditionThresholds:
+#       - type: RuntimeComponentsHealthy
+#         duration: 1m
+#       - type: VirtualComponentsHealthy
+#         duration: 1m
+#       - type: VirtualGardenAPIServerAvailable
+#         duration: 1m
+#       - type: ObservabilityComponentsHealthy
+#         duration: 1m
+#     gardenletDeployer:
+#       concurrentSyncs: 5
+#     networkPolicy:
+#       concurrentSyncs: 5
+#     # additionalNamespaceSelectors:
+#     # - matchLabels:
+#     #     foo: bar
+#     vpaEvictionRequirements:
+#       concurrentSyncs: 5
+#     extension:
+#       concurrentSyncs: 5
+#     extensionRequired:
+#       concurrentSyncs: 5
+# nodeToleration:
+#   defaultNotReadyTolerationSeconds: 60
+#   defaultUnreachableTolerationSeconds: 60
