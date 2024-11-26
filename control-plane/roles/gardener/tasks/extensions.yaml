@@ -101,6 +101,18 @@
     - controller-registration.yaml
   when: gardener_extension_shoot_dns_service_enabled
 
+- name: Register controller for backup-s3
+  kubernetes.core.k8s:
+    template:
+      - path: backup-s3/controller-deployment.yaml.j2
+      - path: backup-s3/controller-registration.yaml.j2
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
+
 - name: Register controller for dns-powerdns
   kubernetes.core.k8s:
     template:

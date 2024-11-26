@@ -1,0 +1,12 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerDeployment
+metadata:
+  name: backup-s3
+type: helm
+providerConfig:
+  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/metal-stack/gardener-extension-backup-s3/' + backup_s3_repo_ref + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+  values:
+    image:
+      repository: "{{ backup_s3_image_name }}"
+      tag: "{{ backup_s3_image_tag }}"
