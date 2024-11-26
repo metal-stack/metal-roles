@@ -55,6 +55,7 @@
     postgres_backup_restore_sidecar_s3_endpoint: "{{ headscale_db_backup_restore_sidecar_s3_endpoint }}"
     postgres_backup_restore_sidecar_s3_access_key: "{{ headscale_db_backup_restore_sidecar_s3_access_key }}"
     postgres_backup_restore_sidecar_s3_secret_key: "{{ headscale_db_backup_restore_sidecar_s3_secret_key }}"
+    postgres_backup_restore_sidecar_encryption_key: "{{ headscale_db_backup_restore_sidecar_encryption_key }}"
     postgres_resources: "{{ headscale_db_resources }}"
 
 - name: Deploy headscale

@@ -14,6 +14,7 @@ metal_db_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
 metal_db_backup_restore_sidecar_log_level: debug
 
 metal_db_backup_restore_sidecar_object_max_keep:
+metal_db_backup_restore_sidecar_encryption_key:
 
 metal_db_backup_restore_sidecar_gcp_bucket_name:
 metal_db_backup_restore_sidecar_gcp_backup_location:

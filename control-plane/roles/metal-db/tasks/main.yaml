@@ -45,3 +45,4 @@
     rethinkdb_ingress_dns: "{{ metal_db_ingress_dns }}"
     rethinkdb_resources: "{{ metal_db_resources }}"
     rethinkdb_backup_restore_sidecar_object_max_keep: "{{ metal_db_backup_restore_sidecar_object_max_keep }}"
+    rethinkdb_backup_restore_sidecar_encryption_key: "{{ metal_db_backup_restore_sidecar_encryption_key }}"

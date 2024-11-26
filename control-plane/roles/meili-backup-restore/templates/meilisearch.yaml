@@ -258,6 +258,9 @@ data:
 {% if meilisearch_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ meilisearch_backup_restore_sidecar_object_max_keep }}
 {% endif %}
+{% if meilisearch_backup_restore_sidecar_encryption_key %}
+    encryption-key: {{ meilisearch_backup_restore_sidecar_encryption_key }}
+{% endif %}
     post-exec-cmds:
       - meilisearch --db-path=/data/data.ms/ --dump-dir=/backup/upload/files
 ---

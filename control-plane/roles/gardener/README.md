@@ -25,7 +25,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_backup_infrastructure_secret                  |           | Specifies the secret for the backup infrastructure                                                                                                                                                          |
 | gardener_soil_name                                     |           | The name of the initial `Seed` (used for spinning up shooted seeds)                                                                                                                                         |
 | gardener_soil_kubeconfig_file_path                     |           | The kubeconfig path to the initial seed cluster                                                                                                                                                             |
-| gardener_soil_vertical_pod_autoscaler_enabled          |           | Enables the VPA for the intial seed cluster                                                                                                                                                                 |
+| gardener_soil_vertical_pod_autoscaler_enabled          |           | Enables the VPA for the initial seed cluster                                                                                                                                                                 |
 | gardener_soil_project_owner_name                       |           | Specifies the owner name for the project that the initial seed uses to set up shooted seeds                                                                                                                 |
 | gardener_soil_project_members                          |           | Specifies the members of the soil project. Each member requires a `name` and a `role`. Optionally, and array of `roles` can be specified. Example: `{"name": "admin", "role": "admin", "roles": ["owner"]}` |
 | gardener_gardenlet_shoot_concurrent_syncs              |           | Specifies the amount of concurrent shoot syncs for the Gardenlet                                                                                                                                            |
@@ -38,6 +38,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_api_server_kubeconfig                    |           | The kubeconfig for the Gardener Kubernetes API (virtual garden apiserver)                                                                                                                                   |
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                                                                                                   |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral)                                                                               |
+| gardener_logging_enabled                               |           | Specifies whether the logging Gardener logging stack should be activated in the Gardenlet                                                                                                                   |
 
 ### Virtual Garden
 
@@ -95,10 +96,14 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_extension_networking_cilium_enabled                 |           | If enabled, deploys the gardener-networking-extension-cilium                                                                                |
 | gardener_extension_shoot_cert_service_enabled                |           | If enabled, deploys the gardener-extension-shoot-cert-service                                                                               |
 | gardener_extension_shoot_dns_service_enabled                 |           | If enabled, deploys the gardener-extension-shoot-dns-service                                                                                |
+| gardener_extension_backup_s3_enabled                         |           | If enabled, deploys the gardener-extension-backup-s3                                                                                        |
+| gardener_extension_dns_powerdns_enabled                      |           | If enabled, deploys the gardener-extension-dns-powerdns                                                                                     |
 | gardener_os_controller_repo_ref                              |           | A repo reference for deploying the [os-metal-extension](https://github.com/metal-stack/os-metal-extension/)                                 |
 | gardener_networking_cilium_repo_ref                          |           | A repo reference for deploying the [gardener-extension-networking-cilium](https://github.com/gardener/gardener-extension-networking-cilium) |
 | gardener_extension_provider_metal_repo_ref                   |           | A repo reference for deploying the [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)    |
 | gardener_shoot_dns_service_repo_ref                          |           | A repo reference for deploying the [gardener-extension-shoot-dns-service](https://github.com/gardener/gardener-extension-shoot-dns-service) |
+| gardener_extension_backup_s3_repo_ref                        |           | A repo reference for deploying the [gardener-extension-backup-s3](https://github.com/metal-stack/gardener-extension-backup-s3)              |
+| gardener_extension_dns_powerdns_repo_ref                     |           | A repo reference for deploying the [gardener-extension-dns-powerdns](https://github.com/metal-stack/gardener-extension-dns-powerdns)        |
 | gardener_metal_admission_replicas                            |           | Specifies the amount of metal-admission webhook replicas                                                                                    |
 | gardener_metal_admission_vpa                                 |           | Enables the VPA for the metal-admission webhook                                                                                             |
 | gardener_extension_provider_metal_cluster_audit_enabled      |           | Enables the audit functionality of the GEPM                                                                                                 |
@@ -121,6 +126,10 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_shoot_dns_service_image_vector_overwrite            |           | Allows overriding the image vector for the shoot-dns-service extension                                                                      |
 | gardener_shoot_dns_service_dns_controller_manager_image_name |           | Setting an explicit image name for the dns-controller-manager                                                                               |
 | gardener_shoot_dns_service_dns_controller_manager_image_tag  |           | Setting an explicit image tag for the dns-controller-manager                                                                                |
+| gardener_extension_backup_s3_image_name                      |           | Setting an explicit image name for the gardener-extension-backup-s3                                                                         |
+| gardener_extension_backup_s3_image_tag                       |           | Setting an explicit image tag for the gardener-extension-backup-s3                                                                          |
+| gardener_extension_dns_powerdns_image_name                   |           | Setting an explicit image name for the gardener-extension-dns-powerdns                                                                      |
+| gardener_extension_dns_powerdns_image_tag                    |           | Setting an explicit image tag for the  gardener-extension-dns-powerdns                                                                      |
 
 ### Certificates
 

@@ -46,3 +46,4 @@
     meilisearch_backup_restore_sidecar_s3_secret_key: "{{ auditing_meili_backup_restore_sidecar_s3_secret_key }}"
     meilisearch_resources: "{{ auditing_meili_resources }}"
     meilisearch_backup_restore_sidecar_object_max_keep: "{{ auditing_meili_backup_restore_sidecar_object_max_keep }}"
+    meilisearch_backup_restore_sidecar_encryption_key: "{{ auditing_meili_backup_restore_sidecar_encryption_key }}"

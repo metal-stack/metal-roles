@@ -38,6 +38,8 @@ INTERFACE:
   Ethernet0:
     vrf_name: "VrfMpls"
   Ethernet0|10.0.0.2/32: {}
+  Ethernet1:
+    vrf_name: "VrfStorage"
   Ethernet112:
     ipv6_use_link_local_only: enable
   Ethernet116:
@@ -70,6 +72,8 @@ PORT:
     parent_port: Ethernet0
     admin_status: up
     speed: "10000"
+    mtu: "9216"
+    fec: none
   Ethernet2:
     alias: Eth1/3(Port1)
     autoneg: "off"
@@ -110,10 +114,14 @@ PORT:
 VLAN:
   Vlan4000:
     vlanid: 4000
+  Vlan4001:
+    vlanid: 4001
 
 VLAN_INTERFACE:
   Vlan4000:
-    vrf_name: "vrfMpls"
+    vrf_name: "VrfMpls"
+  Vlan4001:
+    vrf_name: "VrfTest"
 
 VLAN_MEMBER:
 
@@ -134,6 +142,8 @@ VXLAN_TUNNEL_MAP:
 VRF:
   VrfMpls:
     vni: "104000"
+  VrfStorage: {}
+  VrfTest: {}
 
 LLDP:
   Global:

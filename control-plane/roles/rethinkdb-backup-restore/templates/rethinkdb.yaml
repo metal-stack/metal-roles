@@ -217,6 +217,9 @@ data:
 {% if rethinkdb_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ rethinkdb_backup_restore_sidecar_object_max_keep }}
 {% endif %}
+{% if rethinkdb_backup_restore_sidecar_encryption_key %}
+    encryption-key: {{ rethinkdb_backup_restore_sidecar_encryption_key }}
+{% endif %}
 ---
 apiVersion: v1
 kind: Secret

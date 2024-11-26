@@ -11,6 +11,7 @@
       - meilisearch_image_tag is defined
       - meilisearch_backup_restore_sidecar_image_name is defined
       - meilisearch_backup_restore_sidecar_image_tag is defined
+      - meilisearch_backup_restore_sidecar_encryption_key is none or meilisearch_backup_restore_sidecar_encryption_key | length == 32
 
 - name: Deploy meilisearch (backup-restore)
   k8s:
