@@ -2,6 +2,43 @@
 
 Configures a server for providing zero-touch-provisioning scripts for switches.
 
+## Provisioning SONiC Switches via ztp.json
+
+On SONiC switches it is possible to describe the ZTP procedure in a file called `ztp.json`.
+It contains all steps that should be performed during ZTP along with some additional options.
+For example, host-specific download paths for the `config_db.json` or any additional files or scripts can be provided in the `ztp.json`.
+To use the `ztp.json` file, add a DHCP option with code 67 to the DHCP server that serves the file.
+For example, add a section like the following to `/etc/dhcp/dhcpd.conf`:
+
+```
+option sonic_ztp code 67 = text;
+
+host leaf01 {
+  hardware ethernet aa:aa:aa:aa:aa:aa;
+  fixed-address 10.1.253.154;
+  option sonic_ztp "http://10.1.253.13:8080/ztp.json";
+}
+```
+
+For more information on the `ztp.json` format refer to the [documentation](https://github.com/sonic-net/SONiC/blob/master/doc/ztp/ztp.md).
+
+### Noteworthy
+
+With a `ztp.json` file it is possible to provision a SONiC switch entirely via ZTP without using the `sonic` role.
+To achieve this, some of the variables from the `sonic` role are reused in this role.
+They are needed to render the templates for the `/etc/resolv.conf` and the `/etc/sonic/iptables.json`.
+Note that each switch that uses the `ztp.json` file needs an individual `config_db.json`, that it can download at `http://{{ ztp_listen_address }}:{{ ztp_port }}/<hostname>_config_db.json`.
+For example, if the switch's hostname is `r01leaf02`, there should be a file called `r01leaf02_config_db.json` located in `{{ ztp_host_dir_path }}/config/`.
+The configs can be added to the `ztp_additional_files` variable, e.g.
+
+```yaml
+ztp_additional_files:
+  - name: r01leaf02_config_db.json
+    data: "{{ lookup('file', 'path/to/r01leaf02_config_db.json)' | string }}" # using `string` to keep the formatting
+  - name: r02leaf01_config_db.json
+    data: ...
+```
+
 ## Variables
 
 | Name                         | Mandatory | Description                                                                                               |
@@ -17,23 +54,3 @@ Configures a server for providing zero-touch-provisioning scripts for switches.
 | ztp_sonic_nameservers        |           | the nameservers to put into resolv.conf for sonic                                                         |
 | ztp_sonic_extended_cacl.ipv4 |           | iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature) |
 | ztp_sonic_extended_cacl.ipv6 |           | iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature) |
-
-## Provisioning SONiC Switches via ztp.json
-
-On SONiC switches it is possible to describe the ZTP procedure in a file called `ztp.json`.
-It contains all steps that should be performed during ZTP along with some additional options.
-We use `ztp.json` to trigger a restart of the BGP service after the initial switch provisioning.
-To use the `ztp.json` file, add a DHCP option with code 67 to the DHCP server that serves the file.
-For example, add a section like the following to `/etc/dhcp/dhcpd.conf`:
-
-```
-option sonic_ztp code 67 = text;
-
-host leaf01 {
-  hardware ethernet aa:aa:aa:aa:aa:aa;
-  fixed-address 10.1.253.154;
-  option sonic_ztp "http://10.1.253.13:8080/ztp.json";
-}
-```
-
-For more information on the `ztp.json` format refer to the [documentation](https://github.com/sonic-net/SONiC/blob/master/doc/ztp/ztp.md).
