@@ -1,0 +1,41 @@
+---
+# GKE sometimes changes the cidrs, which is a validation error for Gardener.
+# Therefore, do not touch the cidrs once deployed
+- name: Describe GCP cluster
+  command: gcloud --format json container clusters describe {{ gcp_cluster_name }} --region {{ gcp_region }}
+  register: gcp_cluster
+  changed_when: false
+
+- name: Describe GCP container subnets
+  command: gcloud --format json container subnets list-usable
+  register: gcp_subnets
+  changed_when: false
+
+# this config map provides the external api-server ip of the gke cluster.
+# this information is unfortunately not provided by gke itself in the cluster.
+# the ip is required by the gardener-extension-provider-metal to create a kubeconfig
+# for the firewall-controller, which can then connect to the kube-apiserver for
+# reconciling the firewall v2 resource.
+- name: Deploy seed-api-server config map
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: seed-api-server
+        namespace: garden
+      data:
+        url: "https://{{ (gcp_cluster.stdout | from_json)['endpoint'] }}"
+    apply: yes
+
+- name: Set node cidr
+  set_fact:
+    _gardener_cluster_node_cidr: "{{ (gcp_subnets.stdout | from_json) | extract_gcp_node_network(region=gcp_region) }}"
+
+- name: Set pod cidr
+  set_fact:
+    _gardener_cluster_pod_cidr: "{{ (gcp_cluster.stdout | from_json)['ipAllocationPolicy']['clusterIpv4CidrBlock'] }}"
+
+- name: Set service cidr
+  set_fact:
+    _gardener_cluster_service_cidr: "{{ (gcp_cluster.stdout | from_json)['servicesIpv4Cidr'] }}"

@@ -13,9 +13,9 @@ spec:
       # providerConfig:
       #   <some-optional-config-for-the-nginx-ingress-controller>
     networking:
-      nodes: "{{ _gardener_soil_node_cidr }}"
-      pods: "{{ _gardener_soil_pod_cidr }}"
-      services: "{{ _gardener_soil_service_cidr }}"
+      nodes: "{{ _gardener_cluster_node_cidr }}"
+      pods: "{{ _gardener_cluster_pod_cidr }}"
+      services: "{{ _gardener_cluster_service_cidr }}"
     # provider:
     #   zones:
     #   - "0"
