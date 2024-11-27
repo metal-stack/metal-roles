@@ -40,6 +40,7 @@ helm:
                     "tag": "0.7.1",
                 },
             ],
+            "gardener_shoot_dns_service_dns_provider_replication": True,
             "gardener_shoot_dns_service_dns_controller_manager_image_name": "dns-controller-image",
             "gardener_shoot_dns_service_dns_controller_manager_image_tag": "dns-controller-tag",
         })
@@ -65,8 +66,12 @@ helm:
           repository: europe-docker.pkg.dev/gardener-project/public/dns-controller-manager
           sourceRepository: github.com/gardener/external-dns-management
           tag: 0.7.1
+
     dnsProviderManagement:
       enabled: true
+    dnsProviderReplication:
+      enabled: true
+
     dnsControllerManager:
       deploy: true
       image:
