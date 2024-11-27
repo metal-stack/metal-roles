@@ -16,10 +16,11 @@ helm:
 {% endif %}
     dnsProviderManagement:
       enabled: true
+    dnsProviderReplication:
+      enabled: {{ gardener_shoot_dns_service_dns_provider_replication | lower }}
+
     dnsControllerManager:
       deploy: true
-    dnsProviderReplication:
-      enabled: {{ gardener_shoot_dns_service_dns_provider_replication }}
 {% if gardener_shoot_dns_service_dns_controller_manager_image_name or gardener_shoot_dns_service_dns_controller_manager_image_tag %}
       image:
 {% if gardener_shoot_dns_service_dns_controller_manager_image_tag %}
