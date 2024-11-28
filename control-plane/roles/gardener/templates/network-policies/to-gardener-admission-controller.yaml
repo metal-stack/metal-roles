@@ -1,0 +1,22 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: to-gardener-admission-controller
+  namespace: garden
+spec:
+  egress:
+  - ports:
+    - port: 2719
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: gardener
+          release: controlplane
+          role: admission-controller
+  podSelector:
+    matchLabels:
+      networking.resources.gardener.cloud/to-gardener-admission-controller-tcp-2719: allowed
+  policyTypes:
+  - Egress
