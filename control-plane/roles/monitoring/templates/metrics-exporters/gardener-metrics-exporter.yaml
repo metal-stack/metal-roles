@@ -101,6 +101,7 @@ spec:
     app: gardener
     role: metrics-exporter
   ports:
-  - protocol: TCP
+  - name: metrics
     port: 2718
+    protocol: TCP
     targetPort: 2718
