@@ -2,6 +2,9 @@
 crds:
   enabled: {{ monitoring_prometheus_operator_crds_enabled }}
 
+defaultRules:
+  create: false
+
 prometheus:
   ingress:
     enabled: {{ monitoring_prometheus_ingress_enabled }}
