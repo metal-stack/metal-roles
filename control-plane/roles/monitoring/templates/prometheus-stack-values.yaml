@@ -175,9 +175,8 @@ alertmanager:
         max_alerts: 0 # 0=all alerts
     - name: 'null'
     - name: msteams
-      msteams_config:
+      msteams_configs:
       - webhook_url: "{{ monitoring_msteam_notification_webhook_url }}"
-        send_resolved: true
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
     - name: slack
       slack_configs:
