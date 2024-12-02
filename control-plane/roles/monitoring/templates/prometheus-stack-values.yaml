@@ -177,25 +177,7 @@ alertmanager:
     - name: msteams
       msteams_config:
       - webhook_url: "{{ monitoring_msteam_notification_webhook_url }}"
-{% raw %}
-        color: '{{ template "slack.color" . }}'
-        title: '{{ template "slack.title" . }}'
-        text: '{{ template "slack.text" . }}'
         send_resolved: true
-        actions:
-          - type: button
-            text: 'Runbook :green_book:'
-            url: '{{ (index .Alerts 0).Annotations.runbook_url }}'
-          - type: button
-            text: 'Query :mag:'
-            url: '{{ (index .Alerts 0).GeneratorURL }}'
-          - type: button
-            text: 'Dashboard :chart_with_upwards_trend:'
-            url: '{{ (index .Alerts 0).Annotations.dashboard_url }}'
-          - type: button
-            text: 'Silence :no_bell:'
-            url: '{{ template "__alert_silence_link" . }}'
-{% endraw %}
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
     - name: slack
       slack_configs:
