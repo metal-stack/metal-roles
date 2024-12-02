@@ -414,7 +414,7 @@ additionalPrometheusRulesMap:
         labels:
           severity: "warning"
         annotations:
-          description: "{{ $value }}% of {{ $labels.networkId }} Internet IP adresses in {{ $labels.partition }} are in use."
+          description: "{{ $value }}% of {{ $labels.networkId }} Internet IP addresses in {{ $labels.partition }} are in use."
       - alert: NetworkPrefixCapacityLow
         expr: avg(metal_network_prefix_used{isPrivateSuper="true"}) by (partition, networkId) / avg(metal_network_prefix_available{isPrivateSuper="true"}) by (partition, networkId)  * 100 > 80
         for: 10m
