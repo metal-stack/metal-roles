@@ -159,6 +159,9 @@ alertmanager:
       - receiver: 'null'
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
+      - receiver: msteams
+        repeat_interval: 1h
+        continue: true
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
       - receiver: slack
         repeat_interval: 1h
