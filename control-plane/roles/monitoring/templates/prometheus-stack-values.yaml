@@ -42,12 +42,12 @@ grafana:
   additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
   grafana.ini:
     server:
-{% if monitoring_ingress_grafana_tls %}
+{% if monitoring_grafana_ingress_tls %}
       root_url: https://{{ monitoring_grafana_ingress_dns }}
 {% else %}
       root_url: http://{{ monitoring_grafana_ingress_dns }}
 {% endif %}
-{% if monitoring_grafana_github_oauth is defined %}
+{% if monitoring_grafana_github_oauth %}
     auth.github: {{ monitoring_grafana_github_oauth | to_json }}
 {% endif %}
 {% if monitoring_grafana_extra_secret_mounts %}
@@ -62,16 +62,16 @@ grafana:
     ingressClassName: nginx
     hosts:
       - {{ monitoring_grafana_ingress_dns }}
-{% if monitoring_ingress_grafana_tls %}
+{% if monitoring_grafana_ingress_tls %}
     tls:
       - secretName: monitoring-ingress-tls
         hosts:
         - {{ monitoring_grafana_ingress_dns }}
 {% endif %}
-{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
+{% if monitoring_grafana_ingress_tls or monitoring_additional_ingress_annotations %}
     annotations:
 {% endif %}
-{% if monitoring_ingress_grafana_tls %}
+{% if monitoring_grafana_ingress_tls %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
