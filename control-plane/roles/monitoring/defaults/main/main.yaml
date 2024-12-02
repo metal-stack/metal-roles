@@ -21,6 +21,10 @@ monitoring_additional_ingress_annotations: {}
 
 monitoring_thanos_receive_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
 
+monitoring_prometheus_operator_instance_namespaces: []
+monitoring_prometheus_operator_crds_enabled: true
+monitoring_prometheus_operator_enabled: true
+
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
 monitoring_alertmanager_ingress_tls: yes
