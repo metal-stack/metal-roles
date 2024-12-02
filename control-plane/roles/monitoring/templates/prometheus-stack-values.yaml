@@ -47,7 +47,7 @@ grafana:
 {% else %}
       root_url: http://{{ monitoring_grafana_ingress_dns }}
 {% endif %}
-{% if monitoring_grafana_github_oauth %}
+{% if monitoring_grafana_github_oauth is defined %}
     auth.github: {{ monitoring_grafana_github_oauth | to_json }}
 {% endif %}
 {% if monitoring_grafana_extra_secret_mounts %}
