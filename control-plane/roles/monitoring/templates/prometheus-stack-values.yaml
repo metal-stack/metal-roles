@@ -17,26 +17,26 @@ prometheus:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-
-  prometheusSpec:
-{% if monitoring_prometheus_image_tag is defined %}
-    image:
-      tag: "{{ monitoring_prometheus_image_tag }}"
-{% endif %}
-{% if monitoring_prometheus_storage_spec is defined %}
-    storageSpec:
-      {{ monitoring_prometheus_storage_spec | indent(6) }}
-{% endif %}
-    thanos:
-      image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
-      version: "{{ thanos_image_tag }}"
-{% if monitoring_thanos_object_store_config is defined %}
-      objectStorageConfig:
-        key: objstore.yml
-        name: thanos-objstore-secret
-{% endif %}
-  thanosService:
-    enabled: true
+#
+#  prometheusSpec:
+#{% if monitoring_prometheus_image_tag is defined %}
+#    image:
+#      tag: "{{ monitoring_prometheus_image_tag }}"
+#{% endif %}
+#{% if monitoring_prometheus_storage_spec is defined %}
+#    storageSpec:
+#      {{ monitoring_prometheus_storage_spec | indent(6) }}
+#{% endif %}
+#    thanos:
+#      image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
+#      version: "{{ thanos_image_tag }}"
+#{% if monitoring_thanos_object_store_config is defined %}
+#      objectStorageConfig:
+#        key: objstore.yml
+#        name: thanos-objstore-secret
+#{% endif %}
+#  thanosService:
+#    enabled: true
 
 grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
@@ -59,7 +59,7 @@ grafana:
   sidecar:
     datasources:
       uid: prometheus
-      url: http://thanos-query-frontend:9090
+      url: http://kube-prometheus-stack-prometheus:9090
   ingress:
     enabled: true
     ingressClassName: nginx
