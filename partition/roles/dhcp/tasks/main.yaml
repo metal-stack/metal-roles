@@ -17,6 +17,15 @@
   loop_control:
     label: "{{ item.network }}"
 
+- name: ensure config directories are present
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - /etc/dhcp
+    - /etc/default
+
 - name: render dhcpd conf
   template:
     src: dhcpd.conf.j2
