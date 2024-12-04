@@ -22,11 +22,6 @@ host leaf01 {
 
 For more information on the `ztp.json` format refer to the [documentation](https://github.com/sonic-net/SONiC/blob/master/doc/ztp/ztp.md).
 
-### Noteworthy
-
-With a `ztp.json` file it is possible to provision a SONiC switch entirely via ZTP without using the `sonic` role.
-To achieve this, some of the variables from the `sonic` role are reused in this role.
-They are needed to render the templates for the `/etc/resolv.conf` and the `/etc/sonic/iptables.json`.
 Note that each switch that uses the `ztp.json` file needs an individual `config_db.json`, that it can download at `http://{{ ztp_listen_address }}:{{ ztp_port }}/<hostname>_config_db.json`.
 For example, if the switch's hostname is `r01leaf02`, there should be a file called `r01leaf02_config_db.json` located in `{{ ztp_host_dir_path }}/config/`.
 The configs can be added to the `ztp_additional_files` variable, e.g.
@@ -41,16 +36,13 @@ ztp_additional_files:
 
 ## Variables
 
-| Name                         | Mandatory | Description                                                                                               |
-| ---------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
-| ztp_nginx_image_name         | yes       | the docker image to use to serve ztp scripts.                                                             |
-| ztp_nginx_image_tag          | yes       | the tag of the docker image to use to serve ztp scripts.                                                  |
-| ztp_host_dir_path            |           | the path to serve ztp scripts from.                                                                       |
-| ztp_listen_address           |           | the address used to serve ztp requests                                                                    |
-| ztp_port                     |           | the port to serve ztp scripts on.                                                                         |
-| ztp_authorized_keys          | yes       | the authorized keys that should be installed by ztp.                                                      |
-| ztp_admin_user               |           | the user for which the authorized keys will be provisioned.                                               |
-| ztp_additional_files         |           | puts additional files into serve directory.                                                               |
-| ztp_sonic_nameservers        |           | the nameservers to put into resolv.conf for sonic                                                         |
-| ztp_sonic_extended_cacl.ipv4 |           | iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature) |
-| ztp_sonic_extended_cacl.ipv6 |           | iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature) |
+| Name                 | Mandatory | Description                                                 |
+| -------------------- | --------- | ----------------------------------------------------------- |
+| ztp_nginx_image_name | yes       | the docker image to use to serve ztp scripts.               |
+| ztp_nginx_image_tag  | yes       | the tag of the docker image to use to serve ztp scripts.    |
+| ztp_host_dir_path    |           | the path to serve ztp scripts from.                         |
+| ztp_listen_address   |           | the address used to serve ztp requests                      |
+| ztp_port             |           | the port to serve ztp scripts on.                           |
+| ztp_authorized_keys  | yes       | the authorized keys that should be installed by ztp.        |
+| ztp_admin_user       |           | the user for which the authorized keys will be provisioned. |
+| ztp_additional_files |           | puts additional files into serve directory.                 |

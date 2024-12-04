@@ -23,8 +23,6 @@
     dest: "{{ ztp_host_dir_path }}/config/{{ item | splitext | first }}"
     mode: 0644
   loop:
-    - iptables.json.j2
-    - resolv.conf.j2
     - ztp.json.j2
     - ztp.sh.j2
 
