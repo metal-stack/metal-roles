@@ -31,14 +31,9 @@ alerting:
         - targets: [{{ prometheus_alertmanager_target }}]
 {% endif %}
 
-{% if prometheus_remote_write_url %}
+{% if prometheus_remote_write %}
 remote_write:
-- url: {{ prometheus_remote_write_url }}
-  {% if prometheus_remote_write_basic_auth_username is defined and prometheus_remote_write_basic_auth_password is defined %}
-  basic_auth:
-    username: {{ prometheus_remote_write_basic_auth_username }}
-    password: {{ prometheus_remote_write_basic_auth_password }}
-  {% endif %}
+{{ prometheus_remote_write | to_yaml(indent=2) }}
 {% endif %}
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.

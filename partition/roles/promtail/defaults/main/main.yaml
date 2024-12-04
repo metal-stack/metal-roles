@@ -1,5 +1,5 @@
 ---
 promtail_config_host_dir: "/etc/promtail"
 
-promtail_loki_push_endpoint:
+promtail_clients: []
 promtail_scrape_configs: []
