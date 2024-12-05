@@ -1,0 +1,14 @@
+---
+- name: restart dhcp server
+  service:
+    name: "{{ dhcp_service_name }}"
+    enabled: true
+    state: restarted
+    daemon-reload: true
+
+- name: ensure dhcp server is running
+  service:
+    name: "{{ dhcp_service_name }}"
+    enabled: true
+    state: started
+  listen: restart dhcp server

@@ -30,37 +30,23 @@
   template:
     src: dhcpd.conf.j2
     dest: /etc/dhcp/dhcpd.conf
-  register: _dhcpd_conf
+  notify: restart dhcp server
 
 - name: render isc-dhcp-server config
   template:
     src: isc-dhcp-server.j2
     dest: /etc/default/isc-dhcp-server
-  register: _isc_dhcp_server
+  notify: restart dhcp server
 
 - name: render static hosts config
   template:
     src: dhcpd.hosts.j2
     dest: /etc/dhcp/dhcpd.hosts
   when: dhcp_static_hosts is defined
-  register: _hosts_conf
+  notify: restart dhcp server
 
 - name: install isc-dhcp-server
   apt:
     name:
     - isc-dhcp-server
     update_cache : yes
-
-- name: restart isc-dhcp-server on config change
-  service:
-    name: "{{ dhcp_service_name }}"
-    enabled: true
-    state: restarted
-    daemon-reload: true
-  when: _dhcpd_conf is changed or _isc_dhcp_server is changed or _hosts_conf is changed
-
-- name: ensure isc-dhcp-server is running
-  service:
-    name: "{{ dhcp_service_name }}"
-    enabled: true
-    state: started
