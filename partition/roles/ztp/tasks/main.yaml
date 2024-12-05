@@ -26,7 +26,13 @@
     - ztp.json.j2
     - ztp.sh.j2
 
-- name: copy additional contents
+- name: copy frr.conf
+  copy:
+    dest: "{{ ztp_host_dir_path }}/config/frr.conf"
+    src: frr.conf
+    mode: 0644
+
+- name: copy additional files
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
     content: "{{ item.data }}"

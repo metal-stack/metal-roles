@@ -9,14 +9,8 @@
       "files": [
         {
           "url": {
-            "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/resolv.conf",
-            "destination": "/etc/resolv.conf"
-          }
-        },
-        {
-          "url": {
-            "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/iptables.json",
-            "destination": "/etc/sonic/iptables.json"
+            "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/frr.conf",
+            "destination": "/etc/sonic/frr/frr.conf"
           }
         }
       ]
