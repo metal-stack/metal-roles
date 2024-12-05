@@ -51,6 +51,8 @@
     - isc-dhcp-server
     update_cache : yes
 
+# we want this task to be run at this point and not at the end of the playbook
+# this is why we don't use a handler here
 - name: restart isc-dhcp-server on config change
   service:
     name: "{{ dhcp_service_name }}"
