@@ -11,7 +11,6 @@
       data: "{{ gardener_backup_infrastructure_secret }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
-  when: gardener_backup_infrastructure_secret
 
 - name: Add seed provider secret
   k8s:
