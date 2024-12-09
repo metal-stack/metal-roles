@@ -5,17 +5,35 @@
         "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp.sh"
       }
     },
-    "03-configdb-json": {
-      "url": {
-        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/config_db.json"
+    "03-download": {
+      "files": [
+        {
+          "url": {
+            "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/frr.conf",
+            "destination": "/etc/sonic/frr/frr.conf"
+          }
+        }
+      ]
+    },
+    "04-configdb-json": {
+      "dynamic-url": {
+        "source": {
+          "prefix": "http://{{ ztp_listen_address }}:{{ ztp_port }}/",
+          "identifier": "hostname",
+          "suffix": "_config_db.json"
+        }
       },
-      "clear-config": false
+      "clear-config": true
     },
-    "04-reload": {
+{% if ztp_additional_files | selectattr('name', 'equalto', 'ztp-provisioning-script.sh') %}
+    "05-provisioning-script": {
       "plugin": {
-        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/reload.sh"
-      }
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-provisioning-script.sh"
+      },
+      "shell": true,
+      "reboot-on-success": true
     },
+{% endif %}
     "restart-ztp-no-config": false
   }
 }

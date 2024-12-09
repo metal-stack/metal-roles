@@ -4,6 +4,7 @@ hostname {{ inventory_hostname }}
 !
 service integrated-vtysh-config
 !
+agentx
 log syslog {{ sonic_frr_syslog_level }}
 {% if sonic_frr_debug_options is defined %}
 {% for option in sonic_frr_debug_options %}

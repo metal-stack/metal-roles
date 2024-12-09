@@ -17,31 +17,22 @@
     path: "{{ ztp_host_dir_path }}/config"
     state: directory
 
-- name: render ztp script
+- name: render templates
   template:
-    src: "ztp.sh.j2"
-    dest: "{{ ztp_host_dir_path }}/config/ztp.sh"
+    src: "{{ item }}"
+    dest: "{{ ztp_host_dir_path }}/config/{{ item | splitext | first }}"
     mode: 0644
+  loop:
+    - ztp.json.j2
+    - ztp.sh.j2
 
-- name: copy config_db.json
+- name: copy frr.conf
   copy:
-    src: "config_db.json"
-    dest: "{{ ztp_host_dir_path }}/config/config_db.json"
+    dest: "{{ ztp_host_dir_path }}/config/frr.conf"
+    src: frr.conf
     mode: 0644
 
-- name: copy reload script
-  copy: 
-    src: "reload.sh"
-    dest: "{{ ztp_host_dir_path }}/config/reload.sh"
-    mode: 0644
-
-- name: render ztp.json
-  template:
-    src: "ztp.json.j2"
-    dest: "{{ ztp_host_dir_path }}/config/ztp.json"
-    mode: 0644
-
-- name: copy additional contents
+- name: copy additional files
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
     content: "{{ item.data }}"
