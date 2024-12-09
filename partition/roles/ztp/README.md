@@ -34,8 +34,6 @@ ztp_additional_files:
     data: ...
 ```
 
-## Noteworthy
-
 When a SONiC switch is deployed via `ztp.json` and configured by the `sonic` role afterwards, make sure to leave the `sonic_ports`, `sonic_portchannels` and `sonic_breakouts` variables empty and set `sonic_render_config_db_template` to false.
 Otherwise the `sonic` role will override the `config_db.json` provided by the `ztp.json`.
 The result of this is unpredictable and, in the worst case, the switch might reach a broken state from which it can only be restored by resetting it completely and setting it up from scratch.
