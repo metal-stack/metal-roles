@@ -1,0 +1,47 @@
+---
+- name: Create backup infrastructure secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: virtual-garden-etcd-main-backup-secret
+        namespace: garden
+      type: Opaque
+      data: "{{ gardener_backup_infrastructure_secret }}"
+    apply: yes
+
+# TODO: prepare migration here
+# - label existing secrets like CA, ETCD encryption key, accordingly
+# - scale down existing components (gardener control plane + virtual garden with ETCD)
+#
+# https://github.com/gardener/gardener/blob/v1.100.2/docs/concepts/operator.md#migrating-an-existing-gardener-landscape-to-gardener-operator
+
+- name: Deploy Gardener Operator
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_timeout: "600s"
+    helm_chart: "{{ gardener_local_tmp_dir }}/gardener/charts/gardener/operator"
+    helm_release_name: operator
+    helm_target_namespace: garden
+    helm_value_file_template: gardener-operator-values.j2
+
+- name: Create Garden
+  k8s:
+    definition: "{{ lookup('template', 'garden.yaml') }}"
+    apply: yes
+
+- name: Wait until Garden is ready
+  kubernetes.core.k8s_info:
+    api_version: "operator.gardener.cloud/v1alpha1"
+    kind: Garden
+    name: "local"
+    wait: yes
+    wait_condition:
+      status: "True"
+      type: "{{ item }}"
+    wait_timeout: 900
+  loop:
+    - VirtualComponentsHealthy
+    - RuntimeComponentsHealthy
