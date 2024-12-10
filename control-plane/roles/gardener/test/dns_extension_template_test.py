@@ -13,13 +13,12 @@ class ShootDnsExtensionControllerDeploymentTemplate(unittest.TestCase):
         cm.getcode.return_value = 200
         cm.read.return_value = '''
 ---
-apiVersion: core.gardener.cloud/v1beta1
+apiVersion: core.gardener.cloud/v1
 kind: ControllerDeployment
 metadata:
   name: extension-shoot-dns-service
-type: helm
-providerConfig:
-  chart: a-chart
+helm:
+  rawChart: a-chart
   values:
     image:
       tag: v1.48.0
@@ -41,6 +40,7 @@ providerConfig:
                     "tag": "0.7.1",
                 },
             ],
+            "gardener_shoot_dns_service_dns_provider_replication": True,
             "gardener_shoot_dns_service_dns_controller_manager_image_name": "dns-controller-image",
             "gardener_shoot_dns_service_dns_controller_manager_image_tag": "dns-controller-tag",
         })
@@ -50,13 +50,12 @@ providerConfig:
 
         expected = '''
 ---
-apiVersion: core.gardener.cloud/v1beta1
+apiVersion: core.gardener.cloud/v1
 kind: ControllerDeployment
 metadata:
   name: extension-shoot-dns-service
-type: helm
-providerConfig:
-  chart: "a-chart"
+helm:
+  rawChart: "a-chart"
   values:
     image:
       repository: "extension-image"
@@ -67,8 +66,12 @@ providerConfig:
           repository: europe-docker.pkg.dev/gardener-project/public/dns-controller-manager
           sourceRepository: github.com/gardener/external-dns-management
           tag: 0.7.1
+
     dnsProviderManagement:
       enabled: true
+    dnsProviderReplication:
+      enabled: true
+
     dnsControllerManager:
       deploy: true
       image:
