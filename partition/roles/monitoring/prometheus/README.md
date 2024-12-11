@@ -4,13 +4,14 @@ Deploys prometheus in a systemd-managed Docker container.
 
 ## Variables
 
-This role uses variables from [partition-defaults](/partition). So, make sure you define them adequately as well.
+This role uses variables from [partition-defaults](/partition). So, make sure
+you define them adequately as well.
 
 | Name                                             | Mandatory | Description                                                 |
 | ------------------------------------------------ | --------- | ----------------------------------------------------------- |
 | prometheus_port                                  |           | Port for prometheus                                         |
-| prometheus_image_name                            |           | Image version of the prometheus                             |
-| prometheus_image_tag                             |           | Image tag of the prometheus                                 |
+| prometheus_image_name                            | yes       | Image version of the prometheus                             |
+| prometheus_image_tag                             | yes       | Image tag of the prometheus                                 |
 | prometheus_config_host_dir                       |           | The host directory for prometheus configurations            |
 | prometheus_data_host_dir                         |           | The host directory for prometheus data                      |
 | prometheus_alertmanager_target                   |           | Targets for the alertmanager                                |
