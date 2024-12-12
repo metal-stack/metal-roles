@@ -28,7 +28,7 @@
 
 - name: render ztp-provisioning-script
   template:
-    content: "{{ ztp_provisioning_script }}"
+    src: "{{ ztp_provisioning_script }}"
     dest: "{{ ztp_host_dir_path }}/config/ztp-provisioning-script.sh"
     mode: 0644
   when: ztp_provisioning_script is defined
