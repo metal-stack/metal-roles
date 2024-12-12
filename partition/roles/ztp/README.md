@@ -36,7 +36,25 @@ ztp_additional_files:
 
 When a SONiC switch is deployed via `ztp.json` and configured by the `sonic` role afterwards, make sure to leave the `sonic_ports`, `sonic_portchannels` and `sonic_breakouts` variables empty and set `sonic_render_config_db_template` to false.
 Otherwise the `sonic` role will override the `config_db.json` provided by the `ztp.json`.
-The result of this is unpredictable and, in the worst case, the switch might reach a broken state from which it can only be restored by resetting it completely and setting it up from scratch.
+The result of this may not be intended and, in the worst case, the switch will reach a broken state from which it only can be restored by a factory reset.
+Of course it is also possible to load only a minimal `config_db.json` via ZTP and allow the `sonic` role to render its template based on the `sonic_ports`, `sonic_portchannels` and `sonic_breakouts` variables.
+Both approaches have their pros and cons.
+
+### Pros and Cons of Loading a Static config_db.json via ZTP
+
+The main advantage of loading the `config_db.json` once via ZTP and disabling template rendering by the `sonic` role is a better stability and the ability to configure the switch exactly as needed without relying on the complex templating logic in the `sonic` role.
+As mentioned above, the problem with loading a new config each time the `sonic` role is run is that even seemingly small changes might break the system (swss crash).
+On the other hand, with a ZTP-only approach, since ZTP only runs during initial setup of the switch, the only way of changing the config is by resetting the switch to activate ZTP.
+So the desicion of whether to use the `sonic` role's dynamic config or a static ZTP-only config comes down to questions like:
+
+- how often will the config need to change?
+- do all ports on the switch look more or less the same or are there ports that require some specific configuration?
+
+In the latter case the templating might run into certain edge cases, where the resulting config breaks the system.
+Then you should consider using only a static config.
+
+> For the time being it is up to the user which provisioning procedure they prefer.
+> In the future we hope to come up with a single solution that is both flexible and reliable.
 
 ## Variables
 
