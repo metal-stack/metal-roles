@@ -25,7 +25,7 @@
       },
       "clear-config": true
     },
-{% if ztp_additional_files | selectattr('name', 'equalto', 'ztp-provisioning-script.sh') %}
+{% if ztp_provisioning_script %}
     "05-provisioning-script": {
       "plugin": {
         "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-provisioning-script.sh"
