@@ -26,13 +26,6 @@
     - ztp.json.j2
     - ztp.sh.j2
 
-- name: render ztp-provisioning-script
-  template:
-    content: "{{ ztp_provisioning_script }}"
-    dest: "{{ ztp_host_dir_path }}/config/ztp-provisioning-script.sh"
-    mode: 0644
-  when: ztp_provisioning_script is defined
-
 - name: copy frr.conf
   copy:
     dest: "{{ ztp_host_dir_path }}/config/frr.conf"
