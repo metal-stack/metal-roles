@@ -41,6 +41,13 @@
   loop_control:
     label: "{{ item.name }}"
 
+- name: copy ztp-provisioning-script
+  copy:
+    dest: "{{ ztp_host_dir_path }}/config/ztp-provisioning-script.sh"
+    content: "{{ ztp_provisioning_script }}"
+    mode: 0644
+  when: ztp_provisioning_script is defined
+
 - name: deploy server for serving ztp.sh
   include_role:
     name: ansible-common/roles/systemd-docker-service
