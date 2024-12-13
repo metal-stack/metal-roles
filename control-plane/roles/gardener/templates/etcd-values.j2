@@ -14,7 +14,7 @@ backup:
   ecs:
     endpoint: "{{ gardener_backup_infrastructure_secret.endpoint | b64decode }}"
     accessKeyID: "{{ gardener_backup_infrastructure_secret.accessKeyID | b64decode }}"
-    secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode}}"
+    secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode }}"
 {% endif %}
 {% endif %}
 

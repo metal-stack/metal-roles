@@ -22,6 +22,7 @@ replicas: 3
 apiServer:
   hostname: 127.0.0.1
   serviceName: garden-kube-apiserver
+  adminKubeconfigPort: 443
 
 oidc:
   issuerURL:

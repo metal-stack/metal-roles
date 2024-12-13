@@ -46,5 +46,5 @@
 - name: Wait for garden-kube-apiserver
   wait_for:
     host: "{{ gardener_virtual_api_server_public_dns }}"
-    port: "443"
+    port: "{{ gardener_virtual_api_server_public_port }}"
     timeout: 60
