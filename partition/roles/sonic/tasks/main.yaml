@@ -37,7 +37,7 @@
   when: sonic_ip_masquerade
 
 - name: Render and save config_db
-  include_tasks: config_db.yaml
+  import_tasks: config_db.yaml
   when: sonic_render_config_db_template
 
 - name: Set NTP timezone
