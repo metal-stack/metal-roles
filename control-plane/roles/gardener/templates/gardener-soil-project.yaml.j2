@@ -29,7 +29,7 @@ spec:
         - owner
 {% for member in gardener_soil_project_members %}
     - apiGroup: rbac.authorization.k8s.io
-      kind: User
+      kind: "{{ member.kind | default('User') }}"
       name: "{{ member.name }}"
       role: "{{ member.role }}"
 {% if member.roles is defined %}
