@@ -19,7 +19,7 @@ dhcp_global_options: []
 # examples:
 # - default-url = "http://{{ ansible_host }}/onie-installer"
 # - ztp_provisioning_script_url code 239 = text
-# - ztp_provisioning_script_url "http://{{ ansible_host }}/ztp.sh"
+# - ztp_provisioning_script_url "http://{{ ansible_host }}/user.sh"
 
 dhcp_global_deny_list: []
 # examples:
