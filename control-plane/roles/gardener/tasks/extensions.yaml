@@ -129,3 +129,18 @@
     - controller-deployment.yaml
     - controller-registration.yaml
   when: gardener_extension_backup_s3_enabled
+
+- name: "Register controller: csi-driver-lvm"
+  k8s:
+    definition: "{{ lookup('template', 'csi-driver-lvm/{{ item }}', split_lines=False) }}"
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+  tags: csi-driver-lvm
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
+  loop:
+    - controller-deployment.yaml
+    - controller-registration.yaml
+  when: gardener_extension_csi_driver_lvm_enabled
