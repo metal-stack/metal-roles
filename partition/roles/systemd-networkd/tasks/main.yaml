@@ -56,13 +56,12 @@
   setup:
 
 - name: Reboot if interfaces were not renamed successfully
-  reboot:
-    reboot_timeout: 60
-  ignore_errors: true
-  when: "(systemd_networkd_nics | map(attribute='name')) is not subset(ansible_facts.interfaces)"
-
-- name: Wait for connection after reboot
-  wait_for_connection:
+  block:
+  - name: Reboot
+    command: reboot
+    become: true
+  - name: Wait for connection after reboot
+    wait_for_connection:
   when: "(systemd_networkd_nics | map(attribute='name')) is not subset(ansible_facts.interfaces)"
 
 - name: Render systemd-networkd vlan netdev config
