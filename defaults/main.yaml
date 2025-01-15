@@ -62,6 +62,8 @@ metal_stack_release:
     gardener_extension_backup_s3_image_name: "docker-images.metal-stack.gardener.gardener-extension-backup-s3.name"
     gardener_extension_dns_powerdns_image_tag: "docker-images.metal-stack.gardener.gardener-extension-dns-powerdns.tag"
     gardener_extension_dns_powerdns_image_name: "docker-images.metal-stack.gardener.gardener-extension-dns-powerdns.name"
+    gardener_extension_csi_driver_lvm_image_tag: "docker-images.metal-stack.gardener.gardener-extension-csi-driver-lvm.tag"
+    gardener_extension_csi_driver_lvm_image_name: "docker-images.metal-stack.gardener.gardener-extension-csi-driver-lvm.name"
     # kubernetes
     csi_lvm_controller_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
     csi_lvm_controller_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"

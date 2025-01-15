@@ -1,0 +1,13 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerRegistration
+metadata:
+  name: csi-driver-lvm
+spec:
+  deployment:
+    policy: Always
+    deploymentRefs:
+    - name: csi-driver-lvm
+  resources:
+  - kind: Extension
+    type: csi-driver-lvm
