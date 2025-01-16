@@ -2323,7 +2323,7 @@ data:
             "uid": "prometheus"
           },
           "decimals": null,
-          "description": "Count of Shoots which have nginx ingress conroller addon enabled.",
+          "description": "Count of Shoots which have nginx ingress controller addon enabled.",
           "format": "none",
           "gauge": {
             "maxValue": 100,

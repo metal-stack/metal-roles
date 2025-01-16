@@ -18,6 +18,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_ip_masquerade                                        |           | Enable ip masquerading on eth0.                                                                                      |
 | sonic_breakouts                                            |           | The breakout configuration for ports, e.g. `dict('Ethernet0'='4x25G')`                                               |
 | sonic_config_action                                        |           | Either `load` or `reload`. In the latter case all services will be restarted. If not given, defaults to `load`       |
+| sonic_render_config_db_template                            |           | When `true` the `metal.yaml.j2` template will be rendered into `/etc/sonic/config_db.json`                           |
 | sonic_ports                                                |           | Configuration for ports (mtu, fec, have highest precedence). These ports will be up by default.                      |
 | sonic_ports.name                                           |           | The port name.                                                                                                       |
 | sonic_ports.speed                                          |           | Speed of the port.                                                                                                   |

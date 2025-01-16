@@ -89,5 +89,5 @@
   delay: 6
   until:
     - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace='garden', resource_name='gardener-apiserver').get('status', {}).get('readyReplicas', 0) >= 1
-    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace='garden', resource_name='garden-kube-apiserver').get('status', {}).get('readyReplicas', 0) >= 3
+    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace='garden', resource_name='garden-kube-apiserver').get('status', {}).get('readyReplicas', 0) >= gardener_virtual_api_replicas
     - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace='garden', resource_name='gardener-controller-manager').get('status', {}).get('readyReplicas', 0) >= 1
