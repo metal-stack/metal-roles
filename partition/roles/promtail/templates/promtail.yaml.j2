@@ -6,13 +6,7 @@ positions:
   filename: /var/log/promtail-positions.yaml
 
 clients:
-  - url: {{ promtail_loki_push_endpoint }}
-    timeout: 60s
-    {% if promtail_loki_basic_auth_username is defined and promtail_loki_basic_auth_password is defined %}
-    basic_auth:
-      username: {{ promtail_loki_basic_auth_username }}
-      password: {{ promtail_loki_basic_auth_password }}
-    {% endif %}
+{{ promtail_clients | to_yaml(indent=2) }}
 
 scrape_configs:
-{{ promtail_scrape_configs|to_yaml(indent=2) }}
+{{ promtail_scrape_configs | to_yaml(indent=2) }}
