@@ -215,6 +215,7 @@ deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
 auditing:
+  enabled: {{ 'true' if metal_auditing_meili_enabled or metal_auditing_timescaledb_enabled else 'false' }}
 {% if metal_auditing_meili_enabled %}
   meilisearch:
     enabled: true
