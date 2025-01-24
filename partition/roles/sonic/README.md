@@ -18,6 +18,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_ip_masquerade                                        |           | Enable ip masquerading on eth0.                                                                                      |
 | sonic_breakouts                                            |           | The breakout configuration for ports, e.g. `dict('Ethernet0'='4x25G')`                                               |
 | sonic_config_action                                        |           | Either `load` or `reload`. In the latter case all services will be restarted. If not given, defaults to `load`       |
+| sonic_render_config_db_template                            |           | When `true` the `metal.yaml.j2` template will be rendered into `/etc/sonic/config_db.json`                           |
 | sonic_ports                                                |           | Configuration for ports (mtu, fec, have highest precedence). These ports will be up by default.                      |
 | sonic_ports.name                                           |           | The port name.                                                                                                       |
 | sonic_ports.speed                                          |           | Speed of the port.                                                                                                   |
@@ -45,6 +46,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_vlans.untagged_ports                                 |           | Array of untagged ports to bind to this VLAN.                                                                        |
 | sonic_vlans.tagged_ports                                   |           | Array of tagged ports to bind to this VLAN.                                                                          |
 | sonic_vlans.vrf                                            |           | The VRF to bind the VLANs SVI to.                                                                                    |
+| sonic_vlans.sag                                            |           | Whether to enable Static Anycast Gateway for this VLAN. Defaults to false in SONIC.                                  |
 | sonic_vteps                                                |           | VTEPs to configure. If defined FRR will automatically advertise all VNIs.                                            |
 | sonic_vteps.comment                                        |           | Description for the VTEP.                                                                                            |
 | sonic_vteps.vlan                                           |           | The local VLAN interface.                                                                                            |
@@ -82,9 +84,6 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_portchannels.members                                 |           | The list of the interfaces taking part in the portchannel.                                                           |
 | sonic_sag                                                  |           | Configuration for SAG (Static Anycast Gateway)                                                                       |
 | sonic_sag.mac                                              |           | The virtual MAC used for the SAG address                                                                             |
-| sonic_sag.vlans                                            |           | A list of VLANs that use SAG                                                                                         |
-| sonic_sag.vlans.id                                         |           | The VLAN ID of this VLAN                                                                                             |
-| sonic_sag.vlans.ip                                         |           | The SAG IP of this VLAN                                                                                              |
 | sonic_ssh_sourceranges                                     |           | The source ranges from which the switch should be reachable over SSH on its prod (non-management) addresses          |
 | sonic_extended_cacl.ipv4                                   |           | Iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
 | sonic_extended_cacl.ipv6                                   |           | Iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |

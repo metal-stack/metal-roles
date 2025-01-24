@@ -11,6 +11,8 @@
       - postgres_image_tag is defined
       - postgres_backup_restore_sidecar_image_name is defined
       - postgres_backup_restore_sidecar_image_tag is defined
+      - postgres_backup_restore_sidecar_encryption_key is none or postgres_backup_restore_sidecar_encryption_key | length == 32
+      - postgres_backup_restore_sidecar_provider in ["local", "gcp", "s3"]
 
 - name: Deploy postgres (backup-restore)
   k8s:

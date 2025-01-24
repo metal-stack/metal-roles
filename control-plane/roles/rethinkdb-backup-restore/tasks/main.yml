@@ -11,6 +11,8 @@
       - rethinkdb_image_tag is defined
       - rethinkdb_backup_restore_sidecar_image_name is defined
       - rethinkdb_backup_restore_sidecar_image_tag is defined
+      - rethinkdb_backup_restore_sidecar_encryption_key is none or rethinkdb_backup_restore_sidecar_encryption_key | length == 32
+      - rethinkdb_backup_restore_sidecar_provider in ["local", "gcp", "s3"]
 
 - name: Check mandatory variables for this role are set
   assert:

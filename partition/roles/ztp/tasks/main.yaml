@@ -10,20 +10,29 @@
       - ztp_nginx_image_name is defined
       - ztp_nginx_image_tag is defined
       - ztp_authorized_keys is not none
-      - "'ztp.sh' not in ztp_additional_files | map(attribute='name')"
+      - "'user.sh' not in ztp_additional_files | map(attribute='name')"
 
 - name: create ztp config directory
   file:
     path: "{{ ztp_host_dir_path }}/config"
     state: directory
 
-- name: render ztp script
+- name: render templates
   template:
-    src: "ztp.sh.j2"
-    dest: "{{ ztp_host_dir_path }}/config/ztp.sh"
+    src: "{{ item }}"
+    dest: "{{ ztp_host_dir_path }}/config/{{ item | splitext | first }}"
+    mode: 0644
+  loop:
+    - ztp.json.j2
+    - user.sh.j2
+
+- name: copy frr.conf
+  copy:
+    dest: "{{ ztp_host_dir_path }}/config/frr.conf"
+    src: frr.conf
     mode: 0644
 
-- name: copy additional contents
+- name: copy additional files
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
     content: "{{ item.data }}"
@@ -32,7 +41,14 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: deploy server for serving ztp.sh
+- name: copy ztp-provisioning-script
+  copy:
+    dest: "{{ ztp_host_dir_path }}/config/ztp-provisioning-script.sh"
+    content: "{{ ztp_provisioning_script }}"
+    mode: 0644
+  when: ztp_provisioning_script is defined
+
+- name: deploy server for serving ztp files
   include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:

@@ -160,14 +160,15 @@ metal_api:
   filesystemlayouts: |
 {% for entity in metal_api_filesystemlayouts %}
     ---
-    {#
-      Some FSL Types confuse different YAML-parsing implementations.
-      Hence we fall back to JSON to enforce quotes around literals like 8e00.
-    #}
     {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
   sizeimageconstraints: |
 {% for entity in metal_api_sizeimageconstraints %}
+    ---
+    {{ entity | to_json | indent(width=4, first=false) }}
+{% endfor %}
+  size_reservations: |
+{% for entity in metal_api_size_reservations %}
     ---
     {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}

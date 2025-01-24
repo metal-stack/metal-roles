@@ -5,5 +5,7 @@ Type=vlan
 [Link]
 MTUBytes={{ item.mtu | default(systemd_networkd_mtu) }}
 
+{% if item.address is defined %}
 [Network]
 Address={{ item.address }}
+{% endif %}

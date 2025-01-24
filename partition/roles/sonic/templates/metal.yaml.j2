@@ -1,5 +1,6 @@
 #jinja2: lstrip_blocks: "False", trim_blocks: "False"
 ---
+{% set vrfs = [] %}
 DEVICE_METADATA:
   localhost:
     docker_routing_config_mode: "{{ sonic_docker_routing_config_mode }}"
@@ -78,6 +79,7 @@ INTERFACE:
     ipv6_use_link_local_only: enable
     {% endif %}
     {% if port.vrf is defined %}
+    {% set vrfs = vrfs.append(port.vrf) %}
     vrf_name: "{{ port.vrf }}"
     {% endif %}
   {% elif port.ips is defined %}
@@ -109,12 +111,21 @@ PORT:
     {% endif %}
     {% if sonic_ports_dict[name] is defined %}
     {% set port = sonic_ports_dict[name] %}
-    admin_status: up
+    admin_status: {{ port.admin_status|default('up') }}
     speed: "{{ port.speed|default(sonic_ports_default_speed) }}"
     mtu: "{{ port.mtu|default(sonic_ports_default_mtu) }}"
-    fec: "{{ port.fec|default(sonic_ports_default_fec)|string|lower }}"
+    fec: {{ port.fec|default(sonic_ports_default_fec)|string|lower }}
     {% else %}
+    admin_status: up
+    {% if running_cfg.speed is defined %}
     speed: "{{ running_cfg.speed }}"
+    {% endif %}
+    {% if running_cfg.mtu is defined %}
+    mtu: "{{ running_cfg.mtu }}"
+    {% endif %}
+    {% if running_cfg.fec is defined %}
+    fec: {{ running_cfg.fec }}
+    {% endif %}
     {% endif %}
   {% endfor %}
 {% if sonic_portchannels %}
@@ -123,8 +134,8 @@ PORTCHANNEL:
 {% for po in sonic_portchannels %}
   PortChannel{{ po.number }}:
     admin_status: "up"
-{% if po.fallback is defined %}
-    fallback: "{{ po.fallback|bool }}"
+{% if po.fallback is defined and po.fallback %}
+    fallback: "true"
 {% endif %}
     fast_rate: "false"
     lacp_key: "auto"
@@ -140,21 +151,11 @@ PORTCHANNEL_MEMBER:
 {% endfor %}
 {% endfor %}
 {% endif %}
-{% if sonic_sag is defined and sonic_sag|length > 0 %}
-{% if sonic_sag.vlans is defined and sonic_sag.vlans|length > 0 %}
+{% if sonic_sag.mac is defined %}
 
 SAG:
-{% for vlan in sonic_sag.vlans %}
-  "Vlan{{ vlan.id }}|IPv4":
-    gwip:
-    - "{{ vlan.ip }}"
-{% endfor %}
-{% endif %}
-
-SAG_GLOBAL:
-  IP:
-    IPv4: "enable"
-    gwmac: "{{ sonic_sag.mac }}"
+  GLOBAL:
+    gateway_mac: "{{ sonic_sag.mac }}"
 {% endif %}
 {% if sonic_vlans is defined and sonic_vlans|length > 0 %}
 
@@ -170,14 +171,11 @@ VLAN:
 VLAN_INTERFACE:
   {% for vlan in sonic_vlans %}
   {% if vlan.vrf is defined %}
+  {% set vrfs = vrfs.append(vlan.vrf) %}
   Vlan{{ vlan.id }}:
-    {% if sonic_sag is defined and sonic_sag.vlans is defined %}
-    {% for sag_vlan in sonic_sag.vlans %}
-    {% if vlan.id == sag_vlan.id %}
-    "grat_arp_force_override": "enabled"
-    {% endif %}
-    {% endfor %}
-    {% endif %}
+  {% if vlan.sag is defined and vlan.sag %}
+    static_anycast_gateway: "true"
+  {% endif %}
     vrf_name: "{{ vlan.vrf }}"
   {% else %}
   Vlan{{ vlan.id }}: {}
@@ -225,9 +223,11 @@ VXLAN_TUNNEL_MAP:
 
 VRF:
 {% endif %}
+{% set defined_vrfs = [] %}
 {% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
 {% for k, i in sonic_interconnects.items() %}
   {% if i.vrf is defined %}
+  {% set defined_vrfs = defined_vrfs.append(i.vrf) %}
   {% if i.vni is defined %}
   {{ i.vrf }}:
     vni: "{{ i.vni }}"
@@ -237,6 +237,10 @@ VRF:
   {% endif %}
 {% endfor %}
 {% endif %}
+{% set vrfs_to_add = vrfs | difference(defined_vrfs) | unique %}
+{% for vrf in vrfs_to_add %}
+  {{ vrf }}: {}
+{% endfor %}
 {% if sonic_lldp_hello_timer is defined %}
 
 LLDP:

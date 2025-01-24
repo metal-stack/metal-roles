@@ -38,11 +38,6 @@
         namespace: garden
       type: kubernetes.io/tls
 
-- name: Write virtual garden kubeconfig
-  copy:
-    dest: "/tmp/kubeconfig.garden"
-    content: "{{ gardener_seeds_virtual_garden_kubeconfig }}"
-
 - name:  Loop over Gardener seeds
   include_tasks: deploy_cert.yaml
   loop: "{{ gardener_seeds_shooted_seeds }}"
