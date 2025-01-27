@@ -153,11 +153,18 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### Auditing
 
-| Name                                | Mandatory | Description                                                                  |
-| ----------------------------------- | --------- | ---------------------------------------------------------------------------- |
-| metal_auditing_meili_enabled        |           | Whether to deploy or not to deploy the auditing. Default false.              |
-| metal_auditing_meili_url            |           | The URL of the auditing server (required if enabled)                         |
-| metal_auditing_meili_index_prefix   |           | auditing index prefix.                                                       |
-| metal_auditing_meili_index_interval |           | auditing index creation interval, can be one of @hourly / @daily / @monthly. |
-| metal_auditing_meili_secret_name    |           | Secret name that holds the API key for meilisearch                           |
-| metal_auditing_meili_api_key        |           | API key for meilisearch                                                      |
+| Name                                 | Mandatory | Description                                                                  |
+| ------------------------------------ | --------- | ---------------------------------------------------------------------------- |
+| metal_auditing_meili_enabled         |           | Whether to deploy or not to configure meilisearch auditing. Default false.   |
+| metal_auditing_meili_url             |           | The URL of the auditing server (required if enabled)                         |
+| metal_auditing_meili_index_prefix    |           | auditing index prefix.                                                       |
+| metal_auditing_meili_index_interval  |           | auditing index creation interval, can be one of @hourly / @daily / @monthly. |
+| metal_auditing_meili_secret_name     |           | Secret name that holds the API key for meilisearch                           |
+| metal_auditing_meili_api_key         |           | API key for meilisearch                                                      |
+| metal_auditing_timescaledb_enabled   |           | Whether to deploy or not to configure timescaledb auditing. Default false.   |
+| metal_auditing_timescaledb_host      |           | The timescaledb host                                                         |
+| metal_auditing_timescaledb_port      |           | The timescaledb port                                                         |
+| metal_auditing_timescaledb_db        |           | The timescaledb database name                                                |
+| metal_auditing_timescaledb_user      |           | The timescaledb user                                                         |
+| metal_auditing_timescaledb_password  |           | The timescaledb password                                                     |
+| metal_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup         |
