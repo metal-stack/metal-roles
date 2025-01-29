@@ -199,7 +199,6 @@ VLAN_MEMBER:
   {% endfor %}
 {% endif %}
 {% endif %}
-{% if sonic_vteps is defined and sonic_vteps|length > 0 %}
 
 VXLAN_EVPN_NVO:
   nvo:
@@ -208,17 +207,6 @@ VXLAN_EVPN_NVO:
 VXLAN_TUNNEL:
   vtep:
     src_ip: "{{ sonic_loopback_address }}"
-
-VXLAN_TUNNEL_MAP:
-{% for vtep in sonic_vteps %}
-  {% if vtep.comment is defined %}
-  # {{ vtep.comment }}
-  {% endif %}
-  "vtep|map_{{ vtep.vni }}_{{ vtep.vlan }}":
-    vlan: "{{ vtep.vlan }}"
-    vni: "{{ vtep.vni }}"
-{% endfor %}
-{% endif %}
 {% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
 
 VRF:
