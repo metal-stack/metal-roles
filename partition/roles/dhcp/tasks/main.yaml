@@ -45,10 +45,6 @@
   when: dhcp_static_hosts is defined
   register: _hosts_conf
 
-- name: debug static hosts
-  debug:
-    msg: "{{ dhcp_static_hosts }}"
-
 - name: install isc-dhcp-server
   apt:
     name:
