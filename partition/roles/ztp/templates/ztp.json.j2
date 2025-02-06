@@ -25,7 +25,7 @@
       },
       "clear-config": true
     },
-{% if ztp_provisioning_script is defined %}
+{% if ztp_provisioning_script %}
     "05-provisioning-script": {
       "plugin": {
         "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-provisioning-script.sh"
