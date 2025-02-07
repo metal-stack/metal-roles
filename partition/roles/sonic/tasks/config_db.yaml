@@ -72,11 +72,6 @@
   set_fact:
     config_db: "{{ lookup('template', 'metal.yaml.j2') }}"
 
-- name: DEBUG save config_db as JSON file
-  copy:
-    content: "{{ config_db | from_yaml | to_nice_json }}"
-    dest: /home/admin/config_db.json
-
 - name: Save config_db as JSON file
   copy:
     content: "{{ config_db | from_yaml | to_nice_json }}"
