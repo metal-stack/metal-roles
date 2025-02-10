@@ -101,6 +101,8 @@ gardener_shooted_seeds: []
 #   verticalPodAutoscaler: false
 #   pod_cidr:
 #   service_cidr:
+#   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
+#   # https://gardener.cloud/docs/guides/high-availability/control-plane/
 #   high_availability_control_plane: node
 
 gardener_shooted_seed_max_pods: 250
