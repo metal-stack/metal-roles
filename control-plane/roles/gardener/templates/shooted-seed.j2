@@ -24,6 +24,12 @@ spec:
       enabled: false
     nginx-ingress:
       enabled: false
+{% if 'high_availability_control_plane' in gardener_shooted_seed %}
+  controlPlane:
+    highAvailability:
+      failureTolerance:
+        type: {{ gardener_shooted_seed.high_availability_control_plane }}
+{% endif %}
   kubernetes:
     version: "{{ gardener_shooted_seed.k8s_version }}"
     kubelet:
