@@ -1,17 +1,11 @@
 ---
-- name: Clone Gardener etcd (with backup restore)
-  git:
-    repo: "{{ gardener_etcd_repo_url }}"
-    dest: "{{ gardener_local_tmp_dir }}/etcd-backup-restore"
-    depth: 1
-    version: "{{ gardener_etcd_repo_ref }}"
-
 - name: Deploy Gardener etcd (with backup restore)
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
     helm_timeout: "600s"
-    helm_chart: "{{ gardener_local_tmp_dir }}/etcd-backup-restore/chart/etcd-backup-restore"
+    helm_chart_custom_folder: "{{ ansible_parent_role_paths[0] }}/files/etcd-backup-restore"
+    helm_chart: "./etcd-backup-restore"
     helm_release_name: etcd-{{ metal_control_plane_stage_name }}
     helm_target_namespace: garden
     helm_value_file_template: etcd-values.j2

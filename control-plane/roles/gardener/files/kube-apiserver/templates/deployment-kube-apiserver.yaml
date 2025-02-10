@@ -88,7 +88,7 @@ spec:
         - --client-ca-file=/srv/kubernetes/ca/ca.crt
         - --enable-aggregator-routing=true
         - --enable-bootstrap-token-auth=true
-        - --etcd-cafile=/srv/kubernetes/etcd/ca/ca.crt
+        - --etcd-cafile=/srv/kubernetes/etcd/ca/bundle.crt
         - --etcd-certfile=/srv/kubernetes/etcd/client/tls.crt
         - --etcd-keyfile=/srv/kubernetes/etcd/client/tls.key
         - --etcd-servers={{ .Values.etcd.main.endpoints }}

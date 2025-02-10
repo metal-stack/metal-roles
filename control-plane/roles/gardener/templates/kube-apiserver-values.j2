@@ -76,6 +76,6 @@ etcd:
     endpoints: https://etcd-{{ metal_control_plane_stage_name }}-etcd-client:2379
   secretNames:
     ca: etcd-{{ metal_control_plane_stage_name }}-etcd-ca
-    client: etcd-{{ metal_control_plane_stage_name }}-etcd-tls
+    client: etcd-{{ metal_control_plane_stage_name }}-etcd-client-tls
 
 networkPolicies: false

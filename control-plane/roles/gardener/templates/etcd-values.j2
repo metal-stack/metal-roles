@@ -22,13 +22,28 @@ backup:
   deltaSnapshotPeriod: {{ gardener_etcd_snapshot_period }}
   garbageCollectionPeriod: {{ gardener_etcd_garbage_collection_period }}
 
-etcdTLS:
-  caBundle: |
-    {{ gardener_etcd_ca_cert | indent(width=4, first=false) }}
-  crt: |
-    {{ gardener_etcd_cert | indent(width=4, first=false) }}
-  key: |
-    {{ gardener_etcd_cert_key | indent(width=4, first=false) }}
-
 resources:
   etcd: {{ gardener_etcd_resources | to_json }}
+
+tls:
+  etcd:
+    ca: |
+      {{ gardener_etcd_ca_cert | indent(width=6, first=false) }}
+    server:
+      crt: |
+        {{ gardener_etcd_cert | indent(width=8, first=false) }}
+      key: |
+        {{ gardener_etcd_cert_key | indent(width=8, first=false) }}
+    client:
+      crt: |
+        {{ gardener_etcd_client_cert | indent(width=8, first=false) }}
+      key: |
+        {{ gardener_etcd_client_key | indent(width=8, first=false) }}
+    peer:
+      ca: |
+        {{ gardener_etcd_ca_cert | indent(width=8, first=false) }}
+      server:
+        crt: |
+          {{ gardener_etcd_cert | indent(width=10, first=false) }}
+        key: |
+          {{ gardener_etcd_cert_key | indent(width=10, first=false) }}
