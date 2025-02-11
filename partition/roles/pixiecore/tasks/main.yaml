@@ -41,6 +41,7 @@
     dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
     mode: 0640
     content: "{{ item.content }}"
+  no_log: yes
   loop:
     - filename: logging-client.crt
       content: "{{ pixiecore_metal_hammer_logging_cert }}"
