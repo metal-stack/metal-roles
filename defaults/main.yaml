@@ -80,6 +80,10 @@ metal_stack_release:
     droptailer_image_tag: "docker-images.metal-stack.kubernetes.droptailer.tag"
     droptailer_image_name: "docker-images.metal-stack.kubernetes.droptailer.name"
     # third party
+    gardener_etcdbrctl_image_tag: "docker-images.third-party.gardener.etcdbrctl.tag"
+    gardener_etcdbrctl_image_name: "docker-images.third-party.gardener.etcdbrctl.name"
+    gardener_etcd_image_tag: "docker-images.third-party.gardener.etcd.tag"
+    gardener_etcd_image_name: "docker-images.third-party.gardener.etcd.name"
     event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
     event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"
     nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"

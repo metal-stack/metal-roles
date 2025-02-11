@@ -1,13 +1,10 @@
 images:
   etcd:
-{% if gardener_etcd_image_name %}
     repository: {{ gardener_etcd_image_name }}
-{% endif %}
+    tag: "{{ gardener_etcd_image_tag }}"
   etcdBackupRestore:
-{% if gardener_etcdbrctl_image_name %}
     repository: {{ gardener_etcdbrctl_image_name }}
-{% endif %}
-    tag: "{{ gardener_etcd_repo_ref }}"
+    tag: "{{ gardener_etcdbrctl_image_tag }}"
 
 {% if gardener_backup_infrastructure_secret %}
 backup:
