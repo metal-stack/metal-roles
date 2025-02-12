@@ -125,3 +125,5 @@ metal_auditing_timescaledb_db: "auditing"
 metal_auditing_timescaledb_user: "postgres"
 metal_auditing_timescaledb_password: "change-me"
 metal_auditing_timescaledb_retention: "14 days"
+
+metal_auditing_search_backend:

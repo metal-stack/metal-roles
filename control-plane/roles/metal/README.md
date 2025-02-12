@@ -168,3 +168,4 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_auditing_timescaledb_user      |           | The timescaledb user                                                         |
 | metal_auditing_timescaledb_password  |           | The timescaledb password                                                     |
 | metal_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup         |
+| metal_auditing_search_backend        |           | Explicitly sets a configured audit backend to be used for search             |
