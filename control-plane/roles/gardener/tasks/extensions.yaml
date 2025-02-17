@@ -1,9 +1,7 @@
 ---
 - name: "Register controller: extension provider metal"
   k8s:
-    definition:
-      "{{ lookup('template', 'extension-provider-metal/{{ item }}',
-      split_lines=False) }}"
+    definition: "{{ lookup('template', 'extension-provider-metal/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   tags: extension-provider-metal
@@ -18,8 +16,7 @@
 
 - name: "Register controller: provider gcp (backups only)"
   k8s:
-    definition:
-      "{{ lookup('template', 'provider-gcp/{{ item }}', split_lines=False) }}"
+    definition: "{{ lookup('template', 'provider-gcp/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   tags: provider-gcp
@@ -34,9 +31,7 @@
 
 - name: "Register controller: os extension provider metal"
   k8s:
-    definition:
-      "{{ lookup('template', 'os-metal-extension/{{ item }}', split_lines=False)
-      }}"
+    definition: "{{ lookup('template', 'os-metal-extension/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   register: result
@@ -50,9 +45,7 @@
 
 - name: "Register controller: networking calico"
   k8s:
-    definition:
-      "{{ lookup('template', 'networking-calico/{{ item }}', split_lines=False)
-      }}"
+    definition: "{{ lookup('template', 'networking-calico/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   register: result
@@ -66,9 +59,7 @@
 
 - name: "Register controller: networking cilium"
   k8s:
-    definition:
-      "{{ lookup('template', 'networking-cilium/{{ item }}', split_lines=False)
-      }}"
+    definition: "{{ lookup('template', 'networking-cilium/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   register: result
@@ -82,9 +73,7 @@
 
 - name: "Register controller: shoot-cert-service"
   k8s:
-    definition:
-      "{{ lookup('template', 'shoot-cert-service/{{ item }}', split_lines=False)
-      }}"
+    definition: "{{ lookup('template', 'shoot-cert-service/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   tags: shoot-cert-service
@@ -99,9 +88,7 @@
 
 - name: "Register controller: shoot-dns-service"
   k8s:
-    definition:
-      "{{ lookup('template', 'shoot-dns-service/{{ item }}', split_lines=False)
-      }}"
+    definition: "{{ lookup('template', 'shoot-dns-service/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   tags: shoot-dns-service
@@ -114,29 +101,35 @@
     - controller-registration.yaml
   when: gardener_extension_shoot_dns_service_enabled
 
-- name: Register controller for backup-s3
-  kubernetes.core.k8s:
-    template:
-      - path: backup-s3/controller-deployment.yaml.j2
-      - path: backup-s3/controller-registration.yaml.j2
+- name: "Register controller: shoot-cert-service"
+  k8s:
+    definition: "{{ lookup('template', 'shoot-cert-service/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
+  tags: shoot-cert-service
   register: result
   until: result is success
   retries: 10
   delay: 6
+  loop:
+    - controller-deployment.yaml
+    - controller-registration.yaml
+  when: gardener_extension_shoot_cert_service_enabled
 
-- name: Register controller for dns-powerdns
-  kubernetes.core.k8s:
-    template:
-      - path: dns-powerdns/controller-deployment.yaml.j2
-      - path: dns-powerdns/controller-registration.yaml.j2
+- name: "Register controller: shoot-dns-service"
+  k8s:
+    definition: "{{ lookup('template', 'shoot-dns-service/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
+  tags: shoot-dns-service
   register: result
   until: result is success
   retries: 10
   delay: 6
+  loop:
+    - controller-deployment.yaml
+    - controller-registration.yaml
+  when: gardener_extension_shoot_dns_service_enabled
 
 - name: "Register controller: csi-driver-lvm"
   k8s:
