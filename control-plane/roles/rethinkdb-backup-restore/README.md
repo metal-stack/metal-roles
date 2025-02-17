@@ -22,7 +22,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | rethinkdb_password                                       |           | The password of the rethinkdb                                                                                     |
 | rethinkdb_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                                                                       |
 | rethinkdb_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                                                           |
-| rethinkdb_backup_restore_sidecar_provider                |           | The backup provider                                                                                               |
+| rethinkdb_backup_restore_sidecar_provider                |           | The backup provider. One of `local`, `gcp` or `s3`                                                                                              |
 | rethinkdb_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                                                          |
 | rethinkdb_backup_restore_sidecar_log_level               |           | The log level of the sidecar                                                                                      |
 | rethinkdb_backup_restore_sidecar_gcp_bucket_name         |           | Bucket name of the GCP bucket                                                                                     |
