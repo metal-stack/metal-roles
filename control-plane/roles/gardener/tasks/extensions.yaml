@@ -101,12 +101,11 @@
     - controller-registration.yaml
   when: gardener_extension_shoot_dns_service_enabled
 
-- name: "Register controller: shoot-cert-service"
+- name: "Register controller: dns powerdns"
   k8s:
-    definition: "{{ lookup('template', 'shoot-cert-service/{{ item }}', split_lines=False) }}"
+    definition: "{{ lookup('template', 'powerdns/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
-  tags: shoot-cert-service
   register: result
   until: result is success
   retries: 10
@@ -114,11 +113,11 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
-  when: gardener_extension_shoot_cert_service_enabled
+  when: gardener_extension_dns_powerdns_enabled
 
-- name: "Register controller: shoot-dns-service"
+- name: "Register controller: backup s3"
   k8s:
-    definition: "{{ lookup('template', 'shoot-dns-service/{{ item }}', split_lines=False) }}"
+    definition: "{{ lookup('template', 'backup-s3/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   tags: shoot-dns-service
@@ -129,12 +128,11 @@
   loop:
     - controller-deployment.yaml
     - controller-registration.yaml
-  when: gardener_extension_shoot_dns_service_enabled
+  when: gardener_extension_backup_s3_enabled
 
 - name: "Register controller: csi-driver-lvm"
   k8s:
-    definition:
-      "{{ lookup('template', 'csi-driver-lvm/{{ item }}', split_lines=False) }}"
+    definition: "{{ lookup('template', 'csi-driver-lvm/{{ item }}', split_lines=False) }}"
     kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
     apply: yes
   tags: csi-driver-lvm
