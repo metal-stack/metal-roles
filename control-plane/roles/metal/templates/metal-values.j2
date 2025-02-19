@@ -216,8 +216,23 @@ deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
 auditing:
-  enabled: {{ metal_auditing_enabled }}
-  index_prefix: "{{ metal_auditing_index_prefix }}"
-  index_interval: "{{ metal_auditing_index_interval }}"
-  existingMasterKeySecret: "metal-auditing-meili-api-key"
-  url: "{{ metal_auditing_url }}"
+  enabled: {{ 'true' if metal_auditing_meili_enabled or metal_auditing_timescaledb_enabled else 'false' }}
+  search_backend: {{ metal_auditing_search_backend if metal_auditing_search_backend else '' }}
+{% if metal_auditing_meili_enabled %}
+  meilisearch:
+    enabled: true
+    index_prefix: "{{ metal_auditing_meili_index_prefix }}"
+    index_interval: "{{ metal_auditing_meili_index_interval }}"
+    existingMasterKeySecret: "metal-auditing-meili-api-key"
+    url: "{{ metal_auditing_meili_url }}"
+{% endif %}
+{% if metal_auditing_timescaledb_enabled %}
+  timescaledb:
+    enabled: true
+    host: "{{ metal_auditing_timescaledb_host }}"
+    port: "{{ metal_auditing_timescaledb_port }}"
+    db: "{{ metal_auditing_timescaledb_db }}"
+    user: "{{ metal_auditing_timescaledb_user }}"
+    password: "{{ metal_auditing_timescaledb_password }}"
+    retention: "{{ metal_auditing_timescaledb_retention }}"
+{% endif %}

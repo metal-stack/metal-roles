@@ -46,6 +46,8 @@ metal_stack_release:
     headscale_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     auditing_meili_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     auditing_meili_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
+    auditing_timescaledb_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
+    auditing_timescaledb_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     # gardener
     firewall_controller_manager_image_tag: "docker-images.metal-stack.gardener.firewall-controller-manager.tag"
     firewall_controller_manager_image_name: "docker-images.metal-stack.gardener.firewall-controller-manager.name"
@@ -100,6 +102,8 @@ metal_stack_release:
     headscale_db_image_name: "docker-images.third-party.control-plane.headscale-db.name"
     auditing_meili_image_name: "docker-images.third-party.control-plane.meilisearch.name"
     auditing_meili_image_tag: "docker-images.third-party.control-plane.meilisearch.tag"
+    auditing_timescaledb_image_name: "docker-images.third-party.control-plane.timescaledb.name"
+    auditing_timescaledb_image_tag: "docker-images.third-party.control-plane.timescaledb.tag"
     image_cache_coredns_image_tag: "docker-images.third-party.partition.image-cache-coredns.tag"
     image_cache_coredns_image_name: "docker-images.third-party.partition.image-cache-coredns.name"
     image_cache_haproxy_image_tag: "docker-images.third-party.partition.image-cache-haproxy.tag"
