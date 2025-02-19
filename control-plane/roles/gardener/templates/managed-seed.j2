@@ -44,7 +44,7 @@ spec:
       logging:
         enabled: true
         vali:
-          enabled: {{ gardener_logging_vali_enabled }}
+          enabled: {{ gardener_logging_vali_enabled | lower }}
 {% endif %}
 
     deployment:
