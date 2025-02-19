@@ -132,6 +132,11 @@ router bgp {{ sonic_asn }} vrf {{ i.vrf }}
  {% for n in i.unnumbered_interfaces|default([]) %}
  neighbor {{ n }} interface peer-group {{ i.peer_group | default(sonic_interconnects_default_peer_group) }}
  {% endfor %}
+ {% if i.extended_routemap_in is defined %}
+  {% for ext in i.extended_routemap_in %}
+ neighbor {{ ext.neighbor_ip }} peer-group INTERNET
+  {% endfor %}
+{% endif %}
  !
  address-family ipv4 unicast
     {% if i.announcements is defined %}
@@ -146,6 +151,12 @@ router bgp {{ sonic_asn }} vrf {{ i.vrf }}
     {% if i.routemap_out is defined %}
   neighbor {{ i.peer_group | default(sonic_interconnects_default_peer_group) }} route-map {{ i.routemap_out.name }} out
     {% endif %}
+    {% for ext in i.extended_routemap_in | default([]) %}
+  neighbor {{ ext.neighbor_ip }} route-map {{ ext.name }} in
+    {% endfor %}
+    {% for ext in i.extended_routemap_out | default([]) %}
+  neighbor {{ ext.neighbor_ip }} route-map {{ ext.name }} out
+    {% endfor %}
  exit-address-family
  !
  address-family l2vpn evpn
@@ -167,12 +178,28 @@ route-map {{ i.routemap_in.name }} permit 10
  {{ e }}
 {% endfor %}
 {% endif %}
+{% if i.extended_routemap_in is defined %}
+  {% for ext in i.extended_routemap_in %}
+!
+route-map {{ ext.name }} permit 10
+ match ip address prefix-list {{ ext.match_ip }}
+ set as-path prepend {{ ext.set_as_path }}
+  {% endfor %}
+{% endif %}
 {% if i.routemap_out is defined %}
 !
 route-map {{ i.routemap_out.name }} permit 20
 {% for e in i.routemap_out.entries %}
  {{ e }}
 {% endfor %}
+{% endif %}
+{% if i.extended_routemap_out is defined %}
+  {% for ext in i.extended_routemap_out %}
+!
+route-map {{ ext.name }} permit 20
+ match ip address prefix-list {{ ext.match_ip }}
+ set as-path prepend {{ ext.set_as_path }}
+  {% endfor %}
 {% endif %}
 {% endfor %}
 {% if sonic_frr_route_map is defined %}

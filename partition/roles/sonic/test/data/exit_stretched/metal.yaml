@@ -1,0 +1,188 @@
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: "split"
+    hostname: "exit01"
+    hwsku: "Accton-AS7726-32X"
+    mac: "e0:01:a6:e3:29:3c"
+    platform: "x86_64-accton_as7726_32x-r0"
+    type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+NTP_SERVER:
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|10.0.0.1/32: {}
+
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "true"
+
+INTERFACE:
+  Ethernet0:
+    vrf_name: "VrfMpls"
+  Ethernet0|10.0.0.2/32: {}
+  Ethernet1:
+    vrf_name: "VrfStorage"
+  Ethernet112:
+    ipv6_use_link_local_only: enable
+  Ethernet116:
+    ipv6_use_link_local_only: enable
+
+BREAKOUT_CFG:
+  Ethernet0:
+    brkout_mode: "4x10G"
+  Ethernet112:
+    brkout_mode: "1x100G[40G]"
+  Ethernet116:
+    brkout_mode: "1x100G[40G]"
+
+PORT:
+  Ethernet0:
+    alias: Eth1/1(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "1"
+    parent_port: Ethernet0
+    admin_status: up
+    speed: "10000"
+    mtu: "1500"
+    fec: none
+  Ethernet1:
+    alias: Eth1/2(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "2"
+    parent_port: Ethernet0
+    admin_status: up
+    speed: "10000"
+    mtu: "9216"
+    fec: none
+  Ethernet2:
+    alias: Eth1/3(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "3"
+    parent_port: Ethernet0
+    admin_status: up
+    speed: "10000"
+  Ethernet3:
+    alias: Eth1/4(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "4"
+    parent_port: Ethernet0
+    admin_status: up
+    speed: "10000"
+  Ethernet112:
+    alias: Eth29(Port29)
+    autoneg: "off"
+    index: "29"
+    lanes: "113,114,115,116"
+    parent_port: Ethernet112
+    admin_status: up
+    speed: "100000"
+    mtu: "9216"
+    fec: none
+  Ethernet116:
+    alias: Eth30(Port30)
+    autoneg: "off"
+    index: "30"
+    lanes: "117,118,119,120"
+    parent_port: Ethernet116
+    admin_status: up
+    speed: "100000"
+    mtu: "9216"
+    fec: none
+
+VLAN:
+  Vlan4000:
+    vlanid: 4000
+  Vlan4001:
+    vlanid: 4001
+
+VLAN_INTERFACE:
+  Vlan4000:
+    vrf_name: "VrfMpls"
+  Vlan4001:
+    vrf_name: "VrfTest"
+
+VLAN_MEMBER:
+
+VXLAN_EVPN_NVO:
+  nvo:
+    source_vtep: vtep
+
+VXLAN_TUNNEL:
+  vtep:
+    src_ip: "10.0.0.1"
+
+VXLAN_TUNNEL_MAP:
+  # MPLS
+  "vtep|map_104000_4000":
+    vlan: "4000"
+    vni: "104000"
+
+VRF:
+  VrfMpls:
+    vni: "104000"
+  VrfStorage: {}
+  VrfTest: {}
+
+LLDP:
+  Global:
+    hello_timer: 10
+
+ACL_RULE:
+  ALLOW_SSH|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+  ALLOW_SSH|RULE_1:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "91"
+    SRC_IP: "1.2.3.4/32"
+  ALLOW_SSH|RULE_2:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "92"
+    SRC_IP: "10.11.0.0/16"
+  ALLOW_NTP|DEFAULT_RULE:
+    ETHER_TYPE: "2048"
+    PACKET_ACTION: "DROP"
+    PRIORITY: "1"
+  ALLOW_NTP|RULE_1:
+    PACKET_ACTION: "ACCEPT"
+    PRIORITY: "99"
+    SRC_IP: "0.0.0.0/0"
+
+ACL_TABLE:
+  ALLOW_SSH:
+    policy_desc: "Allow SSH access"
+    ports: []
+    services:
+    - "SSH"
+    stage: "ingress"
+    type: "CTRLPLANE"
+  ALLOW_NTP:
+    policy_desc: "Allow NTP"
+    ports: []
+    services:
+    - "NTP"
+    stage: "ingress"
+    type: "CTRLPLANE"
