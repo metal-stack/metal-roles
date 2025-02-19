@@ -142,6 +142,8 @@ VXLAN_TUNNEL_MAP:
 VRF:
   VrfMpls:
     vni: "104000"
+  VrfInternet:
+    vni: "104009"
   VrfStorage: {}
   VrfTest: {}
 
