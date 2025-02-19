@@ -115,3 +115,4 @@ gardener_kube_apiserver_kubeconfig_path: "{{ gardener_local_tmp_dir }}/garden-ku
 gardener_local_tmp_dir: "{{ playbook_dir }}/.ansible/tmp"
 
 gardener_logging_enabled: false
+gardener_logging_vali:
