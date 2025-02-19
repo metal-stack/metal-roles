@@ -71,6 +71,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_nsq_http_address          |           | The http address of nsqd (only used for in-cluster traffic)                                    |
 | metal_api_nsq_tls_enabled           |           | Enables TLS for nsq                                                                            |
 | metal_api_nsq_tls_secret_name       |           | The name of the secret where nsq certificates are stored                                       |
+| metal_api_nsq_tls_checksum          |           | The checksum of the nsq certificate data to imply a rolling update                             |
 | metal_api_grpc_tls_enabled          |           | Enables TLS for gRPC                                                                           |
 | metal_api_grpc_certs_ca_cert        |           | The gRPC ca certificate as a string                                                            |
 | metal_api_grpc_certs_server_key     |           | The gRPC client key as a string                                                                |

@@ -86,6 +86,7 @@ metal_api:
     tls:
       enabled: {{ metal_api_nsq_tls_enabled }}
       secret_name: "{{ metal_api_nsq_tls_secret_name }}"
+      checksum: {{ metal_api_nsq_tls_checksum }}
   grpc:
     tls:
       enabled: "{{ metal_api_grpc_tls_enabled }}"
