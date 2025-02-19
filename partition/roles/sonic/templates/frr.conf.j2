@@ -170,26 +170,32 @@ router bgp {{ sonic_asn }} vrf {{ i.vrf }}
 {% endfor %}
 {% endif %}
 {% if i.routemap_in is defined %}
-  {% set route_maps = i.routemap_in if i.routemap_in is sequence else [i.routemap_in] %}
-  {% for rm in route_maps %}
 !
-route-map {{ rm.name }} permit 10
-  {% for e in rm.entries %}
-  {{ e }}
-  {% endfor %}
-  {% endfor %}
+route-map {{ i.routemap_in.name }} permit 10
+{% for e in i.routemap_in.entries %}
+ {{ e }}
+{% endfor %}
+{% endif %}
+{% if i.routemap_in_extended is defined %}
+!
+route-map {{ i.routemap_in_extended.name }} permit 10
+ match ip address prefix-list {{ match_ip }}
+ set as-path prepend {{ set_as_path }}
 {% endif %}
 {% if i.routemap_out is defined %}
-  {% set route_maps_out = i.routemap_out if i.routemap_out is sequence else [i.routemap_out] %}
-  {% for rm in route_maps_out %}
 !
-route-map {{ rm.name }} permit 20
-  {% for e in rm.entries %}
-  {{ e }}
-  {% endfor %}
-  {% endfor %}
+route-map {{ i.routemap_out.name }} permit 20
+{% for e in i.routemap_out.entries %}
+ {{ e }}
+{% endfor %}
 {% endif %}
 {% endfor %}
+{% if i.routemap_out_extended is defined %}
+!
+route-map {{ i.routemap_out_extended.name }} permit 20
+ match ip address prefix-list {{ match_ip }}
+ set as-path prepend {{ set_as_path }}
+{% endif %}
 {% if sonic_frr_route_map is defined %}
 !
 route-map {{ sonic_frr_route_map.name }} permit 10
