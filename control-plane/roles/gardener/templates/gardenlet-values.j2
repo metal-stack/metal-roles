@@ -25,9 +25,8 @@ config:
 {% if gardener_logging_enabled %}
   logging:
     enabled: true
-{% if gardener_logging_vali %}
-    vali: {{ gardener_logging_vali | to_json }}
-{% endif %}
+    vali:
+      enabled: {{ gardener_logging_vali_enabled }}
 {% endif %}
 
   seedConfig:
