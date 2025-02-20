@@ -184,7 +184,9 @@ route-map {{ i.routemap_in.name }} permit 10
 !
 route-map {{ ext.name }} permit 10
  match ip address prefix-list {{ ext.match_ip }}
+ {% if ext.set_as_path is defined %}
  set as-path prepend {{ ext.set_as_path }}
+ {% endif %}
   {% endfor %}
 {% endif %}
 {% if i.routemap_out is defined %}
@@ -199,7 +201,9 @@ route-map {{ i.routemap_out.name }} permit 20
 !
 route-map {{ ext.name }} permit 20
  match ip address prefix-list {{ ext.match_ip }}
+ {% if ext.set_as_path is defined %}
  set as-path prepend {{ ext.set_as_path }}
+ {% endif %}
   {% endfor %}
 {% endif %}
 {% endfor %}
