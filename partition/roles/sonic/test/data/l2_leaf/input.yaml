@@ -15,6 +15,15 @@ sonic_ports_dict:
   Ethernet2:
   Ethernet4:
   Ethernet5:
+# static machines
+  Ethernet96:
+    speed: 100000
+  Ethernet100:
+    speed: 100000
+  Ethernet104:
+    speed: 100000
+  Ethernet108:
+    speed: 100000
 # L2 interconnects
   Ethernet112:
     speed: 100000
@@ -35,6 +44,14 @@ sonic_running_cfg_breakouts:
     brkout_mode: "4x25G"
   Ethernet4:
     brkout_mode: "4x25G"
+  Ethernet96:
+    brkout_mode: "1x100G[40G]"
+  Ethernet100:
+    brkout_mode: "1x100G[40G]"
+  Ethernet104:
+    brkout_mode: "1x100G[40G]"
+  Ethernet108:
+    brkout_mode: "1x100G[40G]"
   Ethernet112:
     brkout_mode: "1x100G[40G]"
   Ethernet116:
@@ -99,6 +116,30 @@ sonic_running_cfg_ports:
     lanes: "4"
     parent_port: Ethernet4
     speed: "25000"  
+  Ethernet96:
+    alias: Eth25(Port25)
+    index: "25"
+    lanes: "97,98,99,100"
+    parent_port: Ethernet96
+    speed: "100000"
+  Ethernet100:
+    alias: Eth26(Port26)
+    index: "26"
+    lanes: "101,102,103,104"
+    parent_port: Ethernet100
+    speed: "100000"
+  Ethernet104:
+    alias: Eth27(Port27)
+    index: "27"
+    lanes: "105,106,107,108"
+    parent_port: Ethernet104
+    speed: "100000"
+  Ethernet108:
+    alias: Eth28(Port28)
+    index: "28"
+    lanes: "109,110,111,112"
+    parent_port: Ethernet108
+    speed: "100000"
   Ethernet112:
     alias: Eth29(Port29)
     index: "29"
@@ -144,11 +185,16 @@ sonic_vlans:
   - PortChannel21
   - PortChannel22
   - PortChannel23
+- id: 1002
+  vrf: Vrf64
 
 sonic_vteps:
 - comment: "Croit storage"
   vlan: Vlan1001
   vni: 46
+- comment: "Static machines"
+  vlan: Vlan1002
+  vni: 64
 
 sonic_interconnects:
   croit:
@@ -161,6 +207,30 @@ sonic_interconnects:
     evpn_peer: true
     neighbor_ip: "192.168.255.2"
     remote_as: "4200000000"
+  static:
+    vrf: Vrf64
+    vni: 64
+    peer_group: "STATIC"
+    keep_private_as: true
+    unnumbered_interfaces:
+    - Ethernet96
+    - Ethernet100
+    - Ethernet104
+    - Ethernet108
+    announcements:
+    - "redistribute connected"
+    - "neighbor STATIC maximum-prefix 24000"
+    routemap_in: "{{ static_routemap_in }}"
+    prefixlists: "{{ static_prefixlists }}"
+
+static_prefixlists:
+- "ip prefix-list STATIC_PREFIX_IN seq 10 permit 10.64.64.0/22 ge 32"
+
+static_routemap_in:
+  name: ALLOW-STATIC-IN
+  entries:
+  - "match ip address prefix-list STATIC_PREFIX_IN"
+
 
 sonic_mclag:
   system_mac: 00:11:22:33:44:55
