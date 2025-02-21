@@ -42,9 +42,13 @@ spec:
     type: metal
     workers:
 {% for worker_group in gardener_shooted_seed.worker_groups %}
-    - name: "group-cri-{{ loop.index0 }}"
+    - name: "{{ worker_group.name | default('group-cri-' + loop.index0) }}"
       cri:
         name: {{ worker_group.worker_cri | default("containerd") }}
+{% if 'k8s_version' in worker_group %}
+      kubernetes:
+        version: "{{ worker_group.k8s_version }}"
+{% endif %}
       maximum: {{ worker_group.worker_count }}
       minimum: {{ worker_group.worker_count }}
       maxSurge: {{ worker_group.worker_max_surge }}
