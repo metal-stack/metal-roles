@@ -89,6 +89,7 @@ class CloudProfileTemplate(unittest.TestCase):
                     "containerRuntimes": [],
                 },
             },
+            "gardener_os_compatibility_mapping": {},
         })
 
         templar.environment.filters["machine_images_for_cloud_profile"] = machine_images_for_cloud_profile
