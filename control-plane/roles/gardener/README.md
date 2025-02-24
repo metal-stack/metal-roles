@@ -88,6 +88,7 @@ Variables for the metal-stack cloud profile.
 | gardener_cloud_profile_regions                             |           | The regions available for shoots                                                    |
 | gardener_cloud_profile_partitions                          |           | The partitions available for shoots                                                 |
 | gardener_os_cri_mapping                                    |           | A mapping to add available CRIs to the machine images                               |
+| gardener_os_compatibility_mapping                          |           | A mapping to add kubelet version constraints to the machine images                  |
 
 ### Extensions
 
