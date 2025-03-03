@@ -39,6 +39,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                                                                                                                                                                     |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral)                                                                                                                                                 |
 | gardener_logging_enabled                               |           | Specifies whether the logging Gardener logging stack should be activated in the Gardenlet                                                                                                                                                                                     |
+| gardener_logging_vali_enabled                          |           | Specifies whether the Vali component of the Gardener logging should be activated in the Gardenlet                                                                                                                                                                             |
 
 ### Virtual Garden
 
@@ -50,7 +51,13 @@ The deployment chart is taken from [garden-setup](https://github.com/gardener/ga
 | ---------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | gardener_virtual_api_server_svc_cluster_ip_add       |           | An integer to "guess" a free IP for the service that allows the soil to internally communicate with the virtual garden                                                                       |
 | gardener_virtual_api_server_public_dns               |           | The DNS domain to reach the virtual garden API server on                                                                                                                                     |
+| gardener_virtual_api_server_public_port              |           | The port on which the virtual garden API server is available                                                                                                                                 |
+| gardener_virtual_api_replicas                        |           | The amount of replicas of the virtual garden API server                                                                                                                                      |
 | gardener_virtual_api_server_healthcheck_static_token | yes       | A static token for healthchecking the virtual garden API server                                                                                                                              |
+| gardener_etcd_image_tag                              |           | Image version of gardener etcd                                                                                                                                                               |
+| gardener_etcd_image_name                             |           | Image name of gardener etcd                                                                                                                                                                  |
+| gardener_etcdbrctl_image_tag                         |           | Image version of gardener etcdbrctl                                                                                                                                                          |
+| gardener_etcdbrctl_image_name                        |           | Image name of gardener etcdbrctl                                                                                                                                                             |
 | gardener_etcd_backup_schedule                        |           | The backup schedule for the virtual garden ETCD                                                                                                                                              |
 | gardener_etcd_snapshot_period                        |           | The snapshot period for the virtual garden ETCD                                                                                                                                              |
 | gardener_etcd_garbage_collection_period              |           | The priod for garbage collection for the virtual garden ETCD                                                                                                                                 |
@@ -81,6 +88,7 @@ Variables for the metal-stack cloud profile.
 | gardener_cloud_profile_regions                             |           | The regions available for shoots                                                    |
 | gardener_cloud_profile_partitions                          |           | The partitions available for shoots                                                 |
 | gardener_os_cri_mapping                                    |           | A mapping to add available CRIs to the machine images                               |
+| gardener_os_compatibility_mapping                          |           | A mapping to add kubelet version constraints to the machine images                  |
 
 ### Extensions
 
@@ -98,12 +106,14 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_extension_shoot_dns_service_enabled                 |           | If enabled, deploys the gardener-extension-shoot-dns-service                                                                                |
 | gardener_extension_backup_s3_enabled                         |           | If enabled, deploys the gardener-extension-backup-s3                                                                                        |
 | gardener_extension_dns_powerdns_enabled                      |           | If enabled, deploys the gardener-extension-dns-powerdns                                                                                     |
+| gardener_extension_csi_driver_lvm_enabled                    |           | If enabled, deploys the gardener-extension-csi-driver-lvm                                                                                   |
 | gardener_os_controller_repo_ref                              |           | A repo reference for deploying the [os-metal-extension](https://github.com/metal-stack/os-metal-extension/)                                 |
 | gardener_networking_cilium_repo_ref                          |           | A repo reference for deploying the [gardener-extension-networking-cilium](https://github.com/gardener/gardener-extension-networking-cilium) |
 | gardener_extension_provider_metal_repo_ref                   |           | A repo reference for deploying the [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)    |
 | gardener_shoot_dns_service_repo_ref                          |           | A repo reference for deploying the [gardener-extension-shoot-dns-service](https://github.com/gardener/gardener-extension-shoot-dns-service) |
 | gardener_extension_backup_s3_repo_ref                        |           | A repo reference for deploying the [gardener-extension-backup-s3](https://github.com/metal-stack/gardener-extension-backup-s3)              |
 | gardener_extension_dns_powerdns_repo_ref                     |           | A repo reference for deploying the [gardener-extension-dns-powerdns](https://github.com/metal-stack/gardener-extension-dns-powerdns)        |
+| gardener_extension_csi_driver_lvm_repo_ref                   |           | A repo reference for deploying the [gardener-extension-csi-driver-lvm](https://github.com/metal-stack/gardener-extension-csi-driver-lvm)    |
 | gardener_metal_admission_replicas                            |           | Specifies the amount of metal-admission webhook replicas                                                                                    |
 | gardener_metal_admission_vpa                                 |           | Enables the VPA for the metal-admission webhook                                                                                             |
 | gardener_extension_provider_metal_cluster_audit_enabled      |           | Enables the audit functionality of the GEPM                                                                                                 |
@@ -131,6 +141,8 @@ This includes the metal-stack extension provider called [gardener-extension-prov
 | gardener_extension_backup_s3_image_tag                       |           | Setting an explicit image tag for the gardener-extension-backup-s3                                                                          |
 | gardener_extension_dns_powerdns_image_name                   |           | Setting an explicit image name for the gardener-extension-dns-powerdns                                                                      |
 | gardener_extension_dns_powerdns_image_tag                    |           | Setting an explicit image tag for the  gardener-extension-dns-powerdns                                                                      |
+| gardener_extension_csi_driver_lvm_image_name                 |           | Setting an explicit image name for the gardener-extension-csi-driver-lvm                                                                    |
+| gardener_extension_csi_driver_lvm_image_tag                  |           | Setting an explicit image tag for the  gardener-extension-csi-driver-lvm                                                                    |
 
 ### Certificates
 

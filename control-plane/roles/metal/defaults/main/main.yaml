@@ -40,6 +40,7 @@ metal_api_nsq_http_address: "nsqd:4151"
 metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tls_enabled: true
 metal_api_nsq_tls_secret_name: nsqd
+metal_api_nsq_tls_checksum: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='nsqd').get('data', {}) | string | hash('sha1') if metal_api_nsq_tls_enabled else None }}"
 metal_api_grpc_tls_enabled: true
 metal_api_bmc_superuser_enabled: false
 metal_api_bmc_superuser_pwd: change-me
@@ -112,8 +113,18 @@ metal_api_headscale_control_plane_address: "http{{ 's' if metal_api_headscale_tl
 metal_api_headscale_internal_api_address: "headscale:50443"
 
 # auditing
-metal_auditing_enabled: false
-metal_auditing_index_prefix: "auditing"
-metal_auditing_index_interval: "@daily"
-metal_auditing_url: "http://auditing-meili.{{ auditing_meili_namespace if auditing_meili_namespace is defined else metal_control_plane_namespace }}.svc.cluster.local:7700"
-metal_auditing_meili_api_key: "{{ lookup('k8s', api_version='v1', namespace=auditing_meili_namespace if auditing_meili_namespace is defined else metal_control_plane_namespace, kind='Secret', resource_name='auditing-meili').get('data', {}).get('MEILI_MASTER_KEY') | b64decode if metal_auditing_enabled else '' }}"
+metal_auditing_meili_enabled: false
+metal_auditing_meili_index_prefix: "auditing"
+metal_auditing_meili_index_interval: "@daily"
+metal_auditing_meili_url: "http://auditing-meili.{{ auditing_meili_namespace if auditing_meili_namespace is defined else metal_control_plane_namespace }}.svc.cluster.local:7700"
+metal_auditing_meili_api_key: "{{ lookup('k8s', api_version='v1', namespace=auditing_meili_namespace if auditing_meili_namespace is defined else metal_control_plane_namespace, kind='Secret', resource_name='auditing-meili').get('data', {}).get('MEILI_MASTER_KEY') | b64decode if metal_auditing_meili_enabled else '' }}"
+
+metal_auditing_timescaledb_enabled: false
+metal_auditing_timescaledb_host: "auditing-timescaledb"
+metal_auditing_timescaledb_port: "5432"
+metal_auditing_timescaledb_db: "auditing"
+metal_auditing_timescaledb_user: "postgres"
+metal_auditing_timescaledb_password: "change-me"
+metal_auditing_timescaledb_retention: "14 days"
+
+metal_auditing_search_backend:

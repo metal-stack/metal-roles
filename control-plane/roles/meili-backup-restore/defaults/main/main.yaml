@@ -24,6 +24,12 @@ meilisearch_backup_restore_sidecar_gcp_backup_location:
 meilisearch_backup_restore_sidecar_gcp_project_id:
 meilisearch_backup_restore_sidecar_gcp_serviceaccount_json:
 
+meilisearch_backup_restore_sidecar_s3_bucket_name:
+meilisearch_backup_restore_sidecar_s3_region:
+meilisearch_backup_restore_sidecar_s3_endpoint:
+meilisearch_backup_restore_sidecar_s3_access_key:
+meilisearch_backup_restore_sidecar_s3_secret_key:
+
 meilisearch_resources:
   requests:
     memory: "256Mi"

@@ -1,11 +1,10 @@
 ---
-apiVersion: core.gardener.cloud/v1beta1
+apiVersion: core.gardener.cloud/v1
 kind: ControllerDeployment
 metadata:
   name: extension-shoot-cert-service
-type: helm
-providerConfig:
-  chart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener-extension-shoot-cert-service/' + gardener_shoot_cert_service_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].providerConfig.chart }}"
+helm:
+  rawChart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener-extension-shoot-cert-service/' + gardener_shoot_cert_service_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].helm.rawChart }}"
   values:
     image:
       repository: "{{ gardener_shoot_cert_service_image_name }}"
