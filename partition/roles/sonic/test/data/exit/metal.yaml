@@ -44,6 +44,8 @@ INTERFACE:
     ipv6_use_link_local_only: enable
   Ethernet116:
     ipv6_use_link_local_only: enable
+  Ethernet2:
+    ipv6_use_link_local_only: enable
 
 BREAKOUT_CFG:
   Ethernet0:
