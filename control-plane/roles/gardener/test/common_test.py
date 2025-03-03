@@ -282,6 +282,57 @@ class ImageTest(unittest.TestCase):
         self.assertListEqual(actual, expected)
 
 
+    def test_image_list_with_compatibility_mapping(self):
+        self.maxDiff = None
+
+        sample_data = """
+        - id: debian-12.0.20240101
+          name: Debian 12 20240101
+          description: Debian 12 20240101
+          url: http://images.metal-stack.io/metal-os/debian/12/img.tar.lz4
+          features:
+            - machine
+        - id: debian-12.0.20250231
+          name: Debian 12 20250231
+          description: Debian 12 20250231
+          url: http://images.metal-stack.io/metal-os/debian/12/img.tar.lz4
+          features:
+            - machine
+        """
+
+        compat_mapping = {
+            "debian": {
+                "when": {
+                    "operator": "<",
+                    "version": "12.0.20250101",
+                    "except": ["12.0"],
+                },
+                "kubelet": "<= 1.30",
+            }
+        }
+
+        actual = machine_images_for_cloud_profile(yaml.safe_load(sample_data), compatibilities=compat_mapping)
+        expected = [
+            {
+                "name": "debian",
+                "versions": [
+                    {
+                        "version": "12.0",
+                    },
+                    {
+                        "version": "12.0.20240101",
+                        "kubeletVersionConstraint": "<= 1.30"
+                    },
+                    {
+                        "version": "12.0.20250231",
+                    },
+                ],
+            },
+        ]
+
+        self.assertListEqual(actual, expected)
+
+
 class KubeconfigTest(unittest.TestCase):
     def test_kubeconfig_for_sa(self):
         kubeconfig = read_mock_file("kubeconfig.yaml")
