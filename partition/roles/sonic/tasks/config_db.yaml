@@ -76,4 +76,4 @@
   copy:
     content: "{{ config_db | from_yaml | to_nice_json }}"
     dest: /etc/sonic/config_db.json
-  notify: "config {{ sonic_config_action }}"
+  notify: config reload
