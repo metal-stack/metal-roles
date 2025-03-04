@@ -1,0 +1,9 @@
+[Unit]
+Description=Collect BGP Neighbor statistics
+
+[Timer]
+OnCalendar=*:0/2
+Persistent=false
+
+[Install]
+WantedBy=timers.target

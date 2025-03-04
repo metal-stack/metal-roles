@@ -46,6 +46,8 @@ metal_stack_release:
     headscale_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     auditing_meili_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     auditing_meili_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
+    auditing_timescaledb_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
+    auditing_timescaledb_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     # gardener
     firewall_controller_manager_image_tag: "docker-images.metal-stack.gardener.firewall-controller-manager.tag"
     firewall_controller_manager_image_name: "docker-images.metal-stack.gardener.firewall-controller-manager.name"
@@ -62,6 +64,8 @@ metal_stack_release:
     gardener_extension_backup_s3_image_name: "docker-images.metal-stack.gardener.gardener-extension-backup-s3.name"
     gardener_extension_dns_powerdns_image_tag: "docker-images.metal-stack.gardener.gardener-extension-dns-powerdns.tag"
     gardener_extension_dns_powerdns_image_name: "docker-images.metal-stack.gardener.gardener-extension-dns-powerdns.name"
+    gardener_extension_csi_driver_lvm_image_tag: "docker-images.metal-stack.gardener.gardener-extension-csi-driver-lvm.tag"
+    gardener_extension_csi_driver_lvm_image_name: "docker-images.metal-stack.gardener.gardener-extension-csi-driver-lvm.name"
     # kubernetes
     csi_lvm_controller_image_tag: "docker-images.metal-stack.kubernetes.csi-lvm-controller.tag"
     csi_lvm_controller_image_name: "docker-images.metal-stack.kubernetes.csi-lvm-controller.name"
@@ -78,6 +82,10 @@ metal_stack_release:
     droptailer_image_tag: "docker-images.metal-stack.kubernetes.droptailer.tag"
     droptailer_image_name: "docker-images.metal-stack.kubernetes.droptailer.name"
     # third party
+    gardener_etcdbrctl_image_tag: "docker-images.third-party.gardener.etcdbrctl.tag"
+    gardener_etcdbrctl_image_name: "docker-images.third-party.gardener.etcdbrctl.name"
+    gardener_etcd_image_tag: "docker-images.third-party.gardener.etcd.tag"
+    gardener_etcd_image_name: "docker-images.third-party.gardener.etcd.name"
     event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
     event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"
     nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"
@@ -94,6 +102,8 @@ metal_stack_release:
     headscale_db_image_name: "docker-images.third-party.control-plane.headscale-db.name"
     auditing_meili_image_name: "docker-images.third-party.control-plane.meilisearch.name"
     auditing_meili_image_tag: "docker-images.third-party.control-plane.meilisearch.tag"
+    auditing_timescaledb_image_name: "docker-images.third-party.control-plane.timescaledb.name"
+    auditing_timescaledb_image_tag: "docker-images.third-party.control-plane.timescaledb.tag"
     image_cache_coredns_image_tag: "docker-images.third-party.partition.image-cache-coredns.tag"
     image_cache_coredns_image_name: "docker-images.third-party.partition.image-cache-coredns.name"
     image_cache_haproxy_image_tag: "docker-images.third-party.partition.image-cache-haproxy.tag"
