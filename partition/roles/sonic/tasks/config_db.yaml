@@ -1,10 +1,10 @@
-- name: Check mandatory variables for this role are set
+- name: Check mandatory variables on non-empty sonic_ports are set
   assert:
-    fail_msg: "not all mandatory variables given, check role documentation"
+    fail_msg: "default port configuration is necessary on non-empty sonic_ports"
     quiet: yes
     that:
-     - sonic_ports_default_speed
-     - sonic_ports_default_mtu
+      - sonic_ports_default_speed
+      - sonic_ports_default_mtu
   when: sonic_ports
 
 - name: Populate sonic_ports_dict
@@ -12,6 +12,7 @@
     sonic_ports_dict: "{{ sonic_ports_dict|default({}) | combine( {item.name: item} ) }}"
   loop: "{{ sonic_ports }}"
 
+# Dependencies are returned by config.
 - name: Configure breakouts
   command: "config interface breakout --yes {{ item.key }} '{{ item.value }}'"
   register: breakout_result
@@ -19,18 +20,18 @@
   failed_when: "breakout_result.rc != 0 or 'Dependecies Exist. No further action will be taken' in breakout_result.stdout"
   with_dict: "{{ sonic_breakouts }}"
   when: sonic_breakouts is defined
-  notify: config reload
-
-- name: Flush handlers
-  meta: flush_handlers
-  when: sonic_breakouts is defined
-
+- name: Delete deprecated metal.yaml
+  ansible.builtin.file:
+    path: "/etc/sonic/metal.yaml"
+    state: absent
 
 
-- name: Get updated running configuration after breakout
+- name: Get running configuration
   ansible.builtin.command: show runningconfiguration all
   register: sonic_running_cfg_result
   changed_when: false
+
+
 
 - name: Parse running configuration
   ansible.builtin.set_fact:
@@ -70,20 +71,3 @@
     dest: /etc/sonic/config_db.json
   notify: "config {{ sonic_config_action }}"
 
-- name: Remove existing config_db.json
-  ansible.builtin.file:
-    path: /etc/sonic/config_db.json
-    state: absent
-  when: sonic_reset_factory | default(false)
-
-- name: Run config-setup factory
-  ansible.builtin.command: config-setup factory
-  args:
-    chdir: /etc/sonic
-  when: sonic_reset_factory | default(false)
-
-- name: Reload config from config_db.json
-  ansible.builtin.command: config reload /etc/sonic/config_db.json -y -f
-  async: 120
-  poll: 0
-  when: sonic_reset_factory | default(false)
