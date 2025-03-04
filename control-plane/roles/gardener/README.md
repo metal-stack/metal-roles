@@ -39,6 +39,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                                                                                                                                                                     |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral)                                                                                                                                                 |
 | gardener_logging_enabled                               |           | Specifies whether the logging Gardener logging stack should be activated in the Gardenlet                                                                                                                                                                                     |
+| gardener_logging_vali_enabled                          |           | Specifies whether the Vali component of the Gardener logging should be activated in the Gardenlet                                                                                                                                                                             |
 
 ### Virtual Garden
 
@@ -87,6 +88,7 @@ Variables for the metal-stack cloud profile.
 | gardener_cloud_profile_regions                             |           | The regions available for shoots                                                    |
 | gardener_cloud_profile_partitions                          |           | The partitions available for shoots                                                 |
 | gardener_os_cri_mapping                                    |           | A mapping to add available CRIs to the machine images                               |
+| gardener_os_compatibility_mapping                          |           | A mapping to add kubelet version constraints to the machine images                  |
 
 ### Extensions
 
