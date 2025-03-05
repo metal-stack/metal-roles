@@ -1,0 +1,38 @@
+---
+- name: Run show bgp summary
+  command: vtysh -c "show bgp summary"
+  register: bgp_summary_output
+
+- name: Check if no neighbors
+  set_fact:
+    no_neighbors: "{{ 'No BGP neighbors found' in bgp_summary_output.stdout }}"
+
+- name: Set unestablished_neighbors based on no neighbors
+  set_fact:
+    unestablished_neighbors: "No BGP neighbors found"
+  when: no_neighbors
+
+- name: Find header line index
+  set_fact:
+    header_index: "{{ bgp_summary_output.stdout_lines | index('Neighbor') }}"
+  when: not no_neighbors
+
+- name: Get data lines
+  set_fact:
+    data_lines: "{{ bgp_summary_output.stdout_lines[header_index + 1:] }}"
+  when: not no_neighbors
+
+- name: Parse data lines
+  set_fact:
+    unestablished_neighbors: []
+  when: not no_neighbors
+
+- name: Find unestablished neighbors
+  set_fact:
+    unestablished_neighbors: "{{ unestablished_neighbors + [item.split()[0]] if item.split()[8] == 'never' and item.split()|length > 8 else unestablished_neighbors }}"
+  with_items: "{{ data_lines }}"
+  when: not no_neighbors
+
+- name: Report result
+  debug:
+    msg: "{{ unestablished_neighbors if unestablished_neighbors is string else 'Unestablished neighbors: ' + unestablished_neighbors | join(', ') if unestablished_neighbors else 'All connections are established' }}"
