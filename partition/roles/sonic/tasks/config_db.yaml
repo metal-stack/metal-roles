@@ -77,3 +77,21 @@
     content: "{{ config_db | from_yaml | to_nice_json }}"
     dest: /etc/sonic/config_db.json
   notify: "config {{ sonic_config_action }}"
+
+- name: Remove existing config_db.json
+  ansible.builtin.file:
+    path: /etc/sonic/config_db.json
+    state: absent
+  when: sonic_reset_factory | default(false)
+
+- name: Run config-setup factory
+  ansible.builtin.command: config-setup factory
+  args:
+    chdir: /etc/sonic
+  when: sonic_reset_factory | default(false)
+
+- name: Reload config from config_db.json
+  ansible.builtin.command: config reload /etc/sonic/config_db.json -y -f
+  async: 120
+  poll: 0
+  when: sonic_reset_factory | default(false)
