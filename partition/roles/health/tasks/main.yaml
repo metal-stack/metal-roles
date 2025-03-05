@@ -14,7 +14,8 @@
 
 - name: Find header line index
   set_fact:
-    header_index: "{{ bgp_summary_output.stdout_lines | index('Neighbor') }}"
+    header_line: "{{ bgp_summary_output.stdout_lines | select('search', 'Neighbor') | first }}"
+    header_index: "{{ bgp_summary_output.stdout_lines.index(header_line) if header_line is defined else -1 }}"
   when: not no_neighbors
 
 - name: Get data lines
