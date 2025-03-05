@@ -1,37 +1,36 @@
 ---
-- name: Run show bgp summary
-  command: vtysh -c "show bgp summary"
-  register: bgp_summary_output
+- name: Run show bgp summary json
+  command: vtysh -c "show bgp summary json"
+  register: bgp_summary_json
+
+- name: Parse JSON output
+  set_fact:
+    bgp_summary: "{{ bgp_summary_json.stdout | from_json }}"
 
 - name: Check if no neighbors
   set_fact:
-    no_neighbors: "{{ 'No BGP neighbors found' in bgp_summary_output.stdout }}"
+    no_neighbors: "{{ bgp_summary.ipv4Unicast.peerCount == 0 }}"
 
 - name: Set unestablished_neighbors based on no neighbors
   set_fact:
     unestablished_neighbors: "No BGP neighbors found"
   when: no_neighbors
 
-- name: Find header line index
-  set_fact:
-    header_line: "{{ bgp_summary_output.stdout_lines | select('search', 'Neighbor') | first }}"
-    header_index: "{{ bgp_summary_output.stdout_lines.index(header_line) if header_line is defined else -1 }}"
-  when: not no_neighbors
-
-- name: Get data lines
-  set_fact:
-    data_lines: "{{ bgp_summary_output.stdout_lines[header_index + 1:] }}"
-  when: not no_neighbors
-
-- name: Parse data lines
+- name: Initialize unestablished_neighbors
   set_fact:
     unestablished_neighbors: []
   when: not no_neighbors
 
 - name: Find unestablished neighbors
   set_fact:
-    unestablished_neighbors: "{{ unestablished_neighbors + [item.split()[0]] if item.split()[8] == 'never' and item.split()|length > 8 else unestablished_neighbors }}"
-  with_items: "{{ data_lines }}"
+    unestablished_neighbors: >-
+      {{ unestablished_neighbors + [neighbor_name] if item.value.state != 'Established' else unestablished_neighbors }}
+  with_dict: "{{ bgp_summary.ipv4Unicast.peers }}"
+  vars:
+    neighbor_name: >-
+      {{
+        (item.value.get('hostname', '') + '(' + item.key + ')') if item.value.get('hostname', '') else item.key
+      }}
   when: not no_neighbors
 
 - name: Report result
