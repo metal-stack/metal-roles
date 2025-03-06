@@ -60,5 +60,10 @@
   notify:
   - restart caclmgrd
 
+# upstream sonic cannot configure lldp so we set it here via lldpcli
+# this command can be safely run against edge-core sonic as well
+- name: set lldp hello timer
+  command: "lldpcli configure lldp tx-interval {{ sonic_lldp_hello_timer }}"
+
 - name: Flush handlers
   meta: flush_handlers
