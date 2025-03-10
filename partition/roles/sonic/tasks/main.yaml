@@ -51,7 +51,6 @@
 - name: Render and save config_db
   import_tasks: config_db.yaml
   when: 
-    - not perform_factory_reset
     - sonic_render_config_db_template | default(true)
 
 - name: Set NTP timezone
