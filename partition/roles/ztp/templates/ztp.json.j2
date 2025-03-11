@@ -15,16 +15,6 @@
         }
       ]
     },
-    "04-configdb-json": {
-      "dynamic-url": {
-        "source": {
-          "prefix": "http://{{ ztp_listen_address }}:{{ ztp_port }}/",
-          "identifier": "hostname",
-          "suffix": "_config_db.json"
-        }
-      },
-      "clear-config": true
-    },
 {% if ztp_provisioning_script %}
     "05-provisioning-script": {
       "plugin": {
