@@ -44,6 +44,30 @@
   ansible.builtin.set_fact:
     sonic_running_cfg: "{{ sonic_running_cfg_result.stdout | from_json }}"
 
+# Add this right after extracting the running configuration
+- name: Debug running configuration ports
+  debug:
+    msg: "Checking ports configuration"
+    verbosity: 0
+
+- name: Debug port entries without index
+  debug:
+    msg: "Port {{ item.key }} is missing 'index' attribute"
+  loop: "{{ sonic_running_cfg_ports | dict2items }}"
+  when: item.value.index is not defined
+  
+- name: Debug port entries without alias
+  debug:
+    msg: "Port {{ item.key }} is missing 'alias' attribute"
+  loop: "{{ sonic_running_cfg_ports | dict2items }}"
+  when: item.value.alias is not defined
+
+- name: Debug port entries without lanes
+  debug:
+    msg: "Port {{ item.key }} is missing 'lanes' attribute"
+  loop: "{{ sonic_running_cfg_ports | dict2items }}"
+  when: item.value.lanes is not defined
+
 - name: Extract running configuration for breakouts and ports
   ansible.builtin.set_fact:
     sonic_running_cfg_breakouts: "{{ sonic_running_cfg | community.general.json_query('BREAKOUT_CFG') }}"
