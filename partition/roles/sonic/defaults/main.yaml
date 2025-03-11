@@ -54,4 +54,3 @@ sonic_interconnects_default_bgp_timers: '1 3'
 
 sonic_mclag: {}
 sonic_sag: {}
-sonic_ssh_sourceranges: []
