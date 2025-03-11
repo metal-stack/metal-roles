@@ -1,0 +1,37 @@
+---
+- name: Create temporary directory
+  file:
+    path: /tmp/sonic
+    state: directory
+
+- name: Render input values template
+  template:
+    src: sonic-config.yaml.j2
+    dest: /tmp/sonic/sonic-config.yaml
+
+- name: Run sonic-configdb-utils
+  community.docker.docker_container:
+    name: sonic-configdb-utils
+    image: ghcr.io/metal-stack/sonic-configdb-utils:latest
+    pull: always
+    detach: false
+    cleanup: true
+    command: generate
+    volumes:
+      - /usr/share/sonic/platform:/usr/share/sonic/platform:ro
+      - /tmp/sonic:/etc/sonic:rw
+      - /tmp/sonic:/sonic:ro
+
+- name: Copy generated config_db.json to /etc/sonic
+  copy:
+    src: /tmp/sonic/config_db.json
+    dest: /etc/sonic/config_db.json
+    mode: 0644
+    owner: root
+    group: root
+  notify: "config {{ sonic_config_action }}"
+
+- name: Remove temporary directory
+  file:
+    path: /tmp/sonic/
+    state: absent

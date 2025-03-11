@@ -5,7 +5,7 @@ sonic_nameservers: []
 sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
 sonic_config_action: load
-sonic_render_config_db_template: true
+sonic_config_source: template
 
 ## Physical settings
 sonic_ports: []
