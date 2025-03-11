@@ -9,18 +9,49 @@ metal_set_resource_limits: yes
 metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api_base_path }}v1/health
 
 metal_log_level: info
-metal_log_encoding: json
 
 # metalctl
 metal_metalctl_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 
 # service ports
 metal_api_port: 8080
+metal_apiserver_port: 8080
 metal_api_grpc_port: 50051
 metal_api_metrics_port: 2112
 metal_masterdata_api_port: 8443
 metal_masterdata_api_metrics_port: 2113
 metal_console_port: 10001
+
+# metal-apiserver
+# TODO: move into release vector
+metal_apiserver_image_name: ghcr.io/metal-stack/metal-apiserver
+metal_apiserver_image_tag: latest
+metal_apiserver_url: https://v2.api.{{ metal_control_plane_ingress_dns }}
+metal_apiserver_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+metal_apiserver_db_addresses:
+ - metal-db
+metal_apiserver_db_password: change-me
+metal_apiserver_redis_addr: valkey-primary:6379
+metal_apiserver_replicas: 1
+metal_apiserver_hpa_enabled: false
+metal_apiserver_hpa_max: 5
+metal_apiserver_hpa_min: 3
+metal_apiserver_hpa_cpu_percentage: 70
+metal_apiserver_resources:
+metal_apiserver_auditing_enabled: true
+metal_apiserver_auditing_timescaledb_host: "auditing-timescaledb.metal-control-plane.svc.cluster.local"
+metal_apiserver_auditing_timescaledb_port: "5432"
+metal_apiserver_auditing_timescaledb_db: "auditing"
+metal_apiserver_auditing_timescaledb_user: "postgres"
+metal_apiserver_auditing_timescaledb_password: "change-me"
+metal_apiserver_auditing_timescaledb_retention: "14 days"
+metal_apiserver_rate_limiting_max_requests_per_minute: 1000
+metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute: 50
+metal_apiserver_oidc_discovery_url:
+metal_apiserver_oidc_end_session_url:
+metal_apiserver_oidc_client_id:
+metal_apiserver_oidc_client_secret:
+metal_apiserver_session_secret: secret
 
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"

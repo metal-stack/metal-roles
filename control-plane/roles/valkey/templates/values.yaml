@@ -1,0 +1,22 @@
+---
+# find the chart values here: https://github.com/bitnami/charts/blob/main/bitnami/valkey/values.yaml
+global:
+{% if valkey_storage_class %}
+  defaultStorageClass: "{{ valkey_storage_class }}"
+{% endif %}
+  valkey:
+    password: "{{ valkey_password }}"
+
+image:
+  pullPolicy: {{ metal_control_plane_image_pull_policy }}
+
+primary:
+  persistence:
+    size: {{ valkey_size }}
+
+replica:
+  replicaCount: {{ valkey_replicas }}
+  persistence:
+    size: {{ valkey_size }}
+
+# TODO: do we need something else?

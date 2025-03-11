@@ -48,6 +48,8 @@ metal_stack_release:
     auditing_meili_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     auditing_timescaledb_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     auditing_timescaledb_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
+    logto_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
+    logto_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     # gardener
     firewall_controller_manager_image_tag: "docker-images.metal-stack.gardener.firewall-controller-manager.tag"
     firewall_controller_manager_image_name: "docker-images.metal-stack.gardener.firewall-controller-manager.name"
