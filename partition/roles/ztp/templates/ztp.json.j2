@@ -15,8 +15,15 @@
         }
       ]
     },
+    "03-configdb-json": {
+      "url": {
+        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/config_db.json",
+        "destination": "/etc/sonic/config_db.json"
+      },
+      "clear-config": true
+    },
 {% if ztp_provisioning_script %}
-    "03-provisioning-script": {
+    "04-provisioning-script": {
       "plugin": {
         "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-provisioning-script.sh"
       },
