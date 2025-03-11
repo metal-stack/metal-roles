@@ -16,7 +16,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_check_api_health_endpoint |           | The endpoint to call if the metal-api is reachable from the outside after deployment                     |
 | metal_set_resource_limits       |           | Deploys metal components with or without resource limits (possibly disable for development environments) |
 | metal_log_level                 |           | The log level of the control plane components                                                            |
-| metal_log_encoding              |           | The output format of the logger                                                                          |
 | metal_helm_chart_repo           |           | The repository URL of the metal control plane helm chart                                                 |
 | metal_helm_chart_version        |           | The version of the metal control plane helm chart                                                        |
 | metal_helm_chart_local_path     |           | Local path to the metal control plane helm chart, which can be useful for development purposes           |
