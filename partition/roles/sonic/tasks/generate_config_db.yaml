@@ -13,7 +13,7 @@
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: ghcr.io/metal-stack/sonic-configdb-utils:latest
-    pull: always
+    pull: true
     detach: false
     cleanup: true
     command: generate
