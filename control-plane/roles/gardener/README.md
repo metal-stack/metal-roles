@@ -39,6 +39,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_kube_apiserver_kubeconfig_path                |           | The acts on multiple Kubernetes APIs, this is where it puts the kubeconfig of the Gardener Kubernetes API                                                                                                                                                                     |
 | gardener_local_tmp_dir                                 |           | The acts on multiple Kubernetes APIs, this is a local folder in the deployment container to store the kubeconfigs (ephemeral)                                                                                                                                                 |
 | gardener_logging_enabled                               |           | Specifies whether the logging Gardener logging stack should be activated in the Gardenlet                                                                                                                                                                                     |
+| gardener_logging_vali_enabled                          |           | Specifies whether the Vali component of the Gardener logging should be activated in the Gardenlet                                                                                                                                                                             |
 
 ### Virtual Garden
 
@@ -53,6 +54,10 @@ The deployment chart is taken from [garden-setup](https://github.com/gardener/ga
 | gardener_virtual_api_server_public_port              |           | The port on which the virtual garden API server is available                                                                                                                                 |
 | gardener_virtual_api_replicas                        |           | The amount of replicas of the virtual garden API server                                                                                                                                      |
 | gardener_virtual_api_server_healthcheck_static_token | yes       | A static token for healthchecking the virtual garden API server                                                                                                                              |
+| gardener_etcd_image_tag                              |           | Image version of gardener etcd                                                                                                                                                               |
+| gardener_etcd_image_name                             |           | Image name of gardener etcd                                                                                                                                                                  |
+| gardener_etcdbrctl_image_tag                         |           | Image version of gardener etcdbrctl                                                                                                                                                          |
+| gardener_etcdbrctl_image_name                        |           | Image name of gardener etcdbrctl                                                                                                                                                             |
 | gardener_etcd_backup_schedule                        |           | The backup schedule for the virtual garden ETCD                                                                                                                                              |
 | gardener_etcd_snapshot_period                        |           | The snapshot period for the virtual garden ETCD                                                                                                                                              |
 | gardener_etcd_garbage_collection_period              |           | The priod for garbage collection for the virtual garden ETCD                                                                                                                                 |
@@ -83,6 +88,7 @@ Variables for the metal-stack cloud profile.
 | gardener_cloud_profile_regions                             |           | The regions available for shoots                                                    |
 | gardener_cloud_profile_partitions                          |           | The partitions available for shoots                                                 |
 | gardener_os_cri_mapping                                    |           | A mapping to add available CRIs to the machine images                               |
+| gardener_os_compatibility_mapping                          |           | A mapping to add kubelet version constraints to the machine images                  |
 
 ### Extensions
 

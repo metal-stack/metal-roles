@@ -1,0 +1,3 @@
+client_key.pem: {{ nsq_certs_client_key | b64encode }}
+client.pem: {{ nsq_certs_client_cert | b64encode }}
+ca.pem: {{ nsq_certs_ca_cert | b64encode }}

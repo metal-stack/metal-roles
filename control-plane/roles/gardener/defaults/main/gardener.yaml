@@ -101,6 +101,9 @@ gardener_shooted_seeds: []
 #   verticalPodAutoscaler: false
 #   pod_cidr:
 #   service_cidr:
+#   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
+#   # https://gardener.cloud/docs/guides/high-availability/control-plane/
+#   high_availability_control_plane: node
 
 gardener_shooted_seed_max_pods: 250
 gardener_shooted_seed_node_cidr_mask_size: 23
@@ -112,3 +115,4 @@ gardener_kube_apiserver_kubeconfig_path: "{{ gardener_local_tmp_dir }}/garden-ku
 gardener_local_tmp_dir: "{{ playbook_dir }}/.ansible/tmp"
 
 gardener_logging_enabled: false
+gardener_logging_vali_enabled: true
