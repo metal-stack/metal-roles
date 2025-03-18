@@ -7,7 +7,7 @@ ztp_admin_user: admin
 ztp_listen_address: "{{ ansible_host }}"
 ztp_port: 8080
 
-ztp_provisioning_script: ""
+ztp_provisioning_script:
 ztp_additional_files: []
 # - name: foo.sh
 #   data: echo
