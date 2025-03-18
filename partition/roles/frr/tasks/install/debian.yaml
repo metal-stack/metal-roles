@@ -1,7 +1,7 @@
 ---
 - name: add FRR apt-key to verify FRR package
   apt_key:
-    url: https://deb-us.frrouting.org/frr/keys.asc
+    url: https://deb.frrouting.org/frr/keys.asc
     state: present
 
 - name: add mainline FRR repository to install FRR
