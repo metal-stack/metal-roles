@@ -9,6 +9,13 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
+- name: Copy current config_db.json into temporary directory
+  copy:
+    src: /etc/sonic/config_db.json
+    dest: /tmp/sonic/config_db.json
+    mode: 0644
+    remote_src: true
+
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
