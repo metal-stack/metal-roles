@@ -5,7 +5,8 @@ sonic_nameservers: []
 sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
 sonic_config_action: load
-sonic_render_config_db_template: true
+sonic_config_source: template
+sonic_configdb_utils_image_tag: latest
 
 ## Physical settings
 sonic_ports: []
@@ -14,6 +15,7 @@ sonic_ports_default_fec: none
 
 ## Layer 2
 sonic_portchannels: []
+sonic_portchannels_default_mtu: 9000
 
 ## BGP related settings
 sonic_loopback_address:
@@ -50,3 +52,6 @@ sonic_interconnects: {}
 
 sonic_interconnects_default_peer_group: EXTERNAL
 sonic_interconnects_default_bgp_timers: '1 3'
+
+sonic_mclag: {}
+sonic_sag: {}
