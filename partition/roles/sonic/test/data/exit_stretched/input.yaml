@@ -204,3 +204,9 @@ internet_routemap_out:
   name: ALLOW-INTERNET-OUT
   entries:
   - "match ip address prefix-list INTERNET_PREFIX_OUT"
+
+sonic_vlan_subinterfaces:
+  - port: 0
+    cidr_ip: "172.17.146.161/32"
+    vlan: 461
+    vrf: VrfInternet

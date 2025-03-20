@@ -289,3 +289,13 @@ ACL_TABLE:
     stage: "ingress"
     type: "CTRLPLANE"
 {% endif %}
+
+{% if sonic_vlan_subinterfaces is defined %}
+VLAN_SUB_INTERFACE:
+{% for sub_interface in sonic_vlan_subinterfaces %}
+  Ethernet{{ sub_interface.port }}.{{ sub_interface.vlan }}:
+    admin_status: up
+    vrf_name: {{ sub_interface.vrf }}
+  Ethernet{{ sub_interface.port }}.{{ sub_interface.vlan }}|{{ sub_interface.cidr_ip }}: {}
+{% endfor %}
+{% endif %}

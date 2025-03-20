@@ -188,3 +188,9 @@ ACL_TABLE:
     - "NTP"
     stage: "ingress"
     type: "CTRLPLANE"
+
+VLAN_SUB_INTERFACE:
+  Ethernet0.461:
+    admin_status: up
+    vrf_name: VrfInternet
+  Ethernet0.461|172.17.146.161/32: {}
