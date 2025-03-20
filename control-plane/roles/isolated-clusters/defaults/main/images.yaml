@@ -113,6 +113,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/sig-storage/snapshot-controller
       match:
         semver: ">= v6.3.0"
+    - source: registry.k8s.io/sig-storage/livenessprobe
+      destination: http://registry:5000/sig-storage/livenessprobe
+      match:
+        semver: ">= v2.7.0"
     - source: registry.k8s.io/coredns/coredns
       destination: http://registry:5000/coredns/coredns
       match:
