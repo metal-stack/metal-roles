@@ -53,6 +53,14 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/metal-stack/metallb-health-sidecar
       match:
         semver: ">= v0.1.1"
+    - source: ghcr.io/metal-stack/csi-driver-lvm
+      destination: http://registry:5000/metal-stack/csi-driver-lvm
+      match:
+        semver: ">= v0.6.0"
+    - source: ghcr.io/metal-stack/csi-driver-lvm
+      destination: http://registry:5000/metal-stack/csi-driver-lvm-provisioner
+      match:
+        semver: ">= v0.6.0"
     - source: quay.io/metallb/controller
       destination: http://registry:5000/metallb/controller
       match:
