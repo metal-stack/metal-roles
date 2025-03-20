@@ -23,9 +23,9 @@
     pull: true
     detach: false
     cleanup: true
-    command: generate -p sonic_platform_dir
+    command: generate
     volumes:
-      - "{{ sonic_platform_dir }}:{{ sonic_platform_dir }}:ro"
+      - /usr/share/sonic/platform:/usr/share/sonic/platform:ro
       - /tmp/sonic:/etc/sonic:rw
       - /tmp/sonic:/sonic:ro
 
