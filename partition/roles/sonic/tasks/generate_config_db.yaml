@@ -19,13 +19,13 @@
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
-    image: ghcr.io/metal-stack/sonic-configdb-utils:latest
+    image: "ghcr.io/metal-stack/sonic-configdb-utils:{{ sonic_configdb_utils_image_tag }}"
     pull: true
     detach: false
     cleanup: true
     command: generate
     volumes:
-      - /usr/share/sonic/platform:/usr/share/sonic/platform:ro
+      - /usr/share/sonic/device:/usr/share/sonic/device:ro
       - /tmp/sonic:/etc/sonic:rw
       - /tmp/sonic:/sonic:ro
 
