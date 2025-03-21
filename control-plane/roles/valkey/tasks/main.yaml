@@ -1,0 +1,9 @@
+---
+- name: Deploy valkey
+  kubernetes.core.helm:
+    name: valkey
+    chart_ref: "{{ valkey_chart_ref }}"
+    chart_version: "{{ valkey_chart_version }}"
+    release_namespace: "{{ valkey_namespace }}"
+    create_namespace: true
+    values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
