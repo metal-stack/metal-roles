@@ -61,6 +61,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_interconnects.neighbor_ip                            |           | Connect to this BGP neighbors IP.                                                                                    |
 | sonic_interconnects.neighbors                              |           | Connect to this BGP neighbors - supports multiple neighbors and also BGP unnumbered by giving `Ethernet0 interface`. |
 | sonic_interconnects.unnumbered_interfaces                  |           | Connect with BGP unnumbered on these interfaces - also sets IPv6 options to make unnumbered work right.              |
+| sonic_interconnects.keep_private_as:                       |           | Do not remove the privates ASes on this interconnect. For use with static machine ports.                             |
 | sonic_interconnects.peer_group                             |           | Put the neighbor in this peer group.                                                                                 |
 | sonic_interconnects.evpn_peer                              |           | Whether the peer should take part in evpn routing (address-family l2vpn evpn)                                        |
 | sonic_interconnects.prefixlists                            |           | BGP prefix lists to configure.                                                                                       |
