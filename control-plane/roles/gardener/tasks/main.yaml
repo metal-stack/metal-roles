@@ -62,8 +62,6 @@
     definition: "{{ item.definition }}"
     apply: yes
   loop:
-    - name: hvpas
-      definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/10-crd-autoscaling.k8s.io_hvpas.yaml', split_lines=False) | from_yaml_all | list)[0] }}"
     - name: vpas
       definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml', split_lines=False) | from_yaml_all | list)[0] }}"
   loop_control:
