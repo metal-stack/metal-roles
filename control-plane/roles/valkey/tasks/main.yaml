@@ -1,0 +1,20 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - valkey_chart_ref is defined
+      - valkey_chart_version is defined
+
+- name: Deploy valkey
+  kubernetes.core.helm:
+    name: valkey
+    chart_ref: "{{ valkey_chart_ref }}"
+    chart_version: "{{ valkey_chart_version }}"
+    release_namespace: "{{ valkey_namespace }}"
+    create_namespace: true
+    values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
