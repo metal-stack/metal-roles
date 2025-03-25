@@ -1,11 +1,10 @@
 ---
 valkey_namespace: "{{ metal_control_plane_namespace }}"
 
-valkey_chart_ref: oci://registry-1.docker.io/bitnamicharts/valkey
-valkey_chart_version: "2.4.5"
-
 valkey_replicas: 3
 valkey_password: change-me-soon
 
 valkey_size: 10Gi
 valkey_storage_class: ""
+
+valkey_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"

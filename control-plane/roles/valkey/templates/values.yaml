@@ -8,7 +8,7 @@ global:
     password: "{{ valkey_password }}"
 
 image:
-  pullPolicy: {{ metal_control_plane_image_pull_policy }}
+  pullPolicy: {{ valkey_image_pull_policy }}
 
 primary:
   persistence:
@@ -18,5 +18,3 @@ replica:
   replicaCount: {{ valkey_replicas }}
   persistence:
     size: {{ valkey_size }}
-
-# TODO: do we need something else?
