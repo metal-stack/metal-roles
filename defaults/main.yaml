@@ -156,8 +156,6 @@ metal_stack_release:
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
     thanos_chart_version: "helm-charts.monitoring.thanos.version"
     thanos_chart_repo: "helm-charts.monitoring.thanos.repository"
-    thanos_chart_version: "helm-charts.monitoring.thanos.version"
-    thanos_chart_repo: "helm-charts.monitoring.thanos.repository"
     valkey_chart_ref: "helm-charts.key-value-store.valkey.repository"
     valkey_chart_version: "helm-charts.key-value-store.valkey.version"
     # monitoring
