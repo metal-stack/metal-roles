@@ -105,6 +105,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 | Name                                                                  | Mandatory | Description                                                               |
 | --------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------- |
+| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                             |
 | metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                    |
 | metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                   |
 | metal_apiserver_db_password                                           |           | The password of the metal-db                                              |
