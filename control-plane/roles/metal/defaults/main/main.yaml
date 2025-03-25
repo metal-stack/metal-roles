@@ -30,6 +30,7 @@ metal_apiserver_db_addresses:
  - metal-db
 metal_apiserver_db_password: change-me
 metal_apiserver_redis_addr: valkey-primary:6379
+metal_apiserver_redis_password: change-me-soon
 metal_apiserver_replicas: 1
 metal_apiserver_hpa_enabled: false
 metal_apiserver_hpa_max: 5
