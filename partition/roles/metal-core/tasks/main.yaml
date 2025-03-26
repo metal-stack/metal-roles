@@ -115,5 +115,5 @@
     max_retries: 5
     retry_counter: 0
   include_tasks: wait_for_metal_core.yaml
-  with_sequence: start=0 end={{ max_retries }}
+  loop: "{{ range(0, max_retries)|list }}"
   until: result is defined and result is success
