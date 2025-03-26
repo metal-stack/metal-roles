@@ -117,4 +117,5 @@
   include_tasks: wait_for_metal_core.yaml
   with_sequence: start=0 end={{ max_retries }}
   loop_control:
-    break_when: result is success
+    break_when:
+      - result is success
