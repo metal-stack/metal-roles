@@ -1,0 +1,21 @@
+---
+- name: wait for metal-core to come up
+  block:
+    - name: wait for metal-core to listen on metrics port
+      wait_for:
+        port: 2112
+        timeout: 30
+      register: result
+
+  rescue:
+    - set_fact:
+        retry_counter: "{{ retry_counter | int + 1 }}"
+
+    - fail:
+        msg: metal-core did not come up
+      when: (retry_counter | int > max_retries | int)
+
+    - name: restart metal-core
+      service:
+        name: metal-core
+        state: restarted
