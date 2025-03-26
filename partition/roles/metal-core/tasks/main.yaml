@@ -110,8 +110,19 @@
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
 
-- name: wait for metal-core to listen on metrics port
-  wait_for:
-    port: 2112
-    timeout: 300
-    msg: "metal-core did not come up"
+- name: wait for metal-core to come up
+  block:
+    - name: wait for metal-core to listen on metrics port
+      wait_for:
+        port: 2112
+        timeout: 30
+      register: result
+
+    - name: restart metal_core if failed
+      service:
+        name: metal-core
+        state: restarted
+      when: result is failed
+
+  until: result is success
+  retries: 5
