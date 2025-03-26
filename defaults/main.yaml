@@ -14,6 +14,8 @@ metal_stack_release:
     # control plane
     metal_api_image_tag: "docker-images.metal-stack.control-plane.metal-api.tag"
     metal_api_image_name: "docker-images.metal-stack.control-plane.metal-api.name"
+    metal_apiserver_image_tag: "docker-images.metal-stack.control-plane.metal-apiserver.tag"
+    metal_apiserver_image_name: "docker-images.metal-stack.control-plane.metal-apiserver.name"
     metal_metalctl_image_tag: "docker-images.metal-stack.control-plane.metalctl.tag"
     metal_metalctl_image_name: "docker-images.metal-stack.control-plane.metalctl.name"
     metal_masterdata_api_image_tag: "docker-images.metal-stack.control-plane.masterdata-api.tag"
@@ -154,6 +156,8 @@ metal_stack_release:
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
     thanos_chart_version: "helm-charts.monitoring.thanos.version"
     thanos_chart_repo: "helm-charts.monitoring.thanos.repository"
+    valkey_chart_ref: "helm-charts.key-value-store.valkey.repository"
+    valkey_chart_version: "helm-charts.key-value-store.valkey.version"
     # monitoring
     webhook_logger_image_name: "docker-images.third-party.control-plane.webhook-logger.name"
     webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"
