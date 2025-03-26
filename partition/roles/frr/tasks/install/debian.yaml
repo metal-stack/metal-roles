@@ -1,12 +1,12 @@
 ---
 - name: add FRR apt-key to verify FRR package
   apt_key:
-    url: https://deb-us.frrouting.org/frr/keys.asc
+    url: https://deb.frrouting.org/frr/keys.asc
     state: present
 
 - name: add mainline FRR repository to install FRR
   apt_repository:
-    repo: deb https://deb-us.frrouting.org/frr {{ ansible_distribution_release }} {{ frr_repo }}
+    repo: deb https://deb.frrouting.org/frr {{ ansible_distribution_release }} {{ frr_repo }}
     state: present
     filename: frr.list
 

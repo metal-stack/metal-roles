@@ -46,7 +46,7 @@
     dest: "{{ ztp_host_dir_path }}/config/ztp-provisioning-script.sh"
     content: "{{ ztp_provisioning_script }}"
     mode: 0644
-  when: ztp_provisioning_script is defined
+  when: ztp_provisioning_script
 
 - name: deploy server for serving ztp files
   include_role:

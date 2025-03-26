@@ -24,6 +24,12 @@ auditing_meili_backup_restore_sidecar_gcp_backup_location:
 auditing_meili_backup_restore_sidecar_gcp_project_id:
 auditing_meili_backup_restore_sidecar_gcp_serviceaccount_json:
 
+auditing_meili_backup_restore_sidecar_s3_bucket_name:
+auditing_meili_backup_restore_sidecar_s3_region:
+auditing_meili_backup_restore_sidecar_s3_endpoint:
+auditing_meili_backup_restore_sidecar_s3_access_key:
+auditing_meili_backup_restore_sidecar_s3_secret_key:
+
 auditing_meili_resources:
   requests:
     memory: "256Mi"
