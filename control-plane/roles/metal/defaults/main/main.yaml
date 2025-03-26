@@ -51,6 +51,7 @@ metal_apiserver_oidc_end_session_url:
 metal_apiserver_oidc_client_id:
 metal_apiserver_oidc_client_secret:
 metal_apiserver_session_secret: secret
+metal_apiserver_admin_subjects: []
 
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
