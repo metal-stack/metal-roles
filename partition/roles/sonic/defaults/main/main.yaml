@@ -6,7 +6,6 @@ sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
 sonic_config_action: load
 sonic_config_source: template
-sonic_configdb_utils_image_tag: latest
 
 ## Physical settings
 sonic_ports: []

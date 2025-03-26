@@ -1,4 +1,7 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: Gather switch facts
   switch_facts:
 
@@ -14,6 +17,8 @@
       - sonic_config_source in ['template', 'generate']
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
+      - sonic_configdb_utils_image_tag is defined
+      - sonic_configdb_utils_image_name is defined
       - metal_stack_switch_os_is_sonic
 
 - name: render resolv.conf
