@@ -116,4 +116,4 @@
     retry_counter: 0
   include_tasks: wait_for_metal_core.yaml
   with_sequence: start=0 end={{ max_retries }}
-  when: "{{ result }} is defined and {{ result }} is failed"
+  until: result is defined and result is success
