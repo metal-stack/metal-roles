@@ -38,19 +38,6 @@
     group: root
     remote_src: true
 
-- name: Flush handlers
-  meta: flush_handlers
-
-- name: Register lldp timer
-  shell: lldpcli show configuration | grep "Transmit delay:"
-  register: hello_timer
-
-- name: Restart lldp service to ensure hello timer gets applied
-  service:
-    name: lldp
-    state: restarted
-  when: hello_timer['Transmit delay'] != {{ sonic_lldp_hello_timer }}
-
 - name: Remove temporary directory
   file:
     path: /tmp/sonic/
