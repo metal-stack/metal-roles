@@ -29,7 +29,7 @@
       - /tmp/sonic:/etc/sonic:rw
       - /tmp/sonic:/sonic:ro
 
-- name: Copy generated config_db.json to /etc/sonic
+- name: Overwrite the existing config_db.json with the newly generated one
   copy:
     src: /tmp/sonic/config_db.json
     dest: /etc/sonic/config_db.json
