@@ -28,6 +28,4 @@ METAL_CORE_SPINE_UPLINKS: "{{ metal_core_spine_uplinks | join(',') }}"
 METAL_CORE_INTERFACES_TPL_FILE: "{{ metal_core_interfaces_tpl_file }}"
 METAL_CORE_FRR_TPL_FILE: "{{ metal_core_frr_tpl_file }}"
 METAL_CORE_PXE_VLAN_ID: "{{ metal_core_pxe_vlan_id }}"
-{% if metal_core_client_dial_ip %}
 METAL_CORE_CLIENT_DIAL_IP: "{{ metal_core_client_dial_ip }}"
-{% endif %}
