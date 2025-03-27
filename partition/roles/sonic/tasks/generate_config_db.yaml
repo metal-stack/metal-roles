@@ -29,7 +29,7 @@
       - /tmp/sonic:/etc/sonic:rw
       - /tmp/sonic:/sonic:ro
 
-- name: Overwrite the existing config_db.json with the newly generated one
+- name: Override the existing config_db.json with the newly generated one
   copy:
     src: /tmp/sonic/config_db.json
     dest: /etc/sonic/config_db.json
@@ -37,7 +37,14 @@
     owner: root
     group: root
     remote_src: true
-  notify: "config {{ sonic_config_action }}"
+
+- name: Flush handlers
+  tags: flush_handlers
+
+- name: Restart lldp service to ensure hello timer gets applied
+  service:
+    name: lldp
+    state: restarted
 
 - name: Remove temporary directory
   file:
