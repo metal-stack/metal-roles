@@ -1,0 +1,9 @@
+{
+  "DEVICE_METADATA": {
+    "localhost": {
+      "hostname": "sonic",
+      "docker_routing_config_mode": "split-unified",
+      "type": "LeafRouter"
+    }
+  }
+}
