@@ -21,6 +21,12 @@
         }
       ]
     },
+    "03-provisioning-script": {
+      "plugin": {
+        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-provisioning-script.sh"
+      },
+      "shell": true
+    },
     "reboot-on-success": true
   }
 }
