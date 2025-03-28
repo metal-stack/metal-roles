@@ -37,6 +37,8 @@ metal_stack_release:
     metal_bmc_image_name: "docker-images.metal-stack.partition.metal-bmc.name"
     image_cache_sync_image_tag: "docker-images.metal-stack.partition.metal-image-cache-sync.tag"
     image_cache_sync_image_name: "docker-images.metal-stack.partition.metal-image-cache-sync.name"
+    sonic_configdb_utils_image_tag: "docker-images.metal-stack.partition.sonic-configdb-utils.tag"
+    sonic_configdb_utils_image_name: "docker-images.metal-stack.partition.sonic-configdb-utils.name"
     # generic
     metal_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     metal_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
