@@ -14,16 +14,24 @@ monitoring_grafana_additional_datasources:
     jsonData:
       maxLines: 1000
 monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
+monitoring_grafana_ingress_tls: true
+monitoring_grafana_github_oauth:
+monitoring_grafana_extra_secret_mounts:
+
 monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
-monitoring_ingress_grafana_tls: yes
 monitoring_prometheus_ingress_enabled: false
+
 monitoring_additional_ingress_annotations: {}
 
 monitoring_thanos_receive_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
 
+monitoring_prometheus_operator_instance_namespaces: []
+monitoring_prometheus_operator_crds_enabled: true
+monitoring_prometheus_operator_enabled: true
+
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
-monitoring_alertmanager_ingress_tls: yes
+monitoring_alertmanager_ingress_tls: true
 monitoring_alertmanager_ingress_basic_auth_user: alertmanager
 monitoring_alertmanager_ingress_basic_auth_password:
 monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertmanager_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"

@@ -2,7 +2,8 @@
 
 Deploys metal-core in a systemd-managed Docker container.
 
-This role can deploy on switches running Cumulus Linux or SONiC. It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
+This role can deploy on switches running Cumulus Linux or SONiC. It depends on the `switch_facts` module from
+`ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
 
 ## Variables
 
@@ -11,7 +12,7 @@ This role uses variables from [partition-defaults](/partition). So, make sure yo
 You can look up all the default values of this role [here](defaults/main/main.yaml).
 
 | Name                                      | Mandatory | Description                                                                                                                                                                |
-| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | metal_core_image_name                     | yes       | Image name of metal-core                                                                                                                                                   |
 | metal_core_image_tag                      | yes       | Image tag of metal-core                                                                                                                                                    |
 | metal_core_cidr                           |           |                                                                                                                                                                            |
@@ -33,3 +34,4 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_core_frr_tpl_file                   |           | The golang template file to use for rendering `/etc/frr/frr.conf`. If this is left blank the default template shipped with metal-core will be used.                        |
 | metal_core_pxe_vlan_id                    |           | The VLAN ID for the PXE machines. Defaults to `4000`.                                                                                                                      |
 | metal_core_additional_volume_mounts       |           | Volumes to mount into the metal-core, besides the default ones                                                                                                             |
+| metal_core_client_dial_ip                 |           | The IP address to be used for the client connection to the metal-api                                                                                                       |

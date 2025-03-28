@@ -1,4 +1,10 @@
 ---
+crds:
+  enabled: {{ monitoring_prometheus_operator_crds_enabled }}
+
+defaultRules:
+  create: false
+
 prometheus:
   ingress:
     enabled: {{ monitoring_prometheus_ingress_enabled }}
@@ -11,26 +17,26 @@ prometheus:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-
-  prometheusSpec:
-{% if monitoring_prometheus_image_tag is defined %}
-    image:
-      tag: "{{ monitoring_prometheus_image_tag }}"
-{% endif %}
-{% if monitoring_prometheus_storage_spec is defined %}
-    storageSpec:
-      {{ monitoring_prometheus_storage_spec | indent(6) }}
-{% endif %}
-    thanos:
-      image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
-      version: "{{ thanos_image_tag }}"
-{% if monitoring_thanos_object_store_config is defined %}
-      objectStorageConfig:
-        key: objstore.yml
-        name: thanos-objstore-secret
-{% endif %}
-  thanosService:
-    enabled: true
+#
+#  prometheusSpec:
+#{% if monitoring_prometheus_image_tag is defined %}
+#    image:
+#      tag: "{{ monitoring_prometheus_image_tag }}"
+#{% endif %}
+#{% if monitoring_prometheus_storage_spec is defined %}
+#    storageSpec:
+#      {{ monitoring_prometheus_storage_spec | indent(6) }}
+#{% endif %}
+#    thanos:
+#      image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
+#      version: "{{ thanos_image_tag }}"
+#{% if monitoring_thanos_object_store_config is defined %}
+#      objectStorageConfig:
+#        key: objstore.yml
+#        name: thanos-objstore-secret
+#{% endif %}
+#  thanosService:
+#    enabled: true
 
 grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
@@ -39,7 +45,7 @@ grafana:
   additionalDataSources: {{ monitoring_grafana_additional_datasources | to_json }}
   grafana.ini:
     server:
-{% if monitoring_ingress_grafana_tls %}
+{% if monitoring_grafana_ingress_tls %}
       root_url: https://{{ monitoring_grafana_ingress_dns }}
 {% else %}
       root_url: http://{{ monitoring_grafana_ingress_dns }}
@@ -53,22 +59,22 @@ grafana:
   sidecar:
     datasources:
       uid: prometheus
-      url: http://thanos-query-frontend:9090
+      url: http://kube-prometheus-stack-prometheus:9090
   ingress:
     enabled: true
     ingressClassName: nginx
     hosts:
       - {{ monitoring_grafana_ingress_dns }}
-{% if monitoring_ingress_grafana_tls %}
+{% if monitoring_grafana_ingress_tls %}
     tls:
       - secretName: monitoring-ingress-tls
         hosts:
         - {{ monitoring_grafana_ingress_dns }}
 {% endif %}
-{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
+{% if monitoring_grafana_ingress_tls or monitoring_additional_ingress_annotations %}
     annotations:
 {% endif %}
-{% if monitoring_ingress_grafana_tls %}
+{% if monitoring_grafana_ingress_tls %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
@@ -77,6 +83,14 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+
+prometheusOperator:
+  enabled: {{ monitoring_prometheus_operator_enabled }}
+
+  alertmanagerInstanceNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
+  alertmanagerConfigNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
+  prometheusInstanceNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
+  thanosRulerInstanceNamespaces: {{ monitoring_prometheus_operator_instance_namespaces | to_json }}
 
 alertmanager:
   ingress:
@@ -145,6 +159,9 @@ alertmanager:
       - receiver: 'null'
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
+      - receiver: msteams
+        repeat_interval: 1h
+        continue: true
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
       - receiver: slack
         repeat_interval: 1h
@@ -157,6 +174,9 @@ alertmanager:
         send_resolved: true
         max_alerts: 0 # 0=all alerts
     - name: 'null'
+    - name: msteams
+      msteams_configs:
+      - webhook_url: "{{ monitoring_msteam_notification_webhook_url }}"
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
     - name: slack
       slack_configs:

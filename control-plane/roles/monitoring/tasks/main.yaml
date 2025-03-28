@@ -27,6 +27,7 @@
 - name: Determine app version for prometheus operator CRDs
   command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
   register: helm_output
+  when: monitoring_prometheus_operator_crds_enabled
 
 - name: Apply prometheus operator CRDs
   k8s:
@@ -40,6 +41,7 @@
     - monitoring.coreos.com_prometheusrules.yaml
     - monitoring.coreos.com_servicemonitors.yaml
     - monitoring.coreos.com_thanosrulers.yaml
+  when: monitoring_prometheus_operator_crds_enabled
 
 - name: Deploy kube-prometheus-stack
   include_role:
@@ -51,18 +53,18 @@
     helm_release_name: kube-prometheus-stack
     helm_chart_version: "{{ prometheus_chart_version }}"
     helm_value_file_template: "prometheus-stack-values.yaml"
-    helm_skip_crds: yes
+    helm_skip_crds: true
 
-- name: Deploy thanos
-  include_role:
-    name: ansible-common/roles/helm-chart
-  vars:
-    helm_repo: "{{ thanos_chart_repo }}"
-    helm_chart: thanos
-    helm_target_namespace: "{{ monitoring_namespace }}"
-    helm_release_name: thanos
-    helm_chart_version: "{{ thanos_chart_version }}"
-    helm_value_file_template: "thanos-values.yaml"
+#- name: Deploy thanos
+#  include_role:
+#    name: ansible-common/roles/helm-chart
+#  vars:
+#    helm_repo: "{{ thanos_chart_repo }}"
+#    helm_chart: thanos
+#    helm_target_namespace: "{{ monitoring_namespace }}"
+#    helm_release_name: thanos
+#    helm_chart_version: "{{ thanos_chart_version }}"
+#    helm_value_file_template: "thanos-values.yaml"
 
 - name: Deploy metrics exporters
   import_tasks: exporters.yaml
@@ -72,11 +74,11 @@
     definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
-     - machine-capacity.yaml
-     - metal-api.yaml
-     - rethinkdb.yaml
-     - alertmanager.yaml
-     - sonic-exporter.yaml
+    - machine-capacity.yaml
+    - metal-api.yaml
+    - rethinkdb.yaml
+    - alertmanager.yaml
+    - sonic-exporter.yaml
 
 - name: Deploy Grafana dashboards for Gardener
   k8s:
