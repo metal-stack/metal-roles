@@ -33,6 +33,7 @@
     mode: 0644
   loop:
     - frr.conf
+    - config_db.json
 
 - name: copy additional files
   copy:
