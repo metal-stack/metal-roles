@@ -32,6 +32,7 @@
         (item.value.get('hostname', '') + '(' + item.key + ')') if item.value.get('hostname', '') else item.key
       }}
   when: not no_neighbors
+  no_log: true
 
 - name: Report issues
   debug:
