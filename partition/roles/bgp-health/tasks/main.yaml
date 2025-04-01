@@ -39,8 +39,3 @@
     msg: "{{ inventory_hostname }}: {{ unestablished_neighbors | join(', ') }}"
   when: unestablished_neighbors | length > 0
   register: issues
-
-- name: Show summary
-  debug:
-    msg: "Broken BGP connections:"
-  when: issues is defined and issues.changed
