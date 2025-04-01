@@ -16,7 +16,6 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_check_api_health_endpoint |           | The endpoint to call if the metal-api is reachable from the outside after deployment                     |
 | metal_set_resource_limits       |           | Deploys metal components with or without resource limits (possibly disable for development environments) |
 | metal_log_level                 |           | The log level of the control plane components                                                            |
-| metal_log_encoding              |           | The output format of the logger                                                                          |
 | metal_helm_chart_repo           |           | The repository URL of the metal control plane helm chart                                                 |
 | metal_helm_chart_version        |           | The version of the metal control plane helm chart                                                        |
 | metal_helm_chart_local_path     |           | Local path to the metal control plane helm chart, which can be useful for development purposes           |
@@ -24,22 +23,25 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### Images
 
-| Name                                   | Mandatory | Description                             |
-|----------------------------------------|-----------|-----------------------------------------|
-| metal_api_image_name                   | yes       | Image version of the metal-api          |
-| metal_api_image_tag                    | yes       | Image tag of the metal-api              |
-| metal_api_image_pull_policy            |           | Image pull policy of the metal-api      |
-| metal_metalctl_image_name              | yes       | Image version of metalctl               |
-| metal_metalctl_image_tag               | yes       | Image tag of metalctl                   |
-| metal_metalctl_image_pull_policy       |           | Image pull policy of metalctl           |
-| metal_console_image_name               | yes       | Image version of the metal-console      |
-| metal_console_image_tag                | yes       | Image tag of the metal-console          |
-| metal_console_image_pull_policy        |           | Image pull policy of the metal-console  |
-| metal_masterdata_api_image_name        | yes       | Image version of the masterdata-api     |
-| metal_masterdata_api_image_tag         | yes       | Image tag of the masterdata-api         |
-| metal_masterdata_api_image_pull_policy |           | Image pull policy of the masterdata-api |
-| metal_ipam_image_name                  | yes       | Image version of the ipam               |
-| metal_ipam_image_tag                   | yes       | Image tag of the ipam                   |
+| Name                                   | Mandatory | Description                              |
+| -------------------------------------- | --------- | ---------------------------------------- |
+| metal_api_image_name                   | yes       | Image version of the metal-api           |
+| metal_api_image_tag                    | yes       | Image tag of the metal-api               |
+| metal_api_image_pull_policy            |           | Image pull policy of the metal-api       |
+| metal_apiserver_image_tag              | yes       | Image version of the metal-apiserver     |
+| metal_apiserver_url                    | yes       | Image tag of the metal-apiserver         |
+| metal_apiserver_image_pull_policy      |           | Image pull policy of the metal-apiserver |
+| metal_metalctl_image_name              | yes       | Image version of metalctl                |
+| metal_metalctl_image_tag               | yes       | Image tag of metalctl                    |
+| metal_metalctl_image_pull_policy       |           | Image pull policy of metalctl            |
+| metal_console_image_name               | yes       | Image version of the metal-console       |
+| metal_console_image_tag                | yes       | Image tag of the metal-console           |
+| metal_console_image_pull_policy        |           | Image pull policy of the metal-console   |
+| metal_masterdata_api_image_name        | yes       | Image version of the masterdata-api      |
+| metal_masterdata_api_image_tag         | yes       | Image tag of the masterdata-api          |
+| metal_masterdata_api_image_pull_policy |           | Image pull policy of the masterdata-api  |
+| metal_ipam_image_name                  | yes       | Image version of the ipam                |
+| metal_ipam_image_tag                   | yes       | Image tag of the ipam                    |
 
 ### Service Ports
 
@@ -99,6 +101,30 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_api_release_version           |           | The release version of metal-stack                                                             |
 | minimum_client_version              |           | minimum metalctl version which is required to talk to this metal-api instance                  |
 
+### metal-apiserver
+
+| Name                                                                  | Mandatory | Description                                                               |
+| --------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------- |
+| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                             |
+| metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                    |
+| metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                   |
+| metal_apiserver_db_password                                           |           | The password of the metal-db                                              |
+| metal_apiserver_redis_addr                                            |           | The address to a redis API                                                |
+| metal_apiserver_redis_password                                        |           | The password to redis                                                     |
+| metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                |
+| metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                              |
+| metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                         |
+| metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                     |
+| metal_apiserver_admin_subjects                                        |           | A list of token subjects that are allowed to create admin tokens          |
+| metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                |
+| metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                |
+| metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                 |
+| metal_apiserver_hpa_min                                               |           | Min amount of replicas for the HPA of the metal-apiserver                 |
+| metal_apiserver_hpa_cpu_percentage:                                   |           | Target CPU utilization percentage for the HPA of the metal-apiserver      |
+| metal_apiserver_resources                                             |           | Sets the given container resources                                        |
+| metal_apiserver_rate_limiting_max_requests_per_minute                 |           | The amount of requests allowed per minute for users with valid API tokens |
+| metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users       |
+
 ### masterdata-api
 
 | Name                                 | Mandatory | Description                                                      |
@@ -154,14 +180,10 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 
 ### Auditing
 
+Configuration for metal-api:
+
 | Name                                 | Mandatory | Description                                                                  |
 | ------------------------------------ | --------- | ---------------------------------------------------------------------------- |
-| metal_auditing_meili_enabled         |           | Whether to deploy or not to configure meilisearch auditing. Default false.   |
-| metal_auditing_meili_url             |           | The URL of the auditing server (required if enabled)                         |
-| metal_auditing_meili_index_prefix    |           | auditing index prefix.                                                       |
-| metal_auditing_meili_index_interval  |           | auditing index creation interval, can be one of @hourly / @daily / @monthly. |
-| metal_auditing_meili_secret_name     |           | Secret name that holds the API key for meilisearch                           |
-| metal_auditing_meili_api_key         |           | API key for meilisearch                                                      |
 | metal_auditing_timescaledb_enabled   |           | Whether to deploy or not to configure timescaledb auditing. Default false.   |
 | metal_auditing_timescaledb_host      |           | The timescaledb host                                                         |
 | metal_auditing_timescaledb_port      |           | The timescaledb port                                                         |
@@ -170,3 +192,15 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_auditing_timescaledb_password  |           | The timescaledb password                                                     |
 | metal_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup         |
 | metal_auditing_search_backend        |           | Explicitly sets a configured audit backend to be used for search             |
+
+Configuration for metal-apiserver:
+
+| Name                                           | Mandatory | Description                                                               |
+| ---------------------------------------------- | --------- | ------------------------------------------------------------------------- |
+| metal_apiserver_auditing_enabled               |           | Whether to deploy or not to configure timescaledb auditing. Default true. |
+| metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                      |
+| metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                      |
+| metal_apiserver_auditing_timescaledb_db        |           | The timescaledb database name                                             |
+| metal_apiserver_auditing_timescaledb_user      |           | The timescaledb user                                                      |
+| metal_apiserver_auditing_timescaledb_password  |           | The timescaledb password                                                  |
+| metal_apiserver_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup      |
