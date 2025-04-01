@@ -1,28 +1,4 @@
 ---
-- name: Check if factory reset is required
-  set_fact:
-    perform_factory_reset: "{{ sonic_reset_factory | default(false) }}"
-
-# Only run these tasks when factory reset is requested
-- name: Remove existing config_db.json
-  ansible.builtin.file:
-    path: /etc/sonic/config_db.json
-    state: absent
-  when: perform_factory_reset
-
-- name: Run config-setup factory
-  ansible.builtin.command: config-setup factory
-  args:
-    chdir: /etc/sonic
-  when: perform_factory_reset
-
-- name: Reload config from config_db.json
-  ansible.builtin.command: config reload /etc/sonic/config_db.json -y -f
-  async: 120
-  poll: 0
-  when: perform_factory_reset
-
-# Skip all other tasks if factory reset is requested
 - name: Check mandatory variables on non-empty sonic_ports are set
   assert:
     fail_msg: "default port configuration is necessary on non-empty sonic_ports"
