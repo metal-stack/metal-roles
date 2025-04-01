@@ -33,6 +33,7 @@
       }}
   when: not no_neighbors
 
-- name: Report result
+- name: Report issues
   debug:
-    msg: "{{ 'BGP connection issues on ' + inventory_hostname + ': ' + (unestablished_neighbors | join(', ')) if unestablished_neighbors else 'All BGP connections are established' }}"
+    msg: "BGP connection issues on {{ inventory_hostname }}: {{ unestablished_neighbors | join(', ') }}"
+  when: unestablished_neighbors | length > 0
