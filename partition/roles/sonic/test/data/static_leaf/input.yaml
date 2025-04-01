@@ -15,6 +15,17 @@ sonic_ports_dict:
   Ethernet2:
   Ethernet4:
   Ethernet5:
+# static machines, bgp numbered
+  Ethernet88:
+    speed: 100000
+    ips:
+    - 10.10.255.2/31
+    vrf: Vrf65
+  Ethernet92:
+    speed: 100000
+    ips:
+    - 10.10.255.2/31
+    vrf: Vrf65
 # static machines
   Ethernet96:
     speed: 100000
@@ -44,6 +55,10 @@ sonic_running_cfg_breakouts:
     brkout_mode: "4x25G"
   Ethernet4:
     brkout_mode: "4x25G"
+  Ethernet88:
+    brkout_mode: "1x100G[40G]"
+  Ethernet92:
+    brkout_mode: "1x100G[40G]"
   Ethernet96:
     brkout_mode: "1x100G[40G]"
   Ethernet100:
@@ -116,6 +131,18 @@ sonic_running_cfg_ports:
     lanes: "4"
     parent_port: Ethernet4
     speed: "25000"  
+  Ethernet88:
+    alias: Eth23(Port23)
+    index: "23"
+    lanes: "89,99,100,101"
+    parent_port: Ethernet88
+    speed: "100000"
+  Ethernet92:
+    alias: Eth24(Port24)
+    index: "24"
+    lanes: "93,94,95,96"
+    parent_port: Ethernet92
+    speed: "100000"
   Ethernet96:
     alias: Eth25(Port25)
     index: "25"
@@ -187,6 +214,8 @@ sonic_vlans:
   - PortChannel23
 - id: 1002
   vrf: Vrf64
+- id: 1003
+  vrf: Vrf65
 
 sonic_vteps:
 - comment: "Croit storage"
@@ -195,6 +224,9 @@ sonic_vteps:
 - comment: "Static machines"
   vlan: Vlan1002
   vni: 64
+- comment: "Static machines bgp numbered"
+  vlan: Vlan1003
+  vni: 65
 
 sonic_interconnects:
   croit:
@@ -222,6 +254,19 @@ sonic_interconnects:
     - "neighbor STATIC maximum-prefix 24000"
     routemap_in: "{{ static_routemap_in }}"
     prefixlists: "{{ static_prefixlists }}"
+  static_numbered:
+    vrf: Vrf65
+    vni: 65
+    peer_group: "STATICN"
+    keep_private_as: true
+    neighbors:
+    - 10.10.255.3
+    - 10.10.255.7
+    announcements:
+    - "redistribute connected"
+    - "neighbor STATICN maximum-prefix 24000"
+    routemap_in: "{{ staticn_routemap_in }}"
+    prefixlists: "{{ staticn_prefixlists }}"
 
 static_prefixlists:
 - "ip prefix-list STATIC_PREFIX_IN seq 10 permit 10.64.64.0/22 ge 32"
@@ -230,6 +275,14 @@ static_routemap_in:
   name: ALLOW-STATIC-IN
   entries:
   - "match ip address prefix-list STATIC_PREFIX_IN"
+
+staticn_prefixlists:
+- "ip prefix-list STATICN_PREFIX_IN seq 10 permit 10.65.65.0/22 ge 32"
+
+staticn_routemap_in:
+  name: ALLOW-STATICN-IN
+  entries:
+  - "match ip address prefix-list STATICN_PREFIX_IN"
 
 
 sonic_mclag:
