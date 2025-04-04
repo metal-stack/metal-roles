@@ -37,6 +37,7 @@
     owner: root
     group: root
     remote_src: true
+  notify: "config {{ sonic_config_action }}"
 
 - name: Remove temporary directory
   file:
