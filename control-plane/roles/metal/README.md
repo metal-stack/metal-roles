@@ -115,6 +115,7 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                              |
 | metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                         |
 | metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                     |
+| metal_apiserver_admin_subjects                                        |           | A list of token subjects that are allowed to create admin tokens          |
 | metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                |
 | metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                |
 | metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                 |

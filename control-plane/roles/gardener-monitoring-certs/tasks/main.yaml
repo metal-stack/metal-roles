@@ -33,7 +33,7 @@
       kind: Secret
       metadata:
         labels:
-          gardener.cloud/role: controlplane-cert
+          gardener.cloud/role: garden-cert
         name: seed-ingress-certificate
         namespace: garden
       type: kubernetes.io/tls
