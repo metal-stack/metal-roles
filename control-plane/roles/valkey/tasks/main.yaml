@@ -10,6 +10,11 @@
       - valkey_chart_ref is defined
       - valkey_chart_version is defined
 
+- name: Deploy valkey image pull secret
+  k8s:
+    definition: "{{ lookup('template', 'valkey-secret.yaml') }}"
+    namespace: "{{ metal_control_plane_namespace }}"
+
 - name: Deploy valkey
   kubernetes.core.helm:
     name: valkey
