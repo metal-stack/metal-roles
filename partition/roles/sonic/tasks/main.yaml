@@ -60,5 +60,9 @@
   notify:
   - restart caclmgrd
 
+- name: Deploy DHCP relay
+  import_tasks: dhcp_relay.yaml
+  when: sonic_deploy_dhcp_relay
+
 - name: Flush handlers
   meta: flush_handlers
