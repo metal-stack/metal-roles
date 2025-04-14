@@ -136,11 +136,13 @@ spec:
             secretKeyRef:
               key: POSTGRES_USER
               name: {{ postgres_name }}
+{% if postgres_backup_restore_sidecar_encryption_key %}
         - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
           valueFrom:
             secretKeyRef:
               key: encryptionKey
               name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+{% endif %}
 {% if postgres_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
           valueFrom:

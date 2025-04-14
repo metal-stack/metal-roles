@@ -112,6 +112,13 @@ spec:
               name: {{ meilisearch_name }}
         - name: BACKUP_RESTORE_SIDECAR_MEILISEARCH_URL
           value: http://localhost:7700
+{% if meilisearch_backup_restore_sidecar_encryption_key %}
+        - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: encryptionKey 
+              name: backup-restore-sidecar-backup-provider-config-{{ meilisearch_name }}
+{% endif %}
 {% if meilisearch_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
           valueFrom:
@@ -258,9 +265,6 @@ data:
 {% if meilisearch_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ meilisearch_backup_restore_sidecar_object_max_keep }}
 {% endif %}
-{% if meilisearch_backup_restore_sidecar_encryption_key %}
-    encryption-key: {{ meilisearch_backup_restore_sidecar_encryption_key }}
-{% endif %}
     post-exec-cmds:
       - meilisearch --db-path=/data/data.ms/ --dump-dir=/backup/upload/files
 ---
@@ -281,6 +285,9 @@ data:
   endpoint: {{ meilisearch_backup_restore_sidecar_s3_endpoint | b64encode }}
   accessKey: {{ meilisearch_backup_restore_sidecar_s3_access_key | b64encode }}
   secretKey: {{ meilisearch_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% endif %}
+{% if meilisearch_backup_restore_sidecar_encryption_key %}
+  encryptionKey: {{ meilisearch_backup_restore_sidecar_encryption_key }}
 {% endif %}
 ---
 apiVersion: v1
