@@ -1,7 +1,7 @@
 {
   "DEVICE_METADATA": {
     "localhost": {
-      "docker_routing_config_mode": "split-unified"
+      "docker_routing_config_mode": "split"
     }
   }
 }
