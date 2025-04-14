@@ -235,7 +235,7 @@ type: Opaque
 data:
   rethinkdb-password: "{{ rethinkdb_password | b64encode }}"
 {% if rethinkdb_backup_restore_sidecar_encryption_key %}
-  encryptionKey: {{ rethinkdb_backup_restore_sidecar_encryption_key }}
+  encryptionKey: {{ rethinkdb_backup_restore_sidecar_encryption_key | b64encode }}
 {% endif %}
 ---
 apiVersion: v1
