@@ -1,2 +1,27 @@
 ---
-# TODO
+- name: Get vlans with dhcp servers configured
+  set_fact:
+    sonic_dhcp_interfaces: "{{ sonic_vlans | selectattr('dhcp_servers', 'defined') | selectattr('dhcp_servers') }}"
+
+- name: Deploy dhcp relay on first vlan that contains dhcp servers
+  block:
+    - name: Set facts
+      set_fact:
+        listening_interface: "Vlan{{ sonic_dhcp_interfaces[0].id }}"
+        dhcp_servers: "{{ sonic_dhcp_interfaces[0].dhcp_servers }}"
+
+    - name: Deploy systemd service
+      include_role:
+        name: ansible-common/roles/systemd-docker-service
+      vars:
+        systemd_service_name: go-dhcp-relay
+        systemd_docker_image_name: "{{ go_dhcp_relay_image_name }}"
+        systemd_docker_image_tag: "{{ go_dhcp_relay_image_tag }}"
+        systemd_service_timeout_start_sec: 30
+        systemd_docker_cpu_period: 50000
+        systemd_docker_cpu_quota: 10000
+        systemd_docker_memory: 1024m
+        systemd_docker_network: host
+        systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
+        systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
+  when: sonic_dhcp_interfaces

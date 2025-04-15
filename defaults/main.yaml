@@ -37,6 +37,8 @@ metal_stack_release:
     metal_bmc_image_name: "docker-images.metal-stack.partition.metal-bmc.name"
     image_cache_sync_image_tag: "docker-images.metal-stack.partition.metal-image-cache-sync.tag"
     image_cache_sync_image_name: "docker-images.metal-stack.partition.metal-image-cache-sync.name"
+    go_dhcp_relay_image_tag: "docker-images.metal-stack.partition.go-dhcp-relay.tag"
+    go_dhcp_relay_image_name: "docker-images.metal-stack.partition.go-dhcp-relay.name"
     # generic
     metal_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     metal_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"

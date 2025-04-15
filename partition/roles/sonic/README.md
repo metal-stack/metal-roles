@@ -20,6 +20,8 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_config_action                                        |           | Either `load` or `reload`. In the latter case all services will be restarted. If not given, defaults to `load`                |
 | sonic_render_config_db_template                            |           | When `true` the `metal.yaml.j2` template will be rendered into `/etc/sonic/config_db.json`                                    |
 | sonic_deploy_dhcp_relay                                    |           | When `true` the dhcp_relay running on SONiC will be replaced by [go-dhcp-relay](https://github.com/metal-stack/go-dhcp-relay) |
+| go_dhcp_relay_image_name                                   | yes       | Image version of the go-dhcp-relay                                                                                            |
+| go_dhcp_relay_image_tag                                    | yes       | Image tag of the go-dhcp-relay                                                                                                |
 | sonic_ports                                                |           | Configuration for ports (mtu, fec, have highest precedence). These ports will be up by default.                               |
 | sonic_ports.name                                           |           | The port name.                                                                                                                |
 | sonic_ports.speed                                          |           | Speed of the port.                                                                                                            |
