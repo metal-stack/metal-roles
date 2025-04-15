@@ -11,5 +11,3 @@ ztp_provisioning_script:
 ztp_additional_files: []
 # - name: foo.sh
 #   data: echo
-
-ztp_provisioning_script:
