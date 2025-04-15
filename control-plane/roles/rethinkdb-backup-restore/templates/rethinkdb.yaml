@@ -234,9 +234,6 @@ metadata:
 type: Opaque
 data:
   rethinkdb-password: "{{ rethinkdb_password | b64encode }}"
-{% if rethinkdb_backup_restore_sidecar_encryption_key %}
-  encryptionKey: {{ rethinkdb_backup_restore_sidecar_encryption_key | b64encode }}
-{% endif %}
 ---
 apiVersion: v1
 kind: Service
@@ -275,6 +272,9 @@ data:
   endpoint: {{ rethinkdb_backup_restore_sidecar_s3_endpoint | b64encode }}
   accessKey: {{ rethinkdb_backup_restore_sidecar_s3_access_key | b64encode }}
   secretKey: {{ rethinkdb_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% endif %}
+{% if rethinkdb_backup_restore_sidecar_encryption_key %}
+  encryptionKey: {{ rethinkdb_backup_restore_sidecar_encryption_key | b64encode }}
 {% endif %}
 {% if rethinkdb_expose_frontend %}
 ---
