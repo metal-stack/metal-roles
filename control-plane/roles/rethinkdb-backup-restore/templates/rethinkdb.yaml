@@ -68,11 +68,11 @@ spec:
           name: grpc
         env:
 {% if rethinkdb_backup_restore_sidecar_encryption_key %}
-          - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
-            valueFrom:
-              secretKeyRef:
-                key: encryptionKey 
-                name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: encryptionKey
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
 {% endif %}
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
