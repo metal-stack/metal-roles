@@ -136,6 +136,13 @@ spec:
             secretKeyRef:
               key: POSTGRES_USER
               name: {{ postgres_name }}
+{% if postgres_backup_restore_sidecar_encryption_key %}
+        - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: encryptionKey
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+{% endif %}
 {% if postgres_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
           valueFrom:
@@ -267,9 +274,6 @@ data:
 {% if postgres_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ postgres_backup_restore_sidecar_object_max_keep }}
 {% endif %}
-{% if postgres_backup_restore_sidecar_encryption_key %}
-    encryption-key: {{ postgres_backup_restore_sidecar_encryption_key }}
-{% endif %}
     post-exec-cmds:
       - docker-entrypoint.sh postgres {% if postgres_shared_libraries_preload %} -c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}{% if postgres_maintenance_work_mem %} -c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}{% if postgres_shared_buffers %} -c shared_buffers={{ postgres_shared_buffers }}{% endif %}{% if postgres_effective_cache_size %} -c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}{% if postgres_work_mem %} -c work_mem={{ postgres_work_mem }}{% endif %} -c max_connections={{ postgres_max_connections }}
 ---
@@ -300,6 +304,9 @@ data:
   endpoint: {{ postgres_backup_restore_sidecar_s3_endpoint | b64encode }}
   accessKey: {{ postgres_backup_restore_sidecar_s3_access_key | b64encode }}
   secretKey: {{ postgres_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% endif %}
+{% if postgres_backup_restore_sidecar_encryption_key %}
+  encryptionKey: {{ postgres_backup_restore_sidecar_encryption_key | b64encode }}
 {% endif %}
 ---
 apiVersion: v1
