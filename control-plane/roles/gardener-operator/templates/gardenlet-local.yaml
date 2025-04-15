@@ -1,0 +1,91 @@
+---
+apiVersion: seedmanagement.gardener.cloud/v1alpha1
+kind: Gardenlet
+metadata:
+  name: "{{ gardener_soil_name }}"
+  namespace: garden
+spec:
+  deployment:
+    replicaCount: 1
+    revisionHistoryLimit: 2
+    helm:
+      ociRepository:
+        ref: "{{ gardener_operator_gardenlet_oci_repository }}:{{ gardener_gardenlet_image_tag }}"
+    # {% if gardener_image_vector_overwrite %}
+    # imageVectorOverwrite: |
+    #   images:
+    #     {{ gardener_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
+    # {% endif %}
+    # {% if gardener_component_image_vector_overwrite %}
+    # componentImageVectorOverwrites: |
+    #     {{ gardener_component_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
+    # {% endif %}
+
+  # image:
+  #   repository: {{ gardener_gardenlet_image_name }}
+  #   tag: {{ gardener_gardenlet_image_tag }}
+  #   pullPolicy: {{ metal_control_plane_image_pull_policy }}
+  config:
+    apiVersion: gardenlet.config.gardener.cloud/v1alpha1
+    kind: GardenletConfiguration
+    controllers:
+      shoot:
+        concurrentSyncs: {{ gardener_gardenlet_shoot_concurrent_syncs }}
+        reconcileInMaintenanceOnly: {{ gardener_gardenlet_shoot_reconcile_in_maintenance_only | lower }}
+        # allow setting shoot ignore annotation:
+        respectSyncPeriodOverwrite: {{ gardener_gardenlet_shoot_respect_sync_period_overwrite | lower }}
+      shootState:
+        concurrentSyncs: 0
+    logging:
+      enabled: {{ gardener_logging_enabled | lower }}
+      vali:
+        enabled: {{ gardener_logging_vali_enabled | lower }}
+      shootNodeLogging:
+        shootPurposes:
+        - infrastructure
+        - production
+        - development
+        - evaluation
+    seedConfig:
+      apiVersion: core.gardener.cloud/v1beta1
+      kind: Seed
+      metadata:
+        labels:
+          name: "{{ gardener_soil_name }}"
+          networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
+      spec:
+        backup: {{ gardener_backup_infrastructure | to_json }}
+        dns:
+          provider:
+            secretRef:
+              name: "{{ lookup('k8s', kubeconfig=_virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
+              namespace: garden
+            type: "{{ gardener_dns_provider }}"
+        ingress:
+          controller:
+            kind: nginx
+          domain: "{{ gardener_dns_domain }}"
+        networks:
+          nodes: "{{ _gardener_gardenlet_node_cidr }}"
+          pods: "{{ _gardener_gardenlet_pod_cidr }}"
+          services: "{{ _gardener_gardenlet_service_cidr }}"
+        provider:
+          region: local
+          type: "{{ metal_control_plane_host_provider }}"
+        secretRef:
+          name: gardener-seed-kubeconfig
+          namespace: garden
+        blockCIDRs: []
+        settings:
+          excessCapacityReservation:
+            enabled: false
+          scheduling:
+            visible: false
+          shootDNS:
+            enabled: true
+          verticalPodAutoscaler:
+            enabled: {{ gardener_soil_vertical_pod_autoscaler_enabled | lower }}
+        taints:
+        - key: seed.gardener.cloud/protected
+        - key: seed.gardener.cloud/invisible
+        - key: seed.gardener.cloud/disable-capacity-reservation

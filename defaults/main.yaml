@@ -121,6 +121,8 @@ metal_stack_release:
     gardener_admission_controller_image_name: "docker-images.third-party.gardener.admission-controller.name"
     gardener_apiserver_image_tag: "docker-images.third-party.gardener.api-server.tag"
     gardener_apiserver_image_name: "docker-images.third-party.gardener.api-server.name"
+    gardener_operator_image_tag: "docker-images.third-party.gardener.operator.tag"
+    gardener_operator_image_name: "docker-images.third-party.gardener.operator.name"
     gardener_controller_manager_image_tag: "docker-images.third-party.gardener.controller-manager.tag"
     gardener_controller_manager_image_name: "docker-images.third-party.gardener.controller-manager.name"
     gardener_scheduler_image_tag: "docker-images.third-party.gardener.scheduler.tag"

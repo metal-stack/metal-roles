@@ -1,0 +1,121 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - gardener_repo_url is defined
+      - gardener_repo_ref is defined
+      - gardener_gardenlet_image_tag is defined
+      - gardener_gardenlet_image_name is defined
+      - gardener_etcd_repo_ref is defined
+      - gardener_apiserver_image_tag is defined
+      - gardener_controller_manager_image_tag is defined
+      - gardener_scheduler_image_tag is defined
+      - gardener_extension_provider_metal_image_tag is defined
+      - gardener_os_controller_image_tag is defined
+      - metal_cloud_controller_manager_image_tag is defined
+      - gardener_networking_calico_image_tag is defined
+      - csi_lvm_controller_image_tag is defined
+      - csi_lvm_provisioner_image_tag is defined
+      - gardener_virtual_api_server_public_dns is not none
+      - gardener_virtual_api_server_healthcheck_static_token is not none
+      - gardener_dns_domain is not none
+      - gardener_dns_provider is not none
+      - gardener_cloud_profile_metal_api_url is not none
+      - gardener_cloud_profile_metal_api_hmac is not none
+      - gardener_backup_infrastructure is not none and gardener_backup_infrastructure.provider in ["gcp", "S3"]
+      - gardener_operator_backup_infrastructure is not none and gardener_operator_backup_infrastructure.provider in ["gcp", "S3"]
+      - gardener_cert_management_issuer_email is not none
+      - gardener_dns_credentials is not none
+
+# - name: Deploy required Seed CRDs
+#   k8s:
+#     definition: "{{ item.definition }}"
+#     apply: yes
+#   loop:
+#     - name: vpas
+#       definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml', split_lines=False) | from_yaml_all | list)[0] }}"
+#   loop_control:
+#     label: "{{ item.name }}"
+
+- name: Create garden namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: garden
+
+- name: Fail when provider unsupported
+  fail:
+    msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
+  when:
+    - metal_control_plane_host_provider not in ["gcp", "metal"]
+
+- name: GCP control plane service cidr
+  import_tasks: control-plane-networks/gcp.yaml
+  when:
+    - metal_control_plane_host_provider == "gcp"
+
+- name: metal control plane service cidr
+  import_tasks: control-plane-networks/metal.yaml
+  when:
+    - metal_control_plane_host_provider == "metal"
+
+- name: Clone Gardener
+  git:
+    repo: "{{ gardener_repo_url }}"
+    dest: "{{ gardener_operator_local_tmp_dir }}/gardener"
+    depth: 1
+    version: "{{ gardener_repo_ref }}"
+
+# - name: Deploy Gardener Operator
+#   import_tasks: operator.yaml
+
+- name: Virtual Garden Access
+  import_tasks: access_kubeconfig.yaml
+
+- name: Deploy domain secrets (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        namespace: garden
+        annotations:
+          helm.sh/resource-policy: keep
+          dns.gardener.cloud/domain: "{{ gardener_dns_domain }}"
+          dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
+        labels:
+          app: gardener
+          gardener.cloud/role: "{{ item }}"
+        name: "{{ item }}-{{ gardener_dns_domain | regex_replace('\\.', '-') }}"
+      type: Opaque
+      data: "{{ gardener_dns_credentials }}"
+    kubeconfig: "{{ _virtual_garden_kubeconfig }}"
+    apply: true
+  loop:
+    - internal-domain
+    - default-domain
+
+- name: Create backup infrastructure secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: backup-secret
+        namespace: garden
+      type: Opaque
+      data: "{{ gardener_backup_infrastructure_secret }}"
+    kubeconfig: "{{ _virtual_garden_kubeconfig }}"
+    apply: yes
+  when: gardener_backup_infrastructure_secret
+
+- name: Deploy Local Gardenlet
+  import_tasks: gardenlet_local.yaml
+  when: gardener_operator_deploy_local_gardenlet
