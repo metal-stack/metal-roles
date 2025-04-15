@@ -11,7 +11,7 @@ config:
 
   controllers:
     backupEntry:
-      deletionGracePeriodHours: 72
+      deletionGracePeriodHours: {{ gardener_gardenlet_backup_entry_deletion_grace_period_hours }}
       deletionGracePeriodShootPurposes:
       - evaluation
       - infrastructure
