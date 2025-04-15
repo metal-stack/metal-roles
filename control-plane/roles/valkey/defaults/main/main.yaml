@@ -1,0 +1,10 @@
+---
+valkey_namespace: "{{ metal_control_plane_namespace }}"
+
+valkey_replicas: 3
+valkey_password: change-me-soon
+
+valkey_size: 10Gi
+valkey_storage_class: ""
+
+valkey_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"

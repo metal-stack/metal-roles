@@ -46,6 +46,46 @@
     - frr-reload.service
   when: metal_stack_switch_os_is_sonic
 
+- name: create bgp-neighbor-stats directory
+  file:
+    path: /var/run/bgp-neighbors
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: create bgp-neighbor-stats.sh
+  copy:
+    src: bgp-neighbor-stats.sh
+    dest: /usr/bin/bgp-neighbor-stats.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: create bgp-neighbor-stats.service
+  copy:
+    src: bgp-neighbor-stats.service
+    dest: /etc/systemd/system/bgp-neighbor-stats.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd daemon
+
+- name: create bgp-neighbor-stats.timer
+  copy:
+    src: bgp-neighbor-stats.timer
+    dest: /etc/systemd/system/bgp-neighbor-stats.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd daemon
+
+- name: bgp-neighbor-stats.timer must be enabled and running
+  systemd:
+    name: bgp-neighbor-stats.timer
+    enabled: yes
+    state: started
+
 - name: deploy metal-core
   include_role:
     name: ansible-common/roles/systemd-docker-service

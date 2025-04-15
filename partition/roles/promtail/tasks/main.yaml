@@ -7,9 +7,9 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
+      - promtail_clients
       - promtail_image_tag is defined
       - promtail_image_name is defined
-      - promtail_loki_push_endpoint is not none
       - promtail_scrape_configs is defined and (promtail_scrape_configs|length>0)
 
 - name: Create promtail config directory

@@ -35,6 +35,8 @@ spec:
     metadata:
       labels:
         app: nsqd
+      annotations:
+        checksum/certs: "{{ lookup('template', 'certs-data.yaml') | string | hash('sha1') }}"
     spec:
 {% if nsq_registry_auth_enabled %}
       imagePullSecrets:
@@ -170,9 +172,7 @@ metadata:
     app: nsqd
   name: nsqd
 data:
-  client_key.pem: {{ nsq_certs_client_key | b64encode }}
-  client.pem: {{ nsq_certs_client_cert | b64encode }}
-  ca.pem: {{ nsq_certs_ca_cert | b64encode }}
+  {{ lookup('template', 'certs-data.yaml') | indent(width=2, first=false) }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
