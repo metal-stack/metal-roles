@@ -1,7 +1,8 @@
 {
   "DEVICE_METADATA": {
     "localhost": {
-      "docker_routing_config_mode": "split"
+      "docker_routing_config_mode": "split",
+      "hostname": "sonic"
     }
   }
 }
