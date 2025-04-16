@@ -9,9 +9,6 @@ valkey_storage_class: ""
 
 valkey_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 
-valkey_image_pull_secrets:
-  - name: valkey-registry-credentials
-
 valkey_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 valkey_registry_auth:
   auths:
