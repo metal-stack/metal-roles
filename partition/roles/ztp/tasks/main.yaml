@@ -26,7 +26,7 @@
     - ztp.json.j2
     - user.sh.j2
 
-- name: copy frr.conf
+- name: copy static files
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item }}"
     src: "{{ item }}"
