@@ -32,5 +32,6 @@
           INTERFACE: "{{ listening_interface }}"
           DHCP_SERVER: "{{ dhcp_servers | join(',') }}"
         systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
-        systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
+        systemd_service_wantedby: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
+
   when: sonic_dhcp_interfaces
