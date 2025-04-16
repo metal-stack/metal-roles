@@ -9,12 +9,6 @@
     that:
       - sonic_dhcp_interfaces
 
-- name: Disable sonic native dhcp relay
-  service:
-    name: dhcp_relay
-    state: stopped
-    enabled: false
-
 - name: Deploy dhcp relay on first vlan that contains dhcp servers
   block:
     - name: Set facts
