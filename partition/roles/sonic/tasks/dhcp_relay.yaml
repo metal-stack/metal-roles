@@ -3,6 +3,18 @@
   set_fact:
     sonic_dhcp_interfaces: "{{ sonic_vlans | selectattr('dhcp_servers', 'defined') | selectattr('dhcp_servers') }}"
 
+- name: Check that there is an interface the dhcp relay can listen on
+  assert:
+    fail_msg: no dhcp servers were configured on any interface, please add a vlan interface with dhcp servers to forward requests to
+    that:
+      - sonic_dhcp_interfaces
+
+- name: Disable sonic native dhcp relay
+  service:
+    name: dhcp_relay
+    state: stopped
+    enabled: false
+
 - name: Deploy dhcp relay on first vlan that contains dhcp servers
   block:
     - name: Set facts
@@ -22,6 +34,9 @@
         systemd_docker_cpu_quota: 10000
         systemd_docker_memory: 1024m
         systemd_docker_network: host
+        systemd_service_environment:
+          INTERFACE: "{{ listening_interface }}"
+          DHCP_SERVERS: "{{ dhcp_servers }}"
         systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
         systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
   when: sonic_dhcp_interfaces
