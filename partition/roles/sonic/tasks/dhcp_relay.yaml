@@ -34,3 +34,9 @@
         systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
         systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
   when: sonic_dhcp_interfaces
+
+- name: wait for dhcp relay to listen on dhcp server port
+  wait_for:
+    port: 67
+    timeout: 60
+    msg: "go-dhcp-relay did not come up"
