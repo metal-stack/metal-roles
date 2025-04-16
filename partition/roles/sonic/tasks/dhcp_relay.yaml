@@ -38,6 +38,8 @@
 - name: wait for dhcp relay to listen on dhcp server port
   wait_for:
     host: 0.0.0.0
+    state: started
     port: 67
     timeout: 60
+    delay: 10
     msg: "go-dhcp-relay did not come up"
