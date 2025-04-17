@@ -4,6 +4,10 @@ global:
 {% if valkey_storage_class %}
   defaultStorageClass: "{{ valkey_storage_class }}"
 {% endif %}
+{% if valkey_registry_auth_enabled %}
+  imagePullSecrets:
+    - name: valkey-registry-credentials
+{% endif %}
   valkey:
     password: "{{ valkey_password }}"
 
