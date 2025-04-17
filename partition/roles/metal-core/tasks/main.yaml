@@ -109,7 +109,6 @@
     systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
-    systemd_service_wantedby: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
 
 - name: wait for metal-core to listen on metrics port
   wait_for:
