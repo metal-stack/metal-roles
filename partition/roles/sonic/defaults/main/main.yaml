@@ -52,3 +52,6 @@ sonic_interconnects: {}
 
 sonic_interconnects_default_peer_group: EXTERNAL
 sonic_interconnects_default_bgp_timers: '1 3'
+
+sonic_mclag: {}
+sonic_sag: {}
