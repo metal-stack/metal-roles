@@ -67,6 +67,13 @@ spec:
         - containerPort: 8000
           name: grpc
         env:
+{% if rethinkdb_backup_restore_sidecar_encryption_key %}
+        - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: encryptionKey
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+{% endif %}
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
           valueFrom:
@@ -217,9 +224,6 @@ data:
 {% if rethinkdb_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ rethinkdb_backup_restore_sidecar_object_max_keep }}
 {% endif %}
-{% if rethinkdb_backup_restore_sidecar_encryption_key %}
-    encryption-key: {{ rethinkdb_backup_restore_sidecar_encryption_key }}
-{% endif %}
 ---
 apiVersion: v1
 kind: Secret
@@ -268,6 +272,9 @@ data:
   endpoint: {{ rethinkdb_backup_restore_sidecar_s3_endpoint | b64encode }}
   accessKey: {{ rethinkdb_backup_restore_sidecar_s3_access_key | b64encode }}
   secretKey: {{ rethinkdb_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% endif %}
+{% if rethinkdb_backup_restore_sidecar_encryption_key %}
+  encryptionKey: {{ rethinkdb_backup_restore_sidecar_encryption_key | b64encode }}
 {% endif %}
 {% if rethinkdb_expose_frontend %}
 ---
