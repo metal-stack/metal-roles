@@ -20,7 +20,7 @@
       include_role:
         name: ansible-common/roles/systemd-docker-service
       vars:
-        systemd_service_name: go-dhcp-relay
+        systemd_service_name: dhcp_relay
         systemd_docker_image_name: "{{ go_dhcp_relay_image_name }}"
         systemd_docker_image_tag: "{{ go_dhcp_relay_image_tag }}"
         systemd_service_timeout_start_sec: 30
@@ -33,5 +33,4 @@
           DHCP_SERVER: "{{ dhcp_servers | join(',') }}"
         systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
         systemd_service_wantedby: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
-
   when: sonic_dhcp_interfaces
