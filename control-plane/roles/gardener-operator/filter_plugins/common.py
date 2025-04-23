@@ -211,8 +211,8 @@ def kubeconfig_from_token(server, ca, token, prepend_https=False):
         ],
     })
 
-def machine_images_for_cloud_profile(image_list, cris=None, compatibilities=None):
 
+def machine_images_for_cloud_profile(image_list, cris=None):
     images = dict()
     for image in image_list:
         if 'machine' not in image.get("features", list()):
@@ -259,26 +259,8 @@ def machine_images_for_cloud_profile(image_list, cris=None, compatibilities=None
                 if cri_condition is None:
                     version["cri"] = cri_config
                 else:
-                    if v in cri_condition.get("except", []):
-                        pass
-                    else:
-                        if version_compare(v, cri_condition["version"], cri_condition["operator"]):
-                            version["cri"] = cri_config
-
-            if compatibilities is not None and name in compatibilities:
-                compat = compatibilities[name].copy()
-
-                kubelet = compat.pop("kubelet")
-                condition = compat.pop("when", None)
-
-                if condition is None:
-                    version["kubeletVersionConstraint"] = kubelet
-                else:
-                    if v in condition.get("except", []):
-                        pass
-                    else:
-                        if version_compare(v, condition["version"], condition["operator"]):
-                            version["kubeletVersionConstraint"] = kubelet
+                    if version_compare(v, cri_condition["version"], cri_condition["operator"]):
+                        version["cri"] = cri_config
 
             versions.append(version)
 
