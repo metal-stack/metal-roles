@@ -50,7 +50,10 @@
     content: "{{ logging_gardener_virtual_garden_kubeconfig | b64decode }}"
   when: logging_gardener_enabled
 
-- name: Loop over Gardener seeds
+- name:  Loop over Gardener seeds
   include_tasks: gardener-seed.yaml
-  loop: "{{ logging_gardener_seeds }}"
+  loop: "{{ gardener_seeds_shooted_seeds }}"
+  loop_control:
+    loop_var: gardener_shooted_seed
+    label: "{{ gardener_shooted_seed.name }}"
   when: logging_gardener_enabled
