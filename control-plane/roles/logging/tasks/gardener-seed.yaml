@@ -2,7 +2,7 @@
 - name: Write seed kubeconfig
   copy:
     dest: "/tmp/kubeconfig.{{ item }}"
-    content: "{{ logging_gardener_virtual_garden_kubeconfig | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
+    content: "{{ logging_gardener_virtual_garden_kubeconfig | b64decode | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
 
 - name: Create monitoring namespace
   k8s:
