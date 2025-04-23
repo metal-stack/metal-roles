@@ -503,31 +503,31 @@ additionalPrometheusRulesMap:
         expr: label_join(label_replace(garden_shoot_condition,"namespace1","shoot--$1--","project","(.*)"),"namespace","","namespace1","name")
 {% endraw %}
 {% endif %}
-{% if custom_rules_enabled %}
-{% raw %}
-  "{{ custom_rule_name }}":
-  groups:
-  {% for rule_group in custom_rules_list %}
-  - name: {{ rule_group.name }}
-    rules:
-    {% for rule in rule_group.rules %}
-    {% if rule.alert is defined %}
-    - alert: {{ rule.alert }}
-      expr: {{ rule.expr }}
-      {% if rule.for is defined %}for: {{ rule.for }}{% endif %}
-      labels:
-        {% for key, value in rule.labels.items() %}
-        {{ key }}: {{ value }}
-        {% endfor %}
-      annotations:
-        {% for key, value in rule.annotations.items() %}
-        {{ key }}: {{ value }}
-        {% endfor %}
-    {% elif rule.record is defined %}
-    - record: {{ rule.record }}
-      expr: {{ rule.expr }}
-    {% endif %}
-    {% endfor %}
-  {% endfor %}
-{% endraw %}
-{% endif %}
+# {% if custom_rules_enabled %}
+# {% raw %}
+#   "{{ custom_rule_name }}":
+#   groups:
+#   {% for rule_group in custom_rules_list %}
+#   - name: {{ rule_group.name }}
+#     rules:
+#     {% for rule in rule_group.rules %}
+#     {% if rule.alert is defined %}
+#     - alert: {{ rule.alert }}
+#       expr: {{ rule.expr }}
+#       {% if rule.for is defined %}for: {{ rule.for }}{% endif %}
+#       labels:
+#         {% for key, value in rule.labels.items() %}
+#         {{ key }}: {{ value }}
+#         {% endfor %}
+#       annotations:
+#         {% for key, value in rule.annotations.items() %}
+#         {{ key }}: {{ value }}
+#         {% endfor %}
+#     {% elif rule.record is defined %}
+#     - record: {{ rule.record }}
+#       expr: {{ rule.expr }}
+#     {% endif %}
+#     {% endfor %}
+#   {% endfor %}
+# {% endraw %}
+# {% endif %}
