@@ -1,4 +1,14 @@
 ---
+- name: Show project file structure (depth-limited)
+  shell: find . -maxdepth 10
+  args:
+    chdir: "{{ playbook_dir }}"
+  register: tree_output
+
+- name: Print project structure
+  debug:
+    var: tree_output.stdout_lines
+
 - name: Gather release versions
   setup_yaml:
 
