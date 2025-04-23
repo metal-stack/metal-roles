@@ -1,4 +1,14 @@
 ---
+- name: Get current working directory on controller
+  shell: pwd
+  args:
+    chdir: "{{ playbook_dir }}"
+  register: pwd_output
+
+- name: Print working directory
+  debug:
+    var: pwd_output.stdout
+
 - name: Show project file structure (depth-limited)
   shell: find . -maxdepth 10
   args:
