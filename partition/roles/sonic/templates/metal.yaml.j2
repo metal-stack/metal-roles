@@ -89,6 +89,19 @@ INTERFACE:
   {{ name }}|{{ ip }}: {}
   {% endfor %}
   {% endfor %}
+  {% if sonic_interconnects is defined and sonic_interconnects|length > 0 %}
+  {% for k, i in sonic_interconnects.items() %}
+  {% if i.unnumbered_interfaces is defined and i.unnumbered_interfaces|length > 0 %}
+  {% for interface in i.unnumbered_interfaces %}
+  {{ interface }}:
+    ipv6_use_link_local_only: enable
+    {% if i.vrf is defined %}
+    vrf_name: "{{ i.vrf }}"
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+  {% endfor %}
+  {% endif %}
 {% endif %}
 {% if sonic_running_cfg_breakouts %}
 

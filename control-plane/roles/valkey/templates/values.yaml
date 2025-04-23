@@ -1,0 +1,24 @@
+---
+# find the chart values here: https://github.com/bitnami/charts/blob/main/bitnami/valkey/values.yaml
+global:
+{% if valkey_storage_class %}
+  defaultStorageClass: "{{ valkey_storage_class }}"
+{% endif %}
+{% if valkey_registry_auth_enabled %}
+  imagePullSecrets:
+    - name: valkey-registry-credentials
+{% endif %}
+  valkey:
+    password: "{{ valkey_password }}"
+
+image:
+  pullPolicy: {{ valkey_image_pull_policy }}
+
+primary:
+  persistence:
+    size: {{ valkey_size }}
+
+replica:
+  replicaCount: {{ valkey_replicas }}
+  persistence:
+    size: {{ valkey_size }}

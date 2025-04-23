@@ -30,3 +30,4 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_bmc_ignore_macs              |           | when fetching bmc reports from the dhcp lease file, the given macs are ignored                 |
 | metal_bmc_allowed_cidrs            |           | when fetching bmc reports from the dhcp lease file, ips in the given cidrs are ignored         |
 | metal_bmc_additional_volume_mounts |           | Volumes to mount into the metal-bmc, besides the default ones                                  |
+| metal_bmc_docker_network           |           | Docker network to use for metal-bmc                                                            |
