@@ -90,6 +90,13 @@
     - shoot-details.yaml
   when: monitoring_gardener_enabled
 
+- name: Deploy Custom dashboards
+  k8s:
+    definition: "{{ lookup('template', custom_dashboard_folder + item) }}"
+    namespace: "{{ monitoring_namespace }}"
+  loop: "{{ custom_dashboard_file_list }}"
+  when: custom_dashboards_enabled
+
 - name: Create service monitors
   k8s:
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
