@@ -503,7 +503,7 @@ additionalPrometheusRulesMap:
         expr: label_join(label_replace(garden_shoot_condition,"namespace1","shoot--$1--","project","(.*)"),"namespace","","namespace1","name")
 {% endraw %}
 {% endif %}
-# {% if custom_rules_enabled %}
+# {% if monitoring_custom_rules_enabled %}
 # {% raw %}
 #   "{{ custom_rule_name }}":
 #   groups:
