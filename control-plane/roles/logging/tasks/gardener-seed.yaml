@@ -1,16 +1,4 @@
 ---
-- debug:
-    var: gardener_shooted_seeds
-
-- debug:
-    var: item
-
-- set_fact:
-    item: "{{ item.name }}"
-
-- debug:
-    var: item
-
 - name: Write seed kubeconfig
   copy:
     dest: "/tmp/kubeconfig.{{ item }}"
