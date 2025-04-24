@@ -1,24 +1,4 @@
 ---
-- name: Get current working directory on controller
-  shell: pwd
-  args:
-    chdir: "{{ playbook_dir }}"
-  register: pwd_output
-
-- name: Print working directory
-  debug:
-    var: pwd_output.stdout
-
-- name: Show project file structure (depth-limited)
-  shell: find . -maxdepth 10
-  args:
-    chdir: "{{ playbook_dir }}"
-  register: tree_output
-
-- name: Print project structure
-  debug:
-    var: tree_output.stdout_lines
-
 - name: Gather release versions
   setup_yaml:
 
@@ -110,12 +90,12 @@
     - shoot-details.yaml
   when: monitoring_gardener_enabled
 
-- name: Deploy Custom dashboards
+- name: Deploy custom dashboards
   k8s:
-    definition: "{{ lookup('template', custom_dashboard_folder + item) }}"
+    definition: "{{ lookup('template', monitoring_custom_dashboard_folder + item) }}"
     namespace: "{{ monitoring_namespace }}"
-  loop: "{{ custom_dashboard_file_list }}"
-  when: custom_dashboards_enabled
+  loop: "{{ monitoring_custom_dashboard_file_list }}"
+  when: monitoring_custom_dashboards_enabled
 
 - name: Create service monitors
   k8s:

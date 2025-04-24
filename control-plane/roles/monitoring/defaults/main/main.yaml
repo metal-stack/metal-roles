@@ -41,4 +41,6 @@ monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 
 monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
 monitoring_gardener_seeds: []
 
-custom_rules_enabled: false
+monitoring_custom_rules_enabled: false
+monitoring_custom_dashboards_enabled: false
+monitoring_custom_dashboard_file_list: []
