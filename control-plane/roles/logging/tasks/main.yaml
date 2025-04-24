@@ -53,6 +53,6 @@
 - name:  Loop over Gardener seeds
   include_tasks: gardener-seed.yaml
   loop: "{{ gardener_shooted_seeds }}"
-  loop_control:
-    label: "{{ item.name }}"
+  vars:
+    item: "{{ item.name }}"
   when: logging_gardener_enabled
