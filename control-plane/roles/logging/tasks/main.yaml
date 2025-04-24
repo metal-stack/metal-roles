@@ -52,7 +52,7 @@
 
 - name: Extract seed names into a new list so name can be the item in the next loop
   set_fact:
-    gardener_seed_names: "{{ gardener_seeds | map(attribute='name') | list }}"
+    gardener_seed_names: "{{ gardener_shooted_seeds | map(attribute='name') | list }}"
 
 - name:  Loop over Gardener seeds
   include_tasks: gardener-seed.yaml
