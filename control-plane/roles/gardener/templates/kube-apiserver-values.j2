@@ -10,6 +10,11 @@ apiServer:
   serviceName: garden-kube-apiserver
   adminKubeconfigPort: {{ gardener_virtual_api_server_public_port }}
 
+{% if gardener_virtual_api_server_authentication_config %}
+authenticationConfig: |-
+  {{ gardener_virtual_api_server_authentication_config | indent(width=2, first=false) }}
+{% endif %}
+
 oidc:
   issuerURL: {% if gardener_virtual_api_oidc_issuer_url %}{{ gardener_virtual_api_oidc_issuer_url }}{% endif %}
 

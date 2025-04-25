@@ -24,6 +24,8 @@ apiServer:
   serviceName: garden-kube-apiserver
   adminKubeconfigPort: 443
 
+authenticationConfig:
+
 oidc:
   issuerURL:
   clientID:
