@@ -33,7 +33,14 @@ alerting:
 
 {% if prometheus_remote_write %}
 remote_write:
-{{ prometheus_remote_write[0] | from_json | to_yaml(indent=2) }}
+  {% for item in prometheus_remote_write %}
+  - {% if item.basic_auth %}
+      basic_auth:
+        username: "{{ item.basic_auth.username }}"
+        password: "{{ item.basic_auth.password }}"
+    {% endif %}
+    url: "{{ item.url }}"
+  {% endfor %}
 {% endif %}
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
