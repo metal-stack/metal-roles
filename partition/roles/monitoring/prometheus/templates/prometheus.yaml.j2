@@ -33,7 +33,7 @@ alerting:
 
 {% if prometheus_remote_write %}
 remote_write:
-{{ prometheus_remote_write | from_json | to_yaml(indent=2) }}
+{{ prometheus_remote_write[0] | from_json | to_yaml(indent=2) }}
 {% endif %}
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
