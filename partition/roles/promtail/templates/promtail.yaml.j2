@@ -6,9 +6,6 @@ positions:
   filename: /var/log/promtail-positions.yaml
 
 clients:
-{{ promtail_clients | to_yaml(indent=2) }}
-
-clients:
   {% for item in promtail_clients -%}
   - url: "{{ item.url }}"
     {% if item.timeout -%}
