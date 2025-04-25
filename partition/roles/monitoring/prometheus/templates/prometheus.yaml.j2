@@ -33,7 +33,7 @@ alerting:
 
 {% if prometheus_remote_write %}
 remote_write:
-  {% for item in prometheus_remote_write %}
+  {% for item in prometheus_remote_write -%}
   - url: "{{ item.url }}"
     {% if item.basic_auth -%}
     basic_auth:
