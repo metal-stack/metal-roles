@@ -34,12 +34,12 @@ alerting:
 {% if prometheus_remote_write %}
 remote_write:
   {% for item in prometheus_remote_write %}
-  - {% if item.basic_auth %}
-      basic_auth:
-        username: "{{ item.basic_auth.username }}"
-        password: "{{ item.basic_auth.password }}"
+  - url: "{{ item.url }}"
+    {% if item.basic_auth %}
+    basic_auth:
+      username: "{{ item.basic_auth.username }}"
+      password: "{{ item.basic_auth.password }}"
     {% endif %}
-    url: "{{ item.url }}"
   {% endfor %}
 {% endif %}
 
@@ -47,6 +47,11 @@ remote_write:
 rule_files:
 - /etc/prometheus/rules/*.yaml
 
+remote_write:
+    -       basic_auth:
+        username: "partition"
+        password: "test"
+        url: "test"
 
 # A scrape configuration containing exactly one endpoint to scrape:
 scrape_configs:
