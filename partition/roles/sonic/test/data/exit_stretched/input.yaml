@@ -112,21 +112,39 @@ sonic_interconnects:
     - "ip prefix-list MPLS_PREFIX_IN seq 10 permit 10.0.0.0/8"
     - "ip prefix-list MPLS_PREFIX_IN seq 20 permit 100.100.0.0/16"
   internet:
-    neighbor_ip: 172.17.146.177
     peer_group: INTERNET
     vrf: VrfInternet
     vlan: 4009
     vni: 104009
     announcements: []
-    routemap_in: "{{ internet_routemap_in }}"
-    routemap_out: "{{ internet_routemap_out }}"
     prefixlists: 
     - "ip prefix-list INTERNET_PREFIX_IN seq 10 permit 0.0.0.0/0"
     - "ip prefix-list INTERNET_PREFIX_OUT seq 10 permit 185.153.67.0/24 ge 32"
     - "ip prefix-list INTERNET_PREFIX_OUT seq 11 permit 212.34.85.0/24 ge 32"
     - "ip prefix-list INTERNET_PREFIX_OUT seq 12 permit 212.34.89.0/24 ge 32"
-    extended_routemap_in: "{{ routemap_in_extended }}"
-    extended_routemap_out: "{{ routemap_out_extended}}"
+    extended_neighbors:
+    - ip: "172.17.146.177"
+      routemap_in:
+        name: "ALLOW-INTERNET-2-IN"
+        entries:
+        - "match ip address prefix-list INTERNET_PREFIX_IN"
+        - "set as-path prepend last-as 2"
+      routemap_out:
+        name: "ALLOW-INTERNET-2-OUT"
+        entries:
+        - "match ip address prefix-list INTERNET_PREFIX_OUT"
+        - "set as-path prepend {{ sonic_asn }} {{ sonic_asn }}"
+    - ip: "172.17.146.161"
+      routemap_in:
+        name: "ALLOW-INTERNET-4-IN"
+        entries:
+        - "match ip address prefix-list INTERNET_PREFIX_IN"
+        - "set as-path prepend last-as 4"
+      routemap_out:
+        name: "ALLOW-INTERNET-4-OUT"
+        entries:
+        - "match ip address prefix-list INTERNET_PREFIX_OUT"
+        - "set as-path prepend {{ sonic_asn }} {{ sonic_asn }} {{ sonic_asn }} {{ sonic_asn }}"
   pxe:
     peer_group: PXE
     neighbors:
@@ -170,43 +188,12 @@ sonic_ssh_sourceranges:
 - "1.2.3.4/32"
 - "10.11.0.0/16"
 
-routemap_in_extended:
-  - name: "INTERNET" 
-    neighbor_ip: "172.17.146.177"
-    allow: "ALLOW-INTERNET-2-IN"
-    match_ip: "INTERNET_PREFIX_IN"
-    set_as_path: "last-as 2"
-  - name: "INTERNET" 
-    neighbor_ip: "172.17.146.161"
-    allow: "ALLOW-INTERNET-4-IN"
-    match_ip: "INTERNET_PREFIX_IN"
-    set_as_path: "last-as 4"
-
-routemap_out_extended:
-   - name: "INTERNET"
-     neighbor_ip: "172.17.146.177"
-     allow: "ALLOW-INTERNET-2-OUT"
-     match_ip: "INTERNET_PREFIX_IN"
-     set_as_path: "{{ sonic_asn }} {{ sonic_asn }}"
-   - name: "INTERNET"
-     neighbor_ip: "172.17.146.161"
-     allow: "ALLOW-INTERNET-4-OUT"
-     match_ip: "INTERNET_PREFIX_IN"
-     set_as_path: "{{ sonic_asn }} {{ sonic_asn }} {{ sonic_asn }} {{ sonic_asn }}"
-
-
-internet_routemap_in:
-  name: ALLOW-INTERNET-IN
-  entries:
-  - "match ip address prefix-list INTERNET_PREFIX_IN"
-
-internet_routemap_out:
-  name: ALLOW-INTERNET-OUT
-  entries:
-  - "match ip address prefix-list INTERNET_PREFIX_OUT"
-
 sonic_vlan_subinterfaces:
   - port: 0
-    cidr_ip: "172.17.146.161/32"
+    cidr_ip: "172.17.146.162/28"
     vlan: 461
+    vrf: VrfInternet
+  - port: 0
+    cidr_ip: "172.17.146.178/28"
+    vlan: 463
     vrf: VrfInternet

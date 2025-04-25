@@ -295,7 +295,9 @@ VLAN_SUB_INTERFACE:
 {% for sub_interface in sonic_vlan_subinterfaces %}
   Ethernet{{ sub_interface.port }}.{{ sub_interface.vlan }}:
     admin_status: up
+{% if sub_interface.vrf is defined %}
     vrf_name: {{ sub_interface.vrf }}
+{% endif %}
   Ethernet{{ sub_interface.port }}.{{ sub_interface.vlan }}|{{ sub_interface.cidr_ip }}: {}
 {% endfor %}
 {% endif %}

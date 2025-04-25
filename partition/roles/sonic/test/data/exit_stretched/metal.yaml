@@ -193,4 +193,8 @@ VLAN_SUB_INTERFACE:
   Ethernet0.461:
     admin_status: up
     vrf_name: VrfInternet
-  Ethernet0.461|172.17.146.161/32: {}
+  Ethernet0.461|172.17.146.162/28: {}
+  Ethernet0.463:
+    admin_status: up
+    vrf_name: VrfInternet
+  Ethernet0.463|172.17.146.178/28: {}
