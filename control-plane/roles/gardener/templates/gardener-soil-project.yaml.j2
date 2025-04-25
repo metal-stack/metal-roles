@@ -10,12 +10,8 @@ spec:
   tolerations:
     defaults:
       - key: seed.gardener.cloud/protected
-      - key: seed.gardener.cloud/invisible
-      - key: seed.gardener.cloud/disable-capacity-reservation
     whitelist:
       - key: seed.gardener.cloud/protected
-      - key: seed.gardener.cloud/invisible
-      - key: seed.gardener.cloud/disable-capacity-reservation
   owner:
     apiGroup: rbac.authorization.k8s.io
     kind: User
