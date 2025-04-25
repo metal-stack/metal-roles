@@ -39,7 +39,7 @@ config:
     spec:
       provider:
         type: {{ metal_control_plane_host_provider }}
-        region: local
+        region: {{ gardener_soil_region }}
       secretRef:
         name: gardener-seed-kubeconfig
         namespace: garden
