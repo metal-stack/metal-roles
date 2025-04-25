@@ -68,9 +68,10 @@ config:
           enabled: true
         verticalPodAutoscaler:
           enabled: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
+{% if gardener_soil_protection_enabled %}
       taints:
       - key: seed.gardener.cloud/protected
-
+{% endif %}
   featureGates: {{ gardener_gardenlet_feature_gates | to_json }}
 
 vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
