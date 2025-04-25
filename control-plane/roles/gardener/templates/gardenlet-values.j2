@@ -63,7 +63,7 @@ config:
         excessCapacityReservation:
           enabled: false
         scheduling:
-          visible: false
+          visible: {{ gardener_soil_scheduling_visible }}
         shootDNS:
           enabled: true
         verticalPodAutoscaler:
