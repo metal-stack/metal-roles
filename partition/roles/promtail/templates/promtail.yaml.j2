@@ -8,5 +8,18 @@ positions:
 clients:
 {{ promtail_clients | to_yaml(indent=2) }}
 
+clients:
+  {% for item in promtail_clients -%}
+  - url: "{{ item.url }}"
+    {% if item.timeout -%}
+    timeout: "{{ item.timeout }}"
+    {% endif %}
+    {% if item.basic_auth -%}
+    basic_auth:
+      username: "{{ item.basic_auth.username }}"
+      password: "{{ item.basic_auth.password }}"
+    {% endif %}
+  {% endfor %}
+
 scrape_configs:
 {{ promtail_scrape_configs | to_yaml(indent=2) }}
