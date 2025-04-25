@@ -62,6 +62,7 @@ gardener_soil_vertical_pod_autoscaler_enabled: false
 gardener_soil_project_owner_name: admin
 gardener_soil_project_members: []
 gardener_soil_region: local
+gardener_soil_protection_enabled: true
 gardener_soil_scheduling_visible: false
 
 gardener_gardenlet_backup_entry_deletion_grace_period_hours: 72
