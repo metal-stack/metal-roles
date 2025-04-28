@@ -58,16 +58,46 @@ MGMT_VRF_CONFIG:
     mgmtVrfEnabled: "true"
 
 INTERFACE:
+  Ethernet88:
+    vrf_name: "Vrf65"
+  Ethernet88|10.10.255.2/31: {}
+  Ethernet92:
+    vrf_name: "Vrf65"
+  Ethernet92|10.10.255.2/31: {}
   Ethernet120:
     ipv6_use_link_local_only: enable
   Ethernet124:
     ipv6_use_link_local_only: enable
+  Ethernet96:
+    ipv6_use_link_local_only: enable
+    vrf_name: "Vrf64"
+  Ethernet100:
+    ipv6_use_link_local_only: enable
+    vrf_name: "Vrf64"
+  Ethernet104:
+    ipv6_use_link_local_only: enable
+    vrf_name: "Vrf64"
+  Ethernet108:
+    ipv6_use_link_local_only: enable
+    vrf_name: "Vrf64"
 
 BREAKOUT_CFG:
   Ethernet0:
     brkout_mode: "4x25G"
   Ethernet4:
     brkout_mode: "4x25G"
+  Ethernet88:
+    brkout_mode: "1x100G[40G]"
+  Ethernet92:
+    brkout_mode: "1x100G[40G]"
+  Ethernet96:
+    brkout_mode: "1x100G[40G]"
+  Ethernet100:
+    brkout_mode: "1x100G[40G]"
+  Ethernet104:
+    brkout_mode: "1x100G[40G]"
+  Ethernet108:
+    brkout_mode: "1x100G[40G]"
   Ethernet112:
     brkout_mode: "1x100G[40G]"
   Ethernet116:
@@ -154,6 +184,66 @@ PORT:
     parent_port: Ethernet4
     admin_status: up
     speed: "25000"
+  Ethernet88:
+    alias: Eth23(Port23)
+    autoneg: "off"
+    index: "23"
+    lanes: "89,99,100,101"
+    parent_port: Ethernet88
+    admin_status: up
+    speed: "100000"
+    mtu: "9000"
+    fec: none
+  Ethernet92:
+    alias: Eth24(Port24)
+    autoneg: "off"
+    index: "24"
+    lanes: "93,94,95,96"
+    parent_port: Ethernet92
+    admin_status: up
+    speed: "100000"
+    mtu: "9000"
+    fec: none
+  Ethernet96:
+    alias: Eth25(Port25)
+    autoneg: "off"
+    index: "25"
+    lanes: "97,98,99,100"
+    parent_port: Ethernet96
+    admin_status: up
+    speed: "100000"
+    mtu: "9000"
+    fec: none
+  Ethernet100:
+    alias: Eth26(Port26)
+    autoneg: "off"
+    index: "26"
+    lanes: "101,102,103,104"
+    parent_port: Ethernet100
+    admin_status: up
+    speed: "100000"
+    mtu: "9000"
+    fec: none
+  Ethernet104:
+    alias: Eth27(Port27)
+    autoneg: "off"
+    index: "27"
+    lanes: "105,106,107,108"
+    parent_port: Ethernet104
+    admin_status: up
+    speed: "100000"
+    mtu: "9000"
+    fec: none
+  Ethernet108:
+    alias: Eth28(Port28)
+    autoneg: "off"
+    index: "28"
+    lanes: "109,110,111,112"
+    parent_port: Ethernet108
+    admin_status: up
+    speed: "100000"
+    mtu: "9000"
+    fec: none
   Ethernet112:
     alias: Eth29(Port29)
     autoneg: "off"
@@ -260,6 +350,10 @@ VLAN:
     vlanid: 1000
   Vlan1001:
     vlanid: 1001
+  Vlan1002:
+    vlanid: 1002
+  Vlan1003:
+    vlanid: 1003
 
 VLAN_INTERFACE:
   Vlan1000: {}
@@ -267,6 +361,10 @@ VLAN_INTERFACE:
   Vlan1001:
     static_anycast_gateway: "true"
     vrf_name: "Vrf46"
+  Vlan1002:
+    vrf_name: "Vrf64"
+  Vlan1003:
+    vrf_name: "Vrf65"
 
 VLAN_MEMBER:
   Vlan1000|PortChannel01:
@@ -297,10 +395,22 @@ VXLAN_TUNNEL_MAP:
   "vtep|map_46_Vlan1001":
     vlan: "Vlan1001"
     vni: "46"
+  # Static machines
+  "vtep|map_64_Vlan1002":
+    vlan: "Vlan1002"
+    vni: "64"
+  # Static machines bgp numbered
+  "vtep|map_65_Vlan1003":
+    vlan: "Vlan1003"
+    vni: "65"
 
 VRF:
   Vrf46:
     vni: "46"
+  Vrf64:
+    vni: "64"
+  Vrf65:
+    vni: "65"
 
 LLDP:
   Global:
