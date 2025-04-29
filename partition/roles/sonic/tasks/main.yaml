@@ -17,9 +17,15 @@
       - sonic_config_source in ['template', 'generate']
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
+      - metal_stack_switch_os_is_sonic
+
+- name: Check mandatody variables for config source generate are set
+  assert:
+    quiet: yes
+    that:
       - sonic_configdb_utils_image_tag is defined
       - sonic_configdb_utils_image_name is defined
-      - metal_stack_switch_os_is_sonic
+  when: sonic_config_source == 'generate'
 
 - name: render resolv.conf
   template:
@@ -60,7 +66,7 @@
     dest: /etc/sonic/frr/frr.conf
   when: sonic_frr_render
   notify:
-  - restart bgp
+    - restart bgp
 
 - name: render iptables.json
   template:
@@ -68,7 +74,7 @@
     dest: /etc/sonic/iptables.json
   when: sonic_extended_cacl is defined
   notify:
-  - restart caclmgrd
+    - restart caclmgrd
 
 - name: Flush handlers
   meta: flush_handlers
