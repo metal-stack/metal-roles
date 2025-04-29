@@ -47,6 +47,11 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_vlans.tagged_ports                                   |           | Array of tagged ports to bind to this VLAN.                                                                          |
 | sonic_vlans.vrf                                            |           | The VRF to bind the VLANs SVI to.                                                                                    |
 | sonic_vlans.sag                                            |           | Whether to enable Static Anycast Gateway for this VLAN. Defaults to false in SONIC.                                  |
+| sonic_vlan_subinterfaces                                   |           | Subinterfaces on a port with .1q VLAN tag. For subinterfaces where there's no local VLAN on the switch.              |
+| sonic_vlan_subinterfaces.port                              |           | The Ethernet interface number of the parent port. Ethernet__n__ corresponds to `port: n`.                            |
+| sonic_vlan_subinterfaces.cidr_ip                           |           | The ip/prefixlength CIDR of the subinterface                                                                         |
+| sonic_vlan_subinterfaces.vlan                              |           | The .1q VLAN tag for this subinterfaces. Creates a `Ethernet<port>.<vlan>` subinterface.                             |
+| sonic_vlan_subinterfaces.vrf                               |           | If defined, the VRF that this subinterface will be bound to.                                                         |
 | sonic_vteps                                                |           | VTEPs to configure. If defined FRR will automatically advertise all VNIs.                                            |
 | sonic_vteps.comment                                        |           | Description for the VTEP.                                                                                            |
 | sonic_vteps.vlan                                           |           | The local VLAN interface.                                                                                            |
@@ -61,6 +66,10 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_interconnects.neighbor_ip                            |           | Connect to this BGP neighbors IP.                                                                                    |
 | sonic_interconnects.neighbors                              |           | Connect to this BGP neighbors - supports multiple neighbors and also BGP unnumbered by giving `Ethernet0 interface`. |
 | sonic_interconnects.unnumbered_interfaces                  |           | Connect with BGP unnumbered on these interfaces - also sets IPv6 options to make unnumbered work right.              |
+| sonic_interconnects.extended_neighbors                     |           | Connect to these BGP neighbors - supports multiple neighbors with individual routemaps.                              |
+| sonic_interconnects.extended_neighbors.ip                  |           | The IP if this particular extended neighbor                                                                          |
+| sonic_interconnects.extended_neighbors.routemap_in         |           | Apply an incoming routemap to this neighbor. Used e.g. to prioritze peers through different prepend_as statements... |
+| sonic_interconnects.extended_neighbors.routemap_out        |           | Apply an outgoing routemap to this neighbor. ...Syntax matches `sonic_interconnnects.routemap_[in|out]`.             |
 | sonic_interconnects.peer_group                             |           | Put the neighbor in this peer group.                                                                                 |
 | sonic_interconnects.evpn_peer                              |           | Whether the peer should take part in evpn routing (address-family l2vpn evpn)                                        |
 | sonic_interconnects.prefixlists                            |           | BGP prefix lists to configure.                                                                                       |
