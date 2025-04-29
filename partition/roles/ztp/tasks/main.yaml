@@ -26,14 +26,19 @@
     - ztp.json.j2
     - user.sh.j2
 
-- name: copy static files
+- name: copy frr.conf
+  copy:
+    dest: "{{ ztp_host_dir_path }}/config/frr.conf"
+    src: "frr.conf"
+    mode: 0644
+
+- name: copy config_db.json files
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item }}"
     src: "{{ item }}"
     mode: 0644
-  loop:
-    - frr.conf
-    - config_db.json
+  with_fileglob:
+    - "*_config_db.json"
 
 - name: copy additional files
   copy:
