@@ -22,13 +22,18 @@ You can look up all the default values of this role [here](defaults/main/main.ya
 | rethinkdb_password                                       |           | The password of the rethinkdb                                                                                     |
 | rethinkdb_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                                                                       |
 | rethinkdb_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                                                           |
-| rethinkdb_backup_restore_sidecar_provider                |           | The backup provider                                                                                               |
+| rethinkdb_backup_restore_sidecar_provider                |           | The backup provider. One of `local`, `gcp` or `s3`                                                                                              |
 | rethinkdb_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                                                          |
 | rethinkdb_backup_restore_sidecar_log_level               |           | The log level of the sidecar                                                                                      |
 | rethinkdb_backup_restore_sidecar_gcp_bucket_name         |           | Bucket name of the GCP bucket                                                                                     |
 | rethinkdb_backup_restore_sidecar_gcp_backup_location     |           | Location of the GCP bucket                                                                                        |
 | rethinkdb_backup_restore_sidecar_gcp_project_id          |           | GCP project name                                                                                                  |
 | rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json |           | GCP Serviceaccount JSON string (service account requires bucket access)                                           |
+| rethinkdb_backup_restore_sidecar_s3_bucket_name          |           | The name of the S3 bucket                                                                                         |
+| rethinkdb_backup_restore_sidecar_s3_region               |           | The region where the S3 bucket is located                                                                         |
+| rethinkdb_backup_restore_sidecar_s3_endpoint             |           | The endpoint URL for the S3 storage service                                                                       |
+| rethinkdb_backup_restore_sidecar_s3_access_key           |           | The access key for authenticating with S3                                                                         |
+| rethinkdb_backup_restore_sidecar_s3_secret_key           |           | The secret key for authenticating with S3                                                                         |
 | rethinkdb_expose_frontend                                |           | Exposes the rethinkdb over ingress (only use for dev environments)                                                |
 | rethinkdb_ingress_dns                                    |           | The virtual host to reach the rethinkdb frontend when exposed via ingress                                         |
 | rethinkdb_resources                                      |           | The kubernetes resources for the actual rethinkdb container                                                       |

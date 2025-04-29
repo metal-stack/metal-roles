@@ -3,9 +3,17 @@ images:
   apiserver: {{ gardener_virtual_api_server_image_name }}:{{ gardener_virtual_api_server_image_tag }}
   controllermanager: {{ gardener_virtual_controller_manager_image_name }}:{{ gardener_virtual_controller_manager_image_tag }}
 
+replicas: {{ gardener_virtual_api_replicas }}
+
 apiServer:
   hostname: {{ gardener_virtual_api_server_public_dns }}
   serviceName: garden-kube-apiserver
+  adminKubeconfigPort: {{ gardener_virtual_api_server_public_port }}
+
+{% if gardener_virtual_api_server_authentication_config %}
+authenticationConfig: |-
+  {{ gardener_virtual_api_server_authentication_config | indent(width=2, first=false) }}
+{% endif %}
 
 oidc:
   issuerURL: {% if gardener_virtual_api_oidc_issuer_url %}{{ gardener_virtual_api_oidc_issuer_url }}{% endif %}

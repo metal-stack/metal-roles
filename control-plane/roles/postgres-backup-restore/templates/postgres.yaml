@@ -136,6 +136,13 @@ spec:
             secretKeyRef:
               key: POSTGRES_USER
               name: {{ postgres_name }}
+{% if postgres_backup_restore_sidecar_encryption_key %}
+        - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: encryptionKey
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+{% endif %}
 {% if postgres_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
           valueFrom:
@@ -154,6 +161,32 @@ spec:
               name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /gcp/credentials/serviceaccount.json
+{% elif postgres_backup_restore_sidecar_provider == "s3" %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              key: bucketName
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              key: endpoint
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: accessKey
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secretKey
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
 {% endif %}
         volumeMounts:
         - name: {{ postgres_name }}
@@ -241,9 +274,6 @@ data:
 {% if postgres_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ postgres_backup_restore_sidecar_object_max_keep }}
 {% endif %}
-{% if postgres_backup_restore_sidecar_encryption_key %}
-    encryption-key: {{ postgres_backup_restore_sidecar_encryption_key }}
-{% endif %}
     post-exec-cmds:
       - docker-entrypoint.sh postgres {% if postgres_shared_libraries_preload %} -c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}{% if postgres_maintenance_work_mem %} -c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}{% if postgres_shared_buffers %} -c shared_buffers={{ postgres_shared_buffers }}{% endif %}{% if postgres_effective_cache_size %} -c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}{% if postgres_work_mem %} -c work_mem={{ postgres_work_mem }}{% endif %} -c max_connections={{ postgres_max_connections }}
 ---
@@ -268,6 +298,15 @@ data:
   bucketLocation: {{ postgres_backup_restore_sidecar_gcp_backup_location | b64encode }}
   projectID: {{ postgres_backup_restore_sidecar_gcp_project_id | b64encode }}
   serviceaccount.json: {{ postgres_backup_restore_sidecar_gcp_serviceaccount_json | to_json | b64encode }}
+{% elif postgres_backup_restore_sidecar_provider == "s3" %}
+  bucketName: {{ postgres_backup_restore_sidecar_s3_bucket_name | b64encode }}
+  region: {{ postgres_backup_restore_sidecar_s3_region | b64encode }}
+  endpoint: {{ postgres_backup_restore_sidecar_s3_endpoint | b64encode }}
+  accessKey: {{ postgres_backup_restore_sidecar_s3_access_key | b64encode }}
+  secretKey: {{ postgres_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% endif %}
+{% if postgres_backup_restore_sidecar_encryption_key %}
+  encryptionKey: {{ postgres_backup_restore_sidecar_encryption_key | b64encode }}
 {% endif %}
 ---
 apiVersion: v1

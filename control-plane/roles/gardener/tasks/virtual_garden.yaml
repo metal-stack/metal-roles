@@ -46,5 +46,100 @@
 - name: Wait for garden-kube-apiserver
   wait_for:
     host: "{{ gardener_virtual_api_server_public_dns }}"
-    port: "443"
+    port: "{{ gardener_virtual_api_server_public_port }}"
     timeout: 60
+
+# the admin kubeconfig is in the seeds group that gets created by the gardenlet.
+# to make it available earlier, let's create it with a custom admin cert
+#
+# we should move to the Gardener Operator soon to get rid off these hacks!
+
+- name: Create private key to setup virtual garden admin
+  community.crypto.openssl_privatekey:
+    path: "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig-key"
+    type: ECC
+    size: 256
+    curve: secp256r1
+
+- name: Create certificate signing request
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig-key"
+    common_name: admin
+    organization_name: system:masters
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - serverAuth
+      - clientAuth
+  register: result
+
+- name: Create certificate
+  community.crypto.x509_certificate:
+    csr_content: "{{ result.csr }}"
+    path: "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig-cert"
+    privatekey_path: "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig-key"
+    ownca_content: "{{ gardener_kube_api_server_ca }}"
+    ownca_privatekey_content: "{{ gardener_kube_api_server_ca_key }}"
+    provider: ownca
+    return_content: true
+  register: result
+
+- name: Write the kubeconfig
+  copy:
+    dest: "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig"
+    content: "{{ (gardener_virtual_api_server_public_dns + ':' + (gardener_virtual_api_server_public_port | string)) | kubeconfig_from_cert(gardener_kube_api_server_ca, result.certificate, lookup('file', gardener_local_tmp_dir + '/system-masters-kubeconfig-key'), prepend_https=true) }}"
+
+- name: Create gardener seeds cluster role
+  k8s:
+    kubeconfig: "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig"
+    apply: true
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: gardener.cloud:system:seeds
+        annotations:
+          meta.helm.sh/release-name: controlplane
+          meta.helm.sh/release-namespace: garden
+        labels:
+          app.kubernetes.io/managed-by: Helm
+      rules:
+      - apiGroups:
+        - '*'
+        resources:
+        - '*'
+        verbs:
+        - '*'
+
+- name: Create gardener seeds cluster role binding
+  k8s:
+    kubeconfig: "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig"
+    apply: true
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: gardener.cloud:system:seeds
+        annotations:
+          meta.helm.sh/release-name: controlplane
+          meta.helm.sh/release-namespace: garden
+        labels:
+          app.kubernetes.io/managed-by: Helm
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: gardener.cloud:system:seeds
+      subjects:
+      - apiGroup: rbac.authorization.k8s.io
+        kind: Group
+        name: gardener.cloud:system:seeds
+
+- name: Cleanup these certificates again
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig"
+    - "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig-cert"
+    - "{{ gardener_local_tmp_dir }}/system-masters-kubeconfig-key"

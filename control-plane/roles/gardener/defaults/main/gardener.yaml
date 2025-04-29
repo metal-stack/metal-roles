@@ -62,13 +62,12 @@ gardener_soil_vertical_pod_autoscaler_enabled: false
 gardener_soil_project_owner_name: admin
 gardener_soil_project_members: []
 
+gardener_gardenlet_backup_entry_deletion_grace_period_hours: 72
 gardener_gardenlet_shoot_concurrent_syncs: 20
 gardener_gardenlet_shoot_reconcile_in_maintenance_only: false
 gardener_gardenlet_shoot_respect_sync_period_overwrite: true
 
-gardener_gardenlet_feature_gates:
-  HVPA: false
-  HVPAForShootedSeed: false
+gardener_gardenlet_feature_gates: {}
 
 gardener_shooted_seeds: []
 # - name: shoot-1
@@ -101,6 +100,9 @@ gardener_shooted_seeds: []
 #   verticalPodAutoscaler: false
 #   pod_cidr:
 #   service_cidr:
+#   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
+#   # https://gardener.cloud/docs/guides/high-availability/control-plane/
+#   high_availability_control_plane: node
 
 gardener_shooted_seed_max_pods: 250
 gardener_shooted_seed_node_cidr_mask_size: 23
@@ -112,3 +114,4 @@ gardener_kube_apiserver_kubeconfig_path: "{{ gardener_local_tmp_dir }}/garden-ku
 gardener_local_tmp_dir: "{{ playbook_dir }}/.ansible/tmp"
 
 gardener_logging_enabled: false
+gardener_logging_vali_enabled: true

@@ -1,0 +1,6 @@
+[Unit]
+Description=Collect BGP Neighbor statistics
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bgp-neighbor-stats.sh

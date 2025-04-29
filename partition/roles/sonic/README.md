@@ -70,6 +70,7 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_interconnects.extended_neighbors.ip                  |           | The IP if this particular extended neighbor                                                                          |
 | sonic_interconnects.extended_neighbors.routemap_in         |           | Apply an incoming routemap to this neighbor. Used e.g. to prioritze peers through different prepend_as statements... |
 | sonic_interconnects.extended_neighbors.routemap_out        |           | Apply an outgoing routemap to this neighbor. ...Syntax matches `sonic_interconnnects.routemap_[in|out]`.             |
+| sonic_interconnects.keep_private_as                        |           | Do not remove the privates ASes on this interconnect. For use with static machine ports.                             |
 | sonic_interconnects.peer_group                             |           | Put the neighbor in this peer group.                                                                                 |
 | sonic_interconnects.evpn_peer                              |           | Whether the peer should take part in evpn routing (address-family l2vpn evpn)                                        |
 | sonic_interconnects.prefixlists                            |           | BGP prefix lists to configure.                                                                                       |
@@ -96,3 +97,30 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 | sonic_ssh_sourceranges                                     |           | The source ranges from which the switch should be reachable over SSH on its prod (non-management) addresses          |
 | sonic_extended_cacl.ipv4                                   |           | Iptables ipv4 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
 | sonic_extended_cacl.ipv6                                   |           | Iptables ipv6 rules that should be added as extended Control Plane ACLs (Edgecore Sonic specific feature)            |
+
+## Configuration hints
+
+### Static machine ports
+
+Sometimes it may be necessary to connect machines to the metal partition that are not managed by metal-stack but need to take part in the bgp routing just like the other machines in the partition; for example certain storage machines.
+
+This can be done by deploying an additional leaf pair without a metal-core, and configuring the machine ports statically with the help of the sonic role.
+Since it is not immediately obvious what needs to be configured, here is a short instruction.
+Most of the work is done with the sonic_interconnects set of variables as this gives us the necessary BGP instance, neighbor definitions and rroutemaps; but other variables are also necessary.
+
+* You need to configure a local VLAN and VRF with sonic_vlans - define id and vrf - and a matching VTEP with sonic_vteps - define vlan and vni to match the vlan you just created.
+* You need to define a sonic_interconnect to create the bgp configuration for the static machines. You need:
+  * `vrf`
+  * `vni`
+  * `peer_group`
+  * specify `keep_private_as: true`
+  * in `announcements` typically `redistribute connected`
+  * routemaps and prefixlists
+  * last but not least the machine interfaces.
+    * For bgp unnumbered use `unnumbered_interfaces`
+    * For "numbered" bgp with interface IPs specify the peers by IP in the `neighbors` section
+* Last but not least you need to specify the ports' parameters in the `sonic_ports` section.
+  * For bgp unnumbered it is sufficient to define basic parameters like port speed and MTU
+  * If you need to define the interface IP for bgp numbered, use `ips`. Then you also need to explicitly seth the vrf with the `vrf` statement.
+
+An example for both bgp unnumbered and numbered can be found in the `static_leaf` test data in the tests for this role.

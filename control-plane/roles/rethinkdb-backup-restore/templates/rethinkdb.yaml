@@ -67,6 +67,13 @@ spec:
         - containerPort: 8000
           name: grpc
         env:
+{% if rethinkdb_backup_restore_sidecar_encryption_key %}
+        - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: encryptionKey
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+{% endif %}
 {% if rethinkdb_backup_restore_sidecar_provider == "gcp" %}
         - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
           valueFrom:
@@ -85,6 +92,32 @@ spec:
               name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /gcp/credentials/serviceaccount.json
+{% elif rethinkdb_backup_restore_sidecar_provider == "s3" %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              key: bucketName
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              key: endpoint
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: accessKey
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secretKey
+              name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
 {% endif %}
         volumeMounts:
         - mountPath: /data
@@ -191,9 +224,6 @@ data:
 {% if rethinkdb_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ rethinkdb_backup_restore_sidecar_object_max_keep }}
 {% endif %}
-{% if rethinkdb_backup_restore_sidecar_encryption_key %}
-    encryption-key: {{ rethinkdb_backup_restore_sidecar_encryption_key }}
-{% endif %}
 ---
 apiVersion: v1
 kind: Secret
@@ -236,6 +266,15 @@ data:
   bucketLocation: {{ rethinkdb_backup_restore_sidecar_gcp_backup_location | b64encode }}
   projectID: {{ rethinkdb_backup_restore_sidecar_gcp_project_id | b64encode }}
   serviceaccount.json: {{ rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json | to_json | b64encode }}
+{% elif rethinkdb_backup_restore_sidecar_provider == "s3" %}
+  bucketName: {{ rethinkdb_backup_restore_sidecar_s3_bucket_name | b64encode }}
+  region: {{ rethinkdb_backup_restore_sidecar_s3_region | b64encode }}
+  endpoint: {{ rethinkdb_backup_restore_sidecar_s3_endpoint | b64encode }}
+  accessKey: {{ rethinkdb_backup_restore_sidecar_s3_access_key | b64encode }}
+  secretKey: {{ rethinkdb_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% endif %}
+{% if rethinkdb_backup_restore_sidecar_encryption_key %}
+  encryptionKey: {{ rethinkdb_backup_restore_sidecar_encryption_key | b64encode }}
 {% endif %}
 {% if rethinkdb_expose_frontend %}
 ---
