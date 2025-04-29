@@ -20,7 +20,8 @@ spec:
         - "{{ _gardener_soil_pod_cidr }}"
       services:
         - "{{ _gardener_soil_service_cidr }}"
-    # provider:
+    provider:
+      region: local
     #   zones:
     #   - "0"
     #   - "1"

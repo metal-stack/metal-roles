@@ -1,0 +1,20 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: backup-s3
+spec:
+  resources:
+  - kind: BackupBucket
+    type: S3
+  - kind: BackupEntry
+    type: S3
+  deployment:
+    extension:
+      policy: Always
+      helm:
+        ociRepository:
+          repository: ghcr.io/metal-stack/charts/gardener-extension-backup-s3
+          tag: v0.0.0-pull-request.15
+      values: {}
+      runtimeClusterValues: {}

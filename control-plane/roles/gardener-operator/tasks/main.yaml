@@ -56,15 +56,15 @@
 #   when:
 #     - metal_control_plane_host_provider not in ["gcp", "metal"]
 
-# - name: GCP control plane service cidr
-#   import_tasks: control-plane-networks/gcp.yaml
-#   when:
-#     - metal_control_plane_host_provider == "gcp"
+- name: GCP control plane service cidr
+  import_tasks: control-plane-networks/gcp.yaml
+  when:
+    - metal_control_plane_host_provider == "gcp"
 
-# - name: metal control plane service cidr
-#   import_tasks: control-plane-networks/metal.yaml
-#   when:
-#     - metal_control_plane_host_provider == "metal"
+- name: metal control plane service cidr
+  import_tasks: control-plane-networks/metal.yaml
+  when:
+    - metal_control_plane_host_provider == "metal"
 
 # - name: Clone Gardener
 #   git:
