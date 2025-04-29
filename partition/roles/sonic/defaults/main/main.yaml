@@ -6,6 +6,7 @@ sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
 sonic_config_action: load
 sonic_render_config_db_template: true
+sonic_deploy_dhcp_relay: false
 
 ## Physical settings
 sonic_ports: []
