@@ -34,7 +34,7 @@
 
 - name: copy config_db.json files
   copy:
-    dest: "{{ ztp_host_dir_path }}/config/{{ item }}"
+    dest: "{{ ztp_host_dir_path }}/config/"
     src: "{{ item }}"
     mode: 0644
   with_fileglob:
