@@ -59,6 +59,34 @@
             loadBalancer:
               ingress:
                 - ip: "{{ gardener_operator_patch_istio_ingress_gateway_service_ip }}"
+
+    - name: Expose istio gateway through ingress-nginx
+      k8s:
+        definition:
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            annotations:
+              nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+            name: apiserver-ingress
+            namespace: virtual-garden-istio-ingress
+          spec:
+            ingressClassName: nginx
+            rules:
+            - host: gardener.{{ gardener_virtual_api_server_public_dns }}
+              http:
+                paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: istio-ingressgateway
+                      port:
+                        number: 443
+            tls:
+            - hosts:
+              - gardener.{{ gardener_virtual_api_server_public_dns }}
+
   when: gardener_operator_patch_istio_ingress_gateway_service_ip
 
 - name: Wait until Garden is ready

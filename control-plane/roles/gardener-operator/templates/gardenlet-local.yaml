@@ -8,6 +8,8 @@ spec:
   deployment:
     replicaCount: 1
     revisionHistoryLimit: 2
+    podLabels:
+      networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
     helm:
       ociRepository:
         ref: "{{ gardener_operator_gardenlet_oci_repository }}:{{ gardener_gardenlet_image_tag }}"
@@ -52,7 +54,6 @@ spec:
       metadata:
         labels:
           name: "{{ gardener_soil_name }}"
-          networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
       spec:
         backup: {{ gardener_backup_infrastructure | to_json }}
         dns:
@@ -72,10 +73,6 @@ spec:
         provider:
           region: local
           type: "{{ metal_control_plane_host_provider }}"
-        secretRef:
-          name: gardener-seed-kubeconfig
-          namespace: garden
-        blockCIDRs: []
         settings:
           excessCapacityReservation:
             enabled: false
@@ -85,7 +82,3 @@ spec:
             enabled: true
           verticalPodAutoscaler:
             enabled: {{ gardener_soil_vertical_pod_autoscaler_enabled | lower }}
-        taints:
-        - key: seed.gardener.cloud/protected
-        - key: seed.gardener.cloud/invisible
-        - key: seed.gardener.cloud/disable-capacity-reservation

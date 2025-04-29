@@ -42,42 +42,55 @@
 #   loop_control:
 #     label: "{{ item.name }}"
 
-- name: Create garden namespace
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: garden
+# - name: Create garden namespace
+#   k8s:
+#     definition:
+#       apiVersion: v1
+#       kind: Namespace
+#       metadata:
+#         name: garden
 
-- name: Fail when provider unsupported
-  fail:
-    msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
-  when:
-    - metal_control_plane_host_provider not in ["gcp", "metal"]
+# - name: Fail when provider unsupported
+#   fail:
+#     msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
+#   when:
+#     - metal_control_plane_host_provider not in ["gcp", "metal"]
 
-- name: GCP control plane service cidr
-  import_tasks: control-plane-networks/gcp.yaml
-  when:
-    - metal_control_plane_host_provider == "gcp"
+# - name: GCP control plane service cidr
+#   import_tasks: control-plane-networks/gcp.yaml
+#   when:
+#     - metal_control_plane_host_provider == "gcp"
 
-- name: metal control plane service cidr
-  import_tasks: control-plane-networks/metal.yaml
-  when:
-    - metal_control_plane_host_provider == "metal"
+# - name: metal control plane service cidr
+#   import_tasks: control-plane-networks/metal.yaml
+#   when:
+#     - metal_control_plane_host_provider == "metal"
 
-- name: Clone Gardener
-  git:
-    repo: "{{ gardener_repo_url }}"
-    dest: "{{ gardener_operator_local_tmp_dir }}/gardener"
-    depth: 1
-    version: "{{ gardener_repo_ref }}"
+# - name: Clone Gardener
+#   git:
+#     repo: "{{ gardener_repo_url }}"
+#     dest: "{{ gardener_operator_local_tmp_dir }}/gardener"
+#     depth: 1
+#     version: "{{ gardener_repo_ref }}"
 
 # - name: Deploy Gardener Operator
 #   import_tasks: operator.yaml
 
 - name: Virtual Garden Access
   import_tasks: access_kubeconfig.yaml
+
+- name: Add Metal cloud profile
+  k8s:
+    definition: "{{ lookup('template', '30-cloud-profile-metal.yaml') }}"
+    kubeconfig: "{{ _virtual_garden_kubeconfig }}"
+    apply: yes
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
+
+- name: Register extensions
+  import_tasks: extensions.yaml
 
 - name: Deploy domain secrets (in virtual apiserver)
   k8s:

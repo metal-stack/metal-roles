@@ -1,0 +1,22 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: provider-metal
+spec:
+  resources:
+  - kind: ControlPlane
+    type: metal
+  - kind: Infrastructure
+    type: metal
+  - kind: Worker
+    type: metal
+  deployment:
+    extension:
+      policy: Always
+      helm:
+        ociRepository:
+          repository: ghcr.io/metal-stack/charts/gardener-extension-provider-metal
+          tag: v0.0.0-pull-request.455
+      values: {}
+      runtimeClusterValues: {}

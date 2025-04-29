@@ -17,7 +17,6 @@
     apply: true
     definition: "{{ lookup('template', 'gardenlet-local.yaml') }}"
 
-
 # image:
 #   repository: {{ gardener_gardenlet_image_name }}
 #   tag: {{ gardener_gardenlet_image_tag }}
