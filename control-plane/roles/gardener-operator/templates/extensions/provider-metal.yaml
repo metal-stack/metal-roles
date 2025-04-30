@@ -55,19 +55,7 @@ spec:
             {%- endfor %}
 
           clusterAudit:
-            enabled: {{ gardener_extension_provider_metal_cluster_audit_enabled }}
-
-          auditToSplunk:
-            enabled: {{ gardener_extension_provider_metal_audit_to_splunk_enabled }}
-{% if gardener_extension_provider_metal_audit_to_splunk_enabled %}
-            hecToken: {{ gardener_extension_provider_metal_audit_to_splunk.hecToken }}
-            index: {{ gardener_extension_provider_metal_audit_to_splunk.index }}
-            hecHost: {{ gardener_extension_provider_metal_audit_to_splunk.hecHost }}
-            hecPort: {{ gardener_extension_provider_metal_audit_to_splunk.hecPort }}
-            tlsEnabled: {{ gardener_extension_provider_metal_audit_to_splunk.tlsEnabled }}
-            hecCAFile: |
-              {{ gardener_extension_provider_metal_audit_to_splunk.hecCAFile | indent(width=14, first=false) }}
-{% endif %}
+            enabled: true
 
           etcd:
 {% if gardener_extension_provider_metal_etcd_storage_class_name is not none %}
@@ -127,12 +115,6 @@ spec:
             sourceRepository: https://github.com/metal-stack/audit-forwarder
             repository: {{ audit_forwarder_image_name }}
             tag: {{ audit_forwarder_image_tag }}
-{% endif %}
-{% if gardener_extension_provider_metal_audit_to_splunk_enabled and fluentd_splunk_audit_image_tag is defined%}
-          - name: fluentd-splunk-audit
-            sourceRepository: https://github.com/fluent/fluentd-kubernetes-daemonset
-            repository: {{ fluentd_splunk_audit_image_name }}
-            tag: {{ fluentd_splunk_audit_image_tag }}
 {% endif %}
 {% if gardener_extension_provider_metal_duros_storage_enabled and duros_controller_image_tag is defined %}
           - name: duros-controller
