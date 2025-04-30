@@ -12,12 +12,33 @@ spec:
   - kind: Worker
     type: metal
   deployment:
+    admission:
+      runtimeCluster:
+        helm:
+          ociRepository:
+            repository: "{{ gardener_extension_admission_metal_helm_chart_runtime_name }}"
+            tag: "{{ gardener_extension_admission_metal_helm_chart_runtime_tag }}"
+      virtualCluster:
+        helm:
+          ociRepository:
+            repository: "{{ gardener_extension_admission_metal_helm_chart_application_name }}"
+            tag: "{{ gardener_extension_admission_metal_helm_chart_application_tag }}"
+      values:
+        image:
+          repository: "{{ gardener_extension_provider_metal_image_name }}"
+          tag: "{{ gardener_extension_provider_metal_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+        webhookConfig:
+          serverPort: 443
+        replicaCount: {{ gardener_metal_admission_replicas }}
+        vpa:
+          enabled: {{ gardener_metal_admission_vpa }}
     extension:
       policy: Always
       helm:
         ociRepository:
-          repository: ghcr.io/metal-stack/charts/gardener-extension-provider-metal
-          tag: v0.0.0-pull-request.455
+          repository: "{{ gardener_extension_provider_metal_helm_chart_name }}"
+          tag: "{{ gardener_extension_provider_metal_helm_chart_tag }}"
       runtimeClusterValues: {}
       values:
         image:

@@ -15,7 +15,7 @@
 # - label existing secrets like CA, ETCD encryption key, accordingly
 # - scale down existing components (gardener control plane + virtual garden with ETCD)
 #
-# https://github.com/gardener/gardener/blob/v1.100.2/docs/concepts/operator.md#migrating-an-existing-gardener-landscape-to-gardener-operator
+# https://github.com/gardener/gardener/blob/v1.117.2/docs/concepts/operator.md#migrating-an-existing-gardener-landscape-to-gardener-operator
 
 - name: Deploy Gardener Operator
   include_role:
@@ -89,6 +89,7 @@
 
   when: gardener_operator_patch_istio_ingress_gateway_service_ip
 
+# ideally we should not wait but for initial bootstrap we require the virtual garden to continue with the deployment
 - name: Wait until Garden is ready
   kubernetes.core.k8s_info:
     api_version: "operator.gardener.cloud/v1alpha1"

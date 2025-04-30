@@ -32,29 +32,19 @@
       - gardener_cert_management_issuer_email is not none
       - gardener_dns_credentials is not none
 
-# - name: Deploy required Seed CRDs
-#   k8s:
-#     definition: "{{ item.definition }}"
-#     apply: yes
-#   loop:
-#     - name: vpas
-#       definition: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener/' + gardener_repo_ref + '/example/seed-crds/10-crd-autoscaling.k8s.io_verticalpodautoscalers.yaml', split_lines=False) | from_yaml_all | list)[0] }}"
-#   loop_control:
-#     label: "{{ item.name }}"
+- name: Create garden namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: garden
 
-# - name: Create garden namespace
-#   k8s:
-#     definition:
-#       apiVersion: v1
-#       kind: Namespace
-#       metadata:
-#         name: garden
-
-# - name: Fail when provider unsupported
-#   fail:
-#     msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
-#   when:
-#     - metal_control_plane_host_provider not in ["gcp", "metal"]
+- name: Fail when provider unsupported
+  fail:
+    msg: "provider is unsupported: {{ metal_control_plane_host_provider }}"
+  when:
+    - metal_control_plane_host_provider not in ["gcp", "metal"]
 
 - name: GCP control plane service cidr
   import_tasks: control-plane-networks/gcp.yaml
@@ -66,15 +56,15 @@
   when:
     - metal_control_plane_host_provider == "metal"
 
-# - name: Clone Gardener
-#   git:
-#     repo: "{{ gardener_repo_url }}"
-#     dest: "{{ gardener_operator_local_tmp_dir }}/gardener"
-#     depth: 1
-#     version: "{{ gardener_repo_ref }}"
+- name: Clone Gardener
+  git:
+    repo: "{{ gardener_repo_url }}"
+    dest: "{{ gardener_operator_local_tmp_dir }}/gardener"
+    depth: 1
+    version: "{{ gardener_repo_ref }}"
 
-# - name: Deploy Gardener Operator
-#   import_tasks: operator.yaml
+- name: Deploy Gardener Operator
+  import_tasks: operator.yaml
 
 - name: Virtual Garden Access
   import_tasks: access_kubeconfig.yaml

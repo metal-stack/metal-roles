@@ -17,40 +17,16 @@
     apply: true
     definition: "{{ lookup('template', 'gardenlet-local.yaml') }}"
 
-# image:
-#   repository: {{ gardener_gardenlet_image_name }}
-#   tag: {{ gardener_gardenlet_image_tag }}
-#   pullPolicy: {{ metal_control_plane_image_pull_policy }}
-# config:
-#   gardenClientConnection:
-#     gardenClusterAddress: {{ (lookup('file', gardener_kube_apiserver_kubeconfig_path) | from_yaml).get("clusters")[0]["cluster"]["server"] }}
-#     gardenClusterCACert: {{ (lookup('file', gardener_kube_apiserver_kubeconfig_path) | from_yaml).get("clusters")[0]["cluster"]["certificate-authority-data"] }}
-#     kubeconfig: |
-#       {{ lookup('file', gardener_kube_apiserver_kubeconfig_path) | indent(width=6, first=false) }}
-
-#   controllers:
-#     backupEntry:
-#       deletionGracePeriodHours: {{ gardener_gardenlet_backup_entry_deletion_grace_period_hours }}
-#       deletionGracePeriodShootPurposes:
-#       - evaluation
-#       - infrastructure
-#       - production
-#     shoot:
-#       concurrentSyncs: {{ gardener_gardenlet_shoot_concurrent_syncs }}
-#       reconcileInMaintenanceOnly: {{ gardener_gardenlet_shoot_reconcile_in_maintenance_only }}
-#       # allow setting shoot ignore annotation:
-#       respectSyncPeriodOverwrite: {{ gardener_gardenlet_shoot_respect_sync_period_overwrite }}
-
-# {% if gardener_logging_enabled %}
-#   logging:
-#     enabled: true
-#     vali:
-#       enabled: {{ gardener_logging_vali_enabled | lower }}
-# {% endif %}
-
-#   seedConfig:
-
-
-#   featureGates: {{ gardener_gardenlet_feature_gates | to_json }}
-
-# vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
+# - name: Wait Gardenlet to be reconciled
+#   kubernetes.core.k8s_info:
+#     api_version: seedmanagement.gardener.cloud/v1alpha1
+#     kind: Gardenlet
+#     name: "{{ gardener_soil_name }}"
+#     namespace: garden
+#     kubeconfig: "{{ _virtual_garden_kubeconfig }}"
+#     wait: yes
+#     wait_condition:
+#       reason: Reconciled
+#       status: "True"
+#       type: GardenletReconciled
+#     wait_timeout: 300
