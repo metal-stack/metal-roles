@@ -109,13 +109,6 @@ spec:
           - name: csi-lvm-provisioner
             sourceRepository: github.com/metal-stack/csi-lvm-provisioner
             repository: {{ csi_lvm_provisioner_image_name }}
-            tag: {{ csi_lvm_provisioner_image_tag }}
-{% if gardener_extension_provider_metal_cluster_audit_enabled and audit_forwarder_image_tag is defined %}
-          - name: auditforwarder
-            sourceRepository: https://github.com/metal-stack/audit-forwarder
-            repository: {{ audit_forwarder_image_name }}
-            tag: {{ audit_forwarder_image_tag }}
-{% endif %}
 {% if gardener_extension_provider_metal_duros_storage_enabled and duros_controller_image_tag is defined %}
           - name: duros-controller
             sourceRepository: https://github.com/metal-stack/duros-controller
