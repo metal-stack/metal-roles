@@ -1,4 +1,10 @@
 ---
+# TODO: prepare migration here
+# - label existing secrets like CA, ETCD encryption key, accordingly
+# - scale down existing components (gardener control plane + virtual garden with ETCD)
+#
+# https://github.com/gardener/gardener/blob/v1.117.2/docs/concepts/operator.md#migrating-an-existing-gardener-landscape-to-gardener-operator
+
 - name: Create backup infrastructure secret
   k8s:
     definition:
@@ -8,14 +14,8 @@
         name: virtual-garden-etcd-main-backup-secret
         namespace: garden
       type: Opaque
-      data: "{{ gardener_backup_infrastructure_secret }}"
+      data: "{{ gardener_operator_backup_infrastructure_secret }}"
     apply: yes
-
-# TODO: prepare migration here
-# - label existing secrets like CA, ETCD encryption key, accordingly
-# - scale down existing components (gardener control plane + virtual garden with ETCD)
-#
-# https://github.com/gardener/gardener/blob/v1.117.2/docs/concepts/operator.md#migrating-an-existing-gardener-landscape-to-gardener-operator
 
 - name: Deploy Gardener Operator
   include_role:
@@ -31,75 +31,3 @@
   k8s:
     definition: "{{ lookup('template', 'garden.yaml') }}"
     apply: yes
-
-- name: Patch istio ingress gateway service (for local environments)
-  block:
-    # the following tasks are only for local environments, not for production environments
-
-    # gardener exposes the istio ingress gateway through service type load balancer
-    # we can fake the exposal by patching the status field, which is also what's
-    # done in the gardener local environment
-    - name: Wait for istio ingress gateway service
-      kubernetes.core.k8s_info:
-        api_version: v1
-        kind: Service
-        name: istio-ingressgateway
-        namespace: virtual-garden-istio-ingress
-      register: result
-      until: result.resources
-      retries: 30
-      delay: 10
-
-    - name: Patch ingress status of istio ingress gateway to allow seed to get ready
-      patch_service_status_k8s:
-        name: istio-ingressgateway
-        namespace: virtual-garden-istio-ingress
-        body:
-          status:
-            loadBalancer:
-              ingress:
-                - ip: "{{ gardener_operator_patch_istio_ingress_gateway_service_ip }}"
-
-    - name: Expose istio gateway through ingress-nginx
-      k8s:
-        definition:
-          apiVersion: networking.k8s.io/v1
-          kind: Ingress
-          metadata:
-            annotations:
-              nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-            name: apiserver-ingress
-            namespace: virtual-garden-istio-ingress
-          spec:
-            ingressClassName: nginx
-            rules:
-            - host: gardener.{{ gardener_virtual_api_server_public_dns }}
-              http:
-                paths:
-                - path: /
-                  pathType: Prefix
-                  backend:
-                    service:
-                      name: istio-ingressgateway
-                      port:
-                        number: 443
-            tls:
-            - hosts:
-              - gardener.{{ gardener_virtual_api_server_public_dns }}
-
-  when: gardener_operator_patch_istio_ingress_gateway_service_ip
-
-# ideally we should not wait but for initial bootstrap we require the virtual garden to continue with the deployment
-- name: Wait until Garden is ready
-  kubernetes.core.k8s_info:
-    api_version: "operator.gardener.cloud/v1alpha1"
-    kind: Garden
-    name: "local"
-    wait: yes
-    wait_condition:
-      status: "True"
-      type: "{{ item }}"
-    wait_timeout: 900
-  loop:
-    - VirtualComponentsHealthy
-    - RuntimeComponentsHealthy

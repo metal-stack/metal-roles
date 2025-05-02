@@ -1,0 +1,10 @@
+---
+- name: Add Metal cloud profile
+  k8s:
+    definition: "{{ lookup('template', '30-cloud-profile-metal.yaml') }}"
+    kubeconfig: "{{ _virtual_garden_kubeconfig }}"
+    apply: yes
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6

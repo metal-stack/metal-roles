@@ -1,0 +1,2 @@
+---
+gardener_gardenlet_oci_repository: europe-docker.pkg.dev/gardener-project/releases/charts/gardener/gardenlet

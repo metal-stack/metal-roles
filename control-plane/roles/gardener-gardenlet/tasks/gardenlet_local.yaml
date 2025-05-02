@@ -11,6 +11,23 @@
     _gardener_gardenlet_pod_cidr: "{{ _gardener_current_soil_pod_cidr if _gardener_current_soil_pod_cidr else _gardener_soil_pod_cidr }}"
     _gardener_gardenlet_service_cidr: "{{ _gardener_current_soil_service_cidr if _gardener_current_soil_service_cidr else _gardener_soil_service_cidr }}"
 
+# this config map provides the external api-server ip of the gke cluster.
+# this information is unfortunately not provided by gke itself in the cluster.
+# the ip is required by the gardener-extension-provider-metal to create a kubeconfig
+# for the firewall-controller, which can then connect to the kube-apiserver for
+# reconciling the firewall v2 resource.
+- name: Deploy seed-api-server config map
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: seed-api-server
+        namespace: garden
+      data:
+        url: "https://{{ (gcp_cluster.stdout | from_json)['endpoint'] }}"
+    apply: yes
+
 - name: Deploy Local Gardenlet
   k8s:
     kubeconfig: "{{ _virtual_garden_kubeconfig }}"

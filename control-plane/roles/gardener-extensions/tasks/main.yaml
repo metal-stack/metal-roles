@@ -1,7 +1,7 @@
 ---
 - name: "Register extension provider metal"
   k8s:
-    definition: "{{ lookup('template', 'extensions/provider-metal.yaml', split_lines=False) }}"
+    definition: "{{ lookup('template', 'provider-metal.yaml', split_lines=False) }}"
     apply: yes
   when: gardener_extension_provider_metal_enabled
 
@@ -108,7 +108,7 @@
 
 - name: "Register extension dns powerdns"
   k8s:
-    definition: "{{ lookup('template', 'extensions/dns-powerdns.yaml', split_lines=False) }}"
+    definition: "{{ lookup('template', 'dns-powerdns.yaml', split_lines=False) }}"
     apply: yes
   when: gardener_extension_dns_powerdns_enabled
 
@@ -129,7 +129,7 @@
 
 - name: "Register extension backup s3"
   k8s:
-    definition: "{{ lookup('template', 'extensions/backup-s3.yaml', split_lines=False) }}"
+    definition: "{{ lookup('template', 'backup-s3.yaml', split_lines=False) }}"
     apply: yes
   when: gardener_extension_backup_s3_enabled
 
