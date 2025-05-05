@@ -2,10 +2,6 @@ from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 
-import base64
-import ipaddress
-import yaml
-
 from ansible.module_utils.six import PY3
 from ansible.plugins.test.core import version_compare
 
