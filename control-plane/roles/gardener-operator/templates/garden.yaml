@@ -2,7 +2,7 @@
 apiVersion: operator.gardener.cloud/v1alpha1
 kind: Garden
 metadata:
-  name: local
+  name: "{{ gardener_operator_garden_name }}"
 spec:
   runtimeCluster:
     ingress:

@@ -306,96 +306,6 @@ def gardener_managed_kubeconfig(generic_kubeconfig_secret, token_secret, server=
     })
 
 
-def virtual_garden_kubeconfig(kubeconfig=None, garden_name='local', port=0, wait=0):
-    start = time.time()
-
-    while True:
-        try:
-            return _virtual_garden_kubeconfig(kubeconfig, garden_name, port)
-        except Exception as e:
-            if (time.time() - start) > wait:
-                raise e
-
-            display.display("wait for virtual garden kubeconfig retrying in 5 seconds...", color=C.COLOR_WARN, stderr=True)
-            display.vvvv(str(e))
-
-            time.sleep(5)
-            continue
-
-
-def _virtual_garden_kubeconfig(kubeconfig=None, garden_name='local', port=0):
-    if kubeconfig:
-        if isinstance(kubeconfig, str) or kubeconfig is None:
-            api_client = config.new_client_from_config(config_file=kubeconfig)
-        elif isinstance(kubeconfig, dict):
-            api_client = config.new_client_from_config_dict(config_dict=kubeconfig)
-        else:
-            raise AnsibleFilterError("Error while reading kubeconfig parameter - a string or dict expected, but got %s instead" % type(kubeconfig))
-    else:
-        api_client = config.new_client_from_config()
-
-    token_secret = client.CoreV1Api(api_client).read_namespaced_secret(name='shoot-access-virtual-garden', namespace='garden')
-
-    garden = dynamic.DynamicClient(client=api_client).resources.get(api_version='operator.gardener.cloud/v1alpha1', kind='Garden').get(name=garden_name)
-    server = 'api.' + garden.spec.virtualCluster.dns.domains[0].name
-
-    if port == 0:
-        # default port for exposal is 443
-        port = 443
-
-        try:
-            # assume mini-lab in case the virtual garden was exposed through ingress-nginx
-            client.NetworkingV1Api(api_client).read_namespaced_ingress(name='apiserver-ingress', namespace='virtual-garden-istio-ingress')
-            port = 4443
-        except ApiException as e:
-            if e.status == 404:
-                pass
-            else:
-                raise e
-
-    generic_kubeconfig_secrets = client.CoreV1Api(api_client).list_namespaced_secret(namespace='garden', label_selector='managed-by=secrets-manager,manager-identity=gardener-operator,name=generic-token-kubeconfig')
-
-    generic_kubeconfig_secret = None
-    for secret in generic_kubeconfig_secrets.items:
-        issued_time = int(secret.metadata.labels.get('issued-at-time'))
-        if generic_kubeconfig_secret is None or int(generic_kubeconfig_secret.metadata.labels.get('issued-at-time')) < issued_time:
-            generic_kubeconfig_secret = secret
-
-    generic_kubeconfig = yaml.safe_load(b64decode(generic_kubeconfig_secret.data.get("kubeconfig"))).get("clusters")[0].get("cluster")
-
-    return {
-        "apiVersion": "v1",
-        "kind": "Config",
-        "clusters": [
-            {
-                "name": "default-cluster",
-                "cluster": {
-                    "certificate-authority-data": generic_kubeconfig.get("certificate-authority-data"),
-                    "server": "https://" + server + ":" + str(port),
-                }
-            }
-        ],
-        "current-context": "default-context",
-        "contexts": [
-            {
-                "name": "default-context",
-                "context": {
-                    "cluster": "default-cluster",
-                    "user": "default-user",
-                }
-            }
-        ],
-        "users": [
-            {
-                "name": "default-user",
-                "user": {
-                    "token": yaml.safe_load(b64decode(token_secret.data.get('token'))),
-                }
-            }
-        ],
-    }
-
-
 class FilterModule(object):
     def filters(self):
         return {
@@ -406,5 +316,4 @@ class FilterModule(object):
             'extract_gcp_node_network': extract_gcp_node_network,
             'managed_seed_annotation': managed_seed_annotation,
             'gardener_managed_kubeconfig': gardener_managed_kubeconfig,
-            'virtual_garden_kubeconfig': virtual_garden_kubeconfig,
         }

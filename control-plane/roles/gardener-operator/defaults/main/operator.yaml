@@ -24,3 +24,5 @@ gardener_operator_backup_infrastructure_secret:
   # secretAccessKey:
 
 gardener_operator_high_availability_control_plane: true
+
+gardener_operator_garden_name: local
