@@ -8,16 +8,19 @@ hostname: {{ sonic_hostname }}
 lldp_hello_time: {{ sonic_lldp_hello_timer }}
 loopback_address: {{ sonic_loopback_address }}
 mclag: {{ sonic_mclag }}
-mgmtif_gateway: {{ sonic_mgmtif_gateway }}
-mgmtif_ip: {{ sonic_mgmtif_ip }}
+mgmt_interface:
+  gateway_address: {{ sonic_mgmtif_gateway }}
+  ip: {{ sonic_mgmtif_ip }}
 mgmt_vrf: {{ sonic_mgmt_vrf }}
 nameservers: {{ sonic_nameservers }}
 ntpservers: {{ sonic_ntpservers }}
-portchannels: {{ sonic_portchannels }}
-portchannels_default_mtu: {{ sonic_portchannels_default_mtu }}
-ports: {{ sonic_ports }}
-ports_default_fec: {{ sonic_ports_default_fec }}
-ports_default_mtu: {{ sonic_ports_default_mtu }}
+portchannels:
+  default_mtu: {{ sonic_portchannels_default_mtu }}
+  list: {{ sonic_portchannels }}
+ports:
+  default_fec: {{ sonic_ports_default_fec }}
+  default_mtu: {{ sonic_ports_default_mtu }}
+  list: {{ sonic_ports }}
 sag: {{ sonic_sag }}
 ssh_sourceranges: {{ sonic_ssh_sourceranges }}
 vlans: {{ sonic_vlans }}
