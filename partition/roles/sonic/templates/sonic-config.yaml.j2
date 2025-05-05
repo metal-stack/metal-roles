@@ -13,7 +13,10 @@ mgmt_interface:
   ip: {{ sonic_mgmtif_ip }}
 mgmt_vrf: {{ sonic_mgmt_vrf }}
 nameservers: {{ sonic_nameservers }}
-ntpservers: {{ sonic_ntpservers }}
+ntp:
+  src_interface: {{ sonic_ntp.src_interface }}
+  servers: {{ sonic_ntpservers }}
+  vrf: {{ sonic_ntp.vrf }}
 portchannels:
   default_mtu: {{ sonic_portchannels_default_mtu }}
   list: {{ sonic_portchannels }}

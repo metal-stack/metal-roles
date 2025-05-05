@@ -1,6 +1,7 @@
 ---
 sonic_mgmt_vrf: true
 sonic_ntpservers: []
+sonic_ntp: {}
 sonic_nameservers: []
 sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
