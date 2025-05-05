@@ -22,3 +22,22 @@
 - name: Set service cidr
   set_fact:
     _gardener_runtime_cluster_service_cidr: "{{ (gcp_cluster.stdout | from_json)['servicesIpv4Cidr'] }}"
+
+# this config map provides the external api-server ip of the gke cluster.
+# this information is unfortunately not provided by gke itself in the cluster.
+# the ip is required by the gardener-extension-provider-metal to create a kubeconfig
+# for the firewall-controller, which can then connect to the kube-apiserver for
+# reconciling the firewall v2 resource.
+- name: Deploy seed-api-server config map
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: seed-api-server
+        namespace: garden
+      data:
+        url: "https://{{ (gcp_cluster.stdout | from_json)['endpoint'] }}"
+    apply: yes
+  # this is really just in case this cluster will have a local gardenlet
+  when: gardener_gardenlet_deploy_local is defined and gardener_gardenlet_deploy_local

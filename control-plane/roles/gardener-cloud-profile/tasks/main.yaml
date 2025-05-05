@@ -2,10 +2,6 @@
 - name: Get kubeconfig for virtual garden access
   virtual_garden_kubeconfig:
     garden_name: "{{ gardener_operator_garden_name }}"
-  register: result
-  until: result is success
-  retries: 120
-  delay: 5
 
 - name: Add Metal cloud profile
   k8s:

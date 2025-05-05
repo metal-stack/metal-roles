@@ -2,23 +2,23 @@
 apiVersion: seedmanagement.gardener.cloud/v1alpha1
 kind: Gardenlet
 metadata:
-  name: "{{ gardener_soil_name }}"
+  name: "{{ gardener_gardenlet_soil_name }}"
   namespace: garden
 spec:
   deployment:
-    replicaCount: 1
+    replicaCount: 2
     revisionHistoryLimit: 2
     podLabels:
       networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
     helm:
       ociRepository:
-        ref: "{{ gardener_operator_gardenlet_oci_repository }}:{{ gardener_gardenlet_image_tag }}"
-{% if gardener_image_vector_overwrite %}
+        ref: "{{ gardener_gardenlet_oci_repository }}:{{ gardener_gardenlet_image_tag }}"
+{% if gardener_gardenlet_image_vector_overwrite %}
     imageVectorOverwrite: |
       images:
         {{ gardener_image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
 {% endif %}
-{% if gardener_component_image_vector_overwrite %}
+{% if gardener_gardenlet_component_image_vector_overwrite %}
     componentImageVectorOverwrites: |
         {{ gardener_component_image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
 {% endif %}
@@ -37,10 +37,16 @@ spec:
         respectSyncPeriodOverwrite: {{ gardener_gardenlet_shoot_respect_sync_period_overwrite | lower }}
       shootState:
         concurrentSyncs: 0
+      backupEntry:
+        deletionGracePeriodHours: {{ gardener_gardenlet_backup_entry_deletion_grace_period_hours }}
+        deletionGracePeriodShootPurposes:
+        - evaluation
+        - infrastructure
+        - production
     logging:
-      enabled: {{ gardener_logging_enabled | lower }}
+      enabled: {{ gardener_gardenlet_logging_enabled | lower }}
       vali:
-        enabled: {{ gardener_logging_vali_enabled | lower }}
+        enabled: {{ gardener_gardenlet_logging_vali_enabled | lower }}
       shootNodeLogging:
         shootPurposes:
         - infrastructure
@@ -52,19 +58,19 @@ spec:
       kind: Seed
       metadata:
         labels:
-          name: "{{ gardener_soil_name }}"
+          name: "{{ gardener_gardenlet_soil_name }}"
       spec:
-        backup: {{ gardener_backup_infrastructure | to_json }}
+        backup: {{ gardener_gardenlet_backup_infrastructure | to_json }}
         dns:
           provider:
             secretRef:
-              name: "{{ lookup('k8s', kubeconfig=_virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
+              name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
               namespace: garden
-            type: "{{ gardener_dns_provider }}"
+            type: "{{ gardener_gardenlet_dns_provider }}"
         ingress:
           controller:
             kind: nginx
-          domain: "{{ gardener_dns_domain }}"
+          domain: "{{ gardener_gardenlet_dns_domain }}"
         networks:
           nodes: "{{ _gardener_gardenlet_node_cidr }}"
           pods: "{{ _gardener_gardenlet_pod_cidr }}"
@@ -80,4 +86,4 @@ spec:
           shootDNS:
             enabled: true
           verticalPodAutoscaler:
-            enabled: {{ gardener_soil_vertical_pod_autoscaler_enabled | lower }}
+            enabled: {{ gardener_gardenlet_vertical_pod_autoscaler_enabled | lower }}

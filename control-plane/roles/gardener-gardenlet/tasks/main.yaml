@@ -1,4 +1,8 @@
 ---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_gardenlet_garden_name }}"
+
 - name: Deploy domain secrets (in virtual apiserver)
   k8s:
     definition:
@@ -8,36 +12,22 @@
         namespace: garden
         annotations:
           helm.sh/resource-policy: keep
-          dns.gardener.cloud/domain: "{{ gardener_dns_domain }}"
-          dns.gardener.cloud/provider: "{{ gardener_dns_provider }}"
+          dns.gardener.cloud/domain: "{{ gardener_gardenlet_dns_domain }}"
+          dns.gardener.cloud/provider: "{{ gardener_gardenlet_dns_provider }}"
         labels:
           app: gardener
           gardener.cloud/role: "{{ item }}"
-        name: "{{ item }}-{{ gardener_dns_domain | regex_replace('\\.', '-') }}"
+        name: "{{ item }}-{{ gardener_gardenlet_dns_domain | regex_replace('\\.', '-') }}"
       type: Opaque
-      data: "{{ gardener_dns_credentials }}"
-    kubeconfig: "{{ _virtual_garden_kubeconfig }}"
+      data: "{{ gardener_gardenlet_dns_credentials }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true
   loop:
     - internal-domain
     - default-domain
 
-- name: Create backup infrastructure secret
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: backup-secret
-        namespace: garden
-      type: Opaque
-      data: "{{ gardener_backup_infrastructure_secret }}"
-    kubeconfig: "{{ _virtual_garden_kubeconfig }}"
-    apply: yes
-  when: gardener_backup_infrastructure_secret
-
 - name: Deploy Local Gardenlet
   import_tasks: gardenlet_local.yaml
-  when: gardener_operator_deploy_local_gardenlet
+  when: gardener_gardenlet_deploy_local
 
 # - name: Deploy Remote Gardenlets

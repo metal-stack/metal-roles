@@ -18,19 +18,16 @@ gardener_extension_backup_s3_repo_ref: "metal-stack/gardener-extension-backup-s3
 gardener_extension_dns_powerdns_repo_ref: "metal-stack/gardener-extension-dns-powerdns/{{ gardener_extension_dns_powerdns_image_tag }}"
 gardener_extension_csi_driver_lvm_repo_ref: "metal-stack/gardener-extension-csi-driver-lvm/{{ gardener_extension_csi_driver_lvm_image_tag }}"
 
+# TODO: move to release vector
+gardener_extension_provider_metal_helm_chart_name: ghcr.io/metal-stack/charts/gardener-extension-provider-metal
+gardener_extension_provider_metal_helm_chart_tag: v0.0.0-pull-request.455
+gardener_extension_admission_metal_helm_chart_runtime_name: ghcr.io/metal-stack/charts/gardener-extension-admission-metal-runtime
+gardener_extension_admission_metal_helm_chart_runtime_tag: v0.0.0-pull-request.455
+gardener_extension_admission_metal_helm_chart_application_name: ghcr.io/metal-stack/charts/gardener-extension-admission-metal-application
+gardener_extension_admission_metal_helm_chart_application_tag: v0.0.0-pull-request.455
+
 gardener_metal_admission_replicas: 1
 gardener_metal_admission_vpa: true
-
-gardener_extension_provider_metal_cluster_audit_enabled: false
-gardener_extension_provider_metal_audit_to_splunk_enabled: false
-gardener_extension_provider_metal_audit_to_splunk:
-  # ...
-  # hecToken: ""
-  # index: ""
-  # hecHost: ""
-  # hecPort: 443
-  # tlsEnabled: true
-  # hecCAFile: ""
 
 gardener_extension_provider_metal_etcd_storage_class_name:
 gardener_extension_provider_metal_etcd_backup_schedule: "0 */2 * * *"

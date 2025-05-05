@@ -1,49 +1,26 @@
 ---
-- name: Fetch current seed cidrs
+- name: Set cidrs from garden
   set_fact:
-    _gardener_current_soil_node_cidr: "{{ (lookup('k8s', kubeconfig=_virtual_garden_kubeconfig, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('nodes', none) }}"
-    _gardener_current_soil_pod_cidr: "{{ (lookup('k8s', kubeconfig=_virtual_garden_kubeconfig, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('pods', none) }}"
-    _gardener_current_soil_service_cidr: "{{ (lookup('k8s', kubeconfig=_virtual_garden_kubeconfig, api_version='core.gardener.cloud/v1beta1', kind='Seed', resource_name=gardener_soil_name) | default({}, true)).get('spec', {}).get('networks', {}).get('services', none) }}"
+    _gardener_gardenlet_node_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.nodes[0] }}"
+    _gardener_gardenlet_pod_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.pods[0] }}"
+    _gardener_gardenlet_service_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.services[0] }}"
 
-- name: Set cidrs for seed
-  set_fact:
-    _gardener_gardenlet_node_cidr: "{{ _gardener_current_soil_node_cidr if _gardener_current_soil_node_cidr else _gardener_soil_node_cidr }}"
-    _gardener_gardenlet_pod_cidr: "{{ _gardener_current_soil_pod_cidr if _gardener_current_soil_pod_cidr else _gardener_soil_pod_cidr }}"
-    _gardener_gardenlet_service_cidr: "{{ _gardener_current_soil_service_cidr if _gardener_current_soil_service_cidr else _gardener_soil_service_cidr }}"
-
-# this config map provides the external api-server ip of the gke cluster.
-# this information is unfortunately not provided by gke itself in the cluster.
-# the ip is required by the gardener-extension-provider-metal to create a kubeconfig
-# for the firewall-controller, which can then connect to the kube-apiserver for
-# reconciling the firewall v2 resource.
-- name: Deploy seed-api-server config map
+- name: Create backup infrastructure secret
   k8s:
     definition:
       apiVersion: v1
-      kind: ConfigMap
+      kind: Secret
       metadata:
-        name: seed-api-server
+        name: backup-secret
         namespace: garden
-      data:
-        url: "https://{{ (gcp_cluster.stdout | from_json)['endpoint'] }}"
+      type: Opaque
+      data: "{{ gardener_gardenlet_backup_infrastructure_secret }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: yes
+  when: gardener_gardenlet_backup_infrastructure_secret
 
 - name: Deploy Local Gardenlet
   k8s:
-    kubeconfig: "{{ _virtual_garden_kubeconfig }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true
     definition: "{{ lookup('template', 'gardenlet-local.yaml') }}"
-
-# - name: Wait Gardenlet to be reconciled
-#   kubernetes.core.k8s_info:
-#     api_version: seedmanagement.gardener.cloud/v1alpha1
-#     kind: Gardenlet
-#     name: "{{ gardener_soil_name }}"
-#     namespace: garden
-#     kubeconfig: "{{ _virtual_garden_kubeconfig }}"
-#     wait: yes
-#     wait_condition:
-#       reason: Reconciled
-#       status: "True"
-#       type: GardenletReconciled
-#     wait_timeout: 300

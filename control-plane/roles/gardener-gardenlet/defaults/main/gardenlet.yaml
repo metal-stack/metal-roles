@@ -1,2 +1,43 @@
 ---
+gardener_gardenlet_garden_name: local
+gardener_gardenlet_deploy_local: false
+
+gardener_gardenlet_soil_name: "{{ metal_control_plane_stage_name }}"
 gardener_gardenlet_oci_repository: europe-docker.pkg.dev/gardener-project/releases/charts/gardener/gardenlet
+
+gardener_gardenlet_image_vector_overwrite:
+gardener_gardenlet_component_image_vector_overwrite:
+
+gardener_gardenlet_backup_entry_deletion_grace_period_hours: 72
+gardener_gardenlet_shoot_concurrent_syncs: 20
+gardener_gardenlet_shoot_reconcile_in_maintenance_only: false
+gardener_gardenlet_shoot_respect_sync_period_overwrite: true
+
+gardener_gardenlet_logging_enabled: false
+gardener_gardenlet_logging_vali_enabled: false
+
+gardener_gardenlet_backup_infrastructure:
+  # provider: gcp
+  # region:
+  # secretRef:
+  #  name: backup-secret
+  #  namespace: garden
+  # bucket:
+  #
+  # provider: S3
+  # endpoint: "{{ gardener_backup_infrastructure_secret.endpoint | b64decode }}"
+  # accessKeyID: "{{ gardener_backup_infrastructure_secret.accessKeyID | b64decode }}"
+  # secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode}}"
+gardener_gardenlet_backup_infrastructure_secret:
+  # for gcp:
+  # serviceaccount.json: "{{ gardener_backup_infrastructure_service_account_json | b64encode }}"
+  #
+  # for S3:
+  # endpoint:
+  # accessKeyID:
+  # secretAccessKey:
+
+gardener_gardenlet_dns_provider:
+gardener_gardenlet_dns_domain:
+
+gardener_gardenlet_vertical_pod_autoscaler_enabled: true
