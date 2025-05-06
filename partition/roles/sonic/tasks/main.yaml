@@ -16,7 +16,7 @@
       - sonic_config_source in ['template', 'generate']
       - metal_stack_switch_os_is_sonic
 
-- name: Check mandatory variables for bgp are set
+- name: Check mandatory variables for frr.conf are set
   assert:
     quiet: yes
     that:
