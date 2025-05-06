@@ -13,6 +13,7 @@ sonic_features: {}
 sonic_ports: []
 sonic_ports_dict: {}
 sonic_ports_default_fec: none
+sonic_ports_default_mtu: 9000
 
 ## Layer 2
 sonic_portchannels: []
@@ -20,6 +21,7 @@ sonic_portchannels_default_mtu: 9000
 
 ## BGP related settings
 sonic_loopback_address:
+sonic_hostname: sonic
 sonic_asn:
 sonic_bgp_ports: []
 sonic_frr_render: true
