@@ -16,6 +16,7 @@ sonic_ports: []
 sonic_ports_dict: {}
 sonic_ports_default_fec: none
 sonic_ports_default_mtu: 9000
+sonic_breakouts: {}
 
 ## Layer 2
 sonic_portchannels: []
