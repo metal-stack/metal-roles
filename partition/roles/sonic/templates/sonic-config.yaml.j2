@@ -9,8 +9,8 @@ lldp_hello_time: {{ sonic_lldp_hello_timer }}
 loopback_address: {{ sonic_loopback_address }}
 mclag: {{ sonic_mclag }}
 mgmt_interface:
-  gateway_address: {{ sonic_mgmtif_gateway | default('') }}
-  ip: {{ sonic_mgmtif_ip | default('') }}
+  gateway_address: {{ sonic_mgmtif_gateway }}
+  ip: {{ sonic_mgmtif_ip }}
 mgmt_vrf: {{ sonic_mgmt_vrf }}
 nameservers: {{ sonic_nameservers }}
 ntp:
@@ -25,7 +25,7 @@ ports:
   default_mtu: {{ sonic_ports_default_mtu }}
   list: {{ sonic_ports }}
 sag: {{ sonic_sag }}
-ssh_sourceranges: {{ sonic_ssh_sourceranges | default([]) }}
+ssh_sourceranges: {{ sonic_ssh_sourceranges }}
 vlans: {{ sonic_vlans }}
 vlan_members: {{ sonic_vlan_members }}
 vteps: {{ sonic_vteps }}

@@ -10,14 +10,20 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - sonic_mgmt_vrf is defined
-      - sonic_loopback_address is defined
-      - sonic_asn is defined
+      - sonic_hostname is defined
       - sonic_config_action in ['load', 'reload']
       - sonic_config_source in ['template', 'generate']
       - sonic_ntpservers is defined
       - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
+
+- name: Check mandatory variables for bgp are set
+  assert:
+    quiet: yes
+    that:
+      - sonic_asn is defined
+      - sonic_loopback_address is defined
+  when: sonic_bgp_ports
 
 - name: Check mandatody variables for config source generate are set
   assert:
