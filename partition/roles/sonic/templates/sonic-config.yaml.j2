@@ -14,9 +14,9 @@ mgmt_interface:
 mgmt_vrf: {{ sonic_mgmt_vrf }}
 nameservers: {{ sonic_nameservers }}
 ntp:
-  src_interface: {{ sonic_ntp.src_interface }}
+  src_interface: {{ sonic_ntp.src_interface | default('') }}
   servers: {{ sonic_ntpservers }}
-  vrf: {{ sonic_ntp.vrf }}
+  vrf: {{ sonic_ntp.vrf | default('') }}
 portchannels:
   default_mtu: {{ sonic_portchannels_default_mtu }}
   list: {{ sonic_portchannels }}
