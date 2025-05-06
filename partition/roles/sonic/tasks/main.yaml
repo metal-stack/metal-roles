@@ -13,8 +13,6 @@
       - sonic_hostname is defined
       - sonic_config_action in ['load', 'reload']
       - sonic_config_source in ['template', 'generate']
-      - sonic_ntpservers is defined
-      - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
 
 - name: Check mandatory variables for bgp are set
