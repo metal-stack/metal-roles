@@ -1,6 +1,5 @@
 ---
 gardener_operator_virtual_garden_public_dns: gardener-kube-apiserver.{{ metal_control_plane_ingress_dns }}
-gardener_operator_virtual_garden_public_port: 443
 
 # can we set this somehow?
 # gardener_etcd_backup_schedule: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
