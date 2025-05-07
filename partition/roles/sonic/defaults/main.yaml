@@ -1,28 +1,23 @@
 ---
 sonic_mgmt_vrf: true
 sonic_ntpservers: []
-sonic_ntp: {}
 sonic_nameservers: []
 sonic_ip_masquerade: false
 sonic_timezone: Europe/Berlin
 sonic_config_action: load
-sonic_config_source: template
-sonic_features: {}
-sonic_mgmtif_gateway:
-sonic_mgmtif_ip:
+sonic_render_config_db_template: true
 
 ## Physical settings
 sonic_ports: []
 sonic_ports_dict: {}
 sonic_ports_default_fec: none
-sonic_ports_default_mtu: 9000
-sonic_breakouts: {}
 
 ## Layer 2
 sonic_portchannels: []
-sonic_portchannels_default_mtu: 9000
 
 ## BGP related settings
+sonic_loopback_address:
+sonic_asn:
 sonic_bgp_ports: []
 sonic_frr_render: true
 sonic_frr_debug_options: []
@@ -55,7 +50,3 @@ sonic_interconnects: {}
 
 sonic_interconnects_default_peer_group: EXTERNAL
 sonic_interconnects_default_bgp_timers: '1 3'
-
-sonic_mclag: {}
-sonic_sag: {}
-sonic_ssh_sourceranges: []

@@ -1,7 +1,4 @@
 ---
-- name: Gather release versions
-  setup_yaml:
-
 - name: Gather switch facts
   switch_facts:
 
@@ -10,26 +7,13 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - sonic_hostname is defined
+      - sonic_mgmt_vrf is defined
       - sonic_loopback_address is defined
-      - sonic_config_action in ['load', 'reload']
-      - sonic_config_source in ['template', 'generate']
-      - metal_stack_switch_os_is_sonic
-
-- name: Check mandatory variables for frr.conf are set
-  assert:
-    quiet: yes
-    that:
       - sonic_asn is defined
-  when: sonic_frr_render
-
-- name: Check mandatody variables for config source generate are set
-  assert:
-    quiet: yes
-    that:
-      - sonic_configdb_utils_image_tag is defined
-      - sonic_configdb_utils_image_name is defined
-  when: sonic_config_source == 'generate'
+      - sonic_config_action in ['load', 'reload']
+      - sonic_ntpservers is defined
+      - sonic_nameservers is defined
+      - metal_stack_switch_os_is_sonic
 
 - name: render resolv.conf
   template:
@@ -52,13 +36,9 @@
     value: "1"
   when: sonic_ip_masquerade
 
-- name: Render template and save config_db
-  import_tasks: render_config_db_template.yaml
-  when: sonic_config_source == 'template'
-
-- name: Generate config_db
-  import_tasks: generate_config_db.yaml
-  when: sonic_config_source == 'generate'
+- name: Render and save config_db
+  import_tasks: config_db.yaml
+  when: sonic_render_config_db_template
 
 - name: Set NTP timezone
   timezone:
@@ -70,7 +50,7 @@
     dest: /etc/sonic/frr/frr.conf
   when: sonic_frr_render
   notify:
-    - restart bgp
+  - restart bgp
 
 - name: render iptables.json
   template:
@@ -78,7 +58,7 @@
     dest: /etc/sonic/iptables.json
   when: sonic_extended_cacl is defined
   notify:
-    - restart caclmgrd
+  - restart caclmgrd
 
 - name: Flush handlers
   meta: flush_handlers

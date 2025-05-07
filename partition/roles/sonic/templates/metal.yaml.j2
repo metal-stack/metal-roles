@@ -50,9 +50,9 @@ MCLAG_UNIQUE_IP:
     unique_ip: "enable"
 
 {% endif %}
-{% if sonic_mgmtif_ip %}
+{% if sonic_mgmtif_ip is defined %}
 MGMT_INTERFACE:
-{% if sonic_mgmtif_gateway %}
+{% if sonic_mgmtif_gateway is defined %}
   eth0|{{ sonic_mgmtif_ip }}:
     gwaddr: "{{ sonic_mgmtif_gateway }}"
 {% else %}
@@ -261,7 +261,7 @@ LLDP:
     hello_timer: {{ sonic_lldp_hello_timer }}
 {% endif %}
 
-{% if sonic_ssh_sourceranges %}
+{% if sonic_ssh_sourceranges is defined %}
 ACL_RULE:
   ALLOW_SSH|DEFAULT_RULE:
     ETHER_TYPE: "2048"

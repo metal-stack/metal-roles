@@ -20,7 +20,7 @@ def readFile(f):
 class SonicRoleTemplates(unittest.TestCase):
     def test_sonic_role_templates(self):
         self.maxDiff = None
-        defaults = readYaml('../defaults/main/main.yaml')
+        defaults = readYaml('../defaults/main.yaml')
         metal_t = read_template_file('metal.yaml.j2')
         frr_t = read_template_file('frr.conf.j2')
         iptables_t = read_template_file('iptables.json.j2')
