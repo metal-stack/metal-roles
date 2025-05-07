@@ -1,0 +1,5 @@
+---
+gardener_extension_os_metal_enabled: true
+
+# TODO: move to release vector
+gardener_extension_os_metal_helm_chart: ghcr.io/metal-stack/charts/os-metal-extension:v0.0.0-pull-request.59

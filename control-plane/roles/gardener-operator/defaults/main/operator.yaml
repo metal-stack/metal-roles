@@ -23,6 +23,11 @@ gardener_operator_backup_infrastructure_secret:
   # accessKeyID:
   # secretAccessKey:
 
+gardener_operator_dns_providers: []
+  # - name: powerdns
+  #   type: powerdns
+  #   secretData:
+
 gardener_operator_high_availability_control_plane: true
 
 gardener_operator_garden_name: local

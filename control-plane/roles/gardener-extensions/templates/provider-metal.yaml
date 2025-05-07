@@ -16,13 +16,11 @@ spec:
       runtimeCluster:
         helm:
           ociRepository:
-            repository: "{{ gardener_extension_admission_metal_helm_chart_runtime_name }}"
-            tag: "{{ gardener_extension_admission_metal_helm_chart_runtime_tag }}"
+            ref: "{{ gardener_extension_admission_metal_helm_chart_runtime }}"
       virtualCluster:
         helm:
           ociRepository:
-            repository: "{{ gardener_extension_admission_metal_helm_chart_application_name }}"
-            tag: "{{ gardener_extension_admission_metal_helm_chart_application_tag }}"
+            ref: "{{ gardener_extension_admission_metal_helm_chart_application }}"
       values:
         image:
           repository: "{{ gardener_extension_provider_metal_image_name }}"
@@ -37,13 +35,13 @@ spec:
       policy: Always
       helm:
         ociRepository:
-          repository: "{{ gardener_extension_provider_metal_helm_chart_name }}"
-          tag: "{{ gardener_extension_provider_metal_helm_chart_tag }}"
+          ref: "{{ gardener_extension_provider_metal_helm_chart }}"
       runtimeClusterValues: {}
       values:
         image:
           repository: "{{ gardener_extension_provider_metal_image_name }}"
           tag: "{{ gardener_extension_provider_metal_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
         config:
           machineImages:
             {% for image in (gardener_cloud_profile_machine_images | machine_images_for_cloud_profile) -%}

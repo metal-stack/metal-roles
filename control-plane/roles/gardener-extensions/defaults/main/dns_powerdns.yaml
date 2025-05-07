@@ -1,0 +1,7 @@
+---
+gardener_extension_dns_powerdns_enabled: false
+
+# TODO: move to release vector
+gardener_extension_dns_powerdns_helm_chart: ghcr.io/metal-stack/charts/gardener-extension-dns-powerdns:v0.0.0-pull-request.10
+
+gardener_extension_dns_powerdns_additional_network_policies: false

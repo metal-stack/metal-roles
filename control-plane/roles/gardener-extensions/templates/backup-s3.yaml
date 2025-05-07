@@ -14,7 +14,14 @@ spec:
       policy: Always
       helm:
         ociRepository:
-          repository: ghcr.io/metal-stack/charts/gardener-extension-backup-s3
-          tag: v0.0.0-pull-request.15
-      values: {}
-      runtimeClusterValues: {}
+          ref: "{{ gardener_extension_backup_s3_helm_chart }}"
+      values:
+        image:
+          repository: "{{ gardener_extension_backup_s3_image_name }}"
+          tag: "{{ gardener_extension_backup_s3_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      runtimeClusterValues:
+        image:
+          repository: "{{ gardener_extension_backup_s3_image_name }}"
+          tag: "{{ gardener_extension_backup_s3_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}

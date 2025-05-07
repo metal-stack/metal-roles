@@ -1,0 +1,43 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: provider-gcp
+spec:
+  resources:
+  - kind: BackupBucket
+    type: gcp
+  - kind: BackupEntry
+    type: gcp
+  - kind: ControlPlane
+    type: gcp
+  - kind: Infrastructure
+    type: gcp
+  - kind: Worker
+    type: gcp
+  - kind: DNSRecord
+    type: google-clouddns
+  deployment:
+    admission:
+      runtimeCluster:
+        helm:
+          ociRepository:
+            ref: "{{ gardener_extension_admission_gcp_helm_chart_runtime }}"
+      virtualCluster:
+        helm:
+          ociRepository:
+            ref: "{{ gardener_extension_admission_gcp_helm_chart_application }}"
+      values:
+        image:
+          tag: {{ gardener_extension_provider_gcp_image_tag }}
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+    extension:
+      helm:
+        ociRepository:
+          ref: "{{ gardener_extension_provider_gcp_helm_chart }}"
+      values:
+        image:
+          tag: {{ gardener_extension_provider_gcp_image_tag }}
+      runtimeClusterValues:
+        image:
+          tag: {{ gardener_extension_provider_gcp_image_tag }}

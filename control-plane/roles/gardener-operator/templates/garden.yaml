@@ -4,13 +4,25 @@ kind: Garden
 metadata:
   name: "{{ gardener_operator_garden_name }}"
 spec:
+  dns:
+    providers:
+{% for provider in gardener_operator_dns_providers %}
+    - name: {{ provider.name }}
+      type: {{ provider.type }}
+    # providerConfig:
+    #   <some-provider-specific-config-for-the-dns-records>
+      secretRef:
+        name: virtual-garden-dns-provider-{{ provider.name | lower }}-secret
+{% endfor %}
   runtimeCluster:
+{% if gardener_operator_dns_providers %}
     ingress:
       domains:
       - name: {{ gardener_operator_ingress_dns_domain }}
-        provider: primary
+        provider: {{ gardener_operator_dns_providers[0].type }}
       controller:
         kind: nginx
+{% endif %}
       # providerConfig:
       #   <some-optional-config-for-the-nginx-ingress-controller>
     networking:
@@ -48,10 +60,12 @@ spec:
     controlPlane:
       highAvailability: {}
 {% endif %}
+{% if gardener_operator_dns_providers %}
     dns:
       domains:
       - name: {{ gardener_operator_virtual_garden_public_dns }}
-        provider: primary
+        provider: {{ gardener_operator_dns_providers[0].type }}
+{% endif %}
     etcd:
       main:
         backup:
