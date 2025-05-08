@@ -10,7 +10,7 @@ log syslog {{ sonic_config_frr_syslog_level }}
 {{ option }}
 {% endfor %}
 !
-{% for k, i in sonic_config_interconnects.items() %}
+{% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is defined %}
 vrf {{ i.vrf }}
  vni {{ i.vni }}
@@ -24,7 +24,7 @@ interface {{ port }}
  no ipv6 nd suppress-ra
 !
 {% endfor %}
-{% for k, i in sonic_config_interconnects.items() %}
+{% for i in sonic_config_interconnects.values() %}
 {% for n in i.unnumbered_interfaces|default([]) %}
 interface {{ n }}{% if i.vrf is defined %} vrf {{ i.vrf }}{% endif +%}
  ipv6 nd ra-interval 6
@@ -41,7 +41,7 @@ router bgp {{ sonic_config_asn }}
 {% for port in sonic_config_bgp_ports %}
  neighbor {{ port }} interface peer-group FABRIC
 {% endfor %}
-{% for k, i in sonic_config_interconnects.items() %}
+{% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is not defined %}
  neighbor {{ i.peer_group | default("EXTERNAL") }} peer-group
  neighbor {{ i.peer_group | default("EXTERNAL") }} remote-as {{ i.remote_as | default("external") }}
@@ -69,7 +69,7 @@ router bgp {{ sonic_config_asn }}
 {% if sonic_config_frr_static_routes %}
   redistribute static
 {% endif %}
-{% for k, i in sonic_config_interconnects.items() %}
+{% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is not defined %}
   {% for a in i.announcements|default([]) %}
   {{ a }}
@@ -91,7 +91,7 @@ router bgp {{ sonic_config_asn }}
 {% endif %}
   neighbor FABRIC activate
   neighbor FABRIC allowas-in 2
-{% for k, i in sonic_config_interconnects.items() %}
+{% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is not defined %}
 {% if i.peer_group is defined and i.evpn_peer|default(false) %}
   neighbor {{ i.peer_group }} activate
@@ -102,7 +102,7 @@ router bgp {{ sonic_config_asn }}
  exit-address-family
 !
 {% endif %}
-{% for k, i in sonic_config_interconnects.items() %}
+{% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is defined %}
 router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
  bgp router-id {{ sonic_config_loopback_address }}
@@ -147,7 +147,7 @@ router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
 !
 {% endif %}
 {% endfor %}
-{% for k, i in sonic_config_interconnects.items() %}
+{% for i in sonic_config_interconnects.values() %}
 {% if i.prefixlists|default([]) %}
 {% for p in i.prefixlists %}
 {{ p }}
