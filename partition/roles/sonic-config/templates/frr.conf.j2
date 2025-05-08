@@ -1,0 +1,197 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+frr defaults datacenter
+hostname {{ inventory_hostname }}
+!
+service integrated-vtysh-config
+!
+agentx
+log syslog {{ sonic_config_frr_syslog_level }}
+{% for option in sonic_config_frr_debug_options %}
+{{ option }}
+{% endfor %}
+!
+{% for k, i in sonic_config_interconnects.items() %}
+{% if i.vrf is defined %}
+vrf {{ i.vrf }}
+ vni {{ i.vni }}
+exit-vrf
+!
+{% endif %}
+{% endfor %}
+{% for port in sonic_config_bgp_ports %}
+interface {{ port }}
+ ipv6 nd ra-interval 6
+ no ipv6 nd suppress-ra
+!
+{% endfor %}
+{% for k, i in sonic_config_interconnects.items() %}
+{% for n in i.unnumbered_interfaces|default([]) %}
+interface {{ n }}{% if i.vrf is defined %} vrf {{ i.vrf }}{% endif +%}
+ ipv6 nd ra-interval 6
+ no ipv6 nd suppress-ra
+!
+{% endfor %}
+{% endfor %}
+router bgp {{ sonic_config_asn }}
+ bgp router-id {{ sonic_config_loopback_address }}
+ bgp bestpath as-path multipath-relax
+ neighbor FABRIC peer-group
+ neighbor FABRIC remote-as external
+ neighbor FABRIC timers 1 3
+{% for port in sonic_config_bgp_ports %}
+ neighbor {{ port }} interface peer-group FABRIC
+{% endfor %}
+{% for k, i in sonic_config_interconnects.items() %}
+{% if i.vrf is not defined %}
+ neighbor {{ i.peer_group | default("EXTERNAL") }} peer-group
+ neighbor {{ i.peer_group | default("EXTERNAL") }} remote-as {{ i.remote_as | default("external") }}
+ neighbor {{ i.peer_group | default("EXTERNAL") }} timers {{ i.bgp_timers | default("1 3") }}
+ {% if i.bfd_parameters is defined %}
+ neighbor {{ i.peer_group }} bfd {{ i.bfd_parameters }}
+ {% endif %}
+ {% if i.neighbor_ip is defined %}
+ neighbor {{ i.neighbor_ip }} peer-group {{ i.peer_group | default("EXTERNAL") }}
+ {% if i.bgp_md5_password is defined %}
+ neighbor {{ i.neighbor_ip }} password {{ i.bgp_md5_password }}
+ {% endif %}
+ {% endif %}
+ {% for n in i.neighbors|default([]) %}
+ neighbor {{ n }} peer-group {{ i.peer_group | default("EXTERNAL") }}
+ {% endfor %}
+ {% for n in i.unnumbered_interfaces|default([]) %}
+ neighbor {{ n }} interface peer-group {{ i.peer_group | default("EXTERNAL") }}
+ {% endfor %}
+{% endif %}
+{% endfor %}
+ !
+ address-family ipv4 unicast
+  redistribute connected route-map {{ sonic_config_frr_route_map.name | default("DENY_MGMT") }}
+{% if sonic_config_frr_static_routes %}
+  redistribute static
+{% endif %}
+{% for k, i in sonic_config_interconnects.items() %}
+{% if i.vrf is not defined %}
+  {% for a in i.announcements|default([]) %}
+  {{ a }}
+  {% endfor %}
+  {% if i.routemap_in is defined %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_in.name }} in
+  {% endif %}
+  {% if i.routemap_out is defined %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_out.name }} out
+  {% endif %}
+{% endif %}
+{% endfor %}
+ exit-address-family
+ !
+{% if sonic_config_frr_l2vpn_evpn %}
+ address-family l2vpn evpn
+{% if sonic_config_vteps %}
+  advertise-all-vni
+{% endif %}
+  neighbor FABRIC activate
+  neighbor FABRIC allowas-in 2
+{% for k, i in sonic_config_interconnects.items() %}
+{% if i.vrf is not defined %}
+{% if i.peer_group is defined and i.evpn_peer|default(false) %}
+  neighbor {{ i.peer_group }} activate
+  neighbor {{ i.peer_group }} allowas-in 2
+{% endif %}
+{% endif %}
+{% endfor %}
+ exit-address-family
+!
+{% endif %}
+{% for k, i in sonic_config_interconnects.items() %}
+{% if i.vrf is defined %}
+router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
+ bgp router-id {{ sonic_config_loopback_address }}
+ bgp bestpath as-path multipath-relax
+ neighbor {{ i.peer_group | default("EXTERNAL") }} peer-group
+ neighbor {{ i.peer_group | default("EXTERNAL") }} remote-as {{ i.remote_as | default("external") }}
+ neighbor {{ i.peer_group | default("EXTERNAL") }} timers {{ i.bgp_timers | default("1 3") }}
+ {% if i.bfd_parameters is defined %}
+ neighbor {{ i.peer_group }} bfd {{ i.bfd_parameters }}
+ {% endif %}
+ {% if i.neighbor_ip is defined %}
+ neighbor {{ i.neighbor_ip }} peer-group {{ i.peer_group | default("EXTERNAL") }}
+ {% if i.bgp_md5_password is defined %}
+ neighbor {{ i.neighbor_ip }} password {{ i.bgp_md5_password }}
+ {% endif %}
+ {% endif %}
+ {% for n in i.neighbors|default([]) %}
+ neighbor {{ n }} peer-group {{ i.peer_group | default("EXTERNAL") }}
+ {% endfor %}
+ {% for n in i.unnumbered_interfaces|default([]) %}
+ neighbor {{ n }} interface peer-group {{ i.peer_group | default("EXTERNAL") }}
+ {% endfor %}
+ !
+ address-family ipv4 unicast
+  {% for a in i.announcements|default([]) %}
+  {{ a }}
+  {% endfor %}
+  {% if not i.keep_private_as|default(false) %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} remove-private-AS all
+  {% endif %}
+  {% if i.routemap_in is defined %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_in.name }} in
+  {% endif %}
+  {% if i.routemap_out is defined %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_out.name }} out
+  {% endif %}
+ exit-address-family
+ !
+ address-family l2vpn evpn
+  advertise ipv4 unicast
+ exit-address-family
+!
+{% endif %}
+{% endfor %}
+{% for k, i in sonic_config_interconnects.items() %}
+{% if i.prefixlists|default([]) %}
+{% for p in i.prefixlists %}
+{{ p }}
+{% endfor %}
+!
+{% endif %}
+{% if i.routemap_in is defined %}
+route-map {{ i.routemap_in.name }} permit 10
+{% for e in i.routemap_in.entries %}
+ {{ e }}
+{% endfor %}
+!
+{% endif %}
+{% if i.routemap_out is defined %}
+route-map {{ i.routemap_out.name }} permit 20
+{% for e in i.routemap_out.entries %}
+ {{ e }}
+{% endfor %}
+!
+{% endif %}
+{% endfor %}
+{% if sonic_config_frr_route_map is defined %}
+route-map {{ sonic_config_frr_route_map.name }} permit 10
+ match {{ sonic_config_frr_route_map.match }}
+!
+{% else %}
+route-map DENY_MGMT deny 10
+ match interface eth0
+route-map DENY_MGMT permit 20
+!
+{% endif %}
+{% if sonic_config_frr_static_routes_mgmt %}
+vrf mgmt
+ {% for route in sonic_config_frr_static_routes_mgmt %}
+ ip route {{ route }}
+ {% endfor %}
+exit-vrf
+!
+{% endif %}
+{% if sonic_config_frr_static_routes %}
+{% for route in sonic_config_frr_static_routes %}
+ip route {{ route }}
+{% endfor %}
+!
+{% endif %}
+line vty
+!

@@ -1,0 +1,11 @@
+sonic_config_frr_debug_options: []
+sonic_config_frr_l2vpn_evpn: false
+sonic_config_frr_static_routes: []
+sonic_config_frr_static_routes_mgmt: []
+sonic_config_frr_syslog_level: informational
+
+sonic_config_interconnects: []
+sonic_config_nameservers: []
+sonic_config_timezone: Europe/Berlin
+
+sonic_config_vteps: []
