@@ -1,11 +1,11 @@
 {
   "ztp": {
-    "02-user": {
+    "01-user": {
       "plugin": {
         "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/user.sh"
       }
     },
-    "03-download": {
+    "02-download": {
       "files": [
         {
           "url": {
@@ -15,24 +15,13 @@
         }
       ]
     },
-    "04-configdb-json": {
-      "dynamic-url": {
-        "source": {
-          "prefix": "http://{{ ztp_listen_address }}:{{ ztp_port }}/",
-          "identifier": "hostname",
-          "suffix": "_config_db.json"
-        }
+    "03-configdb-json": {
+      "url": {
+        "source": "http://{{ ztp_listen_address }}:{{ ztp_port }}/config_db.json",
+        "destination": "/etc/sonic/config_db.json"
       },
-      "clear-config": true
-    },
-{% if ztp_provisioning_script %}
-    "05-provisioning-script": {
-      "plugin": {
-        "url": "http://{{ ztp_listen_address }}:{{ ztp_port }}/ztp-provisioning-script.sh"
-      },
-      "shell": true
-    },
-{% endif %}
-    "reboot-on-success": true
+      "clear-config": true,
+      "reboot-on-success": true
+    }
   }
 }

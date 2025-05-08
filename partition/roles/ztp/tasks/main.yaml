@@ -26,11 +26,14 @@
     - ztp.json.j2
     - user.sh.j2
 
-- name: copy frr.conf
+- name: copy static files
   copy:
-    dest: "{{ ztp_host_dir_path }}/config/frr.conf"
-    src: frr.conf
+    dest: "{{ ztp_host_dir_path }}/config/{{ item }}"
+    src: "{{ item }}"
     mode: 0644
+  loop:
+    - frr.conf
+    - config_db.json
 
 - name: copy additional files
   copy:
@@ -40,13 +43,6 @@
   loop: "{{ ztp_additional_files }}"
   loop_control:
     label: "{{ item.name }}"
-
-- name: copy ztp-provisioning-script
-  copy:
-    dest: "{{ ztp_host_dir_path }}/config/ztp-provisioning-script.sh"
-    content: "{{ ztp_provisioning_script }}"
-    mode: 0644
-  when: ztp_provisioning_script
 
 - name: deploy server for serving ztp files
   include_role:
