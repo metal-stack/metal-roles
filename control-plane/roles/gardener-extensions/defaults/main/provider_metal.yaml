@@ -1,0 +1,49 @@
+---
+gardener_extension_provider_metal_enabled: true
+
+# TODO: move to release vector
+gardener_extension_provider_metal_helm_chart: ghcr.io/metal-stack/charts/gardener-extension-provider-metal:v0.0.0-pull-request.455
+gardener_extension_admission_metal_helm_chart_runtime: ghcr.io/metal-stack/charts/gardener-extension-admission-metal-runtime:v0.0.0-pull-request.455
+gardener_extension_admission_metal_helm_chart_application: ghcr.io/metal-stack/charts/gardener-extension-admission-metal-application:v0.0.0-pull-request.455
+
+gardener_metal_admission_replicas: 1
+gardener_metal_admission_vpa: true
+
+gardener_extension_provider_metal_etcd_storage_class_name:
+gardener_extension_provider_metal_etcd_backup_schedule: "0 */2 * * *"
+gardener_extension_provider_metal_etcd_delta_snapshot_period: "5m"
+
+gardener_extension_provider_metal_internal_networks:
+  - 10.0.0.0/8
+  - 100.64.0.0/10
+
+gardener_extension_provider_metal_egress_destinations: []
+
+gardener_extension_provider_metal_duros_storage_enabled: false
+gardener_extension_provider_metal_duros_storage_config:
+  # <partition>:
+  #   apiEndpoint:
+  #   apiCA:
+  #   apiKey:
+  #   apiCert:
+  #   endpoints: []
+  #   adminKey:
+  #   adminToken:
+  #   storageClasses:
+  #   - replicaCount: 2
+  #     name: duros-silver
+  #     compression: true
+  #   - replicaCount: 3
+  #     name: duros-gold
+  #     compression: false
+  #     encryption: true
+  # ...
+
+gardener_extension_provider_metal_image_pull_policy: "{{ metal_control_plane_image_pull_policy | default('IfNotPresent') }}"
+gardener_extension_provider_metal_image_pull_secret:
+  # auths:
+  #   <registry>:
+  #     username: ""
+  #     password: ""
+  #     auth: ""
+  # ...

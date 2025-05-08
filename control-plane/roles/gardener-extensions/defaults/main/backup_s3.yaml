@@ -1,0 +1,5 @@
+---
+gardener_extension_backup_s3_enabled: false
+
+# TODO: move to release vector
+gardener_extension_backup_s3_helm_chart: ghcr.io/metal-stack/charts/gardener-extension-backup-s3:v0.0.0-pull-request.15

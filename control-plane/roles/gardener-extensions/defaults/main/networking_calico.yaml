@@ -1,0 +1,7 @@
+---
+gardener_extension_networking_calico_enabled: true
+
+# TODO: move to release vector
+gardener_extension_networking_calico_helm_chart: europe-docker.pkg.dev/gardener-project/releases/charts/gardener/extensions/networking-calico:{{ gardener_extension_networking_calico_image_tag }}
+gardener_extension_admission_calico_helm_chart_runtime: europe-docker.pkg.dev/gardener-project/releases/charts/gardener/extensions/admission-calico-runtime:{{ gardener_extension_networking_calico_image_tag }}
+gardener_extension_admission_calico_helm_chart_application: europe-docker.pkg.dev/gardener-project/releases/charts/gardener/extensions/admission-calico-application:{{ gardener_extension_networking_calico_image_tag }}

@@ -1,0 +1,40 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: CloudProfile
+metadata:
+  name: metal
+spec:
+  type: metal
+  providerConfig:
+    apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
+    kind: CloudProfileConfig
+    metalControlPlanes:
+      {{ gardener_cloud_profile_stage_name }}:
+        endpoint: {{ gardener_cloud_profile_metal_api_url }}
+
+{% if (gardener_cloud_profile_firewall_images_from_machine_images and gardener_cloud_profile_machine_images | length > 0) or gardener_cloud_profile_firewall_images | length > 0 %}
+        firewallImages:
+{% for image in gardener_cloud_profile_firewall_images %}
+          - "{{ image }}"
+{% endfor %}
+{% if gardener_cloud_profile_firewall_images_from_machine_images %}
+{% for image in gardener_cloud_profile_machine_images %}
+{% if 'firewall' in image.features %}
+          - "{{ image.id }}"
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
+        firewallControllerVersions: {{ gardener_cloud_profile_firewall_controller_versions | to_json }}
+        partitions:
+{% for id, partition_config in gardener_cloud_profile_partitions.items() %}
+          {{ id }}:
+            firewallTypes: {{ partition_config.get('default-machine-types', {}).get('firewall', []) | to_json }}
+{% if 'network-isolation' in partition_config %}
+            networkIsolation: {{ partition_config.get('network-isolation') | to_json }}
+{% endif %}
+{% endfor %}
+  kubernetes: {{ gardener_cloud_profile_kubernetes | to_json }}
+  machineImages: {{ gardener_cloud_profile_machine_images | machine_images_for_cloud_profile(cris=gardener_os_cri_mapping,compatibilities=gardener_os_compatibility_mapping) | to_json }}
+  machineTypes: {{ gardener_cloud_profile_machine_types | to_json }}
+  regions: {{ gardener_cloud_profile_regions | to_json }}

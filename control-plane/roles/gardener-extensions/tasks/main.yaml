@@ -1,0 +1,17 @@
+---
+- name: Register extension resource
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml', split_lines=False) }}"
+    apply: yes
+  when: lookup('vars', 'gardener_extension_' + item  | regex_replace('-', '_') + '_enabled')
+  loop:
+    - provider-metal
+    - provider-gcp
+    - os-metal
+    - networking-calico
+    - networking-cilium
+    - shoot-cert-service
+    - shoot-dns-service
+    - dns-powerdns
+    - backup-s3
+    - csi-driver-lvm
