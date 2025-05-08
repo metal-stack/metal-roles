@@ -3,6 +3,18 @@
   virtual_garden_kubeconfig:
     garden_name: "{{ gardener_operator_garden_name }}"
 
+# the following task is only useful when deploying gardener initially:
+- name: Wait for cloud profile resource to be available
+  discovery_api_k8s:
+    api_version: core.gardener.cloud/v1beta1
+    kind: CloudProfile
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+  register: result
+  until: result.result
+  retries: 60
+  delay: 5
+  when: gardener_cloud_profile_wait_until_available
+
 - name: Add Metal cloud profile
   k8s:
     definition: "{{ lookup('template', '30-cloud-profile-metal.yaml') }}"
