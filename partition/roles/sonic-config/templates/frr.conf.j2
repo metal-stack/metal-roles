@@ -169,7 +169,7 @@ route-map {{ i.routemap_out.name }} permit 20
 !
 {% endif %}
 {% endfor %}
-{% if sonic_config_frr_route_map is defined %}
+{% if sonic_config_frr_route_map.name is defined and sonic_config_frr_route_map.match is defined %}
 route-map {{ sonic_config_frr_route_map.name }} permit 10
  match {{ sonic_config_frr_route_map.match }}
 !
