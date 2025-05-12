@@ -37,7 +37,14 @@
     owner: root
     group: root
     remote_src: true
-  notify: "config {{ sonic_config_action }}"
+
+- name: Reload config if reload is required
+  command: config reload --yes
+  when: sonic_config_reload_config
+
+- name: Load config if not reloaded
+  command: config load --yes
+  when: not sonic_config_reload_config
 
 - name: Remove temporary directory
   file:

@@ -1,0 +1,482 @@
+# sonic-config
+
+> Note: This role replaces the deprecated [sonic](/partition/roles/sonic/README.md) role.
+> If you are using the sonic role check the [Migration](#migration-from-sonic-role) section below.
+
+This role creates a `config_db.json` on a SONiC switch, configures the timezone and adds a `resolv.conf`.
+Optionally it may render a `frr.conf` for routing or an `iptables.json` for extended CACL.
+
+## Supported SONiC Versions
+
+The only supported SONiC versions are Edgecore SONiC versions 202111.x.
+Other versions might work as well but their behavior might slightly differ for some of the configuration parameters.
+For example, if you are using `sonic_config_docker_routing_config_mode: split` on a 202111.x version and wish to migrate to version 202311.5, you will need to use `split-unified` instead.
+As the 202111.x versions worked best for us so far this role is mostly tested against those versions.
+
+## Problems with DHCP relay
+
+Some of our deployments require a DHCP relay agent on the switch which relays PXE boot requests between a client and a PXE server.
+From version 202111.6 to version 202111.7 some change in the dhcp_relay broke the relay's ability to forward PXE boot OFFER messages from the server back to the client.
+This bug was fixed in version 202111.11.
+
+## Migration from the Deprecated sonic Role
+
+Most of the variables have the same name, meaning and structure as the correspondig ones in the sonic role.
+So in most cases simply adding `_config` to the variable name is enough, e.g. `sonic_interconnects` becomes `sonic_config_interconnects`.
+Variables that were changed, removed or added are explained below.
+
+### sonic_ntpservers
+
+Change
+
+```yaml
+sonic_ntpservers:
+  - 1.2.3.4
+  - 5.6.7.8
+```
+
+to
+
+```yaml
+sonic_config_ntp:
+  servers:
+    - 1.2.3.4
+    - 5.6.7.8
+
+  # Additionally source interface and VRF can be configured.
+  src_interface: # Loopback0
+  vrf: # default
+```
+
+### sonic_mgmtif_ip and sonic_mgmtif_gateway
+
+Change
+
+```yaml
+sonic_mgmtif_ip: 10.1.2.3
+sonic_mgmtif_gateway: 10.1.2.2
+```
+
+to
+
+```yaml
+sonic_config_mgmt_interface:
+  gateway_address: 10.1.2.2
+  ip: 10.1.2.3
+```
+
+### sonic_ip_masquerade
+
+This variable was removed.
+See [this PR in the mini-lab](https://github.com/metal-stack/mini-lab/pull/237).
+
+### sonic_config_action
+
+This variable is replaced by the boolean variable `sonic_config_reload_config` which defaults to `false`.
+See below for explanation.
+
+### sonic_ports, sonic_ports_default_speed, sonic_ports_default_mtu and sonic_ports_default_fec
+
+All these variables are now gathered in the dictionary `sonic_config_ports`.
+
+Change
+
+```yaml
+sonic_ports_default_speed: 100000
+sonic_ports_default_mtu: 9000
+sonic_ports_default_fec: none
+
+sonic_ports:
+  - fec: rs
+    ips:
+      - 10.0.0.1/32
+    mtu: 1420
+    name: Ethernet0
+    speed: 40000
+    vrf: Vrf45
+```
+
+to
+
+```yaml
+sonic_config_ports:
+  # New field to configure default value for auto negotiation.
+  default_autoneg: on
+  default_fec: none
+  default_mtu: 9000
+  list:
+    # New field to configure auto negotiation per port.
+    - autoneg: off
+      fec: rs
+      ips:
+        - 10.0.0.1/32
+      mtu: 1420
+      name: Ethernet0
+      speed: 40000
+      vrf: Vrf45
+```
+
+`sonic_ports_default_speed` was removed.
+The default speed for a port is now derived from its breakout configuration and only a valid alternative speed can override it.
+
+### sonic_frr_debug_options
+
+This variable was removed.
+
+### sonic_interconnects_default_peer_group and sonic_interconnects_default_bgp_timers
+
+These two variables were removed.
+
+### sonic_portchannels and sonic_portchannels_default_mtu
+
+As with `sonic_ports`, these variables are now combined in one dictionary `sonic_config_portchannels`.
+
+Change
+
+```yaml
+sonic_portchannels_default_mtu: 9000
+
+sonic_portchannels:
+  - fallback: true
+    members:
+      - Ethernet0
+      - Ethernet1
+    mtu: 9000
+    number: 01
+```
+
+to
+
+```yaml
+sonic_config_portchannels:
+  default_mtu: 9000
+  list:
+    - fallback: true
+      members:
+        - Ethernet0
+        - Ethernet1
+      mtu: 9000
+      number: 01
+```
+
+## Variables
+
+```yaml
+# The autonomous system number of the router.
+sonic_config_asn: # 42
+
+# Ports for the underlay BGP sessions.
+sonic_config_bgp_ports:
+#   - Ethernet120
+#   - Ethernet124
+
+# Map of breakout configuration for ports.
+sonic_config_breakouts:
+#   Ethernet0: 4x25G
+#   Ethernet4: 1x100G[40G]
+
+# Image of the [config generator tool](https://github.com/metal-stack/sonic-configdb-utils).
+sonic_configdb_utils_image_name: # ghcr.io/metal-stack/sonic-configdb-utils
+
+# Image tag (should be `ec202111` for Edgecore SONiC versions 202111.x)
+sonic_configdb_utils_image_tag: # ec202111
+
+# From the [SONiC yang model](https://github.com/sonic-net/sonic-buildimage/blob/master/src/sonic-yang-models/yang-models/sonic-device_metadata.yang):
+#
+# "This leaf allows different configuration modes for FRR:
+# - separated: FRR config generated from ConfigDB, each FRR daemon has its own config file
+# - unified: FRR config generated from ConfigDB, single FRR config file
+# - split: FRR config not generated from ConfigDB, each FRR daemon has its own config file
+# - split-unified: FRR config not generated from ConfigDB, single FRR config file"
+#
+sonic_config_docker_routing_config_mode: # split
+
+# Rules to be added as extended control plane ACLs.
+sonic_config_extended_cacl:
+  # Iptables IPv4 rules.
+  ipv4:
+  #   - -A INPUT -s 1.2.3.4/32 -p tcp -m tcp --dport 2112 -j ACCEPT
+
+  # Iptables IPv6 rules.
+  ipv6:
+  #   - -A INPUT -s 2001:db8::1/128 -p tcp -m tcp --dport 2112 -j ACCEPT
+
+# Features to be monitored by the container_checker.
+sonic_config_features:
+  # Name of the container.
+  some-feature:
+    # If enabled the container will get restarted on failure.
+    auto_restart: # true
+    # If enabled the container_checker will monitor the container.
+    enabled: # true
+
+# Whether to enable l2vpn evpn address family
+sonic_config_frr_l2vpn_evpn: # true
+
+# Whether to enable frr_mgmt_framework_config
+sonic_config_frr_mgmt_framework_config: # true
+
+# Whether to render the frr.conf.j2 template file. If [metal-core](https://github.com/metal-stack/metal-core) is deployed this should be set to false because metal-core takes care of the FRR config.
+sonic_config_frr_render: # true
+
+# Configure a route map.
+sonic_config_frr_route_map:
+  # Routemap match.
+  match: # interface Loopback0
+
+  # Name of the routemap.
+  name: # LOOPBACKS
+
+# Static routes to be injected through FRR.
+sonic_config_frr_static_routes:
+#   - 0.0.0.0/0 10.1.2.3
+
+# Static routes to be injected to the management VRF.
+sonic_config_frr_static_routes_mgmt:
+#   - 0.0.0.0/0 10.1.2.3
+
+# Log level of FRR.
+sonic_config_frr_syslog_level: # informational
+
+# Map of connections to other BGP parties (e.g. Internet or MPLS routers).
+sonic_config_interconnects:
+  # The name is only a reference within the deployment. It will not be reflected on the switch.
+  interconnect-name:
+    # BGP announcements to the connecting parties.
+    announcements:
+    #   - network 10.1.2.0/24
+
+    # BFD configuration to apply to this connection. An empty string is a valid parameter and will tell FRR to listen for BFD events from this neighbor.
+    bfd_parameters: # check-control-plane-failure
+
+    # Use a MD5 password for BGP.
+    bgp_md5_password: # secret
+
+    # Use specific BGP timer values for the BGP session with the remote party.
+    bgp_timers: # 1 3
+
+    # Whether the peer should take part in evpn routing (address-family l2vpn evpn).
+    evpn_peer: # true
+
+    # Do not remove the private ASes on this interconnect. For use with static machine ports.
+    keep_private_as: # true
+
+    # Connect to this BGP neighbors IP.
+    neighbor_ip: # 10.1.2.3
+
+    # Connect to this BGP neighbors. Supports multiple neighbors and also BGP unnumbered.
+    neighbors:
+    #   - 10.1.2.3
+    #   - Ethernet1 interface
+
+    # Put the neighbor in this peer group.
+    peer_group: # STATIC
+
+    # BGP prefix lists to configure.
+    prefixlists:
+    #   - ip prefix-list STATIC_PREFIX_IN seq 10 permit 10.64.64.0/22 ge 32
+
+    # The AS of the BGP neighbor.
+    remote_as: # 42
+
+    # Apply an incoming routemap for this BGP session.
+    routemap_in:
+      # Name of the routemap.
+      name: # ALLOW-STATIC-IN
+
+      # List of routemap entries.
+      entries:
+      #   - match ip address prefix-list STATIC_PREFIX_IN
+
+    # Apply an outgoing routemap for this BGP session.
+    routemap_out:
+      # Name of the routemap.
+      name: # ALLOW-MPLS-OUT
+
+      # List of routemap entries.
+      entries:
+      #   - "match ip address prefix-list MPLS_PREFIX_OUT"
+
+    # Connect with BGP unnumbered on these interfaces. Also sets IPv6 options to make unnumbered work correctly.
+    unnumbered_interfaces:
+    #   - Ethernet96
+    #   - Ethernet100
+
+    # This BGP session will connect the specified VNI within the CLOS topology with the given peer.
+    vni: # 46
+
+    # Use a dedicated BGP session fenced with a VRF for this connection. It also declares the virtual network as layer-3.
+    vrf: # Vrf46
+
+# LLDP interval.
+sonic_config_lldp_hello_timer: # 10
+
+# The loopback address used for this router. Is used to identify routers with bgp unnumbered.
+sonic_config_loopback_address: # 10.1.1.1
+
+# MCLAG configuration for a switch connecting a machine with a LAG bond interface.
+sonic_config_mclag:
+  # The VLAN used for keepalive messages between the MCLAG pair over the peer-link.
+  keepalive_vlan: # 1000
+
+  # A list of portchannel numbers that take part in the MCLAG domain.
+  member_port_channels:
+  #   - 11
+  #   - 12
+  #   - 21
+
+  # The IP of the remote switch on the MCLAG peer. Corresponds to source_ip.
+  peer_ip: # 10.2.0.1
+
+  # The portchannel interface connecting the switch pair.
+  peer_link: # PortChannel01
+
+  # The IP of this switch on the MCLAG peer-link. Corresponds to peer_ip.
+  source_ip: # 10.1.0.1
+
+  # The shared virtual MAC address used for MCLAG connections.
+  system_mac: # aa:aa:aa:aa:aa:aa
+
+# Management interface configuration.
+sonic_config_mgmt_interface:
+  # If using a fixed management IP, this is the default gateway for the management interface.
+  gateway_address: # 10.7.7.7
+
+  # The fixed IP address of the management interface in `IP/netmask`  format. If not given, defaults to DHCP.
+  ip: # 10.0.0.1
+
+# Whether to enable the management VRF on the switch.
+sonic_config_mgmt_vrf: # true
+
+# The name servers to use on the switch.
+sonic_config_nameservers:
+#   - 1.1.1.1
+#   - 8.8.8.8
+
+# The NTP configuration for the switch.
+sonic_config_ntp:
+  # NTP servers.
+  servers:
+  #   - 1.2.3.4
+  #   - 5.6.7.8
+
+  # NTP source interface.
+  src_interface: # Loopback0
+
+  # VRF to use for NTP.
+  vrf: # default
+
+# Portchannels configuration.
+sonic_config_portchannels:
+  # MTU default value for portchannels.
+  default_mtu: # 9000
+
+  # The list of portchannels.
+  list:
+    # The portchannel number.
+    - number: # 01
+      # The portchannel mtu.
+      mtu: # 9000
+
+      # Whether to fallback to single port when LAG negotiation fails. Defaults to false in SONiC. Does not work with MCLAG.
+      fallback: # false
+
+      # The list of interfaces taking part in the portchannel.
+      members:
+      #   - Ethernet112
+      #   - Ethernet116
+
+# Ports configuration.
+sonic_config_ports:
+  # Default value for auto negotiation.
+  default_autoneg: # off
+
+  # Default FEC mode.
+  default_fec: # rs
+
+  # Default MTU.
+  default_mtu: # 9000
+
+  # List of ports.
+  list:
+    # Auto negotiation.
+    - autoneg: # on
+
+      # FEC mode for the port.
+      fec: # none
+
+      # IPs to assign to the interface.
+      ips:
+      #   - 10.255.0.1/32
+
+      # MTU for the port.
+      mtu: # 1500
+
+      # Port name.
+      name: # Ethernet0
+
+      # Port speed in bytes (100000 = 100G). Must be consistent with the port's breakout configuration.
+      speed: # 25000
+
+      # The VRF the port is bound to.
+      vrf: # Vrf46
+
+# Whehter a `config reload` should be triggered. If `false` a simple `config load` will be performed.
+# Keep in mind that a config reload is a disruptive process. Active connections will be interrupted and it may take up to several minutes for the switch to come back up.
+#
+# When is a config reload necessary?
+# Only when some parts of the running configuration needs to be removed/reset.
+# When something is added to the configuration or some part of the configuration is changed, no reload is necessary.
+#
+# For example, changing the MTU on a port from 9000 to 1500 does not require a reload.
+# On the other hand, removing an IP address that was previously configured on a port does require a reload.
+sonic_config_reload_config: # false
+
+# Static Anycast Gateway (SAG) configuration.
+sonic_config_sag:
+  # The virtual MAC used for the SAG
+  mac: # bb:bb:bb:bb:bb:bb
+
+# The source ranges which the switch should be reachable from via SSH on its prod (non-management) addresses.
+sonic_config_ssh_sourceranges:
+#   - 10.0.0.0/16
+
+# The switch's timezone.
+sonic_config_timezone: # Europe/Berlin
+
+# VLANs to configure on the switch.
+sonic_config_vlans:
+  # DHCP servers to relay to.
+  - dhcp_servers:
+    # - 10.1.1.1
+
+    # VLAN ID.
+    id: # 4000
+
+    # The IP of the SVI of this VLAN.
+    ip: # 10.255.0.1/24
+
+    # Whether to enable static anycast gateway for this VLAN.
+    sag: # false
+
+    # A list of tagged ports to bind to this VLAN.
+    tagged_ports:
+    #   - Ethernet0
+    #   - Ethernet2
+
+    # A list of untagged ports to bind to this VLAN.
+    untagged_ports:
+    #   - Ethernet2
+    #   - Ethernet3
+
+    # The VRF to bind to this VLAN.
+    vrf: # Vrf45
+
+# VTEPs to configure. If defined FRR will automatically advertise all VNIs.
+sonic_config_vteps:
+  # The global VNI within the CLOS topology.
+  - vni: 45
+
+    # The local VLAN interface.
+    vlan: Vlan1001
+```

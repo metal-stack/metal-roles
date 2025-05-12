@@ -6,9 +6,6 @@ service integrated-vtysh-config
 !
 agentx
 log syslog {{ sonic_config_frr_syslog_level }}
-{% for option in sonic_config_frr_debug_options %}
-{{ option }}
-{% endfor %}
 !
 {% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is defined %}
