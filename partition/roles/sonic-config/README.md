@@ -1,6 +1,6 @@
 # sonic-config
 
-> Note: This role replaces the deprecated [sonic](/partition/roles/sonic/README.md) role.
+> NOTE: This role replaces the deprecated [sonic](/partition/roles/sonic/README.md) role.
 > If you are using the sonic role check the [Migration](#migration-from-sonic-role) section below.
 
 This role creates a `config_db.json` on a SONiC switch, configures the timezone and adds a `resolv.conf`.
