@@ -180,7 +180,7 @@ sonic_config_breakouts:
 # Image of the [config generator tool](https://github.com/metal-stack/sonic-configdb-utils).
 sonic_configdb_utils_image_name: # ghcr.io/metal-stack/sonic-configdb-utils
 
-# Image tag (should be `ec202111` for Edgecore SONiC versions 202111.x)
+# Image tag (should be `ec202111` for Edgecore SONiC versions 202111.x).
 sonic_configdb_utils_image_tag: # ec202111
 
 # How to handle routing configuration.
