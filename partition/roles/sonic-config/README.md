@@ -101,12 +101,12 @@ to
 ```yaml
 sonic_config_ports:
   # New field to configure default value for auto negotiation.
-  default_autoneg: on
+  default_autoneg: # on
   default_fec: none
   default_mtu: 9000
   list:
     # New field to configure auto negotiation per port.
-    - autoneg: off
+    - autoneg: # off
       fec: rs
       ips:
         - 10.0.0.1/32
