@@ -20,7 +20,9 @@ spec:
             ref: "{{ gardener_extension_admission_shoot_dns_helm_chart_application }}"
       values:
         image:
-          tag: {{ gardener_extension_shoot_dns_service_image_tag }}
+          repository: "{{ gardener_extension_shoot_dns_service_image_name }}"
+          tag: "{{ gardener_extension_shoot_dns_service_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
     extension:
       policy: Always
       helm:
@@ -55,4 +57,6 @@ spec:
 
       runtimeClusterValues:
         image:
-          tag: {{ gardener_extension_shoot_dns_service_image_tag }}
+          repository: "{{ gardener_extension_shoot_dns_service_image_name }}"
+          tag: "{{ gardener_extension_shoot_dns_service_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}

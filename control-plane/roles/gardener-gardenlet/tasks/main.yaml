@@ -29,5 +29,3 @@
 - name: Deploy Local Gardenlet
   import_tasks: gardenlet_local.yaml
   when: gardener_gardenlet_deploy_local
-
-# - name: Deploy Remote Gardenlets

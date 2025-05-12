@@ -30,4 +30,4 @@ gardener_operator_dns_providers: []
 
 gardener_operator_high_availability_control_plane: true
 
-gardener_operator_garden_name: local
+gardener_operator_garden_name: "{{ metal_control_plane_stage_name }}"

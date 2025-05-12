@@ -1,7 +1,7 @@
 ---
 - name: Get kubeconfig for virtual garden access
   virtual_garden_kubeconfig:
-    garden_name: "{{ gardener_operator_garden_name }}"
+    garden_name: "{{ gardener_cloud_profile_garden_name }}"
 
 # the following task is only useful when deploying gardener initially:
 - name: Wait for cloud profile resource to be available
