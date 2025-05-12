@@ -237,7 +237,7 @@ sonic_config_frr_static_routes_mgmt:
 # Log level of FRR.
 sonic_config_frr_syslog_level: # informational
 
-# Map of connections to other BGP parties (e.g. Internet or MPLS routers).
+# Map of connections to other BGP parties (e.g. internet or MPLS routers).
 sonic_config_interconnects:
   # The name is only a reference within the deployment. It will not be reflected on the switch.
   interconnect-name:
@@ -262,7 +262,7 @@ sonic_config_interconnects:
     # Do not remove the private ASes on this interconnect. For use with static machine ports.
     keep_private_as: # true
 
-    # Connect to this BGP neighbors IP.
+    # Connect to this BGP neighbor's IP.
     neighbor_ip: # 10.1.2.3
 
     # Connect to this BGP neighbors. Supports multiple neighbors and also BGP unnumbered.
@@ -345,7 +345,7 @@ sonic_config_mgmt_interface:
   # If using a fixed management IP, this is the default gateway for the management interface.
   gateway_address: # 10.7.7.7
 
-  # The fixed IP address of the management interface in `IP/netmask`  format.
+  # The fixed IP address of the management interface in `IP/netmask` format.
   # If not given, defaults to DHCP.
   ip: # 10.0.0.1
 
