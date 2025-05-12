@@ -68,7 +68,7 @@ sonic_config_mgmt_interface:
 ### sonic_ip_masquerade
 
 This variable was removed.
-See [this PR in the mini-lab](https://github.com/metal-stack/mini-lab/pull/237).
+See [this mini-lab PR](https://github.com/metal-stack/mini-lab/pull/237).
 
 ### sonic_config_action
 
