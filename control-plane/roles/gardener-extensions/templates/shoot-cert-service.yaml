@@ -16,8 +16,8 @@ spec:
             ref: "{{ gardener_extension_shoot_cert_service_helm_chart }}"
       values:
         image:
-          repository: "{{ gardener_shoot_cert_service_image_name }}"
-          tag: "{{ gardener_shoot_cert_service_image_tag }}"
+          repository: "{{ gardener_extension_shoot_cert_service_image_name }}"
+          tag: "{{ gardener_extension_shoot_cert_service_image_tag }}"
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
         certificateConfig:
           # defaultRequestsPerDayQuota: 100

@@ -2,7 +2,7 @@
 gardener_extension_shoot_cert_service_enabled: true
 
 # TODO: move to release vector
-gardener_extension_shoot_cert_service_helm_chart: europe-docker.pkg.dev/gardener-project/releases/charts/gardener/extensions/shoot-cert-service:{{ gardener_shoot_cert_service_image_tag }}
+gardener_extension_shoot_cert_service_helm_chart: europe-docker.pkg.dev/gardener-project/releases/charts/gardener/extensions/shoot-cert-service:{{ gardener_extension_shoot_cert_service_image_tag }}
 
 gardener_cert_management_issuer_private_key: ""
 gardener_cert_management_issuer_server: https://acme-v02.api.letsencrypt.org/directory
