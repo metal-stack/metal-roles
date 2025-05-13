@@ -22,7 +22,7 @@ This bug was fixed in version 202111.11.
 
 ## Migration from the Deprecated `sonic` Role
 
-Most of the variables have the same name, meaning and structure as the correspondig ones in the sonic role.
+Most of the variables have the same name, meaning and structure as the corresponding ones in the sonic role.
 So in most cases simply adding `_config` to the variable name is enough, e.g. `sonic_interconnects` becomes `sonic_config_interconnects`.
 Variables that were changed, removed or added are explained below.
 
