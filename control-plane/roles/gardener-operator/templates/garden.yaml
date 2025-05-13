@@ -113,10 +113,10 @@ spec:
 {% if gardener_operator_virtual_garden_oidc_groups_prefix %}
         groupsPrefix: "{{ gardener_operator_virtual_garden_oidc_groups_prefix }}"
 {% endif %}
-    #     caBundle: |
-    #       -----BEGIN CERTIFICATE-----
-    #       Li4u
-    #       -----END CERTIFICATE-----
+{% if gardener_operator_virtual_garden_oidc_ca %}
+        caBundle: |
+          {{ gardener_operator_virtual_garden_oidc_ca | indent(width=12, first=false) }}
+{% endif %}
     #     clientID: client-id
     #     signingAlgs: # See https://datatracker.ietf.org/doc/html/rfc7518#section-3.1 for the list of valid algorithms
     #     - RS256

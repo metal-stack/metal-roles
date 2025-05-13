@@ -18,7 +18,7 @@ gardener_cloud_profile_partitions: {}
   #     firewall:
   #       - c1-xlarge-x86
 
-gardener_os_cri_mapping:
+gardener_cloud_profile_os_cri_mapping:
   ubuntu:
     when:
     cris:
@@ -30,7 +30,7 @@ gardener_os_cri_mapping:
     - name: containerd
       containerRuntimes: []
 
-gardener_os_compatibility_mapping: {}
+gardener_cloud_profile_os_compatibility_mapping: {}
   # ubuntu:
   #   when:
   #     operator: "<"

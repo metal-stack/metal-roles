@@ -35,6 +35,6 @@ spec:
 {% endif %}
 {% endfor %}
   kubernetes: {{ gardener_cloud_profile_kubernetes | to_json }}
-  machineImages: {{ gardener_cloud_profile_machine_images | machine_images_for_cloud_profile(cris=gardener_os_cri_mapping,compatibilities=gardener_os_compatibility_mapping) | to_json }}
+  machineImages: {{ gardener_cloud_profile_machine_images | machine_images_for_cloud_profile(cris=gardener_cloud_profile_os_cri_mapping,compatibilities=gardener_cloud_profile_os_compatibility_mapping) | to_json }}
   machineTypes: {{ gardener_cloud_profile_machine_types | to_json }}
   regions: {{ gardener_cloud_profile_regions | to_json }}

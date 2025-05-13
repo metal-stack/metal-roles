@@ -13,6 +13,7 @@ gardener_operator_virtual_garden_oidc_username_claim:
 gardener_operator_virtual_garden_oidc_username_prefix:
 gardener_operator_virtual_garden_oidc_groups_claim:
 gardener_operator_virtual_garden_oidc_groups_prefix:
+gardener_operator_virtual_garden_oidc_ca:
 
 # TODO: move to release vector
 gardener_operator_virtual_garden_kubernetes_version: 1.32.3

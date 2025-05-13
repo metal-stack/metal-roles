@@ -1,5 +1,2 @@
 ---
 gardener_extension_csi_driver_lvm_enabled: false
-
-# TODO: move to release vector
-gardener_extension_csi_driver_lvm_helm_chart: ghcr.io/metal-stack/charts/gardener-extension-csi-driver-lvm:v0.0.0-pull-request.12

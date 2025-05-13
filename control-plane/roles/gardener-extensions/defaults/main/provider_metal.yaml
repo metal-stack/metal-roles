@@ -1,13 +1,8 @@
 ---
 gardener_extension_provider_metal_enabled: true
 
-# TODO: move to release vector
-gardener_extension_provider_metal_helm_chart: ghcr.io/metal-stack/charts/gardener-extension-provider-metal:v0.0.0-pull-request.455
-gardener_extension_admission_metal_helm_chart_runtime: ghcr.io/metal-stack/charts/gardener-extension-admission-metal-runtime:v0.0.0-pull-request.455
-gardener_extension_admission_metal_helm_chart_application: ghcr.io/metal-stack/charts/gardener-extension-admission-metal-application:v0.0.0-pull-request.455
-
-gardener_metal_admission_replicas: 1
-gardener_metal_admission_vpa: true
+gardener_extension_provider_metal_admission_replicas: 1
+gardener_extension_provider_metal_admission_vpa: true
 
 gardener_extension_provider_metal_etcd_storage_class_name:
 gardener_extension_provider_metal_etcd_backup_schedule: "0 */2 * * *"

@@ -2,7 +2,7 @@
 apiVersion: seedmanagement.gardener.cloud/v1alpha1
 kind: Gardenlet
 metadata:
-  name: "{{ gardener_gardenlet_soil_name }}"
+  name: "{{ _config.name }}"
   namespace: garden
 spec:
   deployment:
@@ -12,15 +12,15 @@ spec:
       networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
     helm:
       ociRepository:
-        ref: "{{ gardener_gardenlet_oci_repository }}:{{ gardener_gardenlet_image_tag }}"
-{% if gardener_gardenlet_image_vector_overwrite %}
+        ref: "{{ gardener_gardenlet_helm_chart }}"
+{% if _config.image_vector_overwrite %}
     imageVectorOverwrite: |
       images:
         {{ gardener_image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
 {% endif %}
-{% if gardener_gardenlet_component_image_vector_overwrite %}
+{% if _config.component_image_vector_overwrite %}
     componentImageVectorOverwrites: |
-        {{ gardener_component_image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
+        {{ _config.component_image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
 {% endif %}
     image:
       repository: {{ gardener_gardenlet_image_name }}
@@ -31,22 +31,22 @@ spec:
     kind: GardenletConfiguration
     controllers:
       shoot:
-        concurrentSyncs: {{ gardener_gardenlet_shoot_concurrent_syncs }}
-        reconcileInMaintenanceOnly: {{ gardener_gardenlet_shoot_reconcile_in_maintenance_only | lower }}
+        concurrentSyncs: {{ _config.shoot_concurrent_syncs }}
+        reconcileInMaintenanceOnly: {{ _config.shoot_reconcile_in_maintenance_only | lower }}
         # allow setting shoot ignore annotation:
-        respectSyncPeriodOverwrite: {{ gardener_gardenlet_shoot_respect_sync_period_overwrite | lower }}
+        respectSyncPeriodOverwrite: {{ _config.shoot_respect_sync_period_overwrite | lower }}
       shootState:
         concurrentSyncs: 0
       backupEntry:
-        deletionGracePeriodHours: {{ gardener_gardenlet_backup_entry_deletion_grace_period_hours }}
+        deletionGracePeriodHours: {{ _config.backup_entry_deletion_grace_period_hours }}
         deletionGracePeriodShootPurposes:
         - evaluation
         - infrastructure
         - production
     logging:
-      enabled: {{ gardener_gardenlet_logging_enabled | lower }}
+      enabled: {{ _config.logging_enabled | lower }}
       vali:
-        enabled: {{ gardener_gardenlet_logging_vali_enabled | lower }}
+        enabled: {{ _config.logging_vali_enabled | lower }}
       shootNodeLogging:
         shootPurposes:
         - infrastructure
@@ -58,23 +58,25 @@ spec:
       kind: Seed
       metadata:
         labels:
-          name: "{{ gardener_gardenlet_soil_name }}"
+          name: "{{ _config.name }}"
       spec:
-        backup: {{ gardener_gardenlet_backup_infrastructure | to_json }}
+        backup: {{ _config.backup_infrastructure | to_json }}
         dns:
           provider:
             secretRef:
               name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
               namespace: garden
-            type: "{{ gardener_gardenlet_dns_provider }}"
+            type: "{{ gardener_gardenlet_default_dns_provider }}"
         ingress:
           controller:
             kind: nginx
-          domain: "{{ gardener_gardenlet_dns_domain }}"
+          domain: "{{ gardener_gardenlet_default_dns_domain }}"
+{% if _is_local %}
         networks:
           nodes: "{{ _gardener_gardenlet_node_cidr }}"
           pods: "{{ _gardener_gardenlet_pod_cidr }}"
           services: "{{ _gardener_gardenlet_service_cidr }}"
+{% endif %}
         provider:
           region: local
           type: "{{ metal_control_plane_host_provider }}"
@@ -86,4 +88,4 @@ spec:
           shootDNS:
             enabled: true
           verticalPodAutoscaler:
-            enabled: {{ gardener_gardenlet_vertical_pod_autoscaler_enabled | lower }}
+            enabled: {{ _config.vertical_pod_autoscaler_enabled | lower }}
