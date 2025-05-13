@@ -1,6 +1,6 @@
 # gardener-cloud-profile
 
-Deploys a Gardener Cloud Profile into the virtual garden.
+Deploys a Gardener Cloud Profile for metal-stack into the virtual garden.
 
 Please refer to the metal-stack gardener integration in
 our [documentation](https://docs.metal-stack.io/stable/overview/kubernetes/).
