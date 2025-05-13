@@ -1,14 +1,35 @@
 import unittest
-import sys
 import yaml
 
-from test import FILTER_PLUGINS_PATH,read_template_file, read_mock_file
+from test import read_template_file, read_mock_file
 
 from ansible.template import Templar
 
 
-sys.path.insert(0, FILTER_PLUGINS_PATH)
-from common import machine_images_for_cloud_profile
+def mock_for_machine_images_from_cloud_profile(images, cris=None, compatibilities=None):
+    return [
+        {
+            "name": "ubuntu",
+            "versions": [
+            {
+                "cri": [
+                {
+                    "name": "containerd"
+                }
+                ],
+                "version": "20.04"
+            },
+            {
+                "cri": [
+                {
+                    "name": "containerd"
+                }
+                ],
+                "version": "20.04.20210131"
+            }
+            ]
+        }
+    ]
 
 
 class CloudProfileTemplate(unittest.TestCase):
@@ -92,7 +113,7 @@ class CloudProfileTemplate(unittest.TestCase):
             "gardener_cloud_profile_os_compatibility_mapping": {},
         })
 
-        templar.environment.filters["machine_images_for_cloud_profile"] = machine_images_for_cloud_profile
+        templar.environment.filters["machine_images_for_cloud_profile"] = mock_for_machine_images_from_cloud_profile
 
         res = templar.template(t)
 
