@@ -26,7 +26,7 @@ Most of the variables have the same name, meaning and structure as the correspon
 So in most cases simply adding `_config` to the variable name is enough, e.g. `sonic_interconnects` becomes `sonic_config_interconnects`.
 Variables that were changed, removed or added are explained below.
 
-### sonic_ntpservers
+### `sonic_ntpservers`
 
 Change
 
