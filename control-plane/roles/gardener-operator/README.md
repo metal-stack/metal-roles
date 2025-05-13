@@ -1,13 +1,12 @@
 # gardener-operator
 
-Deploys the Gardener Operator.
+Deploys the Gardener Operator into the Garden cluster. This role spins up a virtual garden.
 
 Please refer to the metal-stack gardener integration in our [documentation](https://docs.metal-stack.io/stable/overview/kubernetes/).
 
 Check out the Gardener project for further documentation on [gardener.cloud](https://gardener.cloud/).
 
 ## Variables
-
 
 | Name                                                          | Mandatory | Description                                                                                                                                                                                  |
 | ------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
