@@ -82,14 +82,14 @@ class CloudProfileTemplate(unittest.TestCase):
                     },
                 },
             },
-            "gardener_os_cri_mapping": {
+            "gardener_cloud_profile_os_cri_mapping": {
                 "ubuntu": {
                     "when": None,
                     "cris": [{"name": "containerd"}],
                     "containerRuntimes": [],
                 },
             },
-            "gardener_os_compatibility_mapping": {},
+            "gardener_cloud_profile_os_compatibility_mapping": {},
         })
 
         templar.environment.filters["machine_images_for_cloud_profile"] = machine_images_for_cloud_profile
