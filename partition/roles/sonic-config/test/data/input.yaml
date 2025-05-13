@@ -76,10 +76,5 @@ sonic_config_interconnects:
 
 sonic_config_loopback_address: 10.0.0.1
 
-sonic_config_vteps:
-  - vlan: Vlan1001
-    vni: 46
-  - vlan: Vlan1002
-    vni: 64
-  - vlan: Vlan1003
-    vni: 65
+sonic_config_vtep:
+  enabled: true
