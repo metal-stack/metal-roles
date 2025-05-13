@@ -483,11 +483,17 @@ sonic_config_vlans:
     # The VRF to bind to this VLAN.
     vrf: # Vrf45
 
-# VTEPs to configure. If defined FRR will automatically advertise all VNIs.
-sonic_config_vteps:
-  # The global VNI within the CLOS topology.
-  - vni: 45
+# VTEP configuration.
+sonic_config_vtep:
+  # If enabled FRR will automatically advertise all VNIs.
+  # Also, EVPN NVO and VTEP with loopback as the source address will be configured.
+  enabled: # true
 
-    # The local VLAN interface.
-    vlan: Vlan1001
+  # Creates a mapping from local VLAN interfaces to global VNIs.
+  vxlan_tunnel_maps:
+    # The global VNI within the CLOS topology.
+    - vni: # 45
+
+      # The local VLAN interface.
+      vlan: # Vlan1001
 ```

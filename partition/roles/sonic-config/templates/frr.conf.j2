@@ -83,7 +83,7 @@ router bgp {{ sonic_config_asn }}
  !
 {% if sonic_config_frr_l2vpn_evpn %}
  address-family l2vpn evpn
-{% if sonic_config_vteps %}
+{% if sonic_config_vtep.enabled|default(false) %}
   advertise-all-vni
 {% endif %}
   neighbor FABRIC activate
