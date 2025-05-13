@@ -20,7 +20,7 @@ Some of our deployments require a DHCP relay agent on the switch which relays PX
 From version 202111.6 to version 202111.7 some change in the dhcp_relay broke the relay's ability to forward PXE boot OFFER messages from the server back to the client.
 This bug was fixed in version 202111.11.
 
-## Migration from the Deprecated sonic Role
+## Migration from the Deprecated `sonic` Role
 
 Most of the variables have the same name, meaning and structure as the correspondig ones in the sonic role.
 So in most cases simply adding `_config` to the variable name is enough, e.g. `sonic_interconnects` becomes `sonic_config_interconnects`.
