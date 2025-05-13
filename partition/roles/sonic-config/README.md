@@ -428,7 +428,7 @@ sonic_config_ports:
       # The VRF the port is bound to.
       vrf: # Vrf46
 
-# Whehter a `config reload` should be triggered. If `false` a simple `config load` will be
+# Whether a `config reload` should be triggered. If `false` a simple `config load` will be
 # performed. Keep in mind that a config reload is a disruptive process.
 # Active connections will be interrupted and it may take up to several minutes for the
 # switch to come back up.
