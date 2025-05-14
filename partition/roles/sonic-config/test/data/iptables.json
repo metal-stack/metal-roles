@@ -1,0 +1,14 @@
+{
+  "ipv4": [
+    "-A INPUT -s 1.2.3.4/32 -p tcp -m tcp --dport 2112 -j ACCEPT",
+    "-A INPUT -s 1.2.3.5/32 -p tcp -m tcp --dport 9080 -j ACCEPT",
+    "-A INPUT -s 1.2.3.6/32 -p tcp -m tcp --dport 9100 -j ACCEPT",
+    "-A INPUT -s 1.2.3.7/32 -p tcp -m tcp --dport 9342 -j ACCEPT"
+  ],
+  "ipv6": [
+    "-A INPUT -s 2001:db8::1/128 -p tcp -m tcp --dport 2112 -j ACCEPT",
+    "-A INPUT -s 2001:db8:1::1/128 -p tcp -m tcp --dport 9080 -j ACCEPT",
+    "-A INPUT -s 2001:db8:2::1/128 -p tcp -m tcp --dport 9100 -j ACCEPT",
+    "-A INPUT -s 2001:db8:3::1/128 -p tcp -m tcp --dport 9342 -j ACCEPT"
+  ]
+}

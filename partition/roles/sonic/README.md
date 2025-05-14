@@ -1,5 +1,7 @@
 # sonic
 
+> DEPRECATED: This role is deprecated and replaced by the [sonic-config role](/partition/roles/sonic-config/README.md).
+
 Deploys a SONiC switch. It can run on all switches inside the network topology, i.e. spines, exits, leaves. It is supposed to run on Edgecore SONiC switches.
 
 It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
