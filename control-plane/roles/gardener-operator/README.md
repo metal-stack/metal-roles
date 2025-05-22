@@ -6,6 +6,8 @@ Please refer to the metal-stack gardener integration in our [documentation](http
 
 Check out the Gardener project for further documentation on [gardener.cloud](https://gardener.cloud/).
 
+##
+
 ## Variables
 
 | Name                                                          | Mandatory | Description                                                                                                                                                                                  |
@@ -23,7 +25,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_operator_ingress_dns_domain                          | true      | The domain on which the ingress-nginx (i.e. monitoring) is exposed                                                                                                                           |
 | gardener_operator_virtual_garden_public_dns                   |           | The domain on which the virtual garden istio ingress is exposed                                                                                                                              |
 | gardener_operator_virtual_garden_etcd_storage_class           |           | The storage class used by the virtual garden etcd                                                                                                                                            |
-| gardener_operator_virtual_garden_kubernetes_version           |           | The kubernetes version of the virtual garden                                                                                                                                                 |
+| gardener_virtual_garden_api_server_version                    |           | The kubernetes version of the virtual garden                                                                                                                                                 |
 | gardener_operator_virtual_garden_oidc_issuer_url              |           | [Corresponds to the `--oidc-issuer-url` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-issuer-url) in the Kubernetes API server configuration.           |
 | gardener_operator_virtual_garden_oidc_client_id               |           | [Corresponds to the `--oidc-client-id` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-client-id) in the Kubernetes API server configuration.             |
 | gardener_operator_virtual_garden_oidc_username_claim          |           | [Corresponds to the `--oidc-username-claim` flag](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#oidc-username-claim) in the Kubernetes API server configuration.   |
