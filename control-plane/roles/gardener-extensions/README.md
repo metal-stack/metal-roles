@@ -8,6 +8,31 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ## Variables
 
+### gardener-extension-acl
+
+| Name                                                        | Mandatory | Description                                                                                             |
+| ----------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| gardener_extension_acl_enabled                              |           | If enabled, deploys the extension                                                                       |
+| gardener_extension_acl_helm_chart                           |           | The ref to the helm oci artifact to deploy this extension                                               |
+| gardener_extension_admission_acl_helm_chart_runtime         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
+| gardener_extension_admission_acl_helm_chart_application     |           | The ref to the helm oci artifact to deploy this extension's admission controller in the virtual garden  |
+| gardener_extension_acl_helm_chart_tag                       |           | The tag of the helm oci artifact to deploy this extension                                               |
+| gardener_extension_admission_acl_helm_chart_runtime_tag     |           | The tag of the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
+| gardener_extension_admission_acl_helm_chart_application_tag |           | The tag of the helm oci artifact to deploy this extension's admission controller in the virtual garden  |
+| gardener_extension_acl_image_name                           |           | Setting an explicit image name for the gardener-extension-acl                                           |
+| gardener_extension_acl_image_tag                            |           | Setting an explicit image tag for the gardener-extensionacl                                             |
+| gardener_extension_acl_additional_allowed_cidrs             |           | Additional allowed CIDRs to add when the extension gets enabled on a kube-apiserver                     |
+
+### gardener-extension-audit
+
+| Name                                    | Mandatory | Description                                                     |
+| --------------------------------------- | --------- | --------------------------------------------------------------- |
+| gardener_extension_audit_enabled        |           | If enabled, deploys the extension                               |
+| gardener_extension_audit_helm_chart     |           | The ref to the helm oci artifact to deploy this extension       |
+| gardener_extension_audit_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension       |
+| gardener_extension_audit_image_name     |           | Setting an explicit image name for the gardener-extension-audit |
+| gardener_extension_audit_image_tag      |           | Setting an explicit image tag for the gardener-extension-audit  |
+
 ### gardener-extension-backup-s3
 
 | Name                                        | Mandatory | Description                                                         |

@@ -57,6 +57,8 @@
     apply: yes
   when: lookup('vars', 'gardener_extension_' + item  | regex_replace('-', '_') + '_enabled')
   loop:
+    - acl
+    - audit
     - backup-s3
     - csi-driver-lvm
     - dns-powerdns
