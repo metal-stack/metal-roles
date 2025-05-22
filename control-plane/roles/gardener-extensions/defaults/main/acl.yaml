@@ -2,5 +2,7 @@
 gardener_extension_acl_enabled: false
 
 gardener_extension_acl_helm_chart_tag: "{{ gardener_extension_acl_image_tag }}"
+gardener_extension_admission_acl_helm_chart_application_tag: "{{ gardener_extension_acl_image_tag }}"
+gardener_extension_admission_acl_helm_chart_runtime_tag: "{{ gardener_extension_acl_image_tag }}"
 
 gardener_extension_acl_additional_allowed_cidrs: []
