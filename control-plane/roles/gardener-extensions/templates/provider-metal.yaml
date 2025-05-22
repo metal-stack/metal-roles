@@ -16,11 +16,11 @@ spec:
       runtimeCluster:
         helm:
           ociRepository:
-            ref: "{{ gardener_extension_admission_metal_helm_chart_runtime }}"
+            ref: "{{ gardener_extension_admission_metal_helm_chart_runtime }}:{{ gardener_extension_admission_metal_helm_chart_runtime_tag }}"
       virtualCluster:
         helm:
           ociRepository:
-            ref: "{{ gardener_extension_admission_metal_helm_chart_application }}"
+            ref: "{{ gardener_extension_admission_metal_helm_chart_application }}:{{ gardener_extension_admission_metal_helm_chart_application_tag }}"
       values:
         image:
           repository: "{{ gardener_extension_provider_metal_image_name }}"
@@ -35,7 +35,7 @@ spec:
       policy: Always
       helm:
         ociRepository:
-          ref: "{{ gardener_extension_provider_metal_helm_chart }}"
+          ref: "{{ gardener_extension_provider_metal_helm_chart }}:{{ gardener_extension_provider_metal_helm_chart_tag }}"
       runtimeClusterValues: {}
       values:
         image:

@@ -13,11 +13,11 @@ spec:
       runtimeCluster:
         helm:
           ociRepository:
-            ref: "{{ gardener_extension_admission_shoot_dns_service_helm_chart_runtime }}"
+            ref: "{{ gardener_extension_admission_shoot_dns_service_helm_chart_runtime }}:{{ gardener_extension_admission_shoot_dns_service_helm_chart_runtime_tag }}"
       virtualCluster:
         helm:
           ociRepository:
-            ref: "{{ gardener_extension_admission_shoot_dns_service_helm_chart_application }}"
+            ref: "{{ gardener_extension_admission_shoot_dns_service_helm_chart_application }}:{{ gardener_extension_admission_shoot_dns_service_helm_chart_application_tag }}"
       values:
         image:
           tag: "{{ gardener_extension_shoot_dns_service_image_tag }}"
@@ -26,7 +26,7 @@ spec:
       policy: Always
       helm:
           ociRepository:
-            ref: "{{ gardener_extension_shoot_dns_service_helm_chart }}"
+            ref: "{{ gardener_extension_shoot_dns_service_helm_chart }}:{{ gardener_extension_shoot_dns_service_helm_chart_tag }}"
       values:
         image:
           repository: "{{ gardener_extension_shoot_dns_service_image_name }}"

@@ -1,4 +1,6 @@
 ---
 gardener_extension_dns_powerdns_enabled: false
 
+gardener_extension_dns_powerdns_helm_chart_tag: "{{ gardener_extension_dns_powerdns_image_tag }}"
+
 gardener_extension_dns_powerdns_additional_network_policies: false

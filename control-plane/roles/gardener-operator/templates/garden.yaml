@@ -87,7 +87,7 @@ spec:
           className: {{ gardener_operator_virtual_garden_etcd_storage_class }}
 {% endif %}
     kubernetes:
-      version: {{ gardener_operator_virtual_garden_kubernetes_version }}
+      version: {{ gardener_virtual_garden_api_server_version }}
     kubeAPIServer:
     #   eventTTL: 1h
     #   featureGates:

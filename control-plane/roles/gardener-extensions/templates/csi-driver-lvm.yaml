@@ -12,7 +12,7 @@ spec:
       policy: Always
       helm:
           ociRepository:
-            ref: "{{ gardener_extension_csi_driver_lvm_helm_chart }}"
+            ref: "{{ gardener_extension_csi_driver_lvm_helm_chart }}:{{ gardener_extension_csi_driver_lvm_helm_chart_tag }}"
       values:
         image:
           repository: "{{ gardener_extension_csi_driver_lvm_image_name }}"

@@ -12,7 +12,7 @@ spec:
       networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
     helm:
       ociRepository:
-        ref: "{{ gardener_gardenlet_helm_chart }}"
+        ref: "{{ gardener_gardenlet_helm_chart }}:{{ gardener_gardenlet_helm_chart_tag }}"
 {% if _config.image_vector_overwrite %}
     imageVectorOverwrite: |
       images:

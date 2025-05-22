@@ -1,6 +1,8 @@
 ---
 gardener_gardenlet_garden_name: "{{ metal_control_plane_stage_name }}"
 
+gardener_gardenlet_helm_chart_tag: "{{ gardener_gardenlet_image_tag }}"
+
 gardener_gardenlet_default_dns_domain:
 gardener_gardenlet_default_dns_provider:
 gardener_gardenlet_default_dns_credentials:

@@ -14,7 +14,7 @@ spec:
       policy: Always
       helm:
         ociRepository:
-          ref: "{{ gardener_extension_backup_s3_helm_chart }}"
+          ref: "{{ gardener_extension_backup_s3_helm_chart }}:{{ gardener_extension_backup_s3_helm_chart_tag }}"
       values:
         image:
           repository: "{{ gardener_extension_backup_s3_image_name }}"

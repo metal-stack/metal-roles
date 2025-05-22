@@ -1,6 +1,10 @@
 ---
 gardener_extension_provider_metal_enabled: true
 
+gardener_extension_provider_metal_helm_chart_tag: "{{ gardener_extension_provider_metal_image_tag }}"
+gardener_extension_admission_metal_helm_chart_runtime_tag: "{{ gardener_extension_provider_metal_image_tag }}"
+gardener_extension_admission_metal_helm_chart_application_tag: "{{ gardener_extension_provider_metal_image_tag }}"
+
 gardener_extension_provider_metal_admission_replicas: 1
 gardener_extension_provider_metal_admission_vpa: true
 

@@ -1,6 +1,10 @@
 ---
 gardener_extension_shoot_dns_service_enabled: true
 
+gardener_extension_shoot_dns_service_helm_chart_tag: "{{ gardener_extension_shoot_dns_service_image_tag }}"
+gardener_extension_admission_shoot_dns_service_helm_chart_application_tag: "{{ gardener_extension_shoot_dns_service_image_tag }}"
+gardener_extension_admission_shoot_dns_service_helm_chart_runtime_tag: "{{ gardener_extension_shoot_dns_service_image_tag }}"
+
 gardener_shoot_dns_service_image_vector_overwrite: []
   # - name: dns-controller-manager
   #   sourceRepository: github.com/gardener/external-dns-management

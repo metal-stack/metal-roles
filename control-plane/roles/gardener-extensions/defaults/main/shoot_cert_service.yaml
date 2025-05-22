@@ -1,6 +1,8 @@
 ---
 gardener_extension_shoot_cert_service_enabled: true
 
+gardener_extension_shoot_cert_service_helm_chart_tag: "{{ gardener_extension_shoot_cert_service_image_tag }}"
+
 gardener_extension_shoot_cert_service_issuer_private_key: ""
 gardener_extension_shoot_cert_service_issuer_server: https://acme-v02.api.letsencrypt.org/directory
 gardener_extension_shoot_cert_service_issuer_email:

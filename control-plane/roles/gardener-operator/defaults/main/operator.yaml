@@ -33,6 +33,3 @@ gardener_operator_dns_providers: []
 gardener_operator_high_availability_control_plane: true
 
 gardener_operator_garden_name: "{{ metal_control_plane_stage_name }}"
-
-# TODO: deprecate old variable and use new one in release vector:
-gardener_operator_virtual_garden_kubernetes_version: "{{ gardener_virtual_api_server_image_tag }}"
