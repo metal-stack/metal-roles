@@ -15,7 +15,6 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_cloud_profile_wait_until_available                |           | If set to true, waits for the cloud profile resource to be registered in the virtual garden (helpful for initial bootstrapping) |
 | gardener_cloud_profile_stage_name                          |           | The name of the metal control plane in the cloud profile                                                                        |
 | gardener_cloud_profile_metal_api_url                       |           | The URL used by the Gardener to communicate with the metal-api                                                                  |
-| gardener_cloud_profile_metal_api_hmac                      | yes       | The admin HMAC used by the Gardener to communicate with the metal-api                                                           |
 | gardener_cloud_profile_machine_images                      |           | The machine images available for shoots in the metal-api                                                                        |
 | gardener_cloud_profile_firewall_images                     |           | The firewall images available for shoots in the metal-api                                                                       |
 | gardener_cloud_profile_firewall_images_from_machine_images |           | If set to true, uses the passed machine images and adds those with firewall feature                                             |

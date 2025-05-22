@@ -1,11 +1,4 @@
 ---
-- name: Check mandatory variables for this role are set
-  assert:
-    fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
-    that:
-      - gardener_cloud_profile_metal_api_hmac is not none
-
 - name: Check deprecated variables are used
   fail:
     msg: "the variable {{ item.old }} was renamed to {{ item.new }}, please migrate and remove the old variable"

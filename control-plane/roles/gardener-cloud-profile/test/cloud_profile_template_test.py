@@ -39,7 +39,6 @@ class CloudProfileTemplate(unittest.TestCase):
         templar = Templar(loader=None, variables={
             "gardener_cloud_profile_stage_name": "prod",
             "gardener_cloud_profile_metal_api_url": "https://metal-api",
-            "gardener_cloud_profile_metal_api_hmac": "hmac",
             "gardener_cloud_profile_machine_images": [
                 {
                     "id": "ubuntu-20.04.20210131",
