@@ -1,13 +1,9 @@
-import os
 import unittest
 from textwrap import dedent
 
 from ansible.template import Templar
 
-
-def read_template_file(name):
-    with open(os.path.join(os.path.dirname(__file__), "..", "templates", name), 'r') as f:
-        return f.read()
+from test import read_template_file
 
 
 class DHCPD(unittest.TestCase):
@@ -39,12 +35,12 @@ class DHCPD(unittest.TestCase):
         self.assertEqual(dedent("""\
         # indicate that the DHCP server should send DHCPNAK messages to misconfigured client
         authoritative;
-        
+
         default-lease-time 600;
         max-lease-time 600;
-        
+
         log-facility local7;
-        
+
         # testing
         subnet 1.2.3.4 netmask 24 {
           range 1 2;
@@ -82,11 +78,11 @@ class DHCPD(unittest.TestCase):
           fixed-address 10.1.2.1;
           option test1;
         }
-        
+
         host test2 {
           hardware ethernet aa:bb:cc:dd:ee:ff;
           fixed-address 10.1.2.2;
           option test2;
         }
-        
+
         """), result)

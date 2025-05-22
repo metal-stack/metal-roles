@@ -1,0 +1,10 @@
+---
+- name: restart caclmgrd
+  systemd:
+    name: caclmgrd
+    state: restarted
+
+- name: restart bgp
+  systemd:
+    name: bgp
+    state: restarted
