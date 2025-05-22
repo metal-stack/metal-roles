@@ -19,8 +19,9 @@ spec:
             ref: "{{ gardener_extension_admission_acl_helm_chart_application }}:{{ gardener_extension_admission_acl_helm_chart_application_tag }}"
       values:
         image:
-          image: {{ gardener_extension_acl_image_name }}:{{ gardener_extension_acl_image_tag }}
-          imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+          repository: {{ gardener_extension_acl_image_name }}
+          tag: {{ gardener_extension_acl_image_tag }}
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
     extension:
       policy: Always
       helm:
@@ -28,10 +29,12 @@ spec:
           ref: "{{ gardener_extension_acl_helm_chart }}:{{ gardener_extension_acl_helm_chart_tag }}"
       values:
         image:
-          image: {{ gardener_extension_acl_image_name }}:{{ gardener_extension_acl_image_tag }}
-          imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
-          additionalAllowedCidrs: {{ gardener_extension_acl_additional_allowed_cidrs | to_json }}
+          repository: {{ gardener_extension_acl_image_name }}
+          tag: {{ gardener_extension_acl_image_tag }}
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+        additionalAllowedCidrs: {{ gardener_extension_acl_additional_allowed_cidrs | to_json }}
       runtimeClusterValues:
         image:
-          image: {{ gardener_extension_acl_image_name }}:{{ gardener_extension_acl_image_tag }}
-          imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+          repository: {{ gardener_extension_acl_image_name }}
+          tag: {{ gardener_extension_acl_image_tag }}
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
