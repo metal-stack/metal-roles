@@ -270,6 +270,31 @@ sonic_config_interconnects:
     # Use specific BGP timer values for the BGP session with the remote party.
     bgp_timers: 1 3
 
+    # Connect to these BGP neighbors - supports multiple neighbors with individual routemaps.
+    extended_neighbors:
+      # The IP of this extended neighbor.
+      - ip: 10.1.1.1
+
+        # Apply an incoming routemap to this neighbor.
+        routemap_in:
+          # Name of the routemap.
+          name: ALLOW-INTERNET-2-IN
+
+          # List of routemap entries.
+          entries:
+            - match ip address prefix-list INTERNET_PREFIX_IN
+            - set as-path prepend last-as 2
+
+        # Apply an outgoing routemap to this neighbor.
+        routemap_out:
+          # Name of the routemap.
+          name: ALLOW-INTERNET-2-OUT
+
+          # List of routemap entries.
+          entries:
+            - match ip address prefix-list INTERNET_PREFIX_OUT
+            - set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}
+
     # Whether the peer should take part in evpn routing (address-family l2vpn evpn).
     evpn_peer: true
 
@@ -468,6 +493,21 @@ sonic_config_ssh_sourceranges:
 
 # The switch's timezone.
 sonic_config_timezone: Europe/Berlin
+
+# Sub-interfaces on a port with .1q VLAN tag. For sub-interfaces where there is no
+# local VLAN on the switch.
+sonic_config_vlan_subinterfaces:
+  # The IP/prefixlength CIDR of the sub-interface.
+  - cidr: 1.2.3.0/24
+
+    # The parent port.
+    port: Ethernet0
+
+    # The .1q VLAN tag for this sub-interface.
+    vlan: 1000
+
+    # If defined, the VRF that this sub-interface will be bound to.
+    vrf: Vrf42
 
 # VLANs to configure on the switch.
 sonic_config_vlans:
