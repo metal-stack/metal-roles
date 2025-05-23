@@ -494,19 +494,19 @@ sonic_config_ssh_sourceranges:
 # The switch's timezone.
 sonic_config_timezone: Europe/Berlin
 
-# Sub-interfaces on a port with .1q VLAN tag. For sub-interfaces where there is no
+# Subinterfaces on a port with .1q VLAN tag. For subinterfaces where there is no
 # local VLAN on the switch.
 sonic_config_vlan_subinterfaces:
-  # The IP/prefixlength CIDR of the sub-interface.
+  # The IP/prefixlength CIDR of the subinterface.
   - cidr: 1.2.3.0/24
 
     # The parent port.
     port: Ethernet0
 
-    # The .1q VLAN tag for this sub-interface.
+    # The .1q VLAN tag for this subinterface.
     vlan: 1000
 
-    # If defined, the VRF that this sub-interface will be bound to.
+    # If defined, the VRF that this subinterface will be bound to.
     vrf: Vrf42
 
 # VLANs to configure on the switch.
