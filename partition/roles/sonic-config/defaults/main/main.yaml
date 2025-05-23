@@ -5,7 +5,7 @@ sonic_config_features: {}
 
 sonic_config_frr_l2vpn_evpn: false
 sonic_config_frr_mgmt_framework_config: true
-sonic_config_frr_render: false
+sonic_config_frr_render: true
 sonic_config_frr_route_map: {}
 sonic_config_frr_static_routes: []
 sonic_config_frr_static_routes_mgmt: []
