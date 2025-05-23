@@ -19,9 +19,9 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_cloud_profile_firewall_images                     |           | The firewall images available for shoots in the metal-api                                                                       |
 | gardener_cloud_profile_firewall_images_from_machine_images |           | If set to true, uses the passed machine images and adds those with firewall feature                                             |
 | gardener_cloud_profile_firewall_controller_versions        |           | The available firewall controller versions for metal-stack shoots                                                               |
-| gardener_cloud_profile_kubernetes                          |           | The available Kubernetes versions for metal-stack shoots                                                                        |
+| gardener_cloud_profile_kubernetes                          | yes       | The available Kubernetes versions for metal-stack shoots                                                                        |
 | gardener_cloud_profile_machine_types                       |           | The machine types available for shoots in the metal-api                                                                         |
-| gardener_cloud_profile_regions                             |           | The regions available for shoots                                                                                                |
+| gardener_cloud_profile_regions                             | yes       | The regions available for shoots                                                                                                |
 | gardener_cloud_profile_partitions                          |           | The partitions available for shoots                                                                                             |
 | gardener_cloud_profile_os_cri_mapping                      |           | A mapping to add available CRIs to the machine images                                                                           |
 | gardener_cloud_profile_os_compatibility_mapping            |           | A mapping to add kubelet version constraints to the machine images                                                              |
