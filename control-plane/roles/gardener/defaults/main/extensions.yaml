@@ -36,10 +36,6 @@ gardener_extension_provider_metal_etcd_storage_class_name:
 gardener_extension_provider_metal_etcd_backup_schedule: "0 */2 * * *"
 gardener_extension_provider_metal_etcd_delta_snapshot_period: "5m"
 
-gardener_extension_provider_metal_internal_networks:
-  - 10.0.0.0/8
-  - 100.64.0.0/10
-
 gardener_extension_provider_metal_egress_destinations: []
 
 gardener_extension_provider_metal_duros_storage_enabled: false
