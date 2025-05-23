@@ -15,9 +15,6 @@
       - sonic_config_asn is defined
   when: sonic_config_frr_render
 
-- name: Generate config_db.json
-  import_tasks: generate_config_db.yaml
-
 - name: Render resolv.conf
   template:
     src: resolv.conf.j2
@@ -42,6 +39,9 @@
   when: sonic_config_extended_cacl is defined
   notify:
     - restart caclmgrd
+
+- name: Generate config_db.json
+  import_tasks: generate_config_db.yaml
 
 - name: Flush handlers
   meta: flush_handlers
