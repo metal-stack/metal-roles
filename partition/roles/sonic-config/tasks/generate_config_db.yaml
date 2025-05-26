@@ -19,7 +19,9 @@
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
-    image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
+    # FIX: only temporary
+    # image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
+    image: sonic-configdb-utils:latest
     pull: true
     detach: false
     cleanup: true
