@@ -24,3 +24,4 @@
       - "/usr/bin/docker:/usr/bin/docker"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/usr/bin/ntpq:/usr/bin/ntpq"
+    systemd_docker_log_driver: "{{ sonic_exporter_docker_log_driver }}"

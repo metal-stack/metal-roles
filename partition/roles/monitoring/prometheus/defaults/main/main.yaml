@@ -1,5 +1,6 @@
 ---
 prometheus_port: 9090
+prometheus_docker_log_driver: json-file
 
 prometheus_config_host_dir: /etc/prometheus
 prometheus_data_host_dir: /var/lib//prometheus
