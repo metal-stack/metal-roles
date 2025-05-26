@@ -1,4 +1,15 @@
 ---
+- name: Retrieve device metadta from running configuration
+  block:
+    - name: Get current config
+      command: show runningconfiguration all
+      register: sonic_config_current_config
+      changed_when: false
+
+    - name: Get metadata
+      set_fact:
+        sonic_config_device_metadata: "{{ sonic_config_current_config['DEVICE_METADATA']['localhost'] }}"
+
 - name: Create temporary directory
   file:
     path: /tmp/sonic
