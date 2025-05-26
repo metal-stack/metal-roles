@@ -22,7 +22,7 @@
     # FIX: only temporary
     # image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
     image: sonic-configdb-utils:latest
-    pull: true
+    # pull: true
     detach: false
     cleanup: true
     command: generate
