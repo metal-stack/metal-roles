@@ -3,6 +3,7 @@ pixiecore_dns_servers: []
 pixiecore_partition_id: "{{ metal_partition_id }}"
 pixiecore_debug: false
 pixiecore_api_port: 4242
+pixiecore_docker_log_driver: json-file
 
 pixiecore_grpc_address: "{{ metal_partition_metal_api_grpc_address }}"
 pixiecore_grpc_cert_dir: "{{ metal_partition_metal_api_grpc_cert_dir }}"

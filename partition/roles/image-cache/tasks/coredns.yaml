@@ -36,3 +36,4 @@
     systemd_docker_command:
       - -conf
       - /root/Corefile
+    systemd_docker_log_driver: "{{ image_cache_coredns_docker_log_driver }}"

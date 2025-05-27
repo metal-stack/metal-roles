@@ -144,6 +144,7 @@
       - --storage.tsdb.no-lockfile
       - --storage.tsdb.min-block-duration=2h
       - --storage.tsdb.max-block-duration=2h
+    systemd_docker_log_driver: "{{ prometheus_docker_log_driver }}"
 
 - name: wait for prometheus to listen on port
   wait_for:

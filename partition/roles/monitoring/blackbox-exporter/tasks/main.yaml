@@ -30,6 +30,7 @@
       - "{{ monitoring_blackbox_exporter_etc_host_dir }}:/config/"
     systemd_docker_command:
       - --config.file=/config/config.yml --web.listen-address=":{{ monitoring_blackbox_exporter_port }}"
+    systemd_docker_log_driver: "{{ monitoring_blackbox_exporter_docker_log_driver }}"
 
 - name: wait for blackbox_exporter to listen on port
   wait_for:

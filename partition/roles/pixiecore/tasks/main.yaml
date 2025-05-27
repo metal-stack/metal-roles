@@ -76,3 +76,4 @@
     # This enables to use an existing DHCP server
     systemd_docker_command: "{{ lookup('template', 'pixie-cmd.j2') | from_yaml }}"
     systemd_external_config_changed: "{{ grpc_certs is changed }}"
+    systemd_docker_log_driver: "{{ pixiecore_docker_log_driver }}"
