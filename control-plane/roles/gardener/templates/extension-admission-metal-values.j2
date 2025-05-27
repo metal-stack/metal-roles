@@ -1,15 +1,16 @@
-global:
-  image:
-    repository: "{{ gardener_extension_provider_metal_image_name }}"
-    tag: "{{ gardener_extension_provider_metal_image_tag }}"
-    pullPolicy: {{ metal_control_plane_image_pull_policy }}
-  webhookConfig:
-    serverPort: 443
-  kubeconfig: |
-    {{ gardener_kube_api_server_kubeconfig | indent(width=4, first=false) }}
-  virtualGarden:
-    enabled: true
-  replicaCount: {{ gardener_metal_admission_replicas }}
-  resources: {}
-  vpa:
-    enabled: {{ gardener_metal_admission_vpa }}
+image:
+  repository: "{{ gardener_extension_provider_metal_image_name }}"
+  tag: "{{ gardener_extension_provider_metal_image_tag }}"
+  pullPolicy: {{ metal_control_plane_image_pull_policy }}
+webhookConfig:
+  serverPort: 443
+kubeconfig: |
+  {{ gardener_kube_api_server_kubeconfig | indent(width=2, first=false) }}
+gardener:
+  virtualCluster:
+    # enabling this only works for gardener operator
+    enabled: false
+replicaCount: {{ gardener_metal_admission_replicas }}
+resources: {}
+vpa:
+  enabled: {{ gardener_metal_admission_vpa }}
