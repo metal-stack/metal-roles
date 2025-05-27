@@ -50,7 +50,13 @@
     content: "{{ logging_gardener_virtual_garden_kubeconfig | b64decode }}"
   when: logging_gardener_enabled
 
-- name: Loop over Gardener seeds
+- name: Extract seed names into a new list so name can be the item in the next loop
+  set_fact:
+    gardener_seed_names: "{{ gardener_shooted_seeds | map(attribute='name') | list }}"
+
+- name:  Loop over Gardener seeds
   include_tasks: gardener-seed.yaml
-  loop: "{{ logging_gardener_seeds }}"
+  loop: "{{ gardener_seed_names }}"
+  loop_control:
+    label: "{{ item }}"
   when: logging_gardener_enabled
