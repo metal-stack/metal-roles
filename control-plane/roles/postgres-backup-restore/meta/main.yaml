@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: monitoring
+  role_name: postgres-backup-restore
   author: metal-stack
-  description: Deploys a monitoring stack for the metal-stack control plane.
+  description: Deploys a postgres database including the backup-restore-sidecar container.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []

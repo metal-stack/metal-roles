@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: monitoring
+  role_name: isolated-clusters
   author: metal-stack
-  description: Deploys a monitoring stack for the metal-stack control plane.
+  description: Deploys additional services for the isolated cluster feature.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []

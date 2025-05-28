@@ -8,7 +8,7 @@ This role can deploy on switches running Cumulus Linux or SONiC. It depends on t
 
 This role uses variables from [partition-defaults](/partition). So, make sure you define them adequately as well.
 
-You can look up all the default values of this role [here](defaults/main/main.yaml).
+You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                                      | Mandatory | Description                                                                                                                                                                |
 | ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

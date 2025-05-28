@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: monitoring
+  role_name: headscale
   author: metal-stack
-  description: Deploys a monitoring stack for the metal-stack control plane.
+  description: Deploys headscalee for the metal-stack firewall VPN.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []

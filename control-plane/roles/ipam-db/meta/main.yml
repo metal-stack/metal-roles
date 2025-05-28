@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: monitoring
+  role_name: ipam-db
   author: metal-stack
-  description: Deploys a monitoring stack for the metal-stack control plane.
+  description: Deploys an ipam database for the go-ipam.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []

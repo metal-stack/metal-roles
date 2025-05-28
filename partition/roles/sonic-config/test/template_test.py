@@ -22,7 +22,7 @@ def read_file(f):
 class SonicConfigRoleTemplates(unittest.TestCase):
     def test_sonic_config_role_templates(self):
         self.maxDiff = None
-        defaults = read_yaml('../defaults/main/main.yaml')
+        defaults = read_yaml('../defaults/main.yaml')
         frr_t = read_template_file('frr.conf.j2')
         iptables_t = read_template_file('iptables.json.j2')
 
