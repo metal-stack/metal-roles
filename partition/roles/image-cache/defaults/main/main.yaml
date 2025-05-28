@@ -20,9 +20,11 @@ image_cache_backend_hosts: "{{ play_hosts }}"
 
 # coredns
 image_cache_coredns_host_dir_path: /coredns
+image_cache_coredns_docker_log_driver: json-file
 
 # haproxy
 image_cache_haproxy_host_dir_path: /haproxy
+image_cache_haproxy_docker_log_driver: json-file
 
 # image-sync
 image_cache_sync_max_cache_size: 100G
@@ -38,6 +40,7 @@ image_cache_sync_kernel_port: 9002
 image_cache_sync_boot_image_port: 9003
 image_cache_sync_excludes:
   - "/pull_requests/"
+image_cache_sync_docker_log_driver: json-file
 
 # the backup server must be reachable over https and have a valid certificate
 # you can only have a single fallback server, thus it does not make sense to

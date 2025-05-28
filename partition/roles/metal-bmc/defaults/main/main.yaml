@@ -23,3 +23,4 @@ metal_bmc_console_key:
 
 metal_bmc_additional_volume_mounts: []
 metal_bmc_docker_network:
+metal_bmc_docker_log_driver: json-file

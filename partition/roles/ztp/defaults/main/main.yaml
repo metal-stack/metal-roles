@@ -10,3 +10,5 @@ ztp_port: 8080
 ztp_additional_files: []
 # - name: foo.sh
 #   data: echo
+
+ztp_nginx_docker_log_driver: json-file
