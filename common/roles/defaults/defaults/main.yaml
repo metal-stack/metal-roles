@@ -48,8 +48,6 @@ metal_stack_release:
     masterdata_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     headscale_db_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     headscale_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
-    auditing_meili_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
-    auditing_meili_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     auditing_timescaledb_backup_restore_sidecar_image_tag: "docker-images.metal-stack.generic.backup-restore-sidecar.tag"
     auditing_timescaledb_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     # gardener
@@ -104,8 +102,6 @@ metal_stack_release:
     headscale_image_name: "docker-images.third-party.control-plane.headscale.name"
     headscale_db_image_tag: "docker-images.third-party.control-plane.headscale-db.tag"
     headscale_db_image_name: "docker-images.third-party.control-plane.headscale-db.name"
-    auditing_meili_image_name: "docker-images.third-party.control-plane.meilisearch.name"
-    auditing_meili_image_tag: "docker-images.third-party.control-plane.meilisearch.tag"
     auditing_timescaledb_image_name: "docker-images.third-party.control-plane.timescaledb.name"
     auditing_timescaledb_image_tag: "docker-images.third-party.control-plane.timescaledb.tag"
     image_cache_coredns_image_tag: "docker-images.third-party.partition.image-cache-coredns.tag"
