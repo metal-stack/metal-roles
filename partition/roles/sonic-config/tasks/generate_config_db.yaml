@@ -3,12 +3,16 @@
   block:
     - name: Get current config
       command: show runningconfiguration all
-      register: sonic_config_current_config
+      register: sonic_config_current_config_result
       changed_when: false
+
+    - name: Parse current config
+      set_fact:
+        sonic_config_current_config: "{{ sonic_config_current_config_result.stdout | from_json }}"
 
     - name: Get metadata
       set_fact:
-        sonic_config_device_metadata: "{{ sonic_config_current_config.stdout.DEVICE_METADATA.localhost }}"
+        sonic_config_device_metadata: "{{ sonic_config_current_config | community.general.json_query('DEVICE_METADATA.localhost') }}"
 
 - name: Create temporary directory
   file:
