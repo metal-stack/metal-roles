@@ -1,0 +1,6 @@
+---
+gardener_extension_provider_gcp_enabled: true
+
+gardener_extension_provider_gcp_helm_chart_tag: "{{ gardener_extension_provider_gcp_image_tag }}"
+gardener_extension_admission_gcp_helm_chart_runtime_tag: "{{ gardener_extension_provider_gcp_image_tag }}"
+gardener_extension_admission_gcp_helm_chart_application_tag: "{{ gardener_extension_provider_gcp_image_tag }}"

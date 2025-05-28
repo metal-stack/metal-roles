@@ -1,0 +1,31 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: networking-calico
+spec:
+  resources:
+  - kind: Network
+    type: calico
+  deployment:
+    admission:
+      runtimeCluster:
+        helm:
+          ociRepository:
+            ref: "{{ gardener_extension_admission_calico_helm_chart_runtime }}:{{ gardener_extension_admission_calico_helm_chart_runtime_tag }}"
+      virtualCluster:
+        helm:
+          ociRepository:
+            ref: "{{ gardener_extension_admission_calico_helm_chart_application }}:{{ gardener_extension_admission_calico_helm_chart_application_tag }}"
+      values: {}
+    extension:
+      policy: Always
+      helm:
+          ociRepository:
+            ref: "{{ gardener_extension_networking_calico_helm_chart }}:{{ gardener_extension_networking_calico_helm_chart_tag }}"
+      values:
+        image:
+          repository: "{{ gardener_extension_networking_calico_image_name }}"
+          tag: "{{ gardener_extension_networking_calico_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      runtimeClusterValues: {}

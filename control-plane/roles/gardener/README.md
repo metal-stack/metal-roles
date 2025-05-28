@@ -1,5 +1,8 @@
 # gardener
 
+> [!WARNING]
+> This role is deprecated and replaced by the [gardener-operator](../gardener-operator/README.md) role.
+
 Deploys Gardener into a virtual garden along with a dedicated ETCD and a set of extension controllers.
 
 Please refer to the metal-stack gardener integration in
