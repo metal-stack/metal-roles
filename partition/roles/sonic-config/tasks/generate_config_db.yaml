@@ -6,13 +6,9 @@
       register: sonic_config_current_config
       changed_when: false
 
-    - name: Debug
-      debug:
-        msg: "{{ sonic_config_current_config.stdout }}"
-
     - name: Get metadata
       set_fact:
-        sonic_config_device_metadata: "{{ sonic_config_current_config.stdout['DEVICE_METADATA']['localhost'] }}"
+        sonic_config_device_metadata: "{{ sonic_config_current_config.stdout.DEVICE_METADATA.localhost }}"
 
 - name: Create temporary directory
   file:
