@@ -14,7 +14,7 @@ Adding nsqadmin as a sidecar into the nsqd pod was the only reasonable way to ma
 
 This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
 
-You can look up all the default values of this role [here](defaults/main/main.yaml).
+You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                             | Mandatory | Description                                                                                                                        |
 | -------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
