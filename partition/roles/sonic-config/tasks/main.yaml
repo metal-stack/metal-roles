@@ -20,6 +20,9 @@
     src: resolv.conf.j2
     dest: /etc/resolv.conf
 
+- name: Generate config_db.json
+  import_tasks: generate_config_db.yaml
+
 - name: Set NTP timezone
   timezone:
     name: "{{ sonic_config_timezone }}"
@@ -40,8 +43,6 @@
   notify:
     - restart caclmgrd
 
-- name: Generate config_db.json
-  import_tasks: generate_config_db.yaml
 
 - name: Flush handlers
   meta: flush_handlers
