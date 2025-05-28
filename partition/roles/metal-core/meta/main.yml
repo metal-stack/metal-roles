@@ -8,7 +8,10 @@ galaxy_info:
   galaxy_tags: []
 
   platforms:
-    - name: GenericLinux
+    - name: Cumulus
+      versions:
+        - 3
+    - name: SONiC
       versions:
         - all
 
