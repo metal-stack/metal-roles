@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: monitoring
+  role_name: image-cache
   author: metal-stack
-  description: Deploys a monitoring stack for the metal-stack control plane.
+  description: Deploys an image cache to a partition.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
@@ -14,4 +14,4 @@ galaxy_info:
 
 dependencies:
   - role: metal-roles/common/roles/defaults
-  - role: metal-roles/control-plane/roles/defaults
+  - role: metal-roles/partition/roles/defaults

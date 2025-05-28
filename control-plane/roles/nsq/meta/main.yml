@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: monitoring
+  role_name: nsq
   author: metal-stack
-  description: Deploys a monitoring stack for the metal-stack control plane.
+  description: Deploys nsq in a standalone configuration.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
