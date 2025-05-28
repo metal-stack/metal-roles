@@ -43,6 +43,5 @@
   notify:
     - restart caclmgrd
 
-
 - name: Flush handlers
   meta: flush_handlers
