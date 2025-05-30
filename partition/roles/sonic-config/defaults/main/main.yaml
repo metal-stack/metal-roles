@@ -15,6 +15,7 @@ sonic_config_interconnects: {}
 sonic_config_lldp_hello_timer: 10
 sonic_config_mclag: {}
 sonic_config_mgmt_interface: {}
+sonic_config_mgmt_vrf: false
 sonic_config_nameservers: []
 sonic_config_ntp: {}
 sonic_config_portchannels: {}
