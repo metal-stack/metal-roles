@@ -15,13 +15,13 @@
       - sonic_config_asn is defined
   when: sonic_config_frr_render
 
-- name: Generate config_db.json
-  import_tasks: generate_config_db.yaml
-
 - name: Render resolv.conf
   template:
     src: resolv.conf.j2
     dest: /etc/resolv.conf
+
+- name: Generate config_db.json
+  import_tasks: generate_config_db.yaml
 
 - name: Set NTP timezone
   timezone:
