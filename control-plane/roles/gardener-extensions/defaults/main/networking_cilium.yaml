@@ -1,0 +1,12 @@
+---
+gardener_extension_networking_cilium_enabled: true
+
+gardener_extension_networking_cilium_helm_chart_tag: "{{ gardener_extension_networking_cilium_image_tag }}"
+gardener_extension_admission_cilium_helm_chart_runtime_tag: "{{ gardener_extension_networking_cilium_image_tag }}"
+gardener_extension_admission_cilium_helm_chart_application_tag: "{{ gardener_extension_networking_cilium_image_tag }}"
+
+gardener_extension_networking_cilium_image_vector_overwrite: []
+  # - name: <image-name>
+  #   sourceRepository: /source/repository
+  #   repository: /repository
+  #   tag: <tag>

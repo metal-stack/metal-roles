@@ -1,0 +1,4 @@
+---
+gardener_extension_audit_enabled: false
+
+gardener_extension_audit_helm_chart_tag: "{{ gardener_extension_audit_image_tag }}"
