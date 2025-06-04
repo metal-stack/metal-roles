@@ -15,13 +15,13 @@
         sonic_config_device_metadata: "{{ sonic_config_current_config | community.general.json_query('DEVICE_METADATA.localhost') }}"
 
 - name: Create temporary directory
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   file:
     path: /tmp/sonic
     state: directory
 
 - name: Render input values template
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   template:
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
@@ -33,7 +33,7 @@
     flat: true
 
 - name: Run sonic-configdb-utils
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
