@@ -26,6 +26,7 @@
 
 - name: Load and save sonic-configdb-utils image
   become: true
+  delegate_to: localhost
   connection: local
   vars:
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
