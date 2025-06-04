@@ -15,17 +15,17 @@
         sonic_config_device_metadata: "{{ sonic_config_current_config | community.general.json_query('DEVICE_METADATA.localhost') }}"
 
 - name: Create temporary directory
-  connection: local
+  delegate_to: localhost
   vars:
-    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    ansible_connection: local
   file:
     path: /tmp/sonic
     state: directory
 
 - name: Render input values template
-  connection: local
+  delegate_to: localhost
   vars:
-    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    ansible_connection: local
   template:
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
@@ -37,9 +37,9 @@
     flat: true
 
 - name: Run sonic-configdb-utils
-  connection: local
+  delegate_to: localhost
   vars:
-    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    ansible_connection: local
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
