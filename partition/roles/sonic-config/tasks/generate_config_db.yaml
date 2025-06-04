@@ -15,16 +15,25 @@
         sonic_config_device_metadata: "{{ sonic_config_current_config | community.general.json_query('DEVICE_METADATA.localhost') }}"
 
 - name: Create temporary directory
+  delegate_to: 127.0.0.1
   file:
     path: /tmp/sonic
     state: directory
 
 - name: Render input values template
+  delegate_to: 127.0.0.1
   template:
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
+- name: Copy platform.json from switch
+  fetch:
+    src: /usr/share/sonic/device/{{ sonic_config_device_metadata.platform }}/platform.json
+    dest: /tmp/sonic/platform.json
+    flat: true
+
 - name: Run sonic-configdb-utils
+  delegate_to: 127.0.0.1
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
@@ -32,7 +41,7 @@
     cleanup: true
     command: generate
     volumes:
-      - /usr/share/sonic/device:/usr/share/sonic/device:ro
+      - /tmp/sonic:/usr/share/sonic/device/{{ sonic_config_device_metadata.platform }}:ro
       - /tmp/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
@@ -43,7 +52,6 @@
     mode: 0644
     owner: root
     group: root
-    remote_src: true
 
 - name: Reload config if reload is required
   when: sonic_config_reload_config
