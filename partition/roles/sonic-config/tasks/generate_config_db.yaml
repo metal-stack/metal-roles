@@ -15,39 +15,46 @@
         sonic_config_device_metadata: "{{ sonic_config_current_config | community.general.json_query('DEVICE_METADATA.localhost') }}"
 
 - name: Create temporary directory
-  delegate_to: localhost
-  vars:
-    ansible_connection: local
   file:
     path: /tmp/sonic
     state: directory
 
 - name: Render input values template
-  delegate_to: localhost
-  vars:
-    ansible_connection: local
   template:
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
-- name: Copy platform.json from switch
-  fetch:
-    src: /usr/share/sonic/device/{{ sonic_config_device_metadata.platform }}/platform.json
-    dest: /tmp/sonic/platform.json
-    flat: true
+- name: Load and save sonic-configdb-utils image
+  become: true
+  connection: local
+  block:
+    - name: Pull image
+      community.docker.docker_image_pull: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
+
+    - name: Save image
+      command: docker image save "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}" -o /tmp/sonic-configdb-utils
+
+- name: Load image onto remote
+  block:
+    - name: Copy image to remote
+      copy:
+        src: /tmp/sonic-configdb-utils
+        dest: /tmp/sonic-configdb-utils
+        mode: 0644
+
+    - name: Load image
+      command: docker load -i /tmp/sonic-configb-utils
 
 - name: Run sonic-configdb-utils
-  delegate_to: localhost
-  vars:
-    ansible_connection: local
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
     detach: false
     cleanup: true
+    pull: never
     command: generate
     volumes:
-      - /tmp/sonic:/usr/share/sonic/device/{{ sonic_config_device_metadata.platform }}:ro
+      - /usr/share/sonic/device:/usr/share/sonic/device/:ro
       - /tmp/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
@@ -58,6 +65,7 @@
     mode: 0644
     owner: root
     group: root
+    remote_src: true
 
 - name: Reload config if reload is required
   when: sonic_config_reload_config
