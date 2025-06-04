@@ -29,7 +29,7 @@
   connection: local
   block:
     - name: Pull image
-      community.docker.docker_image_pull: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
+      command: docker pull "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
 
     - name: Save image
       command: docker image save "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}" -o /tmp/sonic-configdb-utils
