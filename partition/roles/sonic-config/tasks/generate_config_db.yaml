@@ -24,29 +24,29 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
-- name: Load and save sonic-configdb-utils image
-  become: true
-  delegate_to: localhost
-  connection: local
-  vars:
-    ansible_python_interpreter: "{{ ansible_playbook_python }}"
-  block:
-    - name: Pull image
-      command: docker pull "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
+# - name: Load and save sonic-configdb-utils image
+#   become: true
+#   delegate_to: localhost
+#   connection: local
+#   vars:
+#     ansible_python_interpreter: "{{ ansible_playbook_python }}"
+#   block:
+#     - name: Pull image
+#       command: docker pull "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
 
-    - name: Save image
-      command: docker image save "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}" -o /tmp/sonic-configdb-utils
+#     - name: Save image
+#       command: docker image save "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}" -o /tmp/sonic-configdb-utils
 
-- name: Load image onto remote
-  block:
-    - name: Copy image to remote
-      copy:
-        src: /tmp/sonic-configdb-utils
-        dest: /tmp/sonic-configdb-utils
-        mode: 0644
+# - name: Load image onto remote
+#   block:
+#     - name: Copy image to remote
+#       copy:
+#         src: /tmp/sonic-configdb-utils
+#         dest: /tmp/sonic-configdb-utils
+#         mode: 0644
 
-    - name: Load image
-      command: docker load -i /tmp/sonic-configb-utils
+#     - name: Load image
+#       command: docker load -i /tmp/sonic-configb-utils
 
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
@@ -54,7 +54,6 @@
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
     detach: false
     cleanup: true
-    pull: never
     command: generate
     volumes:
       - /usr/share/sonic/device:/usr/share/sonic/device/:ro
