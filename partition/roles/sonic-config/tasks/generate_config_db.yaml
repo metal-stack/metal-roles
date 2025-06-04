@@ -27,6 +27,8 @@
 - name: Load and save sonic-configdb-utils image
   become: true
   connection: local
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
   block:
     - name: Pull image
       command: docker pull "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
