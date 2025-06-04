@@ -50,6 +50,7 @@
   - name: Reload config
     command: config reload --yes
     when: sonic_config_reload_config
+
   - name: wait for new connection
     wait_for_connection:
       connect_timeout: 20
