@@ -16,12 +16,16 @@
 
 - name: Create temporary directory
   connection: local
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
   file:
     path: /tmp/sonic
     state: directory
 
 - name: Render input values template
   connection: local
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
   template:
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
@@ -34,6 +38,8 @@
 
 - name: Run sonic-configdb-utils
   connection: local
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
