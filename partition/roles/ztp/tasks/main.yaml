@@ -57,3 +57,4 @@
     systemd_docker_ports:
       - host_port: "{{ ztp_port }}"
         target_port: "80"
+    systemd_docker_log_driver: "{{ ztp_nginx_docker_log_driver }}"

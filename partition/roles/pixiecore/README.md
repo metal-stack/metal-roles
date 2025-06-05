@@ -11,6 +11,7 @@ Deploys pixiecore in a systemd-managed Docker container.
 | pixiecore_debug                             |           | Enable debugging                                                                                              |
 | pixiecore_api_host                          | yes       | The host on which the metal-hammer can reach the pixiecore to ask for metal-api communication credentials.    |
 | pixiecore_api_port                          |           | The port on which the pixiecore api is listening                                                              |
+| pixiecore_docker_log_driver                 |           | Indicates where to write the docker logs to                                                                   |
 | pixiecore_dns_servers                       |           | Alternative DNS servers to be used by the pixiecore (can be used for configuring kernel and boot image cache) |
 | pixiecore_partition_id                      |           | The partition where pixiecore is installed                                                                    |
 | pixiecore_grpc_cert_dir                     |           | The directory where the grpc certificates reside                                                              |

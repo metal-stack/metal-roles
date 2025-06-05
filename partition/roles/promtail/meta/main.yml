@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: promtail
+  author: metal-stack
+  description: Deploys promtail.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/partition/roles/defaults

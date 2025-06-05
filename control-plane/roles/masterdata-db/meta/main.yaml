@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: masterdata-db
+  author: metal-stack
+  description: Deploys a database for the masterdata-api.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/control-plane/roles/defaults

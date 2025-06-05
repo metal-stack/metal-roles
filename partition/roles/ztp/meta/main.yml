@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: ztp
+  author: metal-stack
+  description: Configures a server for providing zero-touch-provisioning scripts for switches.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/partition/roles/defaults

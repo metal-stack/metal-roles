@@ -83,6 +83,7 @@
         target_port: "{{ metal_bmc_console_port }}"
     systemd_docker_volumes: "{{ lookup('template', 'metal-bmc-volumes.j2') | from_yaml }}"
     systemd_docker_network: "{{ metal_bmc_docker_network }}"
+    systemd_docker_log_driver: "{{ metal_bmc_docker_log_driver }}"
     systemd_service_environment:
       TZ: "{{ metal_partition_timezone }}"
       METAL_BMC_LEASE_FILE: /var/lib/dhcp/dhcpd.leases

@@ -29,6 +29,7 @@
         target_port: "{{ monitoring_ipmi_exporter_port }}"
     systemd_docker_command:
       - --config.file=/etc/ipmi_exporter/config.yml
+    systemd_docker_log_driver: "{{ monitoring_ipmi_exporter_docker_log_driver }}"
 
 - name: wait for ipmi_exporter to listen on port
   wait_for:
