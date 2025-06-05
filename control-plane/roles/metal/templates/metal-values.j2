@@ -264,3 +264,11 @@ auditing:
     password: "{{ metal_auditing_timescaledb_password }}"
     retention: "{{ metal_auditing_timescaledb_retention }}"
 {% endif %}
+
+
+metal_registry_auth:
+  auths:
+    "{{ metal_registry }}":
+      username: "{{ metal_registry_auth_user }}"
+      password: "{{ metal_registry_auth_password }}"
+      auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
