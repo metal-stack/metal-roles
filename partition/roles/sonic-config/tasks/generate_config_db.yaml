@@ -30,7 +30,7 @@
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
     detach: false
     cleanup: true
-    pull: always
+    pull: true
     command: generate
     volumes:
       - /usr/share/sonic/device:/usr/share/sonic/device/:ro
