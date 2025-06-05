@@ -10,6 +10,7 @@ you define them adequately as well.
 | Name                                             | Mandatory | Description                                                                                                                               |
 | ------------------------------------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | prometheus_port                                  |           | Port for prometheus                                                                                                                       |
+| prometheus_docker_log_driver                     |           | Indicates where to write the docker logs to                                                                                               |
 | prometheus_image_name                            | yes       | Image version of the prometheus                                                                                                           |
 | prometheus_image_tag                             | yes       | Image tag of the prometheus                                                                                                               |
 | prometheus_config_host_dir                       |           | The host directory for prometheus configurations                                                                                          |

@@ -1,3 +1,17 @@
 ---
 galaxy_info:
-  min_ansible_version: 2.9
+  role_name: monitoring
+  author: metal-stack
+  description: Deploys a monitoring stack for the metal-stack control plane.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/control-plane/roles/defaults

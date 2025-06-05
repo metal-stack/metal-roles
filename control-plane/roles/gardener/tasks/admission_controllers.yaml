@@ -6,7 +6,7 @@
     depth: 1
     version: "{{ gardener_extension_provider_metal_repo_ref }}"
 
-- name: "Register admission webhook: os extension admission metal"
+- name: "Register admission webhook: admission metal"
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
@@ -15,7 +15,7 @@
     helm_target_namespace: garden
     helm_value_file_template: extension-admission-metal-values.j2
 
-- name: "Register admission webhook: os extension admission metal (in virtual apiserver)"
+- name: "Register admission webhook: admission metal (in virtual apiserver)"
   include_role:
     name: ansible-common/roles/helm-chart
   vars:

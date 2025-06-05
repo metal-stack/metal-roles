@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: prepare
+  author: metal-stack
+  description: Preparation tasks for the deployment of the metal-control-plane.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/control-plane/roles/defaults

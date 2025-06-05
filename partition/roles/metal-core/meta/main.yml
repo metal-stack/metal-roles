@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  role_name: metal-core
+  author: metal-stack
+  description: Deploys the metal-core.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: Cumulus
+      versions:
+        - 3
+    - name: SONiC
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/partition/roles/defaults

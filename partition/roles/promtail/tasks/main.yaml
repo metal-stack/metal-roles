@@ -41,3 +41,4 @@
       - "/var/log:/var/log"
     systemd_docker_command:
       - -config.file=/etc/promtail/promtail.yaml
+    systemd_docker_log_driver: "{{ promtail_docker_log_driver }}"

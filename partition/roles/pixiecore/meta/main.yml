@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: pixiecore
+  author: metal-stack
+  description: Deploys the pixecore.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/partition/roles/defaults

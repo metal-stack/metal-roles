@@ -6,7 +6,7 @@ This role basically deploys the `metal-control-plane` [helm chart](https://githu
 
 This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
 
-You can look up all the default values of this role [here](defaults/main/main.yaml).
+You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### General
 
