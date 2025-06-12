@@ -47,23 +47,21 @@
     remote_src: true
 
 - name: Reload config if reload is required
+  command: config reload --yes
+  async: 120
+  poll: 0
   when: sonic_config_reload_config
-  block:
-    - name: Reload config
-      command: config reload --yes
-      async: 120
-      poll: 0
-
-    - name: wait for new connection
-      wait_for_connection:
-        connect_timeout: 20
-        sleep: 5
-        delay: 30
-        timeout: 300
 
 - name: Load config if not reloaded
   command: config load --yes
   when: not sonic_config_reload_config
+
+- name: wait for new connection
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 30
+    timeout: 300
 
 - name: Remove temporary directory
   file:
