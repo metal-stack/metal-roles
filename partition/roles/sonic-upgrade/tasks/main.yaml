@@ -19,6 +19,7 @@
   copy:
     src: "{{ sonic_upgrade_image_path }}/{{ sonic_upgrade_image }}"
     dest: "/{{ sonic_upgrade_image }}"
+    remote_src: yes
   when: sonic_upgrade_host is not defined and sonic_upgrade_image_path is defined
 
 - name: Install new sonic image

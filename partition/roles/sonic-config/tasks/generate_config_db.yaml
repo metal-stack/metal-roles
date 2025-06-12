@@ -1,4 +1,19 @@
 ---
+- name: Retrieve device metadata from running configuration
+  block:
+    - name: Get current config
+      command: show runningconfiguration all
+      register: sonic_config_current_config_result
+      changed_when: false
+
+    - name: Parse current config
+      set_fact:
+        sonic_config_current_config: "{{ sonic_config_current_config_result.stdout | from_json }}"
+
+    - name: Get metadata
+      set_fact:
+        sonic_config_device_metadata: "{{ sonic_config_current_config | community.general.json_query('DEVICE_METADATA.localhost') }}"
+
 - name: Create temporary directory
   file:
     path: /tmp/sonic
@@ -9,23 +24,16 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
-- name: Copy current config_db.json into temporary directory
-  copy:
-    src: /etc/sonic/config_db.json
-    dest: /tmp/sonic/config_db.json
-    mode: 0644
-    remote_src: true
-
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
-    pull: true
     detach: false
     cleanup: true
+    pull: true
     command: generate
     volumes:
-      - /usr/share/sonic/device:/usr/share/sonic/device:ro
+      - /usr/share/sonic/device:/usr/share/sonic/device/:ro
       - /tmp/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
@@ -40,11 +48,20 @@
 
 - name: Reload config if reload is required
   command: config reload --yes
+  async: 120
+  poll: 0
   when: sonic_config_reload_config
 
 - name: Load config if not reloaded
   command: config load --yes
   when: not sonic_config_reload_config
+
+- name: wait for new connection
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 30
+    timeout: 300
 
 - name: Remove temporary directory
   file:
