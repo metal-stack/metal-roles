@@ -14,6 +14,8 @@ sonic_config_frr_route_map:
 
 sonic_config_frr_static_routes:
   - "0.0.0.0/0 10.1.2.1"
+  - "10.0.0.0/16 10.5.253.33"
+  - "10.67.132.0/22 vrf1560 nexthop-vrf vrf1560"
 
 sonic_config_interconnects:
   mpls:
@@ -69,6 +71,14 @@ sonic_config_interconnects:
           entries:
             - "match ip address prefix-list INTERNET_PREFIX_OUT"
             - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }}"
+  croit:
+    vrf: Vrf1560
+    vni: 1560
+    static_routes:
+      - 10.0.0.0/16 10.5.253.33 nexthop-vrf default
+    announcements:
+      - redistribute static
+
   pxe:
     peer_group: PXE
     neighbors:

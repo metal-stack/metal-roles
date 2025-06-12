@@ -11,6 +11,9 @@ log syslog {{ sonic_config_frr_syslog_level }}
 {% if i.vrf is defined %}
 vrf {{ i.vrf }}
  vni {{ i.vni }}
+{% for r in i.static_routes|default([]) %}
+ ip route {{ r }}
+{% endfor %}
 exit-vrf
 !
 {% endif %}

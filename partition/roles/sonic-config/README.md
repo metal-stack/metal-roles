@@ -337,6 +337,10 @@ sonic_config_interconnects:
       entries:
         - "match ip address prefix-list MPLS_PREFIX_OUT"
 
+    # Add optional static routes to this interconnect's VRF.
+    static_routes:
+      - 10.0.0.0/16 10.1.2.3 nexthop-vrf default
+
     # Connect with BGP unnumbered on these interfaces.
     # Also sets IPv6 options to make unnumbered work correctly.
     unnumbered_interfaces:
