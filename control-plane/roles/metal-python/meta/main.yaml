@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: monitoring
+  role_name: metal-python
   author: metal-stack
-  description: Deploys a monitoring stack for the metal-stack control plane.
+  description: Installs the metal-python client library.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
@@ -14,4 +14,3 @@ galaxy_info:
 
 dependencies:
   - role: metal-roles/common/roles/defaults
-  - role: metal-roles/control-plane/roles/defaults
