@@ -16,7 +16,7 @@
     detach: false
     cleanup: true
     pull: true
-    network: host
+    network_mode: host
     command: generate
     volumes:
       - /usr/share/sonic/device:/usr/share/sonic/device/:ro
