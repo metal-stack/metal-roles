@@ -10,6 +10,8 @@ gardener_gardenlet_default_dns_credentials:
 gardener_gardenlets:
   # - name:
   #   kubeconfigSecretRef: <if-this-is-a-remote-gardenlet>
+  #   garden_client_connection:
+  #     gardenClusterAddress:
   #   image_vector_overwrite:
   #   component_image_vector_overwrite:
   #   backup_entry_deletion_grace_period_hours: 72
