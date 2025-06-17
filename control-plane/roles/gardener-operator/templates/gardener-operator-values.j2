@@ -3,3 +3,41 @@ image:
   repository: {{ gardener_operator_image_name }}
   tag: {{ gardener_operator_image_tag }}
   pullPolicy: {{ metal_control_plane_image_pull_policy }}
+
+imageVectorOverwrite: |
+  images:
+    - name: gardener-apiserver
+      sourceRepository: github.com/gardener/gardener
+      repository: {{ gardener_apiserver_image_name }}
+      tag: {{ gardener_apiserver_image_tag }}
+      resourceId:
+        name: apiserver
+    - name: gardener-admission-controller
+      sourceRepository: github.com/gardener/gardener
+      repository: {{ gardener_admission_controller_image_name }}
+      tag: {{ gardener_admission_controller_image_tag }}
+      resourceId:
+        name: admission-controller
+    - name: gardener-controller-manager
+      sourceRepository: github.com/gardener/gardener
+      repository: {{ gardener_controller_manager_image_name }}
+      tag: {{ gardener_controller_manager_image_tag }}
+      resourceId:
+        name: controller-manager
+    - name: gardener-scheduler
+      sourceRepository: github.com/gardener/gardener
+      repository: {{ gardener_scheduler_image_name }}
+      tag: {{ gardener_scheduler_image_tag }}
+      resourceId:
+        name: scheduler
+    - name: gardenlet
+      sourceRepository: github.com/gardener/gardener
+      repository: {{ gardener_gardenlet_image_name }}
+      tag: {{ gardener_gardenlet_image_tag }}
+{% if gardener_operator_image_vector_overwrite %}
+    {{ gardener_operator_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
+{% endif %}
+{% if gardener_operator_component_image_vector_overwrite %}
+componentImageVectorOverwrites: |
+    {{ gardener_operator_component_image_vector_overwrite | to_yaml | indent(width=4, first=false) }}
+{% endif %}
