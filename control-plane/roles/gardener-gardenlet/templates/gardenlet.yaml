@@ -39,8 +39,8 @@ spec:
   config:
     apiVersion: gardenlet.config.gardener.cloud/v1alpha1
     kind: GardenletConfiguration
+    gardenClientConnection: {{ _config.garden_client_connection }}
     controllers:
-      gardenClientConnection: {{ _config.garden_client_connection }}
       shoot:
         concurrentSyncs: {{ _config.shoot_concurrent_syncs }}
         reconcileInMaintenanceOnly: {{ _config.shoot_reconcile_in_maintenance_only | lower }}
