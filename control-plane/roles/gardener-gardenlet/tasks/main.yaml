@@ -38,6 +38,9 @@
     - internal-domain
     - default-domain
 
-- name: Deploy Local Gardenlet
-  import_tasks: gardenlet_local.yaml
-  when: gardener_gardenlet_local
+- name: Deploy Gardenlet
+  include_tasks: gardenlet.yaml
+  loop: "{{ gardener_gardenlets }}"
+  loop_control:
+    loop_var: _gardenlet
+    label: "{{ _gardenlet.name }}"

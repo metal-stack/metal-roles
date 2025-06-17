@@ -11,19 +11,18 @@
       apiVersion: v1
       kind: Secret
       metadata:
-        name: backup-secret
+        name: backup-secret-{{ _gardenlet.name }}
         namespace: garden
       type: Opaque
-      data: "{{ gardener_gardenlet_local.backup_infrastructure_secret }}"
+      data: "{{ _gardenlet.backup_infrastructure_secret }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: yes
-  when: gardener_gardenlet_local.backup_infrastructure_secret
+  when: _gardenlet.backup_infrastructure_secret
 
-- name: Deploy Local Gardenlet
+- name: Deploy Gardenlet
   k8s:
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: true
     definition: "{{ lookup('template', 'gardenlet.yaml') }}"
+    apply: true
   vars:
-    _is_local: true
-    _config: "{{ gardener_gardenlet_defaults | ansible.builtin.combine(gardener_gardenlet_local_defaults, recursive=true) | ansible.builtin.combine(gardener_gardenlet_local, recursive=true) }}"
+    _config: "{{ gardener_gardenlet_defaults | ansible.builtin.combine(_gardenlet, recursive=true) }}"

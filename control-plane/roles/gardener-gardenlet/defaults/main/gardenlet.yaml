@@ -7,37 +7,38 @@ gardener_gardenlet_default_dns_domain:
 gardener_gardenlet_default_dns_provider:
 gardener_gardenlet_default_dns_credentials:
 
-gardener_gardenlet_local:
-  # name:
-  # image_vector_overwrite:
-  # component_image_vector_overwrite:
-  # backup_entry_deletion_grace_period_hours: 72
-  # shoot_concurrent_syncs: 20
-  # shoot_reconcile_in_maintenance_only: false
-  # shoot_respect_sync_period_overwrite: true
-  # logging_enabled: false
-  # logging_vali_enabled: false
-  # backup_infrastructure:
-  #   provider: gcp
-  #   region:
-  #   secretRef:
-  #     name: backup-secret
-  #     namespace: garden
-  #   bucket:
-  #
-  #   provider: S3
-  #   endpoint: "{{ gardener_backup_infrastructure_secret.endpoint | b64decode }}"
-  #   accessKeyID: "{{ gardener_backup_infrastructure_secret.accessKeyID | b64decode }}"
-  #   secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode}}"
-  # backup_infrastructure_secret:
-  #   # for gcp:
-  #   serviceaccount.json: "{{ gardener_backup_infrastructure_service_account_json | b64encode }}"
-  #
-  #   # for S3:
-  #   endpoint:
-  #   accessKeyID:
-  #   secretAccessKey:
-  # vertical_pod_autoscaler_enabled: true
+gardener_gardenlets:
+  # - name:
+  #   kubeconfigSecretRef: <if-this-is-a-remote-gardenlet>
+  #   image_vector_overwrite:
+  #   component_image_vector_overwrite:
+  #   backup_entry_deletion_grace_period_hours: 72
+  #   shoot_concurrent_syncs: 20
+  #   shoot_reconcile_in_maintenance_only: false
+  #   shoot_respect_sync_period_overwrite: true
+  #   logging_enabled: false
+  #   logging_vali_enabled: false
+  #   backup_infrastructure:
+  #     provider: gcp
+  #     region:
+  #     secretRef:
+  #       name: backup-secret
+  #       namespace: garden
+  #     bucket:
+
+  #     provider: S3
+  #     endpoint: "{{ gardener_backup_infrastructure_secret.endpoint | b64decode }}"
+  #     accessKeyID: "{{ gardener_backup_infrastructure_secret.accessKeyID | b64decode }}"
+  #     secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode}}"
+  #   backup_infrastructure_secret:
+  #     # for gcp:
+  #     serviceaccount.json: "{{ gardener_backup_infrastructure_service_account_json | b64encode }}"
+
+  #     # for S3:
+  #     endpoint:
+  #     accessKeyID:
+  #     secretAccessKey:
+  #   vertical_pod_autoscaler_enabled: true
 
 gardener_gardenlet_defaults:
   backup_entry_deletion_grace_period_hours: 72
@@ -49,6 +50,4 @@ gardener_gardenlet_defaults:
   vertical_pod_autoscaler_enabled: true
   image_vector_overwrite: []
   component_image_vector_overwrite: []
-
-gardener_gardenlet_local_defaults:
-  name: "{{ metal_control_plane_stage_name }}"
+  kubeconfigSecretRef:

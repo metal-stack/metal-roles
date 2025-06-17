@@ -5,11 +5,17 @@ metadata:
   name: "{{ _config.name }}"
   namespace: garden
 spec:
+{% if _config.kubeconfigSecretRef %}
+  kubeconfigSecretRef:
+    name: {{ _config.kubeconfigSecretRef }}
+{% endif %}
   deployment:
     replicaCount: 2
     revisionHistoryLimit: 2
+{% if not _config.kubeconfigSecretRef %}
     podLabels:
       networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
+{% endif %}
     helm:
       ociRepository:
         ref: "{{ gardener_gardenlet_helm_chart }}:{{ gardener_gardenlet_helm_chart_tag }}"
@@ -60,7 +66,13 @@ spec:
         labels:
           name: "{{ _config.name }}"
       spec:
-        backup: {{ _config.backup_infrastructure | to_json }}
+        backup:
+          provider: {{ _config.backup_infrastructure.provider }}
+          region: {{ _config.backup_infrastructure.region | default('', true) }}
+          secretRef:
+            name: backup-secret-{{ _config.name }}
+            namespace: garden
+          providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}
         dns:
           provider:
             secretRef:
@@ -71,21 +83,24 @@ spec:
           controller:
             kind: nginx
           domain: "{{ gardener_gardenlet_default_dns_domain }}"
-{% if _is_local %}
         networks:
-          nodes: "{{ _gardener_gardenlet_node_cidr }}"
-          pods: "{{ _gardener_gardenlet_pod_cidr }}"
-          services: "{{ _gardener_gardenlet_service_cidr }}"
-{% endif %}
+          nodes: "{{ _config.nodes if 'nodes' in _config else _gardener_gardenlet_node_cidr }}"
+          pods: "{{ _config.pods if 'pods' in _config else  _gardener_gardenlet_pod_cidr }}"
+          services: "{{ _config.services if 'services' in _config else _gardener_gardenlet_service_cidr }}"
         provider:
           region: local
           type: "{{ metal_control_plane_host_provider }}"
         settings:
+          dependencyWatchdog:
+            prober:
+              enabled: true
+            weeder:
+              enabled: true
           excessCapacityReservation:
             enabled: false
           scheduling:
             visible: false
-          shootDNS:
-            enabled: true
+          topologyAwareRouting:
+            enabled: false
           verticalPodAutoscaler:
             enabled: {{ _config.vertical_pod_autoscaler_enabled | lower }}
