@@ -30,8 +30,8 @@ spec:
       values:
         image:
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
-          repository: {{ gardener_extension_provider_gcp_image_name }}
-          tag: {{ gardener_extension_provider_gcp_image_tag }}
+          repository: {{ gardener_extension_admission_gcp_image_name }}
+          tag: {{ gardener_extension_admission_gcp_image_tag }}
     extension:
       helm:
         ociRepository:
