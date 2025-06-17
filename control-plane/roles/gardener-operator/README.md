@@ -6,7 +6,20 @@ Please refer to the metal-stack gardener integration in our [documentation](http
 
 Check out the Gardener project for further documentation on [gardener.cloud](https://gardener.cloud/).
 
-##
+## Migration Path
+
+If you are still using the `gardener` role for setting up the Gardener, please read the following notes for the migration to the Gardener Operator.
+
+1. Prepare the Gardener Operator setup
+  - Ideally, create a dedicated cluster for hosting the Gardener control plane. It is possible to also host the Gardener installation in the same cluster as the metal-stack control plane, but it is not recommended for production scenarios.
+  - Prepare the new playbook that uses the roles `gardener-operator`, `gardener-cloud-profile`, `gardener-extensions` and optionally `gardener-gardenlet`. Parametrize these roles properly.
+2. Scale down the existing virtual garden and take a last backup of the Garden ETCD
+  - `kubectl scale deployment garden-kube-apiserver --replicas 0`
+  - `kubectl exec -it <virtual-garden-etcd-sts>-0 -c backup-restore -- curl -k 'http://localhost:8080/snapshot/full?final=true'`
+  - `kubectl scale sts <virtual-garden-etcd-sts> --replicas 0`
+3. Copy over the ETCD backup to a new folder in the backup infrastructure
+  - The object prefix changed from `etcd-<stage>-etcd` to `virtual-garden-etcd-main/etcd-main`
+  - In case of using GCP copy over to the new naming scheme recursively: `gsutil cp -r gs://<etcd-backup-folder>/etcd-test-etcd/v2 gs://<etcd-backup-folder>/virtual-garden-etcd-main/etcd-main/v2`
 
 ## Variables
 

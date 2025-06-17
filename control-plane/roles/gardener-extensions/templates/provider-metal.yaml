@@ -44,7 +44,7 @@ spec:
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
         config:
           machineImages:
-            {% for image in (gardener_cloud_profile_machine_images | machine_images_for_cloud_profile) -%}
+            {% for image in (gardener_extension_provider_metal_machine_images | machine_images_for_cloud_profile) -%}
             {%- for image_version in image.versions -%}
             - name: "{{ image.name }}"
               version: "{{ image_version.version }}"

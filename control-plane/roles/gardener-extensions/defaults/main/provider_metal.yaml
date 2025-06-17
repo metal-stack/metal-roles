@@ -14,6 +14,8 @@ gardener_extension_provider_metal_etcd_delta_snapshot_period: "5m"
 
 gardener_extension_provider_metal_egress_destinations: []
 
+gardener_extension_provider_metal_machine_images: "{{ metal_api_images | default([]) }}"
+
 gardener_extension_provider_metal_duros_storage_enabled: false
 gardener_extension_provider_metal_duros_storage_config:
   # <partition>:

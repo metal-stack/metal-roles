@@ -124,6 +124,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_extension_provider_metal_etcd_backup_schedule        |           | The backup schedule for metal-stack shoot ETCDs                                                         |
 | gardener_extension_provider_metal_etcd_delta_snapshot_period  |           | The delta snapshot period for metal-stack shoot ETCDs                                                   |
 | gardener_extension_provider_metal_egress_destinations         |           | Sets allowed egress destinations for the `RestrictEgress` control plane feature gate of the GEPM        |
+| gardener_extension_provider_metal_machine_images              |           | Specifies the machine images that are usually the same as in the cloud profile                          |
 | gardener_extension_provider_metal_duros_storage_enabled       |           | Enables the duros storage integration feature gate of the GEPM (Lightbits storage)                      |
 | gardener_extension_provider_metal_duros_storage_config        |           | Configuration for the duros storage integration                                                         |
 | gardener_extension_provider_metal_image_pull_policy           |           | Sets the image pull policy for components deployed through this extension controller.                   |
