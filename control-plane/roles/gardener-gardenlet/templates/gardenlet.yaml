@@ -22,7 +22,7 @@ spec:
 {% if _config.image_vector_overwrite %}
     imageVectorOverwrite: |
       images:
-        {{ gardener_image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
+        {{ _config.image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
 {% endif %}
 {% if _config.component_image_vector_overwrite %}
     componentImageVectorOverwrites: |
