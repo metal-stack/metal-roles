@@ -26,11 +26,11 @@ spec:
 {% if _config.image_vector_overwrite %}
     imageVectorOverwrite: |
       images:
-        {{ _config.image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
+        {{ _config.image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
 {% endif %}
 {% if _config.component_image_vector_overwrite %}
     componentImageVectorOverwrites: |
-        {{ _config.component_image_vector_overwrite | to_yaml | indent(width=10, first=false) }}
+        {{ _config.component_image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
 {% endif %}
     image:
       repository: {{ gardener_gardenlet_image_name }}
