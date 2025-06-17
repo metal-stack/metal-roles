@@ -33,10 +33,10 @@ router bgp {{ mgmt_server_asn }}
   {% endif %}
  exit-address-family
 !
-route-map LOCAL_INTERFACES permit 10
-  {% for iface in mgmt_server_frr_match_interfaces %}
+{% for iface in mgmt_server_frr_match_interfaces %}
+route-map LOCAL_INTERFACES permit {{ loop.index }}0
   match interface {{ iface }}
-  {% endfor %}
 !
+{% endfor %}
 line vty
 !

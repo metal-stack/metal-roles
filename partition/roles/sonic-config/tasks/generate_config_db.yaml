@@ -9,24 +9,18 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
-- name: Copy current config_db.json into temporary directory
-  copy:
-    src: /etc/sonic/config_db.json
-    dest: /tmp/sonic/config_db.json
-    mode: 0644
-    remote_src: true
-
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
-    pull: true
     detach: false
     cleanup: true
+    pull: true
+    network_mode: host
     command: generate
     volumes:
-      - /usr/share/sonic/device:/usr/share/sonic/device:ro
-      - /tmp/sonic:/etc/sonic:ro
+      - /usr/share/sonic/device:/usr/share/sonic/device/:ro
+      - /etc/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
 - name: Override the existing config_db.json with the newly generated one
@@ -40,11 +34,20 @@
 
 - name: Reload config if reload is required
   command: config reload --yes
+  async: 120
+  poll: 0
   when: sonic_config_reload_config
 
 - name: Load config if not reloaded
   command: config load --yes
   when: not sonic_config_reload_config
+
+- name: wait for new connection
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 30
+    timeout: 300
 
 - name: Remove temporary directory
   file:
