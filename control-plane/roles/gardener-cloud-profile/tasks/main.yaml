@@ -40,7 +40,7 @@
     definition: "{{ lookup('template', '30-cloud-profile-metal.yaml') }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: yes
-  register: result
-  until: result is success
-  retries: 10
-  delay: 6
+  # register: result
+  # until: result is success
+  # retries: 10
+  # delay: 6
