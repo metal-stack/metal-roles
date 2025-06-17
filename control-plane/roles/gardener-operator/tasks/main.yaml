@@ -42,6 +42,3 @@
 
 - name: Deploy patches for mini-lab
   import_tasks: mini_lab_patches.yaml
-
-- name: Virtual Garden Access
-  import_tasks: access_kubeconfig.yaml
