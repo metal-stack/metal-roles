@@ -49,7 +49,7 @@ sonic_config_ntp:
   vrf: default
 ```
 
-### sonic_mgmtif_ip and sonic_mgmtif_gateway
+### `sonic_mgmtif_ip` and `sonic_mgmtif_gateway`
 
 Change
 
@@ -66,17 +66,17 @@ sonic_config_mgmt_interface:
   ip: 10.1.2.3
 ```
 
-### sonic_ip_masquerade
+### `sonic_ip_masquerade`
 
 This variable was removed.
 See [this mini-lab PR](https://github.com/metal-stack/mini-lab/pull/237).
 
-### sonic_config_action
+### `sonic_config_action`
 
 This variable is replaced by the boolean variable `sonic_config_reload_config` which defaults to `false`.
 See [below](#variables) for explanation.
 
-### sonic_ports, sonic_ports_default_speed, sonic_ports_default_mtu and sonic_ports_default_fec
+### `sonic_ports`, `sonic_ports_default_speed`, `sonic_ports_default_mtu` and `sonic_ports_default_fec`
 
 All these variables are now gathered in the dictionary `sonic_config_ports`.
 
@@ -120,15 +120,15 @@ sonic_config_ports:
 `sonic_ports_default_speed` was removed.
 The default speed for a port is now derived from its breakout configuration and only a valid alternative speed can override it.
 
-### sonic_frr_debug_options
+### `sonic_frr_debug_options`
 
 This variable was removed.
 
-### sonic_interconnects_default_peer_group and sonic_interconnects_default_bgp_timers
+### `sonic_interconnects_default_peer_group` and `sonic_interconnects_default_bgp_timers`
 
 These two variables were removed.
 
-### sonic_portchannels and sonic_portchannels_default_mtu
+### `sonic_portchannels` and `sonic_portchannels_default_mtu`
 
 As with `sonic_ports`, these variables are now combined in one dictionary `sonic_config_portchannels`.
 
