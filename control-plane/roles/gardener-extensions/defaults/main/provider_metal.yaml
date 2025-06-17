@@ -44,3 +44,5 @@ gardener_extension_provider_metal_image_pull_secret:
   #     password: ""
   #     auth: ""
   # ...
+
+gardener_extension_provider_metal_firewall_internal_prefixes: []

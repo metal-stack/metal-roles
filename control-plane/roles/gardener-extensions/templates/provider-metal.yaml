@@ -55,6 +55,8 @@ spec:
           clusterAudit:
             enabled: true
 
+          firewallInternalPrefixes: {{ gardener_extension_provider_metal_firewall_internal_prefixes | to_json }}
+
           etcd:
 {% if gardener_extension_provider_metal_etcd_storage_class_name is not none %}
             storage:
@@ -92,6 +94,10 @@ spec:
             sourceRepository: https://github.com/metal-stack/droptailer
             repository: {{ droptailer_image_name }}
             tag: {{ droptailer_image_tag }}
+          - name: node-init
+            sourceRepository: https://github.com/metal-stack/node-init
+            repository: {{ node_init_image_name }}
+            tag: {{ node_init_image_tag }}
           - name: firewall-controller-manager
             sourceRepository: github.com/metal-stack/firewall-controller-manager
             repository: {{ firewall_controller_manager_image_name }}

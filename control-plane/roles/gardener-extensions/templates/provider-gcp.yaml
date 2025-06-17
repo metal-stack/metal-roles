@@ -29,15 +29,20 @@ spec:
             ref: "{{ gardener_extension_admission_gcp_helm_chart_application }}:{{ gardener_extension_admission_gcp_helm_chart_application_tag }}"
       values:
         image:
-          tag: {{ gardener_extension_provider_gcp_image_tag }}
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
+          repository: {{ gardener_extension_provider_gcp_image_name }}
+          tag: {{ gardener_extension_provider_gcp_image_tag }}
     extension:
       helm:
         ociRepository:
           ref: "{{ gardener_extension_provider_gcp_helm_chart }}:{{ gardener_extension_provider_gcp_helm_chart_tag }}"
       values:
         image:
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+          repository: {{ gardener_extension_provider_gcp_image_name }}
           tag: {{ gardener_extension_provider_gcp_image_tag }}
       runtimeClusterValues:
         image:
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+          repository: {{ gardener_extension_provider_gcp_image_name }}
           tag: {{ gardener_extension_provider_gcp_image_tag }}
