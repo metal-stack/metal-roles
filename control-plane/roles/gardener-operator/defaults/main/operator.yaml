@@ -36,3 +36,5 @@ gardener_operator_garden_name: "{{ metal_control_plane_stage_name }}"
 
 gardener_operator_image_vector_overwrite:
 gardener_operator_component_image_vector_overwrite:
+
+gardener_operator_helm_chart_tag: "{{ gardener_operator_image_tag }}"
