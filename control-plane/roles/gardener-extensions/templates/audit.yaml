@@ -1,0 +1,29 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: audit
+spec:
+  resources:
+  - kind: Extension
+    type: audit
+    lifecycle:
+      delete: BeforeKubeAPIServer
+      migrate: BeforeKubeAPIServer
+      reconcile: BeforeKubeAPIServer
+  deployment:
+    extension:
+      policy: Always
+      helm:
+        ociRepository:
+          ref: "{{ gardener_extension_audit_helm_chart }}:{{ gardener_extension_audit_helm_chart_tag }}"
+      values:
+        image:
+          repository: {{ gardener_extension_audit_image_name }}
+          tag: {{ gardener_extension_audit_image_tag }}
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      runtimeClusterValues:
+        image:
+          repository: {{ gardener_extension_audit_image_name }}
+          tag: {{ gardener_extension_audit_image_tag }}
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}

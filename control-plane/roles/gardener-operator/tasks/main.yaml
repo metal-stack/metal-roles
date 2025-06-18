@@ -1,0 +1,37 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - metal_control_plane_host_provider in ["gcp", "metal"]
+      - gardener_operator_image_name is defined
+      - gardener_operator_image_tag is defined
+      - gardener_operator_backup_infrastructure is not none and gardener_operator_backup_infrastructure.provider in ["gcp", "S3"]
+
+- name: GCP control plane service cidr
+  import_tasks: control-plane-networks/gcp.yaml
+  when:
+    - metal_control_plane_host_provider == "gcp"
+
+- name: metal control plane service cidr
+  import_tasks: control-plane-networks/metal.yaml
+  when:
+    - metal_control_plane_host_provider == "metal"
+
+- name: Create garden namespace
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: garden
+
+- name: Deploy Gardener Operator
+  import_tasks: operator.yaml
+
+- name: Deploy patches for mini-lab
+  import_tasks: mini_lab_patches.yaml

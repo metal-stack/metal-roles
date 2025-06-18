@@ -1,0 +1,46 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - gardener_gardenlet_default_dns_domain is not none
+      - gardener_gardenlet_default_dns_provider is not none
+      - gardener_gardenlet_default_dns_credentials is not none
+
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_gardenlet_garden_name }}"
+
+- name: Deploy domain secrets (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        namespace: garden
+        annotations:
+          helm.sh/resource-policy: keep
+          dns.gardener.cloud/domain: "{{ gardener_gardenlet_default_dns_domain }}"
+          dns.gardener.cloud/provider: "{{ gardener_gardenlet_default_dns_provider }}"
+        labels:
+          app: gardener
+          gardener.cloud/role: "{{ item }}"
+        name: "{{ item }}-{{ gardener_gardenlet_default_dns_domain | regex_replace('\\.', '-') }}"
+      type: Opaque
+      data: "{{ gardener_gardenlet_default_dns_credentials }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    apply: true
+  loop:
+    - internal-domain
+    - default-domain
+
+- name: Deploy Gardenlet
+  include_tasks: gardenlet.yaml
+  loop: "{{ gardener_gardenlets }}"
+  loop_control:
+    loop_var: _gardenlet
+    label: "{{ _gardenlet.name }}"
