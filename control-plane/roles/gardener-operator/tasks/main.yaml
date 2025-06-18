@@ -22,13 +22,6 @@
   when:
     - metal_control_plane_host_provider == "metal"
 
-- name: Clone Gardener
-  git:
-    repo: "{{ gardener_operator_repo_url }}"
-    dest: "{{ gardener_operator_local_tmp_dir }}/gardener"
-    depth: 1
-    version: "{{ gardener_operator_repo_ref }}"
-
 - name: Create garden namespace
   k8s:
     definition:

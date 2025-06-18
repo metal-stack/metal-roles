@@ -187,6 +187,7 @@ metal_stack_release:
     gardener_extension_admission_shoot_dns_service_helm_chart_application: "docker-images.third-party.gardener.shoot-dns-service.charts.application"
     gardener_extension_admission_shoot_dns_service_helm_chart_runtime: "docker-images.third-party.gardener.shoot-dns-service.charts.runtime"
     gardener_gardenlet_helm_chart: "docker-images.third-party.gardener.gardenlet.charts.ref"
+    gardener_operator_helm_chart: "docker-images.third-party.gardener.operator.charts.ref"
     # monitoring
     webhook_logger_image_name: "docker-images.third-party.control-plane.webhook-logger.name"
     webhook_logger_image_tag: "docker-images.third-party.control-plane.webhook-logger.tag"

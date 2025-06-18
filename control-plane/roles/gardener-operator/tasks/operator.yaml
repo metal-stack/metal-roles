@@ -34,7 +34,8 @@
     name: ansible-common/roles/helm-chart
   vars:
     helm_timeout: "600s"
-    helm_chart: "{{ gardener_operator_local_tmp_dir }}/gardener/charts/gardener/operator"
+    helm_chart: "oci://{{ gardener_operator_helm_chart }}"
+    helm_chart_version: "{{ gardener_operator_image_tag }}"
     helm_release_name: operator
     helm_target_namespace: garden
     helm_value_file_template: gardener-operator-values.j2
