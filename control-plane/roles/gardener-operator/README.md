@@ -43,6 +43,8 @@ Here are the steps for the migration:
 1. To complete the migration, deploy a new Gardenlet either in a dedicated cluster or again in the Gardener cluster and execute a shoot migration of the shooted seeds to the new cluster.
 1. As the shoot migration for metal-stack is not fully working, you need to roll the firewalls of the seeds.
 
+![Migration Path](./migration.drawio.svg)
+
 ## Variables
 
 | Name                                                          | Mandatory | Description                                                                                                                                                                                  |
