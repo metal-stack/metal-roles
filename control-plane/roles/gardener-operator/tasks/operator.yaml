@@ -1,10 +1,4 @@
 ---
-# TODO: prepare migration here
-# - label existing secrets like CA, ETCD encryption key, accordingly
-# - scale down existing components (gardener control plane + virtual garden with ETCD)
-#
-# https://github.com/gardener/gardener/blob/v1.117.2/docs/concepts/operator.md#migrating-an-existing-gardener-landscape-to-gardener-operator
-
 - name: Create backup infrastructure secret
   k8s:
     definition:
