@@ -7,7 +7,7 @@ gardener_gardenlet_default_dns_domain:
 gardener_gardenlet_default_dns_provider:
 gardener_gardenlet_default_dns_credentials:
 
-gardener_gardenlets:
+gardener_gardenlets: []
   # - name:
   #   kubeconfigSecretRef: <if-this-is-a-remote-gardenlet>
   #   garden_client_connection:
@@ -53,3 +53,4 @@ gardener_gardenlet_defaults:
   image_vector_overwrite: []
   component_image_vector_overwrite: []
   kubeconfigSecretRef:
+  garden_client_connection:
