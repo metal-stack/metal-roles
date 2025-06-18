@@ -1,10 +1,6 @@
 ---
 gardener_operator_virtual_garden_public_dns: gardener-kube-apiserver.{{ metal_control_plane_ingress_dns }}
 
-# can we set this somehow?
-# gardener_etcd_backup_schedule: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
-# gardener_etcd_snapshot_period: "0"
-# gardener_etcd_garbage_collection_period: "12h"
 gardener_operator_virtual_garden_etcd_storage_class:
 
 gardener_operator_virtual_garden_oidc_issuer_url:
