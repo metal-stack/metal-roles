@@ -27,7 +27,7 @@ spec:
               email: "{{ gardener_extension_shoot_cert_service_issuer_email }}"
               server: "{{ gardener_extension_shoot_cert_service_issuer_server }}"
               privateKey: |
-                {{ gardener_extension_shoot_cert_service_issuer_private_key | indent(width=18, first=false) }}
+                {{ gardener_extension_shoot_cert_service_issuer_private_key | indent(width=16, first=false) }}
 {% if gardener_extension_shoot_cert_service_precheck_nameservers %}
           precheckNameservers: "{{ gardener_extension_shoot_cert_service_precheck_nameservers | join(',') }}"
 {% endif %}

@@ -25,7 +25,7 @@
         annotations:
           serviceaccount.resources.gardener.cloud/name: virtual-garden-user
           serviceaccount.resources.gardener.cloud/namespace: kube-system
-          serviceaccount.resources.gardener.cloud/token-expiration-duration: 3h
+          serviceaccount.resources.gardener.cloud/token-expiration-duration: "{{ gardener_virtual_garden_access_expiration }}"
 
 - name: Create virtual garden access managed resource secret
   k8s:
