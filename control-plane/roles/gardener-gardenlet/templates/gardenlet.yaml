@@ -109,3 +109,5 @@ spec:
             enabled: false
           verticalPodAutoscaler:
             enabled: {{ _config.vertical_pod_autoscaler_enabled | lower }}
+        taints:
+          - key: seed.gardener.cloud/protected
