@@ -1,0 +1,59 @@
+apiVersion: seedmanagement.gardener.cloud/v1alpha1
+kind: ManagedSeed
+metadata:
+  name: "{{ gardener_managed_seed.name }}"
+  namespace: garden
+spec:
+  gardenlet:
+    bootstrap: BootstrapToken
+    config:
+      apiVersion: gardenlet.config.gardener.cloud/v1alpha1
+      kind: GardenletConfiguration
+      seedConfig:
+        spec:
+          backup:
+            provider: {{ gardener_managed_seed.backup_infrastructure.provider }}
+            region: {{ gardener_managed_seed.backup_infrastructure.region | default('', true) }}
+            secretRef:
+              name: "{{ gardener_managed_seed.name }}-backup-secret"
+              namespace: garden
+            providerConfig: {{ gardener_managed_seed.backup_infrastructure.providerConfig | default(None, true) | to_json }}
+          dns:
+            provider:
+              secretRef:
+                name: {{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}
+                namespace: garden
+              type: {{ gardener_dns_provider }}
+          ingress:
+            domain: ingress.{{ gardener_managed_seed.name }}.{{ gardener_soil_name }}.{{ gardener_dns_domain }}
+            controller:
+              kind: nginx
+          networks:
+            pods: "{{ gardener_managed_seed.pod_cidr }}"
+            services: "{{ gardener_managed_seed.service_cidr }}"
+          provider:
+            region: "{{ gardener_managed_seed.region }}"
+            type: metal
+          settings:
+            excessCapacityReservation:
+              enabled: true
+            scheduling:
+              visible: {{ gardener_managed_seed.visible | default(true) }}
+            shootDNS:
+              enabled: true
+{% if 'logging_enabled' in gardener_managed_seed and gardener_managed_seed.logging_enabled %}
+      logging:
+        enabled: true
+        vali:
+          enabled: true
+{% endif %}
+
+    deployment:
+      image:
+        pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      replicaCount: 1
+      revisionHistoryLimit: 1
+      vpa: true
+    mergeWithParent: true
+  shoot:
+    name: "{{ gardener_managed_seed.name }}"

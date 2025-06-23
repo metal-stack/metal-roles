@@ -1,0 +1,46 @@
+---
+gardener_managed_seeds_garden_name: "{{ metal_control_plane_stage_name }}"
+
+# can be useful for rollouts where the shooted seed or managed seed resource changes:
+gardener_managed_seed_rollout_delay_minutes:
+
+gardener_managed_seeds: []
+# - name: seed-a
+#   project_id: 00000000-0000-0000-0000-000000000001
+#   feature_gates:
+#   region: region
+#   partition: partition
+#   networks:
+#     - internet
+#     - e77400fe-e993-47b1-a0dd-64c9b7457b76
+#   k8s_version: 1.23.4
+#   worker_groups:
+#   - worker_count: 1
+#     worker_size: size
+#     worker_cri: containerd
+#     worker_max_surge: 3
+#     worker_max_unavailable: 0
+#     worker_image:
+#       name: debian
+#       version: "12.0"
+#   firewall_size: size
+#   firewall_image: firewall-ubuntu-3.0
+#   firewall_controller_version: auto
+#   api_server:
+#     autoscaler:
+#       min_replicas: 1
+#       max_replicas: 5
+#   verticalPodAutoscaler: false
+#   pod_cidr:
+#   service_cidr:
+#   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
+#   # https://gardener.cloud/docs/guides/high-availability/control-plane/
+#   high_availability_control_plane: node
+#   backup_infrastructure:
+#     provider: gcp
+#     region:
+#     secretRef:
+#       name: backup-secret
+#       namespace: garden
+#     bucket:
+#    logging_enabled: true
