@@ -91,7 +91,7 @@ spec:
             kind: nginx
           domain: "{{ gardener_gardenlet_default_dns_domain }}"
         networks:
-{% if _config.nodes if 'nodes' in _config %}
+{% if 'nodes' in _config %}
           nodes: "{{ _config.nodes }}"
 {% else %}
           pods: "{{ _config.pods if 'pods' in _config else  _gardener_gardenlet_pod_cidr }}"
