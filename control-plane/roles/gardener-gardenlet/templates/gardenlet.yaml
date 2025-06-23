@@ -93,7 +93,7 @@ spec:
         networks:
 {% if 'nodes' in _config %}
           nodes: "{{ _config.nodes }}"
-{% else %}
+{% endif %}
           pods: "{{ _config.pods if 'pods' in _config else  _gardener_gardenlet_pod_cidr }}"
           services: "{{ _config.services if 'services' in _config else _gardener_gardenlet_service_cidr }}"
         provider:
