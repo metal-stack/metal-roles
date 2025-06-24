@@ -45,11 +45,11 @@ spec:
               visible: {{ gardener_managed_seed.visible | default(true) }}
             shootDNS:
               enabled: true
-{% if 'logging_enabled' in gardener_managed_seed and gardener_managed_seed.logging_enabled %}
+{% if 'logging_enabled' in gardener_managed_seed %}
       logging:
-        enabled: true
+        enabled: {{ gardener_managed_seed.logging_enabled | lower }}
         vali:
-          enabled: true
+          enabled: {{ gardener_managed_seed.logging_enabled | lower }}
 {% endif %}
 
     deployment:

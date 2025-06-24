@@ -8,10 +8,9 @@
         name: "{{ gardener_managed_seed.name }}-backup-secret"
         namespace: garden
       type: Opaque
-      data: "{{ gardener_backup_infrastructure_secret }}"
+      data: "{{ gardener_managed_seed.backup_infrastructure_secret }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: yes
-  when: gardener_backup_infrastructure_secret
 
 - name: Add seed provider secret
   k8s:
