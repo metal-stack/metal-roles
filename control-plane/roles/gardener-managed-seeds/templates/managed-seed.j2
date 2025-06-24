@@ -25,7 +25,7 @@ spec:
                 namespace: garden
               type: {{ gardener_dns_provider }}
           ingress:
-{% if 'ingress_domain in gardener_managed_seed %}
+{% if 'ingress_domain' in gardener_managed_seed %}
             domain: {{ gardener_managed_seed.ingress_domain }}
 {% else %}
             domain: ingress.{{ gardener_managed_seed.name }}.{{ gardener_managed_seed_default_dns_domain }}
