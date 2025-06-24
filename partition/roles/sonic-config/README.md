@@ -49,7 +49,7 @@ sonic_config_ntp:
   vrf: default
 ```
 
-### sonic_mgmtif_ip and sonic_mgmtif_gateway
+### `sonic_mgmtif_ip` and `sonic_mgmtif_gateway`
 
 Change
 
@@ -66,17 +66,17 @@ sonic_config_mgmt_interface:
   ip: 10.1.2.3
 ```
 
-### sonic_ip_masquerade
+### `sonic_ip_masquerade`
 
 This variable was removed.
 See [this mini-lab PR](https://github.com/metal-stack/mini-lab/pull/237).
 
-### sonic_config_action
+### `sonic_config_action`
 
 This variable is replaced by the boolean variable `sonic_config_reload_config` which defaults to `false`.
 See [below](#variables) for explanation.
 
-### sonic_ports, sonic_ports_default_speed, sonic_ports_default_mtu and sonic_ports_default_fec
+### `sonic_ports`, `sonic_ports_default_speed`, `sonic_ports_default_mtu` and `sonic_ports_default_fec`
 
 All these variables are now gathered in the dictionary `sonic_config_ports`.
 
@@ -120,15 +120,15 @@ sonic_config_ports:
 `sonic_ports_default_speed` was removed.
 The default speed for a port is now derived from its breakout configuration and only a valid alternative speed can override it.
 
-### sonic_frr_debug_options
+### `sonic_frr_debug_options`
 
 This variable was removed.
 
-### sonic_interconnects_default_peer_group and sonic_interconnects_default_bgp_timers
+### `sonic_interconnects_default_peer_group` and `sonic_interconnects_default_bgp_timers`
 
 These two variables were removed.
 
-### sonic_portchannels and sonic_portchannels_default_mtu
+### `sonic_portchannels` and `sonic_portchannels_default_mtu`
 
 As with `sonic_ports`, these variables are now combined in one dictionary `sonic_config_portchannels`.
 
@@ -270,6 +270,31 @@ sonic_config_interconnects:
     # Use specific BGP timer values for the BGP session with the remote party.
     bgp_timers: 1 3
 
+    # Connect to these BGP neighbors - supports multiple neighbors with individual routemaps.
+    extended_neighbors:
+      # The IP of this extended neighbor.
+      - ip: 10.1.1.1
+
+        # Apply an incoming routemap to this neighbor.
+        routemap_in:
+          # Name of the routemap.
+          name: ALLOW-INTERNET-2-IN
+
+          # List of routemap entries.
+          entries:
+            - match ip address prefix-list INTERNET_PREFIX_IN
+            - set as-path prepend last-as 2
+
+        # Apply an outgoing routemap to this neighbor.
+        routemap_out:
+          # Name of the routemap.
+          name: ALLOW-INTERNET-2-OUT
+
+          # List of routemap entries.
+          entries:
+            - match ip address prefix-list INTERNET_PREFIX_OUT
+            - set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}
+
     # Whether the peer should take part in evpn routing (address-family l2vpn evpn).
     evpn_peer: true
 
@@ -311,6 +336,19 @@ sonic_config_interconnects:
       # List of routemap entries.
       entries:
         - "match ip address prefix-list MPLS_PREFIX_OUT"
+
+    # Create routemaps not associated with a neighbor; for example for controlling dynamic route leaking.
+    routemaps:
+      - # Name of the routemap.
+        name: "IMPORT-INTO-Vrf117"
+
+        # List of routemap entries.
+        entries:
+          - "match ip address prefix-list Vrf117-IN"
+
+    # Add optional static routes to this interconnect's VRF.
+    static_routes:
+      - 10.0.0.0/16 10.1.2.3 nexthop-vrf default
 
     # Connect with BGP unnumbered on these interfaces.
     # Also sets IPv6 options to make unnumbered work correctly.
@@ -468,6 +506,21 @@ sonic_config_ssh_sourceranges:
 
 # The switch's timezone.
 sonic_config_timezone: Europe/Berlin
+
+# Subinterfaces on a port with .1q VLAN tag. For subinterfaces where there is no
+# local VLAN on the switch.
+sonic_config_vlan_subinterfaces:
+  # The IP/prefixlength CIDR of the subinterface.
+  - cidr: 1.2.3.0/24
+
+    # The parent port.
+    port: Ethernet0
+
+    # The .1q VLAN tag for this subinterface.
+    vlan: 1000
+
+    # If defined, the VRF that this subinterface will be bound to.
+    vrf: Vrf42
 
 # VLANs to configure on the switch.
 sonic_config_vlans:

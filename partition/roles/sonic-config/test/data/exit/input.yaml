@@ -1,0 +1,156 @@
+inventory_hostname: exit01
+
+sonic_config_asn: 4200000000
+
+sonic_config_bgp_ports:
+  - Ethernet112
+  - Ethernet116
+
+sonic_config_frr_l2vpn_evpn: true
+
+sonic_config_frr_route_map:
+  name: LOOPBACKS
+  match: interface Loopback0
+
+sonic_config_frr_static_routes:
+  - "0.0.0.0/0 10.1.2.1"
+  - "10.0.0.0/16 10.5.253.33"
+  - "10.67.132.0/22 vrf1560 nexthop-vrf vrf1560"
+
+sonic_config_interconnects:
+  mpls:
+    neighbor_ip: 10.0.0.3
+    bgp_md5_password: test
+    remote_as: 65000
+    peer_group: MPLS
+    vrf: VrfMpls
+    vni: 104000
+    announcements: []
+    routemap_in:
+      name: ALLOW-MPLS-IN
+      entries:
+        - "match ip address prefix-list MPLS_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-MPLS-OUT
+      entries:
+        - "match ip address prefix-list MPLS_PREFIX_OUT"
+    prefixlists:
+      - "ip prefix-list MPLS_PREFIX_IN seq 10 permit 10.0.0.0/8"
+      - "ip prefix-list MPLS_PREFIX_IN seq 20 permit 100.100.0.0/16"
+  internet:
+    peer_group: INTERNET
+    vrf: VrfInternet
+    vlan: 4009
+    vni: 104009
+    announcements: []
+    prefixlists:
+      - "ip prefix-list INTERNET_PREFIX_IN seq 10 permit 0.0.0.0/0"
+      - "ip prefix-list INTERNET_PREFIX_OUT seq 10 permit 185.153.67.0/24 ge 32"
+      - "ip prefix-list INTERNET_PREFIX_OUT seq 11 permit 212.34.85.0/24 ge 32"
+      - "ip prefix-list INTERNET_PREFIX_OUT seq 12 permit 212.34.89.0/24 ge 32"
+    extended_neighbors:
+      - ip: "172.17.146.177"
+        routemap_in:
+          name: "ALLOW-INTERNET-2-IN"
+          entries:
+            - "match ip address prefix-list INTERNET_PREFIX_IN"
+            - "set as-path prepend last-as 2"
+        routemap_out:
+          name: "ALLOW-INTERNET-2-OUT"
+          entries:
+            - "match ip address prefix-list INTERNET_PREFIX_OUT"
+            - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}"
+      - ip: "172.17.146.161"
+        routemap_in:
+          name: "ALLOW-INTERNET-4-IN"
+          entries:
+            - "match ip address prefix-list INTERNET_PREFIX_IN"
+            - "set as-path prepend last-as 4"
+        routemap_out:
+          name: "ALLOW-INTERNET-4-OUT"
+          entries:
+            - "match ip address prefix-list INTERNET_PREFIX_OUT"
+            - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }}"
+  croit:
+    vrf: Vrf1560
+    vni: 1560
+    static_routes:
+      - 10.0.0.0/16 10.5.253.33 nexthop-vrf default
+    announcements:
+      - redistribute static
+      - import vrf route-map IMPORT-INTO-Vrf1560
+      - import vrf default
+    prefixlists:
+      - "ip prefix-list Vrf1560-IN seq 10 permit 10.0.0.0/16"
+    routemaps:
+      - name: "IMPORT-INTO-Vrf1560"
+        entries:
+          - "match ip address prefix-list Vrf1560-IN"
+  default:
+    announcements:
+      - import vrf route-map IMPORT-INTO-Default
+      - import vrf Vrf1560
+    prefixlists:
+      - "ip prefix-list Default-IN seq 10 permit 10.67.132.0/22 ge 22"
+    routemaps:
+      - name: "IMPORT-INTO-Default"
+        entries:
+          - "match ip address prefix-list Default-IN"
+
+  pxe:
+    peer_group: PXE
+    neighbors:
+      - "Ethernet1 interface"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE-IN
+      entries:
+        - "match ip address prefix-list PXE_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE-OUT
+      entries:
+        - "match ip address prefix-list PXE_PREFIX_OUT"
+    prefixlists:
+      - "ip prefix-list PXE_PREFIX_IN seq 10 permit 0.0.0.0/0"
+      - "ip prefix-list PXE_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+  pxe2:
+    peer_group: PXE2
+    unnumbered_interfaces:
+      - "Ethernet2"
+    announcements: []
+    routemap_in:
+      name: ALLOW-PXE2-IN
+      entries:
+        - "match ip address prefix-list PXE2_PREFIX_IN"
+    routemap_out:
+      name: ALLOW-PXE2-OUT
+      entries:
+        - "match ip address prefix-list PXE2_PREFIX_OUT"
+    prefixlists:
+      - "ip prefix-list PXE2_PREFIX_IN seq 10 permit 0.0.0.0/0"
+      - "ip prefix-list PXE2_PREFIX_OUT seq 10 permit 10.255.0.0/16 ge 16"
+
+sonic_config_loopback_address: 10.0.0.1
+
+sonic_config_ssh_sourceranges:
+  - "1.2.3.4/32"
+  - "10.11.0.0/16"
+
+sonic_config_vlan_subinterfaces:
+  - port: 0
+    cidr_ip: "172.17.146.162/28"
+    vlan: 461
+    vrf: VrfInternet
+  - port: 0
+    cidr_ip: "172.17.146.178/28"
+    vlan: 463
+    vrf: VrfInternet
+
+sonic_config_vlans:
+  - id: 4000
+    vrf: VrfMpls
+  - id: 4001
+    vrf: VrfTest
+
+sonic_config_vtep:
+  enabled: true
