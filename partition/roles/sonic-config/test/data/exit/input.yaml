@@ -78,6 +78,24 @@ sonic_config_interconnects:
       - 10.0.0.0/16 10.5.253.33 nexthop-vrf default
     announcements:
       - redistribute static
+      - import vrf route-map IMPORT-INTO-Vrf1560
+      - import vrf default
+    prefixlists:
+      - "ip prefix-list Vrf1560-IN seq 10 permit 10.0.0.0/16"
+    routemaps:
+      - name: "IMPORT-INTO-Vrf1560"
+        entries:
+          - "match ip address prefix-list Vrf1560-IN"
+  default:
+    announcements:
+      - import vrf route-map IMPORT-INTO-Default
+      - import vrf Vrf1560
+    prefixlists:
+      - "ip prefix-list Default-IN seq 10 permit 10.67.132.0/22 ge 22"
+    routemaps:
+      - name: "IMPORT-INTO-Default"
+        entries:
+          - "match ip address prefix-list Default-IN"
 
   pxe:
     peer_group: PXE

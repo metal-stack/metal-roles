@@ -337,6 +337,15 @@ sonic_config_interconnects:
       entries:
         - "match ip address prefix-list MPLS_PREFIX_OUT"
 
+    # Create routemaps not associated with a neighbor; for example for controlling dynamic route leaking.
+    routemaps:
+      - # Name of the routemap.
+        name: "IMPORT-INTO-Vrf117"
+
+        # List of routemap entries.
+        entries:
+          - "match ip address prefix-list Vrf117-IN"
+
     # Add optional static routes to this interconnect's VRF.
     static_routes:
       - 10.0.0.0/16 10.1.2.3 nexthop-vrf default

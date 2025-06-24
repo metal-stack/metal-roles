@@ -190,6 +190,15 @@ route-map {{ i.routemap_out.name }} permit 20
 {% endfor %}
 !
 {% endif %}
+{% if i.routemaps|default([]) %}
+{% for r in i.routemaps %}
+route-map {{ r.name }} permit 10
+{% for e in r.entries %}
+ {{ e }}
+{% endfor %}
+!
+{% endfor %}
+{% endif %}
 {% if i.extended_neighbors is defined %}
 {% for ext in i.extended_neighbors %}
 {% if ext.routemap_in is defined %}
