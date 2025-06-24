@@ -5,6 +5,7 @@ gardener_managed_seeds_garden_name: "{{ metal_control_plane_stage_name }}"
 gardener_managed_seed_rollout_delay_minutes:
 
 gardener_managed_seed_default_dns_domain:
+gardener_managed_seed_default_metal_api_hmac:
 
 gardener_managed_seeds: []
 # - name: seed-a
