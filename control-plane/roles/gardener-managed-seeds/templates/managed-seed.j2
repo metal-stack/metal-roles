@@ -25,7 +25,11 @@ spec:
                 namespace: garden
               type: {{ gardener_dns_provider }}
           ingress:
-            domain: ingress.{{ gardener_managed_seed.name }}.{{ gardener_soil_name }}.{{ gardener_dns_domain }}
+{% if %}
+            domain: {{ gardener_managed_seed.ingress_domain }}
+{% else %}
+            domain: ingress.{{ gardener_managed_seed.name }}.{{ gardener_managed_seed_default_dns_domain }}
+{% endif %}
             controller:
               kind: nginx
           networks:
@@ -36,7 +40,7 @@ spec:
             type: metal
           settings:
             excessCapacityReservation:
-              enabled: true
+              enabled: {{ gardener_managed_seed.excess_capacity_reservation | default(true) }}
             scheduling:
               visible: {{ gardener_managed_seed.visible | default(true) }}
             shootDNS:

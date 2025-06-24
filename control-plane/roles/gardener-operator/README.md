@@ -38,9 +38,9 @@ Here are the steps for the migration:
 1. ️⚠️ If you migrate from a standalone ETCD it is necessary to explicitly set `gardener_operator_high_availability_control_plane` to `false`. After the initial deployment of the virtual garden was successful, you can toggle this field to `true` in order to migrate to HA control plane. In case you deployed this without following this instruction, please repair your ETCD as described in [Recovering Etcd Clusters](https://gardener.cloud/docs/other-components/etcd-druid/recovering-etcd-clusters/).
 1. Deploy the roles `gardener-operator`, `gardener-cloud-profile`, `gardener-extensions`, `gardener-virtual-garden-access`.
 1. Manually deploy a kubeconfig secret for remote Gardenlet deployment through the Gardener Operator into the Virtual Garden as described [here](https://gardener.cloud/docs/gardener/deployment/deploy_gardenlet_via_operator/#remote-clusters). Delete the old Gardenlet helm chart from the original Gardener cluster and deploy the Gardenlet through the `gardener-gardenlet` role. Don't forget to specify the `gardenClientConnection.gardenClusterAddress` (see https://github.com/gardener/gardener/pull/11996)
-1. `kubectl --context garden annotate managedseeds -n garden <managed-seed-resource> gardener.cloud/operation=renew-kubeconfig`
+1. If you did not take over the existing certificates from the previous Virtual Garden, it might be necessary to run `kubectl --context garden annotate managedseeds -n garden <managed-seed-resource> gardener.cloud/operation=renew-kubeconfig` in order to fix the Gardenlet deployments.
 1. Reconcile your shoots, this should end up in a stable setup.
-1. To complete the migration, deploy a new Gardenlet either in a dedicated cluster or again in the Gardener cluster and execute a shoot migration of the shooted seeds to the new cluster.
+1. To complete the migration, deploy a new Gardenlet either in a dedicated cluster or again in the Gardener cluster and execute a shoot migration of the shooted seeds to the new cluster. Follow [this document](https://github.com/gardener/gardener/blob/master/docs/operations/control_plane_migration.md#triggering-the-migration).
 1. As the shoot migration for metal-stack is not fully working, you need to roll the firewalls of the seeds.
 
 ![Migration Path](./migration.drawio.svg)

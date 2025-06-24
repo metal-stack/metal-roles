@@ -4,6 +4,8 @@ gardener_managed_seeds_garden_name: "{{ metal_control_plane_stage_name }}"
 # can be useful for rollouts where the shooted seed or managed seed resource changes:
 gardener_managed_seed_rollout_delay_minutes:
 
+gardener_managed_seed_default_dns_domain:
+
 gardener_managed_seeds: []
 # - name: seed-a
 #   project_id: 00000000-0000-0000-0000-000000000001
@@ -44,3 +46,6 @@ gardener_managed_seeds: []
 #       namespace: garden
 #     bucket:
 #    logging_enabled: true
+#    storage_class_name:
+#    excess_capacity_reservation:
+#    ingress_domain:
