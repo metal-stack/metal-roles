@@ -31,11 +31,11 @@ spec:
   kubernetes:
     version: "{{ gardener_managed_seed.k8s_version }}"
     kubelet:
-      maxPods: {{ gardener_managed_seed_max_pods }}
+      maxPods: {{ gardener_managed_seed.max_pods | default(250) }}
     kubeControllerManager:
-      nodeCIDRMaskSize: {{ gardener_managed_seed_node_cidr_mask_size }}
+      nodeCIDRMaskSize: {{ gardener_managed_seed.node_cidr_mask_size | default(23) }}
     verticalPodAutoscaler:
-      enabled: {{ gardener_managed_seed.verticalPodAutoscaler | default(true) }}
+      enabled: {{ gardener_managed_seed.vertical_pod_autoscaler | default(true) }}
   provider:
     type: metal
     workers:
