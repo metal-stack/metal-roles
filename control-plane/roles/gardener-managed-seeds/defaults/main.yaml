@@ -12,6 +12,7 @@ gardener_managed_seeds: []
 #   feature_gates:
 #   region: region
 #   partition: partition
+#   seed_name:
 #   networks:
 #     - internet
 #     - e77400fe-e993-47b1-a0dd-64c9b7457b76
