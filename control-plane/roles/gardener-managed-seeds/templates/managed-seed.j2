@@ -41,6 +41,8 @@ spec:
           settings:
             excessCapacityReservation:
               enabled: {{ gardener_managed_seed.excess_capacity_reservation | default(true) }}
+            loadBalancerServices:
+              externalTrafficPolicy: {{ gardener_managed_seed.excess_capacity_reservation | default('Local') }}
             scheduling:
               visible: {{ gardener_managed_seed.visible | default(true) }}
             shootDNS:
