@@ -29,6 +29,7 @@ class GardenerSoilProjectTemplate(unittest.TestCase):
                     ],
                 },
             ],
+            "gardener_soil_protection_enabled": "true",
         })
 
         res = templar.template(t)
