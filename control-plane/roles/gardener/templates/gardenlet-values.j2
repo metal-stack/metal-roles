@@ -39,7 +39,7 @@ config:
     spec:
       provider:
         type: {{ metal_control_plane_host_provider }}
-        region: local
+        region: {{ gardener_soil_region }}
       secretRef:
         name: gardener-seed-kubeconfig
         namespace: garden
@@ -63,14 +63,15 @@ config:
         excessCapacityReservation:
           enabled: false
         scheduling:
-          visible: false
+          visible: {{ gardener_soil_scheduling_visible }}
         shootDNS:
           enabled: true
         verticalPodAutoscaler:
           enabled: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
+{% if gardener_soil_protection_enabled %}
       taints:
       - key: seed.gardener.cloud/protected
-
+{% endif %}
   featureGates: {{ gardener_gardenlet_feature_gates | to_json }}
 
 vpa: {{ gardener_soil_vertical_pod_autoscaler_enabled }}
