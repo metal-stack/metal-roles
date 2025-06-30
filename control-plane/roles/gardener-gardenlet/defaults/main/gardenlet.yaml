@@ -41,6 +41,7 @@ gardener_gardenlets: []
   #     accessKeyID:
   #     secretAccessKey:
   #   vertical_pod_autoscaler_enabled: true
+  #   dns_domain:
 
 gardener_gardenlet_defaults:
   backup_entry_deletion_grace_period_hours: 72

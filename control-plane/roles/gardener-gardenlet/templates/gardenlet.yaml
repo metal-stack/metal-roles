@@ -89,9 +89,11 @@ spec:
         ingress:
           controller:
             kind: nginx
-          domain: "{{ gardener_gardenlet_default_dns_domain }}"
+          domain: "{{ _config.dns_domain if 'dns_domain' in _config else gardener_gardenlet_default_dns_domain }}"
         networks:
-          nodes: "{{ _config.nodes if 'nodes' in _config else _gardener_gardenlet_node_cidr }}"
+{% if 'nodes' in _config %}
+          nodes: "{{ _config.nodes }}"
+{% endif %}
           pods: "{{ _config.pods if 'pods' in _config else  _gardener_gardenlet_pod_cidr }}"
           services: "{{ _config.services if 'services' in _config else _gardener_gardenlet_service_cidr }}"
         provider:

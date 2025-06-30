@@ -1,0 +1,11 @@
+---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_managed_seeds_garden_name }}"
+
+- name: Loop over shooted seeds
+  include_tasks: managed_seed.yaml
+  loop: "{{ gardener_managed_seeds }}"
+  loop_control:
+    loop_var: gardener_managed_seed
+    label: "{{ gardener_managed_seed.name }}"
