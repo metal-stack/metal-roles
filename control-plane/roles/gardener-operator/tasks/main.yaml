@@ -32,6 +32,3 @@
 
 - name: Deploy Gardener Operator
   import_tasks: operator.yaml
-
-- name: Deploy patches for mini-lab
-  import_tasks: mini_lab_patches.yaml
