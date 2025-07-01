@@ -1,5 +1,5 @@
 ---
-gardener_gardenlet_garden_name: "{{ metal_control_plane_stage_name }}"
+gardener_gardenlet_garden_name: "{{ gardener_defaults_garden_name }}"
 
 gardener_gardenlet_helm_chart_tag: "{{ gardener_gardenlet_image_tag }}"
 

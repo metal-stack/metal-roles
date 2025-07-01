@@ -1,0 +1,45 @@
+---
+- name: Add shoot provider secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ _config.name }}-provider-secret"
+        namespace: "{{ _config.namespace }}"
+        labels:
+          cloudprofile.garden.sapcloud.io/name: metal
+      type: Opaque
+      data:
+        metalAPIHMac: "{{ gardener_shoot_default_metal_api_hmac | b64encode }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    apply: yes
+
+- name: Add shoot secret binding
+  k8s:
+    definition:
+      apiVersion: core.gardener.cloud/v1beta1
+      kind: SecretBinding
+      metadata:
+        labels:
+          cloudprofile.garden.sapcloud.io/name: metal
+        name: "{{ _config.name }}-provider-secret"
+        namespace: "{{ _config.namespace }}"
+      secretRef:
+        name: "{{ _config.name }}-provider-secret"
+        namespace: "{{ _config.namespace }}"
+      provider:
+        type: metal
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    apply: yes
+
+- name: Deploy shooted seed
+  k8s:
+    definition: "{{ lookup('template', 'shoot.j2') }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    apply: yes
+
+- name: Delay shoot rollout
+  ansible.builtin.pause:
+    minutes: "{{ gardener_shoot_rollout_delay_minutes }}"
+  when: gardener_shoot_rollout_delay_minutes

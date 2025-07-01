@@ -5,50 +5,10 @@
       apiVersion: v1
       kind: Secret
       metadata:
-        name: "{{ gardener_managed_seed.name }}-backup-secret"
+        name: "{{ _gardener_managed_seed.name }}-backup-secret"
         namespace: garden
       type: Opaque
-      data: "{{ gardener_managed_seed.backup_infrastructure_secret }}"
-    kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
-
-- name: Add seed provider secret
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: "{{ gardener_managed_seed.name }}-provider-secret"
-        namespace: garden
-        labels:
-          cloudprofile.garden.sapcloud.io/name: metal
-      type: Opaque
-      data:
-        metalAPIHMac: "{{ gardener_managed_seed_default_metal_api_hmac | b64encode }}"
-    kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
-
-- name: Add secret binding
-  k8s:
-    definition:
-      apiVersion: core.gardener.cloud/v1beta1
-      kind: SecretBinding
-      metadata:
-        labels:
-          cloudprofile.garden.sapcloud.io/name: metal
-        name: "{{ gardener_managed_seed.name }}-provider-secret"
-        namespace: garden
-      secretRef:
-        name: "{{ gardener_managed_seed.name }}-provider-secret"
-        namespace: garden
-      provider:
-        type: metal
-    kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
-
-- name: Deploy shooted seed
-  k8s:
-    definition: "{{ lookup('template', 'shooted-seed.j2') }}"
+      data: "{{ _gardener_managed_seed.backup_infrastructure_secret }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: yes
 
@@ -57,8 +17,3 @@
     definition: "{{ lookup('template', 'managed-seed.j2') }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: yes
-
-- name: Delay shoot rollout
-  ansible.builtin.pause:
-    minutes: "{{ gardener_managed_seed_rollout_delay_minutes }}"
-  when: gardener_managed_seed_rollout_delay_minutes

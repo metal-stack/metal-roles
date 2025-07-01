@@ -1,0 +1,97 @@
+apiVersion: core.gardener.cloud/v1beta1
+kind: Shoot
+metadata:
+  name: "{{ _config.name }}"
+  namespace: "{{ _config.namespace }}"
+  annotations:
+      shoot.gardener.cloud/managed-seed-api-server: "{{ true | managed_seed_annotation(api_server=_config.api_server) }}"
+      cluster.metal-stack.io/name: "{{ _config.name }}"
+      cluster.metal-stack.io/project: "{{ _config.project_id }}"
+      cluster.metal-stack.io/tenant: "{{ metal_control_plane_provider_tenant }}"
+      cluster.metal-stack.io/partition: "{{ _config.partition }}"
+spec:
+  seedName: "{{ _config.seed_name }}"
+  secretBindingName: "{{ _config.name }}-provider-secret"
+  cloudProfileName: metal
+  region: "{{ _config.region }}"
+  purpose: "{{ _config.purpose }}"
+{% if 'managed_seed' in _config %}
+  tolerations: {{ _config.managed_seed.tolerations | to_json }}
+{% endif %}
+  addons:
+    kubernetes-dashboard:
+      enabled: false
+    nginx-ingress:
+      enabled: false
+{% if 'high_availability_control_plane' in _config %}
+  controlPlane:
+    highAvailability:
+      failureTolerance:
+        type: {{ _config.high_availability_control_plane }}
+{% endif %}
+  kubernetes:
+    version: "{{ _config.k8s_version }}"
+    kubelet:
+      maxPods: {{ _config.max_pods }}
+    kubeControllerManager:
+      nodeCIDRMaskSize: {{ _config.node_cidr_mask_size }}
+    verticalPodAutoscaler:
+      enabled: {{ _config.vertical_pod_autoscaler }}
+  provider:
+    type: metal
+    workers:
+{% for worker_group in _config.worker_groups %}
+    - name: "{{ worker_group.name | default('group-cri-' + loop.index0 | string) }}"
+      cri:
+        name: {{ worker_group.worker_cri | default("containerd") }}
+{% if 'k8s_version' in worker_group %}
+      kubernetes:
+        version: "{{ worker_group.k8s_version }}"
+{% endif %}
+      maximum: {{ worker_group.worker_count }}
+      minimum: {{ worker_group.worker_count }}
+      maxSurge: {{ worker_group.worker_max_surge }}
+      maxUnavailable: {{ worker_group.worker_max_unavailable }}
+      machine:
+        type: "{{ worker_group.worker_size }}"
+        image: {{ worker_group.worker_image | to_json }}
+{% endfor %}
+    infrastructureConfig:
+      apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
+      kind: InfrastructureConfig
+      firewall:
+        image: "{{ _config.firewall_image }}"
+        size: "{{ _config.firewall_size }}"
+        networks: {{ _config.networks | to_json }}
+{% if _config.firewall_controller_version is defined %}
+        controllerVersion: "{{ _config.firewall_controller_version }}"
+{% endif %}
+      projectID: "{{ _config.project_id }}"
+      partitionID: "{{ _config.partition }}"
+    controlPlaneConfig:
+      apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
+      kind: ControlPlaneConfig
+{% if 'storage_class_name' in _config %}
+      customDefaultStorageClass:
+        className: {{ _config.storage_class_name }}
+{% endif %}
+      featureGates: {{ _config.control_plane_feature_gates | to_json }}
+  networking:
+    type: calico
+    pods: {{ _config.pod_cidr }}
+    services: {{ _config.service_cidr }}
+    providerConfig:
+      apiVersion: calico.networking.extensions.gardener.cloud/v1alpha1
+      kind: NetworkConfig
+      backend: none
+      ipv4:
+        mode: Never
+      typha:
+        enabled: false
+  maintenance:
+    timeWindow:
+      begin: {{ _config.maintenance_timewindow_begin }}
+      end: {{ _config.maintenance_timewindow_end }}
+    autoUpdate:
+      kubernetesVersion: {{ _config.auto_update.kubernetes }}
+      machineImageVersion: {{ _config.auto_update.machine_image }}

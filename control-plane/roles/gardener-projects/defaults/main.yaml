@@ -1,0 +1,15 @@
+---
+gardener_projects_garden_name: "{{ gardener_defaults_garden_name }}"
+
+gardener_projects: []
+# - name: seed-a
+#   members:
+#     kind:
+#     name:
+#     role:
+#     roles: []
+
+gardener_project_defaults:
+  namespace: garden
+  owner: admin
+  protected_toleration: true

@@ -1,7 +1,7 @@
 apiVersion: seedmanagement.gardener.cloud/v1alpha1
 kind: ManagedSeed
 metadata:
-  name: "{{ gardener_managed_seed.name }}"
+  name: "{{ _config.name }}"
   namespace: garden
 spec:
   gardenlet:
@@ -12,12 +12,12 @@ spec:
       seedConfig:
         spec:
           backup:
-            provider: {{ gardener_managed_seed.backup_infrastructure.provider }}
-            region: {{ gardener_managed_seed.backup_infrastructure.region | default('', true) }}
+            provider: {{ _config.backup_infrastructure.provider }}
+            region: {{ _config.backup_infrastructure.region | default('', true) }}
             secretRef:
-              name: "{{ gardener_managed_seed.name }}-backup-secret"
+              name: "{{ _config.name }}-backup-secret"
               namespace: garden
-            providerConfig: {{ gardener_managed_seed.backup_infrastructure.providerConfig | default(None, true) | to_json }}
+            providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}
           dns:
             provider:
               secretRef:
@@ -25,33 +25,33 @@ spec:
                 namespace: garden
               type: {{ gardener_managed_seed_default_dns_provider }}
           ingress:
-{% if 'ingress_domain' in gardener_managed_seed %}
-            domain: {{ gardener_managed_seed.ingress_domain }}
+{% if 'ingress_domain' in _config %}
+            domain: {{ _config.ingress_domain }}
 {% else %}
-            domain: ingress.{{ gardener_managed_seed.name }}.{{ gardener_managed_seed_default_dns_domain }}
+            domain: ingress.{{ _config.name }}.{{ gardener_managed_seed_default_dns_domain }}
 {% endif %}
             controller:
               kind: nginx
           networks:
-            pods: "{{ gardener_managed_seed.pod_cidr }}"
-            services: "{{ gardener_managed_seed.service_cidr }}"
+            pods: "{{ _config.pod_cidr }}"
+            services: "{{ _config.service_cidr }}"
           provider:
-            region: "{{ gardener_managed_seed.region }}"
+            region: "{{ _config.region }}"
             type: metal
           settings:
             excessCapacityReservation:
-              enabled: {{ gardener_managed_seed.excess_capacity_reservation | default(true) }}
+              enabled: {{ _config.excess_capacity_reservation | default(true) }}
             loadBalancerServices:
-              externalTrafficPolicy: {{ gardener_managed_seed.external_traffic_policy | default('Local') }}
+              externalTrafficPolicy: {{ _config.external_traffic_policy | default('Local') }}
             scheduling:
-              visible: {{ gardener_managed_seed.visible | default(true) }}
+              visible: {{ _config.visible | default(true) }}
             shootDNS:
               enabled: true
-{% if 'logging_enabled' in gardener_managed_seed %}
+{% if 'logging_enabled' in _config %}
       logging:
-        enabled: {{ gardener_managed_seed.logging_enabled | lower }}
+        enabled: {{ _config.logging_enabled | lower }}
         vali:
-          enabled: {{ gardener_managed_seed.logging_enabled | lower }}
+          enabled: {{ _config.logging_enabled | lower }}
 {% endif %}
 
     deployment:
@@ -62,4 +62,4 @@ spec:
       vpa: true
     mergeWithParent: true
   shoot:
-    name: "{{ gardener_managed_seed.name }}"
+    name: "{{ _config.name }}"
