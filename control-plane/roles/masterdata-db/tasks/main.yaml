@@ -45,6 +45,7 @@
     postgres_backup_restore_sidecar_s3_endpoint: "{{ masterdata_db_backup_restore_sidecar_s3_endpoint }}"
     postgres_backup_restore_sidecar_s3_access_key: "{{ masterdata_db_backup_restore_sidecar_s3_access_key }}"
     postgres_backup_restore_sidecar_s3_secret_key: "{{ masterdata_db_backup_restore_sidecar_s3_secret_key }}"
+    postgres_backup_restore_sidecar_s3_trusted_ca_cert: "{{ masterdata_db_backup_restore_sidecar_s3_trusted_ca_cert }}"
     postgres_resources: "{{ masterdata_db_resources }}"
     postgres_backup_restore_sidecar_object_max_keep: "{{ masterdata_db_backup_restore_sidecar_object_max_keep }}"
     postgres_backup_restore_sidecar_encryption_key: "{{ masterdata_db_backup_restore_sidecar_encryption_key }}"

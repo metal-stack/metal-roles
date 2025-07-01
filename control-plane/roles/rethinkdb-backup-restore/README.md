@@ -9,7 +9,7 @@ This role uses variables from [control-plane-defaults](/control-plane). So, make
 You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                                                     | Mandatory | Description                                                                                                       |
-| -------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+|----------------------------------------------------------| --------- |-------------------------------------------------------------------------------------------------------------------|
 | rethinkdb_image_name                                     | yes       | Image version of the rethinkdb                                                                                    |
 | rethinkdb_image_tag                                      | yes       | Image tag of the rethinkdb                                                                                        |
 | rethinkdb_registry_auth_enabled                          |           | Enables registry authentication                                                                                   |
@@ -22,7 +22,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | rethinkdb_password                                       |           | The password of the rethinkdb                                                                                     |
 | rethinkdb_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                                                                       |
 | rethinkdb_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                                                           |
-| rethinkdb_backup_restore_sidecar_provider                |           | The backup provider. One of `local`, `gcp` or `s3`                                                                                              |
+| rethinkdb_backup_restore_sidecar_provider                |           | The backup provider. One of `local`, `gcp` or `s3`                                                                |
 | rethinkdb_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                                                          |
 | rethinkdb_backup_restore_sidecar_log_level               |           | The log level of the sidecar                                                                                      |
 | rethinkdb_backup_restore_sidecar_gcp_bucket_name         |           | Bucket name of the GCP bucket                                                                                     |
@@ -34,6 +34,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | rethinkdb_backup_restore_sidecar_s3_endpoint             |           | The endpoint URL for the S3 storage service                                                                       |
 | rethinkdb_backup_restore_sidecar_s3_access_key           |           | The access key for authenticating with S3                                                                         |
 | rethinkdb_backup_restore_sidecar_s3_secret_key           |           | The secret key for authenticating with S3                                                                         |
+| rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert      |           | The trusted certificate authority for the S3 storage service                                                      |
 | rethinkdb_expose_frontend                                |           | Exposes the rethinkdb over ingress (only use for dev environments)                                                |
 | rethinkdb_ingress_dns                                    |           | The virtual host to reach the rethinkdb frontend when exposed via ingress                                         |
 | rethinkdb_resources                                      |           | The kubernetes resources for the actual rethinkdb container                                                       |

@@ -35,6 +35,7 @@ postgres_backup_restore_sidecar_s3_region:
 postgres_backup_restore_sidecar_s3_endpoint:
 postgres_backup_restore_sidecar_s3_access_key:
 postgres_backup_restore_sidecar_s3_secret_key:
+postgres_backup_restore_sidecar_s3_trusted_ca_cert:
 
 postgres_resources:
   requests:
