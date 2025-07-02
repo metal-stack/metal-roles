@@ -55,6 +55,7 @@ gardener_backup_infrastructure_secret:
   # endpoint:
   # accessKeyID:
   # secretAccessKey:
+  # insecureSkipVerify: (Optional)
 
 gardener_soil_name: "{{ metal_control_plane_stage_name }}"
 gardener_soil_kubeconfig_file_path: "{{ lookup('env', 'KUBECONFIG') }}"
