@@ -4,11 +4,11 @@ kind: ControllerDeployment
 metadata:
   name: extension-shoot-cert-service
 helm:
-  rawChart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener-extension-shoot-cert-service/' + gardener_shoot_cert_service_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].helm.rawChart }}"
+  rawChart: "{{ (lookup('url', 'https://raw.githubusercontent.com/gardener/gardener-extension-shoot-cert-service/' + gardener_extension_shoot_cert_service_image_tag + '/example/controller-registration.yaml', split_lines=False) | from_yaml_all | list)[0].helm.rawChart }}"
   values:
     image:
-      repository: "{{ gardener_shoot_cert_service_image_name }}"
-      tag: "{{ gardener_shoot_cert_service_image_tag }}"
+      repository: "{{ gardener_extension_shoot_cert_service_image_name }}"
+      tag: "{{ gardener_extension_shoot_cert_service_image_tag }}"
     certificateConfig:
       # defaultRequestsPerDayQuota: 100
       defaultIssuer:

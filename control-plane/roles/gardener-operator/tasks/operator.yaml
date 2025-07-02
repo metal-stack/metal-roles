@@ -1,0 +1,46 @@
+---
+- name: Create backup infrastructure secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: virtual-garden-etcd-main-backup-secret
+        namespace: garden
+      type: Opaque
+      data: "{{ gardener_operator_backup_infrastructure_secret }}"
+    apply: yes
+  no_log: yes
+
+- name: Create DNS provider secrets
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: virtual-garden-dns-provider-{{ provider.name | lower }}-secret
+        namespace: garden
+      type: Opaque
+      data: "{{ provider.secretData }}"
+    apply: yes
+  loop: "{{ gardener_operator_dns_providers }}"
+  loop_control:
+    loop_var: provider
+    label: "{{ provider.name }}"
+  no_log: yes
+
+- name: Deploy Gardener Operator
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_timeout: "600s"
+    helm_chart: "oci://{{ gardener_operator_helm_chart }}"
+    helm_chart_version: "{{ gardener_operator_helm_chart_tag }}"
+    helm_release_name: operator
+    helm_target_namespace: garden
+    helm_value_file_template: gardener-operator-values.j2
+
+- name: Create Garden
+  k8s:
+    definition: "{{ lookup('template', 'garden.yaml') }}"
+    apply: yes

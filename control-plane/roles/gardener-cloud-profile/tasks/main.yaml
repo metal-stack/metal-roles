@@ -1,0 +1,46 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - gardener_cloud_profile_kubernetes is not none
+      - gardener_cloud_profile_regions is not none
+
+- name: Check deprecated variables are used
+  fail:
+    msg: "the variable {{ item.old }} was renamed to {{ item.new }}, please migrate and remove the old variable"
+  when: item.old in hostvars[inventory_hostname]
+  loop:
+    - old: gardener_os_cri_mapping
+      new: gardener_cloud_profile_os_cri_mapping
+    - old: gardener_os_compatibility_mapping
+      new: gardener_cloud_profile_os_compatibility_mapping
+  loop_control:
+    label: "{{ item.old }}"
+
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_cloud_profile_garden_name }}"
+
+# the following task is only useful when deploying gardener initially:
+- name: Wait for cloud profile resource to be available
+  discovery_api_k8s:
+    api_version: core.gardener.cloud/v1beta1
+    kind: CloudProfile
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+  register: result
+  until: result.result
+  retries: 60
+  delay: 5
+  when: gardener_cloud_profile_wait_until_available
+
+- name: Add Metal cloud profile
+  k8s:
+    definition: "{{ lookup('template', '30-cloud-profile-metal.yaml') }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    apply: yes
+  register: result
+  until: result is success
+  retries: 10
+  delay: 6
