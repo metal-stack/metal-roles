@@ -15,8 +15,10 @@ spec:
   cloudProfileName: metal
   region: "{{ gardener_shooted_seed.region }}"
   purpose: infrastructure
+{% if gardener_soil_protection_enabled %}
   tolerations:
     - key: seed.gardener.cloud/protected
+{% endif %}
   addons:
     kubernetes-dashboard:
       enabled: false

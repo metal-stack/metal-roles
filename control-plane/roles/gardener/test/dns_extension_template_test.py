@@ -28,10 +28,10 @@ helm:
         t = read_template_file("shoot-dns-service/controller-deployment.yaml")
 
         templar = Templar(loader=None, variables={
-            "gardener_shoot_dns_service_image_tag": "v0.0.1",
-            "gardener_shoot_dns_service_repo_ref": "gardener/gardener-extension-shoot-dns-service/{{ gardener_shoot_dns_service_image_tag }}",
-            "gardener_shoot_dns_service_image_name": "extension-image",
-            "gardener_shoot_dns_service_image_tag": "extension-tag",
+            "gardener_extension_shoot_dns_service_image_tag": "v0.0.1",
+            "gardener_shoot_dns_service_repo_ref": "gardener/gardener-extension-shoot-dns-service/{{ gardener_extension_shoot_dns_service_image_tag }}",
+            "gardener_extension_shoot_dns_service_image_name": "extension-image",
+            "gardener_extension_shoot_dns_service_image_tag": "extension-tag",
             "gardener_shoot_dns_service_image_vector_overwrite": [
                 {
                     "name": "dns-controller-manager",
