@@ -9,7 +9,7 @@ This role uses variables from [control-plane-defaults](/control-plane). So, make
 You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                                                    | Mandatory | Description                                                                                                       |
-| ------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+|---------------------------------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------|
 | postgres_image_name                                     | yes       | Image version of the postgres                                                                                     |
 | postgres_image_tag                                      | yes       | Image tag of the postgres                                                                                         |
 | postgres_registry_auth_enabled                          |           | Enables registry authentication                                                                                   |
@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | postgres_max_connections                                |           | The amount of max. connections possible, defaults to 100                                                          |
 | postgres_backup_restore_sidecar_image_name              | yes       | Image version of the backup-restore-sidecar                                                                       |
 | postgres_backup_restore_sidecar_image_tag               | yes       | Image tag of the backup-restore-sidecar                                                                           |
-| postgres_backup_restore_sidecar_provider                |           | The backup provider. One of `local`, `gcp` or `s3`                                                                                               |
+| postgres_backup_restore_sidecar_provider                |           | The backup provider. One of `local`, `gcp` or `s3`                                                                |
 | postgres_backup_restore_sidecar_backup_cron_schedule    |           | The backup cron schedule                                                                                          |
 | postgres_backup_restore_sidecar_log_level               |           | The log level of the sidecar                                                                                      |
 | postgres_backup_restore_sidecar_gcp_bucket_name         |           | Bucket name of the GCP bucket                                                                                     |
@@ -37,6 +37,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | postgres_backup_restore_sidecar_s3_endpoint             |           | The endpoint URL for the S3 storage service                                                                       |
 | postgres_backup_restore_sidecar_s3_access_key           |           | The access key for authenticating with S3                                                                         |
 | postgres_backup_restore_sidecar_s3_secret_key           |           | The secret key for authenticating with S3                                                                         |
+| postgres_backup_restore_sidecar_s3_insecure_skip_verify |           | Skip certificate check of S3 storage service                                                                      |
+| postgres_backup_restore_sidecar_s3_trusted_ca_cert      |           | The trusted certificate authority for the S3 storage service                                                      |
 | postgres_expose_frontend                                |           | Exposes the postgres over ingress (only use for dev environments)                                                 |
 | postgres_ingress_dns                                    |           | The virtual host to reach the postgres frontend when exposed via ingress                                          |
 | postgres_resources                                      |           | The kubernetes resources for the actual postgres container                                                        |
