@@ -34,7 +34,6 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | rethinkdb_backup_restore_sidecar_s3_endpoint             |           | The endpoint URL for the S3 storage service                                                                       |
 | rethinkdb_backup_restore_sidecar_s3_access_key           |           | The access key for authenticating with S3                                                                         |
 | rethinkdb_backup_restore_sidecar_s3_secret_key           |           | The secret key for authenticating with S3                                                                         |
-| rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert      |           | The trusted certificate authority for the S3 storage service                                                      |
 | rethinkdb_backup_restore_sidecar_s3_insecure_skip_verify |           | Skip certificate check of S3 storage service                                                                      |
 | rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert      |           | The trusted certificate authority for the S3 storage service                                                      |
 | rethinkdb_expose_frontend                                |           | Exposes the rethinkdb over ingress (only use for dev environments)                                                |
