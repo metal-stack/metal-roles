@@ -17,7 +17,6 @@ gardener_managed_seeds: []
 #   pod_cidr:
 #   service_cidr:
 #   logging_enabled: true
-#   storage_class_name:
 #   excess_capacity_reservation:
 #   ingress_domain:
 

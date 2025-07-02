@@ -32,15 +32,18 @@ gardener_shoots: []
 #   managed_seed:
 #     tolerations:
 #       - key: seed.gardener.cloud/protected
-#     api_server_autoscaler:
-#       min_replicas: 1
-#       max_replicas: 5
+#     api_server:
+#       replicas: 3
+#       autoscaler:
+#         min_replicas: 1
+#         max_replicas: 5
 #   verticalPodAutoscaler: false
 #   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
 #   # https://gardener.cloud/docs/guides/high-availability/control-plane/
 #   high_availability_control_plane: node
 #   storage_class_name:
 #   control_plane_feature_gates: []
+#   vethMTU: 1440
 
 gardener_shoot_defaults:
   namespace: garden

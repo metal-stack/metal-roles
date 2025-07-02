@@ -4,7 +4,9 @@ metadata:
   name: "{{ _config.name }}"
   namespace: "{{ _config.namespace }}"
   annotations:
-      shoot.gardener.cloud/managed-seed-api-server: "{{ true | managed_seed_annotation(api_server=_config.api_server) }}"
+{% if 'managed_seed' in _config %}
+      shoot.gardener.cloud/managed-seed-api-server: "{{ _config.managed_seed.api_server | managed_seed_api_server_annotation() }}"
+{% endif %}
       cluster.metal-stack.io/name: "{{ _config.name }}"
       cluster.metal-stack.io/project: "{{ _config.project_id }}"
       cluster.metal-stack.io/tenant: "{{ metal_control_plane_provider_tenant }}"
@@ -19,9 +21,7 @@ spec:
   tolerations: {{ _config.managed_seed.tolerations | to_json }}
 {% endif %}
   addons:
-    kubernetes-dashboard:
-      enabled: false
-    nginx-ingress:
+    kubernetesDashboard:
       enabled: false
 {% if 'high_availability_control_plane' in _config %}
   controlPlane:
@@ -88,6 +88,9 @@ spec:
         mode: Never
       typha:
         enabled: false
+{% if 'vethMTU' in _config %}
+      vethMTU: "{{ _config.vethMTU }}"
+{% endif %}
   maintenance:
     timeWindow:
       begin: {{ _config.maintenance_timewindow_begin }}
