@@ -26,6 +26,7 @@ metal_db_backup_restore_sidecar_s3_region:
 metal_db_backup_restore_sidecar_s3_endpoint:
 metal_db_backup_restore_sidecar_s3_access_key:
 metal_db_backup_restore_sidecar_s3_secret_key:
+metal_db_backup_restore_sidecar_s3_insecure_skip_verify:
 metal_db_backup_restore_sidecar_s3_trusted_ca_cert:
 
 metal_db_expose_frontend: no
