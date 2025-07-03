@@ -3,9 +3,6 @@ apiVersion: core.gardener.cloud/v1beta1
 kind: Project
 metadata:
   name: "{{ _config.name }}"
-  labels:
-    gardener.cloud/role: "project"
-    project.gardener.cloud/name: "{{ _config.name }}"
 spec:
   namespace: "{{ _config.namespace }}"
 {% if _config.protected_toleration %}
