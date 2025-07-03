@@ -115,11 +115,7 @@ BREAKOUT_CFG:
 PORT:
   {% for name, running_cfg in sonic_running_cfg_ports.items() %}
   {{ name }}:
-    {% if running_cfg.alias is defined %}
     alias: {{ running_cfg.alias }}
-    {% else %}
-    alias: {{ name }}  # Use port name as fallback
-    {% endif %}
     autoneg: "{{ running_cfg.autoneg|default("off")|string|lower }}"
     index: "{{ running_cfg.index }}"
     lanes: "{{ running_cfg.lanes }}"
@@ -301,16 +297,4 @@ ACL_TABLE:
     - "NTP"
     stage: "ingress"
     type: "CTRLPLANE"
-{% endif %}
-
-{% if sonic_vlan_subinterfaces is defined %}
-VLAN_SUB_INTERFACE:
-{% for sub_interface in sonic_vlan_subinterfaces %}
-  Ethernet{{ sub_interface.port }}.{{ sub_interface.vlan }}:
-    admin_status: up
-{% if sub_interface.vrf is defined %}
-    vrf_name: {{ sub_interface.vrf }}
-{% endif %}
-  Ethernet{{ sub_interface.port }}.{{ sub_interface.vlan }}|{{ sub_interface.cidr_ip }}: {}
-{% endfor %}
 {% endif %}

@@ -44,17 +44,6 @@
   ansible.builtin.set_fact:
     sonic_running_cfg: "{{ sonic_running_cfg_result.stdout | from_json }}"
 
-# Add this right after extracting the running configuration
-- name: Debug raw running configuration output
-  debug:
-    msg: "Running config command output received: {{ sonic_running_cfg_result.stdout | type_debug }}"
-    verbosity: 1
-
-- name: Debug parsed running configuration  
-  debug:
-    msg: "Parsed running config: {{ sonic_running_cfg | default('NOT_SET') }}"
-    verbosity: 1
-
 - name: Extract running configuration for breakouts and ports
   ansible.builtin.set_fact:
     sonic_running_cfg_breakouts: "{{ sonic_running_cfg | community.general.json_query('BREAKOUT_CFG') }}"
@@ -62,15 +51,6 @@
     sonic_running_cfg_mac: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.mac') }}"
     sonic_running_cfg_platform: "{{ sonic_running_cfg | community.general.json_query('DEVICE_METADATA.localhost.platform') }}"
     sonic_running_cfg_ports: "{{ sonic_running_cfg | community.general.json_query('PORT')  }}"
-
-- name: Debug port entries without index
-  debug:
-    msg: "Port {{ item.key }} is missing 'index' attribute"
-  loop: "{{ sonic_running_cfg_ports | dict2items }}"
-  when: 
-    - sonic_running_cfg_ports is defined
-    - sonic_running_cfg_ports is mapping
-    - item.value.index is not defined
 
 - name: Fail if running configuration doesn't contain required information
   ansible.builtin.assert:
