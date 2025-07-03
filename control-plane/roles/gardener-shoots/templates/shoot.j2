@@ -31,7 +31,7 @@ spec:
 {% endif %}
   kubernetes:
     version: "{{ _config.k8s_version }}"
-{% if 'audit_config' in _config %}
+{% if 'audit_policy' in _config %}
     kubeAPIServer:
       auditConfig:
         auditPolicy:
