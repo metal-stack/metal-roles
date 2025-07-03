@@ -6,7 +6,7 @@ metadata:
     gardener.cloud/role: "project"
     project.gardener.cloud/name: "{{ _config.name }}"
 spec:
-  namespace: garden
+  namespace: "{{ _config.namespace }}"
 {% if _config.protected_toleration %}
   tolerations:
     defaults:
