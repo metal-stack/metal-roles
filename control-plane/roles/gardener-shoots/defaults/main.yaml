@@ -43,7 +43,16 @@ gardener_shoots: []
 #   high_availability_control_plane: node
 #   storage_class_name:
 #   control_plane_feature_gates: []
-#   vethMTU: 1440
+#   veth_mtu: 1440
+#   audit_config:
+#   audit_extension_splunk:
+#     webhook_mode:
+#     size:
+#     index:
+#     host:
+#     port:
+#     tls:
+#     secret_name:
 
 gardener_shoot_defaults:
   namespace: garden

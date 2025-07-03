@@ -31,12 +31,43 @@ spec:
 {% endif %}
   kubernetes:
     version: "{{ _config.k8s_version }}"
+{% if 'audit_config' in _config %}
+    kubeAPIServer:
+      auditConfig:
+        auditPolicy:
+          configMapRef:
+            name: audit-policy-{{ _config.name }}
+{% endif %}
     kubelet:
       maxPods: {{ _config.max_pods }}
     kubeControllerManager:
       nodeCIDRMaskSize: {{ _config.node_cidr_mask_size }}
     verticalPodAutoscaler:
       enabled: {{ _config.vertical_pod_autoscaler }}
+{% if 'audit_extension_splunk' in _config %}
+  extensions:
+  - type: audit
+    providerConfig:
+      apiVersion: audit.metal.extensions.gardener.cloud/v1alpha1
+      kind: AuditConfig
+      webhookMode: {{ _config.audit_extension_splunk.webhook_mode | default('batch') }}
+      persistence:
+        size: {{ _config.audit_extension_splunk.size | default('2Gi') }}
+      backends:
+        splunk:
+          enabled: true
+          index: {{ _config.audit_extension_splunk.index }}
+          host: {{ _config.audit_extension_splunk.host }}
+          port: "{{ _config.audit_extension_splunk.port }}"
+          secretResourceName: splunk-secret
+          tls: {{ _config.audit_extension_splunk.tls | default(true) }}
+  resources:
+    - name: splunk-secret
+      resourceRef:
+        apiVersion: v1
+        kind: Secret
+        name: {{ _config.audit_extension_splunk.secret_name }}
+{% endif %}
   provider:
     type: metal
     workers:
@@ -88,8 +119,8 @@ spec:
         mode: Never
       typha:
         enabled: false
-{% if 'vethMTU' in _config %}
-      vethMTU: "{{ _config.vethMTU }}"
+{% if 'veth_mtu' in _config %}
+      vethMTU: "{{ _config.veth_mtu }}"
 {% endif %}
   maintenance:
     timeWindow:
