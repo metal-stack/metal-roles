@@ -69,7 +69,7 @@
 
 - name: Deploy shoot
   k8s:
-    template: shoot.yaml.j2
+    definition: "{{ lookup('template', 'shoot.yaml.j2') }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true
 
