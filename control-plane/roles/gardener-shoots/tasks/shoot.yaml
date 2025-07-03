@@ -13,7 +13,7 @@
       data:
         metalAPIHMac: "{{ gardener_shoot_default_metal_api_hmac | b64encode }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Add shoot secret binding
   k8s:
