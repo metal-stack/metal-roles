@@ -1,4 +1,8 @@
 ---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_shoots_garden_name }}"
+
 - name: Add shoot provider secret
   k8s:
     definition:
@@ -31,7 +35,7 @@
       provider:
         type: metal
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Deploy audit policy config map
   k8s:
@@ -44,7 +48,7 @@
       type: Opaque
       data:
         policy: "{{ _config.audit_policy }}"
-    apply: yes
+    apply: true
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
   when: "'audit_policy' in _config"
 
@@ -59,17 +63,25 @@
       type: Opaque
       data:
         policy: "{{ _config.structured_auth_config }}"
-    apply: yes
+    apply: true
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
   when: "'structured_auth_config' in _config"
 
-- name: Deploy shooted seed
+- name: Deploy shoot
   k8s:
-    definition: "{{ lookup('template', 'shoot.j2') }}"
+    template: shoot.yaml.j2
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
+    apply: true
 
-- name: Delay shoot rollout
-  ansible.builtin.pause:
-    minutes: "{{ gardener_shoot_rollout_delay_minutes }}"
-  when: gardener_shoot_rollout_delay_minutes
+- name: Wait until shoot reconciled
+  k8s_info:
+    api_version: core.gardener.cloud/v1beta1
+    kind: Shoot
+    name: "{{ _config.name }}"
+    namespace: "{{ _config.namespace }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+  register: _shoot_rollout
+  until: _shoot_rollout.get('status', {}).get('lastOperation', {}).get('state', '') == "Succeeded"
+  retries: "{{ gardener_shoot_rollout_wait_retries }}"
+  delay: "{{ gardener_shoot_rollout_wait_delay }}"
+  when: gardener_shoot_rollout_wait_enabled

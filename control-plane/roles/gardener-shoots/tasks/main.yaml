@@ -1,8 +1,4 @@
 ---
-- name: Get kubeconfig for virtual garden access
-  virtual_garden_kubeconfig:
-    garden_name: "{{ gardener_shoots_garden_name }}"
-
 - name: Loop over shoots
   include_tasks: shoot.yaml
   loop: "{{ gardener_shoots }}"

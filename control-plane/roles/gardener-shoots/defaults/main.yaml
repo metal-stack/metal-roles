@@ -2,7 +2,9 @@
 gardener_shoots_garden_name: "{{ gardener_defaults_garden_name }}"
 
 # can be useful for rollouts where the shooted seed or managed seed resource changes:
-gardener_shoot_rollout_delay_minutes:
+gardener_shoot_rollout_wait_retries: 36
+gardener_shoot_rollout_wait_delay: 10
+gardener_shoot_rollout_wait_enabled: true
 
 gardener_shoot_default_metal_api_hmac:
 
