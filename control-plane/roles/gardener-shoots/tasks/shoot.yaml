@@ -81,7 +81,7 @@
     namespace: "{{ _config.namespace }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
   register: _shoot_rollout
-  until: _shoot_rollout.get('status', {}).get('lastOperation', {}).get('state', '') == "Succeeded"
+  until: _shoot_rollout.resources[0].get('status', {}).get('lastOperation', {}).get('state', '') == "Succeeded"
   retries: "{{ gardener_shoot_rollout_wait_retries }}"
   delay: "{{ gardener_shoot_rollout_wait_delay }}"
   when: gardener_shoot_rollout_wait_enabled
