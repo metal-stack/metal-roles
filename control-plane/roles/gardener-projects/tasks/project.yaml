@@ -1,6 +1,6 @@
 ---
 - name: Create Gardener project
   k8s:
-    template: project.yaml.j2
+    definition: "{{ lookup('template', 'project.yaml.j2') }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true

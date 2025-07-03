@@ -33,7 +33,7 @@ spec:
       kind: "{{ member.kind | default('User') }}"
       name: "{{ member.name }}"
       role: "{{ member.role }}"
-{% if member.roles is defined %}
+{% if 'roles' in member %}
       roles:
 {% for role in member.roles %}
         - "{{ role }}"
