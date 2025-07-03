@@ -3,6 +3,7 @@ gardener_projects_garden_name: "{{ gardener_defaults_garden_name }}"
 
 gardener_projects: []
 # - name: seed-a
+#   description:
 #   members:
 #     kind:
 #     name:

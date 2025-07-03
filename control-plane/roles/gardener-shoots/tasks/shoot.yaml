@@ -48,6 +48,21 @@
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
   when: "'audit_policy' in _config"
 
+- name: Deploy structured auth config map
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: authentication-config-{{ _config.name }}
+        namespace: "{{ _config.namespace }}"
+      type: Opaque
+      data:
+        policy: "{{ _config.structured_auth_config }}"
+    apply: yes
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+  when: "'structured_auth_config' in _config"
+
 - name: Deploy shooted seed
   k8s:
     definition: "{{ lookup('template', 'shoot.j2') }}"

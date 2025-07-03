@@ -31,12 +31,22 @@ spec:
 {% endif %}
   kubernetes:
     version: "{{ _config.k8s_version }}"
-{% if 'audit_policy' in _config %}
+{% if ['audit_policy', 'structured_auth_config'] | intersect(_config.keys()) %}
     kubeAPIServer:
+{% if 'structured_auth_config' in _config %}
+      structuredAuthentication:
+        configMapName: authentication-config-{{ _config.name }}
+{% endif %}
+{% if 'audit_policy' in _config %}
       auditConfig:
         auditPolicy:
           configMapRef:
             name: audit-policy-{{ _config.name }}
+{% endif %}
+{% endif %}
+{% if 'kube_proxy_enabled' in _config %}
+    kubeProxy:
+      enabled: {{ _config.kube_proxy_enabled }}
 {% endif %}
     kubelet:
       maxPods: {{ _config.max_pods }}

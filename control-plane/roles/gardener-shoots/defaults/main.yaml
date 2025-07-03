@@ -43,6 +43,7 @@ gardener_shoots: []
 #   high_availability_control_plane: node
 #   storage_class_name:
 #   control_plane_feature_gates: []
+#   kube_proxy_enabled: true
 #   veth_mtu: 1440
 #   audit_config:
 #   audit_extension_splunk:
@@ -53,6 +54,7 @@ gardener_shoots: []
 #     port:
 #     tls:
 #     secret_name:
+#   structured_auth_config:
 
 gardener_shoot_defaults:
   namespace: garden
