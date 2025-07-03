@@ -43,7 +43,7 @@
         namespace: "{{ _config.namespace }}"
       type: Opaque
       data:
-        policy: "{{ _config.audit_policy | to_json }}"
+        policy: "{{ _config.audit_policy }}"
     apply: yes
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
   when: "'audit_policy' in _config"
