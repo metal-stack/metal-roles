@@ -44,7 +44,18 @@ gardener_shoots: []
 #   storage_class_name:
 #   control_plane_feature_gates: []
 #   kube_proxy_enabled: true
-#   veth_mtu: 1440
+#   networking_type: calico
+#   networking_pod_cidr:
+#   networking_service_cidr:
+#   networking_config_provider_config:
+#     apiVersion: calico.networking.extensions.gardener.cloud/v1alpha1
+#     backend: none
+#     ipv4:
+#       mode: Never
+#     kind: NetworkConfig
+#     typha:
+#       enabled: false
+#     vethMTU: "1440"
 #   audit_config:
 #   audit_extension_splunk:
 #     webhook_mode:

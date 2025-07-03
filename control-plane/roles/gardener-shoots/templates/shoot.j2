@@ -118,20 +118,10 @@ spec:
 {% endif %}
       featureGates: {{ _config.control_plane_feature_gates | to_json }}
   networking:
-    type: calico
-    pods: {{ _config.pod_cidr }}
-    services: {{ _config.service_cidr }}
-    providerConfig:
-      apiVersion: calico.networking.extensions.gardener.cloud/v1alpha1
-      kind: NetworkConfig
-      backend: none
-      ipv4:
-        mode: Never
-      typha:
-        enabled: false
-{% if 'veth_mtu' in _config %}
-      vethMTU: "{{ _config.veth_mtu }}"
-{% endif %}
+    type: {{ _config.networking_type }}
+    pods: {{ _config.networking_pod_cidr }}
+    services: {{ _config.networking_service_cidr }}
+    providerConfig: {{ _config.networking_provider_config | to_json }}
   maintenance:
     timeWindow:
       begin: {{ _config.maintenance_timewindow_begin }}
