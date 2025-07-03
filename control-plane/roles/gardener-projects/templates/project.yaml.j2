@@ -5,7 +5,7 @@ metadata:
   name: "{{ _config.name }}"
 spec:
   namespace: "{{ _config.namespace }}"
-{% if 'description in _config %}
+{% if 'description' in _config %}
   description: "{{ _config.description }}"
 {% endif %}
 {% if _config.protected_toleration %}
