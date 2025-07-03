@@ -1,0 +1,36 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: networking-cilium
+spec:
+  resources:
+  - kind: Network
+    type: cilium
+  deployment:
+    admission:
+      runtimeCluster:
+        helm:
+          ociRepository:
+            ref: "{{ gardener_extension_admission_cilium_helm_chart_runtime }}:{{ gardener_extension_admission_cilium_helm_chart_runtime_tag }}"
+      virtualCluster:
+        helm:
+          ociRepository:
+            ref: "{{ gardener_extension_admission_cilium_helm_chart_application }}:{{ gardener_extension_admission_cilium_helm_chart_application_tag }}"
+      values: {}
+    extension:
+      policy: Always
+      helm:
+          ociRepository:
+            ref: "{{ gardener_extension_networking_cilium_helm_chart }}:{{ gardener_extension_networking_cilium_helm_chart_tag }}"
+      values:
+        image:
+          repository: "{{ gardener_extension_networking_cilium_image_name }}"
+          tag: "{{ gardener_extension_networking_cilium_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+{% if gardener_extension_networking_cilium_image_vector_overwrite %}
+        imageVectorOverwrite: |
+          images:
+            {{ gardener_extension_networking_cilium_image_vector_overwrite | to_nice_yaml(indent=2) | indent(width=14, first=false) }}
+{% endif %}
+      runtimeClusterValues: {}

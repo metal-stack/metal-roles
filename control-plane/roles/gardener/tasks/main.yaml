@@ -18,7 +18,7 @@
       - gardener_extension_provider_metal_image_tag is defined
       - gardener_os_controller_image_tag is defined
       - metal_cloud_controller_manager_image_tag is defined
-      - gardener_networking_calico_image_tag is defined
+      - gardener_extension_networking_calico_image_tag is defined
       - csi_lvm_controller_image_tag is defined
       - csi_lvm_provisioner_image_tag is defined
       - gardener_api_server_ca is not none

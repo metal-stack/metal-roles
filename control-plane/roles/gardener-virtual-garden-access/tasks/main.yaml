@@ -1,0 +1,84 @@
+---
+# the following task is only useful when deploying gardener initially:
+- name: Wait for managed resource resource to be available
+  discovery_api_k8s:
+    api_version: resources.gardener.cloud/v1alpha1
+    kind: ManagedResource
+  register: result
+  until: result.result
+  retries: 12
+  delay: 5
+
+- name: Create virtual garden access secret
+  k8s:
+    apply: yes
+    definition:
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      metadata:
+        name: shoot-access-virtual-garden
+        namespace: garden
+        labels:
+          resources.gardener.cloud/purpose: token-requestor
+          resources.gardener.cloud/class: shoot
+        annotations:
+          serviceaccount.resources.gardener.cloud/name: virtual-garden-user
+          serviceaccount.resources.gardener.cloud/namespace: kube-system
+          serviceaccount.resources.gardener.cloud/token-expiration-duration: "{{ gardener_virtual_garden_access_expiration }}"
+
+- name: Create virtual garden access managed resource secret
+  k8s:
+    apply: yes
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: managedresource-virtual-garden-access
+        namespace: garden
+      type: Opaque
+      stringData:
+        clusterrolebinding____gardener.cloud.virtual-garden-access.yaml: |
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRoleBinding
+          metadata:
+            name: gardener.cloud.sap:virtual-garden
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            name: cluster-admin
+          subjects:
+          - kind: ServiceAccount
+            name: virtual-garden-user
+            namespace: kube-system
+
+- name: Create virtual garden access managed resource
+  k8s:
+    apply: yes
+    definition:
+      apiVersion: resources.gardener.cloud/v1alpha1
+      kind: ManagedResource
+      metadata:
+        name: virtual-garden-access
+        namespace: garden
+      spec:
+        secretRefs:
+        - name: managedresource-virtual-garden-access
+
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_virtual_garden_access_garden_name }}"
+  register: result
+  until: result is success
+  retries: 120
+  delay: 5
+
+# before we can continue, the virtual garden api server has to be up and running
+- name: Wait for garden namespace in virtual garden
+  k8s:
+    api_version: v1
+    kind: Namespace
+    name: garden
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    wait: yes
+    wait_timeout: 300
