@@ -8,6 +8,7 @@ gardener_projects: []
 #     name:
 #     role:
 #     roles: []
+#  protected_toleration:
 
 gardener_project_defaults:
   namespace: garden
