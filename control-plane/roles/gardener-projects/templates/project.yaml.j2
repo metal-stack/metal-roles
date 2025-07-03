@@ -4,11 +4,13 @@ kind: Project
 metadata:
   name: "{{ _config.name }}"
 spec:
+{% if 'namespace' in _config %}
   namespace: "{{ _config.namespace }}"
+{% endif %}
 {% if 'description' in _config %}
   description: "{{ _config.description }}"
 {% endif %}
-{% if _config.protected_toleration %}
+{% if 'protected_toleration' in _config and _config.protected_toleration %}
   tolerations:
     defaults:
       - key: seed.gardener.cloud/protected
@@ -26,7 +28,7 @@ spec:
       role: admin
       roles:
         - owner
-{% for member in _config.members %}
+{% for member in _config.members | default([]) %}
     - apiGroup: rbac.authorization.k8s.io
       kind: "{{ member.kind | default('User') }}"
       name: "{{ member.name }}"
