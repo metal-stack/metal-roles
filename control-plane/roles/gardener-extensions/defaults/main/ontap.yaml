@@ -1,0 +1,4 @@
+---
+gardener_extension_ontap_enabled: false
+
+gardener_extension_ontap_helm_chart_tag: "{{ gardener_extension_ontap_image_tag }}"
