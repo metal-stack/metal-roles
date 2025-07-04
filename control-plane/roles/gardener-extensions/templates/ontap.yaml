@@ -1,0 +1,21 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: ontap
+spec:
+  resources:
+  - kind: Extension
+    type: ontap
+  deployment:
+    extension:
+      policy: Always
+      helm:
+          ociRepository:
+            ref: "{{ gardener_extension_ontap_helm_chart }}:{{ gardener_extension_ontap_helm_chart_tag }}"
+      values:
+        image:
+          repository: "{{ gardener_extension_ontap_image_name }}"
+          tag: "{{ gardener_extension_ontap_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      runtimeClusterValues: {}

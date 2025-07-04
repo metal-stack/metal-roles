@@ -69,3 +69,4 @@
     - provider-metal
     - shoot-cert-service
     - shoot-dns-service
+    - ontap

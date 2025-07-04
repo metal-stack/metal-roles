@@ -163,3 +163,13 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_extension_shoot_dns_service_dns_controller_manager_image_name    |           | Setting an explicit image name for the dns-controller-manager                                           |
 | gardener_extension_shoot_dns_service_dns_controller_manager_image_tag     |           | Setting an explicit image tag for the dns-controller-manager                                            |
 | gardener_extension_shoot_dns_service_dns_provider_replication             |           | Enable provider replication feature for the shoot-service-dns extension                                 |
+
+### gardener-extension-ontap
+
+| Name                                             | Mandatory | Description                                                              |
+| ------------------------------------------------ | --------- | ------------------------------------------------------------------------ |
+| gardener_extension_ontap_enabled        |           | If enabled, deploys the extension                                        |
+| gardener_extension_ontap_helm_chart     |           | The ref to the helm oci artifact to deploy this extension                |
+| gardener_extension_ontap_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension                |
+| gardener_extension_ontap_image_name     |           | Setting an explicit image name for the gardener-extension-ontap |
+| gardener_extension_ontap_image_tag      |           | Setting an explicit image tag for the  gardener-extension-ontap |
