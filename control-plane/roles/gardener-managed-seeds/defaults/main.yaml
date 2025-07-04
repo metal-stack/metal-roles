@@ -1,0 +1,26 @@
+---
+gardener_managed_seeds_garden_name: "{{ gardener_defaults_garden_name }}"
+
+gardener_managed_seed_default_dns_provider:
+gardener_managed_seed_default_dns_domain:
+
+gardener_managed_seeds: []
+# - name: seed-a
+#   backup_infrastructure:
+#     provider: gcp
+#     region:
+#     secretRef:
+#       name: backup-secret
+#       namespace: garden
+#     bucket:
+#   region: region
+#   pod_cidr:
+#   service_cidr:
+#   logging_enabled: true
+#   excess_capacity_reservation:
+#   ingress_domain:
+
+gardener_managed_seed_defaults:
+  visible: true
+  excess_capacity_reservation: true
+  external_traffic_policy: Local

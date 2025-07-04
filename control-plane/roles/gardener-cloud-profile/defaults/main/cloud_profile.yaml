@@ -1,5 +1,5 @@
 ---
-gardener_cloud_profile_garden_name: "{{ metal_control_plane_stage_name }}"
+gardener_cloud_profile_garden_name: "{{ gardener_defaults_garden_name }}"
 gardener_cloud_profile_wait_until_available: true
 
 gardener_cloud_profile_stage_name: "{{ metal_control_plane_stage_name }}"
