@@ -8,7 +8,7 @@
   ansible.builtin.command: config load --yes
 
 - name: config reload
-  ansible.builtin.command: config reload --yes
+  ansible.builtin.command: config reload --yes -f
   async: 120
   poll: 0
   notify: wait for new connection
