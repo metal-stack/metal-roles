@@ -31,6 +31,9 @@ spec:
         replicaCount: {{ gardener_extension_provider_metal_admission_replicas }}
         vpa:
           enabled: {{ gardener_extension_provider_metal_admission_vpa }}
+        defaulter:
+          podsCIDR: {{ gardener_extension_provider_metal_admission_default_pods_cidr }}
+          servicesCIDR: {{ gardener_extension_provider_metal_admission_default_services_cidr }}
     extension:
       policy: Always
       helm:
