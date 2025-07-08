@@ -19,6 +19,9 @@ backup:
     endpoint: "{{ gardener_backup_infrastructure_secret.endpoint | b64decode }}"
     accessKeyID: "{{ gardener_backup_infrastructure_secret.accessKeyID | b64decode }}"
     secretAccessKey: "{{ gardener_backup_infrastructure_secret.secretAccessKey | b64decode }}"
+{% if gardener_backup_infrastructure_secret.insecureSkipVerify is defined %}
+    insecureSkipVerify: "{{ gardener_backup_infrastructure_secret.insecureSkipVerify | b64decode }}"
+{% endif %}
 {% endif %}
 {% endif %}
 
