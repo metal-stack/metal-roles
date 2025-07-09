@@ -7,8 +7,8 @@ gardener_extension_admission_metal_helm_chart_application_tag: "{{ gardener_exte
 
 gardener_extension_provider_metal_admission_replicas: 1
 gardener_extension_provider_metal_admission_vpa: true
-gardener_extension_provider_metal_admission_default_pods_cidr: 10.240.0.0/13
-gardener_extension_provider_metal_admission_default_services_cidr: 10.248.0.0/18
+gardener_extension_provider_metal_admission_default_pods_cidr:
+gardener_extension_provider_metal_admission_default_services_cidr:
 
 gardener_extension_provider_metal_etcd_storage_class_name:
 gardener_extension_provider_metal_etcd_backup_schedule: "0 */2 * * *"
