@@ -20,6 +20,8 @@ gardener_extension_csi_driver_lvm_repo_ref: "metal-stack/gardener-extension-csi-
 
 gardener_metal_admission_replicas: 1
 gardener_metal_admission_vpa: true
+gardener_extension_provider_metal_default_pods_cidr:
+gardener_extension_provider_metal_default_services_cidr:
 
 gardener_extension_provider_metal_cluster_audit_enabled: false
 gardener_extension_provider_metal_audit_to_splunk_enabled: false
