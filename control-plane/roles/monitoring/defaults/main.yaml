@@ -31,6 +31,7 @@ monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertma
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_metal_api_hmac: "metal-view"
+monitoring_metal_api_authtype: "Metal-View"
 
 # rethinkdb exporter
 monitoring_rethinkdb_exporter_metal_db_password: "change-me"
