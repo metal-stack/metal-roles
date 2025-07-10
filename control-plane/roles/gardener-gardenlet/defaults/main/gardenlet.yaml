@@ -46,7 +46,7 @@ gardener_gardenlets: []
 gardener_gardenlet_defaults:
   backup_entry_deletion_grace_period_hours: 72
   shoot_concurrent_syncs: 20
-  shoot_reconcile_in_maintenance_only: false
+  shoot_reconcile_in_maintenance_only: true
   shoot_respect_sync_period_overwrite: true
   logging_enabled: false
   logging_vali_enabled: false
