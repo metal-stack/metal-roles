@@ -14,3 +14,10 @@ replicaCount: {{ gardener_metal_admission_replicas }}
 resources: {}
 vpa:
   enabled: {{ gardener_metal_admission_vpa }}
+defaulter:
+{% if gardener_extension_provider_metal_default_pods_cidr %}
+  podsCIDR: {{ gardener_extension_provider_metal_default_pods_cidr }}
+{% endif %}
+{% if gardener_extension_provider_metal_default_services_cidr %}
+  servicesCIDR: {{ gardener_extension_provider_metal_default_services_cidr }}
+{% endif %}
