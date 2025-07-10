@@ -66,6 +66,7 @@ spec:
         - production
         - development
         - evaluation
+    featureGates: {{ _config.feature_gates | default({}, true) | to_json }}
     seedConfig:
       apiVersion: core.gardener.cloud/v1beta1
       kind: Seed

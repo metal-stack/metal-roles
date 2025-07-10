@@ -55,3 +55,4 @@ gardener_gardenlet_defaults:
   component_image_vector_overwrite: []
   kubeconfigSecretRef:
   garden_client_connection:
+  feature_gates: {}
