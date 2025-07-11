@@ -9,6 +9,13 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
+- name: Copy current config_db.json into temporary directory
+  copy:
+    src: /etc/sonic/sonic-environment
+    dest: /tmp/sonic/sonic-environment
+    mode: 0644
+    remote_src: true
+
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
@@ -19,8 +26,8 @@
     network_mode: host
     command: generate
     volumes:
-      - /usr/share/sonic/device:/usr/share/sonic/device/:ro
-      - /etc/sonic:/etc/sonic:ro
+      - /usr/share/sonic/device:/usr/share/sonic/device:ro
+      - /tmp/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
 - name: Override the existing config_db.json with the newly generated one
