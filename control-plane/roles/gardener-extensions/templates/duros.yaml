@@ -1,0 +1,32 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: duros
+spec:
+  resources:
+  - kind: Extension
+    type: duros
+  deployment:
+    extension:
+      policy: Always
+      helm:
+        ociRepository:
+          ref: "{{ gardener_extension_duros_helm_chart }}:{{ gardener_extension_duros_helm_chart_tag }}"
+      values:
+        image:
+          repository: "{{ gardener_extension_duros_image_name }}"
+          tag: "{{ gardener_extension_duros_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+
+        config:
+          regionConfig: "{{ gardener_extension_duros_regions_config | to_json }}"
+
+        imageVectorOverwrite: |
+          images:
+          - name: duros-controller
+            sourceRepository: https://github.com/metal-stack/duros-controller
+            repository: {{ duros_controller_image_name }}
+            tag: "{{ duros_controller_image_tag }}"
+
+      runtimeClusterValues: {}
