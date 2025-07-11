@@ -20,7 +20,7 @@ spec:
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
 
         config:
-          regionConfig: "{{ gardener_extension_duros_regions_config | to_json }}"
+          regionConfig: {{ gardener_extension_duros_regions_config | to_json }}
 
         imageVectorOverwrite: |
           images:
