@@ -41,6 +41,8 @@
     rethinkdb_backup_restore_sidecar_s3_endpoint: "{{ metal_db_backup_restore_sidecar_s3_endpoint }}"
     rethinkdb_backup_restore_sidecar_s3_access_key: "{{ metal_db_backup_restore_sidecar_s3_access_key }}"
     rethinkdb_backup_restore_sidecar_s3_secret_key: "{{ metal_db_backup_restore_sidecar_s3_secret_key }}"
+    rethinkdb_backup_restore_sidecar_s3_insecure_skip_verify: "{{ metal_db_backup_restore_sidecar_s3_insecure_skip_verify }}"
+    rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert: "{{ metal_db_backup_restore_sidecar_s3_trusted_ca_cert }}"
     rethinkdb_expose_frontend: "{{ metal_db_expose_frontend }}"
     rethinkdb_ingress_dns: "{{ metal_db_ingress_dns }}"
     rethinkdb_resources: "{{ metal_db_resources }}"
