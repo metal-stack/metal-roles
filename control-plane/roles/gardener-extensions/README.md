@@ -64,6 +64,17 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_extension_dns_powerdns_image_name                  |           | Setting an explicit image name for the gardener-extension-dns-powerdns                                        |
 | gardener_extension_dns_powerdns_image_tag                   |           | Setting an explicit image tag for the gardener-extension-dns-powerdns                                         |
 
+### gardener-extension-duros
+
+| Name                                    | Mandatory | Description                                                            |
+| --------------------------------------- | --------- | ---------------------------------------------------------------------- |
+| gardener_extension_duros_enabled        |           | If enabled, deploys the extension                                      |
+| gardener_extension_duros_helm_chart     |           | The ref to the helm oci artifact to deploy this extension              |
+| gardener_extension_duros_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension              |
+| gardener_extension_duros_regions_config |           | The configuration for the duros regions                                |
+| gardener_extension_duros_image_name     |           | Setting an explicit image name for the gardener-extension-dns-powerdns |
+| gardener_extension_duros_image_tag      |           | Setting an explicit image tag for the gardener-extension-dns-powerdns  |
+
 ### gardener-extension-networking-calico
 
 | Name                                                           | Mandatory | Description                                                                                             |

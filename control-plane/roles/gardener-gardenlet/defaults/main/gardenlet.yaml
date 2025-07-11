@@ -1,5 +1,5 @@
 ---
-gardener_gardenlet_garden_name: "{{ metal_control_plane_stage_name }}"
+gardener_gardenlet_garden_name: "{{ gardener_defaults_garden_name }}"
 
 gardener_gardenlet_helm_chart_tag: "{{ gardener_gardenlet_image_tag }}"
 
@@ -41,11 +41,12 @@ gardener_gardenlets: []
   #     accessKeyID:
   #     secretAccessKey:
   #   vertical_pod_autoscaler_enabled: true
+  #   dns_domain:
 
 gardener_gardenlet_defaults:
   backup_entry_deletion_grace_period_hours: 72
   shoot_concurrent_syncs: 20
-  shoot_reconcile_in_maintenance_only: false
+  shoot_reconcile_in_maintenance_only: true
   shoot_respect_sync_period_overwrite: true
   logging_enabled: false
   logging_vali_enabled: false
@@ -54,3 +55,4 @@ gardener_gardenlet_defaults:
   component_image_vector_overwrite: []
   kubeconfigSecretRef:
   garden_client_connection:
+  feature_gates: {}
