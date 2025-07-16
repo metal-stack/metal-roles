@@ -21,7 +21,7 @@
       METAL_IMAGE_CACHE_SYNC_MAX_IMAGES_PER_NAME: "{{ image_cache_sync_max_images_per_name }}"
       METAL_IMAGE_CACHE_SYNC_MIN_IMAGES_PER_NAME: "{{ image_cache_sync_min_images_per_name }}"
       METAL_IMAGE_CACHE_SYNC_METAL_APISERVER_URL: "{{ image_cache_sync_metal_apiserver_url }}"
-      METAL_IMAGE_CACHE_SYNC_METAL_APISERVER_TOKEN_PATH: "{{ image_cache_sync_host_path }}/metal-apiserver-token.txt"
+      METAL_IMAGE_CACHE_SYNC_METAL_APISERVER_TOKEN_PATH: "/var/lib/metal-image-cache-sync/metal-apiserver-token.txt"
       METAL_IMAGE_CACHE_SYNC_SCHEDULE: "{{ image_cache_sync_schedule }}"
       METAL_IMAGE_CACHE_SYNC_EXCLUDES: "{{ image_cache_sync_excludes | join(',') }}"
       METAL_IMAGE_CACHE_SYNC_EXPIRATION_GRACE_PERIOD: "{{ image_cache_sync_expiration_grace_period }}"
