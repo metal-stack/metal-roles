@@ -1,4 +1,12 @@
 ---
+- name: store token in credentials file
+  ansible.builtin.copy:
+  content: {{ image_cache_sync_metal_apiserver_token }}
+  dest: /etc/metal-apiserver-token.txt
+  owner: root
+  group: root
+  mode: '0644'
+
 - name: deploy image-sync service
   include_role:
     name: ansible-common/roles/systemd-docker-service
