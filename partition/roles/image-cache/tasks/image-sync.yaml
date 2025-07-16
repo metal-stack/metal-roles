@@ -1,7 +1,7 @@
 ---
 - name: store token in credentials file
   ansible.builtin.copy:
-  content: {{ image_cache_sync_metal_apiserver_token }}
+  content: "{{ image_cache_sync_metal_apiserver_token }}"
   dest: /etc/metal-apiserver-token.txt
   owner: root
   group: root
