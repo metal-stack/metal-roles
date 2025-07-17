@@ -88,13 +88,13 @@ spec:
 {% endif %}
     kubernetes:
       version: {{ gardener_virtual_garden_api_server_version }}
-    kubeAPIServer:
-    #   eventTTL: 1h
-    #   featureGates:
-    #     SomeKubernetesFeature: true
-    #   runtimeConfig:
-    #     scheduling.k8s.io/v1alpha1: true
-      oidcConfig:
+      kubeAPIServer:
+      #   eventTTL: 1h
+      #   featureGates:
+      #     SomeKubernetesFeature: true
+      #   runtimeConfig:
+      #     scheduling.k8s.io/v1alpha1: true
+        oidcConfig:
 {% if gardener_operator_virtual_garden_oidc_issuer_url %}
         issuerURL: {{ gardener_operator_virtual_garden_oidc_issuer_url }}
 {% endif %}
