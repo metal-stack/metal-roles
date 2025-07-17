@@ -9,10 +9,13 @@ jobs:
     container: metalstack/metal-deployment-base:latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Check spelling
-        uses: crate-ci/typos@master
-
       - name: Test
         run: |
           make test
+
+  spelling:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check spelling
+        uses: crate-ci/typos@master
