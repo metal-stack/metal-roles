@@ -9,6 +9,10 @@ jobs:
     container: metalstack/metal-deployment-base:latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Check spelling
+        uses: crate-ci/typos@master
+
       - name: Test
         run: |
           make test
