@@ -1,7 +1,8 @@
 ---
+gardener_operator_garden_name: "{{ gardener_defaults_garden_name }}"
+
 gardener_operator_repo_url: "{{ gardener_repo_url }}"
 gardener_operator_repo_ref: "{{ gardener_repo_ref }}"
-gardener_operator_local_tmp_dir: "{{ playbook_dir }}/.ansible/tmp"
 
 gardener_opreator_backup_infrastructure:
   # provider: gcp
@@ -31,8 +32,6 @@ gardener_operator_dns_providers: []
   #   secretData:
 
 gardener_operator_high_availability_control_plane: true
-
-gardener_operator_garden_name: "{{ metal_control_plane_stage_name }}"
 
 gardener_operator_image_vector_overwrite:
 gardener_operator_component_image_vector_overwrite:

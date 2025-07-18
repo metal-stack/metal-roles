@@ -62,6 +62,7 @@
     - backup-s3
     - csi-driver-lvm
     - dns-powerdns
+    - duros
     - networking-calico
     - networking-cilium
     - os-metal

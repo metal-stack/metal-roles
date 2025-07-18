@@ -1,0 +1,2 @@
+---
+gardener_defaults_garden_name: "{{ metal_control_plane_stage_name }}"

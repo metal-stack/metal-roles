@@ -1,0 +1,19 @@
+---
+- name: Create backup infrastructure secret for shooted seed
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ _gardener_managed_seed.name }}-backup-secret"
+        namespace: garden
+      type: Opaque
+      data: "{{ _gardener_managed_seed.backup_infrastructure_secret }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    apply: yes
+
+- name: Deploy managed seed resource
+  k8s:
+    definition: "{{ lookup('template', 'managed-seed.j2') }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+    apply: yes
