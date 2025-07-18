@@ -15,6 +15,43 @@
     helm_target_namespace: garden
     helm_value_file_template: extension-admission-metal-values.j2
 
+- name: Deploy service for admission-metal (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        labels:
+          app: gardener-extension-admission-metal
+        name: gardener-extension-admission-metal
+        namespace: garden
+      spec:
+        ports:
+        - port: 443
+        selector:
+          app: gardener-extension-admission-metal
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
+- name: Deploy endpoints for admission-metal (in virtual apiserver)
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Endpoints
+      metadata:
+        labels:
+          app: gardener-extension-admission-metal
+        name: gardener-extension-admission-metal
+        namespace: garden
+      subsets:
+      - addresses:
+        - ip: "{{ lookup('k8s', api_version='v1', kind='Service', namespace='garden', resource_name='gardener-extension-admission-metal').get('spec').get('clusterIP') }}"
+        ports:
+        - port: 443
+          protocol: TCP
+    kubeconfig: "{{ gardener_kube_apiserver_kubeconfig_path }}"
+    apply: yes
+
 - name: "Register admission webhook: admission metal (in virtual apiserver)"
   include_role:
     name: ansible-common/roles/helm-chart
