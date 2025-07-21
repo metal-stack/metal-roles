@@ -21,6 +21,8 @@
       - gardener_extension_networking_calico_image_tag is defined
       - csi_lvm_controller_image_tag is defined
       - csi_lvm_provisioner_image_tag is defined
+      # is this correct here?
+      - ontap_image_tag is defined
       - gardener_api_server_ca is not none
       - gardener_api_server_ca_key is not none
       - gardener_api_server_cert is not none

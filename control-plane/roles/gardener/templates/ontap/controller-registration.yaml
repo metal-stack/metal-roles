@@ -1,0 +1,13 @@
+---
+apiVersion: core.gardener.cloud/v1beta1
+kind: ControllerRegistration
+metadata:
+  name: ontap
+spec:
+  deployment:
+    policy: Always
+    deploymentRefs:
+    - name: ontap
+  resources:
+  - kind: Extension
+    type: ontap
