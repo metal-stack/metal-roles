@@ -5,8 +5,8 @@ metadata:
   name: "{{ _config.name }}"
   namespace: garden
 {% if _config.kubeconfigSecretRef %}
-  # annotations:
-  #   gardener.cloud/operation: force-redeploy
+  annotations:
+    gardener.cloud/operation: force-redeploy
 {% endif %}
 spec:
 {% if _config.kubeconfigSecretRef %}
