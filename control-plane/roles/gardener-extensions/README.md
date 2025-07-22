@@ -11,7 +11,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-acl
 
 | Name                                                        | Mandatory | Description                                                                                             |
-| ----------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------|
 | gardener_extension_acl_enabled                              |           | If enabled, deploys the extension                                                                       |
 | gardener_extension_acl_helm_chart                           |           | The ref to the helm oci artifact to deploy this extension                                               |
 | gardener_extension_admission_acl_helm_chart_runtime         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
@@ -26,7 +26,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-audit
 
 | Name                                    | Mandatory | Description                                                     |
-| --------------------------------------- | --------- | --------------------------------------------------------------- |
+|-----------------------------------------|-----------|-----------------------------------------------------------------|
 | gardener_extension_audit_enabled        |           | If enabled, deploys the extension                               |
 | gardener_extension_audit_helm_chart     |           | The ref to the helm oci artifact to deploy this extension       |
 | gardener_extension_audit_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension       |
@@ -36,7 +36,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-backup-s3
 
 | Name                                        | Mandatory | Description                                                         |
-| ------------------------------------------- | --------- | ------------------------------------------------------------------- |
+|---------------------------------------------|-----------|---------------------------------------------------------------------|
 | gardener_extension_backup_s3_enabled        |           | If enabled, deploys the extension                                   |
 | gardener_extension_backup_s3_helm_chart     |           | The ref to the helm oci artifact to deploy this extension           |
 | gardener_extension_backup_s3_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension           |
@@ -46,7 +46,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-csi-driver-lvm
 
 | Name                                             | Mandatory | Description                                                              |
-| ------------------------------------------------ | --------- | ------------------------------------------------------------------------ |
+|--------------------------------------------------|-----------|--------------------------------------------------------------------------|
 | gardener_extension_csi_driver_lvm_enabled        |           | If enabled, deploys the extension                                        |
 | gardener_extension_csi_driver_lvm_helm_chart     |           | The ref to the helm oci artifact to deploy this extension                |
 | gardener_extension_csi_driver_lvm_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension                |
@@ -56,7 +56,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-dns-powerdns
 
 | Name                                                        | Mandatory | Description                                                                                                   |
-| ----------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------|
 | gardener_extension_dns_powerdns_enabled                     |           | If enabled, deploys the extension                                                                             |
 | gardener_extension_dns_powerdns_helm_chart                  |           | The ref to the helm oci artifact to deploy this extension                                                     |
 | gardener_extension_dns_powerdns_helm_chart_tag              |           | The tag of the helm oci artifact to deploy this extension                                                     |
@@ -67,7 +67,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-networking-calico
 
 | Name                                                           | Mandatory | Description                                                                                             |
-| -------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+|----------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------|
 | gardener_extension_networking_calico_enabled                   |           | If enabled, deploys the extension                                                                       |
 | gardener_extension_networking_calico_helm_chart                |           | The ref to the helm oci artifact to deploy this extension                                               |
 | gardener_extension_admission_calico_helm_chart_runtime         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
@@ -79,7 +79,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-networking-cilium
 
 | Name                                                           | Mandatory | Description                                                                                             |
-| -------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+|----------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------|
 | gardener_extension_networking_cilium_enabled                   |           | If enabled, deploys the extension                                                                       |
 | gardener_extension_networking_cilium_helm_chart                |           | The ref to the helm oci artifact to deploy this extension                                               |
 | gardener_extension_admission_cilium_helm_chart_runtime         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
@@ -92,7 +92,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### os-metal-extension
 
 | Name                                       | Mandatory | Description                                               |
-| ------------------------------------------ | --------- | --------------------------------------------------------- |
+|--------------------------------------------|-----------|-----------------------------------------------------------|
 | gardener_extension_os_metal_enabled        |           | If enabled, deploys the extension                         |
 | gardener_extension_os_metal_helm_chart     |           | The ref to the helm oci artifact to deploy this extension |
 | gardener_extension_os_metal_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension |
@@ -100,7 +100,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-provider-gcp
 
 | Name                                                        | Mandatory | Description                                                                                             |
-| ----------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------|
 | gardener_extension_provider_gcp_enabled                     |           | If enabled, deploys the extension                                                                       |
 | gardener_extension_provider_gcp_helm_chart                  |           | The ref to the helm oci artifact to deploy this extension                                               |
 | gardener_extension_admission_gcp_helm_chart_runtime         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
@@ -112,7 +112,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-provider-metal
 
 | Name                                                              | Mandatory | Description                                                                                               |
-| ----------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
 | gardener_extension_provider_metal_enabled                         |           | If enabled, deploys the extension                                                                         |
 | gardener_extension_provider_metal_helm_chart                      |           | The ref to the helm oci artifact to deploy this extension                                                 |
 | gardener_extension_admission_metal_helm_chart_runtime             |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster   |
@@ -138,7 +138,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### shoot-cert-service
 
 | Name                                                        | Mandatory | Description                                                                                                 |
-| ----------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------------------------|-----------|-------------------------------------------------------------------------------------------------------------|
 | gardener_extension_shoot_cert_service_enabled               |           | If enabled, deploys the extension                                                                           |
 | gardener_extension_shoot_cert_service_helm_chart            |           | The ref to the helm oci artifact to deploy this extension                                                   |
 | gardener_extension_shoot_cert_service_helm_chart_tag        |           | The tag of the helm oci artifact to deploy this extension                                                   |
@@ -153,7 +153,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### shoot-dns-service
 
 | Name                                                                      | Mandatory | Description                                                                                             |
-| ------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+|---------------------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------|
 | gardener_extension_shoot_dns_service_enabled                              |           | If enabled, deploys the extension                                                                       |
 | gardener_extension_shoot_dns_service_helm_chart                           |           | The ref to the helm oci artifact to deploy this extension                                               |
 | gardener_extension_admission_shoot_dns_service_helm_chart_runtime         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
@@ -168,10 +168,10 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ### gardener-extension-ontap
 
-| Name                                             | Mandatory | Description                                                              |
-| ------------------------------------------------ | --------- | ------------------------------------------------------------------------ |
-| gardener_extension_ontap_enabled        |           | If enabled, deploys the extension                                        |
-| gardener_extension_ontap_helm_chart     |           | The ref to the helm oci artifact to deploy this extension                |
-| gardener_extension_ontap_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension                |
+| Name                                    | Mandatory | Description                                                     |
+|-----------------------------------------|-----------|-----------------------------------------------------------------|
+| gardener_extension_ontap_enabled        |           | If enabled, deploys the extension                               |
+| gardener_extension_ontap_helm_chart     |           | The ref to the helm oci artifact to deploy this extension       |
+| gardener_extension_ontap_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension       |
 | gardener_extension_ontap_image_name     |           | Setting an explicit image name for the gardener-extension-ontap |
 | gardener_extension_ontap_image_tag      |           | Setting an explicit image tag for the  gardener-extension-ontap |
