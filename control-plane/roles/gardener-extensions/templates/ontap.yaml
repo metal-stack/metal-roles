@@ -9,7 +9,6 @@ spec:
     type: ontap
   deployment:
     extension:
-      policy: Always
       helm:
           ociRepository:
             ref: "{{ gardener_extension_ontap_helm_chart }}:{{ gardener_extension_ontap_helm_chart_tag }}"
