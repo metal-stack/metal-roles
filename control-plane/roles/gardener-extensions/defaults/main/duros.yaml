@@ -1,0 +1,23 @@
+---
+gardener_extension_duros_enabled: false
+
+gardener_extension_duros_helm_chart: "ghcr.io/metal-stack/charts/gardener-extension-duros"
+gardener_extension_duros_helm_chart_tag: "v0.0.0-pull-request.1"
+gardener_extension_duros_image_name: "ghcr.io/metal-stack/gardener-extension-duros"
+gardener_extension_duros_image_tag: "duros-draft"
+
+gardener_extension_duros_regions_config: {}
+  # local:
+  #   endpoints: []
+  #   adminKey: ""
+  #   adminToken: "some-token"
+  #   apiEndpoint: ""
+  #   apiCA: ""
+  #   apiCert: ""
+  #   apiKey: ""
+  #   qosPolicies:
+  #     - name: standard
+  #       qosType: 1
+  #       readWriteLimit:
+  #         readLimit: "256"
+  #         writeLimit: "256"

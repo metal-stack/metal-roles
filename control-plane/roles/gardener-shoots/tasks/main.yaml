@@ -1,0 +1,9 @@
+---
+- name: Loop over shoots
+  include_tasks: shoot.yaml
+  loop: "{{ gardener_shoots }}"
+  loop_control:
+    loop_var: _gardener_shoot
+    label: "{{ _gardener_shoot.name }}"
+  vars:
+    _config: "{{ gardener_shoot_defaults | ansible.builtin.combine(_gardener_shoot, recursive=true) }}"
