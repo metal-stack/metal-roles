@@ -2,5 +2,9 @@
 gardener_extension_ontap_enabled: false
 
 gardener_extension_ontap_helm_chart_tag: "{{ gardener_extension_ontap_image_tag }}"
-gardener_extension_ontap_admin_secrets: 
-# TODO Populate this with example
+gardener_extension_ontap_clusters:
+ - name: cluster-a
+   ipaddress: 192.168.0.1
+   username: foo
+   password: bar
+
