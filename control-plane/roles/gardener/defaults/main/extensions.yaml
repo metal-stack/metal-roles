@@ -95,6 +95,5 @@ gardener_shoot_dns_service_dns_controller_manager_image_tag:
 gardener_shoot_dns_service_dns_provider_replication: false
 
 
-gardener_extension_ontap_admin_conf:
-# username_clusterA:
-# username_clusterB:
+gardener_extension_ontap_admin_secrets:
+# TODO Populate this with example

@@ -2,4 +2,5 @@
 gardener_extension_ontap_enabled: false
 
 gardener_extension_ontap_helm_chart_tag: "{{ gardener_extension_ontap_image_tag }}"
-gardener_extension_ontap_admin_conf: "{{ gardener_extension_ontap_admin_conf }}"
+gardener_extension_ontap_admin_secrets: 
+# TODO Populate this with example
