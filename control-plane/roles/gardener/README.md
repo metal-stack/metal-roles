@@ -115,7 +115,6 @@ called [gardener-extension-provider-metal](https://github.com/metal-stack/garden
 | gardener_extension_backup_s3_enabled                         |           | If enabled, deploys the gardener-extension-backup-s3                                                                                        |
 | gardener_extension_dns_powerdns_enabled                      |           | If enabled, deploys the gardener-extension-dns-powerdns                                                                                     |
 | gardener_extension_csi_driver_lvm_enabled                    |           | If enabled, deploys the gardener-extension-csi-driver-lvm                                                                                   |
-| gardener_extension_csi_ontap_enabled                         |           | If enabled, deploys the gardener-extension-ontap                                                                                            |
 | gardener_os_controller_repo_ref                              |           | A repo reference for deploying the [os-metal-extension](https://github.com/metal-stack/os-metal-extension/)                                 |
 | gardener_networking_cilium_repo_ref                          |           | A repo reference for deploying the [gardener-extension-networking-cilium](https://github.com/gardener/gardener-extension-networking-cilium) |
 | gardener_extension_provider_metal_repo_ref                   |           | A repo reference for deploying the [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal)    |
@@ -123,7 +122,6 @@ called [gardener-extension-provider-metal](https://github.com/metal-stack/garden
 | gardener_extension_backup_s3_repo_ref                        |           | A repo reference for deploying the [gardener-extension-backup-s3](https://github.com/metal-stack/gardener-extension-backup-s3)              |
 | gardener_extension_dns_powerdns_repo_ref                     |           | A repo reference for deploying the [gardener-extension-dns-powerdns](https://github.com/metal-stack/gardener-extension-dns-powerdns)        |
 | gardener_extension_csi_driver_lvm_repo_ref                   |           | A repo reference for deploying the [gardener-extension-csi-driver-lvm](https://github.com/metal-stack/gardener-extension-csi-driver-lvm)    |
-| gardener_extension_ontap_repo_ref                            |           | A repo reference for deploying the [gardener-extension-ontap](https://github.com/metal-stack/gardener-extension-ontap)                      |
 | gardener_metal_admission_replicas                            |           | Specifies the amount of metal-admission webhook replicas                                                                                    |
 | gardener_metal_admission_vpa                                 |           | Enables the VPA for the metal-admission webhook                                                                                             |
 | gardener_extension_provider_metal_cluster_audit_enabled      |           | Enables the audit functionality of the GEPM                                                                                                 |
@@ -150,11 +148,9 @@ called [gardener-extension-provider-metal](https://github.com/metal-stack/garden
 | gardener_extension_backup_s3_image_name                      |           | Setting an explicit image name for the gardener-extension-backup-s3                                                                         |
 | gardener_extension_backup_s3_image_tag                       |           | Setting an explicit image tag for the gardener-extension-backup-s3                                                                          |
 | gardener_extension_dns_powerdns_image_name                   |           | Setting an explicit image name for the gardener-extension-dns-powerdns                                                                      |
-| gardener_extension_dns_powerdns_image_tag                    |           | Setting an explicit image tag for the gardener-extension-dns-powerdns                                                                       |
+| gardener_extension_dns_powerdns_image_tag                    |           | Setting an explicit image tag for the  gardener-extension-dns-powerdns                                                                      |
 | gardener_extension_csi_driver_lvm_image_name                 |           | Setting an explicit image name for the gardener-extension-csi-driver-lvm                                                                    |
-| gardener_extension_csi_driver_lvm_image_tag                  |           | Setting an explicit image tag for the gardener-extension-csi-driver-lvm                                                                     |
-| gardener_extension_ontap_image_name                          |           | Setting an explicit image name for the gardener-extension-ontap-lvm                                                                         |
-| gardener_extension_ontap_image_tag                           |           | Setting an explicit image tag for the gardener-extension-ontap-lvm                                                                          |
+| gardener_extension_csi_driver_lvm_image_tag                  |           | Setting an explicit image tag for the  gardener-extension-csi-driver-lvm                                                                    |
 
 ### Certificates
 
@@ -166,7 +162,7 @@ the [mini-lab](https://github.com/metal-stack/mini-lab/blob/master/files/certs/r
 certificates.
 
 | Name                                         | Mandatory | Description |
-| -------------------------------------------- | --------- | ----------- |
+|----------------------------------------------|-----------|-------------|
 | gardener_kube_api_server_ca                  | yes       | -           |
 | gardener_kube_api_server_ca_key              | yes       | -           |
 | gardener_kube_api_server_cert                | yes       | -           |

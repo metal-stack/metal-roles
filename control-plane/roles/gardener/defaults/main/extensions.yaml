@@ -9,7 +9,6 @@ gardener_extension_shoot_dns_service_enabled: true
 gardener_extension_dns_powerdns_enabled: false
 gardener_extension_backup_s3_enabled: false
 gardener_extension_csi_driver_lvm_enabled: false
-gardener_extension_ontap_enabled: false
 
 gardener_extension_provider_metal_repo_ref: "{{ gardener_extension_provider_metal_image_tag }}"
 gardener_networking_cilium_repo_ref: "gardener/gardener-extension-networking-cilium/{{ gardener_networking_cilium_image_tag }}"
@@ -18,8 +17,6 @@ gardener_shoot_dns_service_repo_ref: "gardener/gardener-extension-shoot-dns-serv
 gardener_extension_backup_s3_repo_ref: "metal-stack/gardener-extension-backup-s3/{{ gardener_extension_backup_s3_image_tag }}"
 gardener_extension_dns_powerdns_repo_ref: "metal-stack/gardener-extension-dns-powerdns/{{ gardener_extension_dns_powerdns_image_tag }}"
 gardener_extension_csi_driver_lvm_repo_ref: "metal-stack/gardener-extension-csi-driver-lvm/{{ gardener_extension_csi_driver_lvm_image_tag }}"
-gardener_extension_ontap_repo_ref: "metal-stack/gardener-extension-ontap/{{ gardener_extension_ontap_image_tag }}"
-
 
 gardener_metal_admission_replicas: 1
 gardener_metal_admission_vpa: true
@@ -93,7 +90,3 @@ gardener_shoot_dns_service_dns_controller_manager_image_name:
 gardener_shoot_dns_service_dns_controller_manager_image_tag:
 
 gardener_shoot_dns_service_dns_provider_replication: false
-
-
-gardener_extension_ontap_admin_secrets:
-# TODO Populate this with example
