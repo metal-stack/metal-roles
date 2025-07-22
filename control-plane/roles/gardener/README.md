@@ -13,7 +13,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ## Variables
 
 | Name                                                        | Mandatory | Description                                                                                                                                                                                                                                                                   |
-|-------------------------------------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | gardener_image_vector_overwrite                             |           | Allows overriding the image vector to set custom image versions for gardener                                                                                                                                                                                                  |
 | gardener_component_image_vector_overwrite                   |           | Allows overriding the image vector to set custom image versions for gardenlet components                                                                                                                                                                                      |
 | gardener_apiserver_replicas                                 |           | Specifies the amount of gardener-apiserver replicas                                                                                                                                                                                                                           |
@@ -55,7 +55,7 @@ The deployment chart is taken from [garden-setup](https://github.com/gardener/ga
 deployment approach.
 
 | Name                                                 | Mandatory | Description                                                                                                                                                                                  |
-|------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | gardener_virtual_api_server_svc_cluster_ip_add       |           | An integer to "guess" a free IP for the service that allows the soil to internally communicate with the virtual garden                                                                       |
 | gardener_virtual_api_server_public_dns               |           | The DNS domain to reach the virtual garden API server on                                                                                                                                     |
 | gardener_virtual_api_server_public_port              |           | The port on which the virtual garden API server is available                                                                                                                                 |
@@ -82,7 +82,7 @@ deployment approach.
 Variables for the metal-stack cloud profile.
 
 | Name                                                       | Mandatory | Description                                                                         |
-|------------------------------------------------------------|-----------|-------------------------------------------------------------------------------------|
+| ---------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------- |
 | gardener_cloud_profile_stage_name                          |           | The name of the metal-stack environment in the cloud profile                        |
 | gardener_cloud_profile_metal_api_url                       |           | The URL used by the Gardener to communicate with the metal-api                      |
 | gardener_cloud_profile_metal_api_hmac                      | yes       | The admin HMAC used by the Gardener to communicate with the metal-api               |
@@ -105,7 +105,7 @@ This includes the metal-stack extension provider
 called [gardener-extension-provider-metal](https://github.com/metal-stack/gardener-extension-provider-metal) (GEPM).
 
 | Name                                                         | Mandatory | Description                                                                                                                                 |
-|--------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | gardener_extension_provider_gcp_enabled                      |           | If enabled, deploys the gardener-extension-provider-metal                                                                                   |
 | gardener_extension_os_metal_enabled                          |           | If enabled, deploys the os-metal-extension                                                                                                  |
 | gardener_extension_networking_calico_enabled                 |           | If enabled, deploys the gardener-networking-extension-calico                                                                                |
@@ -135,6 +135,8 @@ called [gardener-extension-provider-metal](https://github.com/metal-stack/garden
 | gardener_extension_provider_metal_duros_storage_config       |           | Configuration for the duros storage integration                                                                                             |
 | gardener_extension_provider_metal_image_pull_policy          |           | Sets the image pull policy for components deployed through this extension controller.                                                       |
 | gardener_extension_provider_metal_image_pull_secret          |           | Provide image pull secrets for deployed containers                                                                                          |
+| gardener_extension_provider_metal_default_pods_cidr          |           | Configure the default pod CIDR of a shoot                                                                                                   |
+| gardener_extension_provider_metal_default_services_cidr      |           | Configure the default service CIDR of a shoot                                                                                               |
 | gardener_cert_management_issuer_private_key                  |           | The Let's Encrypt private key used by the cert-management extension controller to setup signed certificates                                 |
 | gardener_extension_networking_cilium_image_vector_overwrite  |           | Allows overriding the image vector for the networking cilium extension                                                                      |
 | gardener_cert_management_issuer_email                        |           | The issuer email used by the cert-management extension                                                                                      |
@@ -148,9 +150,9 @@ called [gardener-extension-provider-metal](https://github.com/metal-stack/garden
 | gardener_extension_backup_s3_image_name                      |           | Setting an explicit image name for the gardener-extension-backup-s3                                                                         |
 | gardener_extension_backup_s3_image_tag                       |           | Setting an explicit image tag for the gardener-extension-backup-s3                                                                          |
 | gardener_extension_dns_powerdns_image_name                   |           | Setting an explicit image name for the gardener-extension-dns-powerdns                                                                      |
-| gardener_extension_dns_powerdns_image_tag                    |           | Setting an explicit image tag for the  gardener-extension-dns-powerdns                                                                      |
+| gardener_extension_dns_powerdns_image_tag                    |           | Setting an explicit image tag for the gardener-extension-dns-powerdns                                                                       |
 | gardener_extension_csi_driver_lvm_image_name                 |           | Setting an explicit image name for the gardener-extension-csi-driver-lvm                                                                    |
-| gardener_extension_csi_driver_lvm_image_tag                  |           | Setting an explicit image tag for the  gardener-extension-csi-driver-lvm                                                                    |
+| gardener_extension_csi_driver_lvm_image_tag                  |           | Setting an explicit image tag for the gardener-extension-csi-driver-lvm                                                                     |
 
 ### Certificates
 
@@ -162,7 +164,7 @@ the [mini-lab](https://github.com/metal-stack/mini-lab/blob/master/files/certs/r
 certificates.
 
 | Name                                         | Mandatory | Description |
-|----------------------------------------------|-----------|-------------|
+| -------------------------------------------- | --------- | ----------- |
 | gardener_kube_api_server_ca                  | yes       | -           |
 | gardener_kube_api_server_ca_key              | yes       | -           |
 | gardener_kube_api_server_cert                | yes       | -           |
