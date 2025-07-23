@@ -186,3 +186,4 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_extension_ontap_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension       |
 | gardener_extension_ontap_image_name     |           | Setting an explicit image name for the gardener-extension-ontap |
 | gardener_extension_ontap_image_tag      |           | Setting an explicit image tag for the  gardener-extension-ontap |
+| gardener_extension_ontap_clusters       |           | Ontap clusters to connect the extension to                      |
