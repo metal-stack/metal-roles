@@ -28,6 +28,7 @@
       - not gardener_extension_shoot_dns_service_enabled or gardener_extension_shoot_dns_service_helm_chart is not none
       - not gardener_extension_shoot_dns_service_enabled or gardener_extension_admission_shoot_dns_service_helm_chart_runtime is not none
       - not gardener_extension_shoot_dns_service_enabled or gardener_extension_admission_shoot_dns_service_helm_chart_application is not none
+      - not gardener_extension_ontap_enabled or gardener_extension_ontap_helm_chart is not none
 
 - name: Check deprecated variables are used
   fail:
@@ -70,3 +71,4 @@
     - provider-metal
     - shoot-cert-service
     - shoot-dns-service
+    - ontap
