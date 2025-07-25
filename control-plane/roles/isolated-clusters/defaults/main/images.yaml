@@ -29,9 +29,9 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/gardener/node-agent
       match:
         semver: ">= v1.89.0"
-        tags:                                                                                                                                                                                                                               
-        - v1.113.3-preview5                                                                                                                                                                                                                 
-        - v1.114.3-preview5                                                                                                                                                                                                                 
+        tags:
+        - v1.113.3-preview5
+        - v1.114.3-preview5
         - v1.115.4-preview5
     - source: europe-docker.pkg.dev/gardener-project/releases/3rd/alpine
       destination: http://registry:5000/gardener-project/releases/3rd/alpine
@@ -153,8 +153,15 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/node-init
       match:
         semver: ">= v0.1.4"
-    # TODO: this can be removed after g/g v1.94 when we do not rely on our fork build anymore
-    - source: r.metal-stack.io/gardener/node-agent
-      destination: http://registry:5000/gardener/node-agent
+    - source: docker.io/netapp/trident
+      destination: http://registry:5000/netapp/trident
       match:
-        all_tags: true
+        semver: ">= 25.02.0"
+    - source: docker.io/netapp/trident-autosupport
+      destination: http://registry:5000/netapp/trident-autosupport
+      match:
+        semver: ">= 25.02.0"
+    - source: docker.io/netapp/trident-operator
+      destination: http://registry:5000/netapp/trident-operator
+      match:
+        semver: ">= 25.02.0"
