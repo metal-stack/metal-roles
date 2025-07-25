@@ -165,3 +165,7 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/netapp/trident-operator
       match:
         semver: ">= 25.02.0"
+    - source: docker.io/library/busybox
+      destination: http://registry:5000/library/busybox
+      match:
+        semver: '>= 1.36'
