@@ -45,7 +45,6 @@
       metadata:
         name: audit-policy-{{ _config.name }}
         namespace: "{{ _config.namespace }}"
-      type: Opaque
       data:
         policy: "{{ _config.audit_policy }}"
     apply: true
