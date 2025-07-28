@@ -59,7 +59,6 @@ spec:
         pullPolicy: {{ metal_control_plane_image_pull_policy }}
       replicaCount: 1
       revisionHistoryLimit: 1
-      vpa: true
     mergeWithParent: true
   shoot:
     name: "{{ _config.name }}"
