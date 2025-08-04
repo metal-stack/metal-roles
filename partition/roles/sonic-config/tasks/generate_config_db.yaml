@@ -9,7 +9,7 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
-- name: Copy current config_db.json into temporary directory
+- name: Copy sonic-environment into temporary directory
   copy:
     src: /etc/sonic/sonic-environment
     dest: /tmp/sonic/sonic-environment
