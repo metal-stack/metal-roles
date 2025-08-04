@@ -1,0 +1,13 @@
+---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_projects_garden_name }}"
+
+- name: Loop over projects
+  include_tasks: project.yaml
+  loop: "{{ gardener_projects }}"
+  loop_control:
+    loop_var: _gardener_project
+    label: "{{ _gardener_project.name }}"
+  vars:
+    _config: "{{ gardener_project_defaults | ansible.builtin.combine(_gardener_project, recursive=true) }}"
