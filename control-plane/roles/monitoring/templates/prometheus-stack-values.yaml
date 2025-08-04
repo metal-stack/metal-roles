@@ -150,6 +150,9 @@ alertmanager:
         repeat_interval: 1h
         continue: true
 {% endif %}
+{% for route in monitoring_alertmanager_additional_routes %}
+      - {{ route | to_yaml | indent(width=8, first=false) }}
+{% endfor %}
     receivers:
     - name: webhook-logger
       webhook_configs:
@@ -181,6 +184,9 @@ alertmanager:
             url: '{{ template "__alert_silence_link" . }}'
 {% endraw %}
 {% endif %}
+{% for receiver in monitoring_alertmanager_additional_receivers %}
+    - {{ receiver | to_yaml | indent(width=6, first=false) }}
+{% endfor %}
 
 {% raw %}
   templateFiles:
