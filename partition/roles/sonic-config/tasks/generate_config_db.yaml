@@ -19,7 +19,7 @@
     network_mode: host
     command: generate
     volumes:
-      - /usr/share/sonic/device:/usr/share/sonic/device:ro
+      - /usr/share/sonic/device:/usr/share/sonic/device/:ro
       - /etc/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
