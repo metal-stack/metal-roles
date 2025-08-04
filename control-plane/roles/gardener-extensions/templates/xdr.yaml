@@ -22,8 +22,4 @@ spec:
           repository: {{ gardener_extension_xdr_image_name }}
           tag: {{ gardener_extension_xdr_image_tag }}
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
-      runtimeClusterValues:
-        image:
-          repository: {{ gardener_extension_xdr_image_name }}
-          tag: {{ gardener_extension_xdr_image_tag }}
-          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      runtimeClusterValues: {}
