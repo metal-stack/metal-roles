@@ -7,10 +7,6 @@ spec:
   resources:
   - kind: Extension
     type: xdr
-    lifecycle:
-      delete: BeforeKubeAPIServer
-      migrate: BeforeKubeAPIServer
-      reconcile: BeforeKubeAPIServer
   deployment:
     extension:
       policy: Always
