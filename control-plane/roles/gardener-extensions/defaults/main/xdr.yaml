@@ -1,0 +1,4 @@
+---
+gardener_extension_xdr_enabled: false
+
+gardener_extension_xdr_helm_chart_tag: "{{ gardener_extension_xdr_image_tag }}"
