@@ -27,6 +27,8 @@ config:
     enabled: true
     vali:
       enabled: {{ gardener_logging_vali_enabled | lower }}
+      garden:
+        storage: "{{ gardener_logging_vali_garden_storage }}"
 {% endif %}
 
   seedConfig:

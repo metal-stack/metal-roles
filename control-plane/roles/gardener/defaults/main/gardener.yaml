@@ -119,3 +119,4 @@ gardener_local_tmp_dir: "{{ playbook_dir }}/.ansible/tmp"
 
 gardener_logging_enabled: false
 gardener_logging_vali_enabled: true
+gardener_logging_vali_garden_storage: "100Gi"
