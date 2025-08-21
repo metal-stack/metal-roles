@@ -1,21 +1,21 @@
-bgp_ports: {{ sonic_config_bgp_ports }}
-breakouts: {{ sonic_config_breakouts }}
-docker_routing_config_mode: {{ sonic_config_docker_routing_config_mode }}
-features: {{ sonic_config_features }}
-frr_mgmt_framework_config: {{ sonic_config_frr_mgmt_framework_config }}
-interconnects: {{ sonic_config_interconnects }}
-hostname: {{ inventory_hostname }}
-lldp_hello_time: {{ sonic_config_lldp_hello_timer }}
-loopback_address: {{ sonic_config_loopback_address }}
-mclag: {{ sonic_config_mclag }}
-mgmt_interface: {{ sonic_config_mgmt_interface }}
-mgmt_vrf: {{ sonic_config_mgmt_vrf }}
-nameservers: {{ sonic_config_nameservers }}
-ntp: {{ sonic_config_ntp }}
-portchannels: {{ sonic_config_portchannels }}
-ports: {{ sonic_config_ports }}
-sag: {{ sonic_config_sag }}
-ssh_sourceranges: {{ sonic_config_ssh_sourceranges }}
-vlan_subinterfaces: {{ sonic_config_vlan_subinterfaces }}
-vlans: {{ sonic_config_vlans }}
-vtep: {{ sonic_config_vtep }}
+bgp_ports: {{ sonic_config_bgp_ports | to_json }}
+breakouts: {{ sonic_config_breakouts | to_json }}
+docker_routing_config_mode: {{ sonic_config_docker_routing_config_mode | to_json }}
+features: {{ sonic_config_features | to_json }}
+frr_mgmt_framework_config: {{ sonic_config_frr_mgmt_framework_config | to_json }}
+interconnects: {{ sonic_config_interconnects | to_json }}
+hostname: {{ inventory_hostname | to_json }}
+lldp_hello_time: {{ sonic_config_lldp_hello_timer | to_json }}
+loopback_address: {{ sonic_config_loopback_address | to_json }}
+mclag: {{ sonic_config_mclag | to_json }}
+mgmt_interface: {{ sonic_config_mgmt_interface | to_json }}
+mgmt_vrf: {{ sonic_config_mgmt_vrf | to_json }}
+nameservers: {{ sonic_config_nameservers | to_json }}
+ntp: {{ sonic_config_ntp | to_json }}
+portchannels: {{ sonic_config_portchannels | to_json }}
+ports: {{ sonic_config_ports | to_json }}
+sag: {{ sonic_config_sag | to_json }}
+ssh_sourceranges: {{ sonic_config_ssh_sourceranges | to_json }}
+vlan_subinterfaces: {{ sonic_config_vlan_subinterfaces | to_json }}
+vlans: {{ sonic_config_vlans | to_json }}
+vtep: {{ sonic_config_vtep | to_json }}
