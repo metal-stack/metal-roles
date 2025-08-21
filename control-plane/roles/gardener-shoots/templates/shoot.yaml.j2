@@ -1,0 +1,131 @@
+apiVersion: core.gardener.cloud/v1beta1
+kind: Shoot
+metadata:
+  name: "{{ _config.name }}"
+  namespace: "{{ _config.namespace }}"
+  annotations:
+{% if 'managed_seed' in _config %}
+      shoot.gardener.cloud/managed-seed-api-server: "{{ _config.managed_seed.api_server | managed_seed_api_server_annotation() }}"
+{% endif %}
+      cluster.metal-stack.io/name: "{{ _config.name }}"
+      cluster.metal-stack.io/project: "{{ _config.project_id }}"
+      cluster.metal-stack.io/tenant: "{{ metal_control_plane_provider_tenant }}"
+      cluster.metal-stack.io/partition: "{{ _config.partition }}"
+spec:
+  seedName: "{{ _config.seed_name }}"
+  secretBindingName: "{{ _config.name }}-provider-secret"
+  cloudProfileName: metal
+  region: "{{ _config.region }}"
+  purpose: "{{ _config.purpose }}"
+{% if 'managed_seed' in _config %}
+  tolerations: {{ _config.managed_seed.tolerations | to_json }}
+{% endif %}
+  addons:
+    kubernetesDashboard:
+      enabled: false
+{% if 'high_availability_control_plane' in _config %}
+  controlPlane:
+    highAvailability:
+      failureTolerance:
+        type: {{ _config.high_availability_control_plane }}
+{% endif %}
+  kubernetes:
+    version: "{{ _config.k8s_version }}"
+{% if ['audit_policy', 'structured_auth_config'] | intersect(_config.keys()) %}
+    kubeAPIServer:
+{% if 'structured_auth_config' in _config %}
+      structuredAuthentication:
+        configMapName: authentication-config-{{ _config.name }}
+{% endif %}
+{% if 'audit_policy' in _config %}
+      auditConfig:
+        auditPolicy:
+          configMapRef:
+            name: audit-policy-{{ _config.name }}
+{% endif %}
+{% endif %}
+{% if 'kube_proxy_enabled' in _config %}
+    kubeProxy:
+      enabled: {{ _config.kube_proxy_enabled }}
+{% endif %}
+    kubelet:
+      maxPods: {{ _config.max_pods }}
+    kubeControllerManager:
+      nodeCIDRMaskSize: {{ _config.node_cidr_mask_size }}
+    verticalPodAutoscaler:
+      enabled: {{ _config.vertical_pod_autoscaler }}
+{% if 'audit_extension_splunk' in _config %}
+  extensions:
+  - type: audit
+    providerConfig:
+      apiVersion: audit.metal.extensions.gardener.cloud/v1alpha1
+      kind: AuditConfig
+      webhookMode: {{ _config.audit_extension_splunk.webhook_mode | default('batch') }}
+      persistence:
+        size: {{ _config.audit_extension_splunk.size | default('2Gi') }}
+      backends:
+        splunk:
+          enabled: true
+          index: {{ _config.audit_extension_splunk.index }}
+          host: {{ _config.audit_extension_splunk.host }}
+          port: "{{ _config.audit_extension_splunk.port }}"
+          secretResourceName: splunk-secret
+          tls: {{ _config.audit_extension_splunk.tls | default(true) }}
+  resources:
+    - name: splunk-secret
+      resourceRef:
+        apiVersion: v1
+        kind: Secret
+        name: {{ _config.audit_extension_splunk.secret_name }}
+{% endif %}
+  provider:
+    type: metal
+    workers:
+{% for worker_group in _config.worker_groups %}
+    - name: "{{ worker_group.name | default('group-cri-' + loop.index0 | string) }}"
+      cri:
+        name: {{ worker_group.worker_cri | default("containerd") }}
+{% if 'k8s_version' in worker_group %}
+      kubernetes:
+        version: "{{ worker_group.k8s_version }}"
+{% endif %}
+      maximum: {{ worker_group.worker_count }}
+      minimum: {{ worker_group.worker_count }}
+      maxSurge: {{ worker_group.worker_max_surge }}
+      maxUnavailable: {{ worker_group.worker_max_unavailable }}
+      machine:
+        type: "{{ worker_group.worker_size }}"
+        image: {{ worker_group.worker_image | to_json }}
+{% endfor %}
+    infrastructureConfig:
+      apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
+      kind: InfrastructureConfig
+      firewall:
+        image: "{{ _config.firewall_image }}"
+        size: "{{ _config.firewall_size }}"
+        networks: {{ _config.networks | to_json }}
+{% if _config.firewall_controller_version is defined %}
+        controllerVersion: "{{ _config.firewall_controller_version }}"
+{% endif %}
+      projectID: "{{ _config.project_id }}"
+      partitionID: "{{ _config.partition }}"
+    controlPlaneConfig:
+      apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
+      kind: ControlPlaneConfig
+{% if 'storage_class_name' in _config %}
+      customDefaultStorageClass:
+        className: {{ _config.storage_class_name }}
+{% endif %}
+      featureGates: {{ _config.control_plane_feature_gates | to_json }}
+  networking:
+    type: {{ _config.networking_type }}
+    pods: {{ _config.networking_pod_cidr }}
+    services: {{ _config.networking_service_cidr }}
+    providerConfig: {{ _config.networking_provider_config | to_json }}
+  maintenance:
+    timeWindow:
+      begin: {{ _config.maintenance_timewindow_begin }}
+      end: {{ _config.maintenance_timewindow_end }}
+    autoUpdate:
+      kubernetesVersion: {{ _config.auto_update.kubernetes }}
+      machineImageVersion: {{ _config.auto_update.machine_image }}

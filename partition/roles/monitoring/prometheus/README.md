@@ -8,7 +8,7 @@ This role uses variables from [partition-defaults](/partition). So, make sure
 you define them adequately as well.
 
 | Name                                             | Mandatory | Description                                                                                                                               |
-| ------------------------------------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | prometheus_port                                  |           | Port for prometheus                                                                                                                       |
 | prometheus_docker_log_driver                     |           | Indicates where to write the docker logs to                                                                                               |
 | prometheus_image_name                            | yes       | Image version of the prometheus                                                                                                           |
@@ -32,3 +32,6 @@ you define them adequately as well.
 | prometheus_hosts_content                         |           | Available hosts for prometheus                                                                                                            |
 | prometheus_blackbox_exporter_icmp_groups         |           | ICMP groups for the blackbox exporter                                                                                                     |
 | prometheus_blackbox_exporter_metal_api_probe_url |           | metal-api probe URL for the blackbox exporter                                                                                             |
+| prometheus_scrape_interval                       |           | The frequency to scrape targets                                                                                                           |
+| prometheus_evaluation_interval                   |           | The frequency to evaluate rules                                                                                                           |
+| prometheus_scrape_timeout                        |           | Timeout per-scrape                                                                                                                        |

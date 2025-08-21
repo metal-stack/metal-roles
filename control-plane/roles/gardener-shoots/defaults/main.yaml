@@ -1,0 +1,82 @@
+---
+gardener_shoots_garden_name: "{{ gardener_defaults_garden_name }}"
+
+# can be useful for rollouts where the shooted seed or managed seed resource changes:
+gardener_shoot_rollout_wait_retries: 36
+gardener_shoot_rollout_wait_delay: 10
+gardener_shoot_rollout_wait_enabled: true
+
+gardener_shoot_default_metal_api_hmac:
+
+gardener_shoots: []
+# - name: shoot-a
+#   seed_name: seed-a
+#   purpose: infrastructure
+#   project_id: 00000000-0000-0000-0000-000000000001
+#   region: region
+#   partition: partition
+#   networks:
+#     - internet
+#     - e77400fe-e993-47b1-a0dd-64c9b7457b76
+#   k8s_version: 1.23.4
+#   worker_groups:
+#   - worker_count: 1
+#     worker_size: size
+#     worker_cri: containerd
+#     worker_max_surge: 3
+#     worker_max_unavailable: 0
+#     worker_image:
+#       name: debian
+#       version: "12.0"
+#   firewall_size: size
+#   firewall_image: firewall-ubuntu-3.0
+#   firewall_controller_version: auto
+#   managed_seed:
+#     tolerations:
+#       - key: seed.gardener.cloud/protected
+#     api_server:
+#       replicas: 3
+#       autoscaler:
+#         min_replicas: 1
+#         max_replicas: 5
+#   verticalPodAutoscaler: false
+#   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
+#   # https://gardener.cloud/docs/guides/high-availability/control-plane/
+#   high_availability_control_plane: node
+#   storage_class_name:
+#   control_plane_feature_gates: []
+#   kube_proxy_enabled: true
+#   networking_type: calico
+#   networking_pod_cidr:
+#   networking_service_cidr:
+#   networking_config_provider_config:
+#     apiVersion: calico.networking.extensions.gardener.cloud/v1alpha1
+#     backend: none
+#     ipv4:
+#       mode: Never
+#     kind: NetworkConfig
+#     typha:
+#       enabled: false
+#     vethMTU: "1440"
+#   audit_config:
+#   audit_extension_splunk:
+#     webhook_mode:
+#     size:
+#     index:
+#     host:
+#     port:
+#     tls:
+#     secret_name:
+#   structured_auth_config:
+
+gardener_shoot_defaults:
+  namespace: garden
+  tenant: "{{ metal_control_plane_provider_tenant }}"
+  max_pods: 250
+  node_cidr_mask_size: 23
+  vertical_pod_autoscaler: true
+  maintenance_timewindow_begin: 220000+0100
+  maintenance_timewindow_end: 230000+0100
+  auto_update:
+    kubernetes: true
+    machine_image: false

@@ -1,0 +1,13 @@
+---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_managed_seeds_garden_name }}"
+
+- name: Loop over managed seeds
+  include_tasks: managed_seed.yaml
+  loop: "{{ gardener_managed_seeds }}"
+  loop_control:
+    loop_var: _gardener_managed_seed
+    label: "{{ _gardener_managed_seed.name }}"
+  vars:
+    _config: "{{ gardener_managed_seed_defaults | ansible.builtin.combine(_gardener_managed_seed, recursive=true) }}"

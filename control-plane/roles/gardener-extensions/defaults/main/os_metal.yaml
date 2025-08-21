@@ -2,3 +2,8 @@
 gardener_extension_os_metal_enabled: true
 
 gardener_extension_os_metal_helm_chart_tag: "{{ gardener_os_controller_image_tag }}"
+
+gardener_extension_os_metal_types:
+  - ubuntu
+  - debian
+  - nvidia
