@@ -21,7 +21,7 @@ sonic_config_ntp: {}
 sonic_config_portchannels: {}
 sonic_config_ports: {}
 sonic_config_reload_config: false
-sonic_config_sag: {}
+sonic_config_sag:
 sonic_config_ssh_sourceranges: []
 sonic_config_timezone: Europe/Berlin
 
