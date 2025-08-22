@@ -39,7 +39,7 @@ auditing_timescaledb_resources:
 auditing_timescaledb_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 auditing_timescaledb_registry_auth:
   auths:
-    https://index.docker.io/v1/:
+    "{{ metal_registry }}":
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
