@@ -53,6 +53,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/gardener/vpn-shoot-client
       match:
         semver: ">= 0.22.0"
+    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/vpn-client
+      destination: http://registry:5000/gardener-project/releases/gardener/vpn-client
+      match:
+        semver: ">= 0.36.0"
     - source: ghcr.io/metal-stack/metallb-health-sidecar
       destination: http://registry:5000/metal-stack/metallb-health-sidecar
       match:
