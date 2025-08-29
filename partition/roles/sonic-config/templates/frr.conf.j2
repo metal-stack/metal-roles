@@ -32,6 +32,17 @@ interface {{ n }}{% if i.vrf is defined %} vrf {{ i.vrf }}{% endif +%}
 !
 {% endfor %}
 {% endfor %}
+{% for vlan in sonic_config_vlans %}
+{% if vlan.vrrp is defined %}
+interface Vlan{{ vlan.id }}
+ vrrp {{ vlan.vrrp.group }}
+{% if vlan.vrrp.priority is defined %}
+ vrrp {{ vlan.vrrp.group }} priority {{ vlan.vrrp.priority }}
+{% endif %}
+ vrrp {{ vlan.vrrp.group }} ip {{ vlan.vrrp.ip|regex_replace('/.*','') }}
+!
+{% endif %}
+{% endfor %}
 router bgp {{ sonic_config_asn }}
  bgp router-id {{ sonic_config_loopback_address }}
  bgp bestpath as-path multipath-relax
