@@ -77,7 +77,9 @@ spec:
         backup:
           provider: {{ _config.backup_infrastructure.provider }}
           region: {{ _config.backup_infrastructure.region | default('', true) }}
-          secretRef:
+          credentialsRef:
+            apiVersion: v1
+            kind: Secret
             name: backup-secret-{{ _config.name }}
             namespace: garden
           providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}

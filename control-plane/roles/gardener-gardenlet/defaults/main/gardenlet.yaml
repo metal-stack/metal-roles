@@ -23,8 +23,10 @@ gardener_gardenlets: []
   #   backup_infrastructure:
   #     provider: gcp
   #     region:
-  #     secretRef:
-  #       name: backup-secret
+  #     credentialsRef:
+  #       apiVersion: v1
+  #       kind: Secret
+  #       name: "backup-secret"
   #       namespace: garden
   #     bucket:
 

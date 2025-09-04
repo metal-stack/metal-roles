@@ -9,7 +9,9 @@ gardener_managed_seeds: []
 #   backup_infrastructure:
 #     provider: gcp
 #     region:
-#     secretRef:
+#     credentialsRef:
+#       apiVersion: v1
+#       kind: Secret
 #       name: backup-secret
 #       namespace: garden
 #     bucket:
