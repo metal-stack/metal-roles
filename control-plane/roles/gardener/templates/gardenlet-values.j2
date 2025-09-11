@@ -42,7 +42,9 @@ config:
       provider:
         type: {{ metal_control_plane_host_provider }}
         region: {{ gardener_soil_region }}
-      secretRef:
+      credentialsRef:
+        apiVersion: v1
+        kind: Secret
         name: gardener-seed-kubeconfig
         namespace: garden
       dns:

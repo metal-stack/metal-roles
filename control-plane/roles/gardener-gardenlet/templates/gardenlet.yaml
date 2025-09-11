@@ -28,9 +28,12 @@ spec:
       images:
         {{ _config.image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
 {% endif %}
-{% if _config.component_image_vector_overwrite %}
     componentImageVectorOverwrites: |
+{% if _config.component_image_vector_overwrite %}
         {{ _config.component_image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
+{% else %}
+        {# if an image overwrite was set once and when removing it again, the gardenlet does not deploy the managed seeds with the removed overwrites, therefore setting an empty yaml here #}
+        ---
 {% endif %}
     image:
       repository: {{ gardener_gardenlet_image_name }}
@@ -77,7 +80,9 @@ spec:
         backup:
           provider: {{ _config.backup_infrastructure.provider }}
           region: {{ _config.backup_infrastructure.region | default('', true) }}
-          secretRef:
+          credentialsRef:
+            apiVersion: v1
+            kind: Secret
             name: backup-secret-{{ _config.name }}
             namespace: garden
           providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}
