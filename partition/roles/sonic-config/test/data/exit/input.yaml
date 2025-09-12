@@ -151,6 +151,12 @@ sonic_config_vlans:
     vrf: VrfMpls
   - id: 4001
     vrf: VrfTest
+  - id: 4003
+    ip: 192.168.0.1/24
+    vrrp:
+      group: 1
+      priority: 66
+      ip: 10.1.1.1/24
 
 sonic_config_vtep:
   enabled: true

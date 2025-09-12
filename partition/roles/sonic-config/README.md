@@ -552,6 +552,18 @@ sonic_config_vlans:
     # The VRF to bind to this VLAN.
     vrf: Vrf45
 
+    # VRRP: Gateway redundancy without Vxlan/EVPN. If you use Vxlan/EVPN you should configure SAG instead.
+    # Prerequisite: The two routers must be able to reach each other through this VLAN, and multicast VRRP packets (Multicast address 224.0.0.18, protocol 112) must not be blocked.
+    vrrp:
+      # The VRRP group. Should be unique per VLAN.
+      group: 1
+
+      # The VRRP priority. The router with the highest priority is master; in case of a tie the highest (VLAN) IP wins. Between 1 and 254.
+      priority: 50
+
+    # The VRRP IP. This is the virtual IP used as default gateway for the connected machines. It must not overlap with the VLAN ip.
+      ip: 10.255.1.1/24
+
 # VTEP configuration.
 sonic_config_vtep:
   # If enabled FRR will automatically advertise all VNIs.
