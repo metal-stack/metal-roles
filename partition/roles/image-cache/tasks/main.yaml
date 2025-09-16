@@ -13,8 +13,8 @@
       - image_cache_haproxy_image_name is defined
       - image_cache_sync_image_tag is defined
       - image_cache_sync_image_name is defined
-      - image_cache_sync_metal_api_endpoint is not none
-      - image_cache_sync_metal_api_view_hmac is not none
+      - image_cache_sync_metal_apiserver_url is not none
+      - image_cache_sync_metal_apiserver_token is not none
 
 - name: Setup CoreDNS
   import_tasks: coredns.yaml
