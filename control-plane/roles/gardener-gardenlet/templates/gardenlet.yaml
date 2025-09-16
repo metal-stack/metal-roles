@@ -28,7 +28,7 @@ spec:
       images:
         {{ _config.image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
 {% endif %}
-    componentImageVectorOverwrites: |
+    componentImageVectorOverwrite: |
 {% if _config.component_image_vector_overwrite %}
         {{ _config.component_image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
 {% else %}
