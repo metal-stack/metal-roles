@@ -16,6 +16,18 @@
     namespace: "{{ metal_control_plane_namespace }}"
   when: valkey_registry_auth_enabled
 
+# TODO: can be removed after migration can be assumed
+- name: "Migration: Remove old bitnami valkey chart if present"
+  kubernetes.core.helm:
+    name: valkey
+    chart_ref: oci://registry-1.docker.io/bitnamicharts/valkey
+    release_namespace: "{{ valkey_namespace }}"
+    release_state: absent
+    wait: true
+  when:
+  - lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, resource_name='valkey-primary-0')
+  - "'bitnami' in lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, resource_name='valkey-primary-0').get('spec').get('containers')[0].get('image', '')"
+
 - name: Deploy valkey
   kubernetes.core.helm:
     name: valkey
@@ -27,3 +39,4 @@
     release_namespace: "{{ valkey_namespace }}"
     create_namespace: true
     values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
+    wait: true
