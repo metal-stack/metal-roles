@@ -1,4 +1,10 @@
 ---
+# TODO: move this to the release vector:
+valkey_chart_version: "0.1.0"
+valkey_repo_url: https://helm.metal-stack.io/pull_requests/valkey-replacement
+
+valkey_chart_ref: valkey
+
 valkey_namespace: "{{ metal_control_plane_namespace }}"
 
 valkey_replicas: 3

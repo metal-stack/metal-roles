@@ -19,8 +19,11 @@
 - name: Deploy valkey
   kubernetes.core.helm:
     name: valkey
-    chart_ref: "{{ valkey_chart_ref }}"
     chart_version: "{{ valkey_chart_version }}"
+    chart_ref: "{{ valkey_chart_ref }}"
+    chart_repo_url: "{{ valkey_repo_url }}"
+    # for testing the chart locally
+    # chart_ref: /helm-charts/charts/valkey
     release_namespace: "{{ valkey_namespace }}"
     create_namespace: true
     values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
