@@ -11,7 +11,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | Name                         | Mandatory | Description                                                       |
 | ---------------------------- | --------- | ----------------------------------------------------------------- |
 | valkey_namespace             |           | The deployment's target namespace                                 |
-| valkey_chart_ref             | yes       | The helm chart reference                                          |
+| valkey_chart_repo            | yes       | The helm chart repo                                               |
 | valkey_chart_version         | yes       | The helm chart version                                            |
 | valkey_image_pull_policy     |           | Image pull policy of valkey                                       |
 | valkey_replicas              |           | The number of deployed replicas                                   |

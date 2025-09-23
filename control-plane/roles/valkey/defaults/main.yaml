@@ -1,4 +1,8 @@
 ---
+valkey_chart_ref: valkey
+# for testing the chart locally in the mini-lab
+# valkey_chart_ref: /helm-charts/charts/valkey
+
 valkey_namespace: "{{ metal_control_plane_namespace }}"
 
 valkey_replicas: 3

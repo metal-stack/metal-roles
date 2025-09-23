@@ -7,7 +7,7 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - valkey_chart_ref is defined
+      - valkey_chart_repo is defined
       - valkey_chart_version is defined
 
 - name: Deploy valkey image pull secret
@@ -16,11 +16,36 @@
     namespace: "{{ metal_control_plane_namespace }}"
   when: valkey_registry_auth_enabled
 
+# TODO: tasks can be removed once migration can be assumed
+- name: Figure out if migration from bitnami chart is required
+  set_fact:
+    _needs_migration: "{{ lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=metal_control_plane_namespace, resource_name='valkey-data-valkey-replicas-0') }}"
+
+- name: "Migration: Remove old bitnami valkey chart"
+  kubernetes.core.helm:
+    name: valkey
+    chart_ref: oci://registry-1.docker.io/bitnamicharts/valkey
+    release_namespace: "{{ valkey_namespace }}"
+    release_state: absent
+    wait: true
+  when: _needs_migration
+
+- name: "Migration: Remove old replicas PVC"
+  k8s:
+    api_version: v1
+    kind: PersistentVolumeClaim
+    name: valkey-data-valkey-replicas-0
+    namespace: "{{ metal_control_plane_namespace }}"
+    state: absent
+  when: _needs_migration
+
 - name: Deploy valkey
   kubernetes.core.helm:
     name: valkey
-    chart_ref: "{{ valkey_chart_ref }}"
     chart_version: "{{ valkey_chart_version }}"
+    chart_ref: "{{ valkey_chart_ref }}"
+    chart_repo_url: "{{ valkey_chart_repo }}"
     release_namespace: "{{ valkey_namespace }}"
     create_namespace: true
     values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
+    wait: true
