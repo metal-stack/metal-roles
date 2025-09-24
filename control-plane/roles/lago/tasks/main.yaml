@@ -1,0 +1,39 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - lago_api_url is defined
+      - lago_frontUrl is defined
+
+- name: Deploy lago helm chart
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "https://charts.getlago.com"
+    helm_chart_version: "{{ lago_helm_chart_version | default(omit) }}"
+    helm_chart_custom_folder: "{{ lago_helm_chart_local_path | default(omit) }}"
+    helm_chart: "{{ './' if lago_helm_chart_local_path is not none }}lago"
+    helm_release_name: lago
+    helm_target_namespace: "{{ lago_namespace }}"
+    helm_value_file_template: lago-values.j2
+    # deployment can take a while due to post install hooks, therefore increasing the timeout for this chart...
+    helm_timeout: "{{ lago_helm_chart_timeout }}"
+    helm_chart_inject_config_hash: yes
+
+# for automation tests, we need to wait until all the services are ready...
+- name: Wait until lago is available
+  uri:
+    url: "{{ lago_check_api_health_endpoint }}"
+    follow_redirects: safe
+    status_code: 200
+    validate_certs: no
+  register: result
+  until: result is success
+  retries: 60
+  delay: 10
+  when: lago_check_api_available
