@@ -36,8 +36,10 @@
     - monitoring.coreos.com_alertmanagers.yaml
     - monitoring.coreos.com_podmonitors.yaml
     - monitoring.coreos.com_probes.yaml
+    - monitoring.coreos.com_prometheusagents.yaml
     - monitoring.coreos.com_prometheuses.yaml
     - monitoring.coreos.com_prometheusrules.yaml
+    - monitoring.coreos.com_scrapeconfigs.yaml
     - monitoring.coreos.com_servicemonitors.yaml
     - monitoring.coreos.com_thanosrulers.yaml
 
