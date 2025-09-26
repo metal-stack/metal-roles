@@ -1,8 +1,4 @@
 ---
-crds:
-  upgradeJob:
-    enabled: true
-
 prometheus:
   ingress:
     enabled: {{ monitoring_prometheus_ingress_enabled }}
