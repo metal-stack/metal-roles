@@ -45,13 +45,14 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ### gardener-extension-csi-driver-lvm
 
-| Name                                             | Mandatory | Description                                                              |
-|--------------------------------------------------|-----------|--------------------------------------------------------------------------|
-| gardener_extension_csi_driver_lvm_enabled        |           | If enabled, deploys the extension                                        |
-| gardener_extension_csi_driver_lvm_helm_chart     |           | The ref to the helm oci artifact to deploy this extension                |
-| gardener_extension_csi_driver_lvm_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension                |
-| gardener_extension_csi_driver_lvm_image_name     |           | Setting an explicit image name for the gardener-extension-csi-driver-lvm |
-| gardener_extension_csi_driver_lvm_image_tag      |           | Setting an explicit image tag for the gardener-extension-csi-driver-lvm  |
+| Name                                                     | Mandatory | Description                                                              |
+| -------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
+| gardener_extension_csi_driver_lvm_enabled                |           | If enabled, deploys the extension                                        |
+| gardener_extension_csi_driver_lvm_helm_chart             |           | The ref to the helm oci artifact to deploy this extension                |
+| gardener_extension_csi_driver_lvm_helm_chart_tag         |           | The tag of the helm oci artifact to deploy this extension                |
+| gardener_extension_csi_driver_lvm_image_name             |           | Setting an explicit image name for the gardener-extension-csi-driver-lvm |
+| gardener_extension_csi_driver_lvm_image_tag              |           | Setting an explicit image tag for the gardener-extension-csi-driver-lvm  |
+| gardener_extension_csi_driver_lvm_image_vector_overwrite |           | Allows overriding the image vector for the xtension                      |
 
 ### gardener-extension-dns-powerdns
 
