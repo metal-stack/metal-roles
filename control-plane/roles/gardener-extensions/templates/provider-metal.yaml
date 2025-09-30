@@ -73,7 +73,7 @@ spec:
               schedule: "{{ gardener_extension_provider_metal_etcd_backup_schedule }}"
               deltaSnapshotPeriod: "{{ gardener_extension_provider_metal_etcd_delta_snapshot_period }}"
 
-            isEvictionAllowed: "{{ gardener_extension_provider_metal_etcd_volume_eviction | lower }}"
+            isEvictionAllowed: {{ gardener_extension_provider_metal_etcd_volume_eviction | lower }}
 
           storage:
             duros:
