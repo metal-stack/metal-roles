@@ -56,7 +56,7 @@ spec:
       enabled: {{ _config.vertical_pod_autoscaler }}
 {% if 'audit_extension_splunk' in _config or 'csi_driver_lvm_extension' in _config %}
   extensions:
-{% if 'audit_extension_splunk' %}
+{% if 'audit_extension_splunk' in _config %}
   - type: audit
     providerConfig:
       apiVersion: audit.metal.extensions.gardener.cloud/v1alpha1
@@ -81,7 +81,7 @@ spec:
 {% endif %}
 {% if 'csi_driver_lvm_extension' in _config %}
   - type: csi-driver-lvm
-    disabled: {{ not _config.csi_driver_lvm_extension.enabled }}
+    disabled: {{ not _config.csi_driver_lvm_extension.enabled | lower }}
 {% if 'default_storage_class' in _config.csi_driver_lvm_extension %}
     providerConfig:
       defaultStorageClass: {{ _config.csi_driver_lvm_extension.default_storage_class }}
