@@ -22,7 +22,6 @@
 
 - name: Generate config_db.json
   import_tasks: generate_config_db.yaml
-  notify: reload frr
 
 - name: Set NTP timezone
   timezone:
@@ -52,3 +51,9 @@
 
 - name: Flush handlers
   meta: flush_handlers
+
+- name: Notify frr reload
+  debug:
+    msg: notify frr reload
+  changed_when: true
+  notify: reload frr
