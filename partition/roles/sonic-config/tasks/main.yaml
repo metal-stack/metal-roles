@@ -51,8 +51,4 @@
 
 - name: Flush handlers
   meta: flush_handlers
-
-- name: Reload frr
-  debug:
-    msg: 'reload frr'
   notify: reload frr
