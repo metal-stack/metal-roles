@@ -42,7 +42,7 @@ receive:
 {% endif %}
     tls: {{ monitoring_thanos_receive_ingress_tls }}
   persistence:
-    size: 16Gi
+    size: {{ monitoring_thanos_receive_size }}
 
 extraDeploy:
 - apiVersion: v1
