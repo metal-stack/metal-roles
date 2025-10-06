@@ -47,13 +47,7 @@
   copy:
     src: frr-reload.service
     dest: /etc/systemd/system/frr-reload.service
-  notify: reload systemd daemon
-
-- name: Flush handlers
-  meta: flush_handlers
-
-- name: Notify frr reload
-  debug:
-    msg: notify frr reload
+  notify:
+    - reload systemd daemon
+    - reload frr
   changed_when: true
-  notify: reload frr

@@ -9,11 +9,11 @@
     name: bgp
     state: restarted
 
+- name: reload systemd daemon
+  systemd:
+    daemon_reload: true
+
 - name: reload frr
   systemd:
     name: frr-reload.service
     state: restarted
-
-- name: reload systemd daemon
-  systemd:
-    daemon_reload: true
