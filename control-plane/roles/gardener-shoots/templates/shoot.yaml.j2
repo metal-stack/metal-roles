@@ -116,16 +116,30 @@ spec:
       customDefaultStorageClass:
         className: {{ _config.storage_class_name }}
 {% endif %}
+{% if 'control_plane_feature_gates' in _config %}
       featureGates: {{ _config.control_plane_feature_gates | to_json }}
+{% endif %}
   networking:
     type: {{ _config.networking_type }}
     pods: {{ _config.networking_pod_cidr }}
     services: {{ _config.networking_service_cidr }}
+{% if 'networking_provider_config' in _config %}
     providerConfig: {{ _config.networking_provider_config | to_json }}
+{% endif %}
   maintenance:
     timeWindow:
+{% if 'maintenance_timewindow_begin' in _config %}
       begin: {{ _config.maintenance_timewindow_begin }}
+{% endif %}
+{% if 'maintenance_timewindow_end' in _config %}
       end: {{ _config.maintenance_timewindow_end }}
+{% endif %}
+{% if 'auto_update' in _config %}
     autoUpdate:
+{% if 'kubernetes' in _config.auto_update %}
       kubernetesVersion: {{ _config.auto_update.kubernetes }}
+{% endif %}
+{% if 'machine_image' in _config.auto_update %}
       machineImageVersion: {{ _config.auto_update.machine_image }}
+{% endif %}
+{% endif %}
