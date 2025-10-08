@@ -1,24 +1,25 @@
 ---
-# find the chart values here: https://github.com/bitnami/charts/blob/main/bitnami/valkey/values.yaml
-global:
-{% if valkey_storage_class %}
-  defaultStorageClass: "{{ valkey_storage_class }}"
-{% endif %}
-{% if valkey_registry_auth_enabled %}
-  imagePullSecrets:
-    - name: valkey-registry-credentials
-{% endif %}
-  valkey:
-    password: "{{ valkey_password }}"
+cluster:
+  enabled: false ## cluster mode not fully supported yet
+
+replicas: {{ valkey_replicas }}
+
+# this is to keep existing deployments work with the previous bitnami chart:
+fullnameOverride: valkey-primary
 
 image:
+  # repository: valkey/valkey
+  # tag: ""
   pullPolicy: {{ valkey_image_pull_policy }}
 
-primary:
-  persistence:
-    size: {{ valkey_size }}
+{% if valkey_registry_auth_enabled %}
+imagePullSecrets:
+  - name: valkey-registry-credentials
+{% endif %}
 
-replica:
-  replicaCount: {{ valkey_replicas }}
-  persistence:
-    size: {{ valkey_size }}
+storage:
+  data:
+    claimSize: {{ valkey_size }}
+{% if valkey_storage_class %}
+    storageClass: "{{ valkey_storage_class }}"
+{% endif %}

@@ -9,7 +9,7 @@ Optionally it may render a `frr.conf` for routing or an `iptables.json` for exte
 
 ## Supported SONiC Versions
 
-The only supported SONiC versions are Edgecore SONiC versions 202111.x.
+The only supported SONiC versions are Edgecore SONiC versions 202111.x and 202211.x.
 Other versions might work as well but their behavior might slightly differ for some of the configuration parameters.
 For example, if you are using `sonic_config_docker_routing_config_mode: split` on a 202111.x version and wish to migrate to version 202311.5, you will need to use `split-unified` instead.
 As the 202111.x versions worked best for us so far this role is mostly tested against those versions.
@@ -18,7 +18,7 @@ As the 202111.x versions worked best for us so far this role is mostly tested ag
 
 Some of our deployments require a DHCP relay agent on the switch which relays PXE boot requests between a client and a PXE server.
 From version 202111.6 to version 202111.7 some change in the dhcp_relay broke the relay's ability to forward PXE boot OFFER messages from the server back to the client.
-This bug was fixed in version 202111.11.
+This bug has been fixed in version 202111.11.
 
 ## Migration from the Deprecated `sonic` Role
 
@@ -495,6 +495,7 @@ sonic_config_ports:
 sonic_config_reload_config: false
 
 # Static Anycast Gateway (SAG) configuration.
+# SAG is only supported for EdgeCore SONiC 202211.x versions.
 sonic_config_sag:
   # The virtual MAC used for the SAG
   mac: bb:bb:bb:bb:bb:bb
@@ -535,6 +536,7 @@ sonic_config_vlans:
     ip: 10.255.0.1/24
 
     # Whether to enable static anycast gateway for this VLAN.
+    # SAG is only supported for EdgeCore SONiC 202211.x versions.
     sag: false
 
     # A list of tagged ports to bind to this VLAN.
@@ -549,6 +551,18 @@ sonic_config_vlans:
 
     # The VRF to bind to this VLAN.
     vrf: Vrf45
+
+    # VRRP: Gateway redundancy without Vxlan/EVPN. If you use Vxlan/EVPN you should configure SAG instead.
+    # Prerequisite: The two routers must be able to reach each other through this VLAN, and multicast VRRP packets (Multicast address 224.0.0.18, protocol 112) must not be blocked.
+    vrrp:
+      # The VRRP group. Should be unique per VLAN.
+      group: 1
+
+      # The VRRP priority. The router with the highest priority is master; in case of a tie the highest (VLAN) IP wins. Between 1 and 254.
+      priority: 50
+
+    # The VRRP IP. This is the virtual IP used as default gateway for the connected machines. It must not overlap with the VLAN ip.
+      ip: 10.255.1.1/24
 
 # VTEP configuration.
 sonic_config_vtep:

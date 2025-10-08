@@ -14,7 +14,9 @@ spec:
           backup:
             provider: "{{ gardener_backup_infrastructure.provider }}"
             region: "{{ gardener_backup_infrastructure.region }}"
-            secretRef:
+            credentialsRef:
+              apiVersion: v1
+              kind: Secret
               name: "{{ gardener_shooted_seed.name }}-backup-secret"
               namespace: garden
           dns:
