@@ -82,8 +82,9 @@ spec:
 {% if 'csi_driver_lvm_extension' in _config %}
   - type: csi-driver-lvm
     disabled: {{ not _config.csi_driver_lvm_extension.enabled | lower }}
-{% if 'default_storage_class' in _config.csi_driver_lvm_extension %}
     providerConfig:
+      pullPolicy: {{ metal_control_plane_image_pull_policy }}
+{% if 'default_storage_class' in _config.csi_driver_lvm_extension %}
       defaultStorageClass: {{ _config.csi_driver_lvm_extension.default_storage_class }}
 {% endif %}
 {% endif %}
