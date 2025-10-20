@@ -70,8 +70,8 @@
     garden_name: "{{ gardener_virtual_garden_access_garden_name }}"
   register: result
   until: result is success
-  retries: 120
-  delay: 5
+  retries: "{{ gardener_virtual_garden_access_wait_retries }}"
+  delay: "{{ gardener_virtual_garden_access_wait_delay }}"
 
 # before we can continue, the virtual garden api server has to be up and running
 - name: Wait for garden namespace in virtual garden
