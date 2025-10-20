@@ -5,13 +5,32 @@
     state: directory
     mode: '0755'
 
+- name: create image-cache tenant
+  metal_v2_tenant:
+    name: metal-image-cache-sync
+    description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
+  register: _tenant
+
+- name: create image-cache api token
+  metal_v2_api_token:
+    description: "metal-image-cache-sync token"
+    expires: 30d
+    permissions:
+      - subject: "{{ _tenant.id }}"
+        methods:
+          - /metalstack.api.v2.ImageService/List
+          - /metalstack.api.v2.PartitionService/List
+          - /metalstack.api.v2.TokenService/Refresh
+  register: _token
+
 - name: store token in credentials file
   ansible.builtin.copy:
-    content: "{{ image_cache_sync_metal_apiserver_token }}"
+    content: "{{ _token.secret }}"
     dest: "{{ image_cache_sync_host_path }}/metal-apiserver-token.txt"
     owner: root
     group: root
     mode: '0644'
+  when: '"secret" in _token'
 
 - name: deploy image-sync service
   include_role:
