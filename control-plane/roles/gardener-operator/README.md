@@ -26,15 +26,15 @@ If you are still using the `gardener` role for setting up the Gardener, please r
 Here are the steps for the migration:
 
 1. Prepare the Gardener Operator setup
-  - Ideally, create a dedicated cluster for hosting the Gardener control plane. It is possible to also host the Gardener installation in the same cluster as the metal-stack control plane, but it is not recommended for production scenarios.
-  - Prepare the new playbook that uses the roles `gardener-operator`, `gardener-cloud-profile`, `gardener-extensions`, `gardener-virtual-garden-access` and `gardener-gardenlet`. Parametrize them properly. Many parameters are equivalent as they were before, but the new roles require new ones. Check them all.
+    - Ideally, create a dedicated cluster for hosting the Gardener control plane. It is possible to also host the Gardener installation in the same cluster as the metal-stack control plane, but it is not recommended for production scenarios.
+    - Prepare the new playbook that uses the roles `gardener-operator`, `gardener-cloud-profile`, `gardener-extensions`, `gardener-virtual-garden-access`, `gardener-projects`, `gardener-gardenlet`, `gardener-shoots` and `gardener-managed-seeds`. Parametrize them properly. Many parameters are equivalent as they were before, but the new roles require new ones. Check them all.
 1. Scale down the existing virtual garden and take a last backup of the Garden ETCD
-  - `kubectl scale deployment garden-kube-apiserver --replicas 0`
-  - `kubectl exec -it <virtual-garden-etcd-sts>-0 -c backup-restore -- curl -k 'http://localhost:8080/snapshot/full?final=true'`
-  - `kubectl scale sts <virtual-garden-etcd-sts> --replicas 0`
+    - `kubectl scale deployment garden-kube-apiserver --replicas 0`
+    - `kubectl exec -it <virtual-garden-etcd-sts>-0 -c backup-restore -- curl -k 'http://localhost:8080/snapshot/full?final=true'`
+    - `kubectl scale sts <virtual-garden-etcd-sts> --replicas 0`
 1. Copy over the ETCD backup to a new folder in the backup infrastructure
-  - The object prefix changed from `etcd-<stage>-etcd` to `virtual-garden-etcd-main/etcd-main`
-  - In case of using GCP copy over to the new naming scheme recursively: `gsutil cp -r gs://<etcd-backup-folder>/etcd-test-etcd/v2 gs://<etcd-backup-folder>/virtual-garden-etcd-main/etcd-main/v2`
+    - The object prefix changed from `etcd-<stage>-etcd` to `virtual-garden-etcd-main/etcd-main`
+    - In case of using GCP copy over to the new naming scheme recursively: `gsutil cp -r gs://<etcd-backup-folder>/etcd-test-etcd/v2 gs://<etcd-backup-folder>/virtual-garden-etcd-main/etcd-main/v2`
 1. ️⚠️ If you migrate from a standalone ETCD it is necessary to explicitly set `gardener_operator_high_availability_control_plane` to `false`. After the initial deployment of the virtual garden was successful, you can toggle this field to `true` in order to migrate to HA control plane. In case you deployed this without following this instruction, please repair your ETCD as described in [Recovering Etcd Clusters](https://gardener.cloud/docs/other-components/etcd-druid/recovering-etcd-clusters/).
 1. Deploy the roles `gardener-operator`, `gardener-cloud-profile`, `gardener-extensions`, `gardener-virtual-garden-access`.
 1. Manually deploy a kubeconfig secret for remote Gardenlet deployment through the Gardener Operator into the Virtual Garden as described [here](https://gardener.cloud/docs/gardener/deployment/deploy_gardenlet_via_operator/#remote-clusters). Delete the old Gardenlet helm chart from the original Gardener cluster and deploy the Gardenlet through the `gardener-gardenlet` role. Don't forget to specify the `gardenClientConnection.gardenClusterAddress` (see https://github.com/gardener/gardener/pull/11996)
