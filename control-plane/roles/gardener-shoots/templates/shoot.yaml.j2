@@ -41,7 +41,10 @@ spec:
       auditConfig:
         auditPolicy:
           configMapRef:
+            apiVersion: v1
+            kind: ConfigMap
             name: audit-policy-{{ _config.name }}
+            namespace: {{ _config.namespace }}
 {% endif %}
 {% endif %}
 {% if 'kube_proxy_enabled' in _config %}
