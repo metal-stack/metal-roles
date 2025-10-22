@@ -8,9 +8,6 @@
 
 - name: Gather releases
   setup_yaml:
-  when:
-    - metal_python_version is none
-    - metal_python_version_from_release_vector
 
 - name: Set metal-python from release vector
   set_fact:
@@ -43,3 +40,15 @@
       fail:
         msg: "given metal-python version not found"
       when: not metal_python_install_latest_on_version_error | bool
+
+- name: Install metal-stack-api v2 python client
+  block:
+    # to install the bug module we need for now a download from the buf.build index:
+    # https://github.com/bufbuild/protovalidate-python/pull/367
+    - name: Install latest metal-stack-api
+      pip:
+        name:
+          - metal-stack-api=={{ metal_api_version }}
+          - bufbuild-protovalidate-protocolbuffers-python
+      environment:
+        PIP_EXTRA_INDEX_URL: https://buf.build/gen/python
