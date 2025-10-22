@@ -43,7 +43,6 @@
   notify: Reload systemd daemon
   loop:
     - bgp-validation@.service
-    - frr-reload.service
   when: metal_stack_switch_os_is_sonic
 
 - name: create bgp-neighbor-stats directory
