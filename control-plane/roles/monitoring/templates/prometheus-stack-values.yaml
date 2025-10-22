@@ -13,6 +13,9 @@ prometheus:
 {% endif %}
 
   prometheusSpec:
+    additionalArgs:
+      - name: "web.enable-remote-write-receiver"
+        value: ""
 {% if monitoring_prometheus_image_tag is defined %}
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
