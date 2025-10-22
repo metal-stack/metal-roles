@@ -286,7 +286,7 @@ kubeControllerManager:
 
 {% raw %}
 additionalPrometheusRulesMap:
-  "alertmanager.rules":
+  "metal-alertmanager.rules":
     groups:
     - name: metal-api.rules
       rules:
