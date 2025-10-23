@@ -9,7 +9,7 @@
 
 - name: copy ipmi_exporter config
   template:
-    src: config.yml
+    src: config.yml.j2
     dest: "{{ monitoring_ipmi_exporter_etc_host_dir }}/config.yml"
   register: ipmi_config
 

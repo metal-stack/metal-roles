@@ -182,7 +182,7 @@ scrape_configs:
   - separator: ;
     regex: .*
     target_label: __address__
-    replacement: 172.17.0.1:9290
+    replacement: "{{inventory_hostname}}:9290"
     action: replace
 
 {% if prometheus_haproxy_enabled %}
