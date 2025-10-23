@@ -140,6 +140,7 @@
     systemd_docker_image_tag: "{{ prometheus_image_tag }}"
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
+    systemd_docker_network: host
     systemd_docker_volumes:
       - "{{ prometheus_config_host_dir }}:/etc/prometheus"
       - "/etc/hosts:/etc/hosts:ro"
