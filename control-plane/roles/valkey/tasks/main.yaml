@@ -19,7 +19,7 @@
 # TODO: tasks can be removed once migration can be assumed
 - name: Figure out if migration from bitnami chart is required
   set_fact:
-    _needs_migration: "{{ lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=metal_control_plane_namespace, resource_name='valkey-data-valkey-replicas-0') }}"
+    _needs_migration: "{{ lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=metal_control_plane_namespace, resource_name='valkey-data-valkey-replicas-0') | length > 0 }}"
 
 - name: "Migration: Remove old bitnami valkey chart"
   kubernetes.core.helm:
