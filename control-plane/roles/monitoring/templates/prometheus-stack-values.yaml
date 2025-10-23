@@ -272,10 +272,10 @@ alertmanager:
 {% endraw %}
 
 coreDns:
-  enabled: false
+  enabled: true
 
 kubeDns:
-  enabled: true
+  enabled: false
 
 kubeProxy:
   enabled: false

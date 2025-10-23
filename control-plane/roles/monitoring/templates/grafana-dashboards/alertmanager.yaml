@@ -229,7 +229,7 @@ data:
         {
           "datasource": {
             "type": "camptocamp-prometheus-alertmanager-datasource",
-            "uid": "cf1wn2fyg28lcb"
+            "uid": "alertmanager-datasource"
           },
           "fieldConfig": {
             "defaults": {
@@ -362,12 +362,10 @@ data:
             {
               "datasource": {
                 "type": "camptocamp-prometheus-alertmanager-datasource",
-                "uid": "cf1wn2fyg28lcb"
+                "uid": "alertmanager-datasource"
               },
               "filters": "severity=\"critical\"",
-              "inhibited": true,
-              "refId": "A",
-              "silenced": true
+              "refId": "A"
             }
           ],
           "title": "Current Critical Alerts",
@@ -452,7 +450,7 @@ data:
         {
           "datasource": {
             "type": "camptocamp-prometheus-alertmanager-datasource",
-            "uid": "cf1wn2fyg28lcb"
+            "uid": "alertmanager-datasource"
           },
           "fieldConfig": {
             "defaults": {
@@ -580,7 +578,7 @@ data:
             {
               "datasource": {
                 "type": "camptocamp-prometheus-alertmanager-datasource",
-                "uid": "cf1wn2fyg28lcb"
+                "uid": "alertmanager-datasource"
               },
               "filters": "severity=\"warning\"",
               "refId": "A"
