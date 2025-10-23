@@ -185,10 +185,12 @@ scrape_configs:
     replacement: 172.17.0.1:9290
     action: replace
 
+{% if prometheus_haproxy_enabled %}
 - job_name: 'haproxy'
   metrics_path: /metrics
   static_configs:
   - targets: ['172.17.0.1:65534']
+{% endif %}
 
 - job_name: 'lightbox-exporter'
   metrics_path: /metrics
