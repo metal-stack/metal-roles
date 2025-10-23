@@ -57,8 +57,9 @@ spec:
       nodeCIDRMaskSize: {{ _config.node_cidr_mask_size }}
     verticalPodAutoscaler:
       enabled: {{ _config.vertical_pod_autoscaler }}
-{% if 'audit_extension_splunk' in _config %}
+{% if 'audit_extension_splunk' in _config or 'csi_driver_lvm_extension' in _config %}
   extensions:
+{% if 'audit_extension_splunk' in _config %}
   - type: audit
     providerConfig:
       apiVersion: audit.metal.extensions.gardener.cloud/v1alpha1
@@ -80,6 +81,16 @@ spec:
         apiVersion: v1
         kind: Secret
         name: {{ _config.audit_extension_splunk.secret_name }}
+{% endif %}
+{% if 'csi_driver_lvm_extension' in _config %}
+  - type: csi-driver-lvm
+    disabled: {{ not _config.csi_driver_lvm_extension.enabled | lower }}
+    providerConfig:
+      pullPolicy: {{ metal_control_plane_image_pull_policy }}
+{% if 'default_storage_class' in _config.csi_driver_lvm_extension %}
+      defaultStorageClass: {{ _config.csi_driver_lvm_extension.default_storage_class }}
+{% endif %}
+{% endif %}
 {% endif %}
   provider:
     type: metal

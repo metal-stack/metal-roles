@@ -11,11 +11,15 @@ spec:
     extension:
       policy: Always
       helm:
-          ociRepository:
-            ref: "{{ gardener_extension_csi_driver_lvm_helm_chart }}:{{ gardener_extension_csi_driver_lvm_helm_chart_tag }}"
+        ociRepository:
+          ref: "{{ gardener_extension_csi_driver_lvm_helm_chart }}:{{ gardener_extension_csi_driver_lvm_helm_chart_tag }}"
       values:
         image:
           repository: "{{ gardener_extension_csi_driver_lvm_image_name }}"
           tag: "{{ gardener_extension_csi_driver_lvm_image_tag }}"
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
+{% if gardener_extension_csi_driver_lvm_image_vector_overwrite %}
+        imageVectorOverwrite: |
+          images: {{ gardener_extension_csi_driver_lvm_image_vector_overwrite | to_json }}
+{% endif %}
       runtimeClusterValues: {}
