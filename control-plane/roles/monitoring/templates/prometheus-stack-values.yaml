@@ -81,6 +81,8 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+  plugins:
+    - camptocamp-prometheus-alertmanager-datasource
 
 alertmanager:
   ingress:

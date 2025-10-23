@@ -13,7 +13,10 @@ data:
         "list": [
           {
             "builtIn": 1,
-            "datasource": "-- Grafana --",
+            "datasource": {
+              "type": "datasource",
+              "uid": "grafana"
+            },
             "enable": true,
             "hide": true,
             "iconColor": "rgba(0, 211, 255, 1)",
@@ -23,22 +26,29 @@ data:
         ]
       },
       "editable": true,
-      "gnetId": null,
+      "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 52,
+      "id": 27,
       "links": [],
       "panels": [
         {
-          "datasource": null,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -47,6 +57,7 @@ data:
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -68,8 +79,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -91,14 +101,23 @@ data:
             "legend": {
               "calcs": [],
               "displayMode": "list",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
-              "mode": "single"
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
             }
           },
+          "pluginVersion": "12.0.1",
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
               "exemplar": true,
               "expr": "count(ALERTS_FOR_STATE{severity=\"critical\"}) by(alertname)",
               "instant": false,
@@ -108,20 +127,26 @@ data:
             }
           ],
           "title": "Critical Alerts History",
-          "transformations": [],
           "type": "timeseries"
         },
         {
-          "datasource": null,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -130,6 +155,7 @@ data:
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -151,8 +177,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -174,14 +199,22 @@ data:
             "legend": {
               "calcs": [],
               "displayMode": "list",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
-              "mode": "single"
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
             }
           },
+          "pluginVersion": "12.0.1",
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
               "exemplar": true,
               "expr": "count(ALERTS_FOR_STATE{severity=\"warning\"}) by(alertname)",
               "instant": false,
@@ -191,11 +224,13 @@ data:
             }
           ],
           "title": "Warnings History",
-          "transformations": [],
           "type": "timeseries"
         },
         {
-          "datasource": "AlertManager",
+          "datasource": {
+            "type": "camptocamp-prometheus-alertmanager-datasource",
+            "uid": "cf1wn2fyg28lcb"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -203,15 +238,17 @@ data:
               },
               "custom": {
                 "align": "auto",
-                "displayMode": "auto"
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -303,15 +340,34 @@ data:
           },
           "id": 4,
           "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
             "showHeader": true,
-            "sortBy": []
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "severity"
+              }
+            ]
           },
-          "pluginVersion": "8.0.5",
+          "pluginVersion": "12.0.1",
           "targets": [
             {
-              "active": true,
-              "filters": "severity=critical, alertname!=QuietHours",
-              "refId": "A"
+              "datasource": {
+                "type": "camptocamp-prometheus-alertmanager-datasource",
+                "uid": "cf1wn2fyg28lcb"
+              },
+              "filters": "severity=\"critical\"",
+              "inhibited": true,
+              "refId": "A",
+              "silenced": true
             }
           ],
           "title": "Current Critical Alerts",
@@ -320,6 +376,10 @@ data:
               "id": "groupBy",
               "options": {
                 "fields": {
+                  "SeverityValue": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
                   "Time": {
                     "aggregations": [],
                     "operation": "groupby"
@@ -329,8 +389,7 @@ data:
                     "operation": "groupby"
                   },
                   "alertstatus_code": {
-                    "aggregations": [],
-                    "operation": null
+                    "aggregations": []
                   },
                   "cluster": {
                     "aggregations": [],
@@ -345,8 +404,7 @@ data:
                     "operation": "groupby"
                   },
                   "job": {
-                    "aggregations": [],
-                    "operation": null
+                    "aggregations": []
                   },
                   "namespace": {
                     "aggregations": [],
@@ -356,9 +414,12 @@ data:
                     "aggregations": [],
                     "operation": "groupby"
                   },
-                  "summary": {
+                  "severity": {
                     "aggregations": [],
-                    "operation": null
+                    "operation": "groupby"
+                  },
+                  "summary": {
+                    "aggregations": []
                   }
                 }
               }
@@ -366,7 +427,12 @@ data:
             {
               "id": "organize",
               "options": {
-                "excludeByName": {},
+                "excludeByName": {
+                  "SeverityValue": true,
+                  "namespace": false,
+                  "severity": true
+                },
+                "includeByName": {},
                 "indexByName": {
                   "Time": 0,
                   "alertname": 1,
@@ -384,7 +450,10 @@ data:
           "type": "table"
         },
         {
-          "datasource": "AlertManager",
+          "datasource": {
+            "type": "camptocamp-prometheus-alertmanager-datasource",
+            "uid": "cf1wn2fyg28lcb"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -392,15 +461,17 @@ data:
               },
               "custom": {
                 "align": "auto",
-                "displayMode": "auto"
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -492,14 +563,26 @@ data:
           },
           "id": 3,
           "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "8.0.5",
+          "pluginVersion": "12.0.1",
           "targets": [
             {
-              "active": true,
-              "filters": "severity=warning",
+              "datasource": {
+                "type": "camptocamp-prometheus-alertmanager-datasource",
+                "uid": "cf1wn2fyg28lcb"
+              },
+              "filters": "severity=\"warning\"",
               "refId": "A"
             }
           ],
@@ -518,8 +601,7 @@ data:
                     "operation": "groupby"
                   },
                   "alertstatus_code": {
-                    "aggregations": [],
-                    "operation": null
+                    "aggregations": []
                   },
                   "cluster": {
                     "aggregations": [],
@@ -534,8 +616,7 @@ data:
                     "operation": "groupby"
                   },
                   "job": {
-                    "aggregations": [],
-                    "operation": null
+                    "aggregations": []
                   },
                   "namespace": {
                     "aggregations": [],
@@ -546,8 +627,7 @@ data:
                     "operation": "groupby"
                   },
                   "summary": {
-                    "aggregations": [],
-                    "operation": null
+                    "aggregations": []
                   }
                 }
               }
@@ -573,9 +653,9 @@ data:
           "type": "table"
         }
       ],
+      "preload": false,
       "refresh": false,
-      "schemaVersion": 30,
-      "style": "dark",
+      "schemaVersion": 41,
       "tags": [],
       "templating": {
         "list": []
@@ -588,6 +668,6 @@ data:
       "timezone": "",
       "title": "Alerts",
       "uid": "xezOEyI7k",
-      "version": 2
+      "version": 1
     }
     {% endraw %}
