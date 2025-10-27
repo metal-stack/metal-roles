@@ -1,0 +1,147 @@
+---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_partition_proxy_garden_name }}"
+
+- name: Get shooted seed kubeconfig
+  set_fact:
+    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
+
+- name: Allocate IP address for the proxy in {{ gardener_shooted_seed.name }}
+  metal_ip:
+    api_url: "{{ gardener_partition_proxy_metal_api_url }}"
+    api_hmac: "{{ gardener_partition_proxy_metal_api_edit_hmac }}"
+    name: partition-proxy-{{ seed }}
+    description: For partition proxy in {{ seed }}
+    project: "{{ gardener_shooted_seed.metal_project_id }}"
+    network: "{{ gardener_shooted_seed.metal_network_id }}"
+    type: static
+  register: _ip
+
+- name: Create a DNS record
+  k8s:
+    definition:
+      apiVersion: extensions.gardener.cloud/v1alpha1
+      kind: DNSRecord
+      metadata:
+        name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
+        # only works from garden namespace for some reason, otherwise it won't get reconciled properly
+        namespace: garden
+      spec:
+        name: "{{ gardener_shooted_seed.ingress_domain }}"
+        recordType: A
+        secretRef:
+          name: partition-proxy-dns
+          namespace: garden
+        ttl: 120
+        type: "{{ gardener_partition_proxy_dns_provider }}"
+        values:
+          - "{{ _ip.ip }}"
+    apply: yes
+
+- name: Create namespace in shooted seed
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: partition-proxy
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    apply: yes
+
+- name: Deploy proxy configmap
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: partition-proxy
+        namespace: partition-proxy
+      data:
+        nginx.conf: "{{ lookup('template', 'nginx.conf') }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    apply: yes
+
+- name: Deploy proxy secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: partition-proxy
+        namespace: partition-proxy
+      type: Opaque
+      data:
+        ca.pem: "{{ gardener_shooted_seed.ca | b64encode }}"
+        cert.pem: "{{ gardener_shooted_seed.cert | b64encode }}"
+        cert.key: "{{ gardener_shooted_seed.cert_key | b64encode }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    apply: yes
+
+- name: Deploy proxy
+  k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: partition-proxy
+        namespace: partition-proxy
+        labels:
+          app.kubernetes.io/name: "partition-proxy"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: "partition-proxy"
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: "partition-proxy"
+              config-hash: "{{ lookup('template', 'nginx.conf') | hash('sha1') }}"
+          spec:
+            nodeSelector:
+              kubernetes.io/os: linux
+            containers:
+              - name: proxy
+                image: "{{ gardener_partition_proxy_image_name }}:{{ gardener_partition_proxy_image_tag }}"
+                ports:
+                  - containerPort: 25005
+                volumeMounts:
+                  - name: nginx-conf
+                    mountPath: /etc/nginx
+                    readOnly: true
+                  - name: certs
+                    mountPath: /etc/ssl
+                    readOnly: true
+            volumes:
+              - name: nginx-conf
+                configMap:
+                  name: partition-proxy
+              - name: certs
+                secret:
+                  secretName: partition-proxy
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    apply: yes
+
+- name: Expose service
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: partition-proxy
+        namespace: partition-proxy
+        labels:
+          app.kubernetes.io/name: "partition-proxy"
+      spec:
+        type: LoadBalancer
+        loadBalancerIP: "{{ ip._ip }}"
+        ports:
+          - port: 443
+            targetPort: 25005
+            protocol: TCP
+            name: http
+        selector:
+          app.kubernetes.io/name: "partition-proxy"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    apply: yes

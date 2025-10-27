@@ -1,0 +1,19 @@
+---
+- name: Create proxy DNS secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: partition-proxy-dns
+        namespace: garden
+      type: Opaque
+      data: "{{ gardener_partition_proxy_dns_credentials }}"
+    apply: yes
+
+- name: Deploy partition proxy in shooted seeds
+  include_tasks: proxy.yaml
+  loop: "{{ gardener_partition_proxy_shooted_seeds }}"
+  loop_control:
+    loop_var: gardener_shooted_seed
+    label: "{{ gardener_partition_proxy_shooted_seed.name }}"
