@@ -1,0 +1,67 @@
+{{ lookup('template', 'configs.yaml') }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: partition-proxy
+  namespace: partition-proxy
+  labels:
+    app.kubernetes.io/name: "partition-proxy"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "partition-proxy"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "partition-proxy"
+        config-hash: "{{ lookup('template', 'configs.yaml') | hash('sha1') }}"
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: proxy
+          image: "{{ gardener_partition_proxy_image_name }}:{{ gardener_partition_proxy_image_tag }}"
+          ports:
+{% for conf in gardener_shooted_seed.proxy_servers %}
+            - containerPort: {{ conf.port }}
+{% endfor %}
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx
+              readOnly: true
+{% for conf in gardener_shooted_seed.proxy_servers %}
+            - name: certs-{{ conf.name }}
+              mountPath: /etc/ssl/{{ conf.name }}
+              readOnly: true
+{% endfor %}
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: partition-proxy
+{% for conf in gardener_shooted_seed.proxy_servers %}
+        - name: certs-{{ conf.name }}
+          secret:
+            secretName: partition-proxy-{{ config.name }}
+{% endfor %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: partition-proxy
+  namespace: partition-proxy
+  labels:
+    app.kubernetes.io/name: "partition-proxy"
+spec:
+  type: LoadBalancer
+  loadBalancerIP: "{{ ip._ip }}"
+  ports:
+{% for conf in gardener_shooted_seed.proxy_servers %}
+    - port: 443
+      targetPort: {{ conf.port }}
+      protocol: TCP
+      name: {{ conf.type }}-{{ conf.name }}
+{% endfor %}
+  selector:
+    app.kubernetes.io/name: "partition-proxy"

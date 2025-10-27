@@ -12,17 +12,16 @@ gardener_partition_proxy_image_name: nginx
 gardener_partition_proxy_image_tag: 1.29-alpine
 
 gardener_partition_proxy_shooted_seeds: []
-  # - name: "seed-a"
+  # - name: seed-a
   #   ingress_domain: ingress.my-domain.com
   #   metal_project_id:
   #   metal_network_id:
-  #   ca:
-  #   cert:
-  #   cert_key:
   #   proxy_servers:
   #     - name: duros
   #       port: 25005
+  #       ca:
+  #       cert:
+  #       cert_key:
   #       addresses:
   #         - <address>:443
   #       type: grpcs
-  #
