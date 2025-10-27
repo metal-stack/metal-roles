@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: gardener-monitoring-certs
   author: metal-stack
-  description: Deploys certificates used for monitoring components of the Gardner.
+  description: Deploys certificates used for monitoring components of the Gardener.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
