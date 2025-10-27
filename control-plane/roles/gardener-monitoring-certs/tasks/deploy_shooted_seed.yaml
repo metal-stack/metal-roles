@@ -1,9 +1,13 @@
 ---
-- name: Get seed kubeconfig
-  set_fact:
-    _seed_kubeconfig: "{{ gardener_seeds_virtual_garden_kubeconfig | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_monitoring_certs_garden_name }}"
 
-- name: Add seed ingress certificate
+- name: Get shooted seed kubeconfig
+  set_fact:
+    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
+
+- name: Add ingress certificate
   k8s:
     definition:
       apiVersion: cert.gardener.cloud/v1alpha1
@@ -12,13 +16,13 @@
         name: seed-ingress
         namespace: garden
       spec:
-        commonName: "*.ingress.{{ gardener_shooted_seed.name }}.{{ gardener_seeds_soil_name }}.{{ gardener_seeds_dns_domain }}"
+        commonName: "*.{{ gardener_shooted_seed.ingress_domain }}"
         issuerRef:
           name: gardener
         secretRef:
           name: seed-ingress-certificate
           namespace: garden
-    kubeconfig: "{{ _seed_kubeconfig }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
     apply: true
 
 - name: Wait until ingress secret is ready
@@ -27,14 +31,14 @@
     kind: Secret
     name: seed-ingress-certificate
     namespace: garden
-    kubeconfig: "{{ _seed_kubeconfig }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
   changed_when: false
   register: result
   delay: 10
   retries: 60
   until: result.resources | length > 0
 
-- name: Prepare seed ingress certificate secret
+- name: Prepare ingress certificate secret
   k8s:
     definition:
       apiVersion: v1
@@ -45,5 +49,5 @@
         name: seed-ingress-certificate
         namespace: garden
       type: kubernetes.io/tls
-    kubeconfig: "{{ _seed_kubeconfig }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
     apply: true
