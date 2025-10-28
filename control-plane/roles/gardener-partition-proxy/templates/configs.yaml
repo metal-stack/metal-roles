@@ -5,7 +5,8 @@ metadata:
   name: partition-proxy
   namespace: partition-proxy
 data:
-  nginx.conf: "{{ lookup('template', 'nginx.conf') }}"
+  nginx.conf: |
+    {{ lookup('template', 'nginx.conf') | indent(width=4, first=false) }}
 {% for conf in gardener_shooted_seed.proxy_servers %}
 ---
 apiVersion: v1

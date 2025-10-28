@@ -43,7 +43,7 @@ spec:
 {% for conf in gardener_shooted_seed.proxy_servers %}
         - name: certs-{{ conf.name }}
           secret:
-            secretName: partition-proxy-{{ config.name }}
+            secretName: partition-proxy-{{ conf.name }}
 {% endfor %}
 ---
 apiVersion: v1

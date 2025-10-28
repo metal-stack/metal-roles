@@ -5,14 +5,14 @@
 
 - name: Get shooted seed kubeconfig
   set_fact:
-    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
+    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) }}"
 
 - name: Allocate IP address for the proxy in {{ gardener_shooted_seed.name }}
   metal_ip:
     api_url: "{{ gardener_partition_proxy_metal_api_url }}"
     api_hmac: "{{ gardener_partition_proxy_metal_api_edit_hmac }}"
-    name: partition-proxy-{{ seed }}
-    description: For partition proxy in {{ seed }}
+    name: partition-proxy-{{ gardener_shooted_seed.name }}
+    description: For partition proxy in {{ gardener_shooted_seed.name }}
     project: "{{ gardener_shooted_seed.metal_project_id }}"
     network: "{{ gardener_shooted_seed.metal_network_id }}"
     type: static
@@ -21,7 +21,7 @@
 
 - name: Set IP address to use
   set_fact:
-    _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else ip._ip }}"
+    _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else _ip.ip }}"
 
 - name: Create a DNS record
   k8s:
