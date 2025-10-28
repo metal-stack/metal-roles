@@ -7,6 +7,8 @@ gardener_partition_proxy_metal_api_edit_hmac:
 gardener_partition_proxy_dns_credentials:
 gardener_partition_proxy_dns_provider:
 
+gardener_partition_proxy_ip_address:
+
 # TODO: move to release vector?
 gardener_partition_proxy_image_name: nginx
 gardener_partition_proxy_image_tag: 1.29-alpine

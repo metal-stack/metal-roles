@@ -55,7 +55,7 @@ metadata:
     app.kubernetes.io/name: "partition-proxy"
 spec:
   type: LoadBalancer
-  loadBalancerIP: "{{ ip._ip }}"
+  loadBalancerIP: "{{ _proxy_ip }}"
   ports:
 {% for conf in gardener_shooted_seed.proxy_servers %}
     - port: 443

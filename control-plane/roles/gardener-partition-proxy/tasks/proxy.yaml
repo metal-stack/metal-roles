@@ -17,6 +17,11 @@
     network: "{{ gardener_shooted_seed.metal_network_id }}"
     type: static
   register: _ip
+  when: not gardener_partition_proxy_ip_address
+
+- name: Set IP address to use
+  set_fact:
+    _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else ip._ip }}"
 
 - name: Create a DNS record
   k8s:
@@ -36,7 +41,7 @@
         ttl: 120
         type: "{{ gardener_partition_proxy_dns_provider }}"
         values:
-          - "{{ _ip.ip }}"
+          - "{{ _proxy_ip }}"
     apply: yes
 
 - name: Create namespace in shooted seed
