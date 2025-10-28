@@ -85,6 +85,8 @@ metal_stack_release:
     node_init_image_name: "docker-images.metal-stack.kubernetes.node-init.name"
     droptailer_image_tag: "docker-images.metal-stack.kubernetes.droptailer.tag"
     droptailer_image_name: "docker-images.metal-stack.kubernetes.droptailer.name"
+    capms_controller_name: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.name"
+    capms_controller_tag: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.tag"
     # third party
     gardener_etcdbrctl_image_tag: "docker-images.third-party.gardener.etcdbrctl.tag"
     gardener_etcdbrctl_image_name: "docker-images.third-party.gardener.etcdbrctl.name"
