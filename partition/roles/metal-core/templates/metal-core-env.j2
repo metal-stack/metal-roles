@@ -28,3 +28,6 @@ METAL_CORE_SPINE_UPLINKS: "{{ metal_core_spine_uplinks | join(',') }}"
 METAL_CORE_INTERFACES_TPL_FILE: "{{ metal_core_interfaces_tpl_file }}"
 METAL_CORE_FRR_TPL_FILE: "{{ metal_core_frr_tpl_file }}"
 METAL_CORE_PXE_VLAN_ID: "{{ metal_core_pxe_vlan_id }}"
+{% if metal_core_ssl_selfsigned is true %}
+SSL_CERT_FILE: "{{ metal_core_grpc_cert_dir }}/ca.pem"
+{% endif %}
