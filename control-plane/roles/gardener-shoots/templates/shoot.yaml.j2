@@ -75,12 +75,6 @@ spec:
           port: "{{ _config.audit_extension_splunk.port }}"
           secretResourceName: splunk-secret
           tls: {{ _config.audit_extension_splunk.tls | default(true) }}
-  resources:
-    - name: splunk-secret
-      resourceRef:
-        apiVersion: v1
-        kind: Secret
-        name: {{ _config.audit_extension_splunk.secret_name }}
 {% endif %}
 {% if 'csi_driver_lvm_extension' in _config %}
   - type: csi-driver-lvm
@@ -91,6 +85,14 @@ spec:
       defaultStorageClass: {{ _config.csi_driver_lvm_extension.default_storage_class }}
 {% endif %}
 {% endif %}
+{% endif %}
+{% if 'audit_extension_splunk' in _config %}
+  resources:
+    - name: splunk-secret
+      resourceRef:
+        apiVersion: v1
+        kind: Secret
+        name: {{ _config.audit_extension_splunk.secret_name }}
 {% endif %}
   provider:
     type: metal
