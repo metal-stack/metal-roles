@@ -20,6 +20,7 @@ monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
 
 monitoring_thanos_receive_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
+monitoring_thanos_receive_size: 16Gi
 
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"

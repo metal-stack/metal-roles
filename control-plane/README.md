@@ -38,6 +38,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | [gardener-managed-seeds](roles/gardener-managed-seeds)                 | Deploys managed seeds into the virtual garden                                                                                      |
 | [gardener-monitoring-certs](roles/gardener-monitoring-certs)           | Deploys monitoring ingress certificates for seed clusters                                                                          |
 | [gardener-operator](roles/gardener-operator)                           | Deploys the Gardener operator                                                                                                      |
+| [gardener-partition-proxy](roles/gardener-partition-proxy)             | Deploys a partition proxy into a shooted seed                                                                                      |
 | [gardener-projects](roles/gardener-projects)                           | Deploys gardener projects into the virtual garden.                                                                                 |
 | [gardener-shoots](roles/gardener-shoots)                               | Deploys managed shoots into the virtual garden.                                                                                    |
 | [gardener-virtual-garden-access](roles/gardener-virtual-garden-access) | Deploys a managed resource to access the the Virtual Garden with operator setup                                                    |
