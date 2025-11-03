@@ -1,7 +1,4 @@
 ---
-# TODO: move to release vector
-prometheus_chart_version: 73.2.3
-
 monitoring_namespace: monitoring
 monitoring_grafana_admin_password: admin
 monitoring_grafana_dashboard_timezone: Europe/Berlin
