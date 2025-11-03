@@ -19,7 +19,7 @@ The following variables can be set to configure the role:
 ### General
 
 | Name                                          | Mandatory | Description                                                                                                                                                                                                                     |
-|-----------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | rethinkdb_exporter_name                       | yes       | rethinkdb exporter image name                                                                                                                                                                                                   |
 | rethinkdb_exporter_tag                        | yes       | rethinkdb exporter image tag                                                                                                                                                                                                    |
 | event_exporter_name                           | yes       | event exporter image name                                                                                                                                                                                                       |
@@ -57,6 +57,7 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_ingress_basic_auth  |           | Set basic authentication on the Ingress for Thanos Receive                                                                                                                                                                      |
 | monitoring_thanos_receive_ingress_dns         |           | The DNS name used for exposing Thanos Receive via Ingress                                                                                                                                                                       |
 | monitoring_thanos_receive_ingress_tls         |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                                                                                 |
+| monitoring_thanos_receive_size                |           | The PVC size of the Thanos Receive component                                                                                                                                                                                    |
 
 ### Gardener
 
