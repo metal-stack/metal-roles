@@ -85,6 +85,8 @@ metal_stack_release:
     node_init_image_name: "docker-images.metal-stack.kubernetes.node-init.name"
     droptailer_image_tag: "docker-images.metal-stack.kubernetes.droptailer.tag"
     droptailer_image_name: "docker-images.metal-stack.kubernetes.droptailer.name"
+    capms_controller_name: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.name"
+    capms_controller_tag: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.tag"
     # third party
     gardener_etcdbrctl_image_tag: "docker-images.third-party.gardener.etcdbrctl.tag"
     gardener_etcdbrctl_image_name: "docker-images.third-party.gardener.etcdbrctl.name"
@@ -129,10 +131,6 @@ metal_stack_release:
     gardener_scheduler_image_name: "docker-images.third-party.gardener.scheduler.name"
     gardener_gardenlet_image_tag: "docker-images.third-party.gardener.gardenlet.tag"
     gardener_gardenlet_image_name: "docker-images.third-party.gardener.gardenlet.name"
-    gardener_virtual_api_server_image_tag: "docker-images.third-party.gardener.virtual-apiserver.tag"
-    gardener_virtual_api_server_image_name: "docker-images.third-party.gardener.virtual-apiserver.name"
-    gardener_virtual_controller_manager_image_tag: "docker-images.third-party.gardener.virtual-controller-manager.tag"
-    gardener_virtual_controller_manager_image_name: "docker-images.third-party.gardener.virtual-controller-manager.name"
     gardener_virtual_garden_api_server_version: "docker-images.third-party.gardener.virtual-garden-apiserver.tag"
     gardener_extension_provider_gcp_image_tag: "docker-images.third-party.gardener.extension-provider-gcp.tag"
     gardener_extension_provider_gcp_image_name: "docker-images.third-party.gardener.extension-provider-gcp.name"
@@ -197,7 +195,5 @@ metal_stack_release:
     # repositories
     gardener_repo_url: "repositories.third-party.gardener.gardener.url"
     gardener_repo_ref: "repositories.third-party.gardener.gardener.ref"
-    gardener_etcd_repo_url: "repositories.third-party.gardener.etcd-backup-restore.url"
-    gardener_etcd_repo_ref: "repositories.third-party.gardener.etcd-backup-restore.ref"
     thanos_image_name: "docker-images.third-party.control-plane.thanos.name"
     thanos_image_tag: "docker-images.third-party.control-plane.thanos.tag"
