@@ -5,7 +5,7 @@
 
 - name: Get shooted seed kubeconfig
   set_fact:
-    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) }}"
+    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
 
 - name: Allocate IP address for the proxy in {{ gardener_shooted_seed.name }}
   metal_ip:
