@@ -45,13 +45,14 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ### gardener-extension-csi-driver-lvm
 
-| Name                                             | Mandatory | Description                                                              |
-|--------------------------------------------------|-----------|--------------------------------------------------------------------------|
-| gardener_extension_csi_driver_lvm_enabled        |           | If enabled, deploys the extension                                        |
-| gardener_extension_csi_driver_lvm_helm_chart     |           | The ref to the helm oci artifact to deploy this extension                |
-| gardener_extension_csi_driver_lvm_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension                |
-| gardener_extension_csi_driver_lvm_image_name     |           | Setting an explicit image name for the gardener-extension-csi-driver-lvm |
-| gardener_extension_csi_driver_lvm_image_tag      |           | Setting an explicit image tag for the gardener-extension-csi-driver-lvm  |
+| Name                                                     | Mandatory | Description                                                              |
+| -------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
+| gardener_extension_csi_driver_lvm_enabled                |           | If enabled, deploys the extension                                        |
+| gardener_extension_csi_driver_lvm_helm_chart             |           | The ref to the helm oci artifact to deploy this extension                |
+| gardener_extension_csi_driver_lvm_helm_chart_tag         |           | The tag of the helm oci artifact to deploy this extension                |
+| gardener_extension_csi_driver_lvm_image_name             |           | Setting an explicit image name for the gardener-extension-csi-driver-lvm |
+| gardener_extension_csi_driver_lvm_image_tag              |           | Setting an explicit image tag for the gardener-extension-csi-driver-lvm  |
+| gardener_extension_csi_driver_lvm_image_vector_overwrite |           | Allows overriding the image vector for the xtension                      |
 
 ### gardener-extension-dns-powerdns
 
@@ -123,7 +124,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 ### gardener-extension-provider-metal
 
 | Name                                                              | Mandatory | Description                                                                                               |
-|-------------------------------------------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
+| ----------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
 | gardener_extension_provider_metal_enabled                         |           | If enabled, deploys the extension                                                                         |
 | gardener_extension_provider_metal_helm_chart                      |           | The ref to the helm oci artifact to deploy this extension                                                 |
 | gardener_extension_admission_metal_helm_chart_runtime             |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster   |
@@ -134,6 +135,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_extension_provider_metal_etcd_storage_class_name         |           | The storage class used for metal-stack shoot ETCDs                                                        |
 | gardener_extension_provider_metal_etcd_backup_schedule            |           | The backup schedule for metal-stack shoot ETCDs                                                           |
 | gardener_extension_provider_metal_etcd_delta_snapshot_period      |           | The delta snapshot period for metal-stack shoot ETCDs                                                     |
+| gardener_extension_provider_metal_etcd_volume_eviction            |           | Allows PVC eviction when using ETCD volumes based on csi-driver-lvm provisioner types                     |
 | gardener_extension_provider_metal_egress_destinations             |           | Sets allowed egress destinations for the `RestrictEgress` control plane feature gate of the GEPM          |
 | gardener_extension_provider_metal_machine_images                  |           | Specifies the machine images that are usually the same as in the cloud profile                            |
 | gardener_extension_provider_metal_duros_storage_enabled           |           | Enables the duros storage integration feature gate of the GEPM (Lightbits storage)                        |
