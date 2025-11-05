@@ -9,8 +9,6 @@
     that:
       - image_cache_coredns_image_tag is defined
       - image_cache_coredns_image_name is defined
-      - image_cache_haproxy_image_tag is defined
-      - image_cache_haproxy_image_name is defined
       - image_cache_sync_image_tag is defined
       - image_cache_sync_image_name is defined
       - image_cache_sync_metal_api_endpoint is not none
