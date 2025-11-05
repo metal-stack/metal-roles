@@ -21,3 +21,4 @@
       - "{{ image_cache_sync_host_path }}:/var/lib/metal-image-cache-sync"
     systemd_docker_ports: "{{ lookup('template', 'metal-image-cache-ports.j2') | from_yaml }}"
     systemd_docker_log_driver: "{{ image_cache_sync_docker_log_driver }}"
+    systemd_container_host_network: true
