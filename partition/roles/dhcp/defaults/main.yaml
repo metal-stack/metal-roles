@@ -33,3 +33,5 @@ dhcp_service_name: "{{ 'dhcpd' if metal_stack_switch_os_is_cumulus | default(fal
 #  ip: 10.1.2.3
 
 dhcp_use_host_decl_names: false
+
+dhcp_restart_on_failure: false
