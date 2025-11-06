@@ -34,4 +34,3 @@
       - host_port: "65534"
         target_port: "65534"
     systemd_docker_log_driver: "{{ image_cache_haproxy_docker_log_driver }}"
-    systemd_container_host_network: "{{ image_cache_haproxy_docker_network_host }}"
