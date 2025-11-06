@@ -21,6 +21,7 @@ image_cache_backend_hosts: "{{ play_hosts }}"
 # coredns
 image_cache_coredns_host_dir_path: /coredns
 image_cache_coredns_docker_log_driver: json-file
+image_cache_coredns_docker_network_host: false
 
 # haproxy
 image_cache_haproxy_host_dir_path: /haproxy
