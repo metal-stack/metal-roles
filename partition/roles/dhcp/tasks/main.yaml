@@ -59,7 +59,7 @@
 
 - name: install systemd override for dhcp service
   template:
-    src: systemd-service-override.j2
+    src: systemd-service-override.conf.j2
     dest: "/etc/systemd/system/{{ dhcp_service_name }}.service.d/override.conf"
   register: _override_conf
   when: dhcp_restart_on_failure
