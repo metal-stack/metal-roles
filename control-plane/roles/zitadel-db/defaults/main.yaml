@@ -2,7 +2,7 @@
 
 # Remove these once zitadel-db in release vectore
 zitadel_db_image_name: docker.io/library/postgres
-zitadel_db_image_tag: 14.19-alpine
+zitadel_db_image_tag: 18.0-alpine
 
 zitadel_db_name: zitadel-db
 zitadel_db_namespace: "{{ metal_control_plane_namespace }}"
