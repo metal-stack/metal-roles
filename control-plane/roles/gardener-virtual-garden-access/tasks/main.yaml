@@ -75,7 +75,9 @@
 
 - debug:
     var: result
+- debug:
     var: virtual_garden_kubeconfig
+- debug:
     var: gardener_virtual_garden_access_garden_name
 
 # before we can continue, the virtual garden api server has to be up and running
