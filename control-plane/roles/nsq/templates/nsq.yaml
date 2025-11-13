@@ -160,6 +160,10 @@ spec:
       labels:
         app: nsq-lookupd
     spec:
+{% if nsq_registry_auth_enabled %}
+      imagePullSecrets:
+        - name: nsq-registry-credentials
+{% endif %}
       containers:
       - name: nsq-lookupd
         args:
