@@ -33,6 +33,7 @@ spec:
       - name: {{ postgres_name }}-registry-credentials
 {% endif %}
       securityContext:
+        fsGroup: 1
         runAsNonRoot: false
       containers:
       - name: postgres
