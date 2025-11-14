@@ -34,6 +34,7 @@ spec:
 {% endif %}
       securityContext:
         fsGroup: 1
+        runAsNonRoot: false
       containers:
       - name: postgres
         image: {{ postgres_image_name }}:{{ postgres_image_tag }}
@@ -103,9 +104,6 @@ spec:
           timeoutSeconds: 5
         resources: {{ postgres_resources | to_json }}
         securityContext:
-          runAsUser: 1001
-          runAsNonRoot: true
-          runAsGroup: 1
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
@@ -122,8 +120,6 @@ spec:
         imagePullPolicy: {{ postgres_image_pull_policy }}
         resources: {{ postgres_resources | to_json }}
         securityContext:
-          runAsUser: 1001
-          runAsNonRoot: true
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
@@ -216,8 +212,6 @@ spec:
         image: {{ postgres_backup_restore_sidecar_image_name }}:{{ postgres_backup_restore_sidecar_image_tag }}
         imagePullPolicy: {{ postgres_backup_restore_sidecar_image_pull_policy }}
         securityContext:
-          runAsUser: 1001
-          runAsNonRoot: true
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
