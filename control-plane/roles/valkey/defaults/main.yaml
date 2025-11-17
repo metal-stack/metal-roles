@@ -12,7 +12,7 @@ valkey_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 valkey_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 valkey_registry_auth:
   auths:
-    "{{ metal_registry }}":
+    "{{ metal_registry_url }}":
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
