@@ -41,7 +41,7 @@ masterdata_db_resources:
 masterdata_db_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 masterdata_db_registry_auth:
   auths:
-    "{{ metal_registry_url }}":
+    {{ metal_registry_url }}:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
