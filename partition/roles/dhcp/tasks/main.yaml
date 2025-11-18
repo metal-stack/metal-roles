@@ -49,7 +49,20 @@
   apt:
     name:
     - isc-dhcp-server
-    update_cache : yes
+    update_cache: yes
+
+- name: create directory for systemd override
+  file:
+    path: "/etc/systemd/system/{{ dhcp_service_name }}.service.d"
+    state: directory
+    mode: 0755
+
+- name: install systemd override for dhcp service
+  template:
+    src: systemd-service-override.conf.j2
+    dest: "/etc/systemd/system/{{ dhcp_service_name }}.service.d/override.conf"
+  register: _override_conf
+  when: dhcp_restart_on_failure
 
 # we want this task to be run at this point and not at the end of the playbook
 # this is why we don't use a handler here
@@ -59,7 +72,9 @@
     enabled: true
     state: restarted
     daemon-reload: true
-  when: _dhcpd_conf is changed or _isc_dhcp_server is changed or _hosts_conf is changed
+  when: _dhcpd_conf is changed or _isc_dhcp_server is changed or
+        (_hosts_conf is defined and _hosts_conf is changed) or
+        _override_conf is changed
 
 - name: ensure isc-dhcp-server is running
   service:
