@@ -1,0 +1,52 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - zitadel_db_image_name is defined
+      - zitadel_db_image_tag is defined
+      - zitadel_db_backup_restore_sidecar_image_name is defined
+      - zitadel_db_backup_restore_sidecar_image_tag is defined
+
+- name: Deploy zitadel db
+  include_role:
+    name: metal-roles/control-plane/roles/postgres-backup-restore
+  vars:
+    postgres_name: "{{ zitadel_db_name }}"
+    postgres_namespace: "{{ zitadel_db_namespace }}"
+    postgres_image_pull_policy: "{{ zitadel_db_image_pull_policy }}"
+    postgres_image_name: "{{ zitadel_db_image_name }}"
+    postgres_image_tag: "{{ zitadel_db_image_tag }}"
+    postgres_registry_auth_enabled: "{{ zitadel_db_registry_auth_enabled }}"
+    postgres_registry_auth: "{{ zitadel_db_registry_auth }}"
+    postgres_storage_size: "{{ zitadel_db_storage_size }}"
+    postgres_storage_class: "{{ zitadel_db_storage_class }}"
+    postgres_db: "{{ zitadel_db_db }}"
+    postgres_user: "{{ zitadel_db_user }}"
+    postgres_password: "{{ zitadel_db_password }}"
+    postgres_max_connections: "{{ zitadel_db_max_connections }}"
+    postgres_backup_restore_sidecar_image_pull_policy: "{{ zitadel_db_backup_restore_sidecar_image_pull_policy }}"
+    postgres_backup_restore_sidecar_image_name: "{{ zitadel_db_backup_restore_sidecar_image_name }}"
+    postgres_backup_restore_sidecar_image_tag: "{{ zitadel_db_backup_restore_sidecar_image_tag }}"
+    postgres_backup_restore_sidecar_provider: "{{ zitadel_db_backup_restore_sidecar_provider }}"
+    postgres_backup_restore_sidecar_backup_cron_schedule: "{{ zitadel_db_backup_restore_sidecar_backup_cron_schedule }}"
+    postgres_backup_restore_sidecar_log_level: "{{ zitadel_db_backup_restore_sidecar_log_level }}"
+    postgres_backup_restore_sidecar_object_prefix: "{{ zitadel_db_backup_restore_sidecar_object_prefix }}"
+    postgres_backup_restore_sidecar_gcp_bucket_name: "{{ zitadel_db_backup_restore_sidecar_gcp_bucket_name }}"
+    postgres_backup_restore_sidecar_gcp_backup_location: "{{ zitadel_db_backup_restore_sidecar_gcp_backup_location }}"
+    postgres_backup_restore_sidecar_gcp_project_id: "{{ zitadel_db_backup_restore_sidecar_gcp_project_id }}"
+    postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ zitadel_db_backup_restore_sidecar_gcp_serviceaccount_json }}"
+    postgres_backup_restore_sidecar_s3_bucket_name: "{{ zitadel_db_backup_restore_sidecar_s3_bucket_name }}"
+    postgres_backup_restore_sidecar_s3_region: "{{ zitadel_db_backup_restore_sidecar_s3_region }}"
+    postgres_backup_restore_sidecar_s3_endpoint: "{{ zitadel_db_backup_restore_sidecar_s3_endpoint }}"
+    postgres_backup_restore_sidecar_s3_access_key: "{{ zitadel_db_backup_restore_sidecar_s3_access_key }}"
+    postgres_backup_restore_sidecar_s3_secret_key: "{{ zitadel_db_backup_restore_sidecar_s3_secret_key }}"
+    postgres_backup_restore_sidecar_s3_insecure_skip_verify: "{{ zitadel_db_backup_restore_sidecar_s3_insecure_skip_verify }}"
+    postgres_backup_restore_sidecar_s3_trusted_ca_cert: "{{ zitadel_db_backup_restore_sidecar_s3_trusted_ca_cert }}"
+    postgres_resources: "{{ zitadel_db_resources }}"
+    postgres_backup_restore_sidecar_object_max_keep: "{{ zitadel_db_backup_restore_sidecar_object_max_keep }}"
+    postgres_backup_restore_sidecar_encryption_key: "{{ zitadel_db_backup_restore_sidecar_encryption_key }}"
