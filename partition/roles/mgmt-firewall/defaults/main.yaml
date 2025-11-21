@@ -26,7 +26,7 @@ mgmt_firewall_interfaces:
         - { option: '12', value: '' }
   mgmt_firewall_wan:
     default:
-      ip_adress: ''
+      ip_address: ''
       gateway: ''
       net_mask: ''
     interfaces:
