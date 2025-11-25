@@ -9,7 +9,7 @@ Optionally it may render a `frr.conf` for routing or an `iptables.json` for exte
 
 ## Supported SONiC Versions
 
-The only supported SONiC versions are Edgecore SONiC versions 202111.x.
+The only supported SONiC versions are Edgecore SONiC versions 202111.x and 202211.x.
 Other versions might work as well but their behavior might slightly differ for some of the configuration parameters.
 For example, if you are using `sonic_config_docker_routing_config_mode: split` on a 202111.x version and wish to migrate to version 202311.5, you will need to use `split-unified` instead.
 As the 202111.x versions worked best for us so far this role is mostly tested against those versions.
@@ -18,7 +18,7 @@ As the 202111.x versions worked best for us so far this role is mostly tested ag
 
 Some of our deployments require a DHCP relay agent on the switch which relays PXE boot requests between a client and a PXE server.
 From version 202111.6 to version 202111.7 some change in the dhcp_relay broke the relay's ability to forward PXE boot OFFER messages from the server back to the client.
-This bug was fixed in version 202111.11.
+This bug has been fixed in version 202111.11.
 
 ## Migration from the Deprecated `sonic` Role
 
@@ -49,7 +49,7 @@ sonic_config_ntp:
   vrf: default
 ```
 
-### sonic_mgmtif_ip and sonic_mgmtif_gateway
+### `sonic_mgmtif_ip` and `sonic_mgmtif_gateway`
 
 Change
 
@@ -66,17 +66,17 @@ sonic_config_mgmt_interface:
   ip: 10.1.2.3
 ```
 
-### sonic_ip_masquerade
+### `sonic_ip_masquerade`
 
 This variable was removed.
 See [this mini-lab PR](https://github.com/metal-stack/mini-lab/pull/237).
 
-### sonic_config_action
+### `sonic_config_action`
 
 This variable is replaced by the boolean variable `sonic_config_reload_config` which defaults to `false`.
 See [below](#variables) for explanation.
 
-### sonic_ports, sonic_ports_default_speed, sonic_ports_default_mtu and sonic_ports_default_fec
+### `sonic_ports`, `sonic_ports_default_speed`, `sonic_ports_default_mtu` and `sonic_ports_default_fec`
 
 All these variables are now gathered in the dictionary `sonic_config_ports`.
 
@@ -120,15 +120,15 @@ sonic_config_ports:
 `sonic_ports_default_speed` was removed.
 The default speed for a port is now derived from its breakout configuration and only a valid alternative speed can override it.
 
-### sonic_frr_debug_options
+### `sonic_frr_debug_options`
 
 This variable was removed.
 
-### sonic_interconnects_default_peer_group and sonic_interconnects_default_bgp_timers
+### `sonic_interconnects_default_peer_group` and `sonic_interconnects_default_bgp_timers`
 
 These two variables were removed.
 
-### sonic_portchannels and sonic_portchannels_default_mtu
+### `sonic_portchannels` and `sonic_portchannels_default_mtu`
 
 As with `sonic_ports`, these variables are now combined in one dictionary `sonic_config_portchannels`.
 
@@ -270,6 +270,31 @@ sonic_config_interconnects:
     # Use specific BGP timer values for the BGP session with the remote party.
     bgp_timers: 1 3
 
+    # Connect to these BGP neighbors - supports multiple neighbors with individual routemaps.
+    extended_neighbors:
+      # The IP of this extended neighbor.
+      - ip: 10.1.1.1
+
+        # Apply an incoming routemap to this neighbor.
+        routemap_in:
+          # Name of the routemap.
+          name: ALLOW-INTERNET-2-IN
+
+          # List of routemap entries.
+          entries:
+            - match ip address prefix-list INTERNET_PREFIX_IN
+            - set as-path prepend last-as 2
+
+        # Apply an outgoing routemap to this neighbor.
+        routemap_out:
+          # Name of the routemap.
+          name: ALLOW-INTERNET-2-OUT
+
+          # List of routemap entries.
+          entries:
+            - match ip address prefix-list INTERNET_PREFIX_OUT
+            - set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}
+
     # Whether the peer should take part in evpn routing (address-family l2vpn evpn).
     evpn_peer: true
 
@@ -311,6 +336,19 @@ sonic_config_interconnects:
       # List of routemap entries.
       entries:
         - "match ip address prefix-list MPLS_PREFIX_OUT"
+
+    # Create routemaps not associated with a neighbor; for example for controlling dynamic route leaking.
+    routemaps:
+      - # Name of the routemap.
+        name: "IMPORT-INTO-Vrf117"
+
+        # List of routemap entries.
+        entries:
+          - "match ip address prefix-list Vrf117-IN"
+
+    # Add optional static routes to this interconnect's VRF.
+    static_routes:
+      - 10.0.0.0/16 10.1.2.3 nexthop-vrf default
 
     # Connect with BGP unnumbered on these interfaces.
     # Also sets IPv6 options to make unnumbered work correctly.
@@ -457,6 +495,7 @@ sonic_config_ports:
 sonic_config_reload_config: false
 
 # Static Anycast Gateway (SAG) configuration.
+# SAG is only supported for EdgeCore SONiC 202211.x versions.
 sonic_config_sag:
   # The virtual MAC used for the SAG
   mac: bb:bb:bb:bb:bb:bb
@@ -468,6 +507,21 @@ sonic_config_ssh_sourceranges:
 
 # The switch's timezone.
 sonic_config_timezone: Europe/Berlin
+
+# Subinterfaces on a port with .1q VLAN tag. For subinterfaces where there is no
+# local VLAN on the switch.
+sonic_config_vlan_subinterfaces:
+  # The IP/prefixlength CIDR of the subinterface.
+  - cidr: 1.2.3.0/24
+
+    # The parent port.
+    port: Ethernet0
+
+    # The .1q VLAN tag for this subinterface.
+    vlan: 1000
+
+    # If defined, the VRF that this subinterface will be bound to.
+    vrf: Vrf42
 
 # VLANs to configure on the switch.
 sonic_config_vlans:
@@ -482,6 +536,7 @@ sonic_config_vlans:
     ip: 10.255.0.1/24
 
     # Whether to enable static anycast gateway for this VLAN.
+    # SAG is only supported for EdgeCore SONiC 202211.x versions.
     sag: false
 
     # A list of tagged ports to bind to this VLAN.
@@ -496,6 +551,18 @@ sonic_config_vlans:
 
     # The VRF to bind to this VLAN.
     vrf: Vrf45
+
+    # VRRP: Gateway redundancy without Vxlan/EVPN. If you use Vxlan/EVPN you should configure SAG instead.
+    # Prerequisite: The two routers must be able to reach each other through this VLAN, and multicast VRRP packets (Multicast address 224.0.0.18, protocol 112) must not be blocked.
+    vrrp:
+      # The VRRP group. Should be unique per VLAN.
+      group: 1
+
+      # The VRRP priority. The router with the highest priority is master; in case of a tie the highest (VLAN) IP wins. Between 1 and 254.
+      priority: 50
+
+    # The VRRP IP. This is the virtual IP used as default gateway for the connected machines. It must not overlap with the VLAN ip.
+      ip: 10.255.1.1/24
 
 # VTEP configuration.
 sonic_config_vtep:

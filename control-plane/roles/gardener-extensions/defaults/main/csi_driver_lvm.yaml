@@ -1,0 +1,6 @@
+---
+gardener_extension_csi_driver_lvm_enabled: false
+
+gardener_extension_csi_driver_lvm_helm_chart_tag: "{{ gardener_extension_csi_driver_lvm_image_tag }}"
+
+gardener_extension_csi_driver_lvm_image_vector_overwrite: []

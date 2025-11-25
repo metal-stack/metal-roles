@@ -1,0 +1,74 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - not gardener_extension_backup_s3_enabled or gardener_extension_backup_s3_helm_chart is not none
+      - not gardener_extension_csi_driver_lvm_enabled or gardener_extension_csi_driver_lvm_helm_chart is not none
+      - not gardener_extension_dns_powerdns_enabled or gardener_extension_dns_powerdns_helm_chart is not none
+      - not gardener_extension_networking_calico_enabled or gardener_extension_networking_calico_helm_chart is not none
+      - not gardener_extension_networking_calico_enabled or gardener_extension_admission_calico_helm_chart_runtime is not none
+      - not gardener_extension_networking_calico_enabled or gardener_extension_admission_calico_helm_chart_application is not none
+      - not gardener_extension_networking_cilium_enabled or gardener_extension_networking_cilium_helm_chart is not none
+      - not gardener_extension_networking_cilium_enabled or gardener_extension_admission_cilium_helm_chart_runtime is not none
+      - not gardener_extension_networking_cilium_enabled or gardener_extension_admission_cilium_helm_chart_application is not none
+      - not gardener_extension_os_metal_enabled or gardener_extension_os_metal_helm_chart is not none
+      - not gardener_extension_provider_gcp_enabled or gardener_extension_provider_gcp_helm_chart is not none
+      - not gardener_extension_provider_gcp_enabled or gardener_extension_admission_gcp_helm_chart_runtime is not none
+      - not gardener_extension_provider_gcp_enabled or gardener_extension_admission_gcp_helm_chart_application is not none
+      - not gardener_extension_provider_metal_enabled or gardener_extension_provider_metal_helm_chart is not none
+      - not gardener_extension_provider_metal_enabled or gardener_extension_admission_metal_helm_chart_runtime is not none
+      - not gardener_extension_provider_metal_enabled or gardener_extension_admission_metal_helm_chart_application is not none
+      - not gardener_extension_shoot_cert_service_enabled or gardener_extension_shoot_cert_service_helm_chart is not none
+      - not gardener_extension_shoot_cert_service_enabled or gardener_extension_shoot_cert_service_issuer_email is not none
+      - not gardener_extension_shoot_dns_service_enabled or gardener_extension_shoot_dns_service_helm_chart is not none
+      - not gardener_extension_shoot_dns_service_enabled or gardener_extension_admission_shoot_dns_service_helm_chart_runtime is not none
+      - not gardener_extension_shoot_dns_service_enabled or gardener_extension_admission_shoot_dns_service_helm_chart_application is not none
+      - not gardener_extension_ontap_enabled or gardener_extension_ontap_helm_chart is not none
+
+- name: Check deprecated variables are used
+  fail:
+    msg: "the variable {{ item.old }} was renamed to {{ item.new }}, please migrate and remove the old variable"
+  when: item.old in hostvars[inventory_hostname]
+  loop:
+    - old: gardener_metal_admission_replicas
+      new: gardener_extension_provider_metal_admission_replicas
+    - old: gardener_metal_admission_vpa
+      new: gardener_extension_provider_metal_admission_vpa
+    - old: gardener_cert_management_issuer_private_key
+      new: gardener_extension_shoot_cert_service_issuer_private_key
+    - old: gardener_cert_management_issuer_server
+      new: gardener_extension_shoot_cert_service_issuer_server
+    - old: gardener_cert_management_issuer_email
+      new: gardener_extension_shoot_cert_service_issuer_email
+    - old: gardener_cert_management_precheck_nameservers
+      new: gardener_extension_shoot_cert_service_precheck_nameservers
+    - old: gardener_cert_management_shoot_issuers_enabled
+      new: gardener_extension_shoot_cert_service_shoot_issuers_enabled
+  loop_control:
+    label: "{{ item.old }}"
+
+- name: Register gardener extension
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml', split_lines=False) }}"
+    apply: yes
+  when: lookup('vars', 'gardener_extension_' + item  | regex_replace('-', '_') + '_enabled')
+  loop:
+    - acl
+    - audit
+    - backup-s3
+    - csi-driver-lvm
+    - dns-powerdns
+    - duros
+    - networking-calico
+    - networking-cilium
+    - os-metal
+    - provider-gcp
+    - provider-metal
+    - shoot-cert-service
+    - shoot-dns-service
+    - ontap

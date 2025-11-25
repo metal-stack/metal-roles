@@ -29,6 +29,8 @@ ipam_db_backup_restore_sidecar_s3_region:
 ipam_db_backup_restore_sidecar_s3_endpoint:
 ipam_db_backup_restore_sidecar_s3_access_key:
 ipam_db_backup_restore_sidecar_s3_secret_key:
+ipam_db_backup_restore_sidecar_s3_insecure_skip_verify:
+ipam_db_backup_restore_sidecar_s3_trusted_ca_cert:
 
 ipam_db_resources:
   requests:

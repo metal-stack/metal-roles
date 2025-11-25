@@ -1,0 +1,126 @@
+---
+apiVersion: seedmanagement.gardener.cloud/v1alpha1
+kind: Gardenlet
+metadata:
+  name: "{{ _config.name }}"
+  namespace: garden
+{% if _config.kubeconfigSecretRef %}
+  annotations:
+    gardener.cloud/operation: force-redeploy
+{% endif %}
+spec:
+{% if _config.kubeconfigSecretRef %}
+  kubeconfigSecretRef:
+    name: {{ _config.kubeconfigSecretRef }}
+{% endif %}
+  deployment:
+    replicaCount: 2
+    revisionHistoryLimit: 2
+{% if not _config.kubeconfigSecretRef %}
+    podLabels:
+      networking.resources.gardener.cloud/to-virtual-garden-kube-apiserver-tcp-443: allowed
+{% endif %}
+    helm:
+      ociRepository:
+        ref: "{{ gardener_gardenlet_helm_chart }}:{{ gardener_gardenlet_helm_chart_tag }}"
+    imageVectorOverwrite: |
+{% if _config.image_vector_overwrite %}
+      images:
+        {{ _config.image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
+{% else %}
+        {# if an image overwrite was set once and when removing it again, the gardenlet does not deploy the managed seeds with the removed overwrites, therefore setting an empty yaml here #}
+        ---
+{% endif %}
+    componentImageVectorOverwrite: |
+{% if _config.component_image_vector_overwrite %}
+        {{ _config.component_image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
+{% else %}
+        {# if an image overwrite was set once and when removing it again, the gardenlet does not deploy the managed seeds with the removed overwrites, therefore setting an empty yaml here #}
+        ---
+{% endif %}
+    image:
+      repository: {{ gardener_gardenlet_image_name }}
+      tag: {{ gardener_gardenlet_image_tag }}
+      pullPolicy: {{ metal_control_plane_image_pull_policy }}
+  config:
+    apiVersion: gardenlet.config.gardener.cloud/v1alpha1
+    kind: GardenletConfiguration
+{% if _config.garden_client_connection %}
+    gardenClientConnection: {{ _config.garden_client_connection }}
+{% endif %}
+    controllers:
+      shoot:
+        concurrentSyncs: {{ _config.shoot_concurrent_syncs }}
+        reconcileInMaintenanceOnly: {{ _config.shoot_reconcile_in_maintenance_only | lower }}
+        # allow setting shoot ignore annotation:
+        respectSyncPeriodOverwrite: {{ _config.shoot_respect_sync_period_overwrite | lower }}
+      shootState:
+        concurrentSyncs: 0
+      backupEntry:
+        deletionGracePeriodHours: {{ _config.backup_entry_deletion_grace_period_hours }}
+        deletionGracePeriodShootPurposes:
+        - evaluation
+        - infrastructure
+        - production
+    logging:
+      enabled: {{ _config.logging_enabled | lower }}
+      vali:
+        enabled: {{ _config.logging_vali_enabled | lower }}
+      shootNodeLogging:
+        shootPurposes:
+        - infrastructure
+        - production
+        - development
+        - evaluation
+    featureGates: {{ _config.feature_gates | default({}, true) | to_json }}
+    seedConfig:
+      apiVersion: core.gardener.cloud/v1beta1
+      kind: Seed
+      metadata:
+        labels:
+          name: "{{ _config.name }}"
+      spec:
+        backup:
+          provider: {{ _config.backup_infrastructure.provider }}
+          region: {{ _config.backup_infrastructure.region | default('', true) }}
+          credentialsRef:
+            apiVersion: v1
+            kind: Secret
+            name: backup-secret-{{ _config.name }}
+            namespace: garden
+          providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}
+        dns:
+          provider:
+            secretRef:
+              name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
+              namespace: garden
+            type: "{{ gardener_gardenlet_default_dns_provider }}"
+        ingress:
+          controller:
+            kind: nginx
+          domain: "{{ _config.dns_domain if 'dns_domain' in _config else gardener_gardenlet_default_dns_domain }}"
+        networks:
+{% if 'nodes' in _config %}
+          nodes: "{{ _config.nodes }}"
+{% endif %}
+          pods: "{{ _config.pods if 'pods' in _config else  _gardener_gardenlet_pod_cidr }}"
+          services: "{{ _config.services if 'services' in _config else _gardener_gardenlet_service_cidr }}"
+        provider:
+          region: local
+          type: "{{ metal_control_plane_host_provider }}"
+        settings:
+          dependencyWatchdog:
+            prober:
+              enabled: true
+            weeder:
+              enabled: true
+          excessCapacityReservation:
+            enabled: false
+          scheduling:
+            visible: false
+          topologyAwareRouting:
+            enabled: false
+          verticalPodAutoscaler:
+            enabled: {{ _config.vertical_pod_autoscaler_enabled | lower }}
+        taints:
+          - key: seed.gardener.cloud/protected

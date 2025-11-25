@@ -26,8 +26,9 @@ prometheus:
       version: "{{ thanos_image_tag }}"
 {% if monitoring_thanos_object_store_config is defined %}
       objectStorageConfig:
-        key: objstore.yml
-        name: thanos-objstore-secret
+        existingSecret:
+          key: objstore.yml
+          name: thanos-objstore-secret
 {% endif %}
   thanosService:
     enabled: true
@@ -150,6 +151,9 @@ alertmanager:
         repeat_interval: 1h
         continue: true
 {% endif %}
+{% for route in monitoring_alertmanager_additional_routes %}
+      - {{ route | to_yaml | indent(width=8, first=false) }}
+{% endfor %}
     receivers:
     - name: webhook-logger
       webhook_configs:
@@ -181,6 +185,9 @@ alertmanager:
             url: '{{ template "__alert_silence_link" . }}'
 {% endraw %}
 {% endif %}
+{% for receiver in monitoring_alertmanager_additional_receivers %}
+    - {{ receiver | to_yaml | indent(width=6, first=false) }}
+{% endfor %}
 
 {% raw %}
   templateFiles:

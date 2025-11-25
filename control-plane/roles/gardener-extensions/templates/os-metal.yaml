@@ -1,0 +1,23 @@
+---
+apiVersion: operator.gardener.cloud/v1alpha1
+kind: Extension
+metadata:
+  name: os-metal
+spec:
+  resources:
+{% for os_type in gardener_extension_os_metal_types %}
+  - kind: OperatingSystemConfig
+    type: {{ os_type }}
+{% endfor %}
+  deployment:
+    extension:
+      policy: Always
+      helm:
+          ociRepository:
+            ref: "{{ gardener_extension_os_metal_helm_chart }}:{{ gardener_extension_os_metal_helm_chart_tag }}"
+      values:
+        image:
+          repository: "{{ gardener_os_controller_image_name }}"
+          tag: "{{ gardener_os_controller_image_tag }}"
+          pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      runtimeClusterValues: {}

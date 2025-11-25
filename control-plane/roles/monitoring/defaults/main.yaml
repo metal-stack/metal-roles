@@ -20,6 +20,7 @@ monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
 
 monitoring_thanos_receive_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
+monitoring_thanos_receive_size: 16Gi
 
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
@@ -30,7 +31,8 @@ monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertma
 
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
-monitoring_metal_api_hmac: "metal-admin"
+monitoring_metal_api_hmac: "metal-view"
+monitoring_metal_api_authtype: "Metal-View"
 
 # rethinkdb exporter
 monitoring_rethinkdb_exporter_metal_db_password: "change-me"
@@ -40,3 +42,7 @@ monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28
 monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 else False }}"
 monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
 monitoring_gardener_seeds: []
+
+# alertmanager config
+monitoring_alertmanager_additional_routes: []
+monitoring_alertmanager_additional_receivers: []

@@ -55,6 +55,8 @@
     postgres_backup_restore_sidecar_s3_endpoint: "{{ headscale_db_backup_restore_sidecar_s3_endpoint }}"
     postgres_backup_restore_sidecar_s3_access_key: "{{ headscale_db_backup_restore_sidecar_s3_access_key }}"
     postgres_backup_restore_sidecar_s3_secret_key: "{{ headscale_db_backup_restore_sidecar_s3_secret_key }}"
+    postgres_backup_restore_sidecar_s3_insecure_skip_verify: "{{ headscale_db_backup_restore_sidecar_s3_insecure_skip_verify }}"
+    postgres_backup_restore_sidecar_s3_trusted_ca_cert: "{{ headscale_db_backup_restore_sidecar_s3_trusted_ca_cert }}"
     postgres_backup_restore_sidecar_encryption_key: "{{ headscale_db_backup_restore_sidecar_encryption_key }}"
     postgres_resources: "{{ headscale_db_resources }}"
 
@@ -83,6 +85,9 @@
     pod: "{{ lookup('k8s', api_version='v1', namespace=headscale_namespace, kind='Pod', label_selector='app=headscale').get('metadata', {}).get('name') }}"
     command: headscale apikeys create -e {{ headscale_api_key_expiration }}
   register: headscale_api_key
+  retries: 6
+  delay: 5
+  until: headscale_api_key is success
   when:
     - not headscale_api_key_already_created
 

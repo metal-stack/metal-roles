@@ -2,7 +2,7 @@
 - name: Create namespace {{ isolated_clusters_dns_namespace }}
   k8s:
     definition:
-      api_version: v1
+      apiVersion: v1
       kind: Namespace
       metadata:
         name: "{{ isolated_clusters_dns_namespace }}"

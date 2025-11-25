@@ -29,6 +29,8 @@ masterdata_db_backup_restore_sidecar_s3_region:
 masterdata_db_backup_restore_sidecar_s3_endpoint:
 masterdata_db_backup_restore_sidecar_s3_access_key:
 masterdata_db_backup_restore_sidecar_s3_secret_key:
+masterdata_db_backup_restore_sidecar_s3_insecure_skip_verify:
+masterdata_db_backup_restore_sidecar_s3_trusted_ca_cert:
 
 masterdata_db_resources:
   requests:

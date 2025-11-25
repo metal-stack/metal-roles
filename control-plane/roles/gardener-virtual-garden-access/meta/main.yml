@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: gardener-virtual-garden-access
+  author: metal-stack
+  description: Deploys a managed resource for accessing the virtual garden.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/control-plane/roles/defaults
+  - role: metal-roles/control-plane/roles/gardener-defaults

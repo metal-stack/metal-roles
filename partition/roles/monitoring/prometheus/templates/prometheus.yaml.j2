@@ -1,9 +1,9 @@
 
 # global config
 global:
-  scrape_interval: 30s
-  evaluation_interval: 30s
-  scrape_timeout: 15s
+  scrape_interval: {{ prometheus_scrape_interval }}
+  evaluation_interval: {{ prometheus_evaluation_interval }}
+  scrape_timeout: {{ prometheus_scrape_timeout }}
   external_labels:
     partition: '{{ metal_partition_id }}'
     replica: '{{ inventory_hostname }}'

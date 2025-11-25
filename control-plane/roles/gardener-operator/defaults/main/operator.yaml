@@ -1,0 +1,39 @@
+---
+gardener_operator_garden_name: "{{ gardener_defaults_garden_name }}"
+
+gardener_operator_repo_url: "{{ gardener_repo_url }}"
+gardener_operator_repo_ref: "{{ gardener_repo_ref }}"
+
+gardener_operator_backup_infrastructure:
+  # provider: gcp
+  # region:
+  # secretRef:
+  #  name: backup-secret
+  #  namespace: garden
+  # bucket:
+  #
+  # provider: S3
+  # endpoint: "{{ gardener_operator_backup_infrastructure_secret.endpoint | b64decode }}"
+  # accessKeyID: "{{ gardener_operator_backup_infrastructure_secret.accessKeyID | b64decode }}"
+  # secretAccessKey: "{{ gardener_operator_backup_infrastructure_secret.secretAccessKey | b64decode}}"
+
+gardener_operator_backup_infrastructure_secret:
+  # for gcp:
+  # serviceaccount.json: "{{ gardener_operator_backup_infrastructure_service_account_json | b64encode }}"
+  #
+  # for S3:
+  # endpoint:
+  # accessKeyID:
+  # secretAccessKey:
+
+gardener_operator_dns_providers: []
+  # - name: powerdns
+  #   type: powerdns
+  #   secretData:
+
+gardener_operator_high_availability_control_plane: true
+
+gardener_operator_image_vector_overwrite:
+gardener_operator_component_image_vector_overwrite:
+
+gardener_operator_helm_chart_tag: "{{ gardener_operator_image_tag }}"

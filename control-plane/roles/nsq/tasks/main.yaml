@@ -14,6 +14,3 @@
   k8s:
     definition: "{{ lookup('template', 'nsq.yaml') }}"
     namespace: "{{ metal_control_plane_namespace }}"
-
-- debug:
-    msg: "{{ metal_control_plane_stage_name }}"

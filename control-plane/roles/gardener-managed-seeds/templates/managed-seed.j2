@@ -1,0 +1,66 @@
+apiVersion: seedmanagement.gardener.cloud/v1alpha1
+kind: ManagedSeed
+metadata:
+  name: "{{ _config.name }}"
+  namespace: garden
+spec:
+  gardenlet:
+    bootstrap: BootstrapToken
+    config:
+      apiVersion: gardenlet.config.gardener.cloud/v1alpha1
+      kind: GardenletConfiguration
+      seedConfig:
+        spec:
+          backup:
+            provider: {{ _config.backup_infrastructure.provider }}
+            region: {{ _config.backup_infrastructure.region | default('', true) }}
+            credentialsRef:
+              apiVersion: v1
+              kind: Secret
+              name: "{{ _config.name }}-backup-secret"
+              namespace: garden
+            providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}
+          dns:
+            provider:
+              secretRef:
+                name: {{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}
+                namespace: garden
+              type: {{ gardener_managed_seed_default_dns_provider }}
+          ingress:
+{% if 'ingress_domain' in _config %}
+            domain: {{ _config.ingress_domain }}
+{% else %}
+            domain: ingress.{{ _config.name }}.{{ gardener_managed_seed_default_dns_domain }}
+{% endif %}
+            controller:
+              kind: nginx
+          networks:
+            pods: "{{ _config.pod_cidr }}"
+            services: "{{ _config.service_cidr }}"
+          provider:
+            region: "{{ _config.region }}"
+            type: metal
+          settings:
+            excessCapacityReservation:
+              enabled: {{ _config.excess_capacity_reservation | default(true) }}
+            loadBalancerServices:
+              externalTrafficPolicy: {{ _config.external_traffic_policy | default('Local') }}
+            scheduling:
+              visible: {{ _config.visible | default(true) }}
+            shootDNS:
+              enabled: true
+{% if 'logging_enabled' in _config %}
+      logging:
+        enabled: {{ _config.logging_enabled | lower }}
+        vali:
+          enabled: {{ _config.logging_enabled | lower }}
+{% endif %}
+
+    deployment:
+      image:
+        pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      replicaCount: 1
+      revisionHistoryLimit: 1
+    mergeWithParent: true
+  shoot:
+    name: "{{ _config.name }}"

@@ -31,6 +31,10 @@ data:
 
     dns:
       magic_dns: false
+      override_local_dns: false
+
+    policy:
+      mode: database
 
 ---
 apiVersion: v1

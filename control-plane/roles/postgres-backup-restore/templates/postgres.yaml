@@ -195,6 +195,20 @@ spec:
             secretKeyRef:
               key: secretKey
               name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+{% if postgres_backup_restore_sidecar_s3_insecure_skip_verify %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_INSECURE_SKIP_VERIFY
+          valueFrom:
+            secretKeyRef:
+              key: insecureSkipVerify
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+{% endif %}
+{% if postgres_backup_restore_sidecar_s3_trusted_ca_cert %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_TRUSTED_CA_CERT
+          valueFrom:
+            secretKeyRef:
+              key: trustedCaCert
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+{% endif %}
 {% endif %}
         volumeMounts:
         - name: {{ postgres_name }}
@@ -318,6 +332,12 @@ data:
   endpoint: {{ postgres_backup_restore_sidecar_s3_endpoint | b64encode }}
   accessKey: {{ postgres_backup_restore_sidecar_s3_access_key | b64encode }}
   secretKey: {{ postgres_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% if postgres_backup_restore_sidecar_s3_insecure_skip_verify %}
+  insecureSkipVerify: {{ postgres_backup_restore_sidecar_s3_insecure_skip_verify | b64encode }}
+{% endif %}
+{% if postgres_backup_restore_sidecar_s3_trusted_ca_cert %}
+  trustedCaCert: {{ postgres_backup_restore_sidecar_s3_trusted_ca_cert | b64encode }}
+{% endif %}
 {% endif %}
 {% if postgres_backup_restore_sidecar_encryption_key %}
   encryptionKey: {{ postgres_backup_restore_sidecar_encryption_key | b64encode }}
