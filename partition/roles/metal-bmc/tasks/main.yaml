@@ -86,7 +86,7 @@
     systemd_docker_log_driver: "{{ metal_bmc_docker_log_driver }}"
     systemd_service_environment:
       TZ: "{{ metal_partition_timezone }}"
-      METAL_BMC_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
+      METAL_BMC_LEASE_FILE: "{{ metal_bmc_lease_file }}"
       METAL_BMC_PARTITION_ID: "{{ metal_partition_id }}"
       METAL_BMC_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
       METAL_BMC_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
