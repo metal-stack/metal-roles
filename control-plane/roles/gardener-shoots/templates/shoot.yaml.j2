@@ -82,6 +82,8 @@ spec:
         name: {{ _config.audit_extension_splunk.secret_name }}
 {% endif %}
   provider:
+    machineControllerManager: 
+      machineCreationTimeout: 6h
     type: metal
     workers:
 {% for worker_group in _config.worker_groups %}
