@@ -84,9 +84,9 @@ spec:
   provider:
     type: metal
     workers:
-{% for worker_group in _config.worker_groups %}
       machineControllerManager: 
         machineCreationTimeout: 6h
+{% for worker_group in _config.worker_groups %}
     - name: "{{ worker_group.name | default('group-cri-' + loop.index0 | string) }}"
       cri:
         name: {{ worker_group.worker_cri | default("containerd") }}
