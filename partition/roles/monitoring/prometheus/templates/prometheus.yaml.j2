@@ -110,12 +110,12 @@ scrape_configs:
   metrics_path: /probe
   params:
     module: [dns_resolution]
-    target: [1.1.1.1]
+    target: [{{ prometheus_blackbox_exporter_dns }}]
   static_configs:
   - labels:
       job: blackbox-dns-cloudflare
       dns_query: "{{ metal_partition_metal_api_addr }}"
-      dns_resolver: "1.1.1.1"
+      dns_resolver: "{{ prometheus_blackbox_exporter_dns }}"
     targets: {{ prometheus_blackbox_exporter_targets | to_json }}
   relabel_configs:
     - source_labels: [__address__]
