@@ -16,8 +16,8 @@
 
 - name: generate /etc/hosts
   copy:
-   content: "{{ prometheus_hosts_content }}"
-   dest: "{{ prometheus_config_host_dir }}/hosts"
+    content: "{{ prometheus_hosts_content }}"
+    dest: "{{ prometheus_config_host_dir }}/hosts"
 
 - name: generate prometheus.yaml
   template:
@@ -28,39 +28,39 @@
 - name: generate prometheus_metal_core_sd
   set_fact:
     prometheus_metal_core_sd:
-    - labels:
-        job: metal-core
-      targets: "{{ prometheus_metal_core_targets }}"
+      - labels:
+          job: metal-core
+        targets: "{{ prometheus_metal_core_targets }}"
 
 - name: create metal-core.yaml
   copy:
-    content: '{{ prometheus_metal_core_sd | to_nice_yaml(indent=2) }}'
+    content: "{{ prometheus_metal_core_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/metal-core.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_node_exporter_sd
   set_fact:
     prometheus_node_exporter_sd:
-    - labels:
-        job: node-exporter
-      targets: "{{ prometheus_node_exporter_targets }}"
+      - labels:
+          job: node-exporter
+        targets: "{{ prometheus_node_exporter_targets }}"
 
 - name: create node-exporter.yaml
   copy:
-    content: '{{ prometheus_node_exporter_sd | to_nice_yaml(indent=2) }}'
+    content: "{{ prometheus_node_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/node-exporter.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_frr_exporter_sd
   set_fact:
     prometheus_frr_exporter_sd:
-    - labels:
-        job: frr
-      targets: "{{ prometheus_frr_exporter_targets }}"
+      - labels:
+          job: frr
+        targets: "{{ prometheus_frr_exporter_targets }}"
 
 - name: create frr-exporter.yaml
   copy:
-    content: '{{ prometheus_frr_exporter_sd | to_nice_yaml(indent=2) }}'
+    content: "{{ prometheus_frr_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yaml"
   notify: restart prometheus
 
@@ -76,52 +76,52 @@
 - name: generate prometheus_ipmi_exporter_targets_sd
   set_fact:
     prometheus_ipmi_exporter_targets_sd:
-    - labels:
-        job: ipmi
-      targets: "{{ prometheus_ipmi_exporter_targets }}"
+      - labels:
+          job: ipmi
+        targets: "{{ prometheus_ipmi_exporter_targets }}"
 
 - name: create ipmi.yaml
   copy:
-    content: '{{ prometheus_ipmi_exporter_targets_sd | to_nice_yaml(indent=2) }}'
+    content: "{{ prometheus_ipmi_exporter_targets_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/ipmi.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_promtail_sd
   set_fact:
     prometheus_promtail_sd:
-    - labels:
-        job: frr
-      targets: "{{ prometheus_promtail_targets }}"
+      - labels:
+          job: frr
+        targets: "{{ prometheus_promtail_targets }}"
 
 - name: create promtail.yaml
   copy:
-    content: '{{ prometheus_promtail_sd | to_nice_yaml(indent=2) }}'
+    content: "{{ prometheus_promtail_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/promtail.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_sonic_exporter_sd
   set_fact:
     prometheus_sonic_exporter_sd:
-    - labels:
-        job: sonic-exporter
-      targets: "{{ prometheus_sonic_exporter_targets }}"
+      - labels:
+          job: sonic-exporter
+        targets: "{{ prometheus_sonic_exporter_targets }}"
 
 - name: create sonic-exporter.yaml
   copy:
-    content: '{{ prometheus_sonic_exporter_sd | to_nice_yaml(indent=2) }}'
+    content: "{{ prometheus_sonic_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/sonic-exporter.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_blackbox_exporter_sd
   set_fact:
     prometheus_blackbox_exporter_sd:
-    - labels:
-        job: blackbox-exporter
-      targets: "{{ prometheus_blackbox_exporter_targets }}"
+      - labels:
+          job: blackbox-exporter
+        targets: "{{ prometheus_blackbox_exporter_targets }}"
 
 - name: create blackbox-exporter.yaml
   copy:
-    content: '{{ prometheus_blackbox_exporter_sd | to_nice_yaml(indent=2) }}'
+    content: "{{ prometheus_blackbox_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/blackbox-exporter.yaml"
   notify: restart prometheus
 
