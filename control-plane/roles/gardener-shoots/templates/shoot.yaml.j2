@@ -82,8 +82,6 @@ spec:
         name: {{ _config.audit_extension_splunk.secret_name }}
 {% endif %}
   provider:
-    machineControllerManager: 
-      machineCreationTimeout: 6h
     type: metal
     workers:
 {% for worker_group in _config.worker_groups %}
@@ -102,6 +100,8 @@ spec:
         type: "{{ worker_group.worker_size }}"
         image: {{ worker_group.worker_image | to_json }}
 {% endfor %}
+    machineControllerManager: 
+      machineCreationTimeout: 6h
     infrastructureConfig:
       apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
       kind: InfrastructureConfig
@@ -134,3 +134,4 @@ spec:
     autoUpdate:
       kubernetesVersion: {{ _config.auto_update.kubernetes }}
       machineImageVersion: {{ _config.auto_update.machine_image }}
+  
