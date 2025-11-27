@@ -84,8 +84,6 @@ spec:
   provider:
     type: metal
     workers:
-      machineControllerManager: 
-        machineCreationTimeout: 6h
 {% for worker_group in _config.worker_groups %}
     - name: "{{ worker_group.name | default('group-cri-' + loop.index0 | string) }}"
       cri:
@@ -101,8 +99,9 @@ spec:
       machine:
         type: "{{ worker_group.worker_size }}"
         image: {{ worker_group.worker_image | to_json }}
+      machineControllerManager: 
+          machineCreationTimeout: 6h
 {% endfor %}
-    
     infrastructureConfig:
       apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
       kind: InfrastructureConfig
