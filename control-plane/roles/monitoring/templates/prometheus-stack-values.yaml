@@ -26,8 +26,9 @@ prometheus:
       version: "{{ thanos_image_tag }}"
 {% if monitoring_thanos_object_store_config is defined %}
       objectStorageConfig:
-        key: objstore.yml
-        name: thanos-objstore-secret
+        existingSecret:
+          key: objstore.yml
+          name: thanos-objstore-secret
 {% endif %}
   thanosService:
     enabled: true
