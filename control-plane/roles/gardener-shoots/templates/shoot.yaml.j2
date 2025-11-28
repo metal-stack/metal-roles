@@ -100,7 +100,7 @@ spec:
         type: "{{ worker_group.worker_size }}"
         image: {{ worker_group.worker_image | to_json }}
       machineControllerManager: 
-          machineCreationTimeout: 6h
+          machineCreationTimeout: 4d
 {% endfor %}
     infrastructureConfig:
       apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
