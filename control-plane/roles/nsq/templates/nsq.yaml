@@ -51,7 +51,11 @@ spec:
         - -broadcast-address={{ nsq_broadcast_address }}
         - -data-path=/data
 {% if nsq_tls_enabled %}
-        - -tls-required=tcp-https
+{% if nsq_tls_require_mode is boolean %}
+- -tls-required={{ nsq_tls_require_mode | to_json }}
+{% else %}
+- -tls-required={{ nsq_tls_require_mode | default("tcp-https") }}
+{% endif %}
         - -tls-client-auth-policy=require-verify
         - -tls-root-ca-file=/certs/ca.pem
         - -tls-cert=/certs/client.pem
