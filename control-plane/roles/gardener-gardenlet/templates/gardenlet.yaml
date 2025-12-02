@@ -23,10 +23,13 @@ spec:
     helm:
       ociRepository:
         ref: "{{ gardener_gardenlet_helm_chart }}:{{ gardener_gardenlet_helm_chart_tag }}"
-{% if _config.image_vector_overwrite %}
     imageVectorOverwrite: |
+{% if _config.image_vector_overwrite %}
       images:
         {{ _config.image_vector_overwrite | to_yaml | indent(width=8, first=false) }}
+{% else %}
+        {# if an image overwrite was set once and when removing it again, the gardenlet does not deploy the managed seeds with the removed overwrites, therefore setting an empty yaml here #}
+        ---
 {% endif %}
     componentImageVectorOverwrite: |
 {% if _config.component_image_vector_overwrite %}
