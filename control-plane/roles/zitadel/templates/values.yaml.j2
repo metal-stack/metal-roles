@@ -10,15 +10,15 @@ zitadel:
           Password: {{ zitadel_db_password }}
   configmapConfig:
     FirstInstance:
-      InstanceName: metal-stack
+      InstanceName: {{ zitadel_initial_instance }}
       Org:
-        Name: metal-stack
+        Name: {{ zitadel_initial_org }}
         Human:
           Username: admin
-          FirstName: Metal
-          LastName: Stack
+          FirstName: Admin
+          LastName: Initial
           NickName:
-          DisplayName: metal-stack admin
+          DisplayName: admin
           Password: {{ zitadel_admin_password }}
           PasswordChangeRequired: false
     ExternalDomain: {{ zitadel_domain }}
@@ -55,3 +55,16 @@ login:
   ingress:
     enabled: true
     className: nginx
+
+setupJob:
+  extraContainers:
+    - name: client-creds
+      image: "{{ zitadel_init_image }}:{{ zitadel_init_image_tag }}"
+      pullPolicy: {{ metal_control_plane_image_pull_policy }}
+      args:
+        - "zitadel-init"
+        - "--zitadel-endpoint={{ zitadel_domain }}"
+        - "--zitadel-port=4443"
+        - "--namespace={{ metal_control_plane_namespace }}"
+        - "--secret=zitadel-client-credentials"
+        - "--zitadel-skip-verify-tls=true"

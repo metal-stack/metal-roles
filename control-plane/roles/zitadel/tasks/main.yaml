@@ -14,6 +14,18 @@
       - zitadel_init_image is not none
       - zitadel_init_image_tag is not none
 
+- name: Deploy static users secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: zitadel-static-users
+        namespace: "{{ metal_control_plane_namespace }}"
+      type: Opaque
+      stringData:
+        users: "{{ zitadel_users | to_json }}"
+
 - name: Deploy Zitadel
   kubernetes.core.helm:
     name: zitadel
@@ -24,12 +36,6 @@
     create_namespace: true
     values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
     wait: true
-
-- name: Create init job
-  kubernetes.core.k8s:
-    state: present
-    definition: "{{ lookup('template', 'zitadel-init.yaml') }}"
-    namespace: "{{ metal_control_plane_namespace }}"
 
 - name: Wait for Secret zitadel-client-credentials
   kubernetes.core.k8s_info:
