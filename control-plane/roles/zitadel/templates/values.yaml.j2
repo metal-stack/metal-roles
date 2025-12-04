@@ -1,0 +1,61 @@
+---
+zitadel:
+  masterkey: {{ zitadel_master_key}}
+  secretConfig:
+    Database:
+      Postgres:
+        User:
+          Password: {{ zitadel_db_password }}
+        Admin:
+          Password: {{ zitadel_db_password }}
+  configmapConfig:
+    FirstInstance:
+      InstanceName: {{ zitadel_initial_instance }}
+      Org:
+        Name: {{ zitadel_initial_org }}
+        Human:
+          Username: admin
+          FirstName: Admin
+          LastName: Initial
+          NickName:
+          DisplayName: admin
+          Password: {{ zitadel_admin_password }}
+          PasswordChangeRequired: false
+    ExternalDomain: {{ zitadel_domain }}
+    ExternalPort: 80
+    TLS:
+      Enabled: false
+    Database:
+      Postgres:
+        Host: {{ zitadel_db_address }}
+        Port: 5432
+        Database: zitadel
+        MaxOpenConns: 20
+        MaxIdleConns: 10
+        MaxConnLifetime: 30m
+        MaxConnIdleTime: 5m
+        User:
+          Username: postgres
+          SSL:
+            Mode: disable
+        Admin:
+          Username: postgres
+          SSL:
+            Mode: disable
+ingress:
+  enabled: true
+  className: nginx
+image:
+  tag: v4.7.0
+env:
+  - name: ZITADEL_API_URL
+    value: {{ zitadel_ingress_dns }}
+login:
+  image:
+    tag: v4.7.0
+  env:
+    - name: ZITADEL_API_URL
+      value: {{ zitadel_ingress_dns }}
+  ingress:
+    enabled: true
+    className: nginx
