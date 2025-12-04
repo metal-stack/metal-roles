@@ -20,11 +20,11 @@
       apiVersion: v1
       kind: Secret
       metadata:
-        name: zitadel-static-users
+        name: zitadel-init-config
         namespace: "{{ metal_control_plane_namespace }}"
       type: Opaque
       stringData:
-        users: "{{ zitadel_users | to_json }}"
+        config.yaml: "{{ zitadel_config | to_json }}"
 
 - name: Deploy Zitadel
   kubernetes.core.helm:
@@ -36,6 +36,18 @@
     create_namespace: true
     values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
     wait: true
+
+- name: Cleanup previous init job
+  kubernetes.core.k8s:
+    state: absent
+    definition: "{{ lookup('template', 'zitadel-init.yaml') }}"
+    namespace: "{{ metal_control_plane_namespace }}"
+
+- name: Create init job
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'zitadel-init.yaml') }}"
+    namespace: "{{ metal_control_plane_namespace }}"
 
 - name: Wait for Secret zitadel-client-credentials
   kubernetes.core.k8s_info:

@@ -45,26 +45,17 @@ zitadel:
 ingress:
   enabled: true
   className: nginx
+image:
+  tag: v4.7.0
 env:
   - name: ZITADEL_API_URL
     value: {{ zitadel_ingress_dns }}
 login:
+  image:
+    tag: v4.7.0
   env:
     - name: ZITADEL_API_URL
       value: {{ zitadel_ingress_dns }}
   ingress:
     enabled: true
     className: nginx
-
-setupJob:
-  extraContainers:
-    - name: client-creds
-      image: "{{ zitadel_init_image }}:{{ zitadel_init_image_tag }}"
-      pullPolicy: {{ metal_control_plane_image_pull_policy }}
-      args:
-        - "zitadel-init"
-        - "--zitadel-endpoint={{ zitadel_domain }}"
-        - "--zitadel-port=4443"
-        - "--namespace={{ metal_control_plane_namespace }}"
-        - "--secret=zitadel-client-credentials"
-        - "--zitadel-skip-verify-tls=true"

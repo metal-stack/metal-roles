@@ -3,7 +3,7 @@
 zitadel_chart_version: "9.13.0"
 
 zitadel_init_image: ghcr.io/metal-stack/zitadel-init
-zitadel_init_image_tag: pr-2
+zitadel_init_image_tag: v0.1.0
 
 zitadel_domain: zitadel.{{ metal_control_plane_ingress_dns }}
 zitadel_ingress_dns: https://{{ zitadel_domain }}:443
@@ -16,14 +16,4 @@ zitadel_master_key: x123456789012345678901234567891y
 zitadel_db_address: zitadel-db
 zitadel_db_password: change-me
 
-zitadel_users:
-  - org_id: metal-stack
-    first_name: Olli
-    last_name: Owner
-    email: olli.owner@metal-stack.io
-    password: Olli.Owner123!
-  - org_id: metal-stack
-    first_name: Gerrit
-    last_name: Guest
-    email: gerrit.guest@metal-stack.io
-    password: Gerrit.Guest123!
+zitadel_config: {}

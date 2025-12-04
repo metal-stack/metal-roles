@@ -11,7 +11,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
-    verbs: ["create"]
+    verbs: ["create", "get", "update", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -38,7 +38,7 @@ spec:
       containers:
         - name: zitadel-init
           image: "{{ zitadel_init_image }}:{{ zitadel_init_image_tag }}"
-          pullPolicy: Always
+          imagePullPolicy: Always
           args:
             - "zitadel-init"
             - "--zitadel-endpoint={{ zitadel_domain }}"
@@ -46,9 +46,18 @@ spec:
             - "--zitadel-pat=$(ZITADEL_PAT)"
             - "--namespace={{ metal_control_plane_namespace }}"
             - "--secret=zitadel-client-credentials"
+            - "--zitadel-skip-verify-tls=true"
+            - "--config-path=/zitadel/config.yaml"
           env:
-          - name: ZITADEL_PAT
-            valueFrom:
-              secretKeyRef:
-                name: iam-admin-pat
-                key: pat
+            - name: ZITADEL_PAT
+              valueFrom:
+                secretKeyRef:
+                  name: iam-admin-pat
+                  key: pat
+          volumeMounts:
+            - name: config
+              mountPath: /zitadel
+      volumes:
+        - name: config
+          secret:
+            secretName: zitadel-init-config
