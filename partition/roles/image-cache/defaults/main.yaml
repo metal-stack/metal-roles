@@ -51,3 +51,4 @@ image_cache_haproxy_kernel_fallback_backend_server: github.com
 image_cache_haproxy_kernel_fallback_backend_server_health_endpoint: /
 image_cache_haproxy_boot_image_fallback_backend_server: github.com
 image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint: /
+image_cache_sync_docker_network_host: false

@@ -23,3 +23,9 @@ pixiecore_metal_hammer_logging_tls_insecure: false
 pixiecore_metal_hammer_ntp_servers: []
 
 pixiecore_additional_volume_mounts: []
+
+
+pixiecore_resources:
+  cpu_period: 50000
+  cpu_quota: 10000   
+  memory: 256m
