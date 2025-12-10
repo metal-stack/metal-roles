@@ -24,7 +24,7 @@
         namespace: "{{ metal_control_plane_namespace }}"
       type: Opaque
       stringData:
-        config.yaml: "{{ zitadel_config | to_json }}"
+        config.yaml: "{{ zitadel_init_config | to_json }}"
 
 - name: Deploy Zitadel
   kubernetes.core.helm:

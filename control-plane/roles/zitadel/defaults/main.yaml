@@ -6,8 +6,8 @@ zitadel_init_image_tag: v0.1.0
 # don't forget to remove this again until the helm chart was updated to use at least this version
 zitadel_image_tag: v4.7.0
 
-zitadel_domain: zitadel.{{ metal_control_plane_ingress_dns }}
-zitadel_ingress_dns: https://{{ zitadel_domain }}:443
+zitadel_external_domain: zitadel.{{ metal_control_plane_ingress_dns }}
+zitadel_ingress_dns: https://{{ zitadel_external_domain }}:443
 
 zitadel_initial_instance: metal-stack
 zitadel_initial_org: metal-stack
@@ -19,4 +19,18 @@ zitadel_db_password: change-me
 
 zitadel_enabled_ingress: true
 
-zitadel_config: {}
+zitadel_init_config: {}
+  # static_users:
+  #   - first_name: Olli
+  #     last_name: Owner
+  #     email: olli.owner@metal-stack.io
+  #     password: Olli.Owner123!
+  # project:
+  #   id: metal-stack
+  #   name: metal-stack
+  # application:
+  #   id: metal-stack
+  #   name: metal-stack
+  #   redirect_uri: http://v2.api.172.17.0.1.nip.io:8080/auth/openid-connect/callback
+
+zitadel_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"

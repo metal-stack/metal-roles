@@ -38,10 +38,10 @@ spec:
       containers:
         - name: zitadel-init
           image: "{{ zitadel_init_image }}:{{ zitadel_init_image_tag }}"
-          imagePullPolicy: Always
+          imagePullPolicy: "{{ zitadel_image_pull_policy }}"
           args:
             - "zitadel-init"
-            - "--zitadel-endpoint={{ zitadel_domain }}"
+            - "--zitadel-endpoint={{ zitadel_external_domain }}"
             - "--zitadel-port=4443"
             - "--zitadel-pat=$(ZITADEL_PAT)"
             - "--namespace={{ metal_control_plane_namespace }}"

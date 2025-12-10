@@ -21,7 +21,7 @@ zitadel:
           DisplayName: admin
           Password: {{ zitadel_admin_password }}
           PasswordChangeRequired: false
-    ExternalDomain: {{ zitadel_domain }}
+    ExternalDomain: {{ zitadel_external_domain }}
     TLS:
       Enabled: false
     Database:
@@ -44,14 +44,18 @@ zitadel:
 ingress:
   enabled: {{ zitadel_enabled_ingress }}
   className: nginx
+{% if zitadel_image_tag %}
 image:
   tag: {{ zitadel_image_tag }}
+{% endif %}
 env:
   - name: ZITADEL_API_URL
     value: {{ zitadel_ingress_dns }}
 login:
+{% if zitadel_image_tag %}
   image:
     tag: {{ zitadel_image_tag }}
+{% endif %}
   env:
     - name: ZITADEL_API_URL
       value: {{ zitadel_ingress_dns }}
