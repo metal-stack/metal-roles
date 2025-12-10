@@ -22,7 +22,6 @@ zitadel:
           Password: {{ zitadel_admin_password }}
           PasswordChangeRequired: false
     ExternalDomain: {{ zitadel_domain }}
-    ExternalPort: 80
     TLS:
       Enabled: false
     Database:
@@ -43,19 +42,19 @@ zitadel:
           SSL:
             Mode: disable
 ingress:
-  enabled: true
+  enabled: {{ zitadel_enabled_ingress }}
   className: nginx
 image:
-  tag: v4.7.0
+  tag: {{ zitadel_image_tag }}
 env:
   - name: ZITADEL_API_URL
     value: {{ zitadel_ingress_dns }}
 login:
   image:
-    tag: v4.7.0
+    tag: {{ zitadel_image_tag }}
   env:
     - name: ZITADEL_API_URL
       value: {{ zitadel_ingress_dns }}
   ingress:
-    enabled: true
+    enabled: {{ zitadel_enabled_ingress }}
     className: nginx

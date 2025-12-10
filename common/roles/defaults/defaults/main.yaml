@@ -163,6 +163,8 @@ metal_stack_release:
     thanos_chart_repo: "helm-charts.monitoring.thanos.repository"
     valkey_chart_repo: "helm-charts.metal-stack.valkey.repository"
     valkey_chart_version: "helm-charts.metal-stack.valkey.version"
+    zitadel_chart_repo: "helm-charts.oidc.zitadel.repository"
+    zitadel_chart_version: "helm-charts.oidc.zitadel.version"
     # gardener-extension oci helm-charts
     gardener_extension_acl_helm_chart: "docker-images.third-party.gardener.acl-extension.charts.extension"
     gardener_extension_admission_acl_helm_chart_runtime: "docker-images.third-party.gardener.acl-extension.charts.runtime"

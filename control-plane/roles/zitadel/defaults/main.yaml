@@ -1,7 +1,4 @@
 ---
-# TODO: move to release vector
-zitadel_chart_version: "9.13.0"
-
 zitadel_init_image: ghcr.io/metal-stack/zitadel-init
 zitadel_init_image_tag: v0.1.0
 
@@ -15,5 +12,7 @@ zitadel_admin_password: Password1!
 zitadel_master_key: x123456789012345678901234567891y
 zitadel_db_address: zitadel-db
 zitadel_db_password: change-me
+zitadel_image_tag: v4.7.0
+zitadel_enabled_ingress: true
 
 zitadel_config: {}

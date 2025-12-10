@@ -3,7 +3,7 @@
 Role that deploys and manages and configures [Zitadel](https://zitadel.com/), an open-source identity and access management system.
 
 > [!IMPORTANT]
-> This role was introduced as part of the implementation of [MEP-4]() and is currently considered as alpha stage. Please do not use this role for production use-cases at the time being.
+> This role was introduced as part of the implementation of [MEP-4](https://metal-stack.io/docs/MEP-4-multi-tenancy-for-the-metal-api) and is currently considered as alpha stage. Please do not use this role for production use-cases at the time being.
 
 ## UI
 
