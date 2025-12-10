@@ -2,6 +2,10 @@
 zitadel_init_image: ghcr.io/metal-stack/zitadel-init
 zitadel_init_image_tag: v0.1.0
 
+# currently this is overwritten because we require to have the latest version for zitadel-init
+# don't forget to remove this again until the helm chart was updated to use at least this version
+zitadel_image_tag: v4.7.0
+
 zitadel_domain: zitadel.{{ metal_control_plane_ingress_dns }}
 zitadel_ingress_dns: https://{{ zitadel_domain }}:443
 
@@ -12,7 +16,7 @@ zitadel_admin_password: Password1!
 zitadel_master_key: x123456789012345678901234567891y
 zitadel_db_address: zitadel-db
 zitadel_db_password: change-me
-zitadel_image_tag: v4.7.0
+
 zitadel_enabled_ingress: true
 
 zitadel_config: {}
