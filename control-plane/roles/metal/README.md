@@ -11,7 +11,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### General
 
 | Name                            | Mandatory | Description                                                                                              |
-|---------------------------------|-----------|----------------------------------------------------------------------------------------------------------|
+| ------------------------------- | --------- | -------------------------------------------------------------------------------------------------------- |
 | metal_check_api_available       |           | Checks whether the metal-api is reachable from the outside after deployment                              |
 | metal_check_api_health_endpoint |           | The endpoint to call if the metal-api is reachable from the outside after deployment                     |
 | metal_set_resource_limits       |           | Deploys metal components with or without resource limits (possibly disable for development environments) |
@@ -46,7 +46,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### Service Ports
 
 | Name                              | Mandatory | Description                                       |
-|-----------------------------------|-----------|---------------------------------------------------|
+| --------------------------------- | --------- | ------------------------------------------------- |
 | metal_api_port                    |           | Service port of the metal-api                     |
 | metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
 | metal_masterdata_api_port         |           | Service port of the masterdata-api                |
@@ -128,7 +128,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### masterdata-api
 
 | Name                                 | Mandatory | Description                                                      |
-|--------------------------------------|-----------|------------------------------------------------------------------|
+| ------------------------------------ | --------- | ---------------------------------------------------------------- |
 | metal_masterdata_api_db_address      |           | The URL to the masterdata database                               |
 | metal_masterdata_api_db_port         |           | The port of the masterdata database                              |
 | metal_masterdata_api_db_name         |           | The database name of the masterdata database                     |
@@ -148,7 +148,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### metal-console
 
 | Name                                      | Mandatory | Description                                                        |
-|-------------------------------------------|-----------|--------------------------------------------------------------------|
+| ----------------------------------------- | --------- | ------------------------------------------------------------------ |
 | metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console               |
 | metal_console_replicas                    |           | The number of deployed replicas of the metal-console               |
 | metal_console_resources                   |           | Sets the given container resources                                 |
@@ -161,7 +161,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### ipam
 
 | Name                   | Mandatory | Description                                                                       |
-|------------------------|-----------|-----------------------------------------------------------------------------------|
+| ---------------------- | --------- | --------------------------------------------------------------------------------- |
 | metal_ipam_db_address  |           | The hostname of the ipam service                                                  |
 | metal_ipam_db_port     |           | The port of the ipam service                                                      |
 | metal_ipam_db_name     |           | The database name of the ipam service                                             |
@@ -173,7 +173,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### Ingress
 
 | Name                 | Mandatory | Description                                                                |
-|----------------------|-----------|----------------------------------------------------------------------------|
+| -------------------- | --------- | -------------------------------------------------------------------------- |
 | metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
 | metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
 | metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
@@ -182,16 +182,16 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 Configuration for metal-api:
 
-| Name                                 | Mandatory | Description                                                                  |
-| ------------------------------------ | --------- | ---------------------------------------------------------------------------- |
-| metal_auditing_timescaledb_enabled   |           | Whether to deploy or not to configure timescaledb auditing. Default false.   |
-| metal_auditing_timescaledb_host      |           | The timescaledb host                                                         |
-| metal_auditing_timescaledb_port      |           | The timescaledb port                                                         |
-| metal_auditing_timescaledb_db        |           | The timescaledb database name                                                |
-| metal_auditing_timescaledb_user      |           | The timescaledb user                                                         |
-| metal_auditing_timescaledb_password  |           | The timescaledb password                                                     |
-| metal_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup         |
-| metal_auditing_search_backend        |           | Explicitly sets a configured audit backend to be used for search             |
+| Name                                 | Mandatory | Description                                                                |
+| ------------------------------------ | --------- | -------------------------------------------------------------------------- |
+| metal_auditing_timescaledb_enabled   |           | Whether to deploy or not to configure timescaledb auditing. Default false. |
+| metal_auditing_timescaledb_host      |           | The timescaledb host                                                       |
+| metal_auditing_timescaledb_port      |           | The timescaledb port                                                       |
+| metal_auditing_timescaledb_db        |           | The timescaledb database name                                              |
+| metal_auditing_timescaledb_user      |           | The timescaledb user                                                       |
+| metal_auditing_timescaledb_password  |           | The timescaledb password                                                   |
+| metal_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup       |
+| metal_auditing_search_backend        |           | Explicitly sets a configured audit backend to be used for search           |
 
 Configuration for metal-apiserver:
 
