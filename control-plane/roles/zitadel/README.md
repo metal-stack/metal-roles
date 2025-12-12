@@ -35,3 +35,6 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | zitadel_db_password       |           | The password for accessing the zitadel-db                                              |
 | zitadel_enabled_ingress   |           | Whether to enable ingress exposal or not                                               |
 | zitadel_init_config       |           | Configuration for zitadel-init                                                         |
+| zitadel_port              |           | The port used by zitadel                                                               |
+| zitadel_skip_verify_tls   |           | Whether to skip TLS verification for zitadel                                           |
+| zitadel_insecure          |           | Whether to allow insecure connections to zitadel                                       |

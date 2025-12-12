@@ -41,12 +41,14 @@ spec:
           imagePullPolicy: "{{ zitadel_image_pull_policy }}"
           args:
             - "zitadel-init"
-            - "--zitadel-endpoint={{ zitadel_external_domain }}"
-            - "--zitadel-port=4443"
+            - "--zitadel-endpoint={{ zitadel_endpoint }}"
+            - "--zitadel-external-domain={{ zitadel_external_domain }}"
+            - "--zitadel-port={{ zitadel_port }}"
             - "--zitadel-pat=$(ZITADEL_PAT)"
             - "--namespace={{ metal_control_plane_namespace }}"
             - "--secret=zitadel-client-credentials"
-            - "--zitadel-skip-verify-tls=true"
+            - "--zitadel-skip-verify-tls={{ zitadel_skip_verify_tls }}"
+            - "--zitadel-insecure={{ zitadel_insecure }}"
             - "--config-path=/zitadel/config.yaml"
           env:
             - name: ZITADEL_PAT

@@ -1,13 +1,17 @@
 ---
 zitadel_init_image: ghcr.io/metal-stack/zitadel-init
-zitadel_init_image_tag: v0.1.0
+zitadel_init_image_tag: pr-5
 
 # currently this is overwritten because we require to have the latest version for zitadel-init
 # don't forget to remove this again until the helm chart was updated to use at least this version
 zitadel_image_tag: v4.7.0
 
-zitadel_external_domain: zitadel.{{ metal_control_plane_ingress_dns }}
-zitadel_ingress_dns: https://{{ zitadel_external_domain }}:443
+zitadel_endpoint: zitadel.{{ metal_control_plane_ingress_dns }}
+zitadel_external_domain:
+zitadel_ingress_dns: https://zitadel.{{ metal_control_plane_ingress_dns }}:443
+zitadel_port: 443
+zitadel_skip_verify_tls: false
+zitadel_insecure: false
 
 zitadel_initial_instance: metal-stack
 zitadel_initial_org: metal-stack
@@ -19,7 +23,8 @@ zitadel_db_password: change-me
 
 zitadel_enabled_ingress: true
 
-zitadel_init_config: {}
+zitadel_init_config:
+  {}
   # static_users:
   #   - first_name: Olli
   #     last_name: Owner
