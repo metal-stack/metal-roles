@@ -13,6 +13,9 @@ prometheus:
 {% endif %}
 
   prometheusSpec:
+    additionalArgs:
+      - name: "web.enable-remote-write-receiver"
+        value: ""
 {% if monitoring_prometheus_image_tag is defined %}
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
@@ -78,6 +81,8 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+  plugins:
+    - camptocamp-prometheus-alertmanager-datasource
 
 alertmanager:
   ingress:
@@ -267,10 +272,10 @@ alertmanager:
 {% endraw %}
 
 coreDns:
-  enabled: false
+  enabled: true
 
 kubeDns:
-  enabled: true
+  enabled: false
 
 kubeProxy:
   enabled: false
@@ -286,7 +291,7 @@ kubeControllerManager:
 
 {% raw %}
 additionalPrometheusRulesMap:
-  "alertmanager.rules":
+  "metal-alertmanager.rules":
     groups:
     - name: metal-api.rules
       rules:
