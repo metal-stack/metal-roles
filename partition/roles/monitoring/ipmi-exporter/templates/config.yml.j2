@@ -1,9 +1,7 @@
 modules:
   default:
-{% if metal_api_bmc_superuser_enabled %}
-    user: root
-    pass: "{{ metal_api_bmc_superuser_pwd }}"
-{% endif %}
+    user: "{{ monitoring_ipmi_bmc_superuser }}"
+    pass: "{{ monitoring_ipmi_bmc_superuser_pwd }}"
     collectors:
     - ipmi
     - bmc

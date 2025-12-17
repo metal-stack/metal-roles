@@ -4,3 +4,6 @@ monitoring_ipmi_exporter_image_name: "prometheuscommunity/ipmi-exporter"
 monitoring_ipmi_exporter_image_tag: "v1.6.1"
 monitoring_ipmi_exporter_port: 9290
 monitoring_ipmi_exporter_docker_log_driver: json-file
+
+monitoring_ipmi_bmc_superuser: "root"
+monitoring_ipmi_bmc_superuser_pwd: "change-me"
