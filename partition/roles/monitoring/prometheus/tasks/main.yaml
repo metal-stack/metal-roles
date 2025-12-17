@@ -64,15 +64,6 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yaml"
   notify: restart prometheus
 
-- name: get dhcp leases
-  shell: dhcp-lease-list --parsable 2>/dev/null | grep -oE "([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})" | sort
-  register: prometheus_dhcp_leases
-
-- name: generate prometheus_ipmi_exporter_targets
-  set_fact:
-    prometheus_ipmi_exporter_targets: "{{ prometheus_ipmi_exporter_targets|default([]) + [item] }} "
-  loop: "{{ prometheus_dhcp_leases.stdout_lines }}"
-
 - name: generate prometheus_ipmi_exporter_targets_sd
   set_fact:
     prometheus_ipmi_exporter_targets_sd:
@@ -143,7 +134,7 @@
     systemd_docker_network: host
     systemd_docker_volumes:
       - "{{ prometheus_config_host_dir }}:/etc/prometheus"
-      - "/etc/hosts:/etc/hosts:ro"
+      - "{{ prometheus_config_host_dir }}/hosts:/etc/hosts:ro"
       - "{{ prometheus_data_host_dir }}:/prometheus"
     systemd_docker_ports:
       - host_port: "{{ prometheus_port }}"

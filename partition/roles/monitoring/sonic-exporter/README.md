@@ -4,8 +4,8 @@ Deploys the sonic-exporter in a systemd-managed Docker container.
 
 ## Variables
 
-| Name                             | Mandatory | Description                                 |
-| -------------------------------- | --------- | ------------------------------------------- |
+| Name                                        | Mandatory | Description                                 |
+| ------------------------------------------- | --------- | ------------------------------------------- |
 | monitoring_sonic_exporter_image_name        |           | Image name of the sonic exporter            |
 | monitoring_sonic_exporter_image_tag         |           | Image tag of the sonic exporter             |
 | monitoring_sonic_exporter_address           |           | Address for the sonic exporter              |

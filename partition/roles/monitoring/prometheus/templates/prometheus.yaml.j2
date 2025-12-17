@@ -182,14 +182,14 @@ scrape_configs:
   - separator: ;
     regex: .*
     target_label: __address__
-    replacement: "{{inventory_hostname}}:9290"
+    replacement: "{{ inventory_hostname }}:9290"
     action: replace
 
 {% if prometheus_haproxy_enabled %}
 - job_name: 'haproxy'
   metrics_path: /metrics
   static_configs:
-  - targets: ['172.17.0.1:65534']
+  - targets: ['{{ inventory_hostname }}:65534']
 {% endif %}
 
 - job_name: 'lightbox-exporter'

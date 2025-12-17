@@ -1,7 +1,7 @@
 ---
 - name: Determine platform
   ansible.builtin.command: sonic-cfggen -H -v DEVICE_METADATA.localhost.platform
-  register: sonic_exporter_platform
+  register: monitoring_sonic_exporter_platform
   changed_when: false
 
 - name: Deploy sonic_exporter service
@@ -12,7 +12,7 @@
     systemd_docker_image_name: "{{ monitoring_sonic_exporter_image_name }}"
     systemd_docker_image_tag: "{{ monitoring_sonic_exporter_image_tag }}"
     systemd_service_environment:
-      PLATFORM: "{{ sonic_exporter_platform.stdout }}"
+      PLATFORM: "{{ monitoring_sonic_exporter_platform.stdout }}"
       SONIC_EXPORTER_ADDRESS: "{{ monitoring_sonic_exporter_address }}"
       SONIC_EXPORTER_PORT: "{{ monitoring_sonic_exporter_port }}"
     systemd_service_after: docker.service
