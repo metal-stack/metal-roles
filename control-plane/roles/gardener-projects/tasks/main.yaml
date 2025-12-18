@@ -3,6 +3,12 @@
   virtual_garden_kubeconfig:
     garden_name: "{{ gardener_projects_garden_name }}"
 
+- name: Label garden namespace for project
+  ansible.builtin.command: >
+    kubectl label ns garden
+    gardener.cloud/role=project
+    project.gardener.cloud/name={{ gardener_project_name }}
+
 - name: Loop over projects
   include_tasks: project.yaml
   loop: "{{ gardener_projects }}"
