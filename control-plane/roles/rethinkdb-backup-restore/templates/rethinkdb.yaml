@@ -58,7 +58,7 @@ spec:
         - name: backup-restore-sidecar-config
           mountPath: /etc/backup-restore-sidecar
       - name: backup-restore-sidecar
-        image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}
+        image: {{ rethinkdb_backup_restore_sidecar_image_name }}:{{ rethinkdb_backup_restore_sidecar_image_tag }}
         imagePullPolicy: {{ rethinkdb_image_pull_policy }}
         command:
         - backup-restore-sidecar
