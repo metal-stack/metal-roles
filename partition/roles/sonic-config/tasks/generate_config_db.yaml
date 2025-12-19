@@ -9,6 +9,17 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
+- name: Debug input values
+  block:
+    - name: Register file contents
+      shell: cat /tmp/sonic/sonic-config.yaml
+      register: result
+
+    - name: Log output
+      debug:
+        var: result
+  when: sonic_config_debug
+
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
