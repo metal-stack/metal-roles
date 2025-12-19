@@ -7,7 +7,7 @@
   ansible.builtin.command: >
     kubectl label ns garden
     gardener.cloud/role=project
-    project.gardener.cloud/name={{ gardener_project_name }}
+    project.gardener.cloud/name={{ gardener_projects[0].name }}
 
 - name: Loop over projects
   include_tasks: project.yaml
