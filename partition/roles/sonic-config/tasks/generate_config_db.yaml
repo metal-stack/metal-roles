@@ -17,7 +17,7 @@
     cleanup: true
     pull: true
     network_mode: host
-    command: "generate --platform-file {{ sonic_config_platform_file_path }}"
+    command: generate
     volumes:
       - /usr/share/sonic/device:/usr/share/sonic/device/:ro
       - /etc/sonic:/etc/sonic:ro
