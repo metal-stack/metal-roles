@@ -23,6 +23,17 @@
       - /etc/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
+- name: Debug generated config_db.json
+  block:
+    - name: Register file contents
+      shell: cat /tmp/sonic/config_db.json
+      register: result
+
+    - name: Log output
+      debug:
+        var: result
+  when: sonic_config_debug
+
 - name: Override the existing config_db.json with the newly generated one
   copy:
     src: /tmp/sonic/config_db.json
