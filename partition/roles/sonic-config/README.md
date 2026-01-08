@@ -14,7 +14,7 @@ Other versions might work as well but their behavior might slightly differ for s
 For example, if you are using `sonic_config_docker_routing_config_mode: split` on a 202111.x version and wish to migrate to version 202311.5, you will need to use `split-unified` instead.
 As the 202111.x versions worked best for us so far this role is mostly tested against those versions.
 
-## Problems with DHCP relay
+## Problems with DHCP Relay
 
 Some of our deployments require a DHCP relay agent on the switch which relays PXE boot requests between a client and a PXE server.
 From version 202111.6 to version 202111.7 some change in the dhcp_relay broke the relay's ability to forward PXE boot OFFER messages from the server back to the client.
@@ -158,6 +158,28 @@ sonic_config_portchannels:
         - Ethernet1
       mtu: 9000
       number: 01
+```
+
+### `sonic_vteps`
+
+Change
+
+```yaml
+sonic_vteps:
+  - comment: Some comment
+    vlan: Vlan3999
+    vni: 103999
+```
+
+to
+
+```yaml
+sonic_config_vtep:
+  # New field to configure a VTEP interface even when `vxlan_tunnel_maps` is empty.
+  enabled: true
+  vxlan_tunnel_maps:
+    - vlan: Vlan3999
+      vni: 103999
 ```
 
 ## Variables
@@ -561,7 +583,7 @@ sonic_config_vlans:
       # The VRRP priority. The router with the highest priority is master; in case of a tie the highest (VLAN) IP wins. Between 1 and 254.
       priority: 50
 
-    # The VRRP IP. This is the virtual IP used as default gateway for the connected machines. It must not overlap with the VLAN ip.
+      # The VRRP IP. This is the virtual IP used as default gateway for the connected machines. It must not overlap with the VLAN ip.
       ip: 10.255.1.1/24
 
 # VTEP configuration.
