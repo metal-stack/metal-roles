@@ -25,7 +25,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                            |
 | metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                |
 | metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                       |
-| metal_control_plane_host_provider     |           | The control-planes host provider, one of `metal` or `gcp`. Required for gardener deployment.        |
+| metal_control_plane_host_provider     |           | The control-planes hosting provider, one of `metal` or `gcp`. Required for gardener deployment.     |
 
 ## Roles
 
