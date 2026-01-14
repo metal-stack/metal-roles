@@ -21,10 +21,11 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | Name                      | Mandatory | Description                                                                            |
 | ------------------------- | --------- | -------------------------------------------------------------------------------------- |
 | zitadel_chart_version     |           | The chart version for deploying zitadel                                                |
+| zitadel_namespace         |           | The namespace into which zitadel is deployed                                           |
 | zitadel_init_image        | yes       | The zitadel-init image tag                                                             |
 | zitadel_init_image_tag    | yes       | The zitadel-init image name                                                            |
 | zitadel_image_tag         |           | An optional image overwrite for zitadel when not using the default from the helm chart |
-| zitadel_external_domain   |           | The external domain used by zitadel                                                    |
+| zitadel_external_domain   | yes       | The external domain used by zitadel                                                    |
 | zitadel_image_pull_policy |           | The image pull policy to use for zitadel-init                                          |
 | zitadel_ingress_dns       |           | The DNS ingress domain used for the ingress-controller                                 |
 | zitadel_initial_instance  |           | The name of the initial instance                                                       |

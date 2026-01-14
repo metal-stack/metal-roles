@@ -45,7 +45,7 @@ spec:
             - "--zitadel-external-domain={{ zitadel_external_domain }}"
             - "--zitadel-port={{ zitadel_port }}"
             - "--zitadel-pat=$(ZITADEL_PAT)"
-            - "--namespace={{ metal_control_plane_namespace }}"
+            - "--namespace={{ zitadel_namespace }}"
             - "--secret=zitadel-client-credentials"
             - "--zitadel-skip-verify-tls={{ zitadel_skip_verify_tls }}"
             - "--zitadel-insecure={{ zitadel_insecure }}"

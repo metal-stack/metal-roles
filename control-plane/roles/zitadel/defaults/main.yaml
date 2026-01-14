@@ -7,6 +7,7 @@ zitadel_init_image_tag: v0.2.0
 zitadel_image_tag: v4.7.0
 
 zitadel_endpoint: zitadel.{{ metal_control_plane_ingress_dns }}
+zitadel_namespace: "{{ metal_control_plane_namespace }}"
 zitadel_external_domain:
 zitadel_ingress_dns: https://zitadel.{{ metal_control_plane_ingress_dns }}:443
 zitadel_port: 443
@@ -23,8 +24,7 @@ zitadel_db_password: change-me
 
 zitadel_enabled_ingress: true
 
-zitadel_init_config:
-  {}
+zitadel_init_config: {}
   # static_users:
   #   - first_name: Olli
   #     last_name: Owner
