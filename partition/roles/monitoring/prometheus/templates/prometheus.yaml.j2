@@ -110,12 +110,12 @@ scrape_configs:
   metrics_path: /probe
   params:
     module: [dns_resolution]
-    target: [1.1.1.1]
+    target: [{{ prometheus_blackbox_exporter_dns }}]
   static_configs:
   - labels:
       job: blackbox-dns-cloudflare
       dns_query: "{{ metal_partition_metal_api_addr }}"
-      dns_resolver: "1.1.1.1"
+      dns_resolver: "{{ prometheus_blackbox_exporter_dns }}"
     targets: {{ prometheus_blackbox_exporter_targets | to_json }}
   relabel_configs:
     - source_labels: [__address__]
@@ -182,13 +182,15 @@ scrape_configs:
   - separator: ;
     regex: .*
     target_label: __address__
-    replacement: 172.17.0.1:9290
+    replacement: "{{ inventory_hostname }}:9290"
     action: replace
 
+{% if prometheus_haproxy_enabled %}
 - job_name: 'haproxy'
   metrics_path: /metrics
   static_configs:
-  - targets: ['172.17.0.1:65534']
+  - targets: ['{{ inventory_hostname }}:65534']
+{% endif %}
 
 - job_name: 'lightbox-exporter'
   metrics_path: /metrics

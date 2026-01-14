@@ -1,0 +1,10 @@
+modules:
+  default:
+    user: "{{ monitoring_ipmi_bmc_superuser }}"
+    pass: "{{ monitoring_ipmi_bmc_superuser_pwd }}"
+    collectors:
+    - ipmi
+    - bmc
+    - chassis
+    - sel
+    - dcmi
