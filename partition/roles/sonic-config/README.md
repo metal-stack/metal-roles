@@ -466,6 +466,9 @@ sonic_config_portchannels:
         - Ethernet116
 
 # Ports configuration.
+# If this variable is null, which is default, no port configuration will be generated.
+# Otherwise, the generator will add default configuration for all ports present on the switch.
+# Default values for all ports and for each individual port can be overwritten.
 sonic_config_ports:
   # Default value for auto negotiation.
   default_autoneg: off
@@ -477,6 +480,8 @@ sonic_config_ports:
   default_mtu: 9000
 
   # List of ports.
+  # Only ports whose configuration differs from the defaults need to be added here.
+  # A port's name is required. All other fields will fallback to defaults if not specified.
   list:
     # Auto negotiation.
     - autoneg: on
