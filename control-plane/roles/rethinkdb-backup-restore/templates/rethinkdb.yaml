@@ -32,6 +32,8 @@ spec:
       imagePullSecrets:
       - name: {{ rethinkdb_name }}-registry-credentials
 {% endif %}
+      securityContext:
+        runAsNonRoot: false
       containers:
       - name: rethinkdb
         image: {{ rethinkdb_image_name }}:{{ rethinkdb_image_tag }}
@@ -49,6 +51,10 @@ spec:
         - containerPort: 8080
         - containerPort: 28015
         resources: {{ rethinkdb_resources | to_json }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
         volumeMounts:
         - name: {{ rethinkdb_name }}
           mountPath: /data
@@ -133,6 +139,11 @@ spec:
               name: backup-restore-sidecar-backup-provider-config-{{ rethinkdb_name }}
 {% endif %}
 {% endif %}
+        resources: {{ rethinkdb_resources | to_json }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
         volumeMounts:
         - mountPath: /data
           name: {{ rethinkdb_name }}
@@ -160,6 +171,11 @@ spec:
       - name: backup-restore-sidecar-provider
         image: {{ rethinkdb_backup_restore_sidecar_image_name }}:{{ rethinkdb_backup_restore_sidecar_image_tag }}
         imagePullPolicy: {{ rethinkdb_backup_restore_sidecar_image_pull_policy }}
+        resources: {{ rethinkdb_resources | to_json }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
         command:
         - cp
         - /backup-restore-sidecar
