@@ -247,6 +247,11 @@ metal_apiserver:
       user: {{ metal_apiserver_auditing_timescaledb_user }}
       password: {{ metal_apiserver_auditing_timescaledb_password }}
       retention: {{ metal_apiserver_auditing_timescaledb_retention }}
+  headscale:
+    enabled: {{ 'true' if metal_apiserver_headscale_enabled else 'false' }}
+    api_key: "{{ metal_apiserver_headscale_api_key }}"
+    control_plane_address: "{{ metal_apiserver_headscale_control_plane_address }}"
+    internal_api_address: "{{ metal_apiserver_headscale_internal_api_address }}"
   rateLimit:
     maxRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_requests_per_minute }}
     maxUnauthenticatedRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute }}
