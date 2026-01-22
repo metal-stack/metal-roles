@@ -24,6 +24,7 @@ nsq_broadcast_address: "{{ metal_control_plane_ingress_dns }}"
 nsq_nsqd_data_size: 100Mi
 
 nsq_tls_enabled: false
+nsq_tls_require_mode: tcp-https
 nsq_certs_client_key:
 nsq_certs_client_cert:
 nsq_certs_ca_cert:
