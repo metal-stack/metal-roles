@@ -1,4 +1,6 @@
 ---
+nsq_namespace: "{{ metal_control_plane_namespace }}"
+
 nsq_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 
 nsq_set_resource_limits: true
