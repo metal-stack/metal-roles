@@ -28,6 +28,7 @@ You can look up all the default values of this role in the [defaults folder](def
 | nsq_broadcast_address     |           | The nsq broadcast address                                                                   |
 | nsq_nsqd_data_size        |           | The size of the nsqd data volume (used when memory cache is full)                           |
 | nsq_tls_enabled           |           | Enables TLS for nsq                                                                         |
+| nsq_tls_require           |           | Specifies whether TLS is required for client connections (`true`, `false`, or `tcp-https`). |
 | nsq_certs_client_key      |           | The nsq certificate client key as a string                                                  |
 | nsq_certs_client_cert     |           | The nsq client certificate as a string                                                      |
 | nsq_certs_ca_cert         |           | The nsq ca certificate as a string                                                          |
