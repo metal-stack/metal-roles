@@ -16,7 +16,7 @@ Contains roles for deploying the metal-control-plane.
 
 ## Variables
 
-The `defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all [the default values](roles/defaults/defaults/main.yamlrol-plane-defaults/main.yaml).
+The `defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all [the default values](roles/defaults/defaults/main.yaml).
 
 | Name                                  | Mandatory | Description                                                                                         |
 | ------------------------------------- | --------- | --------------------------------------------------------------------------------------------------- |
