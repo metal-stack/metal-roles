@@ -152,4 +152,13 @@ metal_auditing_timescaledb_user: "postgres"
 metal_auditing_timescaledb_password: "change-me"
 metal_auditing_timescaledb_retention: "14 days"
 
+metal_auditing_splunk_enabled: false
+metal_auditing_splunk_endpoint:
+metal_auditing_splunk_hec_token:
+metal_auditing_splunk_source:
+metal_auditing_splunk_source_type:
+metal_auditing_splunk_index:
+metal_auditing_splunk_host:
+metal_auditing_splunk_ca:
+
 metal_auditing_search_backend:
