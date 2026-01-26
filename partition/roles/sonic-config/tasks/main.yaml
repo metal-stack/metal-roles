@@ -43,5 +43,11 @@
   notify:
     - restart caclmgrd
 
-- name: Flush handlers
-  meta: flush_handlers
+- name: Install frr-reload.service
+  copy:
+    src: frr-reload.service
+    dest: /etc/systemd/system/frr-reload.service
+  notify:
+    - reload systemd daemon
+    - reload frr
+  changed_when: true
