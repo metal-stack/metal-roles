@@ -182,25 +182,36 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 Configuration for metal-api:
 
-| Name                                 | Mandatory | Description                                                                |
-| ------------------------------------ | --------- | -------------------------------------------------------------------------- |
-| metal_auditing_timescaledb_enabled   |           | Whether to deploy or not to configure timescaledb auditing. Default false. |
-| metal_auditing_timescaledb_host      |           | The timescaledb host                                                       |
-| metal_auditing_timescaledb_port      |           | The timescaledb port                                                       |
-| metal_auditing_timescaledb_db        |           | The timescaledb database name                                              |
-| metal_auditing_timescaledb_user      |           | The timescaledb user                                                       |
-| metal_auditing_timescaledb_password  |           | The timescaledb password                                                   |
-| metal_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup       |
-| metal_auditing_search_backend        |           | Explicitly sets a configured audit backend to be used for search           |
+| Name                                 | Mandatory | Description                                                          |
+| ------------------------------------ | --------- | -------------------------------------------------------------------- |
+| metal_auditing_timescaledb_enabled   |           | Whether or not to configure timescaledb auditing. Default false.     |
+| metal_auditing_timescaledb_host      |           | The timescaledb host                                                 |
+| metal_auditing_timescaledb_port      |           | The timescaledb port                                                 |
+| metal_auditing_timescaledb_db        |           | The timescaledb database name                                        |
+| metal_auditing_timescaledb_user      |           | The timescaledb user                                                 |
+| metal_auditing_timescaledb_password  |           | The timescaledb password                                             |
+| metal_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup |
+| metal_auditing_search_backend        |           | Explicitly sets a configured audit backend to be used for search     |
+
+| Name                              | Mandatory | Description                                                     |
+| --------------------------------- | --------- | --------------------------------------------------------------- |
+| metal_auditing_splunk_enabled     |           | Whetheror not to configure timescaledb auditing. Default false. |
+| metal_auditing_splunk_endpoint    |           | The splunk endpoint.                                            |
+| metal_auditing_splunk_hec_token   |           | The splunk hec token.                                           |
+| metal_auditing_splunk_source      |           | The splunk source.                                              |
+| metal_auditing_splunk_source_type |           | The splunk source type.                                         |
+| metal_auditing_splunk_index       |           | The splunk index.                                               |
+| metal_auditing_splunk_host        |           | The splunk host.                                                |
+| metal_auditing_splunk_ca          |           | The splunk CA (not encoded).                                    |
 
 Configuration for metal-apiserver:
 
-| Name                                           | Mandatory | Description                                                               |
-| ---------------------------------------------- | --------- | ------------------------------------------------------------------------- |
-| metal_apiserver_auditing_enabled               |           | Whether to deploy or not to configure timescaledb auditing. Default true. |
-| metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                      |
-| metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                      |
-| metal_apiserver_auditing_timescaledb_db        |           | The timescaledb database name                                             |
-| metal_apiserver_auditing_timescaledb_user      |           | The timescaledb user                                                      |
-| metal_apiserver_auditing_timescaledb_password  |           | The timescaledb password                                                  |
-| metal_apiserver_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup      |
+| Name                                           | Mandatory | Description                                                          |
+| ---------------------------------------------- | --------- | -------------------------------------------------------------------- |
+| metal_apiserver_auditing_enabled               |           | Whether or not to configure timescaledb auditing. Default true.       |
+| metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                 |
+| metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                 |
+| metal_apiserver_auditing_timescaledb_db        |           | The timescaledb database name                                        |
+| metal_apiserver_auditing_timescaledb_user      |           | The timescaledb user                                                 |
+| metal_apiserver_auditing_timescaledb_password  |           | The timescaledb password                                             |
+| metal_apiserver_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup |
