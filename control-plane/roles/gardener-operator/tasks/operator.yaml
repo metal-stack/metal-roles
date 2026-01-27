@@ -29,6 +29,21 @@
     label: "{{ provider.name }}"
   no_log: yes
 
+- name: Create kube-apiserver authentication configmap
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: authentication-config
+        namespace: garden
+      data:
+        config.yaml: |-
+          {{ gardener_operator_virtual_garden_api_server_structured_authentication | indent(width=10, first=false)}}
+    apply: yes
+  when: gardener_operator_virtual_garden_api_server_structured_authentication
+  no_log: yes
+
 - name: Deploy Gardener Operator
   include_role:
     name: ansible-common/roles/helm-chart
