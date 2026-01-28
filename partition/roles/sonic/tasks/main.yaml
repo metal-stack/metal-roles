@@ -43,8 +43,6 @@
 - name: Set NTP timezone
   timezone:
     name: "{{ sonic_timezone }}"
-  notify:
-    - restart chrony
 
 - name: Render frr config
   template:

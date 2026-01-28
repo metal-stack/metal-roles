@@ -24,8 +24,3 @@
   systemd:
     name: bgp
     state: restarted
-
-- name: restart chrony
-  systemd:
-    name: chrony
-    state: restarted

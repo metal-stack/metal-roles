@@ -33,6 +33,6 @@ prometheus_hosts_content: |
 prometheus_blackbox_exporter_icmp_groups: []
 prometheus_blackbox_exporter_metal_api_probe_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}v1/version"
 
-prometheus_haproxy_enabled: false
+prometheus_haproxy_enabled: true
 
 prometheus_blackbox_exporter_dns: 1.1.1.1
