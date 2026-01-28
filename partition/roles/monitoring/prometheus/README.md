@@ -8,7 +8,7 @@ This role uses variables from [partition-defaults](/partition). So, make sure
 you define them adequately as well.
 
 | Name                                             | Mandatory | Description                                                                                                                               |
-|--------------------------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | prometheus_port                                  |           | Port for prometheus                                                                                                                       |
 | prometheus_docker_log_driver                     |           | Indicates where to write the docker logs to                                                                                               |
 | prometheus_image_name                            | yes       | Image version of the prometheus                                                                                                           |
@@ -26,6 +26,7 @@ you define them adequately as well.
 | prometheus_ping_targets                          |           | Ping targets to scrape from                                                                                                               |
 | prometheus_sonic_exporter_targets                |           | Sonic exporter targets to scrape from                                                                                                     |
 | prometheus_blackbox_exporter_targets             |           | Blackbox exporter targets to scrape from                                                                                                  |
+| prometheus_blackbox_exporter_dns                 |           | Blackbox exporter DNS resolve nameserver                                                                                                  |
 | prometheus_lightbox_exporter_targets             |           | Lightbox exporter targets to scrape from                                                                                                  |
 | prometheus_lightos_smart_targets                 |           | Lightos smart targets to scrape from                                                                                                      |
 | prometheus_ipmi_exporter_targets                 |           | IPMI exporter targets to scrape from                                                                                                      |
@@ -35,3 +36,4 @@ you define them adequately as well.
 | prometheus_scrape_interval                       |           | The frequency to scrape targets                                                                                                           |
 | prometheus_evaluation_interval                   |           | The frequency to evaluate rules                                                                                                           |
 | prometheus_scrape_timeout                        |           | Timeout per-scrape                                                                                                                        |
+| prometheus_haproxy_enabled                       |           | Enable HAProxy metrics scraping                                                                                                           |

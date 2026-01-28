@@ -9,6 +9,61 @@ data:
   sonic-exporter.json: |
     {% raw %}
     {
+      "__inputs": [
+        {
+          "name": "DS_PROMETHEUS",
+          "label": "Prometheus",
+          "description": "",
+          "type": "datasource",
+          "pluginId": "prometheus",
+          "pluginName": "Prometheus"
+        }
+      ],
+      "__elements": {},
+      "__requires": [
+        {
+          "type": "panel",
+          "id": "bargauge",
+          "name": "Bar gauge",
+          "version": ""
+        },
+        {
+          "type": "panel",
+          "id": "gauge",
+          "name": "Gauge",
+          "version": ""
+        },
+        {
+          "type": "grafana",
+          "id": "grafana",
+          "name": "Grafana",
+          "version": "10.1.2"
+        },
+        {
+          "type": "datasource",
+          "id": "prometheus",
+          "name": "Prometheus",
+          "version": "1.0.0"
+        },
+        {
+          "type": "panel",
+          "id": "table",
+          "name": "Table",
+          "version": ""
+        },
+        {
+          "type": "panel",
+          "id": "text",
+          "name": "Text",
+          "version": ""
+        },
+        {
+          "type": "panel",
+          "id": "timeseries",
+          "name": "Time series",
+          "version": ""
+        }
+      ],
       "annotations": {
         "list": [
           {
@@ -34,39 +89,14 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 31,
+      "id": null,
       "links": [],
       "liveNow": false,
       "panels": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "gridPos": {
-            "h": 5,
-            "w": 12,
-            "x": 0,
-            "y": 0
-          },
-          "id": 154,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "* Select the switch from the dropdown above.\n* For simulated GNS3 switches platform data like PDUs, FANs etc. will not be available for obvious reasons.\n* Graph may show \"No Data\" for the metrics which don't have respective configuration on the switch.\n* As an internal mgmt. in our lab, outside of working hours Real Physical Switches are powered down, Hence monsoon shows no data for that duration. ",
-            "mode": "markdown"
-          },
-          "pluginVersion": "9.5.1",
-          "title": "Information",
-          "type": "text"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "${DS_PROMETHEUS}"
           },
           "fieldConfig": {
             "defaults": {
@@ -131,12 +161,6 @@ data:
               }
             ]
           },
-          "gridPos": {
-            "h": 2,
-            "w": 6,
-            "x": 0,
-            "y": 5
-          },
           "id": 142,
           "options": {
             "cellHeight": "sm",
@@ -150,12 +174,12 @@ data:
             },
             "showHeader": false
           },
-          "pluginVersion": "9.5.1",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "builder",
               "exemplar": false,
@@ -226,7 +250,32 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 3
+          },
+          "id": 154,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "* Select the switch from the dropdown above.\n* For simulated GNS3 switches platform data like PDUs, FANs etc. will not be available for obvious reasons.\n* Graph may show \"No Data\" for the metrics which don't have respective configuration on the switch.\n* As an internal mgmt. in our lab, outside of working hours Real Physical Switches are powered down, Hence monsoon shows no data for that duration. ",
+            "mode": "markdown"
+          },
+          "pluginVersion": "10.1.2",
+          "title": "Information",
+          "type": "text"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
           },
           "fieldConfig": {
             "defaults": {
@@ -240,19 +289,17 @@ data:
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "drawStyle": "line",
-                "fillOpacity": 30,
-                "gradientMode": "hue",
+                "fillOpacity": 25,
+                "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineStyle": {
-                  "fill": "solid"
-                },
-                "lineWidth": 7,
-                "pointSize": 6,
+                "lineWidth": 1,
+                "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -266,33 +313,20 @@ data:
                   "mode": "off"
                 }
               },
-              "mappings": [
-                {
-                  "options": {
-                    "0": {
-                      "index": 1,
-                      "text": "DOWN"
-                    },
-                    "1": {
-                      "index": 0,
-                      "text": "UP"
-                    }
-                  },
-                  "type": "value"
-                }
-              ],
-              "max": 1,
-              "min": 0,
+              "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
                     "color": "green",
                     "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
                   }
                 ]
-              },
-              "unit": "percentunit"
+              }
             },
             "overrides": []
           },
@@ -300,20 +334,18 @@ data:
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 8
           },
-          "id": 144,
+          "id": 200,
           "options": {
             "legend": {
-              "calcs": [
-                "last"
-              ],
+              "calcs": [],
               "displayMode": "list",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
-              "mode": "multi",
+              "mode": "single",
               "sort": "none"
             }
           },
@@ -326,15 +358,15 @@ data:
               "crit": "2",
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "decimals": 2,
               "displayAliasType": "Always",
               "displayType": "Annotation",
               "displayValueWithAlias": "When Alias Displayed",
-              "editorMode": "builder",
+              "editorMode": "code",
               "exemplar": false,
-              "expr": "sonic_system_status{instance=\"$target\"}",
+              "expr": "sonic_system_status{instance=\"$target\",status=\"\",status_core=\"\"}",
               "group": {
                 "$$hashKey": "object:24",
                 "alias": "",
@@ -361,14 +393,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 14
           },
           "id": 8,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -384,7 +416,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -399,11 +432,13 @@ data:
                 "h": 7,
                 "w": 12,
                 "x": 0,
-                "y": 13
+                "y": 15
               },
               "id": 10,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -412,12 +447,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_info{instance=\"$target\"}",
@@ -451,7 +486,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -459,6 +494,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -470,6 +507,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -491,7 +529,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -506,7 +545,7 @@ data:
                 "h": 5,
                 "w": 8,
                 "x": 12,
-                "y": 13
+                "y": 15
               },
               "id": 12,
               "options": {
@@ -517,15 +556,16 @@ data:
                   "showLegend": true
                 },
                 "tooltip": {
-                  "mode": "multi",
+                  "mode": "single",
                   "sort": "none"
                 }
               },
+              "pluginVersion": "9.0.6",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_uptime_seconds_total{instance=\"$target\"}",
@@ -548,7 +588,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -559,7 +599,8 @@ data:
                     "mode": "percentage",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "orange",
@@ -579,7 +620,7 @@ data:
                 "h": 5,
                 "w": 8,
                 "x": 12,
-                "y": 18
+                "y": 20
               },
               "id": 16,
               "options": {
@@ -594,12 +635,12 @@ data:
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_memory_ratio{instance=\"$target\"}",
@@ -613,7 +654,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -629,7 +670,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -645,11 +687,13 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 20
+                "y": 22
               },
               "id": 26,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": [
                     "Value"
                   ],
@@ -660,12 +704,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_fan_available_status{instance=\"$target\"}",
@@ -726,7 +770,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -757,7 +801,7 @@ data:
                 "h": 5,
                 "w": 7,
                 "x": 12,
-                "y": 23
+                "y": 25
               },
               "id": 14,
               "options": {
@@ -772,12 +816,12 @@ data:
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_cpu_ratio{instance=\"$target\"}",
@@ -791,7 +835,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -819,7 +863,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 28
+                "y": 30
               },
               "id": 22,
               "options": {
@@ -834,14 +878,15 @@ data:
                   "fields": "",
                   "values": false
                 },
-                "showUnfilled": true
+                "showUnfilled": true,
+                "valueMode": "color"
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_fan_rpm{instance=\"$target\"}",
@@ -864,7 +909,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -908,11 +953,13 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 28
+                "y": 30
               },
               "id": 24,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -922,12 +969,12 @@ data:
                 "showHeader": true,
                 "sortBy": []
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_fan_operational_status{instance=\"$target\"}",
@@ -987,7 +1034,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1015,7 +1062,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 36
+                "y": 38
               },
               "id": 18,
               "options": {
@@ -1030,14 +1077,15 @@ data:
                   "fields": "",
                   "values": false
                 },
-                "showUnfilled": true
+                "showUnfilled": true,
+                "valueMode": "color"
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_sensor_threshold_celsius{instance=\"$target\"}",
@@ -1063,7 +1111,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1091,7 +1139,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 36
+                "y": 38
               },
               "id": 20,
               "options": {
@@ -1106,14 +1154,15 @@ data:
                   "fields": "",
                   "values": false
                 },
-                "showUnfilled": true
+                "showUnfilled": true,
+                "valueMode": "color"
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_sensor_celsius{instance=\"$target\"}",
@@ -1146,14 +1195,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 15
           },
           "id": 146,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1203,11 +1252,13 @@ data:
                 "h": 4,
                 "w": 16,
                 "x": 0,
-                "y": 14
+                "y": 16
               },
               "id": 150,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -1216,12 +1267,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_mclag_oper_state{instance=\"$target\"}",
@@ -1318,7 +1369,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1363,7 +1414,7 @@ data:
                 "h": 8,
                 "w": 5,
                 "x": 16,
-                "y": 14
+                "y": 16
               },
               "id": 152,
               "options": {
@@ -1378,12 +1429,12 @@ data:
                 "showThresholdLabels": true,
                 "showThresholdMarkers": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_mclag_oper_state{instance=\"$target\"}",
@@ -1400,7 +1451,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1434,11 +1485,13 @@ data:
                 "h": 4,
                 "w": 16,
                 "x": 0,
-                "y": 18
+                "y": 20
               },
               "id": 148,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -1447,12 +1500,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_mclag_domain{instance=\"$target\"}",
@@ -1540,14 +1593,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 16
           },
           "id": 126,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1577,7 +1630,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -1590,9 +1644,9 @@ data:
               },
               "gridPos": {
                 "h": 6,
-                "w": 4,
+                "w": 3,
                 "x": 0,
-                "y": 16
+                "y": 17
               },
               "id": 156,
               "options": {
@@ -1610,12 +1664,12 @@ data:
                   "titleSize": 1
                 }
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_ntp_sync_status{instance=\"$target\"}",
@@ -1630,7 +1684,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1638,6 +1692,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -1649,6 +1705,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -1670,7 +1727,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -1684,9 +1742,9 @@ data:
               },
               "gridPos": {
                 "h": 6,
-                "w": 18,
-                "x": 4,
-                "y": 16
+                "w": 7,
+                "x": 3,
+                "y": 17
               },
               "id": 134,
               "options": {
@@ -1705,7 +1763,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_ntp_jitter{instance=\"$target\"}",
@@ -1720,7 +1778,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1728,6 +1786,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -1739,6 +1799,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -1760,7 +1821,198 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "s"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 7,
+                "x": 10,
+                "y": 17
+              },
+              "id": 140,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "builder",
+                  "expr": "sonic_ntp_rtd{instance=\"$target\"}",
+                  "legendFormat": "[remote-{{remote}}, refid-{{refid}}]",
+                  "range": true,
+                  "refId": "A"
+                }
+              ],
+              "title": "Round-trip delay to the NTP server.",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "inspect": false
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "label"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 114
+                      }
+                    ]
+                  }
+                ]
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 3,
+                "x": 0,
+                "y": 23
+              },
+              "id": 202,
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true,
+                "sortBy": []
+              },
+              "pluginVersion": "10.1.2",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "builder",
+                  "expr": "sonic_ntp_global{instance=\"$target\"}",
+                  "legendFormat": "__auto",
+                  "range": true,
+                  "refId": "A"
+                }
+              ],
+              "title": "NTP Global",
+              "transformations": [
+                {
+                  "id": "labelsToFields",
+                  "options": {
+                    "keepLabels": [
+                      "auth_enabled",
+                      "src_intf"
+                    ],
+                    "mode": "rows"
+                  }
+                }
+              ],
+              "type": "table"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -1778,7 +2030,7 @@ data:
                       "options": {
                         "mode": "exclude",
                         "names": [
-                          "[remote-10.10.131.254, refid-131.188.3.220]"
+                          "[remote-10.10.131.254, refid-.INIT.]"
                         ],
                         "prefix": "All except:",
                         "readOnly": true
@@ -1799,9 +2051,9 @@ data:
               },
               "gridPos": {
                 "h": 6,
-                "w": 11,
-                "x": 0,
-                "y": 22
+                "w": 7,
+                "x": 3,
+                "y": 23
               },
               "id": 136,
               "options": {
@@ -1820,7 +2072,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_ntp_offset{instance=\"$target\"}",
@@ -1835,7 +2087,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1843,6 +2095,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -1854,6 +2108,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -1875,7 +2130,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -1889,99 +2145,9 @@ data:
               },
               "gridPos": {
                 "h": 6,
-                "w": 11,
-                "x": 11,
-                "y": 22
-              },
-              "id": 140,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "prometheus"
-                  },
-                  "editorMode": "builder",
-                  "expr": "sonic_ntp_rtd{instance=\"$target\"}",
-                  "legendFormat": "[remote-{{remote}}, refid-{{refid}}]",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "Round-trip delay to the NTP server.",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "s"
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 22,
-                "x": 0,
-                "y": 28
+                "w": 7,
+                "x": 10,
+                "y": 23
               },
               "id": 138,
               "options": {
@@ -2000,7 +2166,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_ntp_when{instance=\"$target\"}",
@@ -2013,7 +2179,7 @@ data:
               "type": "timeseries"
             }
           ],
-          "title": "Network Time Protocol",
+          "title": "Network Time Protocol (NTP)",
           "type": "row"
         },
         {
@@ -2022,14 +2188,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 17
           },
           "id": 58,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2060,11 +2226,13 @@ data:
                 "h": 9,
                 "w": 12,
                 "x": 0,
-                "y": 17
+                "y": 18
               },
               "id": 46,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -2073,12 +2241,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_transceiver_info{instance=\"$target\"}",
@@ -2086,7 +2254,7 @@ data:
                   "refId": "A"
                 }
               ],
-              "title": "Transceiver Info",
+              "title": "Tranceiver Info",
               "transformations": [
                 {
                   "id": "seriesToRows",
@@ -2172,7 +2340,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2203,11 +2371,13 @@ data:
                 "h": 9,
                 "w": 12,
                 "x": 12,
-                "y": 17
+                "y": 18
               },
               "id": 36,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -2216,12 +2386,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_cable_length_meters{instance=\"$target\"}",
@@ -2285,7 +2455,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2320,11 +2490,13 @@ data:
                 "h": 7,
                 "w": 24,
                 "x": 0,
-                "y": 26
+                "y": 27
               },
               "id": 52,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -2333,12 +2505,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_transceiver_threshold_info{instance=\"$target\"}",
@@ -2410,7 +2582,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2418,6 +2590,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -2429,6 +2603,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2466,7 +2641,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 33
+                "y": 34
               },
               "id": 55,
               "options": {
@@ -2485,7 +2660,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "exemplar": false,
@@ -2503,7 +2678,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2511,6 +2686,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -2522,6 +2699,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2559,7 +2737,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 33
+                "y": 34
               },
               "id": 56,
               "options": {
@@ -2578,7 +2756,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_optic_celsius{instance=\"$target\"}",
@@ -2594,7 +2772,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2602,6 +2780,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -2613,6 +2793,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2650,7 +2831,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 41
+                "y": 42
               },
               "id": 53,
               "options": {
@@ -2669,7 +2850,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_transmit_optic_bias_amperes{instance=\"$target\"}",
@@ -2685,7 +2866,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2693,6 +2874,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -2704,6 +2887,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2741,7 +2925,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 41
+                "y": 42
               },
               "id": 59,
               "options": {
@@ -2760,7 +2944,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_receive_optic_power_dbm{instance=\"$target\"}",
@@ -2776,7 +2960,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2784,6 +2968,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -2795,6 +2981,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2834,7 +3021,7 @@ data:
                       "options": {
                         "mode": "exclude",
                         "names": [
-                          "Eth1/24"
+                          "Eth1/15"
                         ],
                         "prefix": "All except:",
                         "readOnly": true
@@ -2857,7 +3044,7 @@ data:
                 "h": 7,
                 "w": 12,
                 "x": 0,
-                "y": 49
+                "y": 50
               },
               "id": 60,
               "options": {
@@ -2876,7 +3063,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_transmit_optic_power_dbm{instance=\"$target\"}",
@@ -2906,14 +3093,542 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 18
+          },
+          "id": 165,
+          "panels": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "inspect": false
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green"
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 17,
+                "w": 16,
+                "x": 0,
+                "y": 109
+              },
+              "id": 168,
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "enablePagination": false,
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true
+              },
+              "pluginVersion": "10.1.2",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "disableTextWrap": false,
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_lag_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "fullMetaSearch": false,
+                  "hide": false,
+                  "includeNullMetadata": true,
+                  "instant": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "A",
+                  "useBackend": false
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_lag_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "B"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_port_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "C"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_port_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "D"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_rif_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "E"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_rif_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "F"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_switch_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "G"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_switch_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "H"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_vlan_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "I"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_egress_vlan_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "J"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_lag_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "K"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_lag_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "L"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_port_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "M"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_port_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "N"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_rif_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "O"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_rif_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "P"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_switch_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "Q"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_switch_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "R"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_vlan_crm_stats_acl_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "S"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_acl_stats_ingress_vlan_crm_stats_acl_table_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "T"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_dnat_entry_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "U"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_fdb_entry_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "V"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_ipmc_entry_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "W"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_ipv4_neighbor_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "X"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_ipv4_nexthop_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "Y"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_ipv4_route_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "Z"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_ipv6_neighbor_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "AA"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_ipv6_nexthop_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "AB"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_ipv6_route_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "AC"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_nexthop_group_member_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "AD"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_nexthop_group_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "AE"
+                },
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                  },
+                  "editorMode": "code",
+                  "expr": "crm_stats_snat_entry_used{instance=\"$target\"}",
+                  "format": "time_series",
+                  "hide": false,
+                  "legendFormat": "{{__name__}} , Total available={{available}}",
+                  "range": true,
+                  "refId": "AF"
+                }
+              ],
+              "title": "CRM STATS",
+              "transformations": [
+                {
+                  "id": "reduce",
+                  "options": {
+                    "includeTimeField": false,
+                    "mode": "seriesToRows",
+                    "reducers": [
+                      "last"
+                    ]
+                  }
+                },
+                {
+                  "id": "organize",
+                  "options": {
+                    "excludeByName": {},
+                    "indexByName": {},
+                    "renameByName": {
+                      "Field": "CRM STAT",
+                      "Last": "USED"
+                    }
+                  }
+                },
+                {
+                  "id": "convertFieldType",
+                  "options": {
+                    "conversions": [
+                      {
+                        "destinationType": "string",
+                        "targetField": "USED"
+                      }
+                    ],
+                    "fields": {}
+                  }
+                }
+              ],
+              "type": "table"
+            }
+          ],
+          "title": "Critical Resource Monitoring (CRM)",
+          "type": "row"
+        },
+        {
+          "collapsed": true,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 19
           },
           "id": 64,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2921,6 +3636,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -2932,6 +3649,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2968,7 +3686,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 18
+                "y": 20
               },
               "id": 86,
               "options": {
@@ -2987,15 +3705,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_received_ethernet_packets_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_received_ethernet_packets_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Size of the Ethernet Frames received",
+              "title": "Packets received on Ethernet in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3012,7 +3734,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3046,11 +3768,13 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 18
+                "y": 20
               },
               "id": 84,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -3060,12 +3784,12 @@ data:
                 "showHeader": true,
                 "sortBy": []
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_operational_status{instance=\"$target\"}",
@@ -3142,7 +3866,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3150,6 +3874,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3161,6 +3887,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3197,7 +3924,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 26
+                "y": 28
               },
               "id": 82,
               "options": {
@@ -3216,15 +3943,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_queue_processed_packets_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_queue_processed_packets_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface Queue Packet Counter",
+              "title": "Interface queued packets in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3238,7 +3969,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3246,6 +3977,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3257,6 +3990,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3293,7 +4027,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 26
+                "y": 28
               },
               "id": 80,
               "options": {
@@ -3312,15 +4046,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_queue_processed_bytes_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_queue_processed_bytes_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface queue bytes counters",
+              "title": "Interface queued bytes in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3334,7 +4072,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3368,11 +4106,13 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 34
+                "y": 36
               },
               "id": 78,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -3381,12 +4121,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_info{instance=\"$target\"}",
@@ -3457,7 +4197,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3465,6 +4205,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3476,6 +4218,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3512,7 +4255,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 34
+                "y": 36
               },
               "id": 91,
               "options": {
@@ -3531,15 +4274,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_transmitted_bytes_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_transmitted_bytes_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface Tx Bytes Total",
+              "title": "Interface Tx Bytes in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3553,7 +4300,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3561,6 +4308,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3572,6 +4321,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3608,7 +4358,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 42
+                "y": 44
               },
               "id": 76,
               "options": {
@@ -3627,15 +4377,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_received_bytes_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_received_bytes_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface Rx Bytes Total",
+              "title": "Interface Rx Bytes in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3649,7 +4403,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3657,6 +4411,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3668,6 +4424,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3704,7 +4461,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 42
+                "y": 44
               },
               "id": 87,
               "options": {
@@ -3723,15 +4480,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_receive_error_input_packets_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_receive_error_input_packets_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface Rx error packet count",
+              "title": "Interface Rx error packet in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3745,7 +4506,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3753,6 +4514,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3764,6 +4527,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3800,7 +4564,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 50
+                "y": 52
               },
               "id": 74,
               "options": {
@@ -3819,15 +4583,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_received_packets_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_received_packets_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface Rx Packets Total",
+              "title": "Interface Rx Packets in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3841,7 +4609,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3849,6 +4617,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3860,6 +4630,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3896,7 +4667,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 50
+                "y": 52
               },
               "id": 88,
               "options": {
@@ -3915,15 +4686,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_transmitted_packets_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_transmitted_packets_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface Tx Packets Total",
+              "title": "Interface Tx Packets in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -3937,7 +4712,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3945,6 +4720,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -3956,6 +4733,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3992,7 +4770,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 58
+                "y": 60
               },
               "id": 72,
               "options": {
@@ -4011,15 +4789,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_transmit_error_output_packets_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_transmit_error_output_packets_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Interface Tx error packet count",
+              "title": "Interface Tx error packet count in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -4033,7 +4815,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4041,6 +4823,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -4052,6 +4836,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4088,7 +4873,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 58
+                "y": 60
               },
               "id": 70,
               "options": {
@@ -4107,15 +4892,19 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_interface_transmitted_ethernet_packets_total{instance=\"$target\"}",
+                  "expr": "increase(sonic_interface_transmitted_ethernet_packets_total{instance=\"$target\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Size of the Ethernet Frames transmitted",
+              "title": "Size of the Ethernet Frames transmitted in every $__interval range",
               "transformations": [
                 {
                   "id": "labelsToFields",
@@ -4130,7 +4919,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4164,11 +4953,13 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 66
+                "y": 68
               },
               "id": 68,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -4177,12 +4968,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_admin_status{instance=\"$target\"}",
@@ -4262,7 +5053,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4270,6 +5061,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -4281,6 +5074,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4317,7 +5111,7 @@ data:
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 66
+                "y": 68
               },
               "id": 66,
               "options": {
@@ -4337,7 +5131,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_interface_last_flapped_seconds_total{instance=\"$target\"}",
@@ -4367,14 +5161,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 20
           },
           "id": 62,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4409,11 +5203,13 @@ data:
                 "h": 4,
                 "w": 8,
                 "x": 0,
-                "y": 26
+                "y": 21
               },
               "id": 44,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -4422,12 +5218,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_operational_status{instance=\"$target\"}",
@@ -4496,7 +5292,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4527,11 +5323,13 @@ data:
                 "h": 4,
                 "w": 8,
                 "x": 8,
-                "y": 26
+                "y": 21
               },
               "id": 34,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -4540,12 +5338,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_available_status{instance=\"$target\"}",
@@ -4622,7 +5420,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4666,11 +5464,13 @@ data:
                 "h": 5,
                 "w": 16,
                 "x": 0,
-                "y": 30
+                "y": 25
               },
               "id": 32,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "enablePagination": false,
                   "fields": "",
                   "reducer": [
@@ -4682,12 +5482,12 @@ data:
                 "showHeader": true,
                 "sortBy": []
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_info{instance=\"$target\"}",
@@ -4757,7 +5557,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4786,7 +5586,7 @@ data:
                 "h": 5,
                 "w": 8,
                 "x": 0,
-                "y": 35
+                "y": 30
               },
               "id": 50,
               "options": {
@@ -4801,12 +5601,12 @@ data:
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_input_amperes{instance=\"$target\"}",
@@ -4828,7 +5628,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4857,7 +5657,7 @@ data:
                 "h": 5,
                 "w": 8,
                 "x": 8,
-                "y": 35
+                "y": 30
               },
               "id": 48,
               "options": {
@@ -4872,12 +5672,12 @@ data:
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_input_volts{instance=\"$target\"}",
@@ -4899,7 +5699,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4928,7 +5728,7 @@ data:
                 "h": 5,
                 "w": 8,
                 "x": 0,
-                "y": 40
+                "y": 35
               },
               "id": 38,
               "options": {
@@ -4943,12 +5743,12 @@ data:
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_celsius{instance=\"$target\"}",
@@ -4971,7 +5771,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4979,6 +5779,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -4990,6 +5792,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5027,7 +5830,7 @@ data:
                 "h": 8,
                 "w": 17,
                 "x": 0,
-                "y": 45
+                "y": 40
               },
               "id": 40,
               "options": {
@@ -5046,7 +5849,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_output_amperes{instance=\"$target\"}",
@@ -5068,7 +5871,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5076,6 +5879,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -5087,6 +5892,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5124,7 +5930,7 @@ data:
                 "h": 7,
                 "w": 17,
                 "x": 0,
-                "y": 53
+                "y": 48
               },
               "id": 42,
               "options": {
@@ -5143,7 +5949,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_device_psu_output_volts{instance=\"$target\"}",
@@ -5176,14 +5982,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 21
           },
           "id": 4,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5202,7 +6008,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -5217,11 +6024,13 @@ data:
                 "h": 4,
                 "w": 6,
                 "x": 0,
-                "y": 20
+                "y": 22
               },
               "id": 104,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -5230,12 +6039,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_sag_info{instance=\"$target\"}",
@@ -5293,7 +6102,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5301,6 +6110,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -5312,6 +6123,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 8,
                     "pointSize": 5,
@@ -5349,7 +6161,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -5364,7 +6177,7 @@ data:
                 "h": 8,
                 "w": 10,
                 "x": 6,
-                "y": 20
+                "y": 22
               },
               "id": 106,
               "options": {
@@ -5383,7 +6196,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_sag_admin_status{instance=\"$target\"}",
@@ -5398,7 +6211,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5406,6 +6219,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -5417,6 +6232,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5438,7 +6254,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -5453,7 +6270,7 @@ data:
                 "h": 4,
                 "w": 6,
                 "x": 0,
-                "y": 24
+                "y": 26
               },
               "id": 108,
               "options": {
@@ -5472,7 +6289,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_sag_operational_status",
@@ -5493,14 +6310,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 20
+            "y": 22
           },
           "id": 2,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5519,7 +6336,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -5535,11 +6353,13 @@ data:
                 "h": 6,
                 "w": 18,
                 "x": 0,
-                "y": 29
+                "y": 23
               },
               "id": 124,
               "options": {
+                "cellHeight": "sm",
                 "footer": {
+                  "countRows": false,
                   "fields": "",
                   "reducer": [
                     "sum"
@@ -5548,12 +6368,12 @@ data:
                 },
                 "showHeader": true
               },
-              "pluginVersion": "9.0.6",
+              "pluginVersion": "10.1.2",
               "targets": [
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "exemplar": false,
@@ -5583,28 +6403,37 @@ data:
                   "options": {
                     "excludeByName": {
                       "Field": true,
+                      "Last": false,
                       "__name__": true,
                       "instance": true,
+                      "ip_family": true,
                       "job": true,
-                      "peer_count": true
+                      "message_type": true,
+                      "peer_host": true,
+                      "peer_name": true
                     },
                     "indexByName": {
-                      "Field": 1,
+                      "Field": 0,
                       "Last": 7,
-                      "__name__": 2,
-                      "as": 4,
-                      "instance": 3,
-                      "ip_family": 8,
-                      "job": 9,
-                      "message_type": 0,
-                      "peer_host": 10,
-                      "peer_name": 6,
-                      "remote_as": 5,
-                      "vrf": 11
+                      "__name__": 1,
+                      "afi": 3,
+                      "as": 2,
+                      "instance": 4,
+                      "ip_family": 13,
+                      "job": 5,
+                      "message_type": 14,
+                      "neighbor": 6,
+                      "peer": 8,
+                      "peer_host": 15,
+                      "peer_name": 16,
+                      "peer_protocol": 9,
+                      "remote_as": 10,
+                      "safi": 11,
+                      "vrf": 12
                     },
                     "renameByName": {
-                      "Last": "Peer Connected",
-                      "as": "host_as"
+                      "Last": "Status",
+                      "peer": ""
                     }
                   }
                 },
@@ -5614,7 +6443,7 @@ data:
                     "conversions": [
                       {
                         "destinationType": "boolean",
-                        "targetField": "Peer Connected"
+                        "targetField": "Status"
                       }
                     ],
                     "fields": {}
@@ -5626,7 +6455,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5634,6 +6463,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -5645,6 +6476,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5666,7 +6498,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -5682,7 +6515,7 @@ data:
                 "h": 6,
                 "w": 9,
                 "x": 0,
-                "y": 35
+                "y": 29
               },
               "id": 161,
               "options": {
@@ -5701,13 +6534,17 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_bgp_uptime_seconds_total{instance=\"$target\", message_type=\"ipv4\"}",
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
+                  "expr": "sonic_bgp_uptime_seconds_total{instance=\"$target\", afi=\"ipv4\"}",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
+                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer}} afi={{afi}}",
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
               "title": "BGP IPV4 Peer Uptime",
@@ -5716,7 +6553,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5724,6 +6561,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -5735,6 +6574,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5756,122 +6596,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "s"
-                },
-                "overrides": [
-                  {
-                    "__systemRef": "hideSeriesFrom",
-                    "matcher": {
-                      "id": "byNames",
-                      "options": {
-                        "mode": "exclude",
-                        "names": [
-                          "Peer_AS=65102 Peer=1.1.1.3 MsgType=evpn"
-                        ],
-                        "prefix": "All except:",
-                        "readOnly": true
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": false,
-                          "tooltip": false,
-                          "viz": true
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 9,
-                "x": 9,
-                "y": 35
-              },
-              "id": 97,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "prometheus"
-                  },
-                  "editorMode": "builder",
-                  "expr": "sonic_bgp_uptime_seconds_total{instance=\"$target\", message_type=\"evpn\"}",
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "BGP EVPN Peer Uptime",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -5885,8 +6611,8 @@ data:
               "gridPos": {
                 "h": 6,
                 "w": 9,
-                "x": 0,
-                "y": 41
+                "x": 9,
+                "y": 29
               },
               "id": 93,
               "options": {
@@ -5905,22 +6631,26 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_bgp_messages_transmitted_total{instance=\"$target\", message_type=\"ipv4\"}",
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
+                  "expr": "increase(sonic_bgp_messages_transmitted_total{instance=\"$target\", afi=\"ipv4\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
+                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer}} afi={{afi}}",
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Total IPV4 BGP Messages Tx from Peers",
+              "title": "IPV4 BGP Messages Tx from Peers in every $__interval range",
               "type": "timeseries"
             },
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5928,6 +6658,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -5939,6 +6671,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5960,96 +6693,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 9,
-                "x": 9,
-                "y": 41
-              },
-              "id": 157,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "prometheus"
-                  },
-                  "editorMode": "builder",
-                  "expr": "sonic_bgp_messages_transmitted_total{instance=\"$target\", message_type=\"evpn\"}",
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "Total EVPN BGP Messages Tx from Peers",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -6064,7 +6709,7 @@ data:
                 "h": 6,
                 "w": 9,
                 "x": 0,
-                "y": 47
+                "y": 35
               },
               "id": 95,
               "options": {
@@ -6083,22 +6728,26 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_bgp_messages_received_total{instance=\"$target\", message_type=\"ipv4\"}",
-                  "legendFormat": "Peer_AS{{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
+                  "expr": "increase(sonic_bgp_messages_received_total{instance=\"$target\", afi=\"ipv4\"}[$__interval])",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
+                  "legendFormat": "Peer_AS{{remote_as}} Peer={{peer}} afi={{afi}}",
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "Total BGP IPV4 Messages Rx by Peers",
+              "title": "BGP IPV4 Messages Rx by Peers in every $__interval range",
               "type": "timeseries"
             },
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -6106,6 +6755,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -6117,6 +6768,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -6138,7 +6790,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -6153,96 +6806,7 @@ data:
                 "h": 6,
                 "w": 9,
                 "x": 9,
-                "y": 47
-              },
-              "id": 159,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "prometheus"
-                  },
-                  "editorMode": "builder",
-                  "expr": "sonic_bgp_messages_received_total{instance=\"$target\", message_type=\"evpn\"}",
-                  "legendFormat": "Peer_AS{{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "Total BGP EVPN Messages Rx by Peers",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 9,
-                "x": 0,
-                "y": 53
+                "y": 35
               },
               "id": 101,
               "options": {
@@ -6261,22 +6825,26 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
-                  "expr": "sonic_bgp_prefixes_transmitted_total{instance=\"$target\", message_type=\"ipv4\"}",
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
+                  "expr": "sonic_bgp_prefixes_transmitted{instance=\"$target\", afi=\"ipv4\"}",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
+                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer}} afi={{afi}}",
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "BGP IPV4 Prefixes Tx from Peers",
+              "title": "Total BGP IPV4 Prefixes Tx from Peers",
               "type": "timeseries"
             },
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -6284,6 +6852,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -6295,6 +6865,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -6316,96 +6887,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 9,
-                "x": 9,
-                "y": 53
-              },
-              "id": 158,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "prometheus"
-                  },
-                  "editorMode": "builder",
-                  "expr": "sonic_bgp_prefixes_transmitted_total{instance=\"$target\", message_type=\"evpn\"}",
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "BGP EVPN Prefixes Tx from Peers",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -6422,7 +6905,7 @@ data:
                       "options": {
                         "mode": "exclude",
                         "names": [
-                          "Peer_AS=65102 Peer=1.1.1.3 MsgType=ipv4"
+                          "Peer_AS=65000 Peer=1.1.1.2 afi=ipv4"
                         ],
                         "prefix": "All except:",
                         "readOnly": true
@@ -6445,7 +6928,7 @@ data:
                 "h": 6,
                 "w": 9,
                 "x": 0,
-                "y": 59
+                "y": 41
               },
               "id": 102,
               "options": {
@@ -6464,111 +6947,23 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
+                  "disableTextWrap": false,
                   "editorMode": "builder",
                   "exemplar": false,
-                  "expr": "sonic_bgp_prefixes_received_total{instance=\"$target\", message_type=\"ipv4\"}",
+                  "expr": "sonic_bgp_prefixes_received{instance=\"$target\", afi=\"ipv4\"}",
                   "format": "time_series",
+                  "fullMetaSearch": false,
+                  "includeNullMetadata": true,
                   "instant": false,
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
+                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer}} afi={{afi}}",
                   "range": true,
-                  "refId": "A"
+                  "refId": "A",
+                  "useBackend": false
                 }
               ],
-              "title": "BGP IPV4 Prefixes Rx by Peers",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 9,
-                "x": 9,
-                "y": 59
-              },
-              "id": 160,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "prometheus"
-                  },
-                  "editorMode": "builder",
-                  "exemplar": false,
-                  "expr": "sonic_bgp_prefixes_received_total{instance=\"$target\", message_type=\"evpn\"}",
-                  "format": "time_series",
-                  "instant": false,
-                  "legendFormat": "Peer_AS={{remote_as}} Peer={{peer_name}} MsgType={{message_type}}",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "BGP EVPN Prefixes Rx by Peers",
+              "title": "Total BGP IPV4 Prefixes Rx by Peers",
               "type": "timeseries"
             }
           ],
@@ -6581,14 +6976,14 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 21
+            "y": 23
           },
           "id": 6,
           "panels": [
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -6596,6 +6991,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -6607,6 +7004,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 8,
                     "pointSize": 5,
@@ -6644,7 +7042,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -6660,7 +7059,7 @@ data:
                 "h": 6,
                 "w": 9,
                 "x": 0,
-                "y": 22
+                "y": 24
               },
               "id": 120,
               "options": {
@@ -6679,7 +7078,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_evpn_status{instance=\"$target\"}",
@@ -6694,7 +7093,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -6702,6 +7101,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -6713,6 +7114,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 6,
                     "pointSize": 5,
@@ -6750,7 +7152,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -6765,7 +7168,7 @@ data:
                 "h": 6,
                 "w": 9,
                 "x": 9,
-                "y": 22
+                "y": 24
               },
               "id": 114,
               "options": {
@@ -6784,7 +7187,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_vxlan_operational_status{instance=\"$target\"}",
@@ -6799,7 +7202,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -6807,6 +7210,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -6818,6 +7223,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -6839,7 +7245,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -6854,7 +7261,7 @@ data:
                 "h": 5,
                 "w": 9,
                 "x": 0,
-                "y": 28
+                "y": 30
               },
               "id": 118,
               "options": {
@@ -6873,7 +7280,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_evpn_remote_vteps{instance=\"$target\"}",
@@ -6888,7 +7295,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -6896,6 +7303,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -6907,6 +7316,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -6928,7 +7338,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -6937,13 +7348,38 @@ data:
                     ]
                   }
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "__systemRef": "hideSeriesFrom",
+                    "matcher": {
+                      "id": "byNames",
+                      "options": {
+                        "mode": "exclude",
+                        "names": [
+                          "intfc=vtep1-10 osi_layer=l2 vni=100010 vrf=default"
+                        ],
+                        "prefix": "All except:",
+                        "readOnly": true
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": false,
+                          "tooltip": false,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  }
+                ]
               },
               "gridPos": {
                 "h": 5,
                 "w": 9,
                 "x": 9,
-                "y": 28
+                "y": 30
               },
               "id": 110,
               "options": {
@@ -6962,7 +7398,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_evpn_arps{instance=\"$target\"}",
@@ -6977,7 +7413,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -6985,6 +7421,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -6996,6 +7434,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -7017,7 +7456,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -7032,7 +7472,7 @@ data:
                 "h": 5,
                 "w": 9,
                 "x": 0,
-                "y": 33
+                "y": 35
               },
               "id": 116,
               "options": {
@@ -7051,7 +7491,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_evpn_l2_vnis{instance=\"$target\"}",
@@ -7066,7 +7506,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "fieldConfig": {
                 "defaults": {
@@ -7074,6 +7514,8 @@ data:
                     "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
                     "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
@@ -7085,6 +7527,7 @@ data:
                       "tooltip": false,
                       "viz": false
                     },
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -7106,7 +7549,8 @@ data:
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green"
+                        "color": "green",
+                        "value": null
                       },
                       {
                         "color": "red",
@@ -7121,7 +7565,7 @@ data:
                 "h": 5,
                 "w": 9,
                 "x": 9,
-                "y": 33
+                "y": 35
               },
               "id": 112,
               "options": {
@@ -7140,7 +7584,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "prometheus"
+                    "uid": "${DS_PROMETHEUS}"
                   },
                   "editorMode": "builder",
                   "expr": "sonic_evpn_mac_addresses{instance=\"$target\"}",
@@ -7157,7 +7601,7 @@ data:
           "type": "row"
         }
       ],
-      "refresh": "5m",
+      "refresh": "15m",
       "schemaVersion": 38,
       "style": "dark",
       "tags": [],
@@ -7166,12 +7610,26 @@ data:
           {
             "current": {
               "selected": false,
-              "text": "eqx-mu4-r01leaf01",
-              "value": "eqx-mu4-r01leaf01"
+              "text": "default",
+              "value": "default"
             },
+            "hide": 0,
+            "includeAll": false,
+            "label": "datasource",
+            "multi": false,
+            "name": "DS_PROMETHEUS",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          },
+          {
+            "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "prometheus"
+              "uid": "${DS_PROMETHEUS}"
             },
             "definition": "label_values(sonic_device_info{job=\"$sonic_expo\"}, instance)",
             "hide": 0,
@@ -7191,14 +7649,10 @@ data:
             "type": "query"
           },
           {
-            "current": {
-              "selected": false,
-              "text": "sonic-exporter",
-              "value": "sonic-exporter"
-            },
+            "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "prometheus"
+              "uid": "${DS_PROMETHEUS}"
             },
             "definition": "label_values(sonic_device_info,job)",
             "hide": 2,
@@ -7226,7 +7680,7 @@ data:
       "timezone": "",
       "title": "Sonic-Exporter Dashboard",
       "uid": "rXR50WmVk",
-      "version": 1,
+      "version": 14,
       "weekStart": ""
     }
     {% endraw %}
