@@ -9,11 +9,11 @@ clients:
 {% for client in promtail_clients %}
   - url: {{ client.url }}
     timeout: {{ client.timeout }}
-{%- if client.basic_auth is defined %}
+{% if client.basic_auth is defined %}
     basic_auth:
       username: {{ client.basic_auth.username }}
       password: {{ client.basic_auth.password }}
-{%- endif %}
+{% endif %}
 {% endfor %}
 
 scrape_configs:
