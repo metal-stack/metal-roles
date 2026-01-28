@@ -1,7 +1,4 @@
 ---
-# TODO: move to release vector
-prometheus_chart_version: 73.2.3
-
 monitoring_namespace: monitoring
 monitoring_grafana_admin_password: admin
 monitoring_grafana_dashboard_timezone: Europe/Berlin
@@ -30,9 +27,6 @@ monitoring_ingress_grafana_tls: yes
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
 
-monitoring_thanos_receive_ingress_dns: "monitoring.{{ metal_control_plane_ingress_dns }}"
-monitoring_thanos_receive_size: 16Gi
-
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
 monitoring_alertmanager_ingress_tls: yes
@@ -59,9 +53,18 @@ monitoring_alertmanager_additional_routes: []
 monitoring_alertmanager_additional_receivers: []
 
 # component monitoring
-monitoring_prometheus_core_dns_enabled: true
+monitoring_prometheus_core_dns_enabled: false
 monitoring_prometheus_kube_dns_enabled: false
 monitoring_prometheus_kube_proxy_enabled: false
 monitoring_prometheus_kube_scheduler_enabled: false
 monitoring_prometheus_kube_etcd_enabled: false
 monitoring_prometheus_kube_controller_manager_enabled: false
+
+# thanos
+monitoring_thanos_receive_enabled: false
+monitoring_thanos_receive_ingress_enabled: false
+monitoring_thanos_receive_ingress_dns: "thanos-receive.{{ metal_control_plane_ingress_dns }}"
+monitoring_thanos_receive_ingress_annotations: []
+monitoring_thanos_receive_ingress_basic_auth: {}
+monitoring_thanos_receive_ingress_tls: {}
+monitoring_thanos_receive_size: 50Gi

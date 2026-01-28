@@ -65,13 +65,6 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_ingress_tls                 |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                                                                                 |
 | monitoring_thanos_receive_size                        |           | The PVC size of the Thanos Receive component                                                                                                                                                                                    |
 
-monitoring_prometheus_core_dns_enabled: true
-monitoring_prometheus_kube_dns_enabled: false
-monitoring_prometheus_kube_proxy_enabled: false
-monitoring_prometheus_kube_scheduler_enabled: false
-monitoring_prometheus_kube_etcd_enabled: false
-monitoring_prometheus_kube_controller_manager_enabled: false
-
 ### Gardener
 
 | Name                                            | Mandatory | Description                                                 |
