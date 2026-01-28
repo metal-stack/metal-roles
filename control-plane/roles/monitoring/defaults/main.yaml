@@ -18,7 +18,6 @@ monitoring_grafana_additional_datasources:
       maxLines: 1000
   - name: AlertmanagerDatasource
     type: camptocamp-prometheus-alertmanager-datasource
-    # change this to some ingres?
     url: http://kube-prometheus-stack-alertmanager.monitoring:9093/
     access: proxy
     orgId: 1
@@ -58,3 +57,11 @@ monitoring_gardener_seeds: []
 # alertmanager config
 monitoring_alertmanager_additional_routes: []
 monitoring_alertmanager_additional_receivers: []
+
+# component monitoring
+monitoring_prometheus_core_dns_enabled: true
+monitoring_prometheus_kube_dns_enabled: false
+monitoring_prometheus_kube_proxy_enabled: false
+monitoring_prometheus_kube_scheduler_enabled: false
+monitoring_prometheus_kube_etcd_enabled: false
+monitoring_prometheus_kube_controller_manager_enabled: false

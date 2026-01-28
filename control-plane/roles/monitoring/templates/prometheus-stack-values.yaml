@@ -272,22 +272,22 @@ alertmanager:
 {% endraw %}
 
 coreDns:
-  enabled: true
+  enabled: {{ monitoring_prometheus_core_dns_enabled }}
 
 kubeDns:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_dns_enabled }}
 
 kubeProxy:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
 
 kubeScheduler:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}  
 
 kubeEtcd:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_etcd_enabled }}
 
 kubeControllerManager:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_controller_manager_enabled }}
 
 {% raw %}
 additionalPrometheusRulesMap:
