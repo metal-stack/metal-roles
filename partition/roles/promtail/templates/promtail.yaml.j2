@@ -6,7 +6,7 @@ positions:
   filename: /var/log/promtail-positions.yaml
 
 clients:
-{{ promtail_clients | to_nice_yaml(indent=2) | indent(2, first=False) }}
+{{ promtail_clients | to_yaml(indent=2) | indent(2, first=False) }}
 
 scrape_configs:
 {{ promtail_scrape_configs | to_yaml(indent=2) }}
