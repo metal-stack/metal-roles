@@ -264,3 +264,20 @@ auditing:
     password: "{{ metal_auditing_timescaledb_password }}"
     retention: "{{ metal_auditing_timescaledb_retention }}"
 {% endif %}
+
+pod_disruption_budget:
+  ipam:
+    enabled: {{ metal_ipam_pdb_enabled | lower }}
+    min_available: {{ metal_ipam_pdb_min_available }}
+  metal_api:
+    enabled: {{ metal_api_pdb_enabled | lower }}
+    min_available: {{ metal_api_pdb_min_available }}
+  masterdata_api:
+    enabled: {{ metal_masterdata_api_pdb_enabled | lower }}
+    min_available: {{ metal_masterdata_api_pdb_min_available }}
+  metal_console:
+    enabled: {{ metal_console_pdb_enabled | lower }}
+    min_available: {{ metal_console_pdb_min_available }}
+  metal_apiserver:
+    enabled: {{ metal_apiserver_pdb_enabled | lower }}
+    min_available: {{ metal_apiserver_pdb_min_available }}

@@ -52,6 +52,8 @@ metal_apiserver_oidc_client_id: "{{ lookup('k8s', api_version='v1', namespace=me
 metal_apiserver_oidc_client_secret: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='zitadel-client-credentials').data.client_secret | default('') | b64decode }}"
 metal_apiserver_session_secret: secret
 metal_apiserver_admin_subjects: []
+metal_apiserver_pdb_enabled: true
+metal_apiserver_pdb_min_available: 2
 
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -95,6 +97,8 @@ metal_api_s3_firmware_bucket:
 metal_api_password_reason_minlength:
 metal_api_release_version: "{{ metal_stack_release_version }}"
 minimum_client_version: "{{ metalctl_version }}"
+metal_api_pdb_enabled: true
+metal_api_pdb_min_available: 2
 
 # masterdata-api
 metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -106,6 +110,8 @@ metal_masterdata_api_db_password: change-me
 metal_masterdata_api_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
 metal_masterdata_api_hmac: change-me
 metal_masterdata_api_resources:
+metal_masterdata_api_pdb_enabled: true
+metal_masterdata_api_pdb_min_available: 1
 
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
@@ -119,6 +125,8 @@ metal_ipam_db_user: postgres
 metal_ipam_db_password: change-me
 metal_ipam_log_level: debug
 metal_ipam_resources:
+metal_ipam_pdb_enabled: true
+metal_ipam_pdb_min_available: 1
 
 # metal-console
 metal_console_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -130,6 +138,8 @@ metal_console_bmc_proxy_certs_server_pub:
 metal_console_bmc_proxy_certs_client_key:
 metal_console_bmc_proxy_certs_client_cert:
 metal_console_bmc_proxy_certs_ca_cert:
+metal_console_pdb_enabled: false
+metal_console_pdb_min_available: 1
 
 # ingress
 metal_deploy_ingress: true

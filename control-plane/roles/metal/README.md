@@ -100,75 +100,85 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_api_password_reason_minlength |           | If machine console password is requested this defines if and how long the given reason must be |
 | metal_api_release_version           |           | The release version of metal-stack                                                             |
 | minimum_client_version              |           | minimum metalctl version which is required to talk to this metal-api instance                  |
+| metal_api_pdb_enabled               |           | Enables the Pod Disruption Budget for the metal-api                                            |
+| metal_api_pdb_min_available         |           | The minimum number of available pods for the metal-api Pod Disruption Budget                   |
 
 ### metal-apiserver
 
-| Name                                                                  | Mandatory | Description                                                               |
-| --------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------- |
-| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                             |
-| metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                    |
-| metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                   |
-| metal_apiserver_db_password                                           |           | The password of the metal-db                                              |
-| metal_apiserver_redis_addr                                            |           | The address to a redis API                                                |
-| metal_apiserver_redis_password                                        |           | The password to redis                                                     |
-| metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                |
-| metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                              |
-| metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                         |
-| metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                     |
-| metal_apiserver_admin_subjects                                        |           | A list of token subjects that are allowed to create admin tokens          |
-| metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                |
-| metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                |
-| metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                 |
-| metal_apiserver_hpa_min                                               |           | Min amount of replicas for the HPA of the metal-apiserver                 |
-| metal_apiserver_hpa_cpu_percentage:                                   |           | Target CPU utilization percentage for the HPA of the metal-apiserver      |
-| metal_apiserver_resources                                             |           | Sets the given container resources                                        |
-| metal_apiserver_rate_limiting_max_requests_per_minute                 |           | The amount of requests allowed per minute for users with valid API tokens |
-| metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users       |
+| Name                                                                  | Mandatory | Description                                                                        |
+| --------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------- |
+| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                      |
+| metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                             |
+| metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                            |
+| metal_apiserver_db_password                                           |           | The password of the metal-db                                                       |
+| metal_apiserver_redis_addr                                            |           | The address to a redis API                                                         |
+| metal_apiserver_redis_password                                        |           | The password to redis                                                              |
+| metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                         |
+| metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                                       |
+| metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                                  |
+| metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                              |
+| metal_apiserver_admin_subjects                                        |           | A list of token subjects that are allowed to create admin tokens                   |
+| metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                         |
+| metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                         |
+| metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                          |
+| metal_apiserver_hpa_min                                               |           | Min amount of replicas for the HPA of the metal-apiserver                          |
+| metal_apiserver_hpa_cpu_percentage:                                   |           | Target CPU utilization percentage for the HPA of the metal-apiserver               |
+| metal_apiserver_resources                                             |           | Sets the given container resources                                                 |
+| metal_apiserver_rate_limiting_max_requests_per_minute                 |           | The amount of requests allowed per minute for users with valid API tokens          |
+| metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users                |
+| metal_apiserver_pdb_enabled                                           |           | Enables the Pod Disruption Budget for the metal-apiserver                          |
+| metal_apiserver_pdb_min_available                                     |           | The minimum number of available pods for the metal-apiserver Pod Disruption Budget |
 
 ### masterdata-api
 
-| Name                                 | Mandatory | Description                                                      |
-| ------------------------------------ | --------- | ---------------------------------------------------------------- |
-| metal_masterdata_api_db_address      |           | The URL to the masterdata database                               |
-| metal_masterdata_api_db_port         |           | The port of the masterdata database                              |
-| metal_masterdata_api_db_name         |           | The database name of the masterdata database                     |
-| metal_masterdata_api_db_user         |           | The user of the masterdata database                              |
-| metal_masterdata_api_db_password     |           | The password of the masterdata database                          |
-| metal_masterdata_api_provider_tenant |           | The name of the provider tenant                                  |
-| metal_masterdata_api_tls_ca          | yes       | CA certificate key for the GRPC server                           |
-| metal_masterdata_api_tls_cert        | yes       | Server certificate for the GRPC server                           |
-| metal_masterdata_api_tls_cert_key    | yes       | Server certificate key for the GRPC server                       |
-| metal_masterdata_api_tls_client_cert | yes       | Client certificate for the GRPC clients                          |
-| metal_masterdata_api_tls_client_key  | yes       | Client certificate key for the GRPC clients                      |
-| metal_masterdata_api_hmac            |           | The HMAC key of the masterdata-api used for API technical access |
-| metal_masterdata_api_tenants         |           | Starts up the masterdata-api with given list of tenants          |
-| metal_masterdata_api_projects        |           | Starts up the masterdata-api with the given list of projects     |
-| metal_masterdata_api_resources       |           | Sets the given container resources                               |
+| Name                                   | Mandatory | Description                                                                       |
+| -------------------------------------- | --------- | --------------------------------------------------------------------------------- |
+| metal_masterdata_api_db_address        |           | The URL to the masterdata database                                                |
+| metal_masterdata_api_db_port           |           | The port of the masterdata database                                               |
+| metal_masterdata_api_db_name           |           | The database name of the masterdata database                                      |
+| metal_masterdata_api_db_user           |           | The user of the masterdata database                                               |
+| metal_masterdata_api_db_password       |           | The password of the masterdata database                                           |
+| metal_masterdata_api_provider_tenant   |           | The name of the provider tenant                                                   |
+| metal_masterdata_api_tls_ca            | yes       | CA certificate key for the GRPC server                                            |
+| metal_masterdata_api_tls_cert          | yes       | Server certificate for the GRPC server                                            |
+| metal_masterdata_api_tls_cert_key      | yes       | Server certificate key for the GRPC server                                        |
+| metal_masterdata_api_tls_client_cert   | yes       | Client certificate for the GRPC clients                                           |
+| metal_masterdata_api_tls_client_key    | yes       | Client certificate key for the GRPC clients                                       |
+| metal_masterdata_api_hmac              |           | The HMAC key of the masterdata-api used for API technical access                  |
+| metal_masterdata_api_tenants           |           | Starts up the masterdata-api with given list of tenants                           |
+| metal_masterdata_api_projects          |           | Starts up the masterdata-api with the given list of projects                      |
+| metal_masterdata_api_resources         |           | Sets the given container resources                                                |
+| metal_masterdata_api_pdb_enabled       |           | Enables the Pod Disruption Budget for the masterdata-api                          |
+| metal_masterdata_api_pdb_min_available |           | The minimum number of available pods for the masterdata-api Pod Disruption Budget |
 
 ### metal-console
 
-| Name                                      | Mandatory | Description                                                        |
-| ----------------------------------------- | --------- | ------------------------------------------------------------------ |
-| metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console               |
-| metal_console_replicas                    |           | The number of deployed replicas of the metal-console               |
-| metal_console_resources                   |           | Sets the given container resources                                 |
-| metal_console_bmc_proxy_certs_ca_cert     |           | The bmc-proxy ca certificate as a string (required if enabled)     |
-| metal_console_bmc_proxy_certs_server_key  |           | The bmc-proxy server key as a string (required if enabled)         |
-| metal_console_bmc_proxy_certs_server_pub  |           | The bmc-proxy server public key as a string (required if enabled)  |
-| metal_console_bmc_proxy_certs_client_cert |           | The bmc-proxy client certificate as a string (required if enabled) |
-| metal_console_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string (required if enabled)         |
+| Name                                      | Mandatory | Description                                                                      |
+| ----------------------------------------- | --------- | -------------------------------------------------------------------------------- |
+| metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console                             |
+| metal_console_replicas                    |           | The number of deployed replicas of the metal-console                             |
+| metal_console_resources                   |           | Sets the given container resources                                               |
+| metal_console_bmc_proxy_certs_ca_cert     |           | The bmc-proxy ca certificate as a string (required if enabled)                   |
+| metal_console_bmc_proxy_certs_server_key  |           | The bmc-proxy server key as a string (required if enabled)                       |
+| metal_console_bmc_proxy_certs_server_pub  |           | The bmc-proxy server public key as a string (required if enabled)                |
+| metal_console_bmc_proxy_certs_client_cert |           | The bmc-proxy client certificate as a string (required if enabled)               |
+| metal_console_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string (required if enabled)                       |
+| metal_console_pdb_enabled                 |           | Enables the Pod Disruption Budget for the metal-console                          |
+| metal_console_pdb_min_available           |           | The minimum number of available pods for the metal-console Pod Disruption Budget |
 
 ### ipam
 
-| Name                   | Mandatory | Description                                                                       |
-| ---------------------- | --------- | --------------------------------------------------------------------------------- |
-| metal_ipam_db_address  |           | The hostname of the ipam service                                                  |
-| metal_ipam_db_port     |           | The port of the ipam service                                                      |
-| metal_ipam_db_name     |           | The database name of the ipam service                                             |
-| metal_ipam_db_user     |           | The user of the ipam service                                                      |
-| metal_ipam_db_password |           | The password of the ipam service                                                  |
-| metal_ipam_log_level   |           | The log level for the ipam service (metal_log_level is not used for this service) |
-| metal_ipam_resources   |           | Sets the given container resources                                                |
+| Name                         | Mandatory | Description                                                                       |
+| ---------------------------- | --------- | --------------------------------------------------------------------------------- |
+| metal_ipam_db_address        |           | The hostname of the ipam service                                                  |
+| metal_ipam_db_port           |           | The port of the ipam service                                                      |
+| metal_ipam_db_name           |           | The database name of the ipam service                                             |
+| metal_ipam_db_user           |           | The user of the ipam service                                                      |
+| metal_ipam_db_password       |           | The password of the ipam service                                                  |
+| metal_ipam_log_level         |           | The log level for the ipam service (metal_log_level is not used for this service) |
+| metal_ipam_resources         |           | Sets the given container resources                                                |
+| metal_ipam_pdb_enabled       |           | Enables the Pod Disruption Budget for the ipam                                    |
+| metal_ipam_pdb_min_available |           | The minimum number of available pods for the ipam Pod Disruption Budget           |
 
 ### Ingress
 
