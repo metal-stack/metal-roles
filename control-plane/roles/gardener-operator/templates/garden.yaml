@@ -188,6 +188,7 @@ spec:
       gardenerAPIServer:
         admissionPlugins:
         - name: ShootVPAEnabledByDefault
+      shootAdminKubeconfigMaxExpiration: "{{ gardener_operator_shoot_admin_kubeconfig_max_expiration }}"
     #   - name: ShootDNSRewriting
     #     disabled: false
     #     config:

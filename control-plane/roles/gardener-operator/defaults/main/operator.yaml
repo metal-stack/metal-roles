@@ -37,3 +37,5 @@ gardener_operator_image_vector_overwrite:
 gardener_operator_component_image_vector_overwrite:
 
 gardener_operator_helm_chart_tag: "{{ gardener_operator_image_tag }}"
+
+gardener_operator_shoot_admin_kubeconfig_max_expiration: "24h"
