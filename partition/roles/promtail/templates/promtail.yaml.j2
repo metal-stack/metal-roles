@@ -8,7 +8,9 @@ positions:
 clients:
 {% for client in promtail_clients %}
   - url: {{ client.url }}
+{% if client.timeout is defined %}
     timeout: {{ client.timeout }}
+{% endif %}
 {% if client.basic_auth is defined %}
     basic_auth:
       username: {{ client.basic_auth.username }}
