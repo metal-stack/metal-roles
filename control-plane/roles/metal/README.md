@@ -205,7 +205,7 @@ Configuration for metal-api:
 
 | Name                              | Mandatory | Description                                                     |
 | --------------------------------- | --------- | --------------------------------------------------------------- |
-| metal_auditing_splunk_enabled     |           | Whetheror not to configure timescaledb auditing. Default false. |
+| metal_auditing_splunk_enabled     |           | Whether or not to configure splunk auditing. Default false.     |
 | metal_auditing_splunk_endpoint    |           | The splunk endpoint.                                            |
 | metal_auditing_splunk_hec_token   |           | The splunk hec token.                                           |
 | metal_auditing_splunk_source      |           | The splunk source.                                              |
