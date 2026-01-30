@@ -3,6 +3,19 @@
   virtual_garden_kubeconfig:
     garden_name: "{{ gardener_projects_garden_name }}"
 
+# - name: Label garden namespace for project
+#   kubernetes.core.k8s:
+#     api_version: v1
+#     kind: Namespace
+#     name: garden
+#     state: present
+#     definition:
+#       metadata:
+#         labels:
+#           gardener.cloud/role: project
+#           project.gardener.cloud/name: "{{ gardener_projects[0].name }}"
+
+
 - name: Loop over projects
   include_tasks: project.yaml
   loop: "{{ gardener_projects }}"

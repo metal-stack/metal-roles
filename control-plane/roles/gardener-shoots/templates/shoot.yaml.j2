@@ -112,6 +112,8 @@ spec:
       machine:
         type: "{{ worker_group.worker_size }}"
         image: {{ worker_group.worker_image | to_json }}
+      machineControllerManager: 
+          machineCreationTimeout: 300h
 {% endfor %}
     infrastructureConfig:
       apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
@@ -145,3 +147,4 @@ spec:
     autoUpdate:
       kubernetesVersion: {{ _config.auto_update.kubernetes }}
       machineImageVersion: {{ _config.auto_update.machine_image }}
+  
