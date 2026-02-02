@@ -39,6 +39,7 @@
     systemd_docker_volumes:
       - "{{ promtail_config_host_dir }}:/etc/promtail:ro"
       - "/var/log:/var/log"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     systemd_docker_command:
       - -config.file=/etc/promtail/promtail.yaml
     systemd_docker_log_driver: "{{ promtail_docker_log_driver }}"

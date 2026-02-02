@@ -6,7 +6,17 @@ positions:
   filename: /var/log/promtail-positions.yaml
 
 clients:
-{{ promtail_clients | to_yaml(indent=2) }}
+{% for client in promtail_clients %}
+  - url: {{ client.url }}
+{% if client.timeout is defined %}
+    timeout: {{ client.timeout }}
+{% endif %}
+{% if client.basic_auth is defined %}
+    basic_auth:
+      username: {{ client.basic_auth.username }}
+      password: {{ client.basic_auth.password }}
+{% endif %}
+{% endfor %}
 
 scrape_configs:
 {{ promtail_scrape_configs | to_yaml(indent=2) }}

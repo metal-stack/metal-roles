@@ -1,6 +1,6 @@
 ---
-sonic_exporter_image_name: "stordis/sonic-exporter"
-sonic_exporter_image_tag: "latest"
-sonic_exporter_address: "0.0.0.0"
-sonic_exporter_port: 9101
-sonic_exporter_docker_log_driver: json-file
+monitoring_sonic_exporter_image_name: "ghcr.io/metal-stack/sonic-exporter"
+monitoring_sonic_exporter_image_tag: "main"
+monitoring_sonic_exporter_address: "0.0.0.0"
+monitoring_sonic_exporter_port: 9101
+monitoring_sonic_exporter_docker_log_driver: json-file

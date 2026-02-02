@@ -1,4 +1,12 @@
 ---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - monitoring_ipmi_bmc_superuser is defined
+      - monitoring_ipmi_bmc_superuser_pwd is defined
+
 - name: create ipmi_exporter directories
   file:
     path: "{{ monitoring_ipmi_exporter_etc_host_dir }}"
@@ -9,7 +17,7 @@
 
 - name: copy ipmi_exporter config
   template:
-    src: config.yml
+    src: config.yml.j2
     dest: "{{ monitoring_ipmi_exporter_etc_host_dir }}/config.yml"
   register: ipmi_config
 
