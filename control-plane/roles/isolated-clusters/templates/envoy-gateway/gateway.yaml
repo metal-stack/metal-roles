@@ -21,7 +21,7 @@ spec:
     - name: https-registry
       protocol: HTTPS
       port: 443
-      hostname: "{{ isolated_clusters_envoy_gateway_fqdn }}"
+      hostname: "{{ isolated_clusters_envoy_registry_fqdn }}"
       tls:
         mode: Terminate
         certificateRefs:
