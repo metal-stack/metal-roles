@@ -1,9 +1,2 @@
-envoy-gateway:
-  replicaCount: {{ isolated_clusters_envoy_gateway_replicas | default(1) }}
-
-  service:
-    type: LoadBalancer
-    externalTrafficPolicy: "Local"
-    loadBalancerIP: "{{ isolated_clusters_envoy_gateway_load_balancer_ip }}"
-    loadBalancerSourceRanges:
-{{ isolated_clusters_envoy_gateway_load_balancer_source_ranges | to_nice_yaml | indent(6, true) }}
+deployment:
+  replicas: {{ isolated_clusters_envoy_gateway_replicas | default(1) }}
