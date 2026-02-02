@@ -14,12 +14,23 @@
 - name: Deploy envoy gateway
   kubernetes.core.helm:
     name: envoy-gateway
-    chart_repo_url: https://gateway.envoyproxy.io
-    chart_ref: envoy-gateway
+    chart_ref: oci://docker.io/envoyproxy/gateway-helm
     chart_version: "{{ isolated_clusters_envoy_gateway_chart_version }}"
     namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
     values: "{{ lookup('template', 'envoy-gateway/values.yaml') | from_yaml }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
+
+- name: Wait for envoy-gateway deployment to be available
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    name: envoy-gateway
+    namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
+    wait: yes
+    wait_condition:
+      type: Available
+      status: "True"
+    wait_timeout: 300
 
 - name: Deploy gateway resources
   k8s:
