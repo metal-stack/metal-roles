@@ -48,27 +48,39 @@ spec:
             namespace: {{ isolated_clusters_registry_namespace }}
       allowedRoutes:
         namespaces:
-          from: All
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ isolated_clusters_registry_namespace }}
 
     - name: dns-tcp
       protocol: TCP
       port: 53
       allowedRoutes:
         namespaces:
-          from: All
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ isolated_clusters_dns_namespace }}
     - name: dns-udp
       protocol: UDP
       port: 53
       allowedRoutes:
         namespaces:
-          from: All
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ isolated_clusters_dns_namespace }}
 
     - name: ntp-udp
       protocol: UDP
       port: 123
       allowedRoutes:
         namespaces:
-          from: All
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ isolated_clusters_ntp_namespace }}
 ---
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
