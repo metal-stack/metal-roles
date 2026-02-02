@@ -1,0 +1,12 @@
+envoy-gateway:
+  replicaCount: {{ isolated_clusters_envoy_gateway_replicas | default(1) }}
+
+  service:
+    type: LoadBalancer
+    {% if isolated_clusters_envoy_gateway_load_balancer_ip is defined %}
+    loadBalancerIP: {{ isolated_clusters_envoy_gateway_load_balancer_ip }}
+    {% endif %}
+    externalTrafficPolicy: "Local"
+    {% if isolated_clusters_envoy_gateway_load_balancer_source_ranges is defined %}
+    loadBalancerSourceRanges: {{ isolated_clusters_envoy_gateway_load_balancer_source_ranges }}
+    {% endif %}

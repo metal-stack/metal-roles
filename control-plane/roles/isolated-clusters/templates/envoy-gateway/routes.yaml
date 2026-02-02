@@ -1,0 +1,76 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: registry-mirror-route
+  namespace: {{ isolated_clusters_registry_namespace }}
+  labels:
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: {{ isolated_clusters_envoy_gateway_namespace }}
+      sectionName: https-registry
+  hostnames:
+    - "{{ isolated_clusters_envoy_gateway_fqdn }}"
+  rules:
+    - matches:
+        - method: GET
+        - method: HEAD
+      backendRefs:
+        - name: registry
+          port: 5000
+
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: dns-tcp-route
+  namespace: {{ isolated_clusters_dns_namespace }}
+  labels:
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: {{ isolated_clusters_envoy_gateway_namespace }}
+      sectionName: dns-tcp
+  rules:
+    - backendRefs:
+        - name: coredns-tcp
+          port: 53
+
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: UDPRoute
+metadata:
+  name: dns-udp-route
+  namespace: {{ isolated_clusters_dns_namespace }}
+  labels:
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: {{ isolated_clusters_envoy_gateway_namespace }}
+      sectionName: dns-udp
+  rules:
+    - backendRefs:
+        - name: coredns-udp
+          port: 53
+
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: UDPRoute
+metadata:
+  name: ntp-udp-route
+  namespace: {{ isolated_clusters_ntp_namespace }}
+  labels:
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: {{ isolated_clusters_envoy_gateway_namespace }}
+      sectionName: ntp-udp
+  rules:
+    - backendRefs:
+        - name: chrony
+          port: 123

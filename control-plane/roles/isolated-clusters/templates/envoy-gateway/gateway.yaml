@@ -1,0 +1,51 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: envoy-gateway-class
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: main-gateway
+  namespace: {{ isolated_clusters_envoy_gateway_namespace }}
+  labels:
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+  annotations:
+{{ isolated_clusters_envoy_gateway_annotations | to_nice_yaml | indent(4, first=True) }}
+spec:
+  gatewayClassName: envoy-gateway-class
+  listeners:
+    - name: https-registry
+      protocol: HTTPS
+      port: 443
+      hostname: "{{ isolated_clusters_envoy_gateway_fqdn }}"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: {{ isolated_clusters_envoy_gateway_registry_tls_secret_name }}
+      allowedRoutes:
+        namespaces:
+          from: All
+
+    - name: dns-tcp
+      protocol: TCP
+      port: 53
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: dns-udp
+      protocol: UDP
+      port: 53
+      allowedRoutes:
+        namespaces:
+          from: All
+
+    - name: ntp-udp
+      protocol: UDP
+      port: 123
+      allowedRoutes:
+        namespaces:
+          from: All

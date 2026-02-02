@@ -1,0 +1,34 @@
+---
+- name: Create namespace for envoy-gateway
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ isolated_clusters_envoy_gateway_namespace }}"
+        labels:
+          app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+    apply: yes
+    kubeconfig: "{{ cluster.kubeconfig }}"
+
+- name: Deploy envoy gateway
+  kubernetes.core.helm:
+    name: envoy-gateway
+    chart_repo_url: https://gateway.envoyproxy.io
+    chart_ref: envoy-gateway
+    chart_version: "{{ isolated_clusters_envoy_gateway_chart_version }}"
+    namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
+    values: "{{ lookup('template', 'envoy-gateway/values.yaml') | from_yaml }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
+
+- name: Deploy gateway resources
+  k8s:
+    definition: "{{ lookup('template', 'envoy-gateway/gateway.yaml') }}"
+    apply: yes
+    kubeconfig: "{{ cluster.kubeconfig }}"
+
+- name: Deploy gateway routes
+  k8s:
+    definition: "{{ lookup('template', 'envoy-gateway/routes.yaml') }}"
+    apply: yes
+    kubeconfig: "{{ cluster.kubeconfig }}"
