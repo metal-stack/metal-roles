@@ -12,3 +12,6 @@
 
 - name: Install deployment
   import_tasks: registry.yaml
+
+- name: Install envoy-gateway
+  import_tasks: envoy-gateway.yaml
