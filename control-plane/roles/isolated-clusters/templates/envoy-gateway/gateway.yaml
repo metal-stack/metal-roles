@@ -47,6 +47,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - name: {{ isolated_clusters_envoy_gateway_registry_tls_secret_name }}
+            namespace: {{ isolated_clusters_registry_namespace }}
       allowedRoutes:
         namespaces:
           from: All
@@ -70,3 +71,20 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-gateway-to-read-tls-secret
+  namespace: {{ isolated_clusters_registry_namespace }}
+  labels:
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: {{ isolated_clusters_envoy_gateway_namespace }}
+  to:
+    - group: ""
+      kind: Secret
+      name: {{ isolated_clusters_envoy_gateway_registry_tls_secret_name }}
