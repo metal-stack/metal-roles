@@ -3,6 +3,7 @@
 
 - name: Install nginx-ingress
   import_tasks: ingress.yaml
+  when: isolated_clusters_ingress_controller_enabled | bool
 
 - name: Install ntp
   import_tasks: ntp.yaml
@@ -15,3 +16,4 @@
 
 - name: Install envoy-gateway
   import_tasks: envoy-gateway.yaml
+  when: isolated_clusters_envoy_gateway_enabled | bool

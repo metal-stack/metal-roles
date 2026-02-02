@@ -20,5 +20,12 @@
   loop:
     - registry-sts.yaml
     - registry-service.yaml
-    - registry-ingress.yaml
     - registry-oci-mirror.yaml
+
+- name: Deploy registry ingress
+  k8s:
+    definition: "{{ lookup('template', 'registry/registry-ingress.yaml') }}"
+    namespace: "{{ isolated_clusters_registry_namespace }}"
+    kubeconfig: "{{ cluster.kubeconfig }}"
+    apply: yes
+  when: isolated_clusters_ingress_controller_enabled | bool
