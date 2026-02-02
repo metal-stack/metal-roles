@@ -21,9 +21,6 @@ isolated_clusters_envoy_gateway_replicas: 1
 isolated_clusters_envoy_gateway_load_balancer_ip:
 isolated_clusters_envoy_gateway_load_balancer_source_ranges:
 isolated_clusters_envoy_gateway_registry_tls_secret_name: registry-tls-cert
-isolated_clusters_envoy_gateway_annotations: {}
-
-isolated_clusters_envoy_registry_fqdn:
 
 isolated_clusters_group_label: "{{ metal_control_plane_stage_name }}"
 isolated_clusters_partition_services_cluster: []

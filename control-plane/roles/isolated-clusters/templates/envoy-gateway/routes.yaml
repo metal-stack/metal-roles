@@ -12,7 +12,7 @@ spec:
       namespace: {{ isolated_clusters_envoy_gateway_namespace }}
       sectionName: https-registry
   hostnames:
-    - "{{ isolated_clusters_envoy_registry_fqdn }}"
+    - "{{ isolated_clusters_registry_fqdn }}"
   rules:
     - matches:
         - method: GET

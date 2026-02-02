@@ -34,15 +34,13 @@ metadata:
   namespace: {{ isolated_clusters_envoy_gateway_namespace }}
   labels:
     app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-  annotations:
-{{ isolated_clusters_envoy_gateway_annotations | to_nice_yaml | indent(4, first=True) }}
 spec:
   gatewayClassName: envoy-gateway-class
   listeners:
     - name: https-registry
       protocol: HTTPS
       port: 443
-      hostname: "{{ isolated_clusters_envoy_registry_fqdn }}"
+      hostname: "{{ isolated_clusters_registry_fqdn }}"
       tls:
         mode: Terminate
         certificateRefs:
