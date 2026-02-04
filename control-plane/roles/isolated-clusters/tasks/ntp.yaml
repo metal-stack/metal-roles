@@ -2,7 +2,6 @@
 - name: Create namespace {{ isolated_clusters_ntp_namespace }}
   k8s:
     definition:
-      api_version: v1
       kind: Namespace
       metadata:
         name: "{{ isolated_clusters_ntp_namespace }}"
