@@ -5,6 +5,15 @@ metadata:
   name: custom-proxy-config
   namespace: {{ isolated_clusters_envoy_gateway_namespace }}
 spec:
+  telemetry:
+    accessLog:
+      settings:
+      - matches:
+        - has(request.path)
+        sinks:
+        - file:
+            path: /dev/stdout
+          type: File
   provider:
     type: Kubernetes
     kubernetes:
