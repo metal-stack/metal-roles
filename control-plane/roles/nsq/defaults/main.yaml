@@ -18,6 +18,13 @@ nsq_nsq_lookupd_resources:
   limits:
     memory: "100Mi"
     cpu: "1"
+nsq_nsq_admin_resources:
+  requests:
+    memory: 64Mi
+    cpu: 30m
+  limits:
+    memory: 128Mi
+    cpu: 100m
 
 nsq_log_level: info
 nsq_broadcast_address: "{{ metal_control_plane_ingress_dns }}"
@@ -36,3 +43,5 @@ nsq_registry_auth:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
+
+nsq_enable_security_context: true

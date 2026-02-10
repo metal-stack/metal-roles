@@ -34,6 +34,13 @@ spec:
       imagePullSecrets:
       - name: nsq-registry-credentials
 {% endif %}
+{% if nsq_enable_security_context %}
+      securityContext:
+        fsGroup: 1
+        runAsUser: 1001
+        runAsNonRoot: true
+        runAsGroup: 1
+{% endif %}
       containers:
       - name: nsqd
         args:
@@ -51,6 +58,12 @@ spec:
 {% endif %}
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
+{% if nsq_enable_security_context %}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+{% endif %}
         ports:
         - containerPort: 4150
         - containerPort: 4151
@@ -66,9 +79,18 @@ spec:
       - name: nsq-admin
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
+{% if nsq_enable_security_context %}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+{% endif %}
         ports:
         - containerPort: 4171
           name: http
+{% if nsq_set_resource_limits %}
+        resources: {{ nsq_nsqd_admin_resources | to_json }}
+{% endif %}
         livenessProbe:
           httpGet:
             path: /ping
@@ -142,6 +164,12 @@ spec:
       labels:
         app: nsq-lookupd
     spec:
+{% if nsq_enable_security_context %}
+      securityContext:
+        runAsUser: 1001
+        runAsNonRoot: true
+        runAsGroup: 1
+{% endif %}
       containers:
       - name: nsq-lookupd
         args:
@@ -150,6 +178,12 @@ spec:
         - -broadcast-address={{ nsq_broadcast_address }}
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
+{% if nsq_enable_security_context %}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+{% endif %}
         ports:
         - containerPort: 4160
         - containerPort: 4161

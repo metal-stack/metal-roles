@@ -45,6 +45,13 @@ postgres_resources:
   limits:
     memory: "256Mi"
     cpu: "100m"
+postgres_backup_restore_sidecar_resources:
+  requests:
+    memory: "150Mi"    
+    cpu: "5m"          
+  limits:
+    memory: "256Mi"    
+    cpu: "50m"  
 
 postgres_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 postgres_registry_auth:
@@ -53,3 +60,5 @@ postgres_registry_auth:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
+
+postgres_enable_security_context: true
