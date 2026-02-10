@@ -63,6 +63,8 @@ spec:
       enabled: {{ _config.logging_enabled | lower }}
       vali:
         enabled: {{ _config.logging_vali_enabled | lower }}
+        garden:
+          storage: {{ _config.logging_vali_storage }}
       shootNodeLogging:
         shootPurposes:
         - infrastructure
