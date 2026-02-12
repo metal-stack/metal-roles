@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: zitadel-db
   author: metal-stack
-  description: Deploys a database for the zitadel oidc proivder.
+  description: Deploys a database for the zitadel oidc provider.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
