@@ -10,18 +10,15 @@
 
 - name: Identify pod for token creation
   set_fact:
-    _metal_apiserver_pod: "{{ lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, label_selector='app=metal-apiserver')[0].get('metadata', {}).get('name') if api_server_replicas > 1 else lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, label_selector='app=metal-apiserver').get('metadata', {}).get('name') }}"
+    _metal_apiserver_pod: "{{ lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, label_selector='app=metal-apiserver').get('metadata', {}).get('name') }}"
 
 - name: Generate deployment token
-  no_log: true
+  # no_log: true
   kubernetes.core.k8s_exec:
     namespace: "{{ metal_control_plane_namespace }}"
     pod: "{{ _metal_apiserver_pod }}"
     command: |
       /server token
-        --redis-addr={{ api_server_redis_addr }}
-        --redis-password={{ api_server_redis_password }}
-        --server-http-url={{ api_server_http_url }}
         --description=ansible-ci-deployment
         --admin-role={{ metal_deployment_token_admin_role }}
         --expiration={{ metal_deployment_token_expiration }}
@@ -29,4 +26,5 @@
 
 - name: Set deployment token
   set_fact:
-    metal_deployment_admin_token: "{{ _generated_token.stdout }}"
+    metal_deployment_admin_token: "{{ _generated_token.stdout_lines[-1] }}"
+    cacheable: true
