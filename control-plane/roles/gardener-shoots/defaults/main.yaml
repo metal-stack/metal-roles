@@ -11,6 +11,8 @@ gardener_shoot_default_metal_api_hmac:
 gardener_shoots: []
 # - name: shoot-a
 #   seed_name: seed-a
+#   owner: admin
+#   description:
 #   purpose: infrastructure
 #   project_id: 00000000-0000-0000-0000-000000000001
 #   region: region
@@ -49,7 +51,7 @@ gardener_shoots: []
 #   networking_type: calico
 #   networking_pod_cidr:
 #   networking_service_cidr:
-#   networking_config_provider_config:
+#   networking_provider_config:
 #     apiVersion: calico.networking.extensions.gardener.cloud/v1alpha1
 #     backend: none
 #     ipv4:
