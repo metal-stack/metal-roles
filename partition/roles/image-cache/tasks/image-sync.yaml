@@ -7,7 +7,7 @@
 
 - name: create image-cache tenant
   delegate_to: localhost
-  metal_v2_tenant:
+  metal_v2_admin_tenant:
     name: metal-image-cache-sync
     description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
   environment:
