@@ -11,12 +11,16 @@ metadata:
     cluster.metal-stack.io/project: "{{ _config.project_name }}"
     cluster.metal-stack.io/tenant: "{{ _config.tenant }}"
     cluster.metal-stack.io/description: "{{ _config.description }}"
-{% if 'additional_annotations' in _config %}
-    "{{ _config.additional_annotations | to_nice_yaml | indent(width=4, first=false) }}"
+{% if _config.additional_annotations is defined %}
+{% for key, value in _config.additional_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
 {% endif %}
-{% if 'additional_labels' in _config %}
+{% if _config.additional_labels is defined %}
   labels:
-    "{{ _config.additional_labels | to_nice_yaml | indent(width=4, first=false) }}"
+{% for key, value in _config.additional_labels.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
 {% endif %}
 spec:
   seedName: "{{ _config.seed_name }}"
