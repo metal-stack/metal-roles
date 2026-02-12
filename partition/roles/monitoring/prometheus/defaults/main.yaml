@@ -20,6 +20,7 @@ prometheus_metal_core_targets: []
 prometheus_node_exporter_targets: []
 prometheus_promtail_targets: []
 prometheus_ping_targets: []
+prometheus_ipmi_exporter_targets: []
 prometheus_sonic_exporter_targets: []
 prometheus_blackbox_exporter_targets: []
 prometheus_lightbox_exporter_targets: []
@@ -31,3 +32,7 @@ prometheus_hosts_content: |
 
 prometheus_blackbox_exporter_icmp_groups: []
 prometheus_blackbox_exporter_metal_api_probe_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}v1/version"
+
+prometheus_haproxy_enabled: true
+
+prometheus_blackbox_exporter_dns: 1.1.1.1

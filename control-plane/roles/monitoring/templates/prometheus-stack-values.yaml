@@ -13,6 +13,9 @@ prometheus:
 {% endif %}
 
   prometheusSpec:
+    additionalArgs:
+      - name: "web.enable-remote-write-receiver"
+        value: ""
 {% if monitoring_prometheus_image_tag is defined %}
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
@@ -26,8 +29,9 @@ prometheus:
       version: "{{ thanos_image_tag }}"
 {% if monitoring_thanos_object_store_config is defined %}
       objectStorageConfig:
-        key: objstore.yml
-        name: thanos-objstore-secret
+        existingSecret:
+          key: objstore.yml
+          name: thanos-objstore-secret
 {% endif %}
   thanosService:
     enabled: true
@@ -77,6 +81,8 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+  plugins:
+    - camptocamp-prometheus-alertmanager-datasource
 
 alertmanager:
   ingress:
@@ -266,26 +272,26 @@ alertmanager:
 {% endraw %}
 
 coreDns:
-  enabled: false
+  enabled: {{ monitoring_prometheus_core_dns_enabled }}
 
 kubeDns:
-  enabled: true
+  enabled: {{ monitoring_prometheus_kube_dns_enabled }}
 
 kubeProxy:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
 
 kubeScheduler:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}  
 
 kubeEtcd:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_etcd_enabled }}
 
 kubeControllerManager:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kube_controller_manager_enabled }}
 
 {% raw %}
 additionalPrometheusRulesMap:
-  "alertmanager.rules":
+  "metal-alertmanager.rules":
     groups:
     - name: metal-api.rules
       rules:

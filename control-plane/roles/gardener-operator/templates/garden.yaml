@@ -89,6 +89,10 @@ spec:
     kubernetes:
       version: {{ gardener_virtual_garden_api_server_version }}
       kubeAPIServer:
+{% if gardener_operator_virtual_garden_api_server_structured_authentication %}
+        structuredAuthentication:
+          configMapName: authentication-config
+{% endif %}
       #   eventTTL: 1h
       #   featureGates:
       #     SomeKubernetesFeature: true
@@ -96,26 +100,26 @@ spec:
       #     scheduling.k8s.io/v1alpha1: true
         oidcConfig:
 {% if gardener_operator_virtual_garden_oidc_issuer_url %}
-        issuerURL: {{ gardener_operator_virtual_garden_oidc_issuer_url }}
+          issuerURL: {{ gardener_operator_virtual_garden_oidc_issuer_url }}
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_client_id %}
-        clientID: {{ gardener_operator_virtual_garden_oidc_client_id }}
+          clientID: {{ gardener_operator_virtual_garden_oidc_client_id }}
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_username_claim %}
-        usernameClaim: {{ gardener_operator_virtual_garden_oidc_username_claim }}
+          usernameClaim: {{ gardener_operator_virtual_garden_oidc_username_claim }}
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_username_prefix %}
-        usernamePrefix: "{{ gardener_operator_virtual_garden_oidc_username_prefix }}"
+          usernamePrefix: "{{ gardener_operator_virtual_garden_oidc_username_prefix }}"
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_groups_claim %}
-        groupsClaim: {{ gardener_operator_virtual_garden_oidc_groups_claim }}
+          groupsClaim: {{ gardener_operator_virtual_garden_oidc_groups_claim }}
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_groups_prefix %}
-        groupsPrefix: "{{ gardener_operator_virtual_garden_oidc_groups_prefix }}"
+          groupsPrefix: "{{ gardener_operator_virtual_garden_oidc_groups_prefix }}"
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_ca %}
-        caBundle: |
-          {{ gardener_operator_virtual_garden_oidc_ca | indent(width=12, first=false) }}
+          caBundle: |
+          {{ gardener_operator_virtual_garden_oidc_ca | indent(width=14, first=false) }}
 {% endif %}
     #     clientID: client-id
     #     signingAlgs: # See https://datatracker.ietf.org/doc/html/rfc7518#section-3.1 for the list of valid algorithms
@@ -188,6 +192,7 @@ spec:
       gardenerAPIServer:
         admissionPlugins:
         - name: ShootVPAEnabledByDefault
+      shootAdminKubeconfigMaxExpiration: "{{ gardener_operator_shoot_admin_kubeconfig_max_expiration }}"
     #   - name: ShootDNSRewriting
     #     disabled: false
     #     config:

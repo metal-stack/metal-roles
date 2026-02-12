@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     container: metalstack/metal-deployment-base:latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Test
         run: |
           make test

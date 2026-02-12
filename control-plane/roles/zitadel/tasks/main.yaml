@@ -1,0 +1,62 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - zitadel_admin_password is not none
+      - zitadel_master_key is not none
+      - zitadel_db_password is not none
+      - zitadel_chart_version is not none
+      - zitadel_init_image is not none
+      - zitadel_init_image_tag is not none
+      - zitadel_external_domain is not none
+
+- name: Deploy static users secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: zitadel-init-config
+        namespace: "{{ zitadel_namespace }}"
+      type: Opaque
+      stringData:
+        config.yaml: "{{ zitadel_init_config | to_json }}"
+
+- name: Deploy Zitadel
+  kubernetes.core.helm:
+    name: zitadel
+    chart_ref: zitadel
+    chart_version: "{{ zitadel_chart_version }}"
+    chart_repo_url: https://charts.zitadel.com/
+    release_namespace: "{{ zitadel_namespace }}"
+    create_namespace: true
+    values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
+    wait: true
+
+- name: Cleanup previous init job
+  kubernetes.core.k8s:
+    state: absent
+    definition: "{{ lookup('template', 'zitadel-init.yaml') }}"
+    namespace: "{{ zitadel_namespace }}"
+
+- name: Create init job
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'zitadel-init.yaml') }}"
+    namespace: "{{ zitadel_namespace }}"
+
+- name: Wait for Secret zitadel-client-credentials
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: zitadel-client-credentials
+    namespace: "{{ zitadel_namespace }}"
+  register: secret_info
+  until: secret_info.resources | length > 0
+  retries: 10
+  delay: 5

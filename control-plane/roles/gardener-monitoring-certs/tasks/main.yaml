@@ -11,11 +11,11 @@
           use-clouddns-solver: "true"
       spec:
         dnsNames:
-        - "*.{{ gardener_seeds_dns_domain }}"
+        - "*.{{ gardener_monitoring_certs_ingress_domain }}"
         issuerRef:
           group: cert-manager.io
           kind: ClusterIssuer
-          name: "{{ gardener_seeds_certificate_cluster_issuer }}"
+          name: "{{ gardener_monitoring_certs_certificate_cluster_issuer }}"
         secretName: seed-ingress-certificate
 
 - name: Wait until ingress secret for shooted seeds is ready
@@ -33,14 +33,14 @@
       kind: Secret
       metadata:
         labels:
-          gardener.cloud/role: garden-cert
+          gardener.cloud/role: controlplane-cert
         name: seed-ingress-certificate
         namespace: garden
       type: kubernetes.io/tls
 
-- name:  Loop over Gardener seeds
-  include_tasks: deploy_cert.yaml
-  loop: "{{ gardener_seeds_shooted_seeds }}"
+- name:  Loop over shooted seeds
+  include_tasks: deploy_shooted_seed.yaml
+  loop: "{{ gardener_monitoring_certs_shooted_seeds }}"
   loop_control:
     loop_var: gardener_shooted_seed
     label: "{{ gardener_shooted_seed.name }}"

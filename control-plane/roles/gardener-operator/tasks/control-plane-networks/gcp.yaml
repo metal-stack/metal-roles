@@ -39,5 +39,3 @@
       data:
         url: "https://{{ (gcp_cluster.stdout | from_json)['endpoint'] }}"
     apply: yes
-  # this is really just in case this cluster will have a local gardenlet
-  when: gardener_gardenlet_deploy_local is defined and gardener_gardenlet_deploy_local

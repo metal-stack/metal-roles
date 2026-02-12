@@ -52,6 +52,7 @@ gardener_gardenlet_defaults:
   shoot_respect_sync_period_overwrite: true
   logging_enabled: false
   logging_vali_enabled: false
+  logging_vali_storage: "100Gi"
   vertical_pod_autoscaler_enabled: true
   image_vector_overwrite: []
   component_image_vector_overwrite: []

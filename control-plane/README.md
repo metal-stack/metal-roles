@@ -16,7 +16,7 @@ Contains roles for deploying the metal-control-plane.
 
 ## Variables
 
-The `control-plane-defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all the default values [here](control-plane-defaults/main.yaml).
+The `defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all [the default values](roles/defaults/defaults/main.yaml).
 
 | Name                                  | Mandatory | Description                                                                                         |
 | ------------------------------------- | --------- | --------------------------------------------------------------------------------------------------- |
@@ -25,6 +25,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                            |
 | metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                |
 | metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                       |
+| metal_control_plane_host_provider     |           | The control-planes hosting provider, one of `metal` or `gcp`. Required for gardener deployment.     |
 
 ## Roles
 
@@ -35,10 +36,13 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | [gardener-cloud-profile](roles/gardener-cloud-profile)                 | Deploys a Gardener cloud profile for metal-stack                                                                                   |
 | [gardener-extensions](roles/gardener-extensions)                       | Deploys Gardener operator extension resources                                                                                      |
 | [gardener-gardenlet](roles/gardener-gardenlet)                         | Deploys Gardener operator gardenlet resources                                                                                      |
+| [gardener-managed-seeds](roles/gardener-managed-seeds)                 | Deploys managed seeds into the virtual garden                                                                                      |
 | [gardener-monitoring-certs](roles/gardener-monitoring-certs)           | Deploys monitoring ingress certificates for seed clusters                                                                          |
 | [gardener-operator](roles/gardener-operator)                           | Deploys the Gardener operator                                                                                                      |
+| [gardener-partition-proxy](roles/gardener-partition-proxy)             | Deploys a partition proxy into a shooted seed                                                                                      |
+| [gardener-projects](roles/gardener-projects)                           | Deploys gardener projects into the virtual garden.                                                                                 |
+| [gardener-shoots](roles/gardener-shoots)                               | Deploys managed shoots into the virtual garden.                                                                                    |
 | [gardener-virtual-garden-access](roles/gardener-virtual-garden-access) | Deploys a managed resource to access the the Virtual Garden with operator setup                                                    |
-| [gardener](roles/gardener)                                             | Deprecated: A role to deploy the Gardener for metal-stack                                                                          |
 | [headscale](roles/headscale)                                           | Deploys headscale for firewall VPN                                                                                                 |
 | [ipam-db](roles/ipam-db)                                               | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                         |
 | [isolated-clusters](roles/isolated-clusters)                           | Deploys services for Gardener isolated clusters                                                                                    |
