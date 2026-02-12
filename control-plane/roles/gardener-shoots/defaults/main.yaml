@@ -41,7 +41,6 @@ gardener_shoots: []
 #       autoscaler:
 #         min_replicas: 1
 #         max_replicas: 5
-#   verticalPodAutoscaler: false
 #   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
 #   # https://gardener.cloud/docs/guides/high-availability/control-plane/
 #   high_availability_control_plane: node

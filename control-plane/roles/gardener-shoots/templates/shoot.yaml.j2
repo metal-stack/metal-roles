@@ -60,8 +60,6 @@ spec:
       maxPods: {{ _config.max_pods }}
     kubeControllerManager:
       nodeCIDRMaskSize: {{ _config.node_cidr_mask_size }}
-    verticalPodAutoscaler:
-      enabled: {{ _config.vertical_pod_autoscaler }}
 {% if 'audit_extension_splunk' in _config %}
   extensions:
   - type: audit
