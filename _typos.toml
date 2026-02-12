@@ -11,7 +11,7 @@ nd = "nd"
 cacl = "cacl"
 CLOS = "CLOS"
 Sover = "Sover"
-
+syncd = "syncd"
 
 [files]
 extend-exclude = []
