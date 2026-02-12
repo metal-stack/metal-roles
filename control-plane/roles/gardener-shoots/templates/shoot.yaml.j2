@@ -11,11 +11,13 @@ metadata:
     cluster.metal-stack.io/project: "{{ _config.project_name }}"
     cluster.metal-stack.io/tenant: "{{ _config.tenant }}"
     cluster.metal-stack.io/description: "{{ _config.description }}"
-    cluster.metal-stack.io/owner: "{{ _config.owner }}"
+{% if 'additional_annotations' in _config %}
+    "{{ additional_annotations | to_nice_yaml | indent(width=4, first=false) }}"
+{% endif %}
+{% if 'additional_labels' in _config %}
   labels:
-    cluster.metal-stack.io/name: "{{ _config.name }}"
-    cluster.metal-stack.io/partition: "{{ _config.partition }}"
-    cluster.metal-stack.io/project: "{{ _config.project_id }}"
+    "{{ additional_labels | to_nice_yaml | indent(width=4, first=false) }}"
+{% endif %}
 spec:
   seedName: "{{ _config.seed_name }}"
   secretBindingName: "{{ _config.secret_binding_name }}"

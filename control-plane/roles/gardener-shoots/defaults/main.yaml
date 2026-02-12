@@ -73,6 +73,8 @@ gardener_shoots: []
 gardener_shoot_defaults:
   namespace: garden
   tenant: "{{ metal_control_plane_provider_tenant }}"
+  additional_annotations: {}
+  additional_labels: {}
   max_pods: 250
   node_cidr_mask_size: 23
   vertical_pod_autoscaler: true
