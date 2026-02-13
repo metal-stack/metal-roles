@@ -1,10 +1,10 @@
 ---
 galaxy_info:
-  role_name: zitadel-db
+  role_name: metal-v2-client
   author: metal-stack
-  description: Deploys a database for the zitadel oidc provider.
+  description: Installs the metal-stack v2 client library.
   license: MIT
-  min_ansible_version: "2.10"
+  min_ansible_version: "2.18"
   galaxy_tags: []
 
   platforms:
@@ -14,4 +14,3 @@ galaxy_info:
 
 dependencies:
   - role: metal-roles/common/roles/defaults
-  - role: metal-roles/control-plane/roles/defaults
