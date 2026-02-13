@@ -1,24 +1,32 @@
 ---
+- name: Check if factory reset is required
+  set_fact:
+    perform_factory_reset: "{{ sonic_reset_factory | default(false) }}"
+
+# Only run these tasks when factory reset is NOT requested
 - name: Gather switch facts
   switch_facts:
+  when: not perform_factory_reset
 
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - sonic_mgmt_vrf is defined
-      - sonic_loopback_address is defined
-      - sonic_asn is defined
-      - sonic_config_action in ['load', 'reload']
-      - sonic_ntpservers is defined
-      - sonic_nameservers is defined
-      - metal_stack_switch_os_is_sonic
+     - sonic_mgmt_vrf is defined
+     - sonic_loopback_address is defined
+     - sonic_asn is defined
+     - sonic_config_action in ['load', 'reload']
+     - sonic_ntpservers is defined
+     - sonic_nameservers is defined
+     - metal_stack_switch_os_is_sonic
+  when: not perform_factory_reset
 
 - name: render resolv.conf
   template:
     src: resolv.conf.j2
     dest: /etc/resolv.conf
+  when: not perform_factory_reset
 
 - name: Activate IP MASQUERADE on eth0
   ansible.builtin.iptables:
@@ -26,7 +34,9 @@
     jump: MASQUERADE
     out_interface: eth0
     table: nat
-  when: sonic_ip_masquerade
+  when: 
+    - not perform_factory_reset
+    - sonic_ip_masquerade | default(false)
 
 - name: Activate ipv4 forwarding on eth0
   ansible.posix.sysctl:
@@ -34,21 +44,27 @@
     reload: no
     sysctl_set: yes
     value: "1"
-  when: sonic_ip_masquerade
+  when: 
+    - not perform_factory_reset
+    - sonic_ip_masquerade | default(false)
 
 - name: Render and save config_db
   import_tasks: config_db.yaml
-  when: sonic_render_config_db_template
+  when: 
+    - sonic_render_config_db_template | default(true)
 
 - name: Set NTP timezone
   timezone:
     name: "{{ sonic_timezone }}"
+  when: not perform_factory_reset
 
 - name: Render frr config
   template:
     src: frr.conf.j2
     dest: /etc/sonic/frr/frr.conf
-  when: sonic_frr_render
+  when: 
+    - not perform_factory_reset
+    - sonic_frr_render | default(false)
   notify:
     - restart bgp
 
@@ -56,9 +72,12 @@
   template:
     src: iptables.json.j2
     dest: /etc/sonic/iptables.json
-  when: sonic_extended_cacl is defined
+  when: 
+    - not perform_factory_reset
+    - sonic_extended_cacl is defined
   notify:
     - restart caclmgrd
 
 - name: Flush handlers
   meta: flush_handlers
+  when: not perform_factory_reset
