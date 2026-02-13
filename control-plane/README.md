@@ -51,6 +51,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [meili-backup-restore](roles/meili-backup-restore)                     | A role for deploying a meilisearch database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |
 | [metal-db](roles/metal-db)                                             | Deploys a database for the metal-api                                                                                               |
 | [metal-python](roles/metal-python)                                     | Installs metal-python                                                                                                              |
+| [metal-v2-client](roles/metal-v2-client)                               | Installs metal-stack-api                                                                                                           |
 | [metal](roles/metal)                                                   | Deploys all metal-stack components of the metal-control-plane via Helm chart                                                       |
 | [monitoring](roles/monitoring)                                         | Deploys metal-stack control plane monitoring components                                                                            |
 | [nsq](roles/nsq)                                                       | Deploys [nsq](https://nsq.io/)                                                                                                     |

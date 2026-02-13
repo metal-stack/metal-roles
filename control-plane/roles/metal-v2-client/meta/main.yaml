@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: metal-v2-client
+  author: metal-stack
+  description: Installs the metal-stack v2 client library.
+  license: MIT
+  min_ansible_version: "2.18"
+  galaxy_tags: []
+
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
