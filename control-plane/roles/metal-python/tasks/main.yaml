@@ -8,6 +8,9 @@
 
 - name: Gather releases
   setup_yaml:
+  when:
+    - metal_python_version is none
+    - metal_python_version_from_release_vector
 
 - name: Set metal-python from release vector
   set_fact:

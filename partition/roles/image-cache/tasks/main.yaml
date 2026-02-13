@@ -2,6 +2,13 @@
 - name: Gather release versions
   setup_yaml:
 
+- name: Check metal-deployment-token has run
+  assert:
+    fail_msg: "this role requires the metal-deployment-token role to be run before execution, check role documentation"
+    quiet: yes
+    that:
+      - "'metal_deployment_admin_token' in hostvars['localhost']"
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"

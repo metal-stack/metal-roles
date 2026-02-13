@@ -1,9 +1,9 @@
 ---
-- name: Gather releases
-  setup_yaml:
-
 - name: Install metal-stack-api
   block:
+    - name: Gather releases
+      setup_yaml:
+
     - name: Install metal-stack-api client library {{ metal_api_version }}
       pip:
         name:

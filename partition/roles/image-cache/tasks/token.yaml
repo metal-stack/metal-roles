@@ -1,27 +1,27 @@
 ---
-- name: create image-cache tenant
-  delegate_to: localhost
-  metal_v2_admin_tenant:
-    name: metal-image-cache-sync-{{ metal_partition_id }}-{{ inventory_hostname }}
-    description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
-  environment:
-    METALCTLV2_API_URL: "{{ image_cache_sync_metal_apiserver_url }}"
-    METALCTLV2_API_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
-  register: _tenant
+- name: create api tokens for metal-image-cache-sync
+  block:
 
-- name: create image-cache api token
+    - name: create image-cache tenant
+      metal_v2_admin_tenant:
+        name: metal-image-cache-sync-{{ metal_partition_id }}-{{ inventory_hostname }}
+        description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
+      register: _tenant
+
+    - name: create image-cache api token
+      metal_v2_admin_token:
+        user: "{{ _tenant.id }}"
+        description: "metal-image-cache-sync token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
+        expires: "{{ image_cache_sync_token_expiration }}"
+        permissions:
+          - subject: "*"
+            methods:
+              - /metalstack.api.v2.ImageService/List
+              - /metalstack.api.v2.PartitionService/List
+              - /metalstack.api.v2.TokenService/Refresh
+      register: _token
+
   delegate_to: localhost
-  metal_v2_admin_token:
-    user: "{{ _tenant.id }}"
-    description: "metal-image-cache-sync token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
-    expires:
-    permissions:
-      - subject: "*"
-        methods:
-          - /metalstack.api.v2.ImageService/List
-          - /metalstack.api.v2.PartitionService/List
-          - /metalstack.api.v2.TokenService/Refresh
   environment:
     METALCTLV2_API_URL: "{{ image_cache_sync_metal_apiserver_url }}"
     METALCTLV2_API_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
-  register: _token
