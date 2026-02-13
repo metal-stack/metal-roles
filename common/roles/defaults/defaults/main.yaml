@@ -15,6 +15,7 @@ metal_stack_release:
     # control plane
     metal_api_image_tag: "docker-images.metal-stack.control-plane.metal-api.tag"
     metal_api_image_name: "docker-images.metal-stack.control-plane.metal-api.name"
+    metal_api_version: "projects.metal-stack.api.version"
     metal_apiserver_image_tag: "docker-images.metal-stack.control-plane.metal-apiserver.tag"
     metal_apiserver_image_name: "docker-images.metal-stack.control-plane.metal-apiserver.name"
     metal_metalctl_image_tag: "docker-images.metal-stack.control-plane.metalctl.tag"
