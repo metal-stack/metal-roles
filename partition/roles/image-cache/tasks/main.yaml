@@ -16,6 +16,9 @@
       - image_cache_sync_metal_apiserver_url is not none
       - image_cache_sync_metal_apiserver_token is not none
 
+- name: Create tokens
+  import_tasks: token.yaml
+
 - name: Setup CoreDNS
   import_tasks: coredns.yaml
 
