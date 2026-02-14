@@ -3,9 +3,9 @@ apiVersion: core.gardener.cloud/v1beta1
 kind: Project
 metadata:
   name: "{{ _config.name }}"
-{% if _config.additional_annotations is defined %}
-  annotations:
-{% for key, value in _config.additional_annotations.items() %}
+{% if _config.additional_labels is defined %}
+  labels:
+{% for key, value in _config.additional_labels.items() %}
     {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
