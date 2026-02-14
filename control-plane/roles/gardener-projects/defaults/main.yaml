@@ -14,5 +14,6 @@ gardener_projects: []
 gardener_project_defaults:
   namespace: garden
   owner: admin
+  additional_annotations: {}
   protected_toleration: true
   members: []
