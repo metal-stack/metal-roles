@@ -13,6 +13,5 @@ galaxy_info:
         - all
 
 dependencies:
-  - role: metal-ansible-modules
   - role: metal-roles/common/roles/defaults
   - role: metal-roles/partition/roles/defaults

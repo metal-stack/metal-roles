@@ -1,19 +1,4 @@
 ---
-- name: ensure cache directory
-  ansible.builtin.file:
-    path: "{{ image_cache_sync_host_path }}"
-    state: directory
-    mode: '0755'
-
-- name: store token in credentials file
-  ansible.builtin.copy:
-    content: "{{ _token.secret }}"
-    dest: "{{ image_cache_sync_host_path }}/metal-apiserver-token"
-    owner: root
-    group: root
-    mode: '0644'
-  when: '"secret" in _token'
-
 - name: deploy image-sync service
   include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -27,8 +12,8 @@
       METAL_IMAGE_CACHE_SYNC_MAX_CACHE_SIZE: "{{ image_cache_sync_max_cache_size }}"
       METAL_IMAGE_CACHE_SYNC_MAX_IMAGES_PER_NAME: "{{ image_cache_sync_max_images_per_name }}"
       METAL_IMAGE_CACHE_SYNC_MIN_IMAGES_PER_NAME: "{{ image_cache_sync_min_images_per_name }}"
-      METAL_IMAGE_CACHE_SYNC_METAL_APISERVER_URL: "{{ image_cache_sync_metal_apiserver_url }}"
-      METAL_IMAGE_CACHE_SYNC_METAL_APISERVER_TOKEN_PATH: "/var/lib/metal-image-cache-sync/metal-apiserver-token"
+      METAL_IMAGE_CACHE_SYNC_METAL_API_ENDPOINT: "{{ image_cache_sync_metal_api_endpoint }}"
+      METAL_IMAGE_CACHE_SYNC_METAL_API_HMAC: "{{ image_cache_sync_metal_api_view_hmac }}"
       METAL_IMAGE_CACHE_SYNC_SCHEDULE: "{{ image_cache_sync_schedule }}"
       METAL_IMAGE_CACHE_SYNC_EXCLUDES: "{{ image_cache_sync_excludes | join(',') }}"
       METAL_IMAGE_CACHE_SYNC_EXPIRATION_GRACE_PERIOD: "{{ image_cache_sync_expiration_grace_period }}"
