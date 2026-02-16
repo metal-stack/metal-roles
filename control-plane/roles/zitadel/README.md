@@ -7,12 +7,12 @@ Role that deploys and manages and configures [Zitadel](https://zitadel.com/), an
 
 ## UI
 
-Because `ExternalSecure: true` is set by default, Zitadel is only available over HTTPS. Using Zitadel with HTTP does currently not work due to https://github.com/zitadel/zitadel/issues/11019.
+Because `ExternalSecure: true` is set by default, Zitadel is only available over HTTPS. Using Zitadel with HTTP does currently not work due to <https://github.com/zitadel/zitadel/issues/11019>.
 
 ## Other
 
-- Login image not loading because of csp (https://github.com/zitadel/zitadel/pull/11088)
-- For deploying data automatically through CI, we use https://github.com/metal-stack/zitadel-init
+- Login image not loading because of csp (<https://github.com/zitadel/zitadel/pull/11088>)
+- For deploying data automatically through CI, we use <https://github.com/metal-stack/zitadel-init>
 
 ## Variables
 

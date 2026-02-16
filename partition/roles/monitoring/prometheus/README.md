@@ -18,7 +18,7 @@ you define them adequately as well.
 | prometheus_alertmanager_target                   |           | Targets for the alertmanager                                                                                                              |
 | prometheus_alertmanager_basic_auth_username      |           | The username for the authentication to the alertmanager                                                                                   |
 | prometheus_alertmanager_basic_auth_password      |           | The password for the authentication to the alertmanager                                                                                   |
-| prometheus_remote_write                          |           | A list of remote write targets for prometheus, see https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write |
+| prometheus_remote_write                          |           | A list of remote write targets for prometheus, see <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write> |
 | prometheus_frr_exporter_targets                  |           | FRR exporter targets to scrape from                                                                                                       |
 | prometheus_metal_core_targets                    |           | metal-core targets to scrape from                                                                                                         |
 | prometheus_node_exporter_targets                 |           | Node exporter targets to scrape from                                                                                                      |
