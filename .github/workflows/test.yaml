@@ -26,7 +26,6 @@ jobs:
       - uses: actions/checkout@v6
       - name: markdownlint-cli
         uses: DavidAnson/markdownlint-cli2-action@main
-        # for now we need to ignore, it throws a lot of errors that need to be fixed over time
         continue-on-error: true
 
   yamllint:
