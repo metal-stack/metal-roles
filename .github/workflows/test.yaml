@@ -25,9 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: markdownlint-cli
-        uses: nosborn/github-action-markdown-cli@v3.5.0
-        with:
-          files: .
+        uses: DavidAnson/markdownlint-cli2-action@main
         # for now we need to ignore, it throws a lot of errors that need to be fixed over time
         continue-on-error: true
 

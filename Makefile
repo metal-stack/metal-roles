@@ -11,8 +11,6 @@ test-local:
 .PHONY: lint
 lint:
 # 	docker run --rm -v $(PWD):/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "*.md"
+	docker run --rm -v $(PWD):/workdir davidanson/markdownlint-cli2:v0.21.0 "**/*.md"
 # 	docker run --rm -v $(PWD):/work -w /work pipelinecomponents/yamllint:edge common control-plane partition
-	docker run --rm -v $(PWD):/work -w /work pipelinecomponents/ansible-lint:edge
-
-# 	yamllint common controlplane partition
-# 	ansible-galaxy collection install . && ansible-lint
+# 	docker run --rm -v $(PWD):/work -w /work pipelinecomponents/ansible-lint:edge --fix
