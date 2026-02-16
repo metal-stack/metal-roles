@@ -10,9 +10,10 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 If you are still using the `gardener` role for setting up the Gardener, please read the following notes for the migration to the Gardener Operator.
 
+<!-- markdownlint-disable-next-line no-blanks-blockquote -->
 > [!CAUTION]
 > The migration requires a downtime of the Gardener for end-users. The API servers of the end-users are not disrupted.
-
+<!-- markdownlint-disable-next-line no-blanks-blockquote -->
 > [!IMPORTANT]
 > For the migration it is required to either wait until Gardener `v1.119` or use a backport feature to `force-redeploy` the existing Gardenlets. If you want to use the backports, please set the following overwrites:
 >
