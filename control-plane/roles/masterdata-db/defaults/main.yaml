@@ -18,12 +18,10 @@ masterdata_db_backup_restore_sidecar_log_level: debug
 masterdata_db_backup_restore_sidecar_object_prefix: "{{ masterdata_db_name }}-{{ metal_control_plane_stage_name }}"
 masterdata_db_backup_restore_sidecar_object_max_keep: 480
 masterdata_db_backup_restore_sidecar_encryption_key:
-
 masterdata_db_backup_restore_sidecar_gcp_bucket_name:
 masterdata_db_backup_restore_sidecar_gcp_backup_location:
 masterdata_db_backup_restore_sidecar_gcp_project_id:
 masterdata_db_backup_restore_sidecar_gcp_serviceaccount_json:
-
 masterdata_db_backup_restore_sidecar_s3_bucket_name:
 masterdata_db_backup_restore_sidecar_s3_region:
 masterdata_db_backup_restore_sidecar_s3_endpoint:
@@ -31,7 +29,6 @@ masterdata_db_backup_restore_sidecar_s3_access_key:
 masterdata_db_backup_restore_sidecar_s3_secret_key:
 masterdata_db_backup_restore_sidecar_s3_insecure_skip_verify:
 masterdata_db_backup_restore_sidecar_s3_trusted_ca_cert:
-
 masterdata_db_resources:
   requests:
     memory: "128Mi"

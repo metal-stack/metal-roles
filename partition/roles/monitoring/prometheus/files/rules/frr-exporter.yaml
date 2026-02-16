@@ -1,35 +1,36 @@
+---
 groups:
-- name: frr-recording.rules
-  rules:
-  - record: device:frr_bgp_peer_state
-    expr: |2
-      label_replace(frr_bgp_peer_state,"device","$1","peer","(.+)")
-- name: frr-alert.rules
-  rules:
-  - alert: TooMuchActivePrefixes
-    expr: frr_bgp_prefixes_active>13000
-    for: 15m
-    labels:
-      severity: "warning"
-    annotations:
-      description: "FRR {{ $labels.instance }} has too much prefixes {{ $value }}"
-  - alert: RoutesFlapping
-    expr: sum(abs(delta(frr_bgp_prefixes_active[1m]))) by (instance) >100
-    labels:
-      severity: "warning"
-    annotations:
-      description: "Number of routes on {{ $labels.instance }} are flapping: {{ $value }} "
-  - alert: FrrDown
-    expr: frr_collector_up==0
-    for: 15m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "FRR on {{ $labels.instance }} is DOWN"
-  - alert: BgpPeerConfigurationError
-    expr: count(label_replace(frr_bgp_peer_state{instance=~".*leaf.*"},"leafpair", "$1", "instance", "(.*leaf).*")) by (leafpair,peer)!=2
-    for: 30m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "BGP peer configuration on port {{ $labels.peer }} on leaf-pair {{ $labels.leafpair }}01/02 is different"
+  - name: frr-recording.rules
+    rules:
+      - record: device:frr_bgp_peer_state
+        expr: |
+          label_replace(frr_bgp_peer_state,"device","$1","peer","(.+)")
+  - name: frr-alert.rules
+    rules:
+      - alert: TooMuchActivePrefixes
+        expr: frr_bgp_prefixes_active>13000
+        for: 15m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "FRR {{ $labels.instance }} has too much prefixes {{ $value }}"
+      - alert: RoutesFlapping
+        expr: sum(abs(delta(frr_bgp_prefixes_active[1m]))) by (instance) >100
+        labels:
+          severity: "warning"
+        annotations:
+          description: "Number of routes on {{ $labels.instance }} are flapping: {{ $value }} "
+      - alert: FrrDown
+        expr: frr_collector_up==0
+        for: 15m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "FRR on {{ $labels.instance }} is DOWN"
+      - alert: BgpPeerConfigurationError
+        expr: count(label_replace(frr_bgp_peer_state{instance=~".*leaf.*"},"leafpair", "$1", "instance", "(.*leaf).*")) by (leafpair,peer)!=2
+        for: 30m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "BGP peer configuration on port {{ $labels.peer }} on leaf-pair {{ $labels.leafpair }}01/02 is different"

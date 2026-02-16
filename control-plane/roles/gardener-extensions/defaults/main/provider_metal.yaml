@@ -9,14 +9,12 @@ gardener_extension_provider_metal_admission_replicas: 1
 gardener_extension_provider_metal_admission_vpa: true
 gardener_extension_provider_metal_admission_default_pods_cidr:
 gardener_extension_provider_metal_admission_default_services_cidr:
-
 gardener_extension_provider_metal_etcd_storage_class_name:
 gardener_extension_provider_metal_etcd_backup_schedule: "0 */2 * * *"
 gardener_extension_provider_metal_etcd_delta_snapshot_period: "5m"
 gardener_extension_provider_metal_etcd_volume_eviction: false
 
 gardener_extension_provider_metal_egress_destinations: []
-
 gardener_extension_provider_metal_machine_images: "{{ metal_api_images | default([]) }}"
 
 gardener_extension_provider_metal_duros_storage_enabled: false

@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - sonic_mgmt_vrf is defined
       - sonic_loopback_address is defined
@@ -31,8 +31,8 @@
 - name: Activate ipv4 forwarding on eth0
   ansible.posix.sysctl:
     name: net.ipv4.conf.eth0.forwarding
-    reload: no
-    sysctl_set: yes
+    reload: false
+    sysctl_set: true
     value: "1"
   when: sonic_ip_masquerade
 

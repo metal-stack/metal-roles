@@ -9,8 +9,8 @@
         namespace: garden
       type: Opaque
       data: "{{ gardener_operator_backup_infrastructure_secret }}"
-    apply: yes
-  no_log: yes
+    apply: true
+  no_log: true
 
 - name: Create DNS provider secrets
   k8s:
@@ -22,12 +22,12 @@
         namespace: garden
       type: Opaque
       data: "{{ provider.secretData }}"
-    apply: yes
+    apply: true
   loop: "{{ gardener_operator_dns_providers }}"
   loop_control:
     loop_var: provider
     label: "{{ provider.name }}"
-  no_log: yes
+  no_log: true
 
 - name: Create kube-apiserver authentication configmap
   k8s:
@@ -40,9 +40,9 @@
       data:
         config.yaml: |-
           {{ gardener_operator_virtual_garden_api_server_structured_authentication }}
-    apply: yes
+    apply: true
   when: gardener_operator_virtual_garden_api_server_structured_authentication
-  no_log: yes
+  no_log: true
 
 - name: Deploy Gardener Operator
   include_role:
@@ -58,4 +58,4 @@
 - name: Create Garden
   k8s:
     definition: "{{ lookup('template', 'garden.yaml') }}"
-    apply: yes
+    apply: true

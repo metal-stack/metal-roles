@@ -1,3 +1,4 @@
+---
 inventory_hostname: exit01
 
 sonic_config_asn: 4200000000

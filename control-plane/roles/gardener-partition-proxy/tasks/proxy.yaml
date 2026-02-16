@@ -42,7 +42,7 @@
         type: "{{ gardener_partition_proxy_dns_provider }}"
         values:
           - "{{ _proxy_ip }}"
-    apply: yes
+    apply: true
 
 - name: Create namespace in shooted seed
   k8s:
@@ -52,10 +52,10 @@
       metadata:
         name: partition-proxy
     kubeconfig: "{{ _shoot_kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Deploy proxy
   k8s:
     definition: "{{ lookup('template', 'proxy.yaml') }}"
     kubeconfig: "{{ _shoot_kubeconfig }}"
-    apply: yes
+    apply: true

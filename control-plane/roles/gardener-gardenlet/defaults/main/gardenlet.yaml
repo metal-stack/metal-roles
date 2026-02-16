@@ -6,7 +6,6 @@ gardener_gardenlet_helm_chart_tag: "{{ gardener_gardenlet_image_tag }}"
 gardener_gardenlet_default_dns_domain:
 gardener_gardenlet_default_dns_provider:
 gardener_gardenlet_default_dns_credentials:
-
 gardener_gardenlets: []
   # - name:
   #   kubeconfigSecretRef: <if-this-is-a-remote-gardenlet>

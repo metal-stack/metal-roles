@@ -7,7 +7,6 @@ gardener_shoot_rollout_wait_delay: 10
 gardener_shoot_rollout_wait_enabled: true
 
 gardener_shoot_default_metal_api_hmac:
-
 gardener_shoots: []
 # - name: shoot-a
 #   seed_name: seed-a

@@ -16,7 +16,6 @@ postgres_shared_buffers:
 postgres_maintenance_work_mem:
 postgres_work_mem:
 postgres_effective_cache_size:
-
 postgres_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 postgres_backup_restore_sidecar_provider: local
 postgres_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
@@ -24,12 +23,10 @@ postgres_backup_restore_sidecar_log_level: debug
 postgres_backup_restore_sidecar_object_prefix: "{{ postgres_name }}-{{ metal_control_plane_stage_name }}"
 postgres_backup_restore_sidecar_object_max_keep: 480
 postgres_backup_restore_sidecar_encryption_key:
-
 postgres_backup_restore_sidecar_gcp_bucket_name:
 postgres_backup_restore_sidecar_gcp_backup_location:
 postgres_backup_restore_sidecar_gcp_project_id:
 postgres_backup_restore_sidecar_gcp_serviceaccount_json:
-
 postgres_backup_restore_sidecar_s3_bucket_name:
 postgres_backup_restore_sidecar_s3_region:
 postgres_backup_restore_sidecar_s3_endpoint:
@@ -37,7 +34,6 @@ postgres_backup_restore_sidecar_s3_access_key:
 postgres_backup_restore_sidecar_s3_secret_key:
 postgres_backup_restore_sidecar_s3_insecure_skip_verify:
 postgres_backup_restore_sidecar_s3_trusted_ca_cert:
-
 postgres_resources:
   requests:
     memory: "128Mi"

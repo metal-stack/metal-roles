@@ -1,12 +1,12 @@
 ---
 inventory_hostname: r01mgmtleaf
 
-sonic_mgmtif_ip: '10.255.255.254/30'
+sonic_mgmtif_ip: "10.255.255.254/30"
 sonic_mgmtif_gateway: 10.255.255.253
 
 sonic_loopback_address: 10.0.0.1
 sonic_asn: 420000000
-sonic_ntpservers: ['1.2.3.4']
+sonic_ntpservers: ["1.2.3.4"]
 sonic_breakouts:
   Ethernet0: "4x25G"
 
@@ -47,71 +47,71 @@ sonic_running_cfg_ports:
     speed: "25000"
   Ethernet1:
     alias: Eth1/2(Port1)
-    index: '1'
-    lanes: '2'
+    index: "1"
+    lanes: "2"
     parent_port: Ethernet0
-    speed: '25000'
+    speed: "25000"
   Ethernet2:
     alias: Eth1/3(Port1)
-    index: '1'
-    lanes: '3'
+    index: "1"
+    lanes: "3"
     parent_port: Ethernet0
-    speed: '25000'
+    speed: "25000"
   Ethernet3:
     alias: Eth1/4(Port1)
-    index: '1'
-    lanes: '4'
+    index: "1"
+    lanes: "4"
     parent_port: Ethernet0
-    speed: '25000'
+    speed: "25000"
   Ethernet4:
     alias: Eth2(Port2)
-    index: '2'
-    lanes: '5,6,7,8'
+    index: "2"
+    lanes: "5,6,7,8"
     parent_port: Ethernet4
-    speed: '100000'
+    speed: "100000"
   Ethernet120:
     alias: Eth31(Port31)
-    index: '31'
-    lanes: '121,122,123,124'
+    index: "31"
+    lanes: "121,122,123,124"
     parent_port: Ethernet120
-    speed: '100000'
+    speed: "100000"
   Ethernet124:
     alias: Eth32(Port32)
-    index: '32'
-    lanes: '125,126,127,128'
+    index: "32"
+    lanes: "125,126,127,128"
     parent_port: Ethernet124
-    speed: '100000'
+    speed: "100000"
 
 sonic_bgp_ports:
-- Ethernet120
-- Ethernet124
+  - Ethernet120
+  - Ethernet124
 
 sonic_vlans:
-- id: 1
-  dhcp_servers: ['10.255.255.254']
-  ip: '10.255.255.1/24'
-  untagged_ports:
-  - Ethernet0
-  - Ethernet1
-  - Ethernet2
-  - Ethernet3
-- id: 2
-  untagged_ports:
-  - Ethernet4
+  - id: 1
+    dhcp_servers: ["10.255.255.254"]
+    ip: "10.255.255.1/24"
+    untagged_ports:
+      - Ethernet0
+      - Ethernet1
+      - Ethernet2
+      - Ethernet3
+  - id: 2
+    untagged_ports:
+      - Ethernet4
 
 sonic_vteps:
-- comment: "test-vtep"
-  vlan: Vlan2
-  vni: 10002
+  - comment: "test-vtep"
+    vlan: Vlan2
+    vni: 10002
 
 sonic_extended_cacl:
   ipv4:
-  - "-A INPUT -s 1.2.3.9/32 -p tcp -m tcp --dport 2112 -j ACCEPT"
-  - "-A INPUT -s 1.2.3.13/32 -p tcp -m tcp --dport 9080 -j ACCEPT"
-  - "-A INPUT -s 1.2.3.25/32 -p tcp -m tcp --dport 9100 -j ACCEPT"
-  - "-A INPUT -s 1.2.3.29/32 -p tcp -m tcp --dport 9342 -j ACCEPT"
+    - "-A INPUT -s 1.2.3.9/32 -p tcp -m tcp --dport 2112 -j ACCEPT"
+    - "-A INPUT -s 1.2.3.13/32 -p tcp -m tcp --dport 9080 -j ACCEPT"
+    - "-A INPUT -s 1.2.3.25/32 -p tcp -m tcp --dport 9100 -j ACCEPT"
+    - "-A INPUT -s 1.2.3.29/32 -p tcp -m tcp --dport 9342 -j ACCEPT"
   ipv6:
-  - "-A INPUT -s 2001:db8::1/128 -p tcp -m tcp --dport 2112 -j ACCEPT"
-  - "-A INPUT -s 2001:db8:1::1/128 -p tcp -m tcp --dport 9080 -j ACCEPT"
-  - "-A INPUT -s 2001:db8:2::1/128 -p tcp -m tcp --dport 9100 -j ACCEPT"
-  - "-A INPUT -s 2001:db8:3::1/128 -p tcp -m tcp --dport 9342 -j ACCEPT"
+    - "-A INPUT -s 2001:db8::1/128 -p tcp -m tcp --dport 2112 -j ACCEPT"
+    - "-A INPUT -s 2001:db8:1::1/128 -p tcp -m tcp --dport 9080 -j ACCEPT"
+    - "-A INPUT -s 2001:db8:2::1/128 -p tcp -m tcp --dport 9100 -j ACCEPT"
+    - "-A INPUT -s 2001:db8:3::1/128 -p tcp -m tcp --dport 9342 -j ACCEPT"

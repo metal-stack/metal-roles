@@ -1,58 +1,66 @@
+---
 groups:
-- name: ipmi-rules.rules
-  rules:
-  - alert: IPMIAccessDown
-    expr: sum(up{job="ipmi"}) == 0
-    for: 5m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "No IPMI connections possible at partition {{ $externalLabels.partition }}"
-  - alert: IPMISensorState
-    expr: ipmi_sensor_state>0
-    for: 15m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "Sensor {{ $labels.type }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
-  - alert: IPMIVoltageState
-    expr: ipmi_voltage_state>0
-    for: 15m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "Voltage {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
-  - alert: IPMIFanSpeedState
-    expr: ipmi_voltage_state>0
-    for: 15m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "Fan speed {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
-  - alert: IPMIPowerState
-    expr: ipmi_power_state>0
-    for: 15m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "Fan speed {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
-  - alert: IPMIChassisPowerState
-    expr: ipmi_chassis_power_state!=1
-    for: 15m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "Chassis power on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
-  - alert: IPMITemperatureState
-    expr: ipmi_temperature_state>0
-    for: 15m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "Temperature {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
-  - alert: IPMISystemEventLog
-    expr: rate(ipmi_sel_logs_count[5m])>0
-    labels:
-      severity: "warning"
-    annotations:
-      description: "(experimental alert) IPMI instance {{ $labels.instance }} in partition {{ $externalLabels.partition }} reports new system events. Get more details with 'ipmitool -H {{ $labels.instance }} -U ... -P ... sel list'"
+  - name: ipmi-rules.rules
+    rules:
+      - alert: IPMIAccessDown
+        expr: sum(up{job="ipmi"}) == 0
+        for: 5m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "No IPMI connections possible at partition {{ $externalLabels.partition }}"
+      - alert: IPMISensorState
+        expr: ipmi_sensor_state>0
+        for: 15m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Sensor {{ $labels.type }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding
+            machine with 'metalctl machine ipmi'"
+      - alert: IPMIVoltageState
+        expr: ipmi_voltage_state>0
+        for: 15m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Voltage {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding
+            machine with 'metalctl machine ipmi'"
+      - alert: IPMIFanSpeedState
+        expr: ipmi_voltage_state>0
+        for: 15m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Fan speed {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding
+            machine with 'metalctl machine ipmi'"
+      - alert: IPMIPowerState
+        expr: ipmi_power_state>0
+        for: 15m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Fan speed {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding
+            machine with 'metalctl machine ipmi'"
+      - alert: IPMIChassisPowerState
+        expr: ipmi_chassis_power_state!=1
+        for: 15m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Chassis power on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with
+            'metalctl machine ipmi'"
+      - alert: IPMITemperatureState
+        expr: ipmi_temperature_state>0
+        for: 15m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Temperature {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding
+            machine with 'metalctl machine ipmi'"
+      - alert: IPMISystemEventLog
+        expr: rate(ipmi_sel_logs_count[5m])>0
+        labels:
+          severity: "warning"
+        annotations:
+          description: "(experimental alert) IPMI instance {{ $labels.instance }} in partition {{ $externalLabels.partition }} reports new system events. Get more
+            details with 'ipmitool -H {{ $labels.instance }} -U ... -P ... sel list'"

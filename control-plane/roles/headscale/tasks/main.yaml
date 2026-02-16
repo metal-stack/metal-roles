@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - headscale_image_name is defined
       - headscale_image_tag is defined
@@ -64,7 +64,7 @@
   k8s:
     definition: "{{ lookup('template', 'headscale.yaml') }}"
     namespace: "{{ headscale_namespace }}"
-    apply: yes
+    apply: true
 
 - name: Determine if api key secret was already created
   set_fact:
@@ -77,7 +77,8 @@
   delay: 12
   when: not headscale_api_key_already_created
   until:
-    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace=headscale_namespace, resource_name='headscale').get('status', {}).get('readyReplicas', 0) >= 1
+    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace=headscale_namespace, resource_name='headscale').get('status', {}).get('readyReplicas',
+      0) >= 1
 
 - name: Create headscale API key
   kubernetes.core.k8s_exec:

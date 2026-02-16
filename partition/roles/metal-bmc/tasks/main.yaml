@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - metal_bmc_nsqd_addr is defined
       - metal_bmc_image_tag is defined
@@ -28,9 +28,9 @@
 - name: copy nsq certificates
   copy:
     dest: "{{ metal_bmc_nsq_cert_dir }}/{{ item.filename }}"
-    mode: 0640
+    mode: "0640"
     content: "{{ item.content }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: ca.pem
       content: "{{ metal_bmc_nsqd_ca_cert }}"
@@ -49,16 +49,16 @@
     state: directory
     owner: "{{ metal_bmc_console_cert_owner }}"
     group: "{{ metal_bmc_console_cert_group }}"
-    mode: 0700
+    mode: "0700"
 
 - name: copy metal-bmc console certificates
   copy:
     dest: "{{ metal_bmc_console_cert_dir }}/{{ item.filename }}"
     content: "{{ item.content }}"
-    mode: 0640
+    mode: "0640"
     owner: "{{ metal_bmc_console_cert_owner }}"
     group: "{{ metal_bmc_console_cert_group }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: ca.pem
       content: "{{ metal_bmc_console_ca_cert }}"
@@ -88,7 +88,8 @@
       TZ: "{{ metal_partition_timezone }}"
       METAL_BMC_LEASE_FILE: /var/lib/dhcp/dhcpd.leases
       METAL_BMC_PARTITION_ID: "{{ metal_partition_id }}"
-      METAL_BMC_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
+      METAL_BMC_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath
+        }}"
       METAL_BMC_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
       METAL_BMC_IGNORE_MACS: "{{ metal_bmc_ignore_macs | join(',') }}"
       METAL_BMC_ALLOWED_CIDRS: "{{ metal_bmc_allowed_cidrs | join(',') }}"

@@ -1,10 +1,10 @@
 ---
-metal_check_api_available: yes
+metal_check_api_available: true
 
 metal_helm_chart_local_path:
 metal_helm_chart_timeout: "600s"
 
-metal_set_resource_limits: yes
+metal_set_resource_limits: true
 
 metal_check_api_health_endpoint: https://{{ metal_api_ingress_dns }}{{ metal_api_base_path }}v1/health
 
@@ -48,8 +48,10 @@ metal_apiserver_rate_limiting_max_requests_per_minute: 1000
 metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute: 50
 metal_apiserver_oidc_discovery_url:
 metal_apiserver_oidc_end_session_url:
-metal_apiserver_oidc_client_id: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='zitadel-client-credentials').data.client_id | default('') | b64decode }}"
-metal_apiserver_oidc_client_secret: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='zitadel-client-credentials').data.client_secret | default('') | b64decode }}"
+metal_apiserver_oidc_client_id: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='zitadel-client-credentials').data.client_id
+  | default('') | b64decode }}"
+metal_apiserver_oidc_client_secret: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='zitadel-client-credentials').data.client_secret
+  | default('') | b64decode }}"
 metal_apiserver_session_secret: secret
 metal_apiserver_admin_subjects: []
 metal_apiserver_pdb_enabled: true
@@ -73,7 +75,8 @@ metal_api_nsq_http_address: "nsqd:4151"
 metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tls_enabled: true
 metal_api_nsq_tls_secret_name: nsqd
-metal_api_nsq_tls_checksum: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='nsqd').get('data', {}) | string | hash('sha1') if metal_api_nsq_tls_enabled else None }}"
+metal_api_nsq_tls_checksum: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='nsqd').get('data', {}) | string
+  | hash('sha1') if metal_api_nsq_tls_enabled else None }}"
 metal_api_grpc_tls_enabled: true
 metal_api_bmc_superuser_enabled: false
 metal_api_bmc_superuser_pwd: change-me
@@ -115,7 +118,6 @@ metal_masterdata_api_pdb_min_available: 1
 
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
-
 # ipam
 metal_ipam_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_ipam_db_address: ipam-db
@@ -148,8 +150,9 @@ metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
 
 # headscale
 metal_api_headscale_enabled: false
-metal_api_headscale_tls: yes
-metal_api_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data', {}).get('key') | b64decode if metal_api_headscale_enabled else '' }}"
+metal_api_headscale_tls: true
+metal_api_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data',
+  {}).get('key') | b64decode if metal_api_headscale_enabled else '' }}"
 metal_api_headscale_control_plane_address: "http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_ingress_dns }}"
 metal_api_headscale_internal_api_address: "headscale:50443"
 
@@ -170,5 +173,4 @@ metal_auditing_splunk_source_type:
 metal_auditing_splunk_index:
 metal_auditing_splunk_host:
 metal_auditing_splunk_ca:
-
 metal_auditing_search_backend:
