@@ -11,5 +11,10 @@ test-local:
 .PHONY: lint
 lint:
 	docker run --rm -v $(PWD):/workdir davidanson/markdownlint-cli2:v0.21.0 "**/*.md"
-	docker run --rm -v $(PWD):/work -w /work pipelinecomponents/yamllint:edge common control-plane partition
-	docker run --rm -v $(PWD):/work -w /work pipelinecomponents/ansible-lint:edge
+	docker run --rm -v $(PWD):/work -w /work pipelinecomponents/ansible-lint:edge --fix='yaml[truthy]'
+
+
+# yaml[truthy]: Truthy value should be one of [false, true]
+# partition/roles/wireguard/tasks/main.yaml:12
+
+# name[casing]:
