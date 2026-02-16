@@ -19,9 +19,11 @@ NTP:
     src_intf: "eth0"
 
 NTP_SERVER:
+
 LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}
+
 MCLAG_DOMAIN:
   "1":
     mclag_system_id: "00:11:22:33:44:55"
@@ -331,13 +333,14 @@ PORTCHANNEL:
     mtu: "9000"
 
 PORTCHANNEL_MEMBER:
-  PortChannel01|Ethernet112: {}
-  PortChannel01|Ethernet116: {}
-  PortChannel11|Ethernet4: {}
-  PortChannel12|Ethernet5: {}
-  PortChannel21|Ethernet0: {}
-  PortChannel22|Ethernet1: {}
-  PortChannel23|Ethernet2: {}
+  PortChannel01|Ethernet112:  {}
+  PortChannel01|Ethernet116:  {}
+  PortChannel11|Ethernet4:  {}
+  PortChannel12|Ethernet5:  {}
+  PortChannel21|Ethernet0:  {}
+  PortChannel22|Ethernet1:  {}
+  PortChannel23|Ethernet2:  {}
+
 SAG:
   GLOBAL:
     gateway_mac: "00:11:22:33:44:66"
@@ -365,19 +368,19 @@ VLAN_INTERFACE:
 
 VLAN_MEMBER:
   Vlan1000|PortChannel01:
-    tagging_mode: tagged
+      tagging_mode: tagged
   Vlan1001|PortChannel11:
-    tagging_mode: untagged
+      tagging_mode: untagged
   Vlan1001|PortChannel12:
-    tagging_mode: untagged
+      tagging_mode: untagged
   Vlan1001|PortChannel21:
-    tagging_mode: untagged
+      tagging_mode: untagged
   Vlan1001|PortChannel22:
-    tagging_mode: untagged
+      tagging_mode: untagged
   Vlan1001|PortChannel23:
-    tagging_mode: untagged
+      tagging_mode: untagged
   Vlan1001|PortChannel01:
-    tagging_mode: tagged
+      tagging_mode: tagged
 
 VXLAN_EVPN_NVO:
   nvo:
@@ -440,13 +443,13 @@ ACL_TABLE:
     policy_desc: "Allow SSH access"
     ports: []
     services:
-      - "SSH"
+    - "SSH"
     stage: "ingress"
     type: "CTRLPLANE"
   ALLOW_NTP:
     policy_desc: "Allow NTP"
     ports: []
     services:
-      - "NTP"
+    - "NTP"
     stage: "ingress"
     type: "CTRLPLANE"
