@@ -13,7 +13,7 @@
 - name: install required packages to have the network stack in place
   apt:
     name:
-    - frr={{ frr_version }}*
-    - frr-pythontools={{ frr_version }}*
-    update_cache : yes
-    force_apt_get: yes
+      - frr={{ frr_version }}*
+      - frr-pythontools={{ frr_version }}*
+    update_cache: true
+    force_apt_get: true

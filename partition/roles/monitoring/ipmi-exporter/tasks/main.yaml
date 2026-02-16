@@ -2,7 +2,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - monitoring_ipmi_bmc_superuser is defined
       - monitoring_ipmi_bmc_superuser_pwd is defined
@@ -49,6 +49,6 @@
   systemd:
     name: "ipmi_exporter"
     state: restarted
-    enabled: yes
-    daemon_reload: yes
+    enabled: true
+    daemon_reload: true
   when: ipmi_config is changed

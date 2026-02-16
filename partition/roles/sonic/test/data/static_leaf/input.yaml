@@ -15,18 +15,18 @@ sonic_ports_dict:
   Ethernet2:
   Ethernet4:
   Ethernet5:
-# static machines, bgp numbered
+  # static machines, bgp numbered
   Ethernet88:
     speed: 100000
     ips:
-    - 10.10.255.2/31
+      - 10.10.255.2/31
     vrf: Vrf65
   Ethernet92:
     speed: 100000
     ips:
-    - 10.10.255.2/31
+      - 10.10.255.2/31
     vrf: Vrf65
-# static machines
+  # static machines
   Ethernet96:
     speed: 100000
   Ethernet100:
@@ -35,14 +35,14 @@ sonic_ports_dict:
     speed: 100000
   Ethernet108:
     speed: 100000
-# L2 interconnects
+  # L2 interconnects
   Ethernet112:
     speed: 100000
     mtu: 9216
   Ethernet116:
     speed: 100000
     mtu: 9216
-# Spine uplinks
+  # Spine uplinks
   Ethernet120:
     speed: 100000
     mtu: 9216
@@ -130,7 +130,7 @@ sonic_running_cfg_ports:
     index: "2"
     lanes: "4"
     parent_port: Ethernet4
-    speed: "25000"  
+    speed: "25000"
   Ethernet88:
     alias: Eth23(Port23)
     index: "23"
@@ -193,47 +193,47 @@ sonic_running_cfg_ports:
     speed: "100000"
 
 sonic_bgp_ports:
-- Ethernet120
-- Ethernet124
+  - Ethernet120
+  - Ethernet124
 
 sonic_vlans:
-- id: 1000
-  ip: "192.168.255.1/24"
-  tagged_ports:
-  - PortChannel01
-- id: 1001
-  vrf: Vrf46
-  sag: "true"
-  tagged_ports:
-  - PortChannel01
-  untagged_ports:
-  - PortChannel11
-  - PortChannel12
-  - PortChannel21
-  - PortChannel22
-  - PortChannel23
-- id: 1002
-  vrf: Vrf64
-- id: 1003
-  vrf: Vrf65
+  - id: 1000
+    ip: "192.168.255.1/24"
+    tagged_ports:
+      - PortChannel01
+  - id: 1001
+    vrf: Vrf46
+    sag: "true"
+    tagged_ports:
+      - PortChannel01
+    untagged_ports:
+      - PortChannel11
+      - PortChannel12
+      - PortChannel21
+      - PortChannel22
+      - PortChannel23
+  - id: 1002
+    vrf: Vrf64
+  - id: 1003
+    vrf: Vrf65
 
 sonic_vteps:
-- comment: "Croit storage"
-  vlan: Vlan1001
-  vni: 46
-- comment: "Static machines"
-  vlan: Vlan1002
-  vni: 64
-- comment: "Static machines bgp numbered"
-  vlan: Vlan1003
-  vni: 65
+  - comment: "Croit storage"
+    vlan: Vlan1001
+    vni: 46
+  - comment: "Static machines"
+    vlan: Vlan1002
+    vni: 64
+  - comment: "Static machines bgp numbered"
+    vlan: Vlan1003
+    vni: 65
 
 sonic_interconnects:
   croit:
     vrf: Vrf46
     vni: 46
     announcements:
-    - redistribute connected
+      - redistribute connected
   xconnect:
     peer_group: XCONNECT
     evpn_peer: true
@@ -245,13 +245,13 @@ sonic_interconnects:
     peer_group: "STATIC"
     keep_private_as: true
     unnumbered_interfaces:
-    - Ethernet96
-    - Ethernet100
-    - Ethernet104
-    - Ethernet108
+      - Ethernet96
+      - Ethernet100
+      - Ethernet104
+      - Ethernet108
     announcements:
-    - "redistribute connected"
-    - "neighbor STATIC maximum-prefix 24000"
+      - "redistribute connected"
+      - "neighbor STATIC maximum-prefix 24000"
     routemap_in: "{{ static_routemap_in }}"
     prefixlists: "{{ static_prefixlists }}"
   static_numbered:
@@ -260,30 +260,29 @@ sonic_interconnects:
     peer_group: "STATICN"
     keep_private_as: true
     neighbors:
-    - 10.10.255.3
-    - 10.10.255.7
+      - 10.10.255.3
+      - 10.10.255.7
     announcements:
-    - "redistribute connected"
-    - "neighbor STATICN maximum-prefix 24000"
+      - "redistribute connected"
+      - "neighbor STATICN maximum-prefix 24000"
     routemap_in: "{{ staticn_routemap_in }}"
     prefixlists: "{{ staticn_prefixlists }}"
 
 static_prefixlists:
-- "ip prefix-list STATIC_PREFIX_IN seq 10 permit 10.64.64.0/22 ge 32"
+  - "ip prefix-list STATIC_PREFIX_IN seq 10 permit 10.64.64.0/22 ge 32"
 
 static_routemap_in:
   name: ALLOW-STATIC-IN
   entries:
-  - "match ip address prefix-list STATIC_PREFIX_IN"
+    - "match ip address prefix-list STATIC_PREFIX_IN"
 
 staticn_prefixlists:
-- "ip prefix-list STATICN_PREFIX_IN seq 10 permit 10.65.65.0/22 ge 32"
+  - "ip prefix-list STATICN_PREFIX_IN seq 10 permit 10.65.65.0/22 ge 32"
 
 staticn_routemap_in:
   name: ALLOW-STATICN-IN
   entries:
-  - "match ip address prefix-list STATICN_PREFIX_IN"
-
+    - "match ip address prefix-list STATICN_PREFIX_IN"
 
 sonic_mclag:
   system_mac: 00:11:22:33:44:55
@@ -292,47 +291,47 @@ sonic_mclag:
   source_ip: "192.168.255.1"
   keepalive_vlan: "1000"
   member_port_channels:
-  - "11"
-  - "12"
-  - "21"
-  - "22"
-  - "23"
+    - "11"
+    - "12"
+    - "21"
+    - "22"
+    - "23"
 
 sonic_portchannels_default_mtu: 9000
 sonic_portchannels:
-- number: "01"
-  mtu: "9216"
-  members:
-  - Ethernet112
-  - Ethernet116
-- number: "11"
-  fallback: true
-  members:
-  - Ethernet4
-- number: "12"
-  fallback: "true"
-  members:
-  - Ethernet5
-- number: "21"
-  fallback: "True"
-  members:
-  - Ethernet0
-- number: "22"
-  fallback: false
-  members:
-  - Ethernet1
-- number: "23"
-  members:
-  - Ethernet2
+  - number: "01"
+    mtu: "9216"
+    members:
+      - Ethernet112
+      - Ethernet116
+  - number: "11"
+    fallback: true
+    members:
+      - Ethernet4
+  - number: "12"
+    fallback: "true"
+    members:
+      - Ethernet5
+  - number: "21"
+    fallback: "True"
+    members:
+      - Ethernet0
+  - number: "22"
+    fallback: false
+    members:
+      - Ethernet1
+  - number: "23"
+    members:
+      - Ethernet2
 
 sonic_sag:
   mac: 00:11:22:33:44:66
 
 sonic_frr_l2vpn_evpn: true
 sonic_frr_route_map:
- name: LOOPBACKS
- match: interface Loopback0
+  name: LOOPBACKS
+  match: interface Loopback0
 
 sonic_ssh_sourceranges:
-- "1.2.3.4/32"
-- "10.11.0.0/16"
+  - "1.2.3.4/32"
+  - "10.11.0.0/16"

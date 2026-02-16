@@ -19,11 +19,9 @@ NTP:
     src_intf: "eth0"
 
 NTP_SERVER:
-
 LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}
-
 MGMT_PORT:
   eth0:
     alias: "eth0"
@@ -126,7 +124,6 @@ VLAN_INTERFACE:
     vrf_name: "VrfTest"
 
 VLAN_MEMBER:
-
 VXLAN_EVPN_NVO:
   nvo:
     source_vtep: vtep
@@ -146,7 +143,6 @@ VRF:
     vni: "104000"
   VrfStorage: {}
   VrfTest: {}
-
 LLDP:
   Global:
     hello_timer: 10
@@ -178,13 +174,13 @@ ACL_TABLE:
     policy_desc: "Allow SSH access"
     ports: []
     services:
-    - "SSH"
+      - "SSH"
     stage: "ingress"
     type: "CTRLPLANE"
   ALLOW_NTP:
     policy_desc: "Allow NTP"
     ports: []
     services:
-    - "NTP"
+      - "NTP"
     stage: "ingress"
     type: "CTRLPLANE"

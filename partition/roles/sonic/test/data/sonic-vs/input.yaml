@@ -14,7 +14,6 @@ sonic_ports_default_mtu: 9000
 sonic_ports_default_speed: 40000
 sonic_ports_dict:
   Ethernet0:
-
 sonic_running_cfg_breakouts:
 sonic_running_cfg_hwsku: Force10-S6000
 sonic_running_cfg_mac: e0:01:a6:e3:29:3c
@@ -34,13 +33,12 @@ sonic_running_cfg_ports:
 
 sonic_bgp_ports:
   Ethernet0:
-
 sonic_vlans:
   - id: 4000
     ip: 10.0.1.1/25
 
 # Dummy VTEP so that basic VXLAN config will be deployed by sonic role:
 sonic_vteps:
-- comment: Dummy
-  vlan: Vlan3999
-  vni: 103999
+  - comment: Dummy
+    vlan: Vlan3999
+    vni: 103999

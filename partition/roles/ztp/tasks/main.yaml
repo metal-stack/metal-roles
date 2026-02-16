@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - ztp_nginx_image_name is defined
       - ztp_nginx_image_tag is defined
@@ -21,7 +21,7 @@
   template:
     src: "{{ item }}"
     dest: "{{ ztp_host_dir_path }}/config/{{ item | splitext | first }}"
-    mode: 0644
+    mode: "0644"
   loop:
     - ztp.json.j2
     - user.sh.j2
@@ -30,7 +30,7 @@
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item }}"
     src: "{{ item }}"
-    mode: 0644
+    mode: "0644"
   loop:
     - frr.conf
     - config_db.json
@@ -39,7 +39,7 @@
   copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
     content: "{{ item.data }}"
-    mode: 0644
+    mode: "0644"
   loop: "{{ ztp_additional_files }}"
   loop_control:
     label: "{{ item.name }}"

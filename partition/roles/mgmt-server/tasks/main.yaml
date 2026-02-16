@@ -2,7 +2,7 @@
 - name: check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - mgmt_server_asn is not none
       - mgmt_server_router_id is not none
@@ -37,11 +37,11 @@
 - name: install required packages to have the network stack in place
   apt:
     name:
-    - net-tools
-    - ipmitool
-    - iptables-persistent
-    update_cache : yes
-    force_apt_get: yes
+      - net-tools
+      - ipmitool
+      - iptables-persistent
+    update_cache: true
+    force_apt_get: true
 
 - name: install docker
   block:
@@ -52,7 +52,8 @@
 
     - name: add docker repository
       apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release|lower }} stable"
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release|lower
+          }} stable"
 
     - name: install docker
       apt:
@@ -70,12 +71,12 @@
   sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
-    sysctl_set: yes
+    sysctl_set: true
   loop:
     - key: "net.ipv6.conf.{{ mgmt_server_spine_facing_interface }}.disable_ipv6"
-      value: '0'
+      value: "0"
     - key: net.ipv4.ip_forward
-      value: '1'
+      value: "1"
 
 - name: configure forward chain to accept to route packages
   iptables:
@@ -103,7 +104,7 @@
   template:
     src: frr.conf.j2
     dest: /etc/frr/frr.conf
-    validate: '/usr/bin/vtysh --dryrun --inputfile %s'
+    validate: "/usr/bin/vtysh --dryrun --inputfile %s"
   notify:
     - reload frr
 
@@ -116,12 +117,12 @@
     group: metal
   no_log: true
   loop:
-  - content: "{{ mgmt_server_metal_ssh_privkey }}"
-    dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}"
-    mode: "0600"
-  - content: "{{ mgmt_server_metal_ssh_pubkey }}"
-    dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}.pub"
-    mode: "0644"
+    - content: "{{ mgmt_server_metal_ssh_privkey }}"
+      dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}"
+      mode: "0600"
+    - content: "{{ mgmt_server_metal_ssh_pubkey }}"
+      dest: "/home/metal/.ssh/{{ mgmt_server_metal_ssh_key_filename }}.pub"
+      mode: "0644"
   loop_control:
     label: "{{ item.dest }}"
 
@@ -129,8 +130,8 @@
 - name: Add own ssh key to authorized_keys
   lineinfile:
     path: /home/metal/.ssh/authorized_keys
-    regexp: '^{{ mgmt_server_metal_ssh_pubkey }}$'
-    line: '{{ mgmt_server_metal_ssh_pubkey }}'
+    regexp: "^{{ mgmt_server_metal_ssh_pubkey }}$"
+    line: "{{ mgmt_server_metal_ssh_pubkey }}"
 
 - name: configure sshd to avoid root login and password authentication, hide OS information
   lineinfile:
@@ -148,11 +149,11 @@
 - name: Add IP's of all hosts to /etc/hosts to use those hostnames for connections
   lineinfile:
     dest: /etc/hosts
-    regexp: '.*\s{{ item }}$'
+    regexp: ".*\\s{{ item }}$"
     line: "{{ hostvars[item].ansible_host }} {{ item }} {{ hostvars[item].host_alias|default('') }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when:
     - hostvars[item].ansible_host is defined
   loop: "{{ mgmt_server_metal_ssh_groups }}"
@@ -161,7 +162,7 @@
   template:
     src: ssh_config.j2
     dest: /home/metal/.ssh/config
-    mode: 0644
+    mode: "0644"
     owner: metal
     group: metal
 

@@ -11,7 +11,7 @@
 
 - name: Create virtual garden access secret
   k8s:
-    apply: yes
+    apply: true
     definition:
       apiVersion: v1
       kind: Secret
@@ -29,7 +29,7 @@
 
 - name: Create virtual garden access managed resource secret
   k8s:
-    apply: yes
+    apply: true
     definition:
       apiVersion: v1
       kind: Secret
@@ -54,7 +54,7 @@
 
 - name: Create virtual garden access managed resource
   k8s:
-    apply: yes
+    apply: true
     definition:
       apiVersion: resources.gardener.cloud/v1alpha1
       kind: ManagedResource
@@ -63,7 +63,7 @@
         namespace: garden
       spec:
         secretRefs:
-        - name: managedresource-virtual-garden-access
+          - name: managedresource-virtual-garden-access
 
 - name: Get kubeconfig for virtual garden access
   virtual_garden_kubeconfig:
@@ -80,5 +80,5 @@
     kind: Namespace
     name: garden
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    wait: yes
+    wait: true
     wait_timeout: 300

@@ -168,4 +168,4 @@ isolated_clusters_registry_oci_mirror_config:
     - source: docker.io/library/busybox
       destination: http://registry:5000/library/busybox
       match:
-        semver: '>= 1.36'
+        semver: ">= 1.36"

@@ -1,10 +1,11 @@
+---
 groups:
-- name: pixiecore-rules.rules
-  rules:
-  - alert: PixieCoreDown
-    expr: up{job="pixiecore"} == 0
-    for: 5m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "pixiecore {{ $labels.instance }} is down"
+  - name: pixiecore-rules.rules
+    rules:
+      - alert: PixieCoreDown
+        expr: up{job="pixiecore"} == 0
+        for: 5m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "pixiecore {{ $labels.instance }} is down"

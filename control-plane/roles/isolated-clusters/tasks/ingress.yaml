@@ -8,7 +8,7 @@
         name: "{{ isolated_clusters_ingress_controller_namespace }}"
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-    apply: yes
+    apply: true
     kubeconfig: "{{ cluster.kubeconfig }}"
 
 - name: Deploy ingress nginx controller

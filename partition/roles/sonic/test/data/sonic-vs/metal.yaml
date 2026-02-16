@@ -18,11 +18,9 @@ NTP:
     src_intf: "eth0"
 
 NTP_SERVER:
-
 LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}
-
 MGMT_INTERFACE:
   eth0|172.17.0.2/16:
     gwaddr: "172.17.0.1"
@@ -66,9 +64,7 @@ VLAN:
 VLAN_INTERFACE:
   Vlan4000: {}
   Vlan4000|10.0.1.1/25: {}
-
 VLAN_MEMBER:
-
 VXLAN_EVPN_NVO:
   nvo:
     source_vtep: vtep

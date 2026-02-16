@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - not gardener_extension_backup_s3_enabled or gardener_extension_backup_s3_helm_chart is not none
       - not gardener_extension_csi_driver_lvm_enabled or gardener_extension_csi_driver_lvm_helm_chart is not none
@@ -55,7 +55,7 @@
 - name: Register gardener extension
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml', split_lines=False) }}"
-    apply: yes
+    apply: true
   when: lookup('vars', 'gardener_extension_' + item  | regex_replace('-', '_') + '_enabled')
   loop:
     - acl

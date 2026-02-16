@@ -8,7 +8,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
@@ -22,7 +22,7 @@
 - name: copy gRPC certificates
   copy:
     dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
-    mode: 0640
+    mode: "0640"
     content: "{{ item.content }}"
   no_log: true
   loop:
@@ -82,7 +82,7 @@
 - name: bgp-neighbor-stats.timer must be enabled and running
   systemd:
     name: bgp-neighbor-stats.timer
-    enabled: yes
+    enabled: true
     state: started
 
 - name: deploy metal-core

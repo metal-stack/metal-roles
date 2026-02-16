@@ -3,7 +3,6 @@ metal_core_log_driver: journald
 metal_core_log_level: warn
 metal_core_hmac_key: change-me
 metal_core_rack_id:
-
 metal_core_reconfigure_switch: true
 metal_core_reconfigure_switch_interval: 10s
 
@@ -16,7 +15,6 @@ metal_core_grpc_client_key: "{{ metal_partition_metal_api_grpc_client_key }}"
 metal_core_additional_bridge_vids: []
 metal_core_additional_bridge_ports: []
 metal_core_additional_volume_mounts: []
-
 metal_core_consider_hosts_file_resolution: false
 
 metal_core_interfaces_tpl_file: ""

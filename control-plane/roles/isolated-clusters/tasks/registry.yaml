@@ -8,14 +8,14 @@
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Deploy registry
   k8s:
     definition: "{{ lookup('template', 'registry/' + item) }}"
     namespace: "{{ isolated_clusters_registry_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    apply: yes
+    apply: true
   loop:
     - registry-sts.yaml
     - registry-service.yaml
@@ -26,5 +26,5 @@
     definition: "{{ lookup('template', 'registry/registry-ingress.yaml') }}"
     namespace: "{{ isolated_clusters_registry_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    apply: yes
+    apply: true
   when: isolated_clusters_ingress_controller_enabled | bool

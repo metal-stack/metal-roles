@@ -1,17 +1,18 @@
+---
 groups:
-- name: leaf-rules.rules
-  rules:
-  - alert: MetalCoreDown
-    expr: up{job="metal-core"} == 0
-    for: 5m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "metal-core on {{ $labels.instance }} is down"
-  - alert: LeafHasRebooted
-    expr: rate(node_boot_time_seconds{instance=~".*leaf.*"}[1h])>0
-    for: 5m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "Leaf {{ $labels.instance }} has rebooted."
+  - name: leaf-rules.rules
+    rules:
+      - alert: MetalCoreDown
+        expr: up{job="metal-core"} == 0
+        for: 5m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "metal-core on {{ $labels.instance }} is down"
+      - alert: LeafHasRebooted
+        expr: rate(node_boot_time_seconds{instance=~".*leaf.*"}[1h])>0
+        for: 5m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Leaf {{ $labels.instance }} has rebooted."

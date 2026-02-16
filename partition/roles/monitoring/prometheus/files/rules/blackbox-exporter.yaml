@@ -1,31 +1,32 @@
+---
 groups:
-- name: blackbox-alert.rules
-  rules:
-  - alert: BlackboxExporterDown
-    expr: up{job="blackbox-exporter"} == 0
-    for: 30m
-    labels:
-      severity: "warning"
-    annotations:
-      description: "blackbox-exporter down on {{ $labels.instance }}."
-  - alert: PartitionPingFailure
-    expr: probe_success{kind="mutual-partition-ping"} == 0
-    for: 5m
-    labels:
-      severity: "critical"
-    annotations:
-      description: "{{ $labels.instance }} cannot ping {{ $labels.ping_to_hostname }} ({{ $labels.ping_to_ip }}) in partition {{ $labels.partition }}."
-  - alert: PartitionMetalApiUnreachable
-    expr: probe_success{job="blackbox-metal-api-http"} == 0
-    for: 10m
-    labels:
-      severity: "warning"
-    annotations:
-      description: "metal-api cannot be reached from {{ $labels.instance }} in partition {{ $labels.partition }}."
-  - alert: PartitionNoDnsResolution
-    expr: probe_success{job="blackbox-dns-cloudflare"} == 0
-    for: 10m
-    labels:
-      severity: "warning"
-    annotations:
-      description: "{{ $labels.instance }} cannot resolve {{ $labels.dns_query }} through {{ $labels.dns_resolver }}"
+  - name: blackbox-alert.rules
+    rules:
+      - alert: BlackboxExporterDown
+        expr: up{job="blackbox-exporter"} == 0
+        for: 30m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "blackbox-exporter down on {{ $labels.instance }}."
+      - alert: PartitionPingFailure
+        expr: probe_success{kind="mutual-partition-ping"} == 0
+        for: 5m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "{{ $labels.instance }} cannot ping {{ $labels.ping_to_hostname }} ({{ $labels.ping_to_ip }}) in partition {{ $labels.partition }}."
+      - alert: PartitionMetalApiUnreachable
+        expr: probe_success{job="blackbox-metal-api-http"} == 0
+        for: 10m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "metal-api cannot be reached from {{ $labels.instance }} in partition {{ $labels.partition }}."
+      - alert: PartitionNoDnsResolution
+        expr: probe_success{job="blackbox-dns-cloudflare"} == 0
+        for: 10m
+        labels:
+          severity: "warning"
+        annotations:
+          description: "{{ $labels.instance }} cannot resolve {{ $labels.dns_query }} through {{ $labels.dns_resolver }}"

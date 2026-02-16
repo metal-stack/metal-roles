@@ -1,8 +1,8 @@
 ---
 - name: Check mandatory variables for this role are set
   assert:
-    fail_msg: 'not all mandatory variables given, check role documentation'
-    quiet: yes
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
     that:
       - mgmt_firewall_location_name is not none
       - mgmt_firewall_device_name is not none
@@ -61,7 +61,7 @@
     uci set firewall.A_BGP.name='Allow-BGP-WAN-traffic'
     uci set firewall.A_BGP.target='ACCEPT'
     uci set firewall.A_BGP.dest_port='179'
-    uci add_list firewall.A_BGP.proto='tcp' 
+    uci add_list firewall.A_BGP.proto='tcp'
     uci add_list firewall.A_BGP.proto='udp'
     {% endif %}
     uci commit firewall
@@ -75,7 +75,7 @@
 - name: Disable all sms_utils rules
   ansible.builtin.raw: |
     uci set sms_utils.@rule[{{ item }}].enabled='0'
-  loop: '{{ range(0, rule_count.stdout | int) }}'
+  loop: "{{ range(0, rule_count.stdout | int) }}"
   register: disable_output
 
 - name: Commit and restart sms_utils after disabling rules
@@ -135,7 +135,7 @@
     uci set network.wan.ipaddr='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.ip_address}}'
     uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.net_mask}}'
     uci set network.wan.gateway='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway}}'
-    uci add_list network.wan.dns='1.1.1.1' 
+    uci add_list network.wan.dns='1.1.1.1'
     uci add_list network.wan.dns='1.0.0.1' # Hardcoded for now
     uci set network.wan.peerdns='0'
     uci set network.wan.proto='static'
@@ -164,7 +164,7 @@
     uci commit firewall
     /etc/init.d/firewall restart
 
-  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
+  loop: "{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}"
 
 - name: Configure DHCP
   ansible.builtin.raw: |
@@ -183,7 +183,7 @@
     uci commit dhcp
     /etc/init.d/dnsmasq restart
 
-  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}'
+  loop: "{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}"
 
 - name: Configure WAN interfaces
   ansible.builtin.raw: |
@@ -207,7 +207,7 @@
 
     uci commit network
     /etc/init.d/network restart
-  loop: '{{ mgmt_firewall_interfaces.mgmt_firewall_wan.interfaces }}'
+  loop: "{{ mgmt_firewall_interfaces.mgmt_firewall_wan.interfaces }}"
 
 - name: Apply Port-Forwards
   ansible.builtin.raw: |
@@ -239,7 +239,7 @@
     {% endif %}
     uci commit firewall
     /etc/init.d/firewall restart
-  loop: '{{ mgmt_firewall_port_forwards }}'
+  loop: "{{ mgmt_firewall_port_forwards }}"
 
 - name: Setup Static Routes
   ansible.builtin.raw: |
@@ -249,7 +249,7 @@
     uci set network.{{ item.network }}.target='0.0.0.0'
     uci set network.{{ item.network }}.gateway='{{ item.gateway }}'
     uci set network.{{ item.network }}.interface='wan'
-  loop: '{{ mgmt_firewall_static_routes }}'
+  loop: "{{ mgmt_firewall_static_routes }}"
   when: mgmt_firewall_static_routes_enabled | default(false)
 
 - name: Setup static VLANs (VLAN 1 and 2)
@@ -266,7 +266,7 @@
     uci set network.@switch_vlan[-1].vid='{{ item.vid }}'
     uci set network.@switch_vlan[-1].ports='{{ item.ports }}'
     uci commit network
-  loop: '{{ mgmt_firewall_vlans }}'
+  loop: "{{ mgmt_firewall_vlans }}"
 
 - name: Restart Network
   ansible.builtin.raw: |

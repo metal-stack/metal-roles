@@ -12,9 +12,7 @@ prometheus_data_host_dir: /var/lib//prometheus
 prometheus_alertmanager_target:
 prometheus_alertmanager_basic_auth_username: alertmanager
 prometheus_alertmanager_basic_auth_password:
-
 prometheus_remote_write: []
-
 prometheus_frr_exporter_targets: []
 prometheus_metal_core_targets: []
 prometheus_node_exporter_targets: []
@@ -25,13 +23,13 @@ prometheus_sonic_exporter_targets: []
 prometheus_blackbox_exporter_targets: []
 prometheus_lightbox_exporter_targets: []
 prometheus_lightos_smart_targets: []
-
 prometheus_hosts_content: |
   127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
   ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
 prometheus_blackbox_exporter_icmp_groups: []
-prometheus_blackbox_exporter_metal_api_probe_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}v1/version"
+prometheus_blackbox_exporter_metal_api_probe_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port
+  }}{{ metal_partition_metal_api_basepath }}v1/version"
 
 prometheus_haproxy_enabled: true
 

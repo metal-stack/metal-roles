@@ -1,10 +1,11 @@
+---
 groups:
-- name: haproxy.rules
-  rules:
-  - alert: HAProxyNoBackends
-    expr: haproxy_backend_active_servers{proxy!="stats"} < 1
-    for: 15m
-    labels:
-      severity: critical
-    annotations:
-      description: "HAProxy reports all servers are unhealthy for {{ $labels.proxy }}"
+  - name: haproxy.rules
+    rules:
+      - alert: HAProxyNoBackends
+        expr: haproxy_backend_active_servers{proxy!="stats"} < 1
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          description: "HAProxy reports all servers are unhealthy for {{ $labels.proxy }}"
