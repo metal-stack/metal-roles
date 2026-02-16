@@ -31,6 +31,15 @@ jobs:
         # for now we need to ignore, it throws a lot of errors that need to be fixed over time
         continue-on-error: true
 
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run yamllint
+        uses: karancode/yamllint-github-action@master
+        # for now we need to ignore, it throws a lot of errors that need to be fixed over time
+        continue-on-error: true
+
   ansible-lint:
     runs-on: ubuntu-latest
     steps:
