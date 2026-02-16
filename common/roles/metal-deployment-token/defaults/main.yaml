@@ -1,0 +1,3 @@
+---
+metal_deployment_token_admin_role: ADMIN_ROLE_EDITOR
+metal_deployment_token_expiration: 1h
