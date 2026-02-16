@@ -10,9 +10,10 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 If you are still using the `gardener` role for setting up the Gardener, please read the following notes for the migration to the Gardener Operator.
 
+<!-- markdownlint-disable-next-line no-blanks-blockquote -->
 > [!CAUTION]
 > The migration requires a downtime of the Gardener for end-users. The API servers of the end-users are not disrupted.
-
+<!-- markdownlint-disable-next-line no-blanks-blockquote -->
 > [!IMPORTANT]
 > For the migration it is required to either wait until Gardener `v1.119` or use a backport feature to `force-redeploy` the existing Gardenlets. If you want to use the backports, please set the following overwrites:
 >
@@ -38,7 +39,7 @@ Here are the steps for the migration:
 1. ️⚠️ If you migrate from a standalone ETCD it is necessary to explicitly set `gardener_operator_high_availability_control_plane` to `false`. After the initial deployment of the virtual garden was successful, you can toggle this field to `true` in order to migrate to HA control plane. In case you deployed this without following this instruction, please repair your ETCD as described in [Recovering Etcd Clusters](https://gardener.cloud/docs/other-components/etcd-druid/recovering-etcd-clusters/).
 1. Deploy the roles `gardener-operator`, `gardener-extensions`, `gardener-virtual-garden-access` and `gardener-cloud-profile` (order matters).
     - In case the `etcd-druid` does not start reconciling the `ETCD` resource for the virtual garden, you might have to manually add the finalizer `druid.gardener.cloud/etcd-druid` on the `ETCD` resource.
-1. Manually deploy a kubeconfig secret for remote Gardenlet deployment through the Gardener Operator into the Virtual Garden as described [here](https://gardener.cloud/docs/gardener/deployment/deploy_gardenlet_via_operator/#remote-clusters). Delete the old Gardenlet helm chart from the original Gardener cluster and deploy the Gardenlet through the `gardener-gardenlet` role. Don't forget to specify the `gardenClientConnection.gardenClusterAddress` (see https://github.com/gardener/gardener/pull/11996)
+1. Manually deploy a kubeconfig secret for remote Gardenlet deployment through the Gardener Operator into the Virtual Garden as described [here](https://gardener.cloud/docs/gardener/deployment/deploy_gardenlet_via_operator/#remote-clusters). Delete the old Gardenlet helm chart from the original Gardener cluster and deploy the Gardenlet through the `gardener-gardenlet` role. Don't forget to specify the `gardenClientConnection.gardenClusterAddress` (see <https://github.com/gardener/gardener/pull/11996>)
     - The gardenlet name needs to be identical with the old name of the initial seed in order to take over the existing resources. Usually, we used the name of the stage for this seed.
 1. If you did not take over the existing certificates from the previous Virtual Garden, it might be necessary to run `kubectl --context garden annotate managedseeds -n garden <managed-seed-resource> gardener.cloud/operation=renew-kubeconfig` in order to fix the Gardenlet deployments.
 1. Reconcile your shoots, this should end up in a stable setup.

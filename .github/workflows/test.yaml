@@ -1,8 +1,8 @@
+---
 name: Test
 
 on:
   push:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,6 +16,27 @@ jobs:
   spelling:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check spelling
         uses: crate-ci/typos@master
+
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: markdownlint-cli
+        uses: DavidAnson/markdownlint-cli2-action@main
+        with:
+          globs: "**/*.md"
+
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main
+        with:
+          requirements_file: requirements.yaml
+          args: "-w role-name"
+        # for now we need to ignore, it throws a lot of errors that need to be fixed over time
+        continue-on-error: true

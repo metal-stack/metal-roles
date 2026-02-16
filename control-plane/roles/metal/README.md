@@ -218,7 +218,7 @@ Configuration for metal-apiserver:
 
 | Name                                           | Mandatory | Description                                                          |
 | ---------------------------------------------- | --------- | -------------------------------------------------------------------- |
-| metal_apiserver_auditing_enabled               |           | Whether or not to configure timescaledb auditing. Default true.       |
+| metal_apiserver_auditing_enabled               |           | Whether or not to configure timescaledb auditing. Default true.      |
 | metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                 |
 | metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                 |
 | metal_apiserver_auditing_timescaledb_db        |           | The timescaledb database name                                        |
