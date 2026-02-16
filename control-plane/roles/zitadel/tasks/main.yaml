@@ -32,7 +32,7 @@
     name: zitadel
     chart_ref: zitadel
     chart_version: "{{ zitadel_chart_version }}"
-    chart_repo_url: https://charts.zitadel.com/
+    chart_repo_url: "{{ zitadel_chart_repo }}"
     release_namespace: "{{ zitadel_namespace }}"
     create_namespace: true
     values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
