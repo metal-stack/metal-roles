@@ -37,5 +37,6 @@ jobs:
         uses: ansible/ansible-lint@main
         with:
           requirements_file: requirements.yaml
+          args: "-w role-name"
         # for now we need to ignore, it throws a lot of errors that need to be fixed over time
         continue-on-error: true
