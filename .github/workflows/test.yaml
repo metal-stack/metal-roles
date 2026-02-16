@@ -16,6 +16,26 @@ jobs:
   spelling:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check spelling
         uses: crate-ci/typos@master
+
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: markdownlint-cli
+        uses: nosborn/github-action-markdown-cli@v3.5.0
+        with:
+          files: .
+        # for now we need to ignore, it throws a lot of errors that need to be fixed over time
+        continue-on-error: true
+
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main
+        # for now we need to ignore, it throws a lot of errors that need to be fixed over time
+        continue-on-error: true
