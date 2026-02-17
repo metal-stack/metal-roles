@@ -3,6 +3,7 @@ zitadel_init_image: ghcr.io/metal-stack/zitadel-init
 zitadel_init_image_tag: v0.2.0
 
 zitadel_image_tag:
+zitadel_tools_kubectl_tag: "1.35.1"
 
 zitadel_endpoint: zitadel.{{ metal_control_plane_ingress_dns }}
 zitadel_namespace: "{{ metal_control_plane_namespace }}"

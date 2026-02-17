@@ -25,6 +25,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | zitadel_init_image        | yes       | The zitadel-init image tag                                                             |
 | zitadel_init_image_tag    | yes       | The zitadel-init image name                                                            |
 | zitadel_image_tag         |           | An optional image overwrite for zitadel when not using the default from the helm chart |
+| zitadel_tools_kubectl_tag |           | The zitadel tools kubectl image tag (of alpine/k8s)                                    |
 | zitadel_external_domain   | yes       | The external domain used by zitadel                                                    |
 | zitadel_image_pull_policy |           | The image pull policy to use for zitadel-init                                          |
 | zitadel_ingress_dns       |           | The DNS ingress domain used for the ingress-controller                                 |

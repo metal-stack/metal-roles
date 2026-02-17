@@ -62,3 +62,12 @@ login:
   ingress:
     enabled: {{ zitadel_enabled_ingress }}
     className: nginx
+
+
+
+
+
+tools:
+  kubectl:
+    image:
+      tag: "{{ zitadel_tools_kubectl_tag }}"
