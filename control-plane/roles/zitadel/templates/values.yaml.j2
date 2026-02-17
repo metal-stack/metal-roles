@@ -44,13 +44,33 @@ zitadel:
 ingress:
   enabled: {{ zitadel_enabled_ingress }}
   className: nginx
+
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+{% if zitadel_tls_enabled %}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+{% for key, value in zitadel_ingress_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+
+{% if zitadel_tls_enabled %}
+  tls:
+    - hosts:
+      - {{ zitadel_ingress_dns }}
+      secretName: zitadel-tls
+{% endif %}
+
 {% if zitadel_image_tag %}
 image:
   tag: {{ zitadel_image_tag }}
 {% endif %}
+
 env:
   - name: ZITADEL_API_URL
     value: {{ zitadel_ingress_dns }}
+
 login:
 {% if zitadel_image_tag %}
   image:
@@ -62,6 +82,22 @@ login:
   ingress:
     enabled: {{ zitadel_enabled_ingress }}
     className: nginx
+
+    annotations:
+{% if zitadel_tls_enabled %}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{% endif %}
+{% for key, value in zitadel_ingress_annotations.items() %}
+     {{ key }}: "{{ value }}"
+{% endfor %}
+
+{% if zitadel_tls_enabled %}
+    tls:
+      - hosts:
+        - {{ zitadel_ingress_dns }}
+        secretName: zitadel-login-tls
+{% endif %}
 
 tools:
   kubectl:

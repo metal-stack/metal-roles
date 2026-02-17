@@ -8,10 +8,14 @@ zitadel_tools_kubectl_tag: "1.35.1"
 zitadel_endpoint: zitadel.{{ metal_control_plane_ingress_dns }}
 zitadel_namespace: "{{ metal_control_plane_namespace }}"
 zitadel_external_domain:
+
 zitadel_ingress_dns: https://zitadel.{{ metal_control_plane_ingress_dns }}:443
+zitadel_ingress_annotations: {}
+
 zitadel_port: 443
 zitadel_skip_verify_tls: false
 zitadel_insecure: false
+zitadel_tls_enabled: true
 
 zitadel_initial_instance: metal-stack
 zitadel_initial_org: metal-stack
