@@ -58,7 +58,7 @@ ingress:
 {% if zitadel_tls_enabled %}
   tls:
     - hosts:
-      - {{ zitadel_ingress_dns }}
+      - {{ zitadel_external_domain }}
       secretName: zitadel-tls
 {% endif %}
 
@@ -95,7 +95,7 @@ login:
 {% if zitadel_tls_enabled %}
     tls:
       - hosts:
-        - {{ zitadel_ingress_dns }}
+        - {{ zitadel_external_domain }}
         secretName: zitadel-login-tls
 {% endif %}
 
