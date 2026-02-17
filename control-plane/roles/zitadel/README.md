@@ -32,7 +32,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | zitadel_initial_instance  |           | The name of the initial instance                                                       |
 | zitadel_initial_org       |           | The name of the initial organization                                                   |
 | zitadel_admin_password    |           | The admin password for the login of the administrator in the UI                        |
-| zitadel_master_key        |           | The master key                                                                         |
+| zitadel_master_key        |           | The master key (must be 32 bytes!)                                                     |
 | zitadel_db_address        |           | The address for the zitadel-db                                                         |
 | zitadel_db_password       |           | The password for accessing the zitadel-db                                              |
 | zitadel_enabled_ingress   |           | Whether to enable ingress exposal or not                                               |
