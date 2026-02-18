@@ -146,6 +146,7 @@ metal_console_pdb_min_available: 1
 metal_deploy_ingress: true
 metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
+metal_ingress_v2_dns: v2.api.{{ metal_control_plane_ingress_dns }}
 
 # headscale
 metal_api_headscale_enabled: false

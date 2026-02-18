@@ -188,6 +188,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
 | metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
 | metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
+| metal_ingress_v2_dns |           | The virtual host to reach the metal-apiserver on                           |
 
 ### Auditing
 
