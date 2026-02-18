@@ -29,6 +29,7 @@ metal_apiserver_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_apiserver_db_addresses:
   - metal-db
 metal_apiserver_db_password: change-me
+metal_apiserver_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
 metal_apiserver_redis_addr: valkey-primary:6379
 metal_apiserver_redis_password: change-me-soon
 metal_apiserver_replicas: 1

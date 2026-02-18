@@ -111,6 +111,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                             |
 | metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                            |
 | metal_apiserver_db_password                                           |           | The password of the metal-db                                                       |
+| metal_apiserver_provider_tenant                                       |           | The provider tenant created at startup                                             |
 | metal_apiserver_redis_addr                                            |           | The address to a redis API                                                         |
 | metal_apiserver_redis_password                                        |           | The password to redis                                                              |
 | metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                         |
