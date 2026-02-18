@@ -218,6 +218,8 @@ masterdata_api:
 {% endfor %}
 
 ingress_public_dns: "{{ metal_ingress_dns }}"
+v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
+
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
@@ -225,6 +227,7 @@ metal_apiserver:
   enabled: {{ 'true' if metal_apiserver_enabled else 'false' }}
   replicas: {{ metal_apiserver_replicas }}
   url: {{ metal_apiserver_url }}
+  provider_tenant: {{ metal_apiserver_provider_tenant }}
   db:
     addresses: {{ metal_apiserver_db_addresses | to_json }}
     password: {{ metal_apiserver_db_password }}
