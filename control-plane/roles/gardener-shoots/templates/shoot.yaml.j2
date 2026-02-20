@@ -105,8 +105,8 @@ spec:
       kubernetes:
         version: "{{ worker_group.k8s_version }}"
 {% endif %}
-      maximum: {{ worker_group.worker_count_maximum }}
-      minimum: {{ worker_group.worker_count_minimum }}
+      maximum: {{ worker_group.worker_count_maximum | default(worker_group.worker_count) }}
+      minimum: {{ worker_group.worker_count_minimum | default(worker_group.worker_count) }}
       maxSurge: {{ worker_group.worker_max_surge }}
       maxUnavailable: {{ worker_group.worker_max_unavailable }}
       machine:
