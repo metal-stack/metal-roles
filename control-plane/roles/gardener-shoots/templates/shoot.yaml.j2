@@ -8,8 +8,9 @@ metadata:
     shoot.gardener.cloud/managed-seed-api-server: "{{ _config.managed_seed.api_server | managed_seed_api_server_annotation() }}"
 {% endif %}
     cluster.metal-stack.io/name: "{{ _config.name }}"
-    cluster.metal-stack.io/project: "{{ _config.project_name }}"
-    cluster.metal-stack.io/tenant: "{{ _config.tenant }}"
+    cluster.metal-stack.io/project: "{{ _config.project_id }}"
+    cluster.metal-stack.io/tenant: "{{ _config.tenant | default(metal_control_plane_provider_tenant) }}"
+    cluster.metal-stack.io/partition: "{{ _config.partition }}"
 {% if _config.additional_annotations is defined %}
 {% for key, value in _config.additional_annotations.items() %}
     {{ key }}: "{{ value }}"
@@ -23,7 +24,7 @@ metadata:
 {% endif %}
 spec:
   seedName: "{{ _config.seed_name }}"
-  secretBindingName: "{{ _config.secret_binding_name }}"
+  secretBindingName: "{{ _config.name }}-provider-secret"
   cloudProfileName: metal
   region: "{{ _config.region }}"
   purpose: "{{ _config.purpose }}"
@@ -45,7 +46,7 @@ spec:
     kubeAPIServer:
 {% if 'structured_auth_config' in _config %}
       structuredAuthentication:
-        configMapName: authentication-config
+        configMapName: authentication-config-{{ _config.name }}
 {% endif %}
 {% if 'audit_policy' in _config %}
       auditConfig:
