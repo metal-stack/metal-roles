@@ -19,6 +19,7 @@
               - /metalstack.api.v2.ImageService/List
               - /metalstack.api.v2.PartitionService/List
               - /metalstack.api.v2.TokenService/Refresh
+              - /metalstack.infra.v2.ComponentService/Ping
       register: _token
 
   delegate_to: localhost
