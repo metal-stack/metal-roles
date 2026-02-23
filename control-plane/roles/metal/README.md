@@ -111,6 +111,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                             |
 | metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                            |
 | metal_apiserver_db_password                                           |           | The password of the metal-db                                                       |
+| metal_apiserver_provider_tenant                                       |           | The provider tenant created at startup                                             |
 | metal_apiserver_redis_addr                                            |           | The address to a redis API                                                         |
 | metal_apiserver_redis_password                                        |           | The password to redis                                                              |
 | metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                         |
@@ -187,6 +188,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
 | metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
 | metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
+| metal_ingress_v2_dns |           | The virtual host to reach the metal-apiserver on                           |
 
 ### Auditing
 
@@ -218,7 +220,7 @@ Configuration for metal-apiserver:
 
 | Name                                           | Mandatory | Description                                                          |
 | ---------------------------------------------- | --------- | -------------------------------------------------------------------- |
-| metal_apiserver_auditing_enabled               |           | Whether or not to configure timescaledb auditing. Default true.       |
+| metal_apiserver_auditing_enabled               |           | Whether or not to configure timescaledb auditing. Default true.      |
 | metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                 |
 | metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                 |
 | metal_apiserver_auditing_timescaledb_db        |           | The timescaledb database name                                        |

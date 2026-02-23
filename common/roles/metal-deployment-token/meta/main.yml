@@ -1,10 +1,10 @@
 ---
 galaxy_info:
-  role_name: zitadel-db
+  role_name: metal-deployment-token
   author: metal-stack
-  description: Deploys a database for the zitadel oidc provider.
+  description: This role creates a deployment token and exports it in order to deploy infra services with it.
   license: MIT
-  min_ansible_version: "2.10"
+  min_ansible_version: "2.18"
   galaxy_tags: []
 
   platforms:
@@ -13,5 +13,6 @@ galaxy_info:
         - all
 
 dependencies:
+  - role: ansible-common
   - role: metal-roles/common/roles/defaults
   - role: metal-roles/control-plane/roles/defaults
