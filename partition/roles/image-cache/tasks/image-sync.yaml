@@ -22,6 +22,7 @@
     systemd_docker_image_name: "{{ image_cache_sync_image_name }}"
     systemd_docker_image_tag: "{{ image_cache_sync_image_tag }}"
     systemd_service_environment:
+      METAL_IMAGE_CACHE_SYNC_HOSTNAME: "{{ inventory_hostname }}"
       METAL_IMAGE_CACHE_SYNC_ENABLE_KERNEL_CACHE: "{{ image_cache_kernel_cache_enabled }}"
       METAL_IMAGE_CACHE_SYNC_ENABLE_BOOT_IMAGE_CACHE: "{{ image_cache_boot_image_cache_enabled }}"
       METAL_IMAGE_CACHE_SYNC_MAX_CACHE_SIZE: "{{ image_cache_sync_max_cache_size }}"
