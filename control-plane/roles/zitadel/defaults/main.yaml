@@ -1,16 +1,21 @@
 ---
 zitadel_init_image: ghcr.io/metal-stack/zitadel-init
-zitadel_init_image_tag: v0.2.0
+zitadel_init_image_tag: v0.3.0
 
 zitadel_image_tag:
+zitadel_tools_kubectl_tag: "1.35.1"
 
 zitadel_endpoint: zitadel.{{ metal_control_plane_ingress_dns }}
 zitadel_namespace: "{{ metal_control_plane_namespace }}"
 zitadel_external_domain:
+
 zitadel_ingress_dns: https://zitadel.{{ metal_control_plane_ingress_dns }}:443
+zitadel_ingress_annotations: {}
+
 zitadel_port: 443
 zitadel_skip_verify_tls: false
 zitadel_insecure: false
+zitadel_tls_enabled: true
 
 zitadel_initial_instance: metal-stack
 zitadel_initial_org: metal-stack
@@ -35,5 +40,10 @@ zitadel_init_config: {}
   #   id: metal-stack
   #   name: metal-stack
   #   redirect_uri: http://v2.api.172.17.0.1.nip.io:8080/auth/openid-connect/callback
+  # generic_oidc_providers:
+  #   - name: keycloak
+  #     issuer: issuer
+  #     client_id: client-id
+  #     client_secret: client-secret
 
 zitadel_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
