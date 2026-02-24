@@ -35,11 +35,7 @@ spec:
       - name: nsq-registry-credentials
 {% endif %}
 {% if nsq_enable_security_context %}
-      securityContext:
-        fsGroup: 1
-        runAsUser: 1001
-        runAsNonRoot: true
-        runAsGroup: 1
+      securityContext: {{ nsq_sts_security_context | to_json}}
 {% endif %}
       containers:
       - name: nsqd
@@ -59,10 +55,7 @@ spec:
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
 {% if nsq_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ nsq_container_security_context | to_json}}
 {% endif %}
         ports:
         - containerPort: 4150
@@ -80,10 +73,7 @@ spec:
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
 {% if nsq_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ nsq_container_security_context | to_json}}
 {% endif %}
         ports:
         - containerPort: 4171
@@ -165,10 +155,7 @@ spec:
         app: nsq-lookupd
     spec:
 {% if nsq_enable_security_context %}
-      securityContext:
-        runAsUser: 1001
-        runAsNonRoot: true
-        runAsGroup: 1
+      securityContext: {{ nsq_sts_security_context | to_json}}
 {% endif %}
       containers:
       - name: nsq-lookupd
@@ -179,10 +166,7 @@ spec:
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
 {% if nsq_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ nsq_container_security_context | to_json}}
 {% endif %}
         ports:
         - containerPort: 4160

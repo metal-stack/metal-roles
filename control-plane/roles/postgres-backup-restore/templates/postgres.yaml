@@ -33,12 +33,7 @@ spec:
       - name: {{ postgres_name }}-registry-credentials
 {% endif %}
 {% if postgres_enable_security_context %}
-      securityContext:
-        fsGroup: 1
-        fsGroupChangePolicy: "OnRootMismatch"
-        runAsUser: 1001
-        runAsNonRoot: true
-        runAsGroup: 1
+      securityContext: {{ postgres_sts_security_context | to_json }}
 {% endif %}
       containers:
       - name: postgres
@@ -108,10 +103,7 @@ spec:
           timeoutSeconds: 5
         resources: {{ postgres_resources | to_json }}
 {% if postgres_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ postgres_container_security_context | to_json }}
 {% endif %}
         volumeMounts:
         - name: {{ postgres_name }}
@@ -126,11 +118,7 @@ spec:
         imagePullPolicy: {{ postgres_image_pull_policy }}
         resources: {{ postgres_backup_restore_sidecar_resources | to_json }}
 {% if postgres_enable_security_context %}
-        securityContext:
-          runAsNonRoot: true
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ postgres_container_security_context | to_json }}
 {% endif %}
         command:
         - backup-restore-sidecar
@@ -235,10 +223,7 @@ spec:
         image: {{ postgres_backup_restore_sidecar_image_name }}:{{ postgres_backup_restore_sidecar_image_tag }}
         imagePullPolicy: {{ postgres_backup_restore_sidecar_image_pull_policy }}
 {% if postgres_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ postgres_container_security_context | to_json }}
 {% endif %}
         command:
         - cp

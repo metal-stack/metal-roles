@@ -33,11 +33,7 @@ spec:
       - name: {{ rethinkdb_name }}-registry-credentials
 {% endif %}
 {% if rethinkdb_enable_security_context %}
-      securityContext:
-        fsGroup: 1
-        runAsUser: 1001
-        runAsNonRoot: true
-        runAsGroup: 1
+      securityContext: {{ rethinkdb_sts_security_context | to_json }}
 {% endif %}
       containers:
       - name: rethinkdb
@@ -57,10 +53,7 @@ spec:
         - containerPort: 28015
         resources: {{ rethinkdb_resources | to_json }}
 {% if rethinkdb_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ rethinkdb_container_security_context | to_json }}
 {% endif %}
         volumeMounts:
         - name: {{ rethinkdb_name }}
@@ -81,10 +74,7 @@ spec:
           name: grpc
         resources: {{ rethinkdb_backup_restore_sidecar_resources | to_json }}
 {% if rethinkdb_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ rethinkdb_container_security_context | to_json }}
 {% endif %}
         env:
 {% if rethinkdb_backup_restore_sidecar_encryption_key %}
@@ -181,10 +171,7 @@ spec:
         image: {{ rethinkdb_backup_restore_sidecar_image_name }}:{{ rethinkdb_backup_restore_sidecar_image_tag }}
         imagePullPolicy: {{ rethinkdb_backup_restore_sidecar_image_pull_policy }}
 {% if rethinkdb_enable_security_context %}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
+        securityContext: {{ rethinkdb_container_security_context | to_json }}
 {% endif %}
         command:
         - cp
