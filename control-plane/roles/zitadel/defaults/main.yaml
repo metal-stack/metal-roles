@@ -1,6 +1,6 @@
 ---
 zitadel_init_image: ghcr.io/metal-stack/zitadel-init
-zitadel_init_image_tag: v0.3.0
+zitadel_init_image_tag: v0.3.1
 
 zitadel_image_tag:
 zitadel_tools_kubectl_tag: "1.35.1"
@@ -45,5 +45,7 @@ zitadel_init_config: {}
   #     issuer: issuer
   #     client_id: client-id
   #     client_secret: client-secret
+  #     is_auto_create: true
+  #     is_auto_update: true
 
 zitadel_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
