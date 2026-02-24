@@ -222,6 +222,7 @@ spec:
       - name: backup-restore-sidecar-provider
         image: {{ postgres_backup_restore_sidecar_image_name }}:{{ postgres_backup_restore_sidecar_image_tag }}
         imagePullPolicy: {{ postgres_backup_restore_sidecar_image_pull_policy }}
+        resources: {{ postgres_init_resources | to_json }}
 {% if postgres_enable_security_context %}
         securityContext: {{ postgres_container_security_context | to_json }}
 {% endif %}

@@ -19,12 +19,12 @@ nsq_nsq_lookupd_resources:
     memory: "100Mi"
     cpu: "1"
 nsq_nsq_admin_resources:
-#  requests:
-#    memory: "32Mi"
-#    cpu: "30m"
-#  limits:
-#    memory: "128Mi"
-#    cpu: "100m"
+  requests:
+    memory: "32Mi"
+    cpu: "30m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
 
 nsq_log_level: info
 nsq_broadcast_address: "{{ metal_control_plane_ingress_dns }}"

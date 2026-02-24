@@ -47,11 +47,18 @@ postgres_resources:
     cpu: "100m"
 postgres_backup_restore_sidecar_resources:
 #  requests:
-#    cpu: "100m"       
-#    memory: "256Mi"
+#    cpu: "50m"       
+#    memory: "64Mi"
 #  limits:
-#    cpu: "600m"
-#    memory: "512Mi"
+#    cpu: "300m"
+#    memory: "256Mi"
+postgres_init_resources:
+#   requests:
+#     cpu: "10m"
+#     memory: "16Mi"
+#   limits:
+#     cpu: "100m"
+#     memory: "64Mi"
 
 postgres_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 postgres_registry_auth:
