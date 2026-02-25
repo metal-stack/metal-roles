@@ -6,7 +6,6 @@ The role includes tasks to install and configure the following logging tools:
 - Loki
 - Logging ingress for Loki
 - Promtail for monitoring the control plane cluster
-- Promtail for monitoring Gardener seed clusters
 
 ## Variables
 
@@ -30,11 +29,3 @@ The following variables can be set to configure the role:
 | logging_ingress_loki_basic_auth_password_salt |           | The basic auth password salt used for stable password hashes   |
 | logging_ingress_loki_basic_auth_password      |           | The basic auth password for the external loki ingress          |
 | logging_ingress_loki_basic_auth_user          |           | The basic auth user for the external loki ingress              |
-
-### Gardener
-
-| Name                                       | Mandatory | Description                                                 |
-| ------------------------------------------ | --------- | ----------------------------------------------------------- |
-| logging_gardener_enabled                   |           | Enables logging for Gardener                                |
-| logging_gardener_seeds                     |           | Seed names on which to deploy promtails that log to loki    |
-| logging_gardener_virtual_garden_kubeconfig |           | The kubeconfig for the kube-apiserver of the virtual garden |

@@ -1,0 +1,19 @@
+---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_logging_garden_name }}"
+
+- name: Get shooted seed kubeconfig
+  set_fact:
+    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_logging_shooted_seed.name) | from_yaml }}"
+
+- name: Deploy Promtail
+  kubernetes.core.helm:
+    name: promtail
+    chart_repo_url: "{{ gardener_logging_promtail_chart_repo }}"
+    chart_version: "{{ gardener_logging_promtail_chart_version }}"
+    chart_ref: promtail
+    namespace: "{{ gardener_logging_namespace }}"
+    values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    create_namespace: true

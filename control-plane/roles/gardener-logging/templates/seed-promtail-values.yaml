@@ -1,0 +1,15 @@
+---
+config:
+  clients:
+    - url: https://{{ gardener_logging_ingress_dns }}/loki/api/v1/push
+      basic_auth:
+        username: "{{ gardener_logging_ingress_loki_basic_auth_user }}"
+        password: "{{ gardener_logging_ingress_loki_basic_auth_password }}"
+
+  snippets:
+    pipelineStages:
+      - cri: {}
+      - docker: {}
+
+extraArgs:
+  - -client.external-labels=cluster={{ gardener_logging_shooted_seed.name }}
