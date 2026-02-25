@@ -10,24 +10,6 @@ config:
     pipelineStages:
       - cri: {}
       - docker: {}
-      - match:
-          selector: '{app="eventrouter"}'
-          stages:
-          - json:
-              expressions:
-                event: event
-          - json:
-              expressions:
-                metadata: metadata
-              source: event
-          - json:
-              expressions:
-                namespace: namespace
-              source: metadata
-          - labels:
-              namespace: null
-          - output:
-              source: event
 
 extraArgs:
   - -client.external-labels=cluster={{ gardener_logging_shooted_seed.name }}

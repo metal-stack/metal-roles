@@ -7,5 +7,6 @@ gardener_logging_garden_name: "{{ gardener_defaults_garden_name }}"
 gardener_logging_ingress_loki_basic_auth_user: promtail
 gardener_logging_ingress_loki_basic_auth_password:
 
+gardener_logging_deploy_to_garden_cluster: true
 gardener_logging_shooted_seeds: []
   # - name: my-shooted-seed

@@ -10,6 +10,18 @@
       - gardener_logging_promtail_chart_repo is defined
       - gardener_logging_promtail_chart_version is defined
 
+- name: Deploy Promtail
+  kubernetes.core.helm:
+    name: promtail
+    chart_repo_url: "{{ gardener_logging_promtail_chart_repo }}"
+    chart_version: "{{ gardener_logging_promtail_chart_version }}"
+    chart_ref: promtail
+    namespace: "{{ gardener_logging_namespace }}"
+    values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    create_namespace: true
+  when: gardener_logging_deploy_to_garden_cluster
+
 - name: Loop over Gardener shooted seeds
   include_tasks: gardener-shooted-seed.yaml
   loop: "{{ gardener_logging_shooted_seeds }}"
