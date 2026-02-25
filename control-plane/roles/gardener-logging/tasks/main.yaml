@@ -18,7 +18,6 @@
     chart_ref: promtail
     namespace: "{{ gardener_logging_namespace }}"
     values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
-    kubeconfig: "{{ _shoot_kubeconfig }}"
     create_namespace: true
   when: gardener_logging_deploy_to_garden_cluster
   vars:
