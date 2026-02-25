@@ -1,0 +1,18 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - gardener_logging_promtail_chart_repo is defined
+      - gardener_logging_promtail_chart_version is defined
+
+- name: Loop over Gardener shooted seeds
+  include_tasks: gardener-shooted-seed.yaml
+  loop: "{{ gardener_logging_shooted_seeds }}"
+  loop_control:
+    loop_var: gardener_logging_shooted_seed
+    label: "{{ gardener_logging_shooted_seed.name }}"
