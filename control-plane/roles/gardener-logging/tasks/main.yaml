@@ -21,6 +21,9 @@
     kubeconfig: "{{ _shoot_kubeconfig }}"
     create_namespace: true
   when: gardener_logging_deploy_to_garden_cluster
+  vars:
+    gardener_logging_shooted_seed:
+      name: "{{ gardener_logging_garden_name }}"
 
 - name: Loop over Gardener shooted seeds
   include_tasks: gardener-shooted-seed.yaml
