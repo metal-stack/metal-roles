@@ -30,4 +30,4 @@ config:
               source: event
 
 extraArgs:
-  - -client.external-labels=cluster={{ item }}
+  - -client.external-labels=cluster={{ gardener_logging_shooted_seed.name }}
