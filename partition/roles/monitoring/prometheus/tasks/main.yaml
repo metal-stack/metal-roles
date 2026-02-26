@@ -65,6 +65,8 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yaml"
   notify: restart prometheus
 
+# TODO: should we write a systemd timer that regularly writes the ipmi targets?
+
 - name: get dhcp leases
   shell: dhcp-lease-list --parsable 2>/dev/null | grep -oE "([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})" | sort
   register: prometheus_dhcp_leases
