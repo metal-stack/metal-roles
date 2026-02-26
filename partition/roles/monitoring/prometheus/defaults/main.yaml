@@ -36,3 +36,5 @@ prometheus_blackbox_exporter_metal_api_probe_url: "{{ metal_partition_metal_api_
 prometheus_haproxy_enabled: true
 
 prometheus_blackbox_exporter_dns: 1.1.1.1
+
+prometheus_ipmi_exporter_allowed_cidrs: "{{ metal_bmc_allowed_cidrs | default([], '') }}"

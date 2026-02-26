@@ -72,8 +72,19 @@
 
 - name: generate prometheus ipmi exporter targets
   set_fact:
-    prometheus_ipmi_exporter_targets: "{{ prometheus_ipmi_exporter_targets|default([]) + [item] }} "
+    _targets: "{{ _targets | default([]) + [item] }} "
   loop: "{{ prometheus_dhcp_leases.stdout_lines }}"
+  when: not prometheus_ipmi_exporter_targets
+
+- name: filter ipmi exporter targets
+  set_fact:
+    _targets: "{{ _targets | ansible.utils.ipaddr(item) }} "
+  loop: "{{ prometheus_ipmi_exporter_allowed_cidrs }}"
+  when: not prometheus_ipmi_exporter_targets
+
+- name: generate prometheus ipmi exporter targets
+  set_fact:
+    prometheus_ipmi_exporter_targets: "{{ _targets }} "
   when: not prometheus_ipmi_exporter_targets
 
 - name: generate prometheus_ipmi_exporter_targets_sd
