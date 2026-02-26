@@ -45,6 +45,20 @@ postgres_resources:
   limits:
     memory: "256Mi"
     cpu: "100m"
+postgres_backup_restore_sidecar_resources:
+#  requests:
+#    cpu: "50m"       
+#    memory: "64Mi"
+#  limits:
+#    cpu: "300m"
+#    memory: "256Mi"
+postgres_init_resources:
+#   requests:
+#     cpu: "10m"
+#     memory: "16Mi"
+#   limits:
+#     cpu: "100m"
+#     memory: "64Mi"
 
 postgres_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 postgres_registry_auth:
@@ -53,3 +67,17 @@ postgres_registry_auth:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
+
+postgres_enable_security_context: false
+
+postgres_sts_security_context:
+#  fsGroup: 1
+#  fsGroupChangePolicy: "OnRootMismatch"
+#  runAsUser: 1001
+#  runAsNonRoot: true
+#  runAsGroup: 1
+
+postgres_container_security_context:
+#  allowPrivilegeEscalation: false
+#  capabilities:
+#    drop: ["ALL"]

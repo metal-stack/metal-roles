@@ -39,6 +39,20 @@ rethinkdb_resources:
   limits:
     memory: "4Gi"
     cpu: "500m"
+rethinkdb_backup_restore_sidecar_resources:
+#  requests:
+#    cpu: "100m"       
+#    memory: "64Mi"
+#  limits:
+#    cpu: "300m"
+#    memory: "256Mi"
+rethinkdb_init_resources:
+#  requests:
+#    cpu: "10m"
+#    memory: "16Mi"
+#  limits:
+#    cpu: "100m"
+#    memory: "64Mi" 
 
 rethinkdb_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 rethinkdb_registry_auth:
@@ -47,3 +61,17 @@ rethinkdb_registry_auth:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
+
+rethinkdb_enable_security_context: false
+
+rethinkdb_sts_security_context:
+#  fsGroup: 1
+#  runAsUser: 1001
+#  runAsNonRoot: true
+#  runAsGroup: 1
+#  fsGroupChangePolicy: "OnRootMismatch"
+
+rethinkdb_container_security_context:
+#  allowPrivilegeEscalation: false
+#  capabilities:
+#    drop: ["ALL"]
