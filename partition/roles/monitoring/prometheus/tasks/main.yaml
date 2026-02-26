@@ -18,6 +18,7 @@
   copy:
     content: "{{ prometheus_hosts_content }}"
     dest: "{{ prometheus_config_host_dir }}/hosts"
+  when: prometheus_hosts_content
 
 - name: generate prometheus.yaml
   template:
@@ -156,13 +157,7 @@
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
     systemd_docker_network: host
-    systemd_docker_volumes:
-      - "{{ prometheus_config_host_dir }}:/etc/prometheus"
-      - "{{ prometheus_config_host_dir }}/hosts:/etc/hosts:ro"
-      - "{{ prometheus_data_host_dir }}:/prometheus"
-    systemd_docker_ports:
-      - host_port: "{{ prometheus_port }}"
-        target_port: "{{ prometheus_port }}"
+    systemd_docker_volumes: "{{ lookup('template', 'prometheus-volumes.yaml.j2') | from_yaml }}"
     systemd_docker_command:
       - --config.file=/etc/prometheus/prometheus.yaml
       - --storage.tsdb.path=/prometheus
