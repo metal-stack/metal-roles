@@ -78,7 +78,7 @@
 
 - name: filter ipmi exporter targets
   set_fact:
-    _filtered_targets: "{{ _filtered_targets | default([]) + [_targets | default([]) | ansible.utils.ipaddr(item)] }} "
+    _filtered_targets: "{{ _filtered_targets | default([]) + _targets | default([]) | ansible.utils.ipaddr(item) }} "
   loop: "{{ prometheus_ipmi_exporter_allowed_cidrs }}"
   when: not prometheus_ipmi_exporter_targets
 
