@@ -64,7 +64,6 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_sync_max_images_per_name                                   |           | Maximum amount of images to cache for an image variant                                                                    |
 | image_cache_sync_min_images_per_name                                   |           | Minimum amount of images to keep of an image variant                                                                      |
 | image_cache_sync_metal_api_endpoint                                    | yes       | Endpoint of the metal-api                                                                                                 |
-| image_cache_sync_metal_api_view_hmac                                   | yes       | HMAC of the metal-api (requires view access)                                                                              |
 | image_cache_sync_schedule                                              |           | Cron sync schedule                                                                                                        |
 | image_cache_sync_excludes                                              |           | URL paths to exclude from the sync                                                                                        |
 | image_cache_sync_host_path                                             |           | Root path of where to store the images                                                                                    |
