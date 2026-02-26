@@ -78,13 +78,13 @@
 
 - name: filter ipmi exporter targets
   set_fact:
-    _targets: "{{ _targets | ansible.utils.ipaddr(item) }} "
+    _filtered_targets: "{{ _filtered_targets | default([]) + [_targets | default([]) | ansible.utils.ipaddr(item)] }} "
   loop: "{{ prometheus_ipmi_exporter_allowed_cidrs }}"
   when: not prometheus_ipmi_exporter_targets
 
-- name: generate prometheus ipmi exporter targets
+- name: set prometheus ipmi exporter targets
   set_fact:
-    prometheus_ipmi_exporter_targets: "{{ _targets }} "
+    prometheus_ipmi_exporter_targets: "{{ _filtered_targets | default([]) }} "
   when: not prometheus_ipmi_exporter_targets
 
 - name: generate prometheus_ipmi_exporter_targets_sd
