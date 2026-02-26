@@ -73,7 +73,7 @@
 - name: generate prometheus ipmi exporter targets
   set_fact:
     _targets: "{{ _targets | default([]) + [item] }} "
-  loop: "{{ prometheus_dhcp_leases.stdout_lines }}"
+  loop: "{{ prometheus_dhcp_leases.stdout_lines | sort }}"
   when: not prometheus_ipmi_exporter_targets
 
 - name: filter ipmi exporter targets
