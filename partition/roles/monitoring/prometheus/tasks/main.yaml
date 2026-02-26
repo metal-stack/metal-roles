@@ -64,16 +64,29 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yaml"
   notify: restart prometheus
 
+# TODO: should we write a systemd timer that regularly writes the ipmi targets?
+
 - name: get dhcp leases
   shell: dhcp-lease-list --parsable 2>/dev/null | grep -oE "([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})" | sort
   register: prometheus_dhcp_leases
-  when: prometheus_ipmi_exporter_targets is not defined
+  when: not prometheus_ipmi_exporter_targets
 
-- name: generate prometheus_ipmi_exporter_targets
+- name: generate prometheus ipmi exporter targets
   set_fact:
-    prometheus_ipmi_exporter_targets: "{{ prometheus_ipmi_exporter_targets|default([]) + [item] }} "
-  loop: "{{ prometheus_dhcp_leases.stdout_lines }}"
-  when: prometheus_ipmi_exporter_targets is not defined
+    _targets: "{{ _targets | default([]) + [item] }} "
+  loop: "{{ prometheus_dhcp_leases.stdout_lines | sort }}"
+  when: not prometheus_ipmi_exporter_targets
+
+- name: filter ipmi exporter targets
+  set_fact:
+    _filtered_targets: "{{ _filtered_targets | default([]) + _targets | default([]) | ansible.utils.ipaddr(item) }} "
+  loop: "{{ prometheus_ipmi_exporter_allowed_cidrs }}"
+  when: not prometheus_ipmi_exporter_targets
+
+- name: set prometheus ipmi exporter targets
+  set_fact:
+    prometheus_ipmi_exporter_targets: "{{ _filtered_targets | default([]) }} "
+  when: not prometheus_ipmi_exporter_targets
 
 - name: generate prometheus_ipmi_exporter_targets_sd
   set_fact:
