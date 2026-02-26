@@ -145,7 +145,7 @@
     - { regexp: "^PermitRootLogin .+", line: "PermitRootLogin no" }
     - { regexp: "^DebianBanner .+", line: "DebianBanner no" }
 
-- name: Add IP's of all hosts to /etc/hosts to use those hostnames for connections
+- name: Add IPs of all hosts to /etc/hosts to use those hostnames for connections
   lineinfile:
     dest: /etc/hosts
     regexp: '.*\s{{ item }}$'
