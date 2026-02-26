@@ -18,6 +18,7 @@
   copy:
     content: "{{ prometheus_hosts_content }}"
     dest: "{{ prometheus_config_host_dir }}/hosts"
+  when: prometheus_hosts_content
 
 - name: generate prometheus.yaml
   template:
