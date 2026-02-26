@@ -140,6 +140,7 @@ alertmanager:
 {% if monitoring_slack_api_url is defined %}
       slack_api_url: "{{ monitoring_slack_api_url }}"
 {% endif %}
+    inhibit_rules: []
     route:
       receiver: webhook-logger
       group_by: ['severity', 'alertname', 'namespace', 'pod', 'job']
@@ -280,7 +281,7 @@ kubeProxy:
   enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
 
 kubeScheduler:
-  enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}
+  enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}  
 
 kubeEtcd:
   enabled: {{ monitoring_prometheus_kube_etcd_enabled }}
