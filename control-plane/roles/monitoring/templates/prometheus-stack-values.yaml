@@ -140,6 +140,7 @@ alertmanager:
 {% if monitoring_slack_api_url is defined %}
       slack_api_url: "{{ monitoring_slack_api_url }}"
 {% endif %}
+    inhibit_rules: []
     route:
       receiver: webhook-logger
       group_by: ['severity', 'alertname', 'namespace', 'pod', 'job']
