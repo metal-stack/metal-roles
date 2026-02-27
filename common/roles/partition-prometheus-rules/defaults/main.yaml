@@ -1,0 +1,344 @@
+---
+partition_prometheus_rules_blackbox_exporter: |
+  {% raw %}
+  - name: blackbox-alert.rules
+    rules:
+    - alert: BlackboxExporterDown
+      expr: up{job="blackbox-exporter"} == 0
+      for: 30m
+      labels:
+        severity: "warning"
+      annotations:
+        description: "blackbox-exporter down on {{ $labels.instance }}."
+    - alert: PartitionPingFailure
+      expr: probe_success{kind="mutual-partition-ping"} == 0
+      for: 5m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "{{ $labels.instance }} cannot ping {{ $labels.ping_to_hostname }} ({{ $labels.ping_to_ip }}) in partition {{ $labels.partition }}."
+    - alert: PartitionMetalApiUnreachable
+      expr: probe_success{job="blackbox-metal-api-http"} == 0
+      for: 10m
+      labels:
+        severity: "warning"
+      annotations:
+        description: "metal-api cannot be reached from {{ $labels.instance }} in partition {{ $labels.partition }}."
+    - alert: PartitionNoDnsResolution
+      expr: probe_success{job="blackbox-dns-cloudflare"} == 0
+      for: 10m
+      labels:
+        severity: "warning"
+      annotations:
+        description: "{{ $labels.instance }} cannot resolve {{ $labels.dns_query }} through {{ $labels.dns_resolver }}"
+  {% endraw %}
+
+partition_prometheus_rules_frr_exporter: |
+  {% raw %}
+  - name: frr-recording.rules
+    rules:
+    - record: device:frr_bgp_peer_state
+      expr: |2
+        label_replace(frr_bgp_peer_state,"device","$1","peer","(.+)")
+  - name: frr-alert.rules
+    rules:
+    - alert: TooMuchActivePrefixes
+      expr: frr_bgp_prefixes_active>13000
+      for: 15m
+      labels:
+        severity: "warning"
+      annotations:
+        description: "FRR {{ $labels.instance }} has too much prefixes {{ $value }}"
+    - alert: RoutesFlapping
+      expr: sum(abs(delta(frr_bgp_prefixes_active[1m]))) by (instance) >100
+      labels:
+        severity: "warning"
+      annotations:
+        description: "Number of routes on {{ $labels.instance }} are flapping: {{ $value }} "
+    - alert: FrrDown
+      expr: frr_collector_up==0
+      for: 15m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "FRR on {{ $labels.instance }} is DOWN"
+    - alert: BgpPeerConfigurationError
+      expr: count(label_replace(frr_bgp_peer_state{instance=~".*leaf.*"},"leafpair", "$1", "instance", "(.*leaf).*")) by (leafpair,peer)!=2
+      for: 30m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "BGP peer configuration on port {{ $labels.peer }} on leaf-pair {{ $labels.leafpair }}01/02 is different"
+  {% endraw %}
+
+partition_prometheus_rules_haproxy: |
+  {% raw %}
+  - name: haproxy.rules
+    rules:
+    - alert: HAProxyNoBackends
+      expr: haproxy_backend_active_servers{proxy!="stats"} < 1
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        description: "HAProxy reports all servers are unhealthy for {{ $labels.proxy }}"
+  {% endraw %}
+
+partition_prometheus_rules_ipmi: |
+  {% raw %}
+  - name: ipmi-rules.rules
+    rules:
+    - alert: IPMIAccessDown
+      expr: sum(up{job="ipmi"}) == 0
+      for: 5m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "No IPMI connections possible at partition {{ $externalLabels.partition }}"
+    - alert: IPMISensorState
+      expr: ipmi_sensor_state>0
+      for: 15m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "Sensor {{ $labels.type }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
+    - alert: IPMIVoltageState
+      expr: ipmi_voltage_state>0
+      for: 15m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "Voltage {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
+    - alert: IPMIFanSpeedState
+      expr: ipmi_voltage_state>0
+      for: 15m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "Fan speed {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
+    - alert: IPMIPowerState
+      expr: ipmi_power_state>0
+      for: 15m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "Fan speed {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
+    - alert: IPMIChassisPowerState
+      expr: ipmi_chassis_power_state!=1
+      for: 15m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "Chassis power on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
+    - alert: IPMITemperatureState
+      expr: ipmi_temperature_state>0
+      for: 15m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "Temperature {{ $labels.name }} on IPMI interface {{ $labels.instance }} in partition {{ $externalLabels.partition }} is not OK. Get corresponding machine with 'metalctl machine ipmi'"
+    - alert: IPMISystemEventLog
+      expr: rate(ipmi_sel_logs_count[5m])>0
+      labels:
+        severity: "warning"
+      annotations:
+        description: "(experimental alert) IPMI instance {{ $labels.instance }} in partition {{ $externalLabels.partition }} reports new system events. Get more details with 'ipmitool -H {{ $labels.instance }} -U ... -P ... sel list'"
+  {% endraw %}
+
+partition_prometheus_rules_leaf: |
+  {% raw %}
+  - name: leaf-rules.rules
+    rules:
+    - alert: MetalCoreDown
+      expr: up{job="metal-core"} == 0
+      for: 5m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "metal-core on {{ $labels.instance }} is down"
+    - alert: LeafHasRebooted
+      expr: rate(node_boot_time_seconds{instance=~".*leaf.*"}[1h])>0
+      for: 5m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "Leaf {{ $labels.instance }} has rebooted."
+  {% endraw %}
+
+partition_prometheus_rules_node_exporter: |
+  {% raw %}
+  - name: node-exporter
+    rules:
+    - alert: NodeFilesystemSpaceFillingUp
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left and is filling
+          up.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemspacefillingup
+        summary: Filesystem is predicted to run out of space within the next 24 hours.
+      expr: |-
+        (
+          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 40
+        and
+          predict_linear(node_filesystem_avail_bytes{job="node-exporter",fstype!=""}[6h], 24*60*60) < 0
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: warning
+    - alert: NodeFilesystemSpaceFillingUp
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left and is filling
+          up fast.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemspacefillingup
+        summary: Filesystem is predicted to run out of space within the next 4 hours.
+      expr: |-
+        (
+          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 20
+        and
+          predict_linear(node_filesystem_avail_bytes{job="node-exporter",fstype!=""}[6h], 4*60*60) < 0
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: critical
+    - alert: NodeFilesystemAlmostOutOfSpace
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutofspace
+        summary: Filesystem has less than 5% space left.
+      expr: |-
+        (
+          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 5
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: warning
+    - alert: NodeFilesystemAlmostOutOfSpace
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutofspace
+        summary: Filesystem has less than 3% space left.
+      expr: |-
+        (
+          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 3
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: critical
+    - alert: NodeFilesystemFilesFillingUp
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left and is filling
+          up.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemfilesfillingup
+        summary: Filesystem is predicted to run out of inodes within the next 24 hours.
+      expr: |-
+        (
+          node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 40
+        and
+          predict_linear(node_filesystem_files_free{job="node-exporter",fstype!=""}[6h], 24*60*60) < 0
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: warning
+    - alert: NodeFilesystemFilesFillingUp
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left and is filling
+          up fast.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemfilesfillingup
+        summary: Filesystem is predicted to run out of inodes within the next 4 hours.
+      expr: |-
+        (
+          node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 20
+        and
+          predict_linear(node_filesystem_files_free{job="node-exporter",fstype!=""}[6h], 4*60*60) < 0
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: critical
+    - alert: NodeFilesystemAlmostOutOfFiles
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutoffiles
+        summary: Filesystem has less than 5% inodes left.
+      expr: |-
+        (
+          node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 5
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: warning
+    - alert: NodeFilesystemAlmostOutOfFiles
+      annotations:
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutoffiles
+        summary: Filesystem has less than 3% inodes left.
+      expr: |-
+        (
+          node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 3
+        and
+          node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+        )
+      for: 1h
+      labels:
+        severity: critical
+    - alert: ReadOnlyFilesystem
+      annotations:
+        description: '{{ $labels.instance }} has a read-only filesystem on {{ $labels.device }}.'
+      expr: node_filesystem_readonly==1
+      for: 1h
+      labels:
+        severity: critical
+    - alert: SystemTimeOutOfSync
+      annotations:
+        description: 'Time on {{ $labels.instance }} is out-of-sync ({{ $value }}s). Check ntpd.'
+      expr: abs(timestamp(node_time_seconds) - node_time_seconds)>10
+      for: 15m
+      labels:
+        severity: critical
+  {% endraw %}
+
+partition_prometheus_rules_pixiecore: |
+  {% raw %}
+  - name: pixiecore-rules.rules
+    rules:
+    - alert: PixieCoreDown
+      expr: up{job="pixiecore"} == 0
+      for: 5m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "pixiecore {{ $labels.instance }} is down"
+  {% endraw %}
+
+partition_prometheus_rules_sonic_exporter: |
+  {% raw %}
+  - name: sonic.rules
+    rules:
+    - alert: SonicSwitchNotScrapable
+      expr: sum(up{job="sonic-exporter"}) by (instance,partition) == 0
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        description: "Sonic switch {{$labels.instance}} in partition {{$externalLabels.partition}} could not be scraped for more than 10 minutes."
+  {% endraw %}

@@ -143,8 +143,25 @@
 
 - name: copy notification rules
   copy:
-    src: files/rules/
-    dest: "{{ prometheus_config_host_dir }}/rules/"
+    content: "{{ lookup('ansible.builtin.vars', item.content_var) }}"
+    dest: "/tmp/rules/{{ item.file }}"
+  loop:
+    - file: blackbox-exporter.yaml
+      content_var: partition_prometheus_rules_blackbox_exporter
+    - file: frr-exporter.yaml
+      content_var: partition_prometheus_rules_frr_exporter
+    - file: haproxy.yaml
+      content_var: partition_prometheus_rules_haproxy
+    - file: ipmi-rules.yaml
+      content_var: partition_prometheus_rules_ipmi
+    - file: leaf-rules.yaml
+      content_var: partition_prometheus_rules_leaf
+    - file: node-exporter.yaml
+      content_var: partition_prometheus_rules_node_exporter
+    - file: pixiecore-rules.yaml
+      content_var: partition_prometheus_rules_pixiecore
+    - file: sonic-exporter.yaml
+      content_var: partition_prometheus_rules_sonic_exporter
   notify: restart prometheus
 
 - name: deploy prometheus service
