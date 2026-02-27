@@ -301,7 +301,14 @@ kubeControllerManager:
   enabled: {{ monitoring_prometheus_kube_controller_manager_enabled }}
 
 kubelet:
-  enabled: false
+  enabled: {{ monitoring_prometheus_kubelet_enabled }}
+
+defaultRules:
+  rules:
+    etcd: {{ monitoring_prometheus_kube_etcd_enabled }}
+    kubeControllerManager: {{ monitoring_prometheus_kube_controller_manager_enabled }}
+    kubelet: {{ monitoring_prometheus_kubelet_enabled }}
+    kubeProxy: {{ monitoring_prometheus_kube_proxy_enabled }}
 
 {% raw %}
 additionalPrometheusRulesMap:
