@@ -287,7 +287,8 @@ kubeDns:
 kubeProxy:
   enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
   serviceMonitor:
-     matchLabels:
+    selector:
+      matchLabels:
         component: kube-proxy
 
 kubeScheduler:
