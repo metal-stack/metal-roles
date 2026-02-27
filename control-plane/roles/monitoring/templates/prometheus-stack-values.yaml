@@ -13,7 +13,13 @@ prometheus:
 {% endif %}
 
   prometheusSpec:
+
     ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    scrapeConfigSelectorNilUsesHelmValues: false
+
     additionalArgs:
       - name: "web.enable-remote-write-receiver"
         value: ""
