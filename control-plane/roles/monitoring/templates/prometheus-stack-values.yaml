@@ -286,6 +286,9 @@ kubeDns:
 
 kubeProxy:
   enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
+  serviceMonitor:
+     matchLabels:
+        component: kube-proxy
 
 kubeScheduler:
   enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}
@@ -295,6 +298,9 @@ kubeEtcd:
 
 kubeControllerManager:
   enabled: {{ monitoring_prometheus_kube_controller_manager_enabled }}
+
+kubelet:
+  enabled: false
 
 {% raw %}
 additionalPrometheusRulesMap:
