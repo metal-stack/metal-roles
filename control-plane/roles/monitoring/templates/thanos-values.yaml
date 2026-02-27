@@ -16,7 +16,7 @@ storegateway:
 ruler:
   enabled: true
   alertmanagers:
-    - http://kube-prometheus-stack-alertmanager.{{ monitoring_namespace }}.svc.cluster.local:9093
+    - {{ prometheus_alertmanager_url }}
   config: |-
     {{ '{{' }}`
       groups:
