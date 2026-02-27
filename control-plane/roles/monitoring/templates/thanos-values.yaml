@@ -15,8 +15,6 @@ storegateway:
 
 ruler:
   enabled: true
-  alertmanagers:
-    -
 
   alertmanagersConfig:
     alertmanagers:
@@ -26,7 +24,7 @@ ruler:
             password: "{{ monitoring_alertmanager_ingress_basic_auth_password }}"
         static_configs:
           - {{ monitoring_alertmanager_ingress_dns }}
-        scheme: https
+        scheme: http
         timeout: 10s
         api_version: v2
 
