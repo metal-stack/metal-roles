@@ -150,8 +150,6 @@
   loop:
     - file: blackbox-exporter.yaml
       content_var: partition_prometheus_rules_blackbox_exporter
-    - file: frr-exporter.yaml
-      content_var: partition_prometheus_rules_frr_exporter
     - file: haproxy.yaml
       content_var: partition_prometheus_rules_haproxy
     - file: ipmi-rules.yaml
