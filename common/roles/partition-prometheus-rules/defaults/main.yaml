@@ -304,7 +304,7 @@ partition_prometheus_rules_node_exporter: |
     - alert: ReadOnlyFilesystem
       annotations:
         description: '{{ $labels.instance }} has a read-only filesystem on {{ $labels.device }}.'
-      expr: node_filesystem_readonly==1
+      expr: node_filesystem_readonly{container!~".+"} == 1
       for: 1h
       labels:
         severity: critical
