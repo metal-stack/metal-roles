@@ -13,6 +13,7 @@ prometheus:
 {% endif %}
 
   prometheusSpec:
+    ruleSelectorNilUsesHelmValues: false
     additionalArgs:
       - name: "web.enable-remote-write-receiver"
         value: ""
