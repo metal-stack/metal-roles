@@ -59,6 +59,7 @@ monitoring_prometheus_kube_proxy_enabled: false
 monitoring_prometheus_kube_scheduler_enabled: false
 monitoring_prometheus_kube_etcd_enabled: false
 monitoring_prometheus_kube_controller_manager_enabled: false
+monitoring_prometheus_kubelet_enabled: false
 
 # thanos
 monitoring_thanos_receive_enabled: false

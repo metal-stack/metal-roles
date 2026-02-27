@@ -9,9 +9,48 @@ objstoreConfig: |-
 
 compactor:
   enabled: true
+
 storegateway:
   enabled: true
+
+ruler:
+  enabled: true
+
+  alertmanagersConfig:
+    alertmanagers:
+      - http_config:
+          basic_auth:
+            username: {{ monitoring_alertmanager_ingress_basic_auth_user }}
+            password: "{{ monitoring_alertmanager_ingress_basic_auth_password }}"
+        static_configs:
+          - {{ monitoring_alertmanager_ingress_dns }}
+        scheme: https
+        timeout: 10s
+        api_version: v2
+
+  config: |-
+    {{ '{{' }}`
+      groups:
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_blackbox_exporter') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_haproxy') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_ipmi') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_leaf') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_node_exporter') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_pixiecore') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_sonic_exporter') | indent(width=8, first=false) }}
+    `{{ '}}' }}
 {% endif %}
+
+metrics:
+  enabled: true
+  prometheusRule:
+    enabled: true
+    default:
+      create: true
+      sidecar: false
+      ## @extra metrics.prometheusRule.default.disabled.ThanosSidecarIsDown Disable ThanosSidecarIsDown rule when metrics.prometheusRule.default.create or metrics.prometheusRule.default.absent_rules is true
+  serviceMonitor:
+    enabled: true
 
 query:
   dnsDiscovery:
@@ -44,6 +83,7 @@ receive:
   persistence:
     size: {{ monitoring_thanos_receive_size }}
 
+{% if monitoring_thanos_receive_ingress_basic_auth %}
 extraDeploy:
 - apiVersion: v1
   kind: Secret
@@ -52,3 +92,4 @@ extraDeploy:
   type: Opaque
   data:
     auth: "{{ monitoring_thanos_receive_ingress_basic_auth | b64encode }}"
+{% endif %}
