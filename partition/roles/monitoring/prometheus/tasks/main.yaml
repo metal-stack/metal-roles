@@ -143,8 +143,10 @@
 
 - name: copy notification rules
   copy:
-    content: "{{ lookup('ansible.builtin.vars', item.content_var) }}"
-    dest: "/tmp/rules/{{ item.file }}"
+    content: |
+      groups:
+      {{ lookup('ansible.builtin.vars', item.content_var) | indent(width=4) }}
+    dest: "{{ prometheus_config_host_dir }}/rules/{{ item.file }}"
   loop:
     - file: blackbox-exporter.yaml
       content_var: partition_prometheus_rules_blackbox_exporter
