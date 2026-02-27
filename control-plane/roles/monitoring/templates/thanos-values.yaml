@@ -16,7 +16,20 @@ storegateway:
 ruler:
   enabled: true
   alertmanagers:
-    - {{ prometheus_alertmanager_url }}
+    -
+
+  alertmanagersConfig:
+    alertmanagers:
+      - http_config:
+          basic_auth:
+            username: {{ monitoring_alertmanager_ingress_basic_auth_user }}
+            password: "{{ monitoring_alertmanager_ingress_basic_auth_password }}"
+        static_configs:
+          - {{ monitoring_alertmanager_ingress_dns }}
+        scheme: https
+        timeout: 10s
+        api_version: v2
+
   config: |-
     {{ '{{' }}`
       groups:
