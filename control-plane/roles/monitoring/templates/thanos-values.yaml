@@ -20,11 +20,11 @@ storegateway:
   enabled: true
 
   livenessProbe:
-    failureThreshold: {{ monitoring_thanos_compactor_probe_failure_threshold }}
+    failureThreshold: {{ monitoring_thanos_object_store_probe_failure_threshold }}
   readinessProbe:
-    failureThreshold: {{ monitoring_thanos_compactor_probe_failure_threshold }}
+    failureThreshold: {{ monitoring_thanos_object_store_probe_failure_threshold }}
 
-  resourcesPreset: {{ monitoring_thanos_resource_preset }}
+  resourcesPreset: {{ monitoring_thanos_object_store_resource_preset }}
 
 ruler:
   enabled: true
@@ -98,11 +98,11 @@ receive:
   persistence:
     size: {{ monitoring_thanos_receive_size }}
 
-  resourcesPreset: {{ monitoring_thanos_resource_preset }}
+  resourcesPreset: {{ monitoring_thanos_receive_resource_preset }}
   livenessProbe:
-    failureThreshold: {{ monitoring_thanos_receiver_probe_failure_threshold }}
+    failureThreshold: {{ monitoring_thanos_receive_probe_failure_threshold }}
   readinessProbe:
-    failureThreshold: {{ monitoring_thanos_receiver_probe_failure_threshold }}
+    failureThreshold: {{ monitoring_thanos_receive_probe_failure_threshold }}
 
   replicaCount: 2
 

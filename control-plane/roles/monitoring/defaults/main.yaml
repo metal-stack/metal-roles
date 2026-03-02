@@ -72,7 +72,9 @@ monitoring_thanos_receive_ingress_annotations: []
 monitoring_thanos_receive_ingress_basic_auth: {}
 monitoring_thanos_receive_ingress_tls: {}
 monitoring_thanos_receive_size: 50Gi
+monitoring_thanos_receive_resource_preset: 30
 monitoring_thanos_compactor_size: 20Gi
-monitoring_thanos_compactor_probe_failure_threshold: 30
 monitoring_thanos_resource_preset: "medium"
-monitoring_thanos_receiver_probe_failure_threshold: 30
+monitoring_thanos_receive_probe_failure_threshold: 30
+monitoring_thanos_object_store_resource_preset: "medium"
+monitoring_thanos_object_store_probe_failure_threshold: 30
