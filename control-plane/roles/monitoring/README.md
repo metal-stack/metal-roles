@@ -67,6 +67,7 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_size                        |           | The PVC size of the Thanos Receive component                                                                                                                                                                                    |
 | monitoring_thanos_compactor_size                      |           | The PVC size of the Thanos Compactor component                                                                                                                                                                                  |
 | monitoring_thanos_compactor_probe_failure_threshold   |           | The failure threshold of liveness and readiness probe for the compactor pod (init may take quite long depending on the bucket size)                                                                                             |
+| monitoring_thanos_receiver_probe_failure_threshold    |           | The failure threshold of liveness and readiness probe for the receiver pod (init may take quite long depending on the bucket size)                                                                                              |
 | monitoring_thanos_resource_preset                     |           | The resource preset to use for the compactor and storegateway (see https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15)                                                                     |
 
 ### Gardener

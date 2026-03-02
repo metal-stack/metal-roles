@@ -72,6 +72,7 @@ query:
 
 receive:
   enabled: {{ monitoring_thanos_receive_enabled }}
+
   ingress:
     enabled: {{ monitoring_thanos_receive_ingress_enabled }}
     hostname: {{ monitoring_thanos_receive_ingress_dns }}
@@ -93,9 +94,18 @@ receive:
 {% endfor %}
 {% endif %}
     tls: {{ monitoring_thanos_receive_ingress_tls }}
+
   persistence:
     size: {{ monitoring_thanos_receive_size }}
+
   resourcesPreset: {{ monitoring_thanos_resource_preset }}
+  livenessProbe:
+    failureThreshold: {{ monitoring_thanos_receiver_probe_failure_threshold }}
+  readinessProbe:
+    failureThreshold: {{ monitoring_thanos_receiver_probe_failure_threshold }}
+
+  replicaCount: 2
+
 
 {% if monitoring_thanos_receive_ingress_basic_auth %}
 extraDeploy:

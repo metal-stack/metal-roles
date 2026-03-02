@@ -75,3 +75,4 @@ monitoring_thanos_receive_size: 50Gi
 monitoring_thanos_compactor_size: 20Gi
 monitoring_thanos_compactor_probe_failure_threshold: 30
 monitoring_thanos_resource_preset: "medium"
+monitoring_thanos_receiver_probe_failure_threshold: 30
