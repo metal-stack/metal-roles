@@ -27,11 +27,12 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 | Name                                    | Mandatory | Description                                                     |
 |-----------------------------------------|-----------|-----------------------------------------------------------------|
-| gardener_extension_audit_enabled        |           | If enabled, deploys the extension                               |
-| gardener_extension_audit_helm_chart     |           | The ref to the helm oci artifact to deploy this extension       |
-| gardener_extension_audit_helm_chart_tag |           | The tag of the helm oci artifact to deploy this extension       |
-| gardener_extension_audit_image_name     |           | Setting an explicit image name for the gardener-extension-audit |
-| gardener_extension_audit_image_tag      |           | Setting an explicit image tag for the gardener-extension-audit  |
+| gardener_extension_audit_enabled              |           | If enabled, deploys the extension                               |
+| gardener_extension_audit_helm_chart           |           | The ref to the helm oci artifact to deploy this extension       |
+| gardener_extension_audit_helm_chart_tag       |           | The tag of the helm oci artifact to deploy this extension       |
+| gardener_extension_audit_image_name           |           | Setting an explicit image name for the gardener-extension-audit |
+| gardener_extension_audit_image_tag            |           | Setting an explicit image tag for the gardener-extension-audit  |
+| gardener_extension_audit_default_webhook_mode |           | Default webhook mode for the audit extension                     |
 
 ### gardener-extension-backup-s3
 
