@@ -14,7 +14,7 @@ global:
 compactor:
   enabled: true
   persistence:
-    size: 20Gi
+    size: {{ monitoring_thanos_compactor_size }}
 
 storegateway:
   enabled: true

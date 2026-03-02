@@ -65,6 +65,7 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_ingress_dns                 |           | The DNS name used for exposing Thanos Receive via Ingress                                                                                                                                                                       |
 | monitoring_thanos_receive_ingress_tls                 |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                                                                                 |
 | monitoring_thanos_receive_size                        |           | The PVC size of the Thanos Receive component                                                                                                                                                                                    |
+| monitoring_thanos_compactor_size                      |           | The PVC size of the Thanos Compactor component                                                                                                                                                                                  |
 
 ### Gardener
 

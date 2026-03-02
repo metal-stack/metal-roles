@@ -72,3 +72,4 @@ monitoring_thanos_receive_ingress_annotations: []
 monitoring_thanos_receive_ingress_basic_auth: {}
 monitoring_thanos_receive_ingress_tls: {}
 monitoring_thanos_receive_size: 50Gi
+monitoring_thanos_compactor_size: 20Gi
