@@ -61,7 +61,13 @@ metrics:
     default:
       create: true
       disabled:
+        # no sidecar used
         ThanosSidecarIsDown: Disable
+        # rule is broken: Prometheus complains:
+        # multiple matches for labels: many-to-one matching must be explicit (group_left/group_right)
+        ThanosReceiveNoUpload: Disable
+        # select two results for the same pod and therefore needs to be disabled
+        ThanosCompactMultipleRunning: Disable
   serviceMonitor:
     enabled: true
 
