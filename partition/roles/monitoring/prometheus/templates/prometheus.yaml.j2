@@ -160,6 +160,8 @@ scrape_configs:
 
 - job_name: 'ipmi'
   metrics_path: /ipmi
+  scrape_timeout: 25s
+  scrape_interval: 5m
   params:
     module: [default]
   file_sd_configs:

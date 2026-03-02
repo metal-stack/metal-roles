@@ -159,6 +159,8 @@ metal_stack_release:
     logging_chart_repo: "helm-charts.logging.loki.repository"
     logging_promtail_chart_version: "helm-charts.logging.promtail.version"
     logging_promtail_chart_repo: "helm-charts.logging.promtail.repository"
+    gardener_logging_promtail_chart_version: "helm-charts.logging.promtail.version"
+    gardener_logging_promtail_chart_repo: "helm-charts.logging.promtail.repository"
     prometheus_chart_version: "helm-charts.monitoring.kube-prometheus-stack.version"
     prometheus_stack_repo: "helm-charts.monitoring.kube-prometheus-stack.repository"
     thanos_chart_version: "helm-charts.monitoring.thanos.version"
