@@ -9,6 +9,8 @@ objstoreConfig: |-
 
 compactor:
   enabled: true
+  persistence:
+    size: 20Gi
 
 storegateway:
   enabled: true
