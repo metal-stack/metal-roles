@@ -20,11 +20,11 @@ storegateway:
   enabled: true
 
   livenessProbe:
-    failureThreshold: 30
+    failureThreshold: {{ monitoring_thanos_compactor_probe_failure_threshold }}
   readinessProbe:
-    failureThreshold: 30
+    failureThreshold: {{ monitoring_thanos_compactor_probe_failure_threshold }}
 
-  resourcesPreset: "medium"
+  resourcesPreset: {{ monitoring_thanos_resource_preset }}
 
 ruler:
   enabled: true
@@ -95,7 +95,7 @@ receive:
     tls: {{ monitoring_thanos_receive_ingress_tls }}
   persistence:
     size: {{ monitoring_thanos_receive_size }}
-  resourcesPreset: "medium"
+  resourcesPreset: {{ monitoring_thanos_resource_preset }}
 
 {% if monitoring_thanos_receive_ingress_basic_auth %}
 extraDeploy:
