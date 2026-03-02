@@ -19,6 +19,13 @@ compactor:
 storegateway:
   enabled: true
 
+  livenessProbe:
+    failureThreshold: 30
+  readinessProbe:
+    failureThreshold: 30
+
+  resourcesPreset: "medium"
+
 ruler:
   enabled: true
 
@@ -88,6 +95,7 @@ receive:
     tls: {{ monitoring_thanos_receive_ingress_tls }}
   persistence:
     size: {{ monitoring_thanos_receive_size }}
+  resourcesPreset: "medium"
 
 {% if monitoring_thanos_receive_ingress_basic_auth %}
 extraDeploy:
