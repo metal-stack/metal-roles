@@ -61,6 +61,9 @@ monitoring_prometheus_kube_etcd_enabled: false
 monitoring_prometheus_kube_controller_manager_enabled: false
 monitoring_prometheus_kubelet_enabled: false
 
+monitoring_prometheus_kube_proxy_service_selector:
+  component: kube-proxy
+
 # thanos
 monitoring_thanos_receive_enabled: false
 monitoring_thanos_receive_ingress_enabled: false

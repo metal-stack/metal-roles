@@ -286,10 +286,10 @@ kubeDns:
 
 kubeProxy:
   enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
-  serviceMonitor:
-    selector:
-      matchLabels:
-        component: kube-proxy
+{% if monitoring_prometheus_kube_proxy_service_selector %}
+  service:
+    selector: {{ monitoring_prometheus_kube_proxy_service_selector | to_json }}
+{% endif %}
 
 kubeScheduler:
   enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}
