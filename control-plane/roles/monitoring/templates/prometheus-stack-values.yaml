@@ -302,6 +302,9 @@ kubeControllerManager:
 
 kubelet:
   enabled: {{ monitoring_prometheus_kubelet_enabled }}
+  serviceMonitor:
+    enabled: {{ monitoring_prometheus_kubelet_enabled }}
+    kubelet: {{ monitoring_prometheus_kubelet_enabled }}
 
 defaultRules:
   rules:
