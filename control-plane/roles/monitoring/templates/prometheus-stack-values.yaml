@@ -1,7 +1,7 @@
 ---
 prometheus:
   ingress:
-    enabled: {{ monitoring_prometheus_ingress_enabled }}
+    enabled: {{ monitoring_prometheus_ingress_enabled | lower }}
     ingressClassName: nginx
     hosts:
       - {{ monitoring_prometheus_ingress_dns }}
@@ -13,6 +13,13 @@ prometheus:
 {% endif %}
 
   prometheusSpec:
+
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    scrapeConfigSelectorNilUsesHelmValues: false
+
     additionalArgs:
       - name: "web.enable-remote-write-receiver"
         value: ""
@@ -86,7 +93,7 @@ grafana:
 
 alertmanager:
   ingress:
-    enabled: {{ monitoring_alertmanager_ingress_enabled }}
+    enabled: {{ monitoring_alertmanager_ingress_enabled | lower }}
     ingressClassName: nginx
     hosts:
       - {{ monitoring_alertmanager_ingress_dns }}
@@ -146,14 +153,14 @@ alertmanager:
       group_by: ['severity', 'alertname', 'namespace', 'pod', 'job']
       group_wait: 30s
       group_interval: 30s
-      repeat_interval: 30s
+      repeat_interval: 600s
       routes:
       - receiver: 'null'
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
       - receiver: slack
-        repeat_interval: 1h
+        repeat_interval: 3h
         continue: true
 {% endif %}
 {% for route in monitoring_alertmanager_additional_routes %}
@@ -272,22 +279,35 @@ alertmanager:
 {% endraw %}
 
 coreDns:
-  enabled: {{ monitoring_prometheus_core_dns_enabled }}
+  enabled: {{ monitoring_prometheus_core_dns_enabled | lower }}
 
 kubeDns:
-  enabled: {{ monitoring_prometheus_kube_dns_enabled }}
+  enabled: {{ monitoring_prometheus_kube_dns_enabled | lower }}
 
 kubeProxy:
-  enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
+  enabled: {{ monitoring_prometheus_kube_proxy_enabled | lower }}
+{% if monitoring_prometheus_kube_proxy_service_selector %}
+  service:
+    selector: {{ monitoring_prometheus_kube_proxy_service_selector | to_json }}
+{% endif %}
 
 kubeScheduler:
-  enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}  
+  enabled: {{ monitoring_prometheus_kube_scheduler_enabled | lower }}
 
 kubeEtcd:
-  enabled: {{ monitoring_prometheus_kube_etcd_enabled }}
+  enabled: {{ monitoring_prometheus_kube_etcd_enabled | lower }}
 
 kubeControllerManager:
-  enabled: {{ monitoring_prometheus_kube_controller_manager_enabled }}
+  enabled: {{ monitoring_prometheus_kube_controller_manager_enabled | lower }}
+
+kubelet:
+  enabled: {{ monitoring_prometheus_kubelet_enabled | lower }}
+
+{% if not monitoring_prometheus_kubelet_enabled %}
+defaultRules:
+  disabled:
+    KubeletDown: true
+{% endif %}
 
 {% raw %}
 additionalPrometheusRulesMap:
@@ -346,7 +366,7 @@ additionalPrometheusRulesMap:
           description: "The metal_api response status code is not in the expected range."
       - alert: MetalFailedMachineReclaim
         expr: (metal_machine_issues{issueid="failed-machine-reclaim"} == 1) * on (machineid) group_left(partition,state) metal_machine_allocation_info{state!="LOCKED"} * on (issueid) group_left(description,severity,refurl) metal_machine_issues_info
-        for: 10m
+        for: 90m
         labels:
           severity: warning
         annotations:
@@ -360,7 +380,7 @@ additionalPrometheusRulesMap:
           description: "Machine `{{ $labels.machineid }}` in partition `{{ $labels.partition }}` has no event container. Use `metalctl machine issues` for further inspection ({{ $labels.refurl }}). The issue is not reported if an operator locks this machine."
       - alert: MetalBmcInfoOutdated
         expr: (metal_machine_issues{issueid="bmc-info-outdated"} == 1) * on (machineid) group_left(partition,state) metal_machine_allocation_info{state!="LOCKED"} * on (issueid) group_left(description,severity,refurl) metal_machine_issues_info
-        for: 10m
+        for: 60m
         labels:
           severity: warning
         annotations:
@@ -451,17 +471,6 @@ additionalPrometheusRulesMap:
         annotations:
           summary: "Switch sync is slow on {{ $labels.switchname }}"
           description: "Average sync duration of {{ $labels.switchname }} in partition {{ $labels.partition }} is exceeding two seconds for more than 5 minutes."
-  "sonic.rules":
-    groups:
-    - name: sonic.rules
-      rules:
-      - alert: SonicSwitchNotScrapable
-        expr: sum(up{job="sonic-exporter"}) by (instance) == 0
-        for: 10m
-        labels:
-          severity: critical
-        annotations:
-          description: "Sonic switch {{ $labels.instance }} could not be scraped for more than 10 minutes."
 {% endraw %}
 {% if monitoring_gardener_enabled %}
 {% raw %}
