@@ -47,13 +47,13 @@ nsq_registry_auth:
 nsq_enable_security_context: false
 
 nsq_sts_security_context:
-#  runAsUser: 1001
-#  runAsNonRoot: true
-#  runAsGroup: 1
-#  fsGroupChangePolicy: "OnRootMismatch"
+  runAsUser: 1001
+  runAsNonRoot: true
+  runAsGroup: 1
+  fsGroupChangePolicy: "OnRootMismatch"
 
 nsq_container_security_context:
-#  allowPrivilegeEscalation: false
-#  capabilities:
-#    drop: ["ALL"]
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
 

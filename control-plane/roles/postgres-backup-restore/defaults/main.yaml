@@ -71,13 +71,13 @@ postgres_registry_auth:
 postgres_enable_security_context: false
 
 postgres_sts_security_context:
-#  fsGroup: 1
-#  fsGroupChangePolicy: "OnRootMismatch"
-#  runAsUser: 1001
-#  runAsNonRoot: true
-#  runAsGroup: 1
+  fsGroup: 1
+  fsGroupChangePolicy: "OnRootMismatch"
+  runAsUser: 1001
+  runAsNonRoot: true
+  runAsGroup: 1
 
 postgres_container_security_context:
-#  allowPrivilegeEscalation: false
-#  capabilities:
-#    drop: ["ALL"]
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
