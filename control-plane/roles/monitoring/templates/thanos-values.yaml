@@ -16,6 +16,8 @@ compactor:
   persistence:
     size: {{ monitoring_thanos_compactor_size }}
 
+  resourcesPreset: {{ monitoring_thanos_compactor_resource_preset }}
+
 storegateway:
   enabled: true
 
