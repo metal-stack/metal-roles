@@ -3,18 +3,20 @@ image:
   repository: {{ (thanos_image_name | split('/'))[1:] | join('/') if '/' in thanos_image_name else thanos_image_name }}
   tag: "{{ thanos_image_tag }}"
 
-{% if monitoring_thanos_object_store_config is defined %}
-objstoreConfig: |-
-  {{ monitoring_thanos_object_store_config | indent(2) }}
-
 global:
   security:
     allowInsecureImages: true
+
+{% if monitoring_thanos_object_store_config is defined %}
+objstoreConfig: |-
+  {{ monitoring_thanos_object_store_config | indent(2) }}
 
 compactor:
   enabled: true
   persistence:
     size: {{ monitoring_thanos_compactor_size }}
+
+  resourcesPreset: {{ monitoring_thanos_compactor_resource_preset }}
 
 storegateway:
   enabled: true
