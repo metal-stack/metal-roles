@@ -15,6 +15,10 @@ compactor:
   enabled: true
   persistence:
     size: {{ monitoring_thanos_compactor_size }}
+{% if monitoring_thanos_compactor_storage_class %}
+    storageClass: {{ monitoring_thanos_compactor_storage_class }}
+{% endif %}
+
 
   resourcesPreset: {{ monitoring_thanos_compactor_resource_preset }}
 

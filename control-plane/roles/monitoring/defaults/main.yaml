@@ -77,6 +77,7 @@ monitoring_thanos_receive_probe_failure_threshold: 30
 
 monitoring_thanos_compactor_size: 20Gi
 monitoring_thanos_compactor_resource_preset: "medium"
+monitoring_thanos_compactor_storage_class:
 
 monitoring_thanos_object_store_resource_preset: "medium"
 monitoring_thanos_object_store_probe_failure_threshold: 30
