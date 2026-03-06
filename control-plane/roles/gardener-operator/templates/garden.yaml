@@ -260,7 +260,7 @@ spec:
     #   logLevel: info # either {debug,info,error}
 {% if gardener_operator_dashboard_enabled %}
       gardenerDashboard:
-        logLevel: {{ gardener_operator_dashboard_log_level }} # {trace,debug,info,warn,error}
+        logLevel: "{{ gardener_operator_dashboard_log_level }}" # {trace,debug,info,warn,error}
         # enableTokenLogin: true
         # frontendConfigMapRef:
         #   name: gardener-dashboard-frontend
@@ -274,10 +274,10 @@ spec:
         #     name: gardener-dashboard-github
         #   pollInterval: 15m
         oidcConfig:
-          clientIDPublic: {{ gardener_operator_dashboard_oidc_client_id_public }}
-          issuerURL: {{ gardener_operator_dashboard_oidc_issuer_url }}
-          sessionLifetime: {{ gardener_operator_dashboard_oidc_session_lifetime }}
-          additionalScopes: {{ gardener_operator_dashboard_oidc_additional_scopes }}
+          clientIDPublic: "{{ gardener_operator_dashboard_oidc_client_id_public }}"
+          issuerURL: "{{ gardener_operator_dashboard_oidc_issuer_url }}"
+          sessionLifetime: "{{ gardener_operator_dashboard_oidc_session_lifetime }}"
+          additionalScopes: "{{ gardener_operator_dashboard_oidc_additional_scopes }}"
           secretRef:
             name: gardener-dashboard-oidc
           # certificateAuthoritySecretRef:

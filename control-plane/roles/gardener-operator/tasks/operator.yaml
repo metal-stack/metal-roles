@@ -58,7 +58,7 @@
         client_secret: "{{ gardener_operator_dashboard_oidc_client_secret | string }}"
     apply: yes
   when: gardener_operator_dashboard_enabled
-  # no_log: yes
+  no_log: yes
 
 # TODO
 # - name: Create gardener dashboard frontend configmap
