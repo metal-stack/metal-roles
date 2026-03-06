@@ -54,8 +54,8 @@
         namespace: garden
       type: Opaque
       stringData:
-        client_id: "{{ gardener_operator_dashboard_oidc_client_id }}"
-        client_secret: "{{ gardener_operator_dashboard_oidc_client_secret }}"
+        client_id: "{{ gardener_operator_dashboard_oidc_client_id | string }}"
+        client_secret: "{{ gardener_operator_dashboard_oidc_client_secret | string }}"
     apply: yes
   when: gardener_operator_dashboard_enabled
   # no_log: yes
