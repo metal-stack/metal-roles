@@ -277,7 +277,7 @@ spec:
           clientIDPublic: "{{ gardener_operator_dashboard_oidc_client_id_public }}"
           issuerURL: "{{ gardener_operator_dashboard_oidc_issuer_url }}"
           sessionLifetime: "{{ gardener_operator_dashboard_oidc_session_lifetime }}"
-          additionalScopes: "{{ gardener_operator_dashboard_oidc_additional_scopes }}"
+          additionalScopes: {{ gardener_operator_dashboard_oidc_additional_scopes }}
           secretRef:
             name: gardener-dashboard-oidc
           # certificateAuthoritySecretRef:
