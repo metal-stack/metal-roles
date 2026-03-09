@@ -60,24 +60,22 @@
   when: gardener_operator_dashboard_enabled
   no_log: yes
 
-# TODO
-# - name: Create gardener dashboard frontend configmap
-#   k8s:
-#     definition:
-#       apiVersion: v1
-#       kind: ConfigMap
-#       metadata:
-#         name: gardener-dashboard-frontend
-#         namespace: garden
-#       data:
-#         frontend-config.yaml: |
-#           landingPageUrl:
-#           branding:
-#           themes:
-#           colors:
-#     apply: yes
-#   when: gardener_operator_dashboard_enabled
-#   no_log: yes
+- name: Create gardener dashboard frontend configmap
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: gardener-dashboard-frontend
+        namespace: garden
+      data:
+        frontend-config.yaml: |-
+          {{ gardener_operator_dashboard_frontend_config }}
+    apply: yes
+  when:
+    - gardener_operator_dashboard_enabled
+    - gardener_operator_dashboard_frontend_config
+  no_log: yes
 
 # - name: Create gardener dashboard assets configmap
 #   k8s:
