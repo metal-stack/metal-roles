@@ -65,13 +65,16 @@ rethinkdb_registry_auth:
 rethinkdb_enable_security_context: false
 
 rethinkdb_sts_security_context:
-  fsGroup: 1
-  runAsUser: 1001
-  runAsNonRoot: true
-  runAsGroup: 1
+  fsGroup: 2000
   fsGroupChangePolicy: "OnRootMismatch"
+  runAsUser:  1001
+  runAsNonRoot: true
+  runAsGroup: 3000
+  seccompProfile:
+    type: RuntimeDefault
 
 rethinkdb_container_security_context:
    allowPrivilegeEscalation: false
    capabilities:
      drop: ["ALL"]
+

@@ -49,8 +49,11 @@ nsq_enable_security_context: false
 nsq_sts_security_context:
   runAsUser: 1001
   runAsNonRoot: true
-  runAsGroup: 1
+  runAsGroup: 3000
   fsGroupChangePolicy: "OnRootMismatch"
+  fsGroup: 2000
+  seccompProfile:
+    type: RuntimeDefault
 
 nsq_container_security_context:
   allowPrivilegeEscalation: false
