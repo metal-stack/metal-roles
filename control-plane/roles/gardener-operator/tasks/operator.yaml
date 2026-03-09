@@ -75,7 +75,6 @@
   when:
     - gardener_operator_dashboard_enabled
     - gardener_operator_dashboard_frontend_config
-  no_log: yes
 
 # - name: Create gardener dashboard assets configmap
 #   k8s:
