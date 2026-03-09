@@ -262,8 +262,10 @@ spec:
       gardenerDashboard:
         logLevel: "{{ gardener_operator_dashboard_log_level }}" # {trace,debug,info,warn,error}
         # enableTokenLogin: true
-        # frontendConfigMapRef:
-        #   name: gardener-dashboard-frontend
+{% if gardener_operator_dashboard_frontend_config %}
+        frontendConfigMapRef:
+          name: gardener-dashboard-frontend
+{% endif %}
         # assetsConfigMapRef:
         #   name: gardener-dashboard-assets
         # gitHub:
