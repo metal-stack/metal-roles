@@ -69,8 +69,7 @@
         name: gardener-dashboard-frontend
         namespace: garden
       data:
-        frontend-config.yaml: |-
-          {{ gardener_operator_dashboard_frontend_config }}
+        frontend-config.yaml: "{{ gardener_operator_dashboard_frontend_config | to_nice_yaml(indent=2)}}"
     apply: yes
   when:
     - gardener_operator_dashboard_enabled
