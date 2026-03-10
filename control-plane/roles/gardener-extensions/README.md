@@ -88,6 +88,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_extension_networking_calico_helm_chart_tag            |           | The tag of the helm oci artifact to deploy this extension                                               |
 | gardener_extension_admission_calico_helm_chart_runtime_tag     |           | The tag of the helm oci artifact to deploy this extension's admission controller in the runtime cluster |
 | gardener_extension_admission_calico_helm_chart_application_tag |           | The tag of the helm oci artifact to deploy this extension's admission controller in the virtual garden  |
+| gardener_extension_networking_calico_image_vector_overwrite    |           | Allows overriding the image vector for the networking calico extension                                  |
 
 ### gardener-extension-networking-cilium
 
