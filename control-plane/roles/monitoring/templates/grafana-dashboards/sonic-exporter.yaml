@@ -2254,7 +2254,7 @@ data:
                   "refId": "A"
                 }
               ],
-              "title": "Tranceiver Info",
+              "title": "Transceiver Info",
               "transformations": [
                 {
                   "id": "seriesToRows",
