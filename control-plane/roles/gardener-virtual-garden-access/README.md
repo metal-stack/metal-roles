@@ -1,6 +1,6 @@
 # gardener-virtual-garden-access
 
-Creates a managed resource that rotates the token for a valid kubeconfig to access the Virtual Garden as described in https://gardener.cloud/docs/gardener/concepts/operator/#virtual-garden-kubeconfig.
+Creates a managed resource that rotates the token for a valid kubeconfig to access the Virtual Garden as described in <https://gardener.cloud/docs/gardener/concepts/operator/#virtual-garden-kubeconfig>.
 
 ## Variables
 

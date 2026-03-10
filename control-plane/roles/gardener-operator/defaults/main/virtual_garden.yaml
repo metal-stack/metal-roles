@@ -12,3 +12,5 @@ gardener_operator_virtual_garden_oidc_groups_prefix:
 gardener_operator_virtual_garden_oidc_ca:
 
 gardener_operator_expose_virtual_garden_through_ingress_nginx: false
+
+gardener_operator_virtual_garden_api_server_structured_authentication:

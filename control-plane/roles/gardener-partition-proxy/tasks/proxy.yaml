@@ -1,0 +1,61 @@
+---
+- name: Get kubeconfig for virtual garden access
+  virtual_garden_kubeconfig:
+    garden_name: "{{ gardener_partition_proxy_garden_name }}"
+
+- name: Get shooted seed kubeconfig
+  set_fact:
+    _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
+
+- name: Allocate IP address for the proxy in {{ gardener_shooted_seed.name }}
+  metal_ip:
+    api_url: "{{ gardener_partition_proxy_metal_api_url }}"
+    api_hmac: "{{ gardener_partition_proxy_metal_api_edit_hmac }}"
+    name: partition-proxy-{{ gardener_shooted_seed.name }}
+    description: For partition proxy in {{ gardener_shooted_seed.name }}
+    project: "{{ gardener_shooted_seed.metal_project_id }}"
+    network: "{{ gardener_shooted_seed.metal_network_id }}"
+    type: static
+  register: _ip
+  when: not gardener_partition_proxy_ip_address
+
+- name: Set IP address to use
+  set_fact:
+    _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else _ip.ip }}"
+
+- name: Create a DNS record
+  k8s:
+    definition:
+      apiVersion: extensions.gardener.cloud/v1alpha1
+      kind: DNSRecord
+      metadata:
+        name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
+        # only works from garden namespace for some reason, otherwise it won't get reconciled properly
+        namespace: garden
+      spec:
+        name: "{{ gardener_shooted_seed.ingress_domain }}"
+        recordType: A
+        secretRef:
+          name: partition-proxy-dns
+          namespace: garden
+        ttl: 120
+        type: "{{ gardener_partition_proxy_dns_provider }}"
+        values:
+          - "{{ _proxy_ip }}"
+    apply: yes
+
+- name: Create namespace in shooted seed
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: partition-proxy
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    apply: yes
+
+- name: Deploy proxy
+  k8s:
+    definition: "{{ lookup('template', 'proxy.yaml') }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    apply: yes

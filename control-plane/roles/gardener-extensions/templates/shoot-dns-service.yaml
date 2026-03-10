@@ -7,7 +7,10 @@ spec:
   resources:
   - kind: Extension
     type: shoot-dns-service
-    globallyEnabled: true
+    autoEnable:
+    - shoot
+    clusterCompatibility:
+    - shoot
   deployment:
     admission:
       runtimeCluster:
@@ -44,6 +47,7 @@ spec:
 
         dnsControllerManager:
           deploy: true
+          createCRDs: true
 {% if gardener_shoot_dns_service_dns_controller_manager_image_name or gardener_shoot_dns_service_dns_controller_manager_image_tag %}
           image:
 {% if gardener_shoot_dns_service_dns_controller_manager_image_tag %}

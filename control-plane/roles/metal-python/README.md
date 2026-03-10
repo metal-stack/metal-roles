@@ -19,7 +19,7 @@ None
 
 ## Examples
 
-```
+```yaml
 - name: Install metal-python
   include_role:
     name: metal-roles/control-plane/roles/metal-python

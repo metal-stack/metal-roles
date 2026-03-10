@@ -10,10 +10,18 @@
       - nsq_image_name is defined
       - nsq_image_tag is defined
 
+- name: Create namespace
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ nsq_namespace }}"
+        labels:
+          name: "{{ nsq_namespace }}"
+
 - name: Deploy nsq
   k8s:
     definition: "{{ lookup('template', 'nsq.yaml') }}"
-    namespace: "{{ metal_control_plane_namespace }}"
-
-- debug:
-    msg: "{{ metal_control_plane_stage_name }}"
+    namespace: "{{ nsq_namespace }}"

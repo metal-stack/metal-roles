@@ -1,0 +1,2 @@
+deployment:
+  replicas: {{ isolated_clusters_envoy_gateway_replicas | default(1) }}

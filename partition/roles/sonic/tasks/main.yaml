@@ -50,7 +50,7 @@
     dest: /etc/sonic/frr/frr.conf
   when: sonic_frr_render
   notify:
-  - restart bgp
+    - restart bgp
 
 - name: render iptables.json
   template:
@@ -58,7 +58,7 @@
     dest: /etc/sonic/iptables.json
   when: sonic_extended_cacl is defined
   notify:
-  - restart caclmgrd
+    - restart caclmgrd
 
 - name: Flush handlers
   meta: flush_handlers

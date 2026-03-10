@@ -1,4 +1,7 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
@@ -7,11 +10,28 @@
       - isolated_clusters_ntp_image_tag is not none
       - isolated_clusters_dns_image_tag is not none
       - isolated_clusters_registry_image_tag is not none
+      - isolated_clusters_registry_oci_mirror_image_name is not none
       - isolated_clusters_registry_oci_mirror_image_tag is not none
+
+- name: Check mandatory variables for ingress controller
+  assert:
+    fail_msg: "not all mandatory ingress controller variables given, check role documentation"
+    quiet: yes
+    that:
       - isolated_clusters_ingress_controller_chart_version is not none
       - isolated_clusters_ingress_controller_load_balancer_ip is not none
       - isolated_clusters_ingress_controller_load_balancer_source_ranges is not none
       - isolated_clusters_registry_ingress_fqdn is not none
+  when: isolated_clusters_ingress_controller_enabled | bool
+
+- name: Check mandatory variables for envoy gateway
+  assert:
+    fail_msg: "not all mandatory envoy gateway variables given, check role documentation"
+    quiet: yes
+    that:
+      - isolated_clusters_envoy_gateway_chart_version is not none
+      - isolated_clusters_registry_fqdn is not none
+  when: isolated_clusters_envoy_gateway_enabled | bool
 
 - name: Loop over clusters to install services
   include_tasks: services.yaml

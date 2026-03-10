@@ -4,6 +4,8 @@ gardener_operator_garden_name: "{{ gardener_defaults_garden_name }}"
 gardener_operator_repo_url: "{{ gardener_repo_url }}"
 gardener_operator_repo_ref: "{{ gardener_repo_ref }}"
 
+gardener_operator_runtime_cluster_provider: local
+
 gardener_operator_backup_infrastructure:
   # provider: gcp
   # region:
@@ -37,3 +39,5 @@ gardener_operator_image_vector_overwrite:
 gardener_operator_component_image_vector_overwrite:
 
 gardener_operator_helm_chart_tag: "{{ gardener_operator_image_tag }}"
+
+gardener_operator_shoot_admin_kubeconfig_max_expiration: "24h"

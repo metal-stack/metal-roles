@@ -6,10 +6,11 @@ It also contains the mapping of our [release vector](https://github.com/metal-st
 
 ## Variables
 
-There are global defaults for all roles of this project defined [here](defaults/main.yaml).
+There are [global defaults](./defaults/main.yaml) for all roles of this project defined.
 
-| Name                         | Mandatory | Description                               |
-| ---------------------------- | --------- | ----------------------------------------- |
-| metal_registry_auth_enabled  |           | Enables deployment of image pull secrets  |
-| metal_registry_auth_user     |           | The default auth user for the registry    |
-| metal_registry_auth_password |           | The password for the user of the registry |
+| Name                         | Mandatory | Description                                    |
+| ---------------------------- | --------- | ---------------------------------------------- |
+| metal_registry_auth_enabled  |           | Enables deployment of image pull secrets       |
+| metal_registry_auth_user     |           | The default auth user for the registry         |
+| metal_registry_auth_password |           | The password for the user of the registry      |
+| metal_registry_url           |           | The Container-registry url, default is docker. |
