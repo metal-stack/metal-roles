@@ -36,6 +36,7 @@
         type: metal
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true
+  when: _config.secret_binding_name is not defined
 
 - name: Deploy audit policy config map
   k8s:

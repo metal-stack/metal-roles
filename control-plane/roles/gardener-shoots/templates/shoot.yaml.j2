@@ -24,7 +24,7 @@ metadata:
 {% endif %}
 spec:
   seedName: "{{ _config.seed_name }}"
-  secretBindingName: "{{ _config.name }}-provider-secret"
+  secretBindingName: "{{ _config.secret_binding_name | default(_config.name + '-provider-secret') }}"
   cloudProfileName: metal
   region: "{{ _config.region }}"
   purpose: "{{ _config.purpose }}"
