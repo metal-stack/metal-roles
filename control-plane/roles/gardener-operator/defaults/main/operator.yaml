@@ -4,6 +4,8 @@ gardener_operator_garden_name: "{{ gardener_defaults_garden_name }}"
 gardener_operator_repo_url: "{{ gardener_repo_url }}"
 gardener_operator_repo_ref: "{{ gardener_repo_ref }}"
 
+gardener_operator_runtime_cluster_provider: local
+
 gardener_operator_backup_infrastructure:
   # provider: gcp
   # region:
