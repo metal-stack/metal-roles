@@ -32,3 +32,4 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_bmc_additional_volume_mounts |           | Volumes to mount into the metal-bmc, besides the default ones                                  |
 | metal_bmc_docker_network           |           | Docker network to use for metal-bmc                                                            |
 | metal_bmc_docker_log_driver        |           | Indicates where to write the docker logs to                                                    |
+| metal_bmc_lease_file               |           | Path to the metal bmc lease file                                                               |

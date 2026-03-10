@@ -18,6 +18,7 @@
   copy:
     content: "{{ prometheus_hosts_content }}"
     dest: "{{ prometheus_config_host_dir }}/hosts"
+  when: prometheus_hosts_content
 
 - name: generate prometheus.yaml
   template:
@@ -64,16 +65,29 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yaml"
   notify: restart prometheus
 
+# TODO: should we write a systemd timer that regularly writes the ipmi targets?
+
 - name: get dhcp leases
   shell: dhcp-lease-list --parsable 2>/dev/null | grep -oE "([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})" | sort
   register: prometheus_dhcp_leases
-  when: prometheus_ipmi_exporter_targets is not defined
+  when: not prometheus_ipmi_exporter_targets
 
-- name: generate prometheus_ipmi_exporter_targets
+- name: generate prometheus ipmi exporter targets
   set_fact:
-    prometheus_ipmi_exporter_targets: "{{ prometheus_ipmi_exporter_targets|default([]) + [item] }} "
-  loop: "{{ prometheus_dhcp_leases.stdout_lines }}"
-  when: prometheus_ipmi_exporter_targets is not defined
+    _targets: "{{ _targets | default([]) + [item] }} "
+  loop: "{{ prometheus_dhcp_leases.stdout_lines | sort }}"
+  when: not prometheus_ipmi_exporter_targets
+
+- name: filter ipmi exporter targets
+  set_fact:
+    _filtered_targets: "{{ _filtered_targets | default([]) + _targets | default([]) | ansible.utils.ipaddr(item) }} "
+  loop: "{{ prometheus_ipmi_exporter_allowed_cidrs }}"
+  when: not prometheus_ipmi_exporter_targets
+
+- name: set prometheus ipmi exporter targets
+  set_fact:
+    prometheus_ipmi_exporter_targets: "{{ _filtered_targets | default([]) }} "
+  when: not prometheus_ipmi_exporter_targets
 
 - name: generate prometheus_ipmi_exporter_targets_sd
   set_fact:
@@ -127,10 +141,32 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/blackbox-exporter.yaml"
   notify: restart prometheus
 
+- name: ensure rules directory
+  file:
+    path: "{{ prometheus_config_host_dir }}/rules"
+    state: directory
+
 - name: copy notification rules
   copy:
-    src: files/rules/
-    dest: "{{ prometheus_config_host_dir }}/rules/"
+    content: |
+      groups:
+      {{ lookup('ansible.builtin.vars', item.content_var) | indent(width=4) }}
+    dest: "{{ prometheus_config_host_dir }}/rules/{{ item.file }}"
+  loop:
+    - file: blackbox-exporter.yaml
+      content_var: partition_prometheus_rules_blackbox_exporter
+    - file: haproxy.yaml
+      content_var: partition_prometheus_rules_haproxy
+    - file: ipmi-rules.yaml
+      content_var: partition_prometheus_rules_ipmi
+    - file: leaf-rules.yaml
+      content_var: partition_prometheus_rules_leaf
+    - file: node-exporter.yaml
+      content_var: partition_prometheus_rules_node_exporter
+    - file: pixiecore-rules.yaml
+      content_var: partition_prometheus_rules_pixiecore
+    - file: sonic-exporter.yaml
+      content_var: partition_prometheus_rules_sonic_exporter
   notify: restart prometheus
 
 - name: deploy prometheus service
@@ -143,13 +179,7 @@
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
     systemd_docker_network: host
-    systemd_docker_volumes:
-      - "{{ prometheus_config_host_dir }}:/etc/prometheus"
-      - "{{ prometheus_config_host_dir }}/hosts:/etc/hosts:ro"
-      - "{{ prometheus_data_host_dir }}:/prometheus"
-    systemd_docker_ports:
-      - host_port: "{{ prometheus_port }}"
-        target_port: "{{ prometheus_port }}"
+    systemd_docker_volumes: "{{ lookup('template', 'prometheus-volumes.yaml.j2') | from_yaml }}"
     systemd_docker_command:
       - --config.file=/etc/prometheus/prometheus.yaml
       - --storage.tsdb.path=/prometheus

@@ -10,7 +10,7 @@ For example, host-specific download paths for the `config_db.json` or any additi
 To use the `ztp.json` file, add a DHCP option with code 67 to the DHCP server that serves the file.
 For example, add a section like the following to `/etc/dhcp/dhcpd.conf`:
 
-```
+```plain
 option sonic_ztp code 67 = text;
 
 host leaf01 {

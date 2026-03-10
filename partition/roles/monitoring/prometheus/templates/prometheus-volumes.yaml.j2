@@ -1,0 +1,5 @@
+- "{{ prometheus_config_host_dir }}:/etc/prometheus"
+{% if prometheus_hosts_content %}
+- "{{ prometheus_config_host_dir }}/hosts:/etc/hosts:ro"
+{% endif %}
+- "{{ prometheus_data_host_dir }}:/prometheus"

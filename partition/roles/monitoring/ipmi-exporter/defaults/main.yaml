@@ -7,3 +7,10 @@ monitoring_ipmi_exporter_docker_log_driver: json-file
 
 monitoring_ipmi_bmc_superuser: "root"
 monitoring_ipmi_bmc_superuser_pwd: "change-me"
+
+monitoring_ipmi_exporter_collectors:
+  - ipmi
+  - bmc
+  - chassis
+  - sel
+  - dcmi
