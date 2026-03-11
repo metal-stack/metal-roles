@@ -56,6 +56,14 @@ gardener_gardenlet_defaults:
   vertical_pod_autoscaler_enabled: true
   image_vector_overwrite: []
   component_image_vector_overwrite: []
+    # components:
+    # - name: etcd-druid
+    #   imageVectorOverwrite: |
+    #     images:
+    #     - name: etcd-backup-restore
+    #       sourceRepository: github.com/gardener/etcd-backup-restore
+    #       repository: europe-docker.pkg.dev/gardener-project/public/gardener/etcdbrctl
+    #       tag: "v0.36.3"
   kubeconfigSecretRef:
   garden_client_connection:
   feature_gates: {}
