@@ -2,7 +2,7 @@
 prometheus_port: 9090
 prometheus_docker_log_driver: json-file
 
-prometheus_scrape_interval: 30s
+prometheus_scrape_interval: 60s
 prometheus_evaluation_interval: 30s
 prometheus_scrape_timeout: 15s
 
