@@ -288,6 +288,10 @@ spec:
           #   name: gardener-dashboard-oidc-ca
         ingress:
           enabled: {{ gardener_operator_dashboard_ingress }}
+{% if gardener_operator_dashboard_wildcard_cert_secret_name %}
+          wildcardCertSecretName: {{ gardener_operator_dashboard_wildcard_cert_secret_name }}
+          # domains:
+{% endif %}
         # terminal:
         #   allowedHosts:
         #   - "*.seed.local.gardener.cloud"

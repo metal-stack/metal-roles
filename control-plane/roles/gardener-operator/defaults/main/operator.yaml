@@ -63,7 +63,7 @@ gardener_operator_dashboard_oidc_client_secret:
 # Toggle Log level
 gardener_operator_dashboard_log_level: debug
 # Toggle Ingress Deployment
-gardener_operator_dashboard_ingress: true
+gardener_operator_dashboard_ingress: false
 
 gardener_operator_dashboard_config:
   # frontend
