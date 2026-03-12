@@ -4,6 +4,8 @@ gardener_operator_garden_name: "{{ gardener_defaults_garden_name }}"
 gardener_operator_repo_url: "{{ gardener_repo_url }}"
 gardener_operator_repo_ref: "{{ gardener_repo_ref }}"
 
+gardener_operator_runtime_cluster_provider: local
+
 gardener_operator_backup_infrastructure:
   # provider: gcp
   # region:
@@ -35,6 +37,14 @@ gardener_operator_high_availability_control_plane: true
 
 gardener_operator_image_vector_overwrite:
 gardener_operator_component_image_vector_overwrite:
+  # components:
+  # - name: etcd-druid
+  #   imageVectorOverwrite: |
+  #     images:
+  #     - name: etcd-backup-restore
+  #       sourceRepository: github.com/gardener/etcd-backup-restore
+  #       repository: europe-docker.pkg.dev/gardener-project/public/gardener/etcdbrctl
+  #       tag: "v0.36.3"
 
 gardener_operator_helm_chart_tag: "{{ gardener_operator_image_tag }}"
 

@@ -5,15 +5,26 @@ metadata:
   namespace: "{{ _config.namespace }}"
   annotations:
 {% if 'managed_seed' in _config %}
-      shoot.gardener.cloud/managed-seed-api-server: "{{ _config.managed_seed.api_server | managed_seed_api_server_annotation() }}"
+    shoot.gardener.cloud/managed-seed-api-server: "{{ _config.managed_seed.api_server | managed_seed_api_server_annotation() }}"
 {% endif %}
-      cluster.metal-stack.io/name: "{{ _config.name }}"
-      cluster.metal-stack.io/project: "{{ _config.project_id }}"
-      cluster.metal-stack.io/tenant: "{{ metal_control_plane_provider_tenant }}"
-      cluster.metal-stack.io/partition: "{{ _config.partition }}"
+    cluster.metal-stack.io/name: "{{ _config.name }}"
+    cluster.metal-stack.io/project: "{{ _config.project_id }}"
+    cluster.metal-stack.io/tenant: "{{ _config.tenant | default(metal_control_plane_provider_tenant) }}"
+    cluster.metal-stack.io/partition: "{{ _config.partition }}"
+{% if _config.additional_annotations is defined %}
+{% for key, value in _config.additional_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+{% if _config.additional_labels is defined %}
+  labels:
+{% for key, value in _config.additional_labels.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
 spec:
   seedName: "{{ _config.seed_name }}"
-  secretBindingName: "{{ _config.name }}-provider-secret"
+  secretBindingName: "{{ _config.secret_binding_name | default(_config.name + '-provider-secret') }}"
   cloudProfileName: metal
   region: "{{ _config.region }}"
   purpose: "{{ _config.purpose }}"
@@ -105,8 +116,8 @@ spec:
       kubernetes:
         version: "{{ worker_group.k8s_version }}"
 {% endif %}
-      maximum: {{ worker_group.worker_count }}
-      minimum: {{ worker_group.worker_count }}
+      maximum: {{ worker_group.worker_count_maximum | default(worker_group.worker_count) }}
+      minimum: {{ worker_group.worker_count_minimum | default(worker_group.worker_count) }}
       maxSurge: {{ worker_group.worker_max_surge }}
       maxUnavailable: {{ worker_group.worker_max_unavailable }}
       machine:

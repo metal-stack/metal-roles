@@ -33,7 +33,7 @@ spec:
       services:
         - "{{ _gardener_runtime_cluster_service_cidr }}"
     provider:
-      region: local
+      region: {{ gardener_operator_runtime_cluster_provider }}
     #   zones:
     #   - "0"
     #   - "1"

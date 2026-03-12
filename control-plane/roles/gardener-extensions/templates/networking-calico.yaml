@@ -28,4 +28,8 @@ spec:
           repository: "{{ gardener_extension_networking_calico_image_name }}"
           tag: "{{ gardener_extension_networking_calico_image_tag }}"
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
+{% if gardener_extension_networking_calico_image_vector_overwrite %}
+        imageVectorOverwrite: |
+          images: {{ gardener_extension_networking_calico_image_vector_overwrite | to_json }}
+{% endif %}
       runtimeClusterValues: {}
