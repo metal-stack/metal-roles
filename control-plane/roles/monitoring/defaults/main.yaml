@@ -34,6 +34,9 @@ monitoring_alertmanager_ingress_basic_auth_user: alertmanager
 monitoring_alertmanager_ingress_basic_auth_password:
 monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertmanager_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
 
+monitoring_alertmanager_webhook_logger_repeat_interval: 60m
+monitoring_alertmanager_webhook_slack_repeat_interval: 24h
+
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_metal_api_hmac: "metal-view"
