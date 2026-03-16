@@ -11,6 +11,7 @@ gardener_shoot_default_metal_api_hmac:
 gardener_shoots: []
 # - name: shoot-a
 #   seed_name: seed-a
+#   owner: admin
 #   purpose: infrastructure
 #   project_id: 00000000-0000-0000-0000-000000000001
 #   region: region
@@ -39,7 +40,6 @@ gardener_shoots: []
 #       autoscaler:
 #         min_replicas: 1
 #         max_replicas: 5
-#   verticalPodAutoscaler: false
 #   # possible values are zone and node, please refer to the gardener documentation to what is appropriate for your environment:
 #   # https://gardener.cloud/docs/guides/high-availability/control-plane/
 #   high_availability_control_plane: node
@@ -49,7 +49,7 @@ gardener_shoots: []
 #   networking_type: calico
 #   networking_pod_cidr:
 #   networking_service_cidr:
-#   networking_config_provider_config:
+#   networking_provider_config:
 #     apiVersion: calico.networking.extensions.gardener.cloud/v1alpha1
 #     backend: none
 #     ipv4:
@@ -68,6 +68,7 @@ gardener_shoots: []
 #     tls:
 #     secret_name:
 #   structured_auth_config:
+#   secret_binding_name:
 #   csi_driver_lvm_extension:
 #     enabled: true
 #     default_storage_class:
@@ -75,6 +76,8 @@ gardener_shoots: []
 gardener_shoot_defaults:
   namespace: garden
   tenant: "{{ metal_control_plane_provider_tenant }}"
+  additional_annotations: {}
+  additional_labels: {}
   max_pods: 250
   node_cidr_mask_size: 23
   vertical_pod_autoscaler: true
