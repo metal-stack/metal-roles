@@ -21,9 +21,20 @@ gardener_partition_proxy_shooted_seeds: []
   #   proxy_servers:
   #     - name: duros
   #       port: 25005
+  #       external_port: 443   # optional, defaults to 443
+  #       mtls: true           # optional, defaults to true
   #       ca:
   #       cert:
   #       cert_key:
   #       addresses:
   #         - <address>:443
   #       type: grpcs
+  #     - name: ontap
+  #       port: 28443
+  #       external_port: 8443
+  #       mtls: false
+  #       cert:
+  #       cert_key:
+  #       addresses:
+  #         - <address>:443
+  #       type: https
