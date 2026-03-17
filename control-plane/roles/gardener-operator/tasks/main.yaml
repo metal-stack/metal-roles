@@ -30,5 +30,47 @@
       metadata:
         name: garden
 
+- name: Add trusted wildcard certificate for garden
+  k8s:
+    definition:
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: wildcard-garden-ingress
+        namespace: garden
+        labels:
+          use-clouddns-solver: "true"
+      spec:
+        dnsNames:
+        - "*.{{ gardener_operator_ingress_dns_domain }}"
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: "{{ gardener_monitoring_certs_certificate_cluster_issuer }}"
+        secretName: wildcard-garden-ingress-certificate
+  when: gardener_operator_dashboard_enabled
+
+- name: Wait until ingress secret for garden is ready
+  command: echo
+  changed_when: false
+  retries: 60
+  delay: 10
+  until:
+    - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='wildcard-garden-ingress-certificate')
+  when: gardener_operator_dashboard_enabled
+
+- name: Prepare certificate secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        labels:
+          gardener.cloud/role: garden-cert
+        name: wildcard-garden-ingress-certificate
+        namespace: garden
+      type: kubernetes.io/tls
+  when: gardener_operator_dashboard_enabled
+
 - name: Deploy Gardener Operator
   import_tasks: operator.yaml
