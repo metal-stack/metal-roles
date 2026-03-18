@@ -15,15 +15,23 @@ gardener_partition_proxy_image_tag: 1.29-alpine
 
 gardener_partition_proxy_shooted_seeds: []
   # - name: seed-a
-  #   ingress_domain: ingress.my-domain.com
   #   metal_project_id:
   #   metal_network_id:
   #   proxy_servers:
   #     - name: duros
-  #       port: 25005
+  #       ingress_domain: duros.fra-equ01.proxy.metal-stack.dev
+  #       mtls: true           # optional, defaults to true
   #       ca:
   #       cert:
   #       cert_key:
   #       addresses:
   #         - <address>:443
   #       type: grpcs
+  #     - name: ontap
+  #       ingress_domain: ontap.fra-equ01.proxy.metal-stack.dev
+  #       mtls: false
+  #       cert:
+  #       cert_key:
+  #       addresses:
+  #         - <address>:443
+  #       type: https

@@ -23,17 +23,25 @@
   set_fact:
     _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else _ip.ip }}"
 
-- name: Create a DNS record
+- name: Cleanup old DNS record for {{ gardener_shooted_seed.name }}
+  k8s:
+    api_version: extensions.gardener.cloud/v1alpha1
+    kind: DNSRecord
+    name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
+    namespace: garden
+    state: absent
+
+- name: Create DNS records for proxy servers
   k8s:
     definition:
       apiVersion: extensions.gardener.cloud/v1alpha1
       kind: DNSRecord
       metadata:
-        name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
+        name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}-{{ item.name }}"
         # only works from garden namespace for some reason, otherwise it won't get reconciled properly
         namespace: garden
       spec:
-        name: "{{ gardener_shooted_seed.ingress_domain }}"
+        name: "{{ item.ingress_domain }}"
         recordType: A
         secretRef:
           name: partition-proxy-dns
@@ -43,6 +51,9 @@
         values:
           - "{{ _proxy_ip }}"
     apply: yes
+  loop: "{{ gardener_shooted_seed.proxy_servers }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Create namespace in shooted seed
   k8s:
