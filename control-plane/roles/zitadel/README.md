@@ -22,7 +22,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | --------------------------- | --------- | -------------------------------------------------------------------------------------- |
 | zitadel_chart_version       |           | The chart version for deploying zitadel                                                |
 | zitadel_namespace           |           | The namespace into which zitadel is deployed                                           |
-| zitadel_init_image          | yes       | The zitadel-init image tag                                                             |
+| zitadel_init_image_name     | yes       | The zitadel-init image tag                                                             |
 | zitadel_init_image_tag      | yes       | The zitadel-init image name                                                            |
 | zitadel_image_tag           |           | An optional image overwrite for zitadel when not using the default from the helm chart |
 | zitadel_tools_kubectl_tag   |           | The zitadel tools kubectl image tag (of alpine/k8s)                                    |
