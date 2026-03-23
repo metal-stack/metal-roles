@@ -56,8 +56,8 @@ metal_stack_release:
     zitadel_db_backup_restore_sidecar_image_name: "docker-images.metal-stack.generic.backup-restore-sidecar.name"
     isolated_clusters_registry_oci_mirror_image_tag: "docker-images.metal-stack.generic.oci-mirror.tag"
     isolated_clusters_registry_oci_mirror_image_name: "docker-images.metal-stack.generic.oci-mirror.name"
-    zitadel_init_image_name: "docker-images.metal-stack.generic.zitadel-init.tag"
-    zitadel_init_image_tag: "docker-images.metal-stack.generic.zitadel-init.name"
+    zitadel_init_image_tag: "docker-images.metal-stack.generic.zitadel-init.tag"
+    zitadel_init_image_name: "docker-images.metal-stack.generic.zitadel-init.name"
     # gardener
     firewall_controller_manager_image_tag: "docker-images.metal-stack.gardener.firewall-controller-manager.tag"
     firewall_controller_manager_image_name: "docker-images.metal-stack.gardener.firewall-controller-manager.name"
