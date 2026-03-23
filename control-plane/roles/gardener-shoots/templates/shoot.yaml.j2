@@ -70,6 +70,14 @@ spec:
       enabled: {{ _config.vertical_pod_autoscaler }}
 {% if 'audit_extension_splunk' in _config or 'csi_driver_lvm_extension' in _config %}
   extensions:
+{% if 'xdr_extension' in _config %}
+  - type: xdr
+    disabled: {{ not _config.xdr_extension.enabled | lower }}
+    providerConfig:
+      apiVersion: xdr.metal.extensions.gardener.cloud/v1alpha1
+      kind: XDRConfig
+      tenant: {{ _config.xdr_extension.tenant }}
+{% endif %}
 {% if 'audit_extension_splunk' in _config %}
   - type: audit
     providerConfig:
