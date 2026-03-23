@@ -32,7 +32,7 @@
     state: present
     definition:
       metadata:
-        annotation: 
+        annotations: 
           confirmation.gardener.cloud/deletion: "true"
 
 - name: Cleanup old DNS record for {{ gardener_shooted_seed.name }}
