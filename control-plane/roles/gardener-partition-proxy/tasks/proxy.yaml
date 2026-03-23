@@ -29,7 +29,7 @@
     kind: DNSRecord
     name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
     namespace: garden
-    state: present
+    state: patched
     definition:
       metadata:
         annotations: 
@@ -42,8 +42,6 @@
     name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
     namespace: garden
     state: absent
-
-    
 
 - name: Create DNS records for proxy servers
   k8s:
