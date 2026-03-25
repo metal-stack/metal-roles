@@ -50,6 +50,7 @@ The `control-plane-defaults` folder contains defaults that are used by multiple 
 | isolated_clusters_envoy_gateway_load_balancer_ip                 |           | The load balancer IP for the Envoy Gateway service (optional).                                   |
 | isolated_clusters_envoy_gateway_load_balancer_source_ranges      |           | The load balancer source ranges for Envoy Gateway (optional).                                    |
 | isolated_clusters_envoy_gateway_registry_tls_secret_name         |           | The name of the TLS secret for registry HTTPS listener in Envoy Gateway.                         |
+| isolated_clusters_envoy_gateway_udp_session_idle_timeout         |           | Envoy UDP session idle timeout for managed UDP listeners (default: 1s).                          |
 | isolated_clusters_registry_fqdn                                  | yes*      | The FQDN for the registry service (required if envoy gateway enabled).                           |
 | isolated_clusters_registry_image_name                            |           | The image name of the registry service for the partition.                                        |
 | isolated_clusters_registry_image_tag                             | yes       | The tag or version of the registry service container image.                                      |
