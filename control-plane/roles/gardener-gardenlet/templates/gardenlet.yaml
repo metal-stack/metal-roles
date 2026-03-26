@@ -119,7 +119,7 @@ spec:
           excessCapacityReservation:
             enabled: false
           scheduling:
-            visible: false
+            visible: {{ _config.visible | default(false, true) | to_json }}
           topologyAwareRouting:
             enabled: false
           verticalPodAutoscaler:
