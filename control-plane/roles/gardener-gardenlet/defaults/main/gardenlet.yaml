@@ -45,6 +45,7 @@ gardener_gardenlets: []
   #   vertical_pod_autoscaler_enabled: true
   #   dns_domain:
   #   visible: false
+  #   additional_labels: {}
 
 gardener_gardenlet_defaults:
   backup_entry_deletion_grace_period_hours: 72

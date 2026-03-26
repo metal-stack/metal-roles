@@ -81,6 +81,11 @@ spec:
       metadata:
         labels:
           name: "{{ _config.name }}"
+{% if _config.additional_labels is defined %}
+{% for key, value in _config.additional_labels.items() %}
+          {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
       spec:
         backup:
           provider: {{ _config.backup_infrastructure.provider }}
