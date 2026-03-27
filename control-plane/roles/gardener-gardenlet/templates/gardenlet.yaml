@@ -130,4 +130,6 @@ spec:
           verticalPodAutoscaler:
             enabled: {{ _config.vertical_pod_autoscaler_enabled | lower }}
         taints:
-          - key: seed.gardener.cloud/protected
+{% for taint in _config.taints | default(["seed.gardener.cloud/protected"]) %}
+          - key: {{ taint }}
+{% endfor %}

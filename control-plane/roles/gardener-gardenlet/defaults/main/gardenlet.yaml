@@ -46,6 +46,8 @@ gardener_gardenlets: []
   #   dns_domain:
   #   visible: false
   #   additional_labels: {}
+  #   taints:
+  #     - seed.gardener.cloud/protected
 
 gardener_gardenlet_defaults:
   backup_entry_deletion_grace_period_hours: 72
