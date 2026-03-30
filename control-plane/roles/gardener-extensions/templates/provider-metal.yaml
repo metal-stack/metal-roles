@@ -52,8 +52,12 @@ spec:
 
         config:
 
+{% if gardener_extension_provider_metal_additional_network_policies %}
+{% if 'ingress_controller' in gardener_extension_provider_metal_additional_network_policies %}
           networkPolicies:
-            enabled: {{ gardener_extension_provider_metal_additional_network_policies | lower }}
+            enabled: {{ gardener_extension_provider_metal_additional_network_policies.ingress_controller.enabled | lower }}
+{% endif %}
+{% endif %}
 
           machineImages:
             {% for image in (gardener_extension_provider_metal_machine_images | machine_images_for_cloud_profile) -%}
