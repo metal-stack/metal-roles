@@ -73,6 +73,7 @@
           job: ipmi
         targets: {{ prometheus_ipmi_exporter_targets | to_json }}
     dest: "{{ prometheus_config_host_dir }}/file_sd/ipmi.yaml"
+  notify: restart prometheus
   when: prometheus_ipmi_exporter_targets
 
 - name: write systemd timer to dynamically write ipmi-exporter-targets file
