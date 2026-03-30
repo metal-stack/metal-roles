@@ -31,7 +31,7 @@
     owner: root
     group: root
     remote_src: true
-  register: _config_db.json
+  register: _config_db_json
 
 - name: Reload config if reload is required
   command: config reload --yes
@@ -39,13 +39,13 @@
   poll: 0
   when:
     - sonic_config_reload_config
-    - _config_db.json is changed
+    - _config_db_json is changed
 
 - name: Load config if not reloaded
   command: config load --yes
   when:
     - not sonic_config_reload_config
-    - _config_db.json is changed
+    - _config_db_json is changed
 
 - name: wait for new connection
   wait_for_connection:
