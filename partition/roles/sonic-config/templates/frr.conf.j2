@@ -180,6 +180,9 @@ router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
 !
 {% endif %}
 {% endfor %}
+{% for p in sonic_config_frr_prefixlists.values() %}
+{{ p }}
+{% endfor %}
 {% for i in sonic_config_interconnects.values() %}
 {% if i.prefixlists|default([]) %}
 {% for p in i.prefixlists %}
