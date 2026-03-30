@@ -23,7 +23,7 @@ You can look up all the default values of this role in the [defaults folder](def
 | nsq_namespace                  |           | The deployment's target namespace                                                           |
 | nsq_set_resource_limits        |           | Deploys nsq with or without resource limits (possibly disable for development environments) |
 | nsq_nsqd_resources             |           | The kubernetes resources for the actual nsqd container                                      |
-| nsq_nsq_admin_resources        |           | The kubernetes resources for the actual nsq admin container                                 |
+| nsq_nsqd_admin_resources       |           | The kubernetes resources for the actual nsq admin container                                 |
 | nsq_nsq_lookupd_resources      |           | The kubernetes resources for the actual nsq lookupd container                               |
 | nsq_log_level                  |           | The nsq log level                                                                           |
 | nsq_broadcast_address          |           | The nsq broadcast address                                                                   |

@@ -18,7 +18,7 @@ nsq_nsq_lookupd_resources:
   limits:
     memory: "100Mi"
     cpu: "1"
-nsq_nsq_admin_resources:
+nsq_nsqd_admin_resources:
   requests:
     memory: "32Mi"
     cpu: "30m"
@@ -59,4 +59,3 @@ nsq_container_security_context:
   allowPrivilegeEscalation: false
   capabilities:
     drop: ["ALL"]
-
