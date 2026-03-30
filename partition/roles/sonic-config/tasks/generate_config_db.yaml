@@ -53,6 +53,7 @@
     sleep: 5
     delay: 30
     timeout: 300
+  when: _config_db_json is changed
 
 - name: Remove temporary directory
   file:
