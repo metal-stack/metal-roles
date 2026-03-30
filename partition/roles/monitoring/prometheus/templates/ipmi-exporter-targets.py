@@ -5,6 +5,8 @@ import argparse
 import ipaddress
 import logging
 import sys
+import psutil
+import signal
 
 
 DEFAULT_DHCPD_LEASE_FILE = '/var/lib/dhcp/dhcpd.leases'
@@ -39,6 +41,8 @@ class IpmiTargetWriter:
 
         logging.info("successfully written ipmi-exporter targets file at %s" %
                      self.ipmi_exporter_file)
+
+        self.reload_prometheus()
 
     def ips_from_dhcpd_lease_file(self) -> Sequence[ipaddress.IPv4Address | ipaddress.IPv6Address]:
         ips = []
@@ -94,6 +98,22 @@ class IpmiTargetWriter:
             filtered.append(ip)
 
         return filtered
+
+    def reload_prometheus(self):
+        process = None
+
+        for proc in psutil.process_iter():
+            if proc.name() == "prometheus":
+                process = proc
+                break
+
+        if not process:
+            logging.error(
+                "unable to reload prometheus, no running process found")
+            return
+
+        proc.send_signal(signal.SIGHUP)
+        logging.info("reloaded prometheus")
 
 
 if __name__ == "__main__":

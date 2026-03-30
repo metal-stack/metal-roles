@@ -95,7 +95,7 @@
 - name: enable or disable ipmi-exporter-targets.timer
   systemd:
     name: ipmi-exporter-targets.timer
-    daemon_reload: yes
+    daemon_reload: true
     enabled: "{{ not prometheus_ipmi_exporter_targets }}"
     state: "{{ 'stopped' if prometheus_blackbox_exporter_targets else 'started' }}"
   failed_when: '_result is failed or ("msg" in _result and "Could not find the requested service" not in _result.msg)'
