@@ -93,13 +93,16 @@
     label: "{{ item.dest }}"
   when: not prometheus_ipmi_exporter_targets
 
-- name: enable or disable ipmi-exporter-targets.timer
+- name: enable or disable ipmi-exporter-targets.{{ item }}
   systemd:
-    name: ipmi-exporter-targets.timer
+    name: ipmi-exporter-targets.{{ item }}
     daemon_reload: true
     enabled: "{{ not prometheus_ipmi_exporter_targets }}"
     state: "{{ 'stopped' if prometheus_blackbox_exporter_targets else 'started' }}"
   failed_when: '_result is failed or ("msg" in _result and "Could not find the requested service" not in _result.msg)'
+  loop:
+    - service
+    - timer
   register: _result
 
 - name: generate prometheus_promtail_sd
