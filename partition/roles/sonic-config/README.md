@@ -160,6 +160,10 @@ sonic_config_portchannels:
       number: 01
 ```
 
+### `sonic_vlan_members`
+
+This variable was removed.
+
 ### `sonic_vteps`
 
 Change

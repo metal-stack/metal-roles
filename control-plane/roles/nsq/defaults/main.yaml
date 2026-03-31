@@ -59,4 +59,3 @@ nsq_container_security_context:
   allowPrivilegeEscalation: false
   capabilities:
     drop: ["ALL"]
-
