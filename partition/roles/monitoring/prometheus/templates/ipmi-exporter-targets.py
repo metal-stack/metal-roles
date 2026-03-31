@@ -1,12 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from collections.abc import Sequence
 import argparse
 import ipaddress
 import logging
 import sys
-import psutil
+import subprocess
 import signal
+import os
 
 
 DEFAULT_DHCPD_LEASE_FILE = '/var/lib/dhcp/dhcpd.leases'
@@ -44,7 +45,7 @@ class IpmiTargetWriter:
 
         self.reload_prometheus()
 
-    def ips_from_dhcpd_lease_file(self) -> Sequence[ipaddress.IPv4Address | ipaddress.IPv6Address]:
+    def ips_from_dhcpd_lease_file(self):
         ips = []
 
         logging.info("reading dhcpd lease file at %s" % self.dhcpd_lease_file)
@@ -71,7 +72,7 @@ class IpmiTargetWriter:
 
         return ips
 
-    def filter_ips(self, ips: Sequence[ipaddress.IPv4Address | ipaddress.IPv6Address]) -> Sequence[ipaddress.IPv4Address | ipaddress.IPv6Address]:
+    def filter_ips(self, ips):
         allowed_networks = []
         filtered = []
 
@@ -84,14 +85,15 @@ class IpmiTargetWriter:
 
         for ip in ips:
             if allowed_networks:
-                skip = False
+                skip = True
 
                 for nw in allowed_networks:
-                    if not ip in nw:
-                        logging.info("filtered out ip address: %s" % str(ip))
-                        skip = True
+                    if ip in nw:
+                        skip = False
+                        break
 
                 if skip:
+                    logging.info("filtered out ip address: %s" % str(ip))
                     continue
 
             logging.info("including ip address in target file: %s" % str(ip))
@@ -100,19 +102,15 @@ class IpmiTargetWriter:
         return filtered
 
     def reload_prometheus(self):
-        process = None
-
-        for proc in psutil.process_iter():
-            if proc.name() == "prometheus":
-                process = proc
-                break
-
-        if not process:
-            logging.error(
-                "unable to reload prometheus, no running process found")
+        try:
+            pid = subprocess.check_output(
+                args=["ps", "--format", "pid", "--no-headers", "-C", "prometheus"])
+        except subprocess.CalledProcessError as e:
+            logging.error("unable to find out pid of prometheus: %s" % e)
             return
 
-        proc.send_signal(signal.SIGHUP)
+        os.kill(int(pid), signal.SIGHUP)
+
         logging.info("reloaded prometheus")
 
 
