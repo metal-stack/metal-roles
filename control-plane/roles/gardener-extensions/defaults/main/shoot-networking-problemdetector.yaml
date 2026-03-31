@@ -1,0 +1,6 @@
+---
+gardener_extension_shoot_networking_problemdetector_image_name: europe-docker.pkg.dev/gardener-project/public/gardener/extensions/shoot-networking-problemdetector
+gardener_extension_shoot_networking_problemdetector_image_tag: latest
+
+gardener_extension_shoot_networking_problemdetector_helm_chart_name: europe-docker.pkg.dev/gardener-project/public/charts/gardener/extensions/shoot-networking-problemdetector
+gardener_extension_shoot_networking_problemdetector_helm_chart_tag: v0.33.0-dev
