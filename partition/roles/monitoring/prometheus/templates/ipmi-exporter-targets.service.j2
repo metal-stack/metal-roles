@@ -1,0 +1,9 @@
+[Unit]
+Description=Generate ipmi-exporter targets
+Wants=ipmi-exporter-targets.timer
+[Service]
+ExecStart={{ prometheus_config_host_dir }}/ipmi-exporter-targets.py --prometheus-ipmi-file-sd {{ prometheus_config_host_dir }}/file_sd/ipmi.yaml{% for nw in prometheus_ipmi_exporter_allowed_cidrs %} {{ nw }}{% endfor %}
+
+WorkingDirectory={{ prometheus_config_host_dir }}
+[Install]
+WantedBy=multi-user.target
