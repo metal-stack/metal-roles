@@ -141,6 +141,13 @@ alertmanager:
         httpGet:
           path: /ready
           port: webhook-logger
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 2Gi
+
   config:
     global:
       resolve_timeout: 5m
