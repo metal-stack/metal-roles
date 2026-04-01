@@ -10,8 +10,8 @@ gardener_partition_proxy_dns_provider:
 gardener_partition_proxy_ip_address:
 
 # TODO: move to release vector?
-gardener_partition_proxy_image_name: haproxy
-gardener_partition_proxy_image_tag: 3.1-alpine
+gardener_partition_proxy_image_name: nginx
+gardener_partition_proxy_image_tag: 1.29-alpine
 
 gardener_partition_proxy_shooted_seeds: []
   # - name: seed-a
