@@ -125,7 +125,7 @@ spec:
         image: {{ worker_group.worker_image | to_json }}
 {% if 'machine_creation_timeout' in worker_group or 'machine_creation_timeout' in _config %}
       machineControllerManager:
-        machineCreationTimeout: {{ worker_group.machine_creation_timeout | default(_config.machine_creation_timeout) | to_json }}
+        machineCreationTimeout: {{ worker_group.machine_creation_timeout | default(_config.machine_creation_timeout) }}
 {% endif %}
 {% endfor %}
     infrastructureConfig:
