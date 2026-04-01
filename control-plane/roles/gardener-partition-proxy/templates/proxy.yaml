@@ -25,9 +25,22 @@ spec:
           image: "{{ gardener_partition_proxy_image_name }}:{{ gardener_partition_proxy_image_tag }}"
           ports:
             - containerPort: 443
+            - containerPort: 8404
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8404
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8404
+            initialDelaySeconds: 5
+            periodSeconds: 10
           volumeMounts:
-            - name: nginx-conf
-              mountPath: /etc/nginx
+            - name: haproxy-conf
+              mountPath: /usr/local/etc/haproxy
               readOnly: true
 {% for conf in gardener_shooted_seed.proxy_servers %}
             - name: certs-{{ conf.name }}
@@ -35,7 +48,7 @@ spec:
               readOnly: true
 {% endfor %}
       volumes:
-        - name: nginx-conf
+        - name: haproxy-conf
           configMap:
             name: partition-proxy
 {% for conf in gardener_shooted_seed.proxy_servers %}

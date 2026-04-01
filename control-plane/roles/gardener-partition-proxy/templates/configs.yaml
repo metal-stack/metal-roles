@@ -5,8 +5,10 @@ metadata:
   name: partition-proxy
   namespace: partition-proxy
 data:
-  nginx.conf: |
-    {{ lookup('template', 'nginx.conf') | indent(width=4, first=false) }}
+  haproxy.cfg: |
+    {{ lookup('template', 'haproxy.cfg') | indent(width=4, first=false) }}
+  crt-list.cfg: |
+    {{ lookup('template', 'crt-list.cfg') | indent(width=4, first=false) }}
 {% for conf in gardener_shooted_seed.proxy_servers %}
 ---
 apiVersion: v1
@@ -19,6 +21,5 @@ data:
 {% if conf.mtls | default(true) %}
   ca.pem: "{{ conf.ca | b64encode }}"
 {% endif %}
-  cert.pem: "{{ conf.cert | b64encode }}"
-  cert.key: "{{ conf.cert_key | b64encode }}"
+  combined.pem: "{{ (conf.cert ~ '\n' ~ conf.cert_key) | b64encode }}"
 {% endfor %}
