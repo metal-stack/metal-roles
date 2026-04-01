@@ -23,6 +23,26 @@
   set_fact:
     _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else _ip.ip }}"
 
+- name: Check if old DNS record exists
+  k8s_info:
+    api_version: extensions.gardener.cloud/v1alpha1
+    kind: DNSRecord
+    name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
+    namespace: garden
+  register: _old_dns_record
+
+- name: Annotate old DNS record to allow deletion
+  k8s:
+    api_version: extensions.gardener.cloud/v1alpha1
+    kind: DNSRecord
+    name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
+    namespace: garden
+    state: patched
+    definition:
+      metadata:
+        annotations:
+          confirmation.gardener.cloud/deletion: "true"
+  when: _old_dns_record.resources | length > 0
 
 - name: Cleanup old DNS record for {{ gardener_shooted_seed.name }}
   k8s:
@@ -31,6 +51,7 @@
     name: "partition-proxy-dns-record-{{ gardener_shooted_seed.name }}"
     namespace: garden
     state: absent
+  when: _old_dns_record.resources | length > 0
 
 - name: Create DNS records for proxy servers
   k8s:

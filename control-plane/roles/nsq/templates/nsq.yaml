@@ -79,7 +79,7 @@ spec:
         - containerPort: 4171
           name: http
 {% if nsq_set_resource_limits %}
-        resources: {{ nsq_nsqd_admin_resources | to_json }}
+        resources: {{ nsq_nsq_admin_resources | to_json }}
 {% endif %}
         livenessProbe:
           httpGet:
