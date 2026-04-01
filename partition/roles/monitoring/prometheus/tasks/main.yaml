@@ -102,7 +102,6 @@
   loop:
     - service
     - timer
-  register: _result
   when: not prometheus_ipmi_exporter_targets
 
 - name: disable ipmi-exporter-targets
