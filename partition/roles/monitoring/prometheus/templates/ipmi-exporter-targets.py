@@ -43,7 +43,8 @@ class IpmiTargetWriter:
         logging.info("successfully written ipmi-exporter targets file at %s" %
                      self.ipmi_exporter_file)
 
-        self.reload_prometheus()
+        # we do not need to trigger a config reload of prometheus,
+        # it watches the file_sd directory and reloads automatically
 
     def ips_from_dhcpd_lease_file(self):
         ips = []
@@ -100,18 +101,6 @@ class IpmiTargetWriter:
             filtered.append(ip)
 
         return filtered
-
-    def reload_prometheus(self):
-        try:
-            pid = subprocess.check_output(
-                args=["ps", "--format", "pid", "--no-headers", "-C", "prometheus"])
-        except subprocess.CalledProcessError as e:
-            logging.error("unable to find out pid of prometheus: %s" % e)
-            return
-
-        os.kill(int(pid), signal.SIGHUP)
-
-        logging.info("reloaded prometheus")
 
 
 if __name__ == "__main__":
