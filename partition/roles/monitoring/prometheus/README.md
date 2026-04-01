@@ -30,6 +30,8 @@ you define them adequately as well.
 | prometheus_lightbox_exporter_targets             |           | Lightbox exporter targets to scrape from                                                                                                    |
 | prometheus_lightos_smart_targets                 |           | Lightos smart targets to scrape from                                                                                                        |
 | prometheus_ipmi_exporter_targets                 |           | IPMI exporter targets to scrape from                                                                                                        |
+| prometheus_ipmi_scrape_interval                  |           | The scrape interval for ipmi exporter targets                                                                                               |
+| prometheus_ipmi_scrape_timeout                   |           | The scrape timeout for ipmi exporter targets                                                                                                |
 | prometheus_hosts_content                         |           | Available hosts for prometheus                                                                                                              |
 | prometheus_blackbox_exporter_icmp_groups         |           | ICMP groups for the blackbox exporter                                                                                                       |
 | prometheus_blackbox_exporter_metal_api_probe_url |           | metal-api probe URL for the blackbox exporter                                                                                               |
