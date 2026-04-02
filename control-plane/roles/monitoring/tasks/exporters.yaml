@@ -16,11 +16,3 @@
     definition: "{{ lookup('template', 'metrics-exporters/event-exporter.yaml') }}"
     namespace: "{{ monitoring_namespace }}"
     apply: true
-
-# TODO: Fix to make compatible with gardener-operator
-# - name: Deploy gardener-metrics-exporter
-#   k8s:
-#     definition: "{{ lookup('template', 'metrics-exporters/gardener-metrics-exporter.yaml') }}"
-#     namespace: "{{ monitoring_namespace }}"
-#     apply: true
-#   when: monitoring_gardener_enabled
