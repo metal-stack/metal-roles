@@ -1,4 +1,7 @@
 ---
+crds:
+  enabled: {{ monitoring_crds_enabled | lower }}
+
 prometheus:
   ingress:
     enabled: {{ monitoring_prometheus_ingress_enabled | lower }}
@@ -27,10 +30,31 @@ prometheus:
     image:
       tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
+{% if monitoring_prometheus_remote_write is defined %}
+{% for rw in monitoring_prometheus_remote_write %}
+  - url: {{ rw.url | indent(2) }}
+{% if rw.headers is defined %}
+    headers:
+{% for key, value in rw.headers.items() %}
+      "{{ key }}": "{{ value }}"
+{% endfor %}
+{% endif %}
+{% if rw.basic_auth is defined %}
+    basic_auth:
+      username: {{ rw.basic_auth.username }}
+      password: {{ rw.basic_auth.password }}
+{% endif %}
+{% endfor %}
+{% endif %}
 {% if monitoring_prometheus_storage_spec is defined %}
     storageSpec:
       {{ monitoring_prometheus_storage_spec | indent(6) }}
 {% endif %}
+{% if monitoring_prometheus_service_monitor_selector_spec is defined %}
+    serviceMonitorSelector:
+      {{ monitoring_prometheus_service_monitor_selector_spec | indent(6) }}
+{% endif %}
+{% if monitoring_thanos_enabled %}
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
       version: "{{ thanos_image_tag }}"
@@ -42,8 +66,13 @@ prometheus:
 {% endif %}
   thanosService:
     enabled: true
+{% endif %}
+
+prometheusOperator:
+  enabled: {{ monitoring_prometheus_operator_enabled | lower }}
 
 grafana:
+  enabled: {{ monitoring_grafana_enabled | lower }}
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
@@ -61,10 +90,12 @@ grafana:
 {% if monitoring_grafana_extra_secret_mounts %}
   extraSecretMounts: {{ monitoring_grafana_extra_secret_mounts | to_json }}
 {% endif %}
+{% if monitoring_thanos_enabled %}
   sidecar:
     datasources:
       uid: prometheus
       url: http://thanos-query-frontend:9090
+{% endif %}
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -92,6 +123,7 @@ grafana:
     - camptocamp-prometheus-alertmanager-datasource
 
 alertmanager:
+  enabled: {{ monitoring_alertmanager_enabled | lower }}
   ingress:
     enabled: {{ monitoring_alertmanager_ingress_enabled | lower }}
     ingressClassName: nginx
@@ -312,6 +344,7 @@ kubelet:
 
 {% if not monitoring_prometheus_kubelet_enabled %}
 defaultRules:
+  create: {{ monitoring_default_rules_create | lower }}
   disabled:
     KubeletDown: true
 {% endif %}
