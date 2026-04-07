@@ -33,17 +33,17 @@ prometheus:
 {% if monitoring_prometheus_remote_write is defined %}
     remoteWrite:
 {% for rw in monitoring_prometheus_remote_write %}
-    - url: {{ rw.url | indent(4) }}
+      - url: {{ rw.url }}
 {% if rw.headers is defined %}
-    headers:
+        headers:
 {% for key, value in rw.headers.items() %}
-      "{{ key }}": "{{ value }}"
+          "{{ key }}": "{{ value }}"
 {% endfor %}
 {% endif %}
 {% if rw.basic_auth is defined %}
-    basic_auth:
-      username: {{ rw.basic_auth.username }}
-      password: {{ rw.basic_auth.password }}
+        basicAuth:
+          username: {{ rw.basic_auth.username }}
+          password: {{ rw.basic_auth.password }}
 {% endif %}
 {% endfor %}
 {% endif %}
