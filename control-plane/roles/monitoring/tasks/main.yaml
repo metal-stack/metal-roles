@@ -22,7 +22,7 @@
     chart_version: "{{ prometheus_chart_version }}"
     release_namespace: "{{ monitoring_namespace }}"
     create_namespace: true
-    values: "{{ lookup('template', 'prometheus-stack-values.yaml') }}"
+    values: "{{ lookup('template', 'prometheus-stack-values.yaml') | from_yaml }}"
     wait: true
 
 - name: Deploy thanos
