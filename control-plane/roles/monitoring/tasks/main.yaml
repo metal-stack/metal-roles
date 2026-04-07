@@ -17,18 +17,18 @@
 - name: Add Prometheus repository
   kubernetes.core.helm_repository:
     name: prometheus-community
-    repo_url: "https://prometheus-community.github.io/helm-charts"
+    repo_url: "{{ prometheus_stack_repo }}"
     state: present
 
 - name: Deploy kube-prometheus-stack
   kubernetes.core.helm:
     name: kube-prometheus-stack
     chart_ref: prometheus-community/kube-prometheus-stack
-    chart_repo_url: "{{ prometheus_stack_repo }}"
     chart_version: "{{ prometheus_chart_version }}"
     release_namespace: "{{ monitoring_namespace }}"
     create_namespace: true
     values: "{{ lookup('template', 'prometheus-stack-values.yaml') | from_yaml }}"
+    state: present
     wait: true
 
 - name: Deploy thanos
