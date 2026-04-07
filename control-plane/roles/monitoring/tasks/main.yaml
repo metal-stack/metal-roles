@@ -17,7 +17,7 @@
 - name: Deploy kube-prometheus-stack
   kubernetes.core.helm:
     name: kube-prometheus-stack
-    chart_ref: prometheus-community/kube-prometheus-stack
+    chart_ref: kube-prometheus-stack
     chart_repo_url: "{{ prometheus_stack_repo }}"
     chart_version: "{{ prometheus_chart_version }}"
     release_namespace: "{{ monitoring_namespace }}"
