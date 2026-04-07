@@ -14,10 +14,16 @@
       - gardener_metrics_exporter_image_name is defined
       - gardener_metrics_exporter_image_tag is defined
 
+- name: Add Prometheus repository
+  kubernetes.core.helm_repository:
+    name: prometheus-community
+    repo_url: "https://prometheus-community.github.io/helm-charts"
+    state: present
+
 - name: Deploy kube-prometheus-stack
   kubernetes.core.helm:
     name: kube-prometheus-stack
-    chart_ref: kube-prometheus-stack
+    chart_ref: prometheus-community/kube-prometheus-stack
     chart_repo_url: "{{ prometheus_stack_repo }}"
     chart_version: "{{ prometheus_chart_version }}"
     release_namespace: "{{ monitoring_namespace }}"
