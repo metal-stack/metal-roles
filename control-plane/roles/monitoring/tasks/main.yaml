@@ -14,6 +14,26 @@
       - gardener_metrics_exporter_image_name is defined
       - gardener_metrics_exporter_image_tag is defined
 
+- name: Determine app version for prometheus operator CRDs
+  ansible.builtin.command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
+  register: helm_output
+
+- name: Apply prometheus operator CRDs
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ (helm_output.stdout | from_yaml).get('appVersion') + '/example/prometheus-operator-crd/' + item , split_lines=False) | regex_replace('- =\n', '- \"=\"\n') }}"
+  loop:
+    - monitoring.coreos.com_alertmanagerconfigs.yaml
+    - monitoring.coreos.com_alertmanagers.yaml
+    - monitoring.coreos.com_podmonitors.yaml
+    - monitoring.coreos.com_probes.yaml
+    - monitoring.coreos.com_prometheusagents.yaml
+    - monitoring.coreos.com_prometheuses.yaml
+    - monitoring.coreos.com_prometheusrules.yaml
+    - monitoring.coreos.com_scrapeconfigs.yaml
+    - monitoring.coreos.com_servicemonitors.yaml
+    - monitoring.coreos.com_thanosrulers.yaml
+
 - name: Add Prometheus repository
   kubernetes.core.helm_repository:
     name: prometheus-community
