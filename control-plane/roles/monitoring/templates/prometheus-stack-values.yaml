@@ -31,8 +31,9 @@ prometheus:
       tag: "{{ monitoring_prometheus_image_tag }}"
 {% endif %}
 {% if monitoring_prometheus_remote_write is defined %}
+    remoteWrite:
 {% for rw in monitoring_prometheus_remote_write %}
-  - url: {{ rw.url | indent(2) }}
+    - url: {{ rw.url | indent(4) }}
 {% if rw.headers is defined %}
     headers:
 {% for key, value in rw.headers.items() %}
