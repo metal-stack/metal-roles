@@ -106,6 +106,7 @@
     - rethinkdb.yaml
     - alertmanager.yaml
     - sonic-exporter.yaml
+    - goflow2-dashboard.yaml
   when: monitoring_grafana_enabled
 
 - name: Deploy Grafana dashboards for Gardener
@@ -133,6 +134,7 @@
     - metal-api.yaml
     - metal-db.yaml
     - metal-metrics-exporter.yaml
+    - goflow2.yaml
 
 - name: Create service monitors for Gardener
   kubernetes.core.k8s:
