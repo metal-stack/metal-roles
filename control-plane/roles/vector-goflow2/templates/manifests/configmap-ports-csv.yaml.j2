@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-goflow2-ports-csv
+  namespace: "{{ sflow_collector_namespace }}"
+  labels:
+    app: vector-goflow2
+data:
+  well_known_ports.csv: |
+    {{ lookup('file', role_path + '/templates/enrichment/well_known_ports.csv') | indent(4) }}

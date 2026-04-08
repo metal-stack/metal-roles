@@ -1,0 +1,4 @@
+---
+sflow_collector_namespace: monitoring
+vector_goflow2_vector_image: timberio/vector:0.54.0-distroless-libc
+vector_goflow2_geo_sample_rate: 10
