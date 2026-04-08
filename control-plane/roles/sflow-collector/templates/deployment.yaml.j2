@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goflow2
+  namespace: "{{ sflow_collector_namespace }}"
+  labels:
+    app: goflow2
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: goflow2
+  template:
+    metadata:
+      labels:
+        app: goflow2
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: goflow2
+        image: "{{ sflow_collector_image }}"
+        args:
+          - "-listen"
+          - "sflow://:{{ sflow_collector_port }}"
+          - "-addr"
+          - ":{{ sflow_collector_metrics_port }}"
+          - "-format"
+          - "json"
+        ports:
+        - name: sflow-udp
+          containerPort: {{ sflow_collector_port }}
+          protocol: UDP
+        - name: metrics
+          containerPort: {{ sflow_collector_metrics_port }}
+          protocol: TCP
+
+      - name: vector
+        image: "{{ vector_goflow2_vector_image }}"
+        args:
+          - --config-dir
+          - /etc/vector/
+        env:
+          - name: VECTOR_LOG
+            value: "info"
+        resources: {{ sflow_collector_vector_resources | to_json }}
+        volumeMounts:
+          - name: vector-config
+            mountPath: /etc/vector/vector.yaml
+            subPath: vector.yaml
+            readOnly: true
+          - name: ports-csv
+            mountPath: /etc/vector/enrichment/well_known_ports.csv
+            subPath: well_known_ports.csv
+            readOnly: true
+          - name: ifindex-csv
+            mountPath: /etc/vector/enrichment/ifindex.csv
+            subPath: ifindex.csv
+            readOnly: true
+          - name: varlogpods
+            mountPath: /var/log/pods
+            readOnly: true
+          - name: vector-data
+            mountPath: /var/lib/vector
+
+      volumes:
+        - name: vector-config
+          configMap:
+            name: vector-goflow2-config
+        - name: ports-csv
+          configMap:
+            name: vector-goflow2-ports-csv
+        - name: ifindex-csv
+          configMap:
+            name: vector-goflow2-ifindex-csv
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+            type: Directory
+        - name: vector-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goflow2
+  namespace: "{{ sflow_collector_namespace }}"
+  labels:
+    app: goflow2
+spec:
+  type: ClusterIP
+  selector:
+    app: goflow2
+  ports:
+  - name: sflow-udp
+    port: {{ sflow_collector_port }}
+    targetPort: {{ sflow_collector_port }}
+    protocol: UDP
+  - name: metrics
+    port: {{ sflow_collector_metrics_port }}
+    targetPort: {{ sflow_collector_metrics_port }}
+    protocol: TCP
