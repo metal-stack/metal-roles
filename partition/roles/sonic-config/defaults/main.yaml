@@ -28,3 +28,5 @@ sonic_config_timezone: Europe/Berlin
 sonic_config_vlan_subinterfaces: []
 sonic_config_vlans: []
 sonic_config_vtep: {}
+
+sonic_config_sflow: {}
