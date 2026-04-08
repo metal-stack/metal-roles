@@ -360,6 +360,71 @@ data:
           "title": "Estimated Bandwidth by Protocol",
           "description": "Extrapolated bits/second per protocol. Derived from sampled packet bytes × sample rate (256) × 8. Requires JSON parsing — heavier than the flow count panel.",
           "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 20, "w": 24, "x": 0, "y": 9 },
+          "id": 14,
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "continuous-RdYlGr" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 10 },
+                  { "color": "orange", "value": 50 },
+                  { "color": "red", "value": 200 }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "view": { "id": "zero", "lat": 0, "lon": 0, "zoom": 1 },
+            "controls": { "showZoom": true, "showAttribution": true },
+            "layers": [
+              {
+                "type": "markers",
+                "name": "Source IPs",
+                "config": {
+                  "style": {
+                    "size": { "field": "Value #A", "fixed": 5, "min": 3, "max": 20 },
+                    "color": { "field": "Value #A", "fixed": "dark-orange" },
+                    "opacity": 0.7,
+                    "symbol": { "fixed": "img/icons/marker/circle.svg", "mode": "fixed" }
+                  },
+                  "showLegend": true
+                },
+                "location": {
+                  "mode": "coords",
+                  "latitude": "latitude",
+                  "longitude": "longitude"
+                },
+                "tooltip": true
+              }
+            ]
+          },
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            { "id": "convertFieldType", "options": { "conversions": [
+              { "targetField": "latitude",  "destinationType": "number" },
+              { "targetField": "longitude", "destinationType": "number" }
+            ]}}
+          ],
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (latitude, longitude) (count_over_time({app=\"goflow2-geo\"} | json latitude, longitude [$__range]))",
+              "legendFormat": "{{country_code}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Source IP Geolocation",
+          "description": "Geographic distribution of sFlow source IPs. GeoIP data by DB-IP (https://db-ip.com), licensed CC BY 4.0.",
+          "type": "geomap"
         }
       ],
       "refresh": "1m",

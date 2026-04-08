@@ -19,6 +19,38 @@ spec:
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      initContainers:
+        - name: geoip-download
+          image: "{{ sflow_collector_geoip_download_image }}"
+          command:
+            - sh
+            - -c
+            - |
+              YEAR=$(date +%Y)
+              MONTH=$(date +%m)
+              PREV_MONTH=$((10#$MONTH - 1))
+              PREV_YEAR=$YEAR
+              if [ $PREV_MONTH -eq 0 ]; then PREV_MONTH=12; PREV_YEAR=$((YEAR - 1)); fi
+              PREV_MONTH=$(printf '%02d' $PREV_MONTH)
+
+              for URL in \
+                "https://download.db-ip.com/free/dbip-city-lite-${YEAR}-${MONTH}.mmdb.gz" \
+                "https://download.db-ip.com/free/dbip-city-lite-${PREV_YEAR}-${PREV_MONTH}.mmdb.gz"; do
+                echo "Trying $URL ..."
+                if wget -q -O /geoip/geoip.mmdb.gz "$URL" && gunzip /geoip/geoip.mmdb.gz; then
+                  chmod 644 /geoip/geoip.mmdb
+                  echo "Done."
+                  exit 0
+                fi
+                rm -f /geoip/geoip.mmdb.gz
+              done
+              echo "ERROR: Could not download GeoIP database." >&2
+              exit 1
+          volumeMounts:
+            - name: geoip-db
+              mountPath: /geoip
+          securityContext:
+            runAsUser: 0
       containers:
       - name: goflow2
         image: "{{ sflow_collector_image }}"
@@ -59,6 +91,9 @@ spec:
             mountPath: /etc/vector/enrichment/ifindex.csv
             subPath: ifindex.csv
             readOnly: true
+          - name: geoip-db
+            mountPath: /etc/vector/enrichment/geoip
+            readOnly: true
           - name: varlogpods
             mountPath: /var/log/pods
             readOnly: true
@@ -80,6 +115,8 @@ spec:
             path: /var/log/pods
             type: Directory
         - name: vector-data
+          emptyDir: {}
+        - name: geoip-db
           emptyDir: {}
 ---
 apiVersion: v1
