@@ -123,6 +123,10 @@ spec:
       machine:
         type: "{{ worker_group.worker_size }}"
         image: {{ worker_group.worker_image | to_json }}
+{% if 'machine_creation_timeout' in worker_group or 'machine_creation_timeout' in _config %}
+      machineControllerManager:
+        machineCreationTimeout: {{ worker_group.machine_creation_timeout | default(_config.machine_creation_timeout) }}
+{% endif %}
 {% endfor %}
     infrastructureConfig:
       apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1

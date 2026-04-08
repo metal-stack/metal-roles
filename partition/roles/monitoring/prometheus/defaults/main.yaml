@@ -6,6 +6,9 @@ prometheus_scrape_interval: 60s
 prometheus_evaluation_interval: 30s
 prometheus_scrape_timeout: 15s
 
+prometheus_ipmi_scrape_interval: 10m
+prometheus_ipmi_scrape_timeout: 120s
+
 prometheus_config_host_dir: /etc/prometheus
 prometheus_data_host_dir: /var/lib//prometheus
 
