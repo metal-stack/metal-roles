@@ -1,0 +1,12 @@
+---
+sflow_collector_namespace: monitoring
+sflow_collector_image: netsampler/goflow2:latest
+sflow_collector_port: 6343
+sflow_collector_metrics_port: 9099
+sflow_collector_vector_resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

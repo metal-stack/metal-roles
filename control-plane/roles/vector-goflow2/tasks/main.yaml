@@ -1,0 +1,22 @@
+---
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - sflow_collector_namespace is defined
+
+- name: Deploy Vector enrichment table - well-known ports CSV
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'manifests/configmap-ports-csv.yaml.j2') | from_yaml_all }}"
+
+- name: Deploy Vector enrichment table - ifindex-to-VRF CSV
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'manifests/configmap-ifindex-csv.yaml.j2') | from_yaml_all }}"
+
+- name: Deploy Vector configuration ConfigMap
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'manifests/configmap-vector.yaml.j2') | from_yaml_all }}"

@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: kube-prometheus-stack
+  name: goflow2
+spec:
+  selector:
+    matchLabels:
+      app: goflow2
+  namespaceSelector:
+    matchNames:
+      - {{ sflow_collector_namespace }}
+  endpoints:
+    - port: metrics
+      path: /metrics
