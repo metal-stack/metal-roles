@@ -6,6 +6,10 @@ Please refer to the metal-stack gardener integration in our [documentation](http
 
 Check out the Gardener project for further documentation on [gardener.cloud](https://gardener.cloud/).
 
+## Requirements
+
+- Requires cert-manager with DNS cluster issuer to be deployed in the Garden cluster, if the Gardener Operator is used to deploy the Gardener dashboard. A wildcard certificate is used for the Gardener dashboard ingress domain.
+
 ## Migration Path
 
 If you are still using the `gardener` role for setting up the Gardener, please read the following notes for the migration to the Gardener Operator.
