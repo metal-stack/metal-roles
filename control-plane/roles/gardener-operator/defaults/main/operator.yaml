@@ -49,3 +49,31 @@ gardener_operator_component_image_vector_overwrite:
 gardener_operator_helm_chart_tag: "{{ gardener_operator_image_tag }}"
 
 gardener_operator_shoot_admin_kubeconfig_max_expiration: "24h"
+
+# Toggle Gardener Dashboard Deployment
+gardener_operator_dashboard_enabled: false
+# Gardener Operator Dashboard OIDC config
+gardener_operator_dashboard_oidc_client_id_public:
+gardener_operator_dashboard_oidc_issuer_url:
+gardener_operator_dashboard_oidc_session_lifetime: 12h
+gardener_operator_dashboard_oidc_additional_scopes: [ profile, offline_access ]
+# Contents of the gardener-dashboard-oidc secret:
+gardener_operator_dashboard_oidc_client_id:
+gardener_operator_dashboard_oidc_client_secret:
+# Toggle Log level
+gardener_operator_dashboard_log_level: debug
+# Toggle Ingress Deployment
+gardener_operator_dashboard_ingress: true
+
+gardener_operator_dashboard_config:
+  # frontend
+    # landingPageUrl:
+    # branding:
+    # themes:
+    # colors:
+  # assets:
+    # favicon_16:
+    # favicon_32:
+    # favicon_96:
+    # favicon_ico:
+    # logo_svg:
