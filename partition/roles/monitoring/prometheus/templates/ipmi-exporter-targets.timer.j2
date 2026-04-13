@@ -1,0 +1,11 @@
+
+[Unit]
+Description=Generate ipmi-exporter targets
+Requires=ipmi-exporter-targets.service
+[Timer]
+Unit=ipmi-exporter-targets.service
+OnUnitInactiveSec=3h
+RandomizedDelaySec=5m
+AccuracySec=5s
+[Install]
+WantedBy=timers.target

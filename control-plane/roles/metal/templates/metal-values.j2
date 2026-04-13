@@ -242,14 +242,27 @@ metal_apiserver:
     password: {{ metal_apiserver_redis_password }}
   admin_subjects: {{ metal_apiserver_admin_subjects | to_json }}
   auditing:
-    enabled: {{ 'true' if metal_apiserver_auditing_enabled else 'false' }}
+{% if metal_apiserver_auditing_timescaledb_enabled %}
     timescaledb:
+      enabled: true
       host: {{ metal_apiserver_auditing_timescaledb_host }}
       port: {{ metal_apiserver_auditing_timescaledb_port }}
       db: {{ metal_apiserver_auditing_timescaledb_db }}
       user: {{ metal_apiserver_auditing_timescaledb_user }}
       password: {{ metal_apiserver_auditing_timescaledb_password }}
       retention: {{ metal_apiserver_auditing_timescaledb_retention }}
+{% endif %}
+{% if metal_apiserver_auditing_splunk_enabled %}
+    splunk:
+      enabled: true
+      endpoint: "{{ metal_apiserver_auditing_splunk_endpoint }}"
+      hec: "{{ metal_apiserver_auditing_splunk_hec_token }}"
+      source: "{{ metal_apiserver_auditing_splunk_source | default('', true) }}"
+      source_type: "{{ metal_apiserver_auditing_splunk_source_type | default('', true) }}"
+      index: "{{ metal_apiserver_auditing_splunk_index | default('', true) }}"
+      host: "{{ metal_apiserver_auditing_splunk_host | default('', true) }}"
+      ca: "{{ (metal_apiserver_auditing_splunk_ca | b64encode) | default('', true) }}"
+{% endif %}
   rateLimit:
     maxRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_requests_per_minute }}
     maxUnauthenticatedRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute }}

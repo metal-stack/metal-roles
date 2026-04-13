@@ -125,30 +125,31 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ### gardener-extension-provider-metal
 
-| Name                                                              | Mandatory | Description                                                                                               |
-| ----------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
-| gardener_extension_provider_metal_enabled                         |           | If enabled, deploys the extension                                                                         |
-| gardener_extension_provider_metal_helm_chart                      |           | The ref to the helm oci artifact to deploy this extension                                                 |
-| gardener_extension_admission_metal_helm_chart_runtime             |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster   |
-| gardener_extension_admission_metal_helm_chart_application         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the virtual garden    |
-| gardener_extension_provider_metal_helm_chart_tag                  |           | The tag of the helm oci artifact to deploy this extension                                                 |
-| gardener_extension_admission_metal_helm_chart_runtime_tag         |           | The tag of the helm oci artifact to deploy this extension's admission controller in the runtime cluster   |
-| gardener_extension_admission_metal_helm_chart_application_tag     |           | The tag of the helm oci artifact to deploy this extension's admission controller in the virtual garden    |
-| gardener_extension_provider_metal_etcd_storage_class_name         |           | The storage class used for metal-stack shoot ETCDs                                                        |
-| gardener_extension_provider_metal_etcd_backup_schedule            |           | The backup schedule for metal-stack shoot ETCDs                                                           |
-| gardener_extension_provider_metal_etcd_delta_snapshot_period      |           | The delta snapshot period for metal-stack shoot ETCDs                                                     |
-| gardener_extension_provider_metal_etcd_volume_eviction            |           | Allows PVC eviction when using ETCD volumes based on csi-driver-lvm provisioner types                     |
-| gardener_extension_provider_metal_egress_destinations             |           | Sets allowed egress destinations for the `RestrictEgress` control plane feature gate of the GEPM          |
-| gardener_extension_provider_metal_machine_images                  |           | Specifies the machine images that are usually the same as in the cloud profile                            |
-| gardener_extension_provider_metal_duros_storage_enabled           |           | Enables the duros storage integration feature gate of the GEPM (Lightbits storage)                        |
-| gardener_extension_provider_metal_duros_storage_config            |           | Configuration for the duros storage integration                                                           |
-| gardener_extension_provider_metal_image_pull_policy               |           | Sets the image pull policy for components deployed through this extension controller.                     |
-| gardener_extension_provider_metal_image_pull_secret               |           | Provide image pull secrets for deployed containers                                                        |
-| gardener_extension_provider_metal_admission_replicas              |           | Specifies the amount of metal-admission webhook replicas                                                  |
-| gardener_extension_provider_metal_admission_vpa                   |           | Enables the VPA for the metal-admission webhook                                                           |
-| gardener_extension_provider_metal_firewall_internal_prefixes      |           | Configures the firewall deployment with these prefixes counted as internal prefixes (e.g. for accounting) |
-| gardener_extension_provider_metal_admission_default_pods_cidr     |           | Configures the default pod CIDR of a shoot                                                                |
-| gardener_extension_provider_metal_admission_default_services_cidr |           | Configures the default service CIDR of a shoot                                                            |
+| Name                                                              | Mandatory | Description                                                                                                                                          |
+| ----------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| gardener_extension_provider_metal_enabled                         |           | If enabled, deploys the extension                                                                                                                    |
+| gardener_extension_provider_metal_helm_chart                      |           | The ref to the helm oci artifact to deploy this extension                                                                                            |
+| gardener_extension_admission_metal_helm_chart_runtime             |           | The ref to the helm oci artifact to deploy this extension's admission controller in the runtime cluster                                              |
+| gardener_extension_admission_metal_helm_chart_application         |           | The ref to the helm oci artifact to deploy this extension's admission controller in the virtual garden                                               |
+| gardener_extension_provider_metal_helm_chart_tag                  |           | The tag of the helm oci artifact to deploy this extension                                                                                            |
+| gardener_extension_admission_metal_helm_chart_runtime_tag         |           | The tag of the helm oci artifact to deploy this extension's admission controller in the runtime cluster                                              |
+| gardener_extension_admission_metal_helm_chart_application_tag     |           | The tag of the helm oci artifact to deploy this extension's admission controller in the virtual garden                                               |
+| gardener_extension_provider_metal_etcd_storage_class_name         |           | The storage class used for metal-stack shoot ETCDs                                                                                                   |
+| gardener_extension_provider_metal_etcd_backup_schedule            |           | The backup schedule for metal-stack shoot ETCDs                                                                                                      |
+| gardener_extension_provider_metal_etcd_delta_snapshot_period      |           | The delta snapshot period for metal-stack shoot ETCDs                                                                                                |
+| gardener_extension_provider_metal_etcd_volume_eviction            |           | Allows PVC eviction when using ETCD volumes based on csi-driver-lvm provisioner types                                                                |
+| gardener_extension_provider_metal_egress_destinations             |           | Sets allowed egress destinations for the `RestrictEgress` control plane feature gate of the GEPM                                                     |
+| gardener_extension_provider_metal_machine_images                  |           | Specifies the machine images that are usually the same as in the cloud profile                                                                       |
+| gardener_extension_provider_metal_duros_storage_enabled           |           | Enables the duros storage integration feature gate of the GEPM (Lightbits storage)                                                                   |
+| gardener_extension_provider_metal_duros_storage_config            |           | Configuration for the duros storage integration                                                                                                      |
+| gardener_extension_provider_metal_image_pull_policy               |           | Sets the image pull policy for components deployed through this extension controller.                                                                |
+| gardener_extension_provider_metal_image_pull_secret               |           | Provide image pull secrets for deployed containers                                                                                                   |
+| gardener_extension_provider_metal_admission_replicas              |           | Specifies the amount of metal-admission webhook replicas                                                                                             |
+| gardener_extension_provider_metal_admission_vpa                   |           | Enables the VPA for the metal-admission webhook                                                                                                      |
+| gardener_extension_provider_metal_firewall_internal_prefixes      |           | Configures the firewall deployment with these prefixes counted as internal prefixes (e.g. for accounting)                                            |
+| gardener_extension_provider_metal_admission_default_pods_cidr     |           | Configures the default pod CIDR of a shoot                                                                                                           |
+| gardener_extension_provider_metal_admission_default_services_cidr |           | Configures the default service CIDR of a shoot                                                                                                       |
+| gardener_extension_provider_metal_additional_network_policies     |           | Adds extra network policies when the metal-stack control plane (exposed through ingress-nginx) is running in the same cluster as the Garden cluster. |
 
 ### shoot-cert-service
 

@@ -141,6 +141,13 @@ alertmanager:
         httpGet:
           path: /ready
           port: webhook-logger
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 2Gi
+
   config:
     global:
       resolve_timeout: 5m
@@ -153,14 +160,14 @@ alertmanager:
       group_by: ['severity', 'alertname', 'namespace', 'pod', 'job']
       group_wait: 30s
       group_interval: 30s
-      repeat_interval: 600s
+      repeat_interval: {{ monitoring_alertmanager_webhook_logger_repeat_interval }}
       routes:
       - receiver: 'null'
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
       - receiver: slack
-        repeat_interval: 3h
+        repeat_interval: {{ monitoring_alertmanager_webhook_slack_repeat_interval }}
         continue: true
 {% endif %}
 {% for route in monitoring_alertmanager_additional_routes %}

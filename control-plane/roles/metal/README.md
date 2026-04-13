@@ -220,10 +220,18 @@ Configuration for metal-apiserver:
 
 | Name                                           | Mandatory | Description                                                          |
 | ---------------------------------------------- | --------- | -------------------------------------------------------------------- |
-| metal_apiserver_auditing_enabled               |           | Whether or not to configure timescaledb auditing. Default true.      |
+| metal_apiserver_auditing_timescaledb_enabled   |           | Whether or not to configure timescaledb auditing. Default true.      |
 | metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                 |
 | metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                 |
 | metal_apiserver_auditing_timescaledb_db        |           | The timescaledb database name                                        |
 | metal_apiserver_auditing_timescaledb_user      |           | The timescaledb user                                                 |
 | metal_apiserver_auditing_timescaledb_password  |           | The timescaledb password                                             |
 | metal_apiserver_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup |
+| metal_apiserver_auditing_splunk_enabled        |           | Whether or not to configure splunk auditing. Default false.          |
+| metal_apiserver_auditing_splunk_endpoint       |           | The splunk endpoint.                                                 |
+| metal_apiserver_auditing_splunk_hec_token      |           | The splunk hec token.                                                |
+| metal_apiserver_auditing_splunk_source         |           | The splunk source.                                                   |
+| metal_apiserver_auditing_splunk_source_type    |           | The splunk source type.                                              |
+| metal_apiserver_auditing_splunk_index          |           | The splunk index.                                                    |
+| metal_apiserver_auditing_splunk_host           |           | The splunk host.                                                     |
+| metal_apiserver_auditing_splunk_ca             |           | The splunk CA (not encoded).                                         |
