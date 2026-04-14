@@ -43,6 +43,7 @@ resources:
 {% if metal_apiserver_resources %}
   metal_apiserver: {{ metal_apiserver_resources | to_json }}
 {% endif %}
+  placeholder: "prevents setting .resources to {} if no values are specified"
 
 hpa:
   metal_api:
