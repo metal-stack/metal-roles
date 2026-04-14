@@ -103,7 +103,7 @@ spec:
           issuerURL: {{ gardener_operator_virtual_garden_oidc_issuer_url }}
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_client_id %}
-          clientID: {{ gardener_operator_virtual_garden_oidc_client_id }}
+          clientID: "{{ gardener_operator_virtual_garden_oidc_client_id | string }}"
 {% endif %}
 {% if gardener_operator_virtual_garden_oidc_username_claim %}
           usernameClaim: {{ gardener_operator_virtual_garden_oidc_username_claim }}
@@ -262,11 +262,11 @@ spec:
       gardenerDashboard:
         logLevel: "{{ gardener_operator_dashboard_log_level }}" # {trace,debug,info,warn,error}
         # enableTokenLogin: true
-{% if gardener_operator_dashboard_config.frontend %}
+{% if gardener_operator_dashboard_config_frontend %}
         frontendConfigMapRef:
           name: gardener-dashboard-frontend
 {% endif %}
-{% if gardener_operator_dashboard_config.assets %}
+{% if gardener_operator_dashboard_config_assets %}
         assetsConfigMapRef:
           name: gardener-dashboard-assets
 {% endif %}
@@ -278,8 +278,12 @@ spec:
         #     name: gardener-dashboard-github
         #   pollInterval: 15m
         oidcConfig:
+{% if gardener_operator_dashboard_oidc_client_id_public %}
           clientIDPublic: "{{ gardener_operator_dashboard_oidc_client_id_public }}"
+{% endif %}
+{% if gardener_operator_dashboard_oidc_issuer_url %}
           issuerURL: "{{ gardener_operator_dashboard_oidc_issuer_url }}"
+{% endif %}
           sessionLifetime: "{{ gardener_operator_dashboard_oidc_session_lifetime }}"
           additionalScopes: {{ gardener_operator_dashboard_oidc_additional_scopes }}
           secretRef:
@@ -287,7 +291,7 @@ spec:
           # certificateAuthoritySecretRef:
           #   name: gardener-dashboard-oidc-ca
         ingress:
-          enabled: {{ gardener_operator_dashboard_ingress }}
+          enabled: {{ gardener_operator_dashboard_ingress_enabled }}
         # terminal:
         #   allowedHosts:
         #   - "*.seed.local.gardener.cloud"
