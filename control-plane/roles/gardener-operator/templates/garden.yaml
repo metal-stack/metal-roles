@@ -98,34 +98,6 @@ spec:
       #     SomeKubernetesFeature: true
       #   runtimeConfig:
       #     scheduling.k8s.io/v1alpha1: true
-        oidcConfig:
-{% if gardener_operator_virtual_garden_oidc_issuer_url %}
-          issuerURL: {{ gardener_operator_virtual_garden_oidc_issuer_url }}
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_client_id %}
-          clientID: "{{ gardener_operator_virtual_garden_oidc_client_id | string }}"
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_username_claim %}
-          usernameClaim: {{ gardener_operator_virtual_garden_oidc_username_claim }}
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_username_prefix %}
-          usernamePrefix: "{{ gardener_operator_virtual_garden_oidc_username_prefix }}"
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_groups_claim %}
-          groupsClaim: {{ gardener_operator_virtual_garden_oidc_groups_claim }}
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_groups_prefix %}
-          groupsPrefix: "{{ gardener_operator_virtual_garden_oidc_groups_prefix }}"
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_ca %}
-          caBundle: |
-          {{ gardener_operator_virtual_garden_oidc_ca | indent(width=14, first=false) }}
-{% endif %}
-    #     clientID: client-id
-    #     signingAlgs: # See https://datatracker.ietf.org/doc/html/rfc7518#section-3.1 for the list of valid algorithms
-    #     - RS256
-    #     requiredClaims:
-    #       key: value
     #   admissionPlugins:
     #   - name: PodNodeSelector
     #     disabled: false
@@ -278,10 +250,8 @@ spec:
         #     name: gardener-dashboard-github
         #   pollInterval: 15m
         oidcConfig:
-{% if gardener_operator_dashboard_oidc_client_id_public %}
-          clientIDPublic: "{{ gardener_operator_dashboard_oidc_client_id_public }}"
-{% endif %}
 {% if gardener_operator_dashboard_oidc_issuer_url %}
+          clientIDPublic: "{{ gardener_operator_dashboard_oidc_client_id_public }}"
           issuerURL: "{{ gardener_operator_dashboard_oidc_issuer_url }}"
 {% endif %}
           sessionLifetime: "{{ gardener_operator_dashboard_oidc_session_lifetime }}"
