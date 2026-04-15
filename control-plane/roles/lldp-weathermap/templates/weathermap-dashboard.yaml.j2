@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-dashboard-network-weathermap"
+  namespace: "{{ lldp_weathermap_namespace }}"
+  labels:
+    grafana_dashboard: "1"
+data:
+  network-weathermap.json: |
+    {{ _weathermap_dashboard | to_json }}
