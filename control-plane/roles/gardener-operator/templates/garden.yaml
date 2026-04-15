@@ -98,34 +98,6 @@ spec:
       #     SomeKubernetesFeature: true
       #   runtimeConfig:
       #     scheduling.k8s.io/v1alpha1: true
-        oidcConfig:
-{% if gardener_operator_virtual_garden_oidc_issuer_url %}
-          issuerURL: {{ gardener_operator_virtual_garden_oidc_issuer_url }}
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_client_id %}
-          clientID: {{ gardener_operator_virtual_garden_oidc_client_id }}
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_username_claim %}
-          usernameClaim: {{ gardener_operator_virtual_garden_oidc_username_claim }}
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_username_prefix %}
-          usernamePrefix: "{{ gardener_operator_virtual_garden_oidc_username_prefix }}"
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_groups_claim %}
-          groupsClaim: {{ gardener_operator_virtual_garden_oidc_groups_claim }}
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_groups_prefix %}
-          groupsPrefix: "{{ gardener_operator_virtual_garden_oidc_groups_prefix }}"
-{% endif %}
-{% if gardener_operator_virtual_garden_oidc_ca %}
-          caBundle: |
-          {{ gardener_operator_virtual_garden_oidc_ca | indent(width=14, first=false) }}
-{% endif %}
-    #     clientID: client-id
-    #     signingAlgs: # See https://datatracker.ietf.org/doc/html/rfc7518#section-3.1 for the list of valid algorithms
-    #     - RS256
-    #     requiredClaims:
-    #       key: value
     #   admissionPlugins:
     #   - name: PodNodeSelector
     #     disabled: false
@@ -258,32 +230,46 @@ spec:
     #   featureGates:
     #     SomeGardenerFeature: true
     #   logLevel: info # either {debug,info,error}
-      # gardenerDashboard: {}
-    #   logLevel: info # either {trace,debug,info,warn,error}
-    #   enableTokenLogin: true
-    #   frontendConfigMapRef:
-    #     name: gardener-dashboard-frontend
-    #   assetsConfigMapRef:
-    #     name: gardener-dashboard-assets
-    #   gitHub:
-    #     apiURL: https://api.github.com
-    #     organisation: kubernetes-dev
-    #     repository: issues-dev
-    #     secretRef:
-    #       name: gardener-dashboard-github
-    #     pollInterval: 15m
-    #   oidcConfig:
-    #     sessionLifetime: 12h
-    #     additionalScopes: [ profile, offline_access ]
-    #     secretRef:
-    #       name: gardener-dashboard-oidc
-    #   terminal:
-    #     allowedHosts:
-    #     - "*.seed.local.gardener.cloud"
-    #     container:
-    #       image: busybox:latest
-    #       description: A nice container for debugging purposes
-      # gardenerDiscoveryServer: {}
+{% if gardener_operator_dashboard_enabled %}
+      gardenerDashboard:
+        logLevel: "{{ gardener_operator_dashboard_log_level }}" # {trace,debug,info,warn,error}
+        # enableTokenLogin: true
+{% if gardener_operator_dashboard_config_frontend %}
+        frontendConfigMapRef:
+          name: gardener-dashboard-frontend
+{% endif %}
+{% if gardener_operator_dashboard_config_assets %}
+        assetsConfigMapRef:
+          name: gardener-dashboard-assets
+{% endif %}
+        # gitHub:
+        #   apiURL: https://api.github.com
+        #   organisation: kubernetes-dev
+        #   repository: issues-dev
+        #   secretRef:
+        #     name: gardener-dashboard-github
+        #   pollInterval: 15m
+        oidcConfig:
+{% if gardener_operator_dashboard_oidc_issuer_url %}
+          clientIDPublic: "{{ gardener_operator_dashboard_oidc_client_id_public }}"
+          issuerURL: "{{ gardener_operator_dashboard_oidc_issuer_url }}"
+{% endif %}
+          sessionLifetime: "{{ gardener_operator_dashboard_oidc_session_lifetime }}"
+          additionalScopes: {{ gardener_operator_dashboard_oidc_additional_scopes }}
+          secretRef:
+            name: gardener-dashboard-oidc
+          # certificateAuthoritySecretRef:
+          #   name: gardener-dashboard-oidc-ca
+        ingress:
+          enabled: {{ gardener_operator_dashboard_ingress_enabled }}
+        # terminal:
+        #   allowedHosts:
+        #   - "*.seed.local.gardener.cloud"
+        #   container:
+        #     image: busybox:latest
+        #     description: A nice container for debugging purposes
+{% endif %}
+        # gardenerDiscoveryServer: {}
     maintenance:
       timeWindow:
         begin: 220000+0100
