@@ -1,5 +1,6 @@
 ---
 monitoring_namespace: monitoring
+monitoring_grafana_enabled: true
 monitoring_grafana_admin_password: admin
 monitoring_grafana_dashboard_timezone: Europe/Berlin
 monitoring_grafana_additional_datasources:
@@ -25,9 +26,11 @@ monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
 monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
 monitoring_ingress_grafana_tls: yes
 monitoring_prometheus_ingress_enabled: false
+monitoring_prometheus_operator_enabled: true
 monitoring_additional_ingress_annotations: {}
 
 monitoring_alertmanager_ingress_enabled: true
+monitoring_alertmanager_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
 monitoring_alertmanager_ingress_tls: yes
 monitoring_alertmanager_ingress_basic_auth_user: alertmanager
@@ -63,11 +66,13 @@ monitoring_prometheus_kube_scheduler_enabled: false
 monitoring_prometheus_kube_etcd_enabled: false
 monitoring_prometheus_kube_controller_manager_enabled: false
 monitoring_prometheus_kubelet_enabled: false
+monitoring_default_rules_create: yes
 
 monitoring_prometheus_kube_proxy_service_selector:
   component: kube-proxy
 
 # thanos
+monitoring_thanos_enabled: true
 monitoring_thanos_receive_enabled: false
 monitoring_thanos_receive_ingress_enabled: false
 monitoring_thanos_receive_ingress_dns: "thanos-receive.{{ metal_control_plane_ingress_dns }}"
