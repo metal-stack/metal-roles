@@ -87,6 +87,6 @@
   k8s:
     definition: "{{ item }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-  loop: "{{ gardener_operator_virtual_garden_api_server_cluster_role_bindings }}"
+  loop: "{{ gardener_virtual_garden_access_cluster_role_bindings }}"
   loop_control:
     label: "{{ item.metadata.name }}"
