@@ -44,6 +44,56 @@
   when: gardener_operator_virtual_garden_api_server_structured_authentication
   no_log: yes
 
+- name: Create gardener dashboard oidc secret
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: gardener-dashboard-oidc
+        namespace: garden
+      type: Opaque
+      stringData:
+        client_id: "{{ gardener_operator_dashboard_oidc_client_id | string }}"
+        client_secret: "{{ gardener_operator_dashboard_oidc_client_secret | string }}"
+    apply: yes
+  when: gardener_operator_dashboard_enabled
+  no_log: yes
+
+- name: Create gardener dashboard frontend configmap
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: gardener-dashboard-frontend
+        namespace: garden
+      data:
+        frontend-config.yaml: "{{ gardener_operator_dashboard_config_frontend | to_nice_yaml(indent=2)}}"
+    apply: yes
+  when:
+    - gardener_operator_dashboard_enabled
+    - gardener_operator_dashboard_config_frontend
+
+- name: Create gardener dashboard assets configmap
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: gardener-dashboard-assets
+        namespace: garden
+      binaryData:
+        favicon-16x16.png: "{{ gardener_operator_dashboard_config_assets.favicon_16 }}"
+        favicon-32x32.png: "{{ gardener_operator_dashboard_config_assets.favicon_32 }}"
+        favicon-96x96.png: "{{ gardener_operator_dashboard_config_assets.favicon_96 }}"
+        favicon.ico:       "{{ gardener_operator_dashboard_config_assets.favicon_ico }}"
+        logo.svg:          "{{ gardener_operator_dashboard_config_assets.logo }}"
+    apply: yes
+  when:
+    - gardener_operator_dashboard_enabled
+    - gardener_operator_dashboard_config_assets
+
 - name: Deploy Gardener Operator
   include_role:
     name: ansible-common/roles/helm-chart
