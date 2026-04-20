@@ -41,6 +41,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/3rd/envoyproxy/envoy-distroless
       match:
         semver: ">= v1.34.1"
+    - source: europe-docker.pkg.dev/gardener-project/releases/3rd/envoyproxy/envoy
+      match:
+        all_tags: true
+      destination: http://registry:5000/gardener-project/releases/3rd/envoyproxy/envoy
     - source: europe-docker.pkg.dev/gardener-project/releases/gardener/apiserver-proxy
       destination: http://registry:5000/gardener-project/releases/gardener/apiserver-proxy
       match:
