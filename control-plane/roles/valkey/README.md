@@ -11,8 +11,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | Name                         | Mandatory | Description                                                       |
 | ---------------------------- | --------- | ----------------------------------------------------------------- |
 | valkey_namespace             |           | The deployment's target namespace                                 |
-| valkey_chart_repo            | yes       | The helm chart repo                                               |
-| valkey_chart_version         | yes       | The helm chart version                                            |
+| valkey_chart                 | yes       | The repository URL of the valkey oci helm chart                   |
+| valkey_chart_tag             | yes       | The tag of the valkey oci helm chart                              |
 | valkey_image_pull_policy     |           | Image pull policy of valkey                                       |
 | valkey_replicas              |           | The number of deployed replicas                                   |
 | valkey_password              |           | The password to authenticate with                                 |
