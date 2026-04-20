@@ -9,6 +9,14 @@
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
 
+- name: Check ntp status
+  command: show ntp
+  register: ntp_status
+
+- name: Set time if ntp is not synchronized
+  command: "date -s '{{ now() }}'"
+  when: "'unsynchronised' in ntp_status.stdout"
+
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
