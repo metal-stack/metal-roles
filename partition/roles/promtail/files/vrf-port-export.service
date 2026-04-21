@@ -1,0 +1,12 @@
+[Unit]
+Description=VRF to port mapping exporter for Promtail
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/vrf-port-export.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
