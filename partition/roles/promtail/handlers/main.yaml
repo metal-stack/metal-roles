@@ -4,3 +4,13 @@
     name: promtail
     enabled: true
     state: restarted
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: restart vrf-port-export
+  service:
+    name: vrf-port-export
+    enabled: true
+    state: restarted
