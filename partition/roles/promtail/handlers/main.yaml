@@ -9,3 +9,9 @@
 - name: reload systemd
   systemd:
     daemon_reload: true
+
+- name: restart vrf-port-export
+  service:
+    name: vrf-port-export
+    enabled: true
+    state: restarted
