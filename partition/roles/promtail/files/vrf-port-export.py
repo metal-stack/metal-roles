@@ -5,11 +5,13 @@ that either the Ethernet Port or the SVI is assigned to a VRF not both.
 """
 
 import json
+import os
 import time
 import redis
 from datetime import datetime, timezone
 
 LOG_FILE = "/var/log/vrf-interface-mapping.log"
+LOG_FILE_TMP = LOG_FILE + ".tmp"
 INTERVAL = 60
 CONFIG_DB = 4
 
@@ -43,9 +45,10 @@ def main():
     db = redis.Redis(host="127.0.0.1", port=6379, db=CONFIG_DB, decode_responses=True)
 
     while True:
-        with open(LOG_FILE, "w") as log:
+        with open(LOG_FILE_TMP, "w") as log:
             for entry in get_vrf_mappings(db):
                 log.write(json.dumps(entry) + "\n")
+        os.replace(LOG_FILE_TMP, LOG_FILE)
         time.sleep(INTERVAL)
 
 
