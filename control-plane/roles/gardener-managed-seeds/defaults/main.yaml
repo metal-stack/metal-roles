@@ -3,7 +3,6 @@ gardener_managed_seeds_garden_name: "{{ gardener_defaults_garden_name }}"
 
 gardener_managed_seed_default_dns_provider:
 gardener_managed_seed_default_dns_domain:
-
 gardener_managed_seeds: []
 # - name: seed-a
 #   backup_infrastructure:

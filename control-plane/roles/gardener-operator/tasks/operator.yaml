@@ -9,8 +9,8 @@
         namespace: garden
       type: Opaque
       data: "{{ gardener_operator_backup_infrastructure_secret }}"
-    apply: yes
-  no_log: yes
+    apply: true
+  no_log: true
 
 - name: Create DNS provider secrets
   k8s:
@@ -22,12 +22,12 @@
         namespace: garden
       type: Opaque
       data: "{{ provider.secretData }}"
-    apply: yes
+    apply: true
   loop: "{{ gardener_operator_dns_providers }}"
   loop_control:
     loop_var: provider
     label: "{{ provider.name }}"
-  no_log: yes
+  no_log: true
 
 - name: Create kube-apiserver authentication configmap
   k8s:
@@ -40,9 +40,9 @@
       data:
         config.yaml: |-
           {{ gardener_operator_virtual_garden_api_server_structured_authentication }}
-    apply: yes
+    apply: true
   when: gardener_operator_virtual_garden_api_server_structured_authentication
-  no_log: yes
+  no_log: true
 
 - name: Create gardener dashboard oidc secret
   k8s:
@@ -56,9 +56,9 @@
       stringData:
         client_id: "{{ gardener_operator_dashboard_oidc_client_id | string }}"
         client_secret: "{{ gardener_operator_dashboard_oidc_client_secret | string }}"
-    apply: yes
+    apply: true
   when: gardener_operator_dashboard_enabled
-  no_log: yes
+  no_log: true
 
 - name: Create gardener dashboard frontend configmap
   k8s:
@@ -70,7 +70,7 @@
         namespace: garden
       data:
         frontend-config.yaml: "{{ gardener_operator_dashboard_config_frontend | to_nice_yaml(indent=2)}}"
-    apply: yes
+    apply: true
   when:
     - gardener_operator_dashboard_enabled
     - gardener_operator_dashboard_config_frontend
@@ -87,9 +87,9 @@
         favicon-16x16.png: "{{ gardener_operator_dashboard_config_assets.favicon_16 }}"
         favicon-32x32.png: "{{ gardener_operator_dashboard_config_assets.favicon_32 }}"
         favicon-96x96.png: "{{ gardener_operator_dashboard_config_assets.favicon_96 }}"
-        favicon.ico:       "{{ gardener_operator_dashboard_config_assets.favicon_ico }}"
-        logo.svg:          "{{ gardener_operator_dashboard_config_assets.logo }}"
-    apply: yes
+        favicon.ico: "{{ gardener_operator_dashboard_config_assets.favicon_ico }}"
+        logo.svg: "{{ gardener_operator_dashboard_config_assets.logo }}"
+    apply: true
   when:
     - gardener_operator_dashboard_enabled
     - gardener_operator_dashboard_config_assets
@@ -108,4 +108,4 @@
 - name: Create Garden
   k8s:
     definition: "{{ lookup('template', 'garden.yaml') }}"
-    apply: yes
+    apply: true

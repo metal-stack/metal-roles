@@ -72,7 +72,7 @@
         type: "{{ gardener_partition_proxy_dns_provider }}"
         values:
           - "{{ _proxy_ip }}"
-    apply: yes
+    apply: true
   loop: "{{ gardener_shooted_seed.proxy_servers }}"
   loop_control:
     label: "{{ item.name }}"
@@ -85,10 +85,10 @@
       metadata:
         name: partition-proxy
     kubeconfig: "{{ _shoot_kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Deploy proxy
   k8s:
     definition: "{{ lookup('template', 'proxy.yaml') }}"
     kubeconfig: "{{ _shoot_kubeconfig }}"
-    apply: yes
+    apply: true

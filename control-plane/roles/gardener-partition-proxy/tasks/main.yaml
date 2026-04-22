@@ -9,7 +9,7 @@
         namespace: garden
       type: Opaque
       data: "{{ gardener_partition_proxy_dns_credentials }}"
-    apply: yes
+    apply: true
 
 - name: Deploy partition proxy in shooted seeds
   include_tasks: proxy.yaml

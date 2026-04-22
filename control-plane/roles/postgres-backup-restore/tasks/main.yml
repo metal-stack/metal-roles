@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - postgres_image_name is defined
       - postgres_image_tag is defined
@@ -29,4 +29,4 @@
   k8s:
     definition: "{{ lookup('template', 'postgres.yaml') }}"
     namespace: "{{ postgres_namespace }}"
-    apply: yes
+    apply: true

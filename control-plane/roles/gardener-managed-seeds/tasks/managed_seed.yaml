@@ -10,10 +10,10 @@
       type: Opaque
       data: "{{ _gardener_managed_seed.backup_infrastructure_secret }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Deploy managed seed resource
   k8s:
     definition: "{{ lookup('template', 'managed-seed.j2') }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
+    apply: true

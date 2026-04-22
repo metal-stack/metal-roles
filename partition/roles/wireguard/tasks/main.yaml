@@ -2,14 +2,14 @@
 - name: check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - wireguard_ip is not none
 
 - name: install wireguard
   apt:
     name: wireguard
-    update_cache: yes
+    update_cache: true
     state: latest
   with_items:
     - wireguard
@@ -21,9 +21,9 @@
   sysctl:
     name: net.ipv4.ip_forward
     value: "1"
-    sysctl_set: yes
+    sysctl_set: true
     state: present
-    reload: yes
+    reload: true
   tags: wg-install
 
 - name: create wireguard certificates directory
@@ -32,7 +32,7 @@
     state: directory
     owner: "{{ wireguard_cert_owner }}"
     group: "{{ wireguard_cert_group }}"
-    mode: 0700
+    mode: "0700"
   tags: wg-generate-keys
 
 - name: set path to private key file
@@ -47,12 +47,12 @@
       copy:
         content: "{{ wireguard_public_key }}"
         dest: "{{ _public_key_file_path }}"
-        mode: 0600
+        mode: "0600"
     - name: store private key file
       copy:
         content: "{{ wireguard_private_key }}"
         dest: "{{ _private_key_file_path }}"
-        mode: 0600
+        mode: "0600"
   when:
     - wireguard_public_key
     - wireguard_private_key
@@ -65,49 +65,49 @@
 
 - name: generate wireguard key pair
   block:
-  - name: generate wireguard private key
-    shell: "wg genkey | tee {{ _private_key_file_path }}"
-    register: _wg_private_key_result
-    tags: skip_ansible_lint
+    - name: generate wireguard private key
+      shell: "wg genkey | tee {{ _private_key_file_path }}"
+      register: _wg_private_key_result
+      tags: skip_ansible_lint
 
-  - name: set private key fact
-    set_fact:
-      _wg_private_key: "{{ _wg_private_key_result.stdout }}"
+    - name: set private key fact
+      set_fact:
+        _wg_private_key: "{{ _wg_private_key_result.stdout }}"
 
-  - name: generate wireguard public key
-    shell: "echo {{ _wg_private_key }} | wg pubkey | tee {{ _public_key_file_path }}"
-    register: _wg_public_key_result
+    - name: generate wireguard public key
+      shell: "echo {{ _wg_private_key }} | wg pubkey | tee {{ _public_key_file_path }}"
+      register: _wg_public_key_result
 
-  - name: set public key fact
-    set_fact:
-      _wg_public_key: "{{ _wg_public_key_result.stdout }}"
+    - name: set public key fact
+      set_fact:
+        _wg_public_key: "{{ _wg_public_key_result.stdout }}"
 
-  - name: print out public key
-    debug:
-      msg: "generated wireguard public key: {{ _wg_public_key }}"
+    - name: print out public key
+      debug:
+        msg: "generated wireguard public key: {{ _wg_public_key }}"
 
   when: not private_key_file_stat.stat.exists
   tags: wg-generate-keys
 
 - name: write wireguard configuration
   block:
-  - name: slurp private key file
-    slurp:
-      src: "{{ _private_key_file_path }}"
-    register: slurped_private_key
+    - name: slurp private key file
+      slurp:
+        src: "{{ _private_key_file_path }}"
+      register: slurped_private_key
 
-  - name: read private key
-    set_fact:
-      private_key: "{{ slurped_private_key.content | b64decode }}"
+    - name: read private key
+      set_fact:
+        private_key: "{{ slurped_private_key.content | b64decode }}"
 
-  - name: render wireguard configuration
-    template:
-      dest: /etc/wireguard/wg0.conf
-      src: wireguard_server.conf.j2
-      owner: root
-      group: root
-      mode: 640
-    notify: enable and restart wireguard
+    - name: render wireguard configuration
+      template:
+        dest: /etc/wireguard/wg0.conf
+        src: wireguard_server.conf.j2
+        owner: root
+        group: root
+        mode: 640
+      notify: enable and restart wireguard
   tags: wg-config
 
 - name: start wireguard

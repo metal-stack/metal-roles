@@ -8,14 +8,14 @@
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Deploy NTP service
   k8s:
     definition: "{{ lookup('template', 'ntp/' + item) }}"
     namespace: "{{ isolated_clusters_ntp_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    apply: yes
+    apply: true
   loop:
     - chrony-configmap.yaml
     - chrony-deployment.yaml

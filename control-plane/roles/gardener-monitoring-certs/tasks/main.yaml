@@ -11,7 +11,7 @@
           use-clouddns-solver: "true"
       spec:
         dnsNames:
-        - "*.{{ gardener_monitoring_certs_ingress_domain }}"
+          - "*.{{ gardener_monitoring_certs_ingress_domain }}"
         issuerRef:
           group: cert-manager.io
           kind: ClusterIssuer
@@ -38,7 +38,7 @@
         namespace: garden
       type: kubernetes.io/tls
 
-- name:  Loop over shooted seeds
+- name: Loop over shooted seeds
   include_tasks: deploy_shooted_seed.yaml
   loop: "{{ gardener_monitoring_certs_shooted_seeds }}"
   loop_control:

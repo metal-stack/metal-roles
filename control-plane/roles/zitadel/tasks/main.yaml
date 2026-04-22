@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - zitadel_admin_password is not none
       - zitadel_master_key is not none

@@ -2,9 +2,9 @@
 - name: ensure gpg is installed to handle FRR repo key
   apt:
     name:
-    - gpg
-    update_cache : yes
-    force_apt_get: yes
+      - gpg
+    update_cache: true
+    force_apt_get: true
 
 - name: add FRR apt-key to verify FRR package
   apt_key:
@@ -20,10 +20,10 @@
 - name: install required packages to have the network stack in place
   apt:
     name:
-    - frr={{ mgmt_server_frr_version }}*
-    - frr-pythontools={{ mgmt_server_frr_version }}*
-    update_cache : yes
-    force_apt_get: yes
+      - frr={{ mgmt_server_frr_version }}*
+      - frr-pythontools={{ mgmt_server_frr_version }}*
+    update_cache: true
+    force_apt_get: true
 
 - name: enable bgp daemons required to run bgp
   copy:

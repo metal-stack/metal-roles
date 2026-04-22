@@ -2,7 +2,7 @@
 - name: check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - lvm_vg is not none
       - lvm_pvs is not none
