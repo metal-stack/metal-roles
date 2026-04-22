@@ -87,10 +87,8 @@ spec:
             mountPath: /etc/vector/enrichment/well_known_ports.csv
             subPath: well_known_ports.csv
             readOnly: true
-          - name: ifindex-csv
-            mountPath: /etc/vector/enrichment/ifindex.csv
-            subPath: ifindex.csv
-            readOnly: true
+          - name: ifindex-dynamic
+            mountPath: /etc/vector/enrichment
           - name: geoip-db
             mountPath: /etc/vector/enrichment/geoip
             readOnly: true
@@ -100,6 +98,18 @@ spec:
           - name: vector-data
             mountPath: /var/lib/vector
 
+      - name: vrf-csv-builder
+        image: "{{ sflow_collector_vrf_csv_builder_image }}"
+        command: ["python3", "/scripts/vrf-csv-builder.py"]
+        env:
+          - name: LOKI_URL
+            value: "http://loki:3100"
+        volumeMounts:
+          - name: vrf-csv-builder-script
+            mountPath: /scripts
+          - name: ifindex-dynamic
+            mountPath: /etc/vector/enrichment
+
       volumes:
         - name: vector-config
           configMap:
@@ -107,9 +117,12 @@ spec:
         - name: ports-csv
           configMap:
             name: vector-goflow2-ports-csv
-        - name: ifindex-csv
+        - name: vrf-csv-builder-script
           configMap:
-            name: vector-goflow2-ifindex-csv
+            name: goflow2-vrf-csv-builder
+            defaultMode: 0755
+        - name: ifindex-dynamic
+          emptyDir: {}
         - name: varlogpods
           hostPath:
             path: /var/log/pods

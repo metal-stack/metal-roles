@@ -32,6 +32,7 @@ data:
           encoding:
             type: csv
         schema:
+          sampler_address: string
           ifindex: integer
           interface: string
           vrf: string
@@ -99,7 +100,7 @@ data:
         inputs:
           - enrich_proto
         source: |
-          row, err = get_enrichment_table_record("ifindex_vrf", { "ifindex": .in_if })
+          row, err = get_enrichment_table_record("ifindex_vrf", { "sampler_address": .sampler_address, "ifindex": .in_if })
           if err == null {
             .vrf       = row.vrf
             .interface = row.interface

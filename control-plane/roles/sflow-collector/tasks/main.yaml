@@ -6,6 +6,11 @@
     that:
       - sflow_collector_namespace is defined
 
+- name: Deploy VRF CSV builder ConfigMap
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'configmap-vrf-csv-builder.yaml.j2') | from_yaml_all }}"
+
 - name: Deploy goflow2
   k8s:
     state: present
