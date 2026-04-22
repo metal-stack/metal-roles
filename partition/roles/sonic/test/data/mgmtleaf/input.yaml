@@ -88,7 +88,7 @@ sonic_bgp_ports:
 
 sonic_vlans:
   - id: 1
-    dhcp_servers: ["10.255.255.254"]
+    dhcp_servers: ['10.255.255.254']
     ip: "10.255.255.1/24"
     untagged_ports:
       - Ethernet0
