@@ -9,8 +9,15 @@ sonic_config_bgp_ports:
 sonic_config_frr_l2vpn_evpn: true
 
 sonic_config_frr_route_map:
-  name: LOOPBACKS
-  match: interface Loopback0
+  name: RM_FABRIC_OUT
+  match: ip address prefix-list PL_FABRIC_OUT
+
+sonic_config_frr_prefixlists:
+  - ip prefix-list PL_FABRIC_OUT seq 5 permit 0.0.0.0/0
+  - ip prefix-list PL_FABRIC_OUT seq 10 permit 10.0.0.0/24 le 32
+  - ip prefix-list PL_FABRIC_OUT seq 15 permit 10.1.1.0/24 le 32
+  - ip prefix-list PL_FABRIC_OUT seq 20 permit 10.100.0.0/30 le 32
+  - ip prefix-list PL_FABRIC_OUT seq 25 permit 100.80.0.0/24 le 32
 
 sonic_config_frr_static_routes:
   - "0.0.0.0/0 10.1.2.1"

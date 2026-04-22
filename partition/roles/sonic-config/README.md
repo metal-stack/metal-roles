@@ -510,6 +510,18 @@ sonic_config_ports:
       # The VRF the port is bound to.
       vrf: Vrf46
 
+# Additional prefix lists.
+sonic_config_frr_prefix_lists:
+  - ip prefix-list PL_FABRIC_OUT seq 5 permit 0.0.0.0/0
+  - ip prefix-list PL_FABRIC_OUT seq 10 permit 10.0.0.0/24 le 32
+
+# Route map to apply when redistributing connected routes in the default VRF.
+sonic_config_frr_route_map:
+  # Name of the route map.
+  name: RM_FABRIC_OUT
+  # Matcher for the route map.
+  match: ip address prefix-list PL_FABRIC_OUT
+
 # Whether a `config reload` should be triggered. If `false` a simple `config load` will be
 # performed. Keep in mind that a config reload is a disruptive process.
 # Active connections will be interrupted and it may take up to several minutes for the
