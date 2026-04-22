@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: goflow2-vrf-csv-builder
+  namespace: "{{ sflow_collector_namespace }}"
+  labels:
+    app: goflow2
+data:
+  vrf-csv-builder.py: |
+    #!/usr/bin/env python3
+    import json
+    import os
+    import time
+    import urllib.request
+    import urllib.parse
+
+    LOKI_URL = os.environ.get("LOKI_URL", "http://loki:3100")
+    CSV_PATH = "/etc/vector/enrichment/ifindex.csv"
+    INTERVAL = int(os.environ.get("UPDATE_INTERVAL", "60"))
+    LOOKBACK_SECS = int(os.environ.get("LOOKBACK_SECS", "300"))
+
+
+    def query_loki():
+        now_ns = time.time_ns()
+        params = urllib.parse.urlencode({
+            "query": '{job="vrf-interface-mapping"}',
+            "limit": "5000",
+            "start": str(now_ns - LOOKBACK_SECS * 1_000_000_000),
+            "end": str(now_ns),
+            "direction": "backward",
+        })
+        with urllib.request.urlopen(f"{LOKI_URL}/loki/api/v1/query_range?{params}", timeout=10) as resp:
+            return json.loads(resp.read())["data"]["result"]
+
+
+    def build_csv(streams):
+        seen = {}
+        for stream in streams:
+            labels = stream.get("stream", {})
+            for ts_ns, line in stream.get("values", []):
+                try:
+                    entry = json.loads(line)
+                    sampler_address = entry.get("sampler_address") or labels.get("sampler_address")
+                    ifindex = int(entry["ifindex"])
+                    interface = entry.get("interface") or labels["interface"]
+                    vrf = entry.get("vrf") or labels["vrf"]
+                    key = (sampler_address, ifindex)
+                    if sampler_address and (key not in seen or int(ts_ns) > seen[key][2]):
+                        seen[key] = (interface, vrf, int(ts_ns))
+                except (KeyError, ValueError, TypeError):
+                    continue
+
+        rows = ["sampler_address,ifindex,interface,vrf"]
+        for (sampler_address, ifindex), (interface, vrf, _) in sorted(seen.items()):
+            rows.append(f"{sampler_address},{ifindex},{interface},{vrf}")
+        return "\n".join(rows) + "\n"
+
+
+    current = ""
+    while True:
+        try:
+            csv_content = build_csv(query_loki())
+            if csv_content != current:
+                with open(CSV_PATH + ".tmp", "w") as f:
+                    f.write(csv_content)
+                os.replace(CSV_PATH + ".tmp", CSV_PATH)
+                print(f"Updated {CSV_PATH}: {csv_content.count(chr(10)) - 1} entries", flush=True)
+                current = csv_content
+        except Exception as e:
+            print(f"ERROR: {e}", flush=True)
+        time.sleep(INTERVAL)
