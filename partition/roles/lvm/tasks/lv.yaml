@@ -5,7 +5,7 @@
     lv: "{{ lv.name }}"
     size: "{{ lv.size }}"
     opts: "{{ lv.opts | default('') }}"
-    resizefs: yes
+    resizefs: true
 
 - name: create filesystem
   filesystem:
@@ -16,7 +16,7 @@
   file:
     path: "{{ lv.mountpath }}"
     state: directory
-    mode: 0750
+    mode: "0750"
 
 - name: mount logical volume
   mount:

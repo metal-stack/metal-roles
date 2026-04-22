@@ -1,3 +1,4 @@
+---
 apiVersion: core.gardener.cloud/v1beta1
 kind: CloudProfile
 metadata:
@@ -5,25 +6,25 @@ metadata:
 spec:
   kubernetes:
     versions:
-    - expirationDate: "2020-12-01T00:00:00Z"
-      version: 1.18.0
-    - version: 1.24.15
+      - expirationDate: "2020-12-01T00:00:00Z"
+        version: 1.18.0
+      - version: 1.24.15
   machineImages:
-  - name: ubuntu
-    versions:
-    - cri:
-      - name: containerd
-      version: "20.04"
-    - cri:
-      - name: containerd
-      version: 20.04.20210131
+    - name: ubuntu
+      versions:
+        - cri:
+            - name: containerd
+          version: "20.04"
+        - cri:
+            - name: containerd
+          version: 20.04.20210131
   machineTypes:
-  - architecture: amd64
-    cpu: "8"
-    gpu: "0"
-    memory: 32Gi
-    name: n1-medium-x86
-    usable: true
+    - architecture: amd64
+      cpu: "8"
+      gpu: "0"
+      memory: 32Gi
+      name: n1-medium-x86
+      usable: true
   providerConfig:
     apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1
     kind: CloudProfileConfig
@@ -31,18 +32,18 @@ spec:
       prod:
         endpoint: https://metal-api
         firewallControllerVersions:
-        - classification: supported
-          url: "https://images.metal-stack.io/firewall-controller/v2.0.4/firewall-controller"
-          version: v2.0.4
+          - classification: supported
+            url: "https://images.metal-stack.io/firewall-controller/v2.0.4/firewall-controller"
+            version: v2.0.4
         firewallImages:
-        - firewall-ubuntu-3.0
-        - firewall-ubuntu-3.0.20300101
+          - firewall-ubuntu-3.0
+          - firewall-ubuntu-3.0.20300101
         partitions:
           partition-a:
             firewallTypes:
-            - n1-medium-x86
+              - n1-medium-x86
   regions:
-  - name: a
-    zones:
-    - name: partition-a
+    - name: a
+      zones:
+        - name: partition-a
   type: metal

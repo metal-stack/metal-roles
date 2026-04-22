@@ -21,13 +21,13 @@ gardener_cloud_profile_os_cri_mapping:
   ubuntu:
     when:
     cris:
-    - name: containerd
-      containerRuntimes: []
+      - name: containerd
+        containerRuntimes: []
   debian:
     when:
     cris:
-    - name: containerd
-      containerRuntimes: []
+      - name: containerd
+        containerRuntimes: []
 
 gardener_cloud_profile_os_compatibility_mapping: {}
   # ubuntu:

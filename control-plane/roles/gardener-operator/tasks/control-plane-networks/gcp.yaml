@@ -38,4 +38,4 @@
         namespace: garden
       data:
         url: "https://{{ (gcp_cluster.stdout | from_json)['endpoint'] }}"
-    apply: yes
+    apply: true

@@ -5,7 +5,7 @@
 - name: Enable systemd-networkd
   systemd:
     name: systemd-networkd
-    enabled: yes
+    enabled: true
     state: started
 
 - name: Copy systemd-networkd conf
@@ -37,8 +37,8 @@
     dest: "/etc/systemd/network/{{ (i+1)*10 }}-{{ item.name }}.link"
   when: item.name != 'lo'
   notify:
-  - restart systemd-networkd
-  - rename interfaces
+    - restart systemd-networkd
+    - rename interfaces
   loop: "{{ systemd_networkd_nics }}"
   loop_control:
     index_var: i

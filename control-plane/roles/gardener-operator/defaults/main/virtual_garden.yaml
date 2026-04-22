@@ -2,7 +2,6 @@
 gardener_operator_virtual_garden_public_dns: gardener-kube-apiserver.{{ metal_control_plane_ingress_dns }}
 
 gardener_operator_virtual_garden_etcd_storage_class:
-
 gardener_operator_virtual_garden_oidc_issuer_url:
 gardener_operator_virtual_garden_oidc_client_id:
 gardener_operator_virtual_garden_oidc_username_claim:
@@ -10,7 +9,6 @@ gardener_operator_virtual_garden_oidc_username_prefix:
 gardener_operator_virtual_garden_oidc_groups_claim:
 gardener_operator_virtual_garden_oidc_groups_prefix:
 gardener_operator_virtual_garden_oidc_ca:
-
 gardener_operator_expose_virtual_garden_through_ingress_nginx: false
 
 gardener_operator_virtual_garden_api_server_structured_authentication:

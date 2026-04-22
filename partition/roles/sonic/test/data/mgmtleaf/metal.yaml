@@ -20,11 +20,9 @@ NTP:
 
 NTP_SERVER:
   1.2.3.4: {}
-
 LOOPBACK_INTERFACE:
   Loopback0: {}
   Loopback0|10.0.0.1/32: {}
-
 MGMT_INTERFACE:
   eth0|10.255.255.254/30:
     gwaddr: "10.255.255.253"
@@ -127,7 +125,7 @@ PORT:
 
 VLAN:
   Vlan1:
-    dhcp_servers: ['10.255.255.254']
+    dhcp_servers: ["10.255.255.254"]
     vlanid: 1
   Vlan2:
     vlanid: 2
@@ -136,18 +134,17 @@ VLAN_INTERFACE:
   Vlan1: {}
   Vlan1|10.255.255.1/24: {}
   Vlan2: {}
-
 VLAN_MEMBER:
   Vlan1|Ethernet0:
-      tagging_mode: untagged
+    tagging_mode: untagged
   Vlan1|Ethernet1:
-      tagging_mode: untagged
+    tagging_mode: untagged
   Vlan1|Ethernet2:
-      tagging_mode: untagged
+    tagging_mode: untagged
   Vlan1|Ethernet3:
-      tagging_mode: untagged
+    tagging_mode: untagged
   Vlan2|Ethernet4:
-      tagging_mode: untagged
+    tagging_mode: untagged
 
 VXLAN_EVPN_NVO:
   nvo:

@@ -8,7 +8,7 @@
         name: "{{ isolated_clusters_envoy_gateway_namespace }}"
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
-    apply: yes
+    apply: true
     kubeconfig: "{{ cluster.kubeconfig }}"
 
 - name: Deploy envoy gateway
@@ -26,7 +26,7 @@
     name: envoy-gateway
     namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    wait: yes
+    wait: true
     wait_condition:
       type: Available
       status: "True"
@@ -35,11 +35,11 @@
 - name: Deploy gateway resources
   k8s:
     definition: "{{ lookup('template', 'envoy-gateway/gateway.yaml') }}"
-    apply: yes
+    apply: true
     kubeconfig: "{{ cluster.kubeconfig }}"
 
 - name: Deploy gateway routes
   k8s:
     definition: "{{ lookup('template', 'envoy-gateway/routes.yaml') }}"
-    apply: yes
+    apply: true
     kubeconfig: "{{ cluster.kubeconfig }}"
