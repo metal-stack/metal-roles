@@ -38,6 +38,10 @@ def get_sampler_address(db):
     return None
 
 
+def get_vni(db, vrf):
+    return db.hget(f"VRF|{vrf}", "vni")
+
+
 def get_vrf_mappings(db, sampler_address):
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     mappings = []
@@ -50,7 +54,8 @@ def get_vrf_mappings(db, sampler_address):
         vrf = db.hget(key, "vrf_name")
         ifindex = get_ifindex(interface)
         if vrf and ifindex is not None:
-            mappings.append({"ts": ts, "interface": interface, "vrf": vrf, "ifindex": ifindex, "sampler_address": sampler_address})
+            vni = get_vni(db, vrf)
+            mappings.append({"ts": ts, "interface": interface, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
 
     for key in db.keys("VLAN_MEMBER|*"):
         try:
@@ -60,7 +65,8 @@ def get_vrf_mappings(db, sampler_address):
         vrf = db.hget(f"VLAN_INTERFACE|{vlan}", "vrf_name")
         ifindex = get_ifindex(interface)
         if vrf and ifindex is not None:
-            mappings.append({"ts": ts, "interface": interface, "vlan": vlan, "vrf": vrf, "ifindex": ifindex, "sampler_address": sampler_address})
+            vni = get_vni(db, vrf)
+            mappings.append({"ts": ts, "interface": interface, "vlan": vlan, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
 
     return mappings
 

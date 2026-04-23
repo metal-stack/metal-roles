@@ -45,15 +45,16 @@ data:
                     ifindex = int(entry["ifindex"])
                     interface = entry.get("interface") or labels["interface"]
                     vrf = entry.get("vrf") or labels["vrf"]
+                    vni = entry.get("vni") or labels.get("vni") or ""
                     key = (sampler_address, ifindex)
                     if sampler_address and (key not in seen or int(ts_ns) > seen[key][2]):
-                        seen[key] = (interface, vrf, int(ts_ns))
+                        seen[key] = (interface, vrf, vni, int(ts_ns))
                 except (KeyError, ValueError, TypeError):
                     continue
 
-        rows = ["sampler_address,ifindex,interface,vrf"]
-        for (sampler_address, ifindex), (interface, vrf, _) in sorted(seen.items()):
-            rows.append(f"{sampler_address},{ifindex},{interface},{vrf}")
+        rows = ["sampler_address,ifindex,interface,vrf,vni"]
+        for (sampler_address, ifindex), (interface, vrf, vni, _) in sorted(seen.items()):
+            rows.append(f"{sampler_address},{ifindex},{interface},{vrf},{vni}")
         return "\n".join(rows) + "\n"
 
 
