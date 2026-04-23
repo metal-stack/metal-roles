@@ -97,12 +97,15 @@
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
+    - auditing-timescaledb.yaml
+    - headscale-db.yaml
     - ipam-db.yaml
     - masterdata-api.yaml
     - masterdata-db.yaml
     - metal-api.yaml
     - metal-db.yaml
     - metal-metrics-exporter.yaml
+    - zitadel-db.yaml
 
 - name: Create service monitors for Gardener
   k8s:

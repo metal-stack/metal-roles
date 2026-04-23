@@ -478,6 +478,50 @@ additionalPrometheusRulesMap:
         annotations:
           summary: "Switch sync is slow on {{ $labels.switchname }}"
           description: "Average sync duration of {{ $labels.switchname }} in partition {{ $labels.partition }} is exceeding two seconds for more than 5 minutes."
+  "backup-restore-sidecar.rules":
+    groups:
+    - name: backup-restore-sidecar.rules
+      rules:
+      - alert: BackupFailed
+        expr: backup_success == 0 and backup_total_backups > 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backup failed on {{ $labels.pod }}"
+          description: "backup-restore-sidecar on {{ $labels.pod }} in namespace {{ $labels.namespace }} had successful backups before, but the last one failed (backup_success == 0) for more than 10 minutes."
+      - alert: BackupDatabaseNotInitialized
+        expr: backup_database_initialized == 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database not initialized for backup on {{ $labels.pod }}"
+          description: "backup-restore-sidecar on {{ $labels.pod }} in namespace {{ $labels.namespace }} has not yet become initialized for more than 10 minutes. This covers two cases: (1) the sidecar is stuck in its startup probe loop (wrong credentials, wrong port, database not accepting connections), or (2) an ongoing restore from the backup provider is taking unexpectedly long. The metric only transitions from 0 to 1 once per container lifetime, so runtime database outages are instead covered by BackupFailed."
+      - alert: BackupErrorsIncreasing
+        expr: increase(backup_errors_total[10m]) > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backup errors on {{ $labels.pod }}"
+          description: "backup-restore-sidecar on {{ $labels.pod }} in namespace {{ $labels.namespace }} is reporting errors for operation {{ $labels.operation }} over the last 10 minutes."
+      - alert: BackupNoSuccessfulBackup
+        expr: backup_total_backups == 0
+        for: 25h # TODO because the longest backup schedule is currently 24h for headscale-db
+        labels:
+          severity: warning
+        annotations:
+          summary: "No successful backup on {{ $labels.pod }}"
+          description: "backup-restore-sidecar on {{ $labels.pod }} in namespace {{ $labels.namespace }} has not completed any successful backup since startup (more than 25 hours). This likely indicates a misconfiguration. The `for:` duration is chosen to tolerate the slowest backup cron schedule in use (currently 24h for headscale-db)."
+      - alert: BackupSizeZero
+        expr: backup_size == 0 and backup_total_backups > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backup size is zero on {{ $labels.pod }}"
+          description: "backup-restore-sidecar on {{ $labels.pod }} in namespace {{ $labels.namespace }} reports a successful backup of zero bytes. This may indicate an empty database or a corrupt backup file."
 {% endraw %}
 {% if monitoring_gardener_enabled %}
 {% raw %}
