@@ -36,6 +36,7 @@ data:
           ifindex: integer
           interface: string
           vrf: string
+          vni: string
 
     sources:
       goflow2_raw:
@@ -68,6 +69,7 @@ data:
 
           .app_proto        = "UNCLASSIFIED"
           .vrf              = "default"
+          .vni              = ""
           .sampler_address  = string(.sampler_address) ?? "UNKNOWN"
 
       enrich_proto:
@@ -103,6 +105,7 @@ data:
           row, err = get_enrichment_table_record("ifindex_vrf", { "sampler_address": .sampler_address, "ifindex": .in_if })
           if err == null {
             .vrf       = row.vrf
+            .vni       = row.vni
             .interface = row.interface
           }
 
