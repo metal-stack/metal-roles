@@ -103,7 +103,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 29 },
+          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 29 },
           "id": 5,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -142,7 +142,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 29 },
+          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 29 },
           "id": 15,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -181,7 +181,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 29 },
+          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 29 },
           "id": 16,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -220,7 +220,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 37 },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 41 },
           "id": 7,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -231,7 +231,7 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", app_proto!~\"UNCLASSIFIED|UNKNOWN|\"} [$__range]))",
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", app_proto!~\"UNCLASSIFIED|UNKNOWN|\", vrf=~\"$vrf\"} [$__range]))",
               "legendFormat": "{{app_proto}}",
               "refId": "A"
             }
@@ -242,7 +242,28 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 37 },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 41 },
+          "id": 17,
+          "options": {
+            "displayLabels": ["percent", "name"],
+            "legend": { "displayMode": "table", "placement": "right", "calcs": ["percent"] },
+            "pieType": "donut",
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (vrf) (count_over_time({app=\"goflow2\", vrf!=\"\"} [$__range]))",
+              "legendFormat": "{{vrf}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Traffic by VRF",
+          "type": "piechart"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 41 },
           "id": 9,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -253,7 +274,7 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (sampler_address) (count_over_time({app=\"goflow2\", sampler_address!=\"\"} [$__range]))",
+              "expr": "sum by (sampler_address) (count_over_time({app=\"goflow2\", sampler_address!=\"\", vrf=~\"$vrf\"} [$__range]))",
               "legendFormat": "{{sampler_address}}",
               "refId": "A"
             }
@@ -292,7 +313,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 45 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 49 },
           "id": 12,
           "maxDataPoints": 60,
           "options": {
@@ -302,7 +323,7 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", app_proto!=\"\", app_proto!~\"UNCLASSIFIED|UNKNOWN\"} [$__interval]))",
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", app_proto!=\"\", app_proto!~\"UNCLASSIFIED|UNKNOWN\", vrf=~\"$vrf\"} [$__interval]))",
               "legendFormat": "{{app_proto}}",
               "refId": "A"
             }
@@ -342,7 +363,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 53 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 57 },
           "id": 13,
           "maxDataPoints": 60,
           "options": {
@@ -352,7 +373,7 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (app_proto) (rate({app=\"goflow2\", app_proto!=\"\", app_proto!~\"UNCLASSIFIED|UNKNOWN\"} | json bytes | unwrap bytes [$__interval])) * 256 * 8",
+              "expr": "sum by (app_proto) (rate({app=\"goflow2\", app_proto!=\"\", app_proto!~\"UNCLASSIFIED|UNKNOWN\", vrf=~\"$vrf\"} | json bytes | unwrap bytes [$__interval])) * 256 * 8",
               "legendFormat": "{{app_proto}}",
               "refId": "A"
             }
@@ -466,7 +487,7 @@ data:
             "includeAll": true,
             "allValue": ".*",
             "label": "VRF",
-            "multi": true,
+            "multi": false,
             "name": "vrf",
             "options": [],
             "query": "label_values({app=\"goflow2\"}, vrf)",
@@ -500,6 +521,6 @@ data:
       "timezone": "",
       "title": "sFlow / goflow2 Dashboard",
       "uid": "goflow2-sflow",
-      "version": 2
+      "version": 6
     }
     {% endraw %}
