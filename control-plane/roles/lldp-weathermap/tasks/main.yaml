@@ -1,0 +1,212 @@
+---
+- name: Collect LLDP topology from switches
+  ansible.builtin.shell: "/usr/bin/docker exec lldp lldpctl -f json0"
+  register: lldp_raw
+  delegate_to: "{{ item }}"
+  loop: "{{ groups[lldp_weathermap_hosts_group] | default([]) }}"
+  failed_when: false
+  changed_when: false
+
+- name: Process LLDP topology
+  set_fact:
+    lldp_topology_data: >-
+      {%- set topology = [] -%}
+      {%- set filter_re = lldp_weathermap_node_filter | join('|') -%}
+      {%- for res in lldp_raw.results | selectattr('stdout') -%}
+        {%- for iface in (res.stdout | from_json).lldp[0].interface -%}
+          {%- set remote_host = iface.chassis[0].name[0].value -%}
+          {%- if remote_host | regex_search(filter_re) -%}
+            {%- set _ = topology.append({'local': res.item, 'remote': remote_host, 'local_port': iface.name}) -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+      {{ topology }}
+
+- name: Build deduplicated link list and node list
+  set_fact:
+    weathermap_links: >-
+      {%- set deduped = [] -%}
+      {%- set keys = [] -%}
+      {%- for link in lldp_topology_data + lldp_weathermap_static_links -%}
+        {%- set key = ([link.local, link.remote] | sort | join('---')) -%}
+        {%- if key not in keys -%}
+          {%- set _ = keys.append(key) -%}
+          {%- set _ = deduped.append(link) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ deduped }}
+    weathermap_nodes: "{{ (lldp_topology_data + lldp_weathermap_static_links) | map(attribute='local') | union((lldp_topology_data + lldp_weathermap_static_links) | map(attribute='remote')) }}"
+
+- name: Categorize nodes into tiers
+  set_fact:
+    weathermap_tiered_nodes: >-
+      {%- set tiered = {} -%}
+      {%- for tier in lldp_weathermap_tiers -%}
+        {%- set _ = tiered.update({tier.id: []}) -%}
+      {%- endfor -%}
+      {%- for node in weathermap_nodes -%}
+        {%- set ns = namespace(tier=none) -%}
+        {%- for f in lldp_weathermap_node_filter -%}
+          {%- if f in node -%}{%- set ns.tier = f -%}{%- endif -%}
+        {%- endfor -%}
+        {%- set _ = tiered[ns.tier | default(lldp_weathermap_fallback_tier, true)].append(node) -%}
+      {%- endfor -%}
+      {{ tiered }}
+
+- name: Build canvas elements
+  set_fact:
+    _weathermap_elements: >-
+      {%- set canvas_width = 1200 -%}
+      {%- set max_tier_count = weathermap_tiered_nodes.values() | map('length') | max | default(1) -%}
+      {%- set node_width = (canvas_width / (max_tier_count + 1) * 0.7) | int -%}
+      {%- set node_height = (lldp_weathermap_panel_grid_rows * 30 * 0.30 * 0.4) | int -%}
+      {%- set node_pos = {} -%}
+      {%- for tier in lldp_weathermap_tiers -%}
+        {%- set tier_nodes = weathermap_tiered_nodes[tier.id] | default([]) -%}
+        {%- set count = tier_nodes | length -%}
+        {%- for node in tier_nodes -%}
+          {%- set x = (loop.index * canvas_width / (count + 1) - node_width / 2) | int -%}
+          {%- set top = (tier.top_fraction * lldp_weathermap_panel_grid_rows * 30) | int -%}
+          {%- set _ = node_pos.update({node: {"x": x, "top": top, "background_color": tier.background_color, "border_color": tier.border_color}}) -%}
+        {%- endfor -%}
+      {%- endfor -%}
+      {%- set elements = [] -%}
+      {%- for node, pos in node_pos.items() -%}
+        {%- set node_connections = [] -%}
+        {%- for link in weathermap_links -%}
+          {%- if link.local == node -%}
+            {%- set tgt_pos = node_pos[link.remote] | default({"x": 0, "top": 0}) -%}
+            {%- if pos.top > tgt_pos.top -%}
+              {%- set src_xy = {"x": 0, "y": 1} -%}
+              {%- set tgt_xy = {"x": 0, "y": -1} -%}
+            {%- elif pos.top < tgt_pos.top -%}
+              {%- set src_xy = {"x": 0, "y": -1} -%}
+              {%- set tgt_xy = {"x": 0, "y": 1} -%}
+            {%- elif pos.x < tgt_pos.x -%}
+              {%- set src_xy = {"x": 1, "y": 0} -%}
+              {%- set tgt_xy = {"x": -1, "y": 0} -%}
+            {%- else -%}
+              {%- set src_xy = {"x": -1, "y": 0} -%}
+              {%- set tgt_xy = {"x": 1, "y": 0} -%}
+            {%- endif -%}
+            {%- set _ = node_connections.append({
+              "source": src_xy,
+              "target": tgt_xy,
+              "targetName": link.remote,
+              "path": "straight",
+              "color": {"field": link.local ~ "→" ~ link.remote},
+              "size": {"fixed": 3},
+              "direction": {"fixed": "none"}
+            }) -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- set elem = {
+          "type": "rectangle",
+          "name": node,
+          "placement": {"left": pos.x, "top": pos.top, "width": node_width, "height": node_height},
+          "background": {"color": {"fixed": pos.background_color}},
+          "border": {"color": {"fixed": pos.border_color}, "width": 5, "radius": 10},
+          "config": {
+            "text": {"fixed": node}
+          }
+        } -%}
+        {%- if node_connections | length > 0 -%}
+          {%- set elem = elem | combine({"connections": node_connections}) -%}
+        {%- endif -%}
+        {%- set _ = elements.append(elem) -%}
+      {%- endfor -%}
+      {%- for link in weathermap_links -%}
+        {%- set src_pos = node_pos[link.local] -%}
+        {%- set tgt_pos = node_pos[link.remote] -%}
+        {%- set mid_x = (src_pos.x + tgt_pos.x + node_width) / 2 - 40 -%}
+        {%- set mid_y = (src_pos.top + tgt_pos.top + node_height) / 2 - 20 -%}
+        {%- set link_elem = {
+          "type": "rectangle",
+          "name": link.local ~ "→" ~ link.remote ~ "_hotspot",
+          "placement": {"left": mid_x | int, "top": mid_y | int, "width": 80, "height": 40},
+          "background": {"color": {"fixed": "rgba(255,255,255,0.01)"}},
+          "border": {"color": {"fixed": "rgba(0,0,0,0)"}, "width": 0},
+          "config": {},
+          "links": [{
+            "title": "Select link: " ~ link.local_port,
+            "url": "/d/network-weathermap?var-selected_instance=" ~ link.local ~ "&var-selected_device=" ~ link.local_port,
+            "targetBlank": false,
+            "oneClick": true
+          }]
+        } -%}
+        {%- set _ = elements.append(link_elem) -%}
+      {%- endfor -%}
+      {{ elements }}
+
+- name: Build standalone weathermap dashboard
+  set_fact:
+    _weathermap_dashboard: >-
+      {%- set targets = [] -%}
+      {%- for link in weathermap_links -%}
+        {%- set _ = targets.append({
+          "refId": loop.index | string,
+          "legendFormat": link.local ~ "→" ~ link.remote,
+          "expr": 'rate(node_network_transmit_bytes_total{instance="' ~ link.local ~ '",device="' ~ link.local_port ~ '"}[15m]) * 8',
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}
+        }) -%}
+      {%- endfor -%}
+      {%- set canvas_panel = {
+        "type": "canvas",
+        "title": lldp_weathermap_dashboard_name,
+        "gridPos": {"h": lldp_weathermap_panel_grid_rows, "w": 24, "x": 0, "y": 1},
+        "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {"mode": "absolute", "steps": lldp_weathermap_thresholds},
+            "unit": "bps"
+          },
+          "overrides": []
+        },
+        "targets": targets,
+        "options": {
+          "inlineEditing": false,
+          "panZoom": false,
+          "root": {"elements": _weathermap_elements}
+        }
+      } -%}
+      {%- set traffic_panel = {
+        "type": "timeseries",
+        "title": "Interface Traffic",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": lldp_weathermap_panel_grid_rows + 1},
+        "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+        "fieldConfig": {"defaults": {"unit": "bps"}, "overrides": []},
+        "targets": [
+          {
+            "refId": "TX", "legendFormat": "TX",
+            "expr": 'rate(node_network_transmit_bytes_total{instance="$selected_instance",device="$selected_device"}[15m]) * 8',
+            "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}
+          },
+          {
+            "refId": "RX", "legendFormat": "RX",
+            "expr": 'rate(node_network_receive_bytes_total{instance="$selected_instance",device="$selected_device"}[15m]) * 8',
+            "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}
+          }
+        ]
+      } -%}
+      {%- set topo_row = {"type": "row", "title": "Network Topology", "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}, "collapsed": false} -%}
+      {%- set ds_var = {"hide": 0, "includeAll": false, "label": "Prometheus", "multi": false, "name": "DS_PROMETHEUS", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource"} -%}
+      {%- set inst_var = {"name": "selected_instance", "label": "Selected Switch", "type": "textbox", "current": {"value": ""}, "hide": 2, "skipUrlSync": false} -%}
+      {%- set dev_var = {"name": "selected_device", "label": "Selected Interface", "type": "textbox", "current": {"value": ""}, "hide": 2, "skipUrlSync": false} -%}
+      {{
+        {
+          "uid": "network-weathermap",
+          "title": lldp_weathermap_dashboard_name,
+          "editable": true,
+          "schemaVersion": 38,
+          "panels": [topo_row, canvas_panel, traffic_panel],
+          "templating": {"list": [ds_var, inst_var, dev_var]},
+          "time": {"from": "now-1h", "to": "now"},
+          "refresh": "1m",
+          "tags": ["weathermap", "network"]
+        }
+      }}
+
+- name: Deploy weathermap dashboard ConfigMap
+  k8s:
+    definition: "{{ lookup('template', 'weathermap-dashboard.yaml.j2') }}"

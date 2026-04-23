@@ -181,6 +181,8 @@
       content_var: partition_prometheus_rules_pixiecore
     - file: sonic-exporter.yaml
       content_var: partition_prometheus_rules_sonic_exporter
+    - file: sonic-systemd.yaml
+      content_var: partition_prometheus_rules_sonic_systemd
   notify: restart prometheus
 
 - name: deploy prometheus service

@@ -1,0 +1,154 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goflow2
+  namespace: "{{ sflow_collector_namespace }}"
+  labels:
+    app: goflow2
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: goflow2
+  template:
+    metadata:
+      labels:
+        app: goflow2
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      initContainers:
+        - name: geoip-download
+          image: "{{ sflow_collector_geoip_download_image }}"
+          command:
+            - sh
+            - -c
+            - |
+              YEAR=$(date +%Y)
+              MONTH=$(date +%m)
+              PREV_MONTH=$((10#$MONTH - 1))
+              PREV_YEAR=$YEAR
+              if [ $PREV_MONTH -eq 0 ]; then PREV_MONTH=12; PREV_YEAR=$((YEAR - 1)); fi
+              PREV_MONTH=$(printf '%02d' $PREV_MONTH)
+
+              for URL in \
+                "https://download.db-ip.com/free/dbip-city-lite-${YEAR}-${MONTH}.mmdb.gz" \
+                "https://download.db-ip.com/free/dbip-city-lite-${PREV_YEAR}-${PREV_MONTH}.mmdb.gz"; do
+                echo "Trying $URL ..."
+                if wget -q -O /geoip/geoip.mmdb.gz "$URL" && gunzip /geoip/geoip.mmdb.gz; then
+                  chmod 644 /geoip/geoip.mmdb
+                  echo "Done."
+                  exit 0
+                fi
+                rm -f /geoip/geoip.mmdb.gz
+              done
+              echo "ERROR: Could not download GeoIP database." >&2
+              exit 1
+          volumeMounts:
+            - name: geoip-db
+              mountPath: /geoip
+          securityContext:
+            runAsUser: 0
+      containers:
+      - name: goflow2
+        image: "{{ sflow_collector_image }}"
+        args:
+          - "-listen"
+          - "sflow://:{{ sflow_collector_port }}"
+          - "-addr"
+          - ":{{ sflow_collector_metrics_port }}"
+          - "-format"
+          - "json"
+        ports:
+        - name: sflow-udp
+          containerPort: {{ sflow_collector_port }}
+          protocol: UDP
+        - name: metrics
+          containerPort: {{ sflow_collector_metrics_port }}
+          protocol: TCP
+
+      - name: vector
+        image: "{{ vector_goflow2_vector_image }}"
+        args:
+          - --config-dir
+          - /etc/vector/
+        env:
+          - name: VECTOR_LOG
+            value: "info"
+        resources: {{ sflow_collector_vector_resources | to_json }}
+        volumeMounts:
+          - name: vector-config
+            mountPath: /etc/vector/vector.yaml
+            subPath: vector.yaml
+            readOnly: true
+          - name: ports-csv
+            mountPath: /etc/vector/enrichment/well_known_ports.csv
+            subPath: well_known_ports.csv
+            readOnly: true
+          - name: ifindex-dynamic
+            mountPath: /etc/vector/enrichment
+          - name: geoip-db
+            mountPath: /etc/vector/enrichment/geoip
+            readOnly: true
+          - name: varlogpods
+            mountPath: /var/log/pods
+            readOnly: true
+          - name: vector-data
+            mountPath: /var/lib/vector
+
+      - name: vrf-csv-builder
+        image: "{{ sflow_collector_vrf_csv_builder_image }}"
+        command: ["python3", "/scripts/vrf-csv-builder.py"]
+        env:
+          - name: LOKI_URL
+            value: "http://loki:3100"
+        volumeMounts:
+          - name: vrf-csv-builder-script
+            mountPath: /scripts
+          - name: ifindex-dynamic
+            mountPath: /etc/vector/enrichment
+
+      volumes:
+        - name: vector-config
+          configMap:
+            name: vector-goflow2-config
+        - name: ports-csv
+          configMap:
+            name: vector-goflow2-ports-csv
+        - name: vrf-csv-builder-script
+          configMap:
+            name: goflow2-vrf-csv-builder
+            defaultMode: 0755
+        - name: ifindex-dynamic
+          emptyDir: {}
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+            type: Directory
+        - name: vector-data
+          emptyDir: {}
+        - name: geoip-db
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goflow2
+  namespace: "{{ sflow_collector_namespace }}"
+  labels:
+    app: goflow2
+spec:
+  type: ClusterIP
+  selector:
+    app: goflow2
+  ports:
+  - name: sflow-udp
+    port: {{ sflow_collector_port }}
+    targetPort: {{ sflow_collector_port }}
+    protocol: UDP
+  - name: metrics
+    port: {{ sflow_collector_metrics_port }}
+    targetPort: {{ sflow_collector_metrics_port }}
+    protocol: TCP

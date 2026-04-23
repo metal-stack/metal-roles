@@ -1,0 +1,38 @@
+---
+lldp_weathermap_namespace: monitoring
+lldp_weathermap_dashboard_name: "Network Weathermap"
+
+lldp_weathermap_tiers:
+  - id: spine
+    top_fraction: 0.15
+    background_color: "#1f3a5f"
+    border_color: "#4a9eff"
+  - id: exit
+    top_fraction: 0.45
+    background_color: "#3a1f5f"
+    border_color: "#a855f7"
+  - id: leaf
+    top_fraction: 0.75
+    background_color: "#1f4a4a"
+    border_color: "#2dd4bf"
+
+lldp_weathermap_fallback_tier: exit
+
+lldp_weathermap_panel_grid_rows: 14
+
+lldp_weathermap_thresholds:
+  - color: green
+    value: null
+  - color: yellow
+    value: 9000000000   # 9 Gbps
+  - color: orange
+    value: 18000000000   # 18 Gbps
+  - color: red
+    value: 24000000000   # 24 Gbps
+
+lldp_weathermap_hosts_group: all_switches
+lldp_weathermap_node_filter:
+  - leaf
+  - spine
+
+lldp_weathermap_static_links: []
