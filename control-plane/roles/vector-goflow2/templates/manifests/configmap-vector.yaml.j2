@@ -41,9 +41,8 @@ data:
     sources:
       goflow2_raw:
         type: file
-        # Reading logs from the node directly, no access to kubeapi necessary
         include:
-          - "/var/log/pods/{{ sflow_collector_namespace }}_goflow2-*_*/goflow2/*.log"
+          - "/flows/goflow2.log"
 
     transforms:
       parse_goflow2:
@@ -51,15 +50,10 @@ data:
         inputs:
           - goflow2_raw
         source: |
-          parsed_line, err = parse_regex(.message, r'^(?P<_ts>\S+) (?P<stream>\S+) \S+ (?P<content>.*)$')
-          if err != null { abort }
-          if parsed_line.stream != "stdout" { abort }
-
-          parsed, err = parse_json(parsed_line.content)
+          parsed, err = parse_json(.message)
           if err != null { abort }
           . = merge!(., parsed)
 
-          # Forcing empty fields to zero
           .dst_port = to_int(.dst_port) ?? 0
           .src_port = to_int(.src_port) ?? 0
           .in_if    = to_int(.in_if)    ?? 0
