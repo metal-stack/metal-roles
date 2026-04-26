@@ -54,13 +54,17 @@ spec:
       containers:
       - name: goflow2
         image: "{{ sflow_collector_image }}"
+        command: ["sh", "-c"]
         args:
-          - "-listen"
-          - "sflow://:{{ sflow_collector_port }}"
-          - "-addr"
-          - ":{{ sflow_collector_metrics_port }}"
-          - "-format"
-          - "json"
+          - >-
+            exec /goflow2
+            -listen sflow://:{{ sflow_collector_port }}
+            -addr :{{ sflow_collector_metrics_port }}
+            -format json
+            > /flows/goflow2.log
+        volumeMounts:
+          - name: flow-stream
+            mountPath: /flows
         ports:
         - name: sflow-udp
           containerPort: {{ sflow_collector_port }}
@@ -92,8 +96,8 @@ spec:
           - name: geoip-db
             mountPath: /etc/vector/enrichment/geoip
             readOnly: true
-          - name: varlogpods
-            mountPath: /var/log/pods
+          - name: flow-stream
+            mountPath: /flows
             readOnly: true
           - name: vector-data
             mountPath: /var/lib/vector
@@ -123,10 +127,10 @@ spec:
             defaultMode: 0755
         - name: ifindex-dynamic
           emptyDir: {}
-        - name: varlogpods
-          hostPath:
-            path: /var/log/pods
-            type: Directory
+        - name: flow-stream
+          emptyDir:
+            medium: Memory
+            sizeLimit: 128Mi
         - name: vector-data
           emptyDir: {}
         - name: geoip-db
