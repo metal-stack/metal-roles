@@ -40,9 +40,13 @@ data:
 
     sources:
       goflow2_raw:
-        type: file
-        include:
-          - "/flows/goflow2.log"
+        type: socket
+        mode: tcp
+        address: 127.0.0.1:{{ sflow_collector_internal_port }}
+        framing:
+          method: newline_delimited
+        decoding:
+          codec: json
 
     transforms:
       parse_goflow2:
@@ -50,10 +54,6 @@ data:
         inputs:
           - goflow2_raw
         source: |
-          parsed, err = parse_json(.message)
-          if err != null { abort }
-          . = merge!(., parsed)
-
           .dst_port = to_int(.dst_port) ?? 0
           .src_port = to_int(.src_port) ?? 0
           .in_if    = to_int(.in_if)    ?? 0
