@@ -82,3 +82,11 @@
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     wait: yes
     wait_timeout: 300
+
+- name: Deploy cluster role bindings
+  k8s:
+    definition: "{{ item }}"
+    kubeconfig: "{{ virtual_garden_kubeconfig }}"
+  loop: "{{ gardener_virtual_garden_access_cluster_role_bindings }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"

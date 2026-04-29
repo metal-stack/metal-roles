@@ -8,27 +8,27 @@ isolated_clusters_registry_oci_mirror_config:
     - source: quay.io/calico/cni
       destination: http://registry:5000/calico/cni
       match:
-        semver: ">= v3.29.3"
+        semver: ">= v3.29.7"
     - source: quay.io/calico/node
       destination: http://registry:5000/calico/node
       match:
-        semver: ">= v3.29.3"
+        semver: ">= v3.29.7"
     - source: docker.lightbitslabs.com/lightos-csi/lb-csi-plugin
       destination: http://registry:5000/lightos-csi/lb-csi-plugin
       match:
-        semver: ">= 1.19.0"
+        semver: ">= 1.21.0"
     - source: docker.lightbitslabs.com/lightos-csi/lb-nvme-discovery-client
       destination: http://registry:5000/lightos-csi/lb-nvme-discovery-client
       match:
-        semver: ">= 1.19.0"
+        semver: ">= 1.21.0"
     - source: europe-docker.pkg.dev/gardener-project/releases/hyperkube
       destination: http://registry:5000/gardener-project/releases/hyperkube
       match:
-        semver: ">= v1.27.10"
+        semver: ">= v1.29.0"
     - source: europe-docker.pkg.dev/gardener-project/releases/gardener/node-agent
       destination: http://registry:5000/gardener-project/releases/gardener/node-agent
       match:
-        semver: ">= v1.119.2"
+        semver: ">= v1.128.7"
     - source: europe-docker.pkg.dev/gardener-project/releases/3rd/alpine
       destination: http://registry:5000/gardener-project/releases/3rd/alpine
       match:
@@ -37,10 +37,6 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/gardener/alpine-conntrack
       match:
         semver: ">= 3.21.3"
-    - source: europe-docker.pkg.dev/gardener-project/releases/3rd/envoyproxy/envoy-distroless
-      destination: http://registry:5000/gardener-project/releases/3rd/envoyproxy/envoy-distroless
-      match:
-        semver: ">= v1.34.1"
     - source: europe-docker.pkg.dev/gardener-project/releases/3rd/envoyproxy/envoy
       match:
         all_tags: true
@@ -49,26 +45,22 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/gardener/apiserver-proxy
       match:
         semver: ">= v0.19.0"
-    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/vpn-shoot-client
-      destination: http://registry:5000/gardener-project/releases/gardener/vpn-shoot-client
-      match:
-        semver: ">= 0.22.0"
     - source: ghcr.io/metal-stack/metallb-health-sidecar
       destination: http://registry:5000/metal-stack/metallb-health-sidecar
       match:
-        semver: ">= v0.1.1"
+        semver: ">= v0.1.2"
     - source: ghcr.io/metal-stack/csi-driver-lvm
       destination: http://registry:5000/metal-stack/csi-driver-lvm
       match:
-        semver: ">= v0.6.0"
+        semver: ">= v0.8.2"
     - source: ghcr.io/metal-stack/csi-driver-lvm-provisioner
       destination: http://registry:5000/metal-stack/csi-driver-lvm-provisioner
       match:
-        semver: ">= v0.6.0"
+        semver: ">= v0.8.2"
     - source: ghcr.io/metal-stack/csi-driver-lvm-controller
       destination: http://registry:5000/metal-stack/csi-driver-lvm-controller
       match:
-        semver: ">= v0.7.0"
+        semver: ">= v0.8.2"
     - source: quay.io/metallb/controller
       destination: http://registry:5000/metallb/controller
       match:
@@ -84,7 +76,7 @@ isolated_clusters_registry_oci_mirror_config:
     - source: quay.io/prometheus/node-exporter
       destination: http://registry:5000/prometheus/node-exporter
       match:
-        semver: ">= v1.7.0"
+        semver: ">= v1.9.1"
     - source: registry.k8s.io/pause
       destination: http://registry:5000/pause
       match:
@@ -96,7 +88,7 @@ isolated_clusters_registry_oci_mirror_config:
     - source: registry.k8s.io/kube-proxy
       destination: http://registry:5000/kube-proxy
       match:
-        semver: ">= v1.27.8"
+        semver: ">= v1.29.0"
     - source: registry.k8s.io/metrics-server/metrics-server
       destination: http://registry:5000/metrics-server/metrics-server
       match:
@@ -104,7 +96,7 @@ isolated_clusters_registry_oci_mirror_config:
     - source: registry.k8s.io/node-problem-detector/node-problem-detector
       destination: http://registry:5000/node-problem-detector/node-problem-detector
       match:
-        semver: ">= v0.8.20"
+        semver: ">= v0.8.22"
     - source: registry.k8s.io/sig-storage/csi-attacher
       destination: http://registry:5000/sig-storage/csi-attacher
       match:
@@ -136,7 +128,7 @@ isolated_clusters_registry_oci_mirror_config:
     - source: registry.k8s.io/coredns/coredns
       destination: http://registry:5000/coredns/coredns
       match:
-        semver: ">= v1.12.1"
+        semver: ">= v1.12.4"
     - source: registry.k8s.io/dns/k8s-dns-node-cache
       destination: http://registry:5000/dns/k8s-dns-node-cache
       match:
@@ -152,11 +144,11 @@ isolated_clusters_registry_oci_mirror_config:
     - source: r.metal-stack.io/droptailer
       destination: http://registry:5000/droptailer
       match:
-        semver: ">= v0.2.18"
+        semver: ">= v0.2.19"
     - source: r.metal-stack.io/node-init
       destination: http://registry:5000/node-init
       match:
-        semver: ">= v0.1.7"
+        semver: ">= v0.1.8"
     - source: docker.io/netapp/trident
       destination: http://registry:5000/netapp/trident
       match:
