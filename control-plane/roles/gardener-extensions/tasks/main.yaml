@@ -72,3 +72,4 @@
     - shoot-cert-service
     - shoot-dns-service
     - ontap
+    - shoot-networking-problemdetector
