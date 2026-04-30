@@ -1,0 +1,16 @@
+---
+alloy_config_host_dir: "/etc/alloy"
+alloy_docker_log_driver: json-file
+
+# List of Loki push endpoints used by the base loki.write component.
+# Each entry: {url: <push-url>, basic_auth?: {username, password}}
+# alloy_loki_write_endpoints:
+#   - url: http://loki.example.com:8080/loki/api/v1/push
+
+# List of snippet names to enable. Each entry must correspond to
+# templates/snippets/<name>.alloy.j2 in this role.
+alloy_config_snippets:
+  - alloy-self
+
+# Port to listen for metrics and HTTP API traffic on
+alloy_port: 12345

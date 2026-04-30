@@ -10,6 +10,8 @@ The following variables can be set to configure the role:
 
 ### General
 
+TODO here
+
 | Name                                              | Mandatory | Description                                                      |
 | ------------------------------------------------- | --------- | ---------------------------------------------------------------- |
 | gardener_logging_promtail_chart_version           | yes       | Helm chart version for promtail specified under release vector   |

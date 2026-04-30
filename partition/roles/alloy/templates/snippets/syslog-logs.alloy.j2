@@ -1,0 +1,19 @@
+loki.process "syslog" {
+	forward_to = [loki.write.default.receiver]
+
+	stage.docker {}
+}
+
+local.file_match "syslog" {
+	path_targets = [{
+		__path__  = "/var/log/syslog",
+		job       = "syslog",
+		partition = "{{ metal_partition_id }}",
+		host      = "{{ inventory_hostname }}",
+	}]
+}
+
+loki.source.file "syslog" {
+	targets    = local.file_match.syslog.targets
+	forward_to = [loki.process.syslog.receiver]
+}

@@ -1,0 +1,15 @@
+// Loki write endpoint shared by all snippets
+loki.write "default" {
+{% for endpoint in alloy_loki_write_endpoints %}
+	endpoint {
+		url = "{{ endpoint.url }}"
+{% if endpoint.basic_auth is defined %}
+		basic_auth {
+			username = "{{ endpoint.basic_auth.username }}"
+			password = "{{ endpoint.basic_auth.password }}"
+		}
+{% endif %}
+	}
+{% endfor %}
+	external_labels = {}
+}

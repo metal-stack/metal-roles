@@ -1,5 +1,11 @@
 ---
 logging_namespace: monitoring
+logging_alloy_port: 12345
+logging_alloy_config: |
+  logging {
+    level = "info"
+    format = "logfmt"
+  }
 logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 logging_ingress_loki_tls: yes
 logging_ingress_loki_basic_auth_user: promtail
