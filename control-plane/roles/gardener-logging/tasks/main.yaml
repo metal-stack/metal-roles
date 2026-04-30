@@ -10,6 +10,7 @@
       - gardener_logging_promtail_chart_repo is defined
       - gardener_logging_promtail_chart_version is defined
 
+# TODO replace with alloy
 - name: Deploy Promtail
   kubernetes.core.helm:
     name: promtail

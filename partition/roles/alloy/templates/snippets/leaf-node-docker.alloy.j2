@@ -1,0 +1,27 @@
+discovery.docker "leaf_node_docker" {
+	host             = "unix:///var/run/docker.sock"
+	refresh_interval = "5s"
+}
+
+discovery.relabel "leaf_node_docker" {
+	targets = []
+
+	rule {
+		source_labels = ["__meta_docker_container_name"]
+		regex         = "/(.*)"
+		target_label  = "container"
+	}
+
+	rule {
+		target_label = "node_name"
+		replacement  = "{{ inventory_hostname }}"
+	}
+}
+
+loki.source.docker "leaf_node_docker" {
+	host             = "unix:///var/run/docker.sock"
+	targets          = discovery.docker.leaf_node_docker.targets
+	forward_to       = [loki.write.default.receiver]
+	relabel_rules    = discovery.relabel.leaf_node_docker.rules
+	refresh_interval = "5s"
+}

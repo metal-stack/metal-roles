@@ -1,0 +1,68 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - alloy_image_tag is defined
+      - alloy_image_name is defined
+      - alloy_loki_write_endpoints is defined and (alloy_loki_write_endpoints | length > 0)
+
+- name: Create alloy config directory
+  file:
+    path: "{{ alloy_config_host_dir }}"
+    state: directory
+    owner: "nobody"
+    group: "nogroup"
+    mode: "0755"
+
+- name: Create alloy config snippets directory
+  file:
+    path: "{{ alloy_config_host_dir }}/conf.d"
+    state: directory
+    owner: "nobody"
+    group: "nogroup"
+    mode: "0755"
+
+- name: Template alloy base configuration
+  template:
+    src: config.alloy.j2
+    dest: "{{ alloy_config_host_dir }}/conf.d/00-base.alloy"
+  notify: restart alloy
+
+- name: Template alloy config snippets
+  template:
+    src: "snippets/{{ item }}.alloy.j2"
+    dest: "{{ alloy_config_host_dir }}/conf.d/50-{{ item }}.alloy"
+  loop: "{{ alloy_config_snippets }}"
+  notify: restart alloy
+
+- name: Assemble alloy config
+  assemble:
+    src: "{{ alloy_config_host_dir }}/conf.d"
+    dest: "{{ alloy_config_host_dir }}/config.alloy"
+    delimiter: "\n"
+  notify: restart alloy
+
+- name: Deploy alloy service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: alloy
+    systemd_docker_image_name: "{{ alloy_image_name }}"
+    systemd_docker_image_tag: "{{ alloy_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      - "{{ alloy_config_host_dir }}:/etc/alloy:ro"
+      - "/var/log:/var/log"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    systemd_docker_command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:{{ alloy_port }}
+      - /etc/alloy/config.alloy
+    systemd_docker_log_driver: "{{ alloy_docker_log_driver }}"
