@@ -19,6 +19,7 @@ sonic_config_extended_cacl:
     - -A INPUT -s 2001:db8:3::1/128 -p tcp -m tcp --dport 9342 -j ACCEPT
 
 sonic_config_frr_l2vpn_evpn: true
+sonic_config_frr_set_source_address_loopback: false
 sonic_config_frr_route_map:
   name: LOOPBACKS
   match: interface Loopback0
