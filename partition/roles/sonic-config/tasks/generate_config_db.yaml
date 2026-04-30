@@ -27,7 +27,7 @@
   copy:
     src: /tmp/sonic/config_db.json
     dest: /etc/sonic/config_db.json
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
     remote_src: true

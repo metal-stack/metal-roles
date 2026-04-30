@@ -10,7 +10,7 @@ dhcp_subnets: []
 #   options: []
 
 dhcp_listening_interfaces:
- - vlan4000
+  - vlan4000
 
 dhcp_default_lease_time: 172800
 dhcp_max_lease_time: 345600

@@ -27,4 +27,3 @@
       - --path.procfs=/host/proc
       - --path.sysfs=/host/sys
     systemd_docker_log_driver: "{{ monitoring_node_exporter_docker_log_driver }}"
-      

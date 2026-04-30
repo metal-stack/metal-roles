@@ -11,7 +11,8 @@ pixiecore_grpc_ca_cert: "{{ metal_partition_metal_api_grpc_ca_cert }}"
 pixiecore_grpc_client_cert: "{{ metal_partition_metal_api_grpc_client_cert }}"
 pixiecore_grpc_client_key: "{{ metal_partition_metal_api_grpc_client_key }}"
 
-pixiecore_metal_api_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
+pixiecore_metal_api_url: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath
+  }}"
 pixiecore_metal_api_hmac_view_key: "{{ metal_partition_metal_api_hmac_view_key }}"
 
 pixiecore_metal_hammer_logging_endpoint:
@@ -21,5 +22,4 @@ pixiecore_metal_hammer_logging_cert:
 pixiecore_metal_hammer_logging_key:
 pixiecore_metal_hammer_logging_tls_insecure: false
 pixiecore_metal_hammer_ntp_servers: []
-
 pixiecore_additional_volume_mounts: []

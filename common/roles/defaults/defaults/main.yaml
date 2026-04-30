@@ -1,5 +1,5 @@
 ---
-metal_registry_auth_enabled: no
+metal_registry_auth_enabled: false
 metal_registry_auth_user: ""
 metal_registry_auth_password: ""
 metal_registry_url: "https://index.docker.io/v1/"

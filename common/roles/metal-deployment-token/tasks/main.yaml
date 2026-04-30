@@ -1,19 +1,19 @@
 ---
 - name: Create admin api token for the deployment
   block:
-
     - name: Wait until the metal-apiserver is running
       kubernetes.core.k8s_info:
         kind: Deployment
         name: metal-apiserver
         namespace: "{{ metal_control_plane_namespace }}"
-        wait: yes
+        wait: true
         wait_sleep: 1
         wait_timeout: 60
 
     - name: Get metal-apiserver pods
       set_fact:
-        _metal_apiserver_pod: "{{ (lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, label_selector='app=metal-apiserver') | list_wrap)[0].get('metadata', {}).get('name') }}"
+        _metal_apiserver_pod: "{{ (lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, label_selector='app=metal-apiserver') | list_wrap)[0].get('metadata',
+          {}).get('name') }}"
 
     - name: Generate deployment token
       no_log: true
