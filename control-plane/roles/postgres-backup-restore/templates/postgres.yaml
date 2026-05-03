@@ -32,6 +32,9 @@ spec:
       imagePullSecrets:
       - name: {{ postgres_name }}-registry-credentials
 {% endif %}
+{% if postgres_enable_security_context %}
+      securityContext: {{ postgres_sts_security_context | to_json }}
+{% endif %}
       containers:
       - name: postgres
         image: {{ postgres_image_name }}:{{ postgres_image_tag }}
@@ -80,7 +83,6 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
-        name: postgres
         ports:
         - containerPort: 5432
         readinessProbe:
@@ -100,6 +102,9 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
         resources: {{ postgres_resources | to_json }}
+{% if postgres_enable_security_context %}
+        securityContext: {{ postgres_container_security_context | to_json }}
+{% endif %}
         volumeMounts:
         - name: {{ postgres_name }}
           mountPath: /data
@@ -111,6 +116,10 @@ spec:
       - name: backup-restore-sidecar
         image: {{ postgres_image_name }}:{{ postgres_image_tag }}
         imagePullPolicy: {{ postgres_image_pull_policy }}
+        resources: {{ postgres_backup_restore_sidecar_resources | to_json }}
+{% if postgres_enable_security_context %}
+        securityContext: {{ postgres_container_security_context | to_json }}
+{% endif %}
         command:
         - backup-restore-sidecar
         - start
@@ -213,6 +222,10 @@ spec:
       - name: backup-restore-sidecar-provider
         image: {{ postgres_backup_restore_sidecar_image_name }}:{{ postgres_backup_restore_sidecar_image_tag }}
         imagePullPolicy: {{ postgres_backup_restore_sidecar_image_pull_policy }}
+        resources: {{ postgres_init_resources | to_json }}
+{% if postgres_enable_security_context %}
+        securityContext: {{ postgres_container_security_context | to_json }}
+{% endif %}
         command:
         - cp
         - /backup-restore-sidecar

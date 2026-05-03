@@ -1,1 +1,11 @@
 *   @metal-stack/metal-roles-maintainers
+
+# partition
+partition/ @metal-stack/metal-roles-maintainers-partition
+
+# monitoring
+monitoring/ @metal-stack/metal-roles-maintainers-monitoring
+logging/ @metal-stack/metal-roles-maintainers-monitoring
+
+# isolated clusters
+control-plane/isolated-clusters/ @metal-stack/metal-roles-maintainers-isolated-clusters

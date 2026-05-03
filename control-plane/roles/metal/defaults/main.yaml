@@ -38,13 +38,21 @@ metal_apiserver_hpa_max: 5
 metal_apiserver_hpa_min: 3
 metal_apiserver_hpa_cpu_percentage: 70
 metal_apiserver_resources:
-metal_apiserver_auditing_enabled: true
+metal_apiserver_auditing_timescaledb_enabled: true
 metal_apiserver_auditing_timescaledb_host: "auditing-timescaledb.metal-control-plane.svc.cluster.local"
 metal_apiserver_auditing_timescaledb_port: "5432"
 metal_apiserver_auditing_timescaledb_db: "auditing"
 metal_apiserver_auditing_timescaledb_user: "postgres"
 metal_apiserver_auditing_timescaledb_password: "change-me"
 metal_apiserver_auditing_timescaledb_retention: "14 days"
+metal_apiserver_auditing_splunk_enabled: false
+metal_apiserver_auditing_splunk_endpoint:
+metal_apiserver_auditing_splunk_hec_token:
+metal_apiserver_auditing_splunk_source:
+metal_apiserver_auditing_splunk_source_type:
+metal_apiserver_auditing_splunk_index:
+metal_apiserver_auditing_splunk_host:
+metal_apiserver_auditing_splunk_ca:
 metal_apiserver_rate_limiting_max_requests_per_minute: 1000
 metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute: 50
 metal_apiserver_oidc_discovery_url:

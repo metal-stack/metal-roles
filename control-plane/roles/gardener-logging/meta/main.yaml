@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  role_name: gardener-logging
+  author: metal-stack
+  description: Deploys promtail into a Gardener seed.
+  license: MIT
+  min_ansible_version: "2.18"
+  galaxy_tags: []
+
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies:
+  - role: metal-roles/common/roles/defaults
+  - role: metal-roles/control-plane/roles/defaults
+  - role: metal-roles/control-plane/roles/gardener-defaults
+  - role: ansible-common

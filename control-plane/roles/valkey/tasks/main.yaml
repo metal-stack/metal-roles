@@ -7,8 +7,8 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - valkey_chart_repo is defined
-      - valkey_chart_version is defined
+      - valkey_chart is defined
+      - valkey_chart_tag is defined
 
 - name: Deploy valkey image pull secret
   k8s:
@@ -19,9 +19,8 @@
 - name: Deploy valkey
   kubernetes.core.helm:
     name: valkey
-    chart_version: "{{ valkey_chart_version }}"
-    chart_ref: "{{ valkey_chart_ref }}"
-    chart_repo_url: "{{ valkey_chart_repo }}"
+    chart_version: "{{ valkey_chart_tag }}"
+    chart_ref: "oci://{{ valkey_chart }}"
     release_namespace: "{{ valkey_namespace }}"
     create_namespace: true
     values: "{{ lookup('template', 'values.yaml') | from_yaml }}"

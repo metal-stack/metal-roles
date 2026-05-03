@@ -22,6 +22,8 @@ spec:
           repository: {{ gardener_extension_audit_image_name }}
           tag: {{ gardener_extension_audit_image_tag }}
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
+        config:
+          defaultWebhookMode: {{ gardener_extension_audit_default_webhook_mode | to_json }}
       runtimeClusterValues:
         image:
           repository: {{ gardener_extension_audit_image_name }}

@@ -16,7 +16,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_check_api_health_endpoint |           | The endpoint to call if the metal-api is reachable from the outside after deployment                     |
 | metal_set_resource_limits       |           | Deploys metal components with or without resource limits (possibly disable for development environments) |
 | metal_log_level                 |           | The log level of the control plane components                                                            |
-| metal_helm_chart_repo           |           | The repository URL of the metal control plane helm chart                                                 |
+| metal_helm_chart                |           | The repository URL of the metal control plane oci helm chart                                             |
+| metal_helm_chart_tag            |           | The tag of the metal control plane oci helm chart                                                        |
 | metal_helm_chart_version        |           | The version of the metal control plane helm chart                                                        |
 | metal_helm_chart_local_path     |           | Local path to the metal control plane helm chart, which can be useful for development purposes           |
 | metal_helm_chart_timeout        |           | Timeout for deploying the control plane helm chart (can help when internet connection is slow)           |
@@ -220,10 +221,18 @@ Configuration for metal-apiserver:
 
 | Name                                           | Mandatory | Description                                                          |
 | ---------------------------------------------- | --------- | -------------------------------------------------------------------- |
-| metal_apiserver_auditing_enabled               |           | Whether or not to configure timescaledb auditing. Default true.      |
+| metal_apiserver_auditing_timescaledb_enabled   |           | Whether or not to configure timescaledb auditing. Default true.      |
 | metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                 |
 | metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                 |
 | metal_apiserver_auditing_timescaledb_db        |           | The timescaledb database name                                        |
 | metal_apiserver_auditing_timescaledb_user      |           | The timescaledb user                                                 |
 | metal_apiserver_auditing_timescaledb_password  |           | The timescaledb password                                             |
 | metal_apiserver_auditing_timescaledb_retention |           | The timescaledb retention period, only configurable at first startup |
+| metal_apiserver_auditing_splunk_enabled        |           | Whether or not to configure splunk auditing. Default false.          |
+| metal_apiserver_auditing_splunk_endpoint       |           | The splunk endpoint.                                                 |
+| metal_apiserver_auditing_splunk_hec_token      |           | The splunk hec token.                                                |
+| metal_apiserver_auditing_splunk_source         |           | The splunk source.                                                   |
+| metal_apiserver_auditing_splunk_source_type    |           | The splunk source type.                                              |
+| metal_apiserver_auditing_splunk_index          |           | The splunk index.                                                    |
+| metal_apiserver_auditing_splunk_host           |           | The splunk host.                                                     |
+| metal_apiserver_auditing_splunk_ca             |           | The splunk CA (not encoded).                                         |

@@ -9,7 +9,7 @@ This role uses variables from [control-plane-defaults](/control-plane). So, make
 You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                                                     | Mandatory | Description                                                                                                       |
-|----------------------------------------------------------| --------- |-------------------------------------------------------------------------------------------------------------------|
+| -------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
 | rethinkdb_image_name                                     | yes       | Image version of the rethinkdb                                                                                    |
 | rethinkdb_image_tag                                      | yes       | Image tag of the rethinkdb                                                                                        |
 | rethinkdb_registry_auth_enabled                          |           | Enables registry authentication                                                                                   |
@@ -39,6 +39,11 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | rethinkdb_expose_frontend                                |           | Exposes the rethinkdb over ingress (only use for dev environments)                                                |
 | rethinkdb_ingress_dns                                    |           | The virtual host to reach the rethinkdb frontend when exposed via ingress                                         |
 | rethinkdb_resources                                      |           | The kubernetes resources for the actual rethinkdb container                                                       |
+| rethinkdb_init_resources                                 |           | The kubernetes resources for the rethinkdb init container                                                         |
+| rethinkdb_backup_restore_sidecar_resources               |           | The kubernetes resources for the rethinkdb backup-restore-sidecars container                                      |
 | rethinkdb_backup_restore_sidecar_image_pull_policy       |           | Image pull policy (defaults to IfNotPresent)                                                                      |
 | rethinkdb_backup_restore_sidecar_object_max_keep         |           | The number of objects to keep at the cloud provider bucket                                                        |
 | rethinkdb_backup_restore_sidecar_encryption_key          |           | An optional encryption key to AES-encrypt the backups before uploading them to the backup provider (length == 32) |
+| rethinkdb_enable_security_context                        |           | Enables SecurityContext for the rethinkdb StatefulSet and containers                                              |
+| rethinkdb_sts_security_context                           |           | The SecurityContext for the rethinkdb StatefulSet                                                                 |
+| rethinkdb_container_security_context                     |           | The SecurityContext for the rethinkdb Containers                                                                  |

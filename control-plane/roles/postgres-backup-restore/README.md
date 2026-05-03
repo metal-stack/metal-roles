@@ -9,7 +9,7 @@ This role uses variables from [control-plane-defaults](/control-plane). So, make
 You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                                                    | Mandatory | Description                                                                                                       |
-|---------------------------------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
 | postgres_image_name                                     | yes       | Image version of the postgres                                                                                     |
 | postgres_image_tag                                      | yes       | Image tag of the postgres                                                                                         |
 | postgres_registry_auth_enabled                          |           | Enables registry authentication                                                                                   |
@@ -42,6 +42,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | postgres_expose_frontend                                |           | Exposes the postgres over ingress (only use for dev environments)                                                 |
 | postgres_ingress_dns                                    |           | The virtual host to reach the postgres frontend when exposed via ingress                                          |
 | postgres_resources                                      |           | The kubernetes resources for the actual postgres container                                                        |
+| postgres_init_resources                                 |           | The kubernetes resources for the postgres init container                                                          |
+| postgres_backup_restore_sidecar_resources               |           | The kubernetes resources for the postgres backup-restore-sidecars container                                       |
 | postgres_backup_restore_sidecar_image_pull_policy       |           | Image pull policy (defaults to IfNotPresent)                                                                      |
 | postgres_shared_libraries_preload                       |           | Allows setting shared libraries preload configuration                                                             |
 | postgres_shared_buffers                                 |           | Allows setting shared buffer size                                                                                 |
@@ -51,3 +53,6 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | postgres_backup_restore_sidecar_object_prefix           |           | The prefix to store the object in the cloud provider bucket                                                       |
 | postgres_backup_restore_sidecar_object_max_keep         |           | The number of objects to keep at the cloud provider bucket                                                        |
 | postgres_backup_restore_sidecar_encryption_key          |           | An optional encryption key to AES-encrypt the backups before uploading them to the backup provider (length == 32) |
+| postgres_enable_security_context                        |           | Enables SecurityContext for the postgres StatefulSet and containers                                               |
+| postgres_sts_security_context                           |           | The SecurityContext for the postgres StatefulSet                                                                  |
+| postgres_container_security_context                     |           | The SecurityContext for the postgres Containers                                                                   |

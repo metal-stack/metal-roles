@@ -36,6 +36,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [gardener-cloud-profile](roles/gardener-cloud-profile)                 | Deploys a Gardener cloud profile for metal-stack                                                                                   |
 | [gardener-extensions](roles/gardener-extensions)                       | Deploys Gardener operator extension resources                                                                                      |
 | [gardener-gardenlet](roles/gardener-gardenlet)                         | Deploys Gardener operator gardenlet resources                                                                                      |
+| [gardener-logging](roles/gardener-logging)                             | Deploys gardener-logging into the virtual garden.                                                                                  |
 | [gardener-managed-seeds](roles/gardener-managed-seeds)                 | Deploys managed seeds into the virtual garden                                                                                      |
 | [gardener-monitoring-certs](roles/gardener-monitoring-certs)           | Deploys monitoring ingress certificates for seed clusters                                                                          |
 | [gardener-operator](roles/gardener-operator)                           | Deploys the Gardener operator                                                                                                      |

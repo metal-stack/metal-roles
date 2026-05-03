@@ -34,6 +34,9 @@ monitoring_alertmanager_ingress_basic_auth_user: alertmanager
 monitoring_alertmanager_ingress_basic_auth_password:
 monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertmanager_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
 
+monitoring_alertmanager_webhook_logger_repeat_interval: 60m
+monitoring_alertmanager_webhook_slack_repeat_interval: 24h
+
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_metal_api_hmac: "metal-view"
@@ -59,6 +62,10 @@ monitoring_prometheus_kube_proxy_enabled: false
 monitoring_prometheus_kube_scheduler_enabled: false
 monitoring_prometheus_kube_etcd_enabled: false
 monitoring_prometheus_kube_controller_manager_enabled: false
+monitoring_prometheus_kubelet_enabled: false
+
+monitoring_prometheus_kube_proxy_service_selector:
+  component: kube-proxy
 
 # thanos
 monitoring_thanos_receive_enabled: false
@@ -68,3 +75,12 @@ monitoring_thanos_receive_ingress_annotations: []
 monitoring_thanos_receive_ingress_basic_auth: {}
 monitoring_thanos_receive_ingress_tls: {}
 monitoring_thanos_receive_size: 50Gi
+monitoring_thanos_receive_resource_preset: "large"
+monitoring_thanos_receive_probe_failure_threshold: 30
+
+monitoring_thanos_compactor_size: 20Gi
+monitoring_thanos_compactor_resource_preset: "medium"
+monitoring_thanos_compactor_storage_class:
+
+monitoring_thanos_object_store_resource_preset: "medium"
+monitoring_thanos_object_store_probe_failure_threshold: 30
