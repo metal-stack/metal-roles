@@ -1,0 +1,15 @@
+---
+sflow_collector_namespace: monitoring
+sflow_collector_image: netsampler/goflow2:latest
+sflow_collector_port: 6343
+sflow_collector_metrics_port: 9099
+sflow_collector_internal_port: 9001
+sflow_collector_geoip_download_image: alpine:3
+sflow_collector_vrf_csv_builder_image: python:3.12-slim
+sflow_collector_vector_resources:
+  requests:
+    cpu: 50m
+    memory: 192Mi
+  limits:
+    cpu: 200m
+    memory: 384Mi

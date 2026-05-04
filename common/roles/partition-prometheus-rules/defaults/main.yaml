@@ -343,3 +343,25 @@ partition_prometheus_rules_sonic_exporter: |
       annotations:
         description: "Sonic switch {{$labels.instance}} in partition {{$externalLabels.partition}} could not be scraped for more than 10 minutes."
   {% endraw %}
+
+partition_prometheus_rules_sonic_systemd: |
+  {% raw %}
+  - name: sonic-systemd.rules
+    rules:
+    - record: sonic:systemd_service_uptime_seconds
+      expr: time() - node_systemd_unit_start_time_seconds{name=~"(swss|bgp).service"}
+    - alert: SonicServiceNotActive
+      expr: node_systemd_unit_state{name=~"(swss|bgp).service", state="active"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: "SONiC service {{ $labels.name }} on {{ $labels.instance }} is not active."
+    - alert: SonicServiceRestarted
+      expr: changes(node_systemd_unit_start_time_seconds{name=~"(swss|bgp).service"}[8h]) > 0
+      labels:
+        severity: critical
+      annotations:
+        description: "SONiC service {{ $labels.name }} on {{ $labels.instance }} has restarted in the last 8 hours."
+  {% endraw %}
+

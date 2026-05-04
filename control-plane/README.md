@@ -45,6 +45,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [gardener-shoots](roles/gardener-shoots)                               | Deploys managed shoots into the virtual garden.                                                                                    |
 | [gardener-virtual-garden-access](roles/gardener-virtual-garden-access) | Deploys a managed resource to access the the Virtual Garden with operator setup                                                    |
 | [headscale](roles/headscale)                                           | Deploys headscale for firewall VPN                                                                                                 |
+| [lldp-weathermap](roles/lldp-weathermap)                               | Generates a Grafana network topology dashboard from LLDP data with live link utilization                                           |
 | [ipam-db](roles/ipam-db)                                               | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                         |
 | [isolated-clusters](roles/isolated-clusters)                           | Deploys services for Gardener isolated clusters                                                                                    |
 | [logging](roles/logging)                                               | Deploys metal-stack control plane logging components                                                                               |
@@ -58,7 +59,9 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [postgres-backup-restore](roles/postgres-backup-restore)               | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar)    |
 | [prepare](roles/prepare)                                               | Contains tasks for preparing the deployment of the metal-control-plane                                                             |
 | [rethinkdb-backup-restore](roles/rethinkdb-backup-restore)             | A role for deploying a rethinkdb database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar)   |
+| [sflow-collector](roles/sflow-collector)                               | Deploys a goflow2 sFlow collector with a Vector enrichment sidecar                                                                 |
 | [valkey](roles/valkey)                                                 | Deploys a valkey cluster                                                                                                           |
+| [vector-goflow2](roles/vector-goflow2)                                 | Deploys Vector ConfigMaps for sFlow flow enrichment (VRF, ports, geo-IP)                                                           |
 
 ## Examples
 

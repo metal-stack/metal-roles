@@ -57,6 +57,7 @@ ruler:
         {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_node_exporter') | indent(width=8, first=false) }}
         {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_pixiecore') | indent(width=8, first=false) }}
         {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_sonic_exporter') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_sonic_systemd') | indent(width=8, first=false) }}
     `{{ '}}' }}
 {% endif %}
 
