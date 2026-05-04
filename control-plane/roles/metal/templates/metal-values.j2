@@ -228,6 +228,10 @@ ingress: {{ metal_ingress | to_json }}
 httproute: {{ metal_httproute | to_json }}
 {% endif %}
 
+{% if metal_tcproute %}
+tcproute: {{ metal_tcproute | to_json }}
+{% endif %}
+
 metal_apiserver:
   enabled: {{ 'true' if metal_apiserver_enabled else 'false' }}
   replicas: {{ metal_apiserver_replicas }}
