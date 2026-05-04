@@ -29,3 +29,4 @@ The following variables can be set to configure the role:
 | logging_ingress_loki_basic_auth_password_salt |           | The basic auth password salt used for stable password hashes   |
 | logging_ingress_loki_basic_auth_password      |           | The basic auth password for the external loki ingress          |
 | logging_ingress_loki_basic_auth_user          |           | The basic auth user for the external loki ingress              |
+| logging_alloy_config                          |           | The config to use for alloy                                    |
