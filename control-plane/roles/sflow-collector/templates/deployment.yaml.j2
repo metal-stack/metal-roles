@@ -51,6 +51,37 @@ spec:
               mountPath: /geoip
           securityContext:
             runAsUser: 0
+        - name: asn-download
+          image: "{{ sflow_collector_geoip_download_image }}"
+          command:
+            - sh
+            - -c
+            - |
+              YEAR=$(date +%Y)
+              MONTH=$(date +%m)
+              PREV_MONTH=$((10#$MONTH - 1))
+              PREV_YEAR=$YEAR
+              if [ $PREV_MONTH -eq 0 ]; then PREV_MONTH=12; PREV_YEAR=$((YEAR - 1)); fi
+              PREV_MONTH=$(printf '%02d' $PREV_MONTH)
+
+              for URL in \
+                "https://download.db-ip.com/free/dbip-asn-lite-${YEAR}-${MONTH}.mmdb.gz" \
+                "https://download.db-ip.com/free/dbip-asn-lite-${PREV_YEAR}-${PREV_MONTH}.mmdb.gz"; do
+                echo "Trying $URL ..."
+                if wget -q -O /asn/asn.mmdb.gz "$URL" && gunzip /asn/asn.mmdb.gz; then
+                  chmod 644 /asn/asn.mmdb
+                  echo "Done."
+                  exit 0
+                fi
+                rm -f /asn/asn.mmdb.gz
+              done
+              echo "ERROR: Could not download ASN database." >&2
+              exit 1
+          volumeMounts:
+            - name: asn-db
+              mountPath: /asn
+          securityContext:
+            runAsUser: 0
       containers:
       - name: goflow2
         image: "{{ sflow_collector_image }}"
@@ -97,6 +128,9 @@ spec:
           - name: geoip-db
             mountPath: /etc/vector/enrichment/geoip
             readOnly: true
+          - name: asn-db
+            mountPath: /etc/vector/enrichment/asn
+            readOnly: true
           - name: vector-data
             mountPath: /var/lib/vector
 
@@ -128,6 +162,8 @@ spec:
         - name: vector-data
           emptyDir: {}
         - name: geoip-db
+          emptyDir: {}
+        - name: asn-db
           emptyDir: {}
 ---
 apiVersion: v1

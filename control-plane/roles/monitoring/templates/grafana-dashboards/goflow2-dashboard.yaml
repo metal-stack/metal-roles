@@ -102,8 +102,16 @@ data:
           "type": "row"
         },
         {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 42 },
+          "id": 23,
+          "panels": [],
+          "title": "IP & Protocol Top Talkers",
+          "type": "row"
+        },
+        {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 29 },
+          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 43 },
           "id": 5,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -142,7 +150,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 29 },
+          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 43 },
           "id": 15,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -181,7 +189,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 29 },
+          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 43 },
           "id": 16,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -220,7 +228,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 41 },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 55 },
           "id": 7,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -242,7 +250,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 41 },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 55 },
           "id": 17,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -263,7 +271,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 41 },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 55 },
           "id": 9,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -313,7 +321,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 49 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 63 },
           "id": 12,
           "maxDataPoints": 60,
           "options": {
@@ -363,7 +371,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 57 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 71 },
           "id": 13,
           "maxDataPoints": 60,
           "options": {
@@ -446,6 +454,157 @@ data:
           "title": "Source IP Geolocation",
           "description": "Geographic distribution of sFlow source IPs. GeoIP data by DB-IP (https://db-ip.com), licensed CC BY 4.0.",
           "type": "geomap"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
+          "id": 19,
+          "panels": [],
+          "title": "ASN Top Talkers (DB-IP)",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 30 },
+          "id": 20,
+          "fieldConfig": {
+            "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Flow Count" },
+                "properties": [{ "id": "custom.width", "value": 120 }]
+              }
+            ]
+          },
+          "options": { "showHeader": true, "sortBy": [{ "displayName": "Flow Count", "desc": true }] },
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "renameByName": {
+                  "src_asn": "ASN",
+                  "src_asn_org": "Organization",
+                  "Value": "Flow Count",
+                  "Value #A": "Flow Count"
+                }
+              }
+            },
+            { "id": "sortBy", "options": { "fields": [{ "displayName": "Flow Count", "desc": true }] } }
+          ],
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_asn, src_asn_org) (count_over_time({app=\"goflow2\", vrf=~\"$vrf\"} | json src_asn, src_asn_org | __error__=\"\" | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__range])))",
+              "legendFormat": "{{src_asn_org}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Top 10 Source ASNs",
+          "description": "Top 10 source ASNs by total flow count over the selected time range. PRIVATE/UNKNOWN excluded. ASN data by DB-IP (https://db-ip.com), CC BY 4.0.",
+          "type": "table"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "flows",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 30 },
+          "id": 21,
+          "maxDataPoints": 60,
+          "options": {
+            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_asn_org) (count_over_time({app=\"goflow2\", vrf=~\"$vrf\"} | json src_asn_org | __error__=\"\" | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__interval])))",
+              "legendFormat": "{{src_asn_org}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Top ASN Traffic over Time",
+          "description": "Stacked flow rate of the top 10 source ASNs over time. Requires JSON parsing of src_asn_org.",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+              "unit": "bps"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 30 },
+          "id": 22,
+          "maxDataPoints": 60,
+          "options": {
+            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_asn_org) (rate({app=\"goflow2\", vrf=~\"$vrf\"} | json bytes, src_asn_org | __error__=\"\" | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" | unwrap bytes [$__interval])) * 256 * 8)",
+              "legendFormat": "{{src_asn_org}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Estimated Bandwidth by Source ASN",
+          "description": "Extrapolated bits/second per source ASN. Sampled packet bytes × sample rate (256) × 8. ASN data by DB-IP (https://db-ip.com), CC BY 4.0.",
+          "type": "timeseries"
         }
       ],
       "refresh": "1m",
@@ -521,6 +680,6 @@ data:
       "timezone": "",
       "title": "sFlow / goflow2 Dashboard",
       "uid": "goflow2-sflow",
-      "version": 6
+      "version": 10
     }
     {% endraw %}
