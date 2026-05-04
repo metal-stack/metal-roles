@@ -161,6 +161,9 @@ metal_ingress_v2_dns: v2.api.{{ metal_control_plane_ingress_dns }}
 # GatewayAPI HTTPRoutes
 metal_httproute: {}
 
+# GatewayAPI TCPRoute for GRPC metal-api(v1)
+metal_tcproute: {}
+
 # headscale
 metal_api_headscale_enabled: false
 metal_api_headscale_tls: true
