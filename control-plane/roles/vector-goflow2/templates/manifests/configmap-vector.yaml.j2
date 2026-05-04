@@ -15,6 +15,10 @@ data:
         type: mmdb
         path: /etc/vector/enrichment/geoip/geoip.mmdb
 
+      asn:
+        type: mmdb
+        path: /etc/vector/enrichment/asn/asn.mmdb
+
       well_known_ports:
         type: file
         file:
@@ -103,6 +107,35 @@ data:
             .interface = row.interface
           }
 
+      enrich_asn:
+        type: remap
+        inputs:
+          - enrich_vrf
+        source: |
+          # Short-circuit private/loopback/link-local — DB-IP ASN DB only covers public space.
+          # Flow is kept (unlike geo path), tagged so dashboard can filter PRIVATE out.
+          src_private = (ip_cidr_contains("10.0.0.0/8",     .src_addr) ?? false) ||
+                        (ip_cidr_contains("172.16.0.0/12",  .src_addr) ?? false) ||
+                        (ip_cidr_contains("192.168.0.0/16", .src_addr) ?? false) ||
+                        (ip_cidr_contains("127.0.0.0/8",    .src_addr) ?? false) ||
+                        (ip_cidr_contains("169.254.0.0/16", .src_addr) ?? false) ||
+                        (ip_cidr_contains("::1/128",        .src_addr) ?? false) ||
+                        (ip_cidr_contains("fc00::/7",       .src_addr) ?? false) ||
+                        (ip_cidr_contains("fe80::/10",      .src_addr) ?? false)
+          if src_private {
+            .src_asn = 0
+            .src_asn_org = "PRIVATE"
+          } else {
+            row, err = get_enrichment_table_record("asn", {"ip": .src_addr})
+            if err == null {
+              .src_asn = to_int(row.autonomous_system_number) ?? 0
+              .src_asn_org = string(row.autonomous_system_organization) ?? "UNKNOWN"
+            } else {
+              .src_asn = 0
+              .src_asn_org = "UNKNOWN"
+            }
+          }
+
       geo_sample:
         type: sample
         inputs:
@@ -142,7 +175,7 @@ data:
       loki_goflow2:
         type: loki
         inputs:
-          - enrich_vrf
+          - enrich_asn
         endpoint: http://loki:3100
         encoding:
           codec: json
