@@ -224,12 +224,22 @@ v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
-{% if metal_httproute %}
-httproute: {{ metal_httproute | to_json }}
+
+httpRoute:
+  enabled: {{ metal_httproute_enabled }}
+{% if metal_httproute_parent_refs %}
+  parentRefs:
+{{ metal_httproute_parent_refs | to_nice_yaml(indent=2) | indent(4, true) }}
+{% endif %}
+{% if metal_httproute_https_redirect %}
+  httpsRedirect: {{ metal_httproute_https_redirect | to_json }}
 {% endif %}
 
-{% if metal_tcproute %}
-tcproute: {{ metal_tcproute | to_json }}
+tcpRoute:
+  enabled: {{ metal_tcproute_enabled }}
+{% if metal_tcproute_parent_refs %}
+  parentRefs:
+{{ metal_tcproute_parent_refs | to_nice_yaml(indent=2) | indent(4, true) }}
 {% endif %}
 
 metal_apiserver:

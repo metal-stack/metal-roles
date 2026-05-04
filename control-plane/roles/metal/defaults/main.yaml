@@ -159,10 +159,17 @@ metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
 metal_ingress_v2_dns: v2.api.{{ metal_control_plane_ingress_dns }}
 
 # GatewayAPI HTTPRoutes
-metal_httproute: {}
+metal_httproute_enabled: false
+metal_httproute_annotations: {}
+metal_httproute_parent_refs: []
+metal_httproute_https_redirect: {}
+# enabled: false
+# redirectParentRefs: []
 
 # GatewayAPI TCPRoute for GRPC metal-api(v1)
-metal_tcproute: {}
+metal_tcproute_enabled: false
+metal_tcproute_annotations: {}
+metal_tcproute_parent_refs: []
 
 # headscale
 metal_api_headscale_enabled: false
