@@ -24,6 +24,10 @@ zitadel_db_password: change-me
 
 zitadel_enabled_ingress: true
 
+zitadel_httproute_enabled: false
+zitadel_httproute_parent_refs: {}
+
+
 zitadel_init_config: {}
   # static_users:
   #   - first_name: Olli
