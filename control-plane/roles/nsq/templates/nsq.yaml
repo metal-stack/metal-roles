@@ -135,6 +135,21 @@ spec:
     targetPort: 4171
   selector:
     app: nsqd
+{% if nsq_tcproute_enabled %}
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  labels:
+    app: nsqd
+  name: nsqd
+spec:
+  parentRefs: {{ nsq_tcproute_parent_refs | to_json }}
+  rules:
+  - backendRefs:
+    - name: nsqd
+      port: 4150
+{% endif %}
 ---
 apiVersion: apps/v1
 kind: Deployment
