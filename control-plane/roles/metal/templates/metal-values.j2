@@ -224,6 +224,10 @@ v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
+{% if metal_httproute %}
+httproute: {{ metal_httproute | to_json }}
+{% endif %}
+
 metal_apiserver:
   enabled: {{ 'true' if metal_apiserver_enabled else 'false' }}
   replicas: {{ metal_apiserver_replicas }}
