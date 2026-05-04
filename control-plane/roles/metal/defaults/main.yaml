@@ -156,6 +156,9 @@ metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
 metal_ingress_v2_dns: v2.api.{{ metal_control_plane_ingress_dns }}
 
+# GatewayAPI HTTPRoutes
+metal_httproute: {}
+
 # headscale
 metal_api_headscale_enabled: false
 metal_api_headscale_tls: yes
