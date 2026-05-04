@@ -23,6 +23,7 @@ you define them adequately as well.
 | prometheus_metal_core_targets                    |           | metal-core targets to scrape from                                                                                                           |
 | prometheus_node_exporter_targets                 |           | Node exporter targets to scrape from                                                                                                        |
 | prometheus_promtail_targets                      |           | Promtail targets to scrape from                                                                                                             |
+| prometheus_alloy_targets                         |           | Alloy targets to scrape from (default port `12345`)                                                                                         |
 | prometheus_ping_targets                          |           | Ping targets to scrape from                                                                                                                 |
 | prometheus_sonic_exporter_targets                |           | Sonic exporter targets to scrape from                                                                                                       |
 | prometheus_blackbox_exporter_targets             |           | Blackbox exporter targets to scrape from                                                                                                    |

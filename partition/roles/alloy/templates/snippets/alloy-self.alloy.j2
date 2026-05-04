@@ -1,0 +1,20 @@
+// Meta-monitoring: forward Alloy's own logs to Loki
+logging {
+	level    = "info"
+	format   = "logfmt"
+	write_to = [loki.relabel.alloy_self.receiver]
+}
+
+loki.relabel "alloy_self" {
+	forward_to = [loki.write.default.receiver]
+
+	rule {
+		target_label = "node_name"
+		replacement  = "{{ inventory_hostname }}"
+	}
+
+	rule {
+		target_label = "job"
+		replacement  = "alloy"
+	}
+}
