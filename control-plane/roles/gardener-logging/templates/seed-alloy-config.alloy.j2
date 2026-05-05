@@ -1,0 +1,121 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+discovery.kubernetes "pods" {
+  role = "pod"
+}
+
+discovery.relabel "pods" {
+  targets = discovery.kubernetes.pods.targets
+
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label  = "namespace"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "pod"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_name"]
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_uid"]
+    target_label  = "pod_uid"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_node_name"]
+    target_label  = "node_name"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_label_app"]
+    separator     = "/"
+    target_label  = "job"
+  }
+}
+
+loki.source.kubernetes "pods" {
+  targets    = discovery.relabel.pods.output
+  forward_to = [loki.write.default.receiver]
+}
+
+loki.source.kubernetes_events "events" {
+  job_name   = "kubernetes-events"
+  log_format = "json"
+  forward_to = [loki.relabel.events.receiver]
+}
+
+loki.relabel "events" {
+  forward_to = [loki.write.default.receiver]
+
+  rule {
+    action = "labeldrop"
+    regex  = "instance"
+  }
+}
+
+// default loki endpoints
+loki.write "default" {
+{% for endpoint in gardener_logging_alloy_loki_write_endpoints %}
+  endpoint {
+    url = "{{ endpoint.url }}"
+{% if endpoint.remote_timeout is defined %}
+    remote_timeout = "{{ endpoint.remote_timeout }}"
+{% endif %}
+{% if endpoint.basic_auth is defined %}
+    basic_auth {
+      username = "{{ endpoint.basic_auth.username }}"
+      password = "{{ endpoint.basic_auth.password }}"
+    }
+{% endif %}
+  }
+{% endfor %}
+  external_labels = {
+    cluster = "{{ gardener_logging_alloy_cluster_label }}",
+  }
+}
+
+// write metrics to remote Prometheus endpoint
+{% if gardener_logging_alloy_prometheus_write_endpoints %}
+prometheus.exporter.self "alloy" {}
+
+prometheus.scrape "alloy_self" {
+  targets    = prometheus.exporter.self.alloy.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.remote_write "default" {
+{% for endpoint in gardener_logging_alloy_prometheus_write_endpoints %}
+  endpoint {
+    url = "{{ endpoint.url }}"
+{% if endpoint.remote_timeout is defined %}
+    remote_timeout = "{{ endpoint.remote_timeout }}"
+{% endif %}
+{% if endpoint.basic_auth is defined %}
+    basic_auth {
+      username = "{{ endpoint.basic_auth.username }}"
+      password = "{{ endpoint.basic_auth.password }}"
+    }
+{% endif %}
+  }
+{% endfor %}
+  wal {
+    // How often to truncate the WAL. Samples older than max_keepalive_time are dropped.
+    truncate_frequency = "{{ gardener_logging_alloy_prometheus_wal_truncate_frequency }}"
+    // Maximum time to keep undelivered samples in the WAL before dropping them.
+    // Increase if you expect control-plane outages longer than the default.
+    max_keepalive_time = "{{ gardener_logging_alloy_prometheus_wal_max_keepalive_time }}"
+  }
+  external_labels = {
+    cluster = "{{ gardener_logging_alloy_cluster_label }}",
+  }
+}
+{% endif %}

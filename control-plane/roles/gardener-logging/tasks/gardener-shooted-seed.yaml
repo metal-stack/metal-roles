@@ -7,6 +7,21 @@
   set_fact:
     _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_logging_shooted_seed.name) | from_yaml }}"
 
+- name: Build alloy config
+  set_fact:
+    gardener_logging_alloy_config: "{{ lookup('template', 'seed-alloy-config.alloy.j2') if (gardener_logging_alloy_config_raw | default('') | length == 0) else gardener_logging_alloy_config_raw }}"
+
+- name: Deploy alloy
+  kubernetes.core.helm:
+    name: alloy
+    chart_repo_url: "{{ gardener_logging_alloy_chart_repo }}"
+    chart_version: "{{ gardener_logging_alloy_chart_version }}"
+    chart_ref: alloy
+    namespace: "{{ gardener_logging_namespace }}"
+    values: "{{ lookup('template', 'seed-alloy-values.yaml') | from_yaml }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    create_namespace: true
+
 - name: Deploy Promtail
   kubernetes.core.helm:
     name: promtail
