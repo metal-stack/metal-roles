@@ -14,6 +14,7 @@ local.file_match "syslog" {
 }
 
 loki.source.file "syslog" {
-	targets    = local.file_match.syslog.targets
-	forward_to = [loki.process.syslog.receiver]
+	targets               = local.file_match.syslog.targets
+	forward_to            = [loki.process.syslog.receiver]
+	legacy_positions_file = "/var/log/promtail-positions.yaml"
 }

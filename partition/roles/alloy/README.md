@@ -22,6 +22,15 @@ Available snippets:
 | `journal-logs`     | Scrapes the systemd journal and forwards to Loki; relabels `unit` from `__journal__systemd_unit` |
 | `syslog-logs`      | Tails `/var/log/syslog` and forwards to Loki with `job=syslog`, `partition`, and `host` labels |
 
+### `journal-logs` vs `syslog-logs`
+
+On a modern systemd host, journald is a superset of syslog. `/var/log/syslog` is written by rsyslog consuming from journald — it is a filtered, text-rendered subset of the journal. Enabling both snippets on the same host will ship most messages twice and produce duplicates in Loki.
+
+**Pick one based on what the host runs:**
+
+- Use `journal-logs` on hosts with systemd/journald (standard Debian/Ubuntu partition nodes and management servers). It covers everything syslog would, plus systemd unit stdout/stderr.
+- Use `syslog-logs` on hosts without journald (some minimal switch OS images), or where rsyslog applies custom filtering that makes `/var/log/syslog` meaningfully different from the raw journal.
+
 ## Adding custom snippets
 
 You can extend the Alloy config with your own snippets without modifying this role.
@@ -71,7 +80,20 @@ This role supersedes the `promtail` role. To migrate:
    ```
 3. If you have a custom promtail scrape config, convert it once with the [`alloy convert`](https://grafana.com/docs/alloy/latest/reference/cli/convert/) CLI (`--source-format=promtail`) and add the result as a new snippet under `templates/snippets/`, then enable it via `alloy_config_snippets`. Be aware of the [converter limitations](https://grafana.com/docs/alloy/latest/set-up/migrate/from-promtail/#limitations) — not all promtail features are supported, and the output should always be reviewed manually before use.
 
+   You can run the converter without installing Alloy locally using Docker:
+
+   ```bash
+   docker run \
+     -v ./promtail.yaml:/etc/promtail/promtail.yaml \
+     -v ./config.alloy:/etc/alloy/config.alloy \
+     grafana/alloy:latest \
+       convert --source-format=promtail --output=/etc/alloy/config.alloy /etc/promtail/promtail.yaml
+   ```
+
+   Note: the input must be a fully rendered promtail config (no Ansible variables). Substitute real values before running the converter. After conversion, review the output and replace any hardcoded host-specific values (hostnames, partition IDs, URLs, credentials) with Ansible variables (e.g. `{{ inventory_hostname }}`, `{{ metal_partition_id }}`) so the snippet works correctly across all target hosts.
+
    If the snippet system does not provide enough flexibility, you can bypass it entirely by setting `alloy_config_raw` to a full Alloy River config string. Ansible variables (e.g. `{{ inventory_hostname }}`) can be used inside the string and will be resolved at deploy time. See the `alloy_config_raw` entry in the Variables table above.
+
 4. Update Prometheus inventory: rename `prometheus_promtail_targets` → `prometheus_alloy_targets` (port `12345` instead of `9080`).
 5. If your environment deploys Alloy on different host groups with different scrape needs (e.g. leaf switches vs. management servers), set `alloy_config_snippets` in per-group inventory files rather than at the partition level:
 
@@ -89,3 +111,13 @@ This role supersedes the `promtail` role. To migrate:
    ```
 
    Keep the `promtail` role available in your playbook until all environments have been migrated.
+
+### WAL and positions file persistence
+
+Alloy stores its write-ahead log (WAL) — including cursor state for `loki.source.file` and `loki.source.journal` — under `--storage.path`, which is set to `/var/lib/alloy` (bind-mounted from the host). This survives container restarts, preventing duplicate log shipments.
+
+The `syslog-logs` snippet sets `legacy_positions_file = "/var/log/promtail-positions.yaml"`. On first start after migration, Alloy reads the existing promtail positions file and continues tailing `/var/log/syslog` from where promtail left off. No log lines are re-shipped.
+
+`loki.source.journal` has no equivalent migration path — its cursor is WAL-only. The very first Alloy start after migration will re-read a portion of the journal (however much the kernel still has buffered, typically a few thousand lines). This is a one-time event and subsequent restarts are safe once the WAL is populated.
+
+Once the promtail role has been removed from all hosts, the `legacy_positions_file` line can be dropped from the snippet and the old `/var/log/promtail-positions.yaml` file cleaned up from hosts.

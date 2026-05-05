@@ -57,6 +57,14 @@
   notify: restart alloy
   when: alloy_config_raw is defined
 
+- name: Create alloy storage directory
+  file:
+    path: /var/lib/alloy
+    state: directory
+    owner: "nobody"
+    group: "nogroup"
+    mode: "0755"
+
 - name: Deploy alloy service
   include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -69,10 +77,12 @@
     systemd_docker_network: host
     systemd_docker_volumes:
       - "{{ alloy_config_host_dir }}:/etc/alloy:ro"
+      - "/var/lib/alloy:/var/lib/alloy"
       - "/var/log:/var/log"
       - "/var/run/docker.sock:/var/run/docker.sock"
     systemd_docker_command:
       - run
       - --server.http.listen-addr=0.0.0.0:{{ alloy_port }}
+      - --storage.path=/var/lib/alloy
       - /etc/alloy/config.alloy
     systemd_docker_log_driver: "{{ alloy_docker_log_driver }}"
