@@ -55,7 +55,7 @@ You can extend the Alloy config with your own snippets without modifying this ro
 | alloy_config_host_dir   |           | The location of the alloy config on the host (default: `/etc/alloy`)         |
 | alloy_image_name        | yes       | Image name of alloy                                                          |
 | alloy_image_tag         | yes       | Image tag of alloy                                                           |
-| alloy_loki_write_endpoints | yes       | List of Loki push endpoints. Each entry: `{url, basic_auth?: {username, password}}` |
+| alloy_loki_write_endpoints | yes       | List of Loki push endpoints. Each entry: `{url, remote_timeout?: <duration>, basic_auth?: {username, password}}` |
 | alloy_docker_log_driver |           | Docker log driver for the alloy container (default: `json-file`)             |
 | alloy_config_snippets   |           | List of snippet names to enable (default: `[alloy-self]`)  |
 | alloy_port              |           | Port for Alloy metrics and HTTP API (default: `12345`)                        |
@@ -76,7 +76,12 @@ This role supersedes the `promtail` role. To migrate:
 
    ```yaml
    alloy_loki_write_endpoints:
-     - url: "http://loki.{{ metal_control_plane_ingress_dns }}:8080/loki/api/v1/push"
+   - url: "http://loki.{{ metal_control_plane_ingress_dns }}:8080/loki/api/v1/push"
+      remote_timeout: 10s
+      basic_auth:
+         username: "promtail"
+         password: "test"
+
    ```
 3. If you have a custom promtail scrape config, convert it once with the [`alloy convert`](https://grafana.com/docs/alloy/latest/reference/cli/convert/) CLI (`--source-format=promtail`) and add the result as a new snippet under `templates/snippets/`, then enable it via `alloy_config_snippets`. Be aware of the [converter limitations](https://grafana.com/docs/alloy/latest/set-up/migrate/from-promtail/#limitations) — not all promtail features are supported, and the output should always be reviewed manually before use.
 
