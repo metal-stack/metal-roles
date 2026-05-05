@@ -7,6 +7,34 @@ gardener_logging_garden_name: "{{ gardener_defaults_garden_name }}"
 gardener_logging_ingress_loki_basic_auth_user: promtail
 gardener_logging_ingress_loki_basic_auth_password:
 
+# Loki push endpoints (same format as the partition alloy role)
+gardener_logging_alloy_loki_write_endpoints:
+  - url: "https://{{ gardener_logging_ingress_dns }}/loki/api/v1/push"
+    basic_auth:
+      username: "{{ gardener_logging_ingress_loki_basic_auth_user }}"
+      password: "{{ gardener_logging_ingress_loki_basic_auth_password }}"
+
+# Value for the cluster= external label attached to all log streams
+gardener_logging_alloy_cluster_label: "{{ gardener_logging_shooted_seed.name }}"
+
+gardener_logging_alloy_port: 12345
+
+# Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
+# When set, Alloy scrapes its own /metrics and pushes them via remote_write.
+# Typical value: the Thanos receive ingress on the metal-stack control plane.
+# Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
+gardener_logging_alloy_prometheus_write_endpoints: []
+
+# WAL retention for prometheus.remote_write. Controls how long undelivered samples
+# are buffered on disk before being dropped during a remote endpoint outage.
+# truncate_frequency: how often the WAL is compacted (default: Alloy built-in 2h)
+# max_keepalive_time: samples older than this are dropped even if not yet delivered (default: Alloy built-in 8h)
+gardener_logging_alloy_prometheus_wal_truncate_frequency: "2h"
+gardener_logging_alloy_prometheus_wal_max_keepalive_time: "8h"
+
+# Full Alloy River config override. When set, bypasses the seed-alloy-config.alloy.j2 template.
+# gardener_logging_alloy_config_raw: |
+
 gardener_logging_deploy_to_garden_cluster: true
 gardener_logging_shooted_seeds: []
   # - name: my-shooted-seed
