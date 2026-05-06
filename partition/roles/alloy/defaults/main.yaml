@@ -9,8 +9,7 @@ alloy_docker_log_driver: json-file
 
 # List of snippet names to enable. Each entry must correspond to
 # templates/snippets/<name>.alloy.j2 in this role.
-alloy_config_snippets:
-  - alloy-self
+alloy_config_snippets: []
 
 # Provide a fully custom Alloy River config as a string to bypass the
 # snippet assembly system entirely. When set, alloy_loki_write_endpoints
@@ -19,3 +18,8 @@ alloy_config_snippets:
 
 # Port to listen for metrics and HTTP API traffic on
 alloy_port: 12345
+
+# Path to the legacy promtail positions file. Read once on first start after migration
+# to continue tailing /var/log/syslog from where promtail left off.
+# Can be removed from the snippet once all hosts have been migrated.
+alloy_promtail_positions_file: "/var/log/promtail-positions.yaml"

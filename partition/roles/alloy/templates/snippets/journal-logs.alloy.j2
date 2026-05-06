@@ -1,9 +1,3 @@
-loki.process "journal" {
-	forward_to = [loki.write.default.receiver]
-
-	stage.docker {}
-}
-
 discovery.relabel "journal" {
 	targets = []
 
@@ -16,7 +10,7 @@ discovery.relabel "journal" {
 loki.source.journal "journal" {
 	path          = "/var/log/journal"
 	relabel_rules = discovery.relabel.journal.rules
-	forward_to    = [loki.process.journal.receiver]
+	forward_to    = [loki.write.default.receiver]
 	labels        = {
 		job       = "systemd-journal",
 		partition = "{{ metal_partition_id }}",

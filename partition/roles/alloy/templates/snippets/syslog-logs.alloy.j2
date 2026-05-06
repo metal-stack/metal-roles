@@ -1,9 +1,3 @@
-loki.process "syslog" {
-	forward_to = [loki.write.default.receiver]
-
-	stage.docker {}
-}
-
 local.file_match "syslog" {
 	path_targets = [{
 		__path__  = "/var/log/syslog",
@@ -15,6 +9,8 @@ local.file_match "syslog" {
 
 loki.source.file "syslog" {
 	targets               = local.file_match.syslog.targets
-	forward_to            = [loki.process.syslog.receiver]
-	legacy_positions_file = "/var/log/promtail-positions.yaml"
+	forward_to            = [loki.write.default.receiver]
+	// can be removed after migration is complete, as alloy will convert it to a new internal format and continue to update it
+	// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.file/#arguments
+	legacy_positions_file = "{{ alloy_promtail_positions_file }}"
 }
