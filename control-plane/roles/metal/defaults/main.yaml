@@ -149,6 +149,8 @@ metal_console_bmc_proxy_certs_client_cert:
 metal_console_bmc_proxy_certs_ca_cert:
 metal_console_pdb_enabled: false
 metal_console_pdb_min_available: 1
+metal_console_tcproute_enabled: false
+metal_console_tcproute_parent_refs: []
 
 # ingress
 metal_deploy_ingress: true
