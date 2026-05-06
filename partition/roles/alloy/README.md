@@ -21,12 +21,12 @@ The snippets are used in our default configs to provide a sensible out-of-the-bo
 
 If your needs are more custom (e.g. you have a non-standard log source, or want to use advanced Alloy features not covered by the existing snippets), you can follow the [Customizing the config](#customizing-the-config) section below to either add your own snippet or bypass the snippet system entirely with a custom raw config.
 
-| Snippet            | Description                                                                                                                                                                                                                                                                                                                           |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `alloy-meta`       | Meta-monitoring: forwards Alloy's own logs to Loki with `job=alloy` and `node_name` labels. Redundant when `journal-logs` is enabled — journald already captures Alloy's stdout/stderr. Log level info and format are always configured via the base config regardless of this snippet.                                               |
-| `leaf-node-docker` | Scrapes Docker container logs on the host via the Docker socket and forwards them to Loki. Assumes the `json-file` log driver (the default). If containers use the `journald` log driver instead, their logs are already captured by `journal-logs` — enabling both snippets in that case will produce duplicate log entries in Loki. |
-| `journal-logs`     | Scrapes the systemd journal and forwards to Loki; relabels `unit` from `__journal__systemd_unit`. On standard systemd hosts (Debian/Ubuntu), journald captures syslog messages as well, so this snippet typically covers everything `syslog-logs` would. Enabling both may produce duplicate log entries in Loki.                     |
-| `syslog-logs`      | Tails `/var/log/syslog` and forwards to Loki with `job=syslog`, `partition`, and `host` labels. Suited for hosts without journald (e.g. minimal switch OS images). On standard systemd hosts, prefer `journal-logs` — enabling both may produce duplicate log entries in Loki.                                                        |
+| Snippet            | Description                                                                                                                                                                                                                                                                                                                      |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `alloy-meta`       | Meta-monitoring: forwards Alloy's own logs to Loki with `job=alloy` and `node_name` labels. Redundant when `journal` is enabled — journald already captures Alloy's stdout/stderr. Log level info and format are always configured via the base config regardless of this snippet.                                               |
+| `leaf-node-docker` | Scrapes Docker container logs on the host via the Docker socket and forwards them to Loki. Assumes the `json-file` log driver (the default). If containers use the `journald` log driver instead, their logs are already captured by `journal` — enabling both snippets in that case will produce duplicate log entries in Loki. |
+| `journal`          | Scrapes the systemd journal and forwards to Loki; relabels `unit` from `__journal__systemd_unit`. On standard systemd hosts (Debian/Ubuntu), journald captures syslog messages as well, so this snippet typically covers everything `syslog` would. Enabling both may produce duplicate log entries in Loki.                     |
+| `syslog`           | Tails `/var/log/syslog` and forwards to Loki with `job=syslog`, `partition`, and `host` labels. Suited for hosts without journald (e.g. minimal switch OS images). On standard systemd hosts, prefer `journal` — enabling both may produce duplicate log entries in Loki.                                                        |
 
 ### Variables
 
@@ -39,7 +39,7 @@ If your needs are more custom (e.g. you have a non-standard log source, or want 
 | alloy_docker_log_driver       |           | Docker log driver for the alloy container (default: `json-file`)                                                                                          |
 | alloy_config_snippets         |           | List of snippet names to enable (default: `[]`)                                                                                                           |
 | alloy_port                    |           | Port for Alloy metrics and HTTP API (default: `12345`)                                                                                                    |
-| alloy_promtail_positions_file |           | Path to the legacy promtail positions file (default: `/var/log/promtail-positions.yaml`). Used by `syslog-logs` on first start after migration.           |
+| alloy_promtail_positions_file |           | Path to the legacy promtail positions file (default: `/var/log/promtail-positions.yaml`). Used by `syslog` on first start after migration.                |
 | alloy_config_raw              |           | Full Alloy River config as a string. When set, bypasses snippet assembly entirely — `alloy_loki_write_endpoints` and `alloy_config_snippets` are ignored. |
 
 ### Meta-monitoring (for Alloy itself)
@@ -52,8 +52,8 @@ Alloy always exposes Prometheus metrics on `0.0.0.0:{{ alloy_port }}/metrics`, r
 
 Alloy's own logs are captured in two ways depending on your snippet configuration:
 
-- **If `journal-logs` is enabled** — Alloy runs as a systemd-managed Docker container, so its stdout/stderr are captured by journald automatically. No additional snippet is needed.
-- **If `journal-logs` is not enabled** (e.g. you only use `syslog-logs` or no log snippet at all) — enable the `alloy-meta` snippet to forward Alloy's own logs to Loki explicitly.
+- **If `journal` is enabled** — Alloy runs as a systemd-managed Docker container, so its stdout/stderr are captured by journald automatically. No additional snippet is needed.
+- **If `journal` is not enabled** (e.g. you only use `syslog` or no log snippet at all) — enable the `alloy-meta` snippet to forward Alloy's own logs to Loki explicitly.
 
 Alloy's log level (`info`) and format (`logfmt`) are always configured via the base config, regardless of which snippets are enabled. The `alloy-meta` snippet only adds the Loki forwarding pipeline on top.
 
@@ -61,7 +61,7 @@ Alloy's log level (`info`) and format (`logfmt`) are always configured via the b
 
 Alloy stores its write-ahead log (WAL) — including cursor state for `loki.source.file` and `loki.source.journal` — under `--storage.path`, which is set to `/var/lib/alloy` (bind-mounted from the host). This survives container restarts, preventing duplicate log shipments.
 
-The `syslog-logs` snippet reads the legacy promtail positions file on first start after migration to continue tailing `/var/log/syslog` from where promtail left off. The path is configured via `alloy_promtail_positions_file` (default: `/var/log/promtail-positions.yaml`). No log lines are re-shipped. This only happens once — after the initial migration, Alloy updates the positions in its own WAL format.
+The `syslog` snippet reads the legacy promtail positions file on first start after migration to continue tailing `/var/log/syslog` from where promtail left off. The path is configured via `alloy_promtail_positions_file` (default: `/var/log/promtail-positions.yaml`). No log lines are re-shipped. This only happens once — after the initial migration, Alloy updates the positions in its own WAL format.
 
 `loki.source.journal` has no equivalent migration path — its cursor is WAL-only. The very first Alloy start after migration will re-read a portion of the journal. This is a one-time event and subsequent restarts are safe once the WAL is populated.
 
@@ -113,8 +113,8 @@ Alloy allows reproducing the same log forwarding behavior as promtail via the [a
    If your environment deploys Alloy on different host groups with different scrape needs (e.g. leaf switches vs. management servers), set `alloy_config_snippets` in per-group inventory files:
 
    ```text
-   group_vars/leaves/alloy.yaml       ← alloy_config_snippets: [leaf-node-docker, journal-logs]
-   group_vars/mgmtservers/alloy.yaml  ← alloy_config_snippets: [journal-logs]
+   group_vars/leaves/alloy.yaml       ← alloy_config_snippets: [leaf-node-docker, journal]
+   group_vars/mgmtservers/alloy.yaml  ← alloy_config_snippets: [journal]
    group_vars/partition/alloy.yaml    ← alloy_loki_write_endpoints: [...] (shared by all)
    ```
 
