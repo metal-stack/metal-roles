@@ -79,15 +79,6 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
-- job_name: promtail
-  file_sd_configs:
-  - files:
-    - '/etc/prometheus/file_sd/promtail.yaml'
-  relabel_configs:
-    - source_labels: [__address__]
-      regex: (.*):\d+
-      target_label: instance
-
 - job_name: alloy
   file_sd_configs:
   - files:
