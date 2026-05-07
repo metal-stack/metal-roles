@@ -7,8 +7,12 @@ logging {
 {% endif %}
 }
 
-// Loki write endpoint shared by all snippets
+// Loki write endpoint shared by all snippets; external_labels are appended to every log entry
 loki.write "default" {
+	external_labels = {
+		host      = "{{ inventory_hostname }}",
+		partition = "{{ metal_partition_id }}",
+	}
 {% for endpoint in alloy_loki_write_endpoints %}
 	endpoint {
 		url = "{{ endpoint.url }}"

@@ -13,18 +13,8 @@ discovery.relabel "docker" {
 	}
 
 	rule {
-		target_label = "node_name"
-		replacement  = "{{ inventory_hostname }}"
-	}
-
-	rule {
 		target_label = "job"
 		replacement  = "docker"
-	}
-
-	rule {
-		target_label = "partition"
-		replacement  = "{{ metal_partition_id }}"
 	}
 }
 

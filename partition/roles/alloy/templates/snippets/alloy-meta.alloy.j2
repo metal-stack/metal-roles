@@ -3,17 +3,7 @@ loki.relabel "alloy_self" {
 	forward_to = [loki.write.default.receiver]
 
 	rule {
-		target_label = "node_name"
-		replacement  = "{{ inventory_hostname }}"
-	}
-
-	rule {
 		target_label = "job"
 		replacement  = "alloy"
-	}
-
-	rule {
-		target_label = "partition"
-		replacement  = "{{ metal_partition_id }}"
 	}
 }

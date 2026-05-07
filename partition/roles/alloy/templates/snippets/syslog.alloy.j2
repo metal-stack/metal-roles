@@ -1,9 +1,7 @@
 local.file_match "syslog" {
 	path_targets = [{
-		__path__  = "/var/log/syslog",
-		job       = "syslog",
-		partition = "{{ metal_partition_id }}",
-		host      = "{{ inventory_hostname }}",
+		__path__ = "/var/log/syslog",
+		job      = "syslog",
 	}]
 }
 

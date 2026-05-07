@@ -11,8 +11,6 @@ loki.source.journal "journal" {
 	relabel_rules = discovery.relabel.journal.rules
 	forward_to    = [loki.write.default.receiver]
 	labels        = {
-		job       = "journal",
-		partition = "{{ metal_partition_id }}",
-		host      = "{{ inventory_hostname }}",
+		job = "systemd-journal",
 	}
 }
