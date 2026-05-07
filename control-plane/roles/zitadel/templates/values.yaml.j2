@@ -65,10 +65,7 @@ ingress:
 gateway:
   httpRoute:
     enabled: {{ zitadel_httproute_enabled }}
-{% if zitadel_httproute_parent_refs %}
-    parentRefs:
-{{ zitadel_httproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
-{% endif %}
+    parentRefs: {{ zitadel_httproute_parent_refs | to_json }}
 
 {% if zitadel_image_tag %}
 image:

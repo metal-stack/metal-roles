@@ -57,10 +57,7 @@ metal_console:
   replicas: "{{ metal_console_replicas }}"
   tcpRoute:
     enabled: {{ metal_console_tcproute_enabled }}
-{% if metal_console_tcproute_parent_refs %}
-    parentRefs:
-{{ metal_console_tcproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
-{% endif %}
+    parentRefs: {{ metal_console_tcproute_parent_refs | to_json }}
   bmc_proxy:
     tls:
       server_key_enc: "{{ metal_console_bmc_proxy_certs_server_key | b64encode }}"
@@ -188,21 +185,14 @@ metal_api:
 {% endfor %}
   httpRoute:
     enabled: {{ metal_api_httproute_enabled }}
-{% if metal_api_httproute_parent_refs %}
-    parentRefs:
-{{ metal_api_httproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
-    hostnames:
-{{ metal_api_httproute_hostnames | to_nice_yaml(indent=2) | indent(6, true) }}
-{% endif %}
+    parentRefs: {{ metal_api_httproute_parent_refs | to_json }}
+    hostnames: {{ metal_api_httproute_hostnames | to_json }}
 {% if metal_api_httproute_https_redirect %}
     httpsRedirect: {{ metal_api_httproute_https_redirect | to_json }}
 {% endif %}
   tcpRoute:
     enabled: {{ metal_api_tcproute_enabled }}
-{% if metal_api_tcproute_parent_refs %}
-    parentRefs:
-{{ metal_api_tcproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
-{% endif %}
+    parentRefs: {{ metal_api_tcproute_parent_refs | to_json }}
 
 masterdata_api:
   provider_tenant: {{ metal_masterdata_api_provider_tenant }}
@@ -292,12 +282,8 @@ metal_apiserver:
     maxUnauthenticatedRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute }}
   httpRoute:
     enabled: {{ metal_apiserver_httproute_enabled }}
-{% if metal_apiserver_httproute_parent_refs %}
-    parentRefs:
-{{ metal_apiserver_httproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
-    hostnames:
-{{ metal_apiserver_httproute_hostnames | to_nice_yaml(indent=2) | indent(6, true) }}
-{% endif %}
+    parentRefs: {{ metal_apiserver_httproute_parent_refs | to_json }}
+    hostnames: {{ metal_apiserver_httproute_hostnames | to_json }}
 {% if metal_apiserver_httproute_https_redirect %}
     httpsRedirect: {{ metal_apiserver_httproute_https_redirect | to_json }}
 {% endif %}
