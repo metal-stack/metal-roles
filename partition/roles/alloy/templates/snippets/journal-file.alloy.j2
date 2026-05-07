@@ -1,0 +1,27 @@
+discovery.relabel "journal" {
+	targets = []
+
+	rule {
+		source_labels = ["__journal__systemd_unit"]
+		target_label  = "unit"
+	}
+}
+
+loki.source.journal "journal" {
+	path          = "{{ alloy_journal_path }}"
+	relabel_rules = discovery.relabel.journal.rules
+	forward_to    = [loki.write.default.receiver]
+	labels        = {
+		job       = "systemd-journal",
+		partition = "{{ metal_partition_id }}",
+		host      = "{{ inventory_hostname }}",
+	}
+
+	// read once on first start after migration to resume from where promtail left off;
+	// ignored if the file does not exist. alloy then tracks the cursor in its own wal.
+	// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.journal/#legacy_position
+	legacy_position {
+		file = "{{ alloy_journal_legacy_positions_file }}"
+		name = "{{ alloy_journal_legacy_position_name }}"
+	}
+}

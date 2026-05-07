@@ -11,6 +11,21 @@
       - alloy_image_name is defined
       - alloy_config_raw is defined or (alloy_loki_write_endpoints is defined and (alloy_loki_write_endpoints | length > 0))
 
+- name: Check journal-file legacy_position variables are either both set or both absent
+  assert:
+    fail_msg: "alloy_journal_legacy_positions_file and alloy_journal_legacy_position_name must either both be set or both be absent (alloy_journal_legacy_position_name must match the job_name of the journal scrape_config in your old promtail config)"
+    quiet: yes
+    that:
+      - (alloy_journal_legacy_positions_file is defined) == (alloy_journal_legacy_position_name is defined)
+  when: "'journal-file' in alloy_config_snippets"
+
+- name: Check journal and journal-file are not both enabled
+  assert:
+    fail_msg: "journal and journal-file snippets cannot both be enabled — this will produce duplicate log entries in Loki"
+    quiet: yes
+    that:
+      - not ('journal' in alloy_config_snippets and 'journal-file' in alloy_config_snippets)
+
 - name: Create alloy config directory
   file:
     path: "{{ alloy_config_host_dir }}"

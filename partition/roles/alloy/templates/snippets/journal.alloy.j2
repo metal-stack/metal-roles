@@ -8,7 +8,6 @@ discovery.relabel "journal" {
 }
 
 loki.source.journal "journal" {
-	path          = "/var/log/journal"
 	relabel_rules = discovery.relabel.journal.rules
 	forward_to    = [loki.write.default.receiver]
 	labels        = {

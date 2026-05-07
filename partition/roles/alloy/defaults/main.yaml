@@ -19,7 +19,20 @@ alloy_config_snippets: []
 # Port to listen for metrics and HTTP API traffic on
 alloy_port: 12345
 
-# Path to the legacy promtail positions file. Read once on first start after migration
-# to continue tailing /var/log/syslog from where promtail left off.
-# Can be removed from the snippet once all hosts have been migrated.
-alloy_promtail_positions_file: "/var/log/promtail-positions.yaml"
+# Path to the legacy promtail positions file used by the syslog snippet on first start
+# after migration to continue tailing /var/log/syslog from where promtail left off.
+# Has no effect if the file does not exist on the host.
+alloy_syslog_legacy_positions_file: "/var/log/promtail-positions.yaml"
+
+# Path to the persistent journal directory used by the journal-file snippet.
+alloy_journal_path: "/var/log/journal"
+
+# Path to the legacy promtail positions file used by the journal-file snippet on first
+# start after migration to resume from where promtail left off.
+# Has no effect if the file does not exist on the host.
+alloy_journal_legacy_positions_file: "/var/log/promtail-positions.yaml"
+
+# Job name used in the legacy promtail positions file for the journal scrape config.
+# Must match the job_name of the journal scrape_config in your old promtail config.
+# Required when alloy_journal_legacy_positions_file is set. Used by the journal-file snippet for migration only.
+alloy_journal_legacy_position_name: "journal"

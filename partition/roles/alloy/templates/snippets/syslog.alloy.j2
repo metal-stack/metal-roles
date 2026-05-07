@@ -10,7 +10,8 @@ local.file_match "syslog" {
 loki.source.file "syslog" {
 	targets               = local.file_match.syslog.targets
 	forward_to            = [loki.write.default.receiver]
-	// can be removed after migration is complete, as alloy will convert it to a new internal format and continue to update it
+	// read once on first start after migration to resume from where promtail left off;
+	// ignored if the file does not exist. alloy then tracks positions in its own wal.
 	// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.file/#arguments
-	legacy_positions_file = "{{ alloy_promtail_positions_file }}"
+	legacy_positions_file = "{{ alloy_syslog_legacy_positions_file }}"
 }
