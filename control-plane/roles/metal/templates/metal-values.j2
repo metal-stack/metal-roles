@@ -57,10 +57,10 @@ metal_console:
   replicas: "{{ metal_console_replicas }}"
   tcpRoute:
     enabled: {{ metal_console_tcproute_enabled }}
-  {% if metal_console_tcproute_parent_refs %}
+{% if metal_console_tcproute_parent_refs %}
     parentRefs:
-  {{ metal_console_tcproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
-  {% endif %}
+{{ metal_console_tcproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
+{% endif %}
   bmc_proxy:
     tls:
       server_key_enc: "{{ metal_console_bmc_proxy_certs_server_key | b64encode }}"
@@ -186,6 +186,23 @@ metal_api:
     ---
     {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
+  httpRoute:
+    enabled: {{ metal_api_httproute_enabled }}
+{% if metal_api_httproute_parent_refs %}
+    parentRefs:
+{{ metal_api_httproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
+    hostnames:
+{{ metal_api_httproute_hostnames | to_nice_yaml(indent=2) | indent(6, true) }}
+{% endif %}
+{% if metal_api_httproute_https_redirect %}
+    httpsRedirect: {{ metal_api_httproute_https_redirect | to_json }}
+{% endif %}
+  tcpRoute:
+    enabled: {{ metal_api_tcproute_enabled }}
+{% if metal_api_tcproute_parent_refs %}
+    parentRefs:
+{{ metal_api_tcproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
+{% endif %}
 
 masterdata_api:
   provider_tenant: {{ metal_masterdata_api_provider_tenant }}
@@ -230,24 +247,6 @@ v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
 deploy_ingress: {{ metal_deploy_ingress }}
 ingress: {{ metal_ingress | to_json }}
 
-
-httpRoute:
-  enabled: {{ metal_httproute_enabled }}
-{% if metal_httproute_parent_refs %}
-  parentRefs:
-{{ metal_httproute_parent_refs | to_nice_yaml(indent=2) | indent(4, true) }}
-{% endif %}
-{% if metal_httproute_https_redirect %}
-  httpsRedirect: {{ metal_httproute_https_redirect | to_json }}
-{% endif %}
-
-tcpRoute:
-  enabled: {{ metal_tcproute_enabled }}
-{% if metal_tcproute_parent_refs %}
-  parentRefs:
-{{ metal_tcproute_parent_refs | to_nice_yaml(indent=2) | indent(4, true) }}
-{% endif %}
-
 metal_apiserver:
   enabled: {{ 'true' if metal_apiserver_enabled else 'false' }}
   replicas: {{ metal_apiserver_replicas }}
@@ -291,6 +290,17 @@ metal_apiserver:
   rateLimit:
     maxRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_requests_per_minute }}
     maxUnauthenticatedRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute }}
+  httpRoute:
+    enabled: {{ metal_apiserver_httproute_enabled }}
+{% if metal_apiserver_httproute_parent_refs %}
+    parentRefs:
+{{ metal_apiserver_httproute_parent_refs | to_nice_yaml(indent=2) | indent(6, true) }}
+    hostnames:
+{{ metal_apiserver_httproute_hostnames | to_nice_yaml(indent=2) | indent(6, true) }}
+{% endif %}
+{% if metal_apiserver_httproute_https_redirect %}
+    httpsRedirect: {{ metal_apiserver_httproute_https_redirect | to_json }}
+{% endif %}
 
 auditing:
   enabled: {{ 'true' if metal_auditing_timescaledb_enabled else 'false' }}

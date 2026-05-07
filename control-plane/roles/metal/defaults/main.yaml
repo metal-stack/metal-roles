@@ -63,6 +63,14 @@ metal_apiserver_session_secret: secret
 metal_apiserver_admin_subjects: []
 metal_apiserver_pdb_enabled: true
 metal_apiserver_pdb_min_available: 2
+metal_apiserver_httproute_enabled: false
+metal_apiserver_httproute_hostnames: []
+metal_apiserver_httproute_annotations: {}
+metal_apiserver_httproute_parent_refs: []
+metal_apiserver_httproute_https_redirect: {}
+# enabled: false
+# redirectParentRefs: []
+
 
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -108,6 +116,18 @@ metal_api_release_version: "{{ metal_stack_release_version }}"
 minimum_client_version: "{{ metalctl_version }}"
 metal_api_pdb_enabled: true
 metal_api_pdb_min_available: 2
+metal_api_httproute_enabled: false
+metal_api_httproute_hostnames: []
+metal_api_httproute_annotations: {}
+metal_api_httproute_parent_refs: []
+metal_api_httproute_https_redirect: {}
+# enabled: false
+# redirectParentRefs: []
+
+# GatewayAPI TCPRoute for GRPC metal-api(v1)
+metal_api_tcproute_enabled: false
+metal_api_tcproute_annotations: {}
+metal_api_tcproute_parent_refs: []
 
 # masterdata-api
 metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -158,18 +178,6 @@ metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
 metal_ingress_v2_dns: v2.api.{{ metal_control_plane_ingress_dns }}
 
-# GatewayAPI HTTPRoutes
-metal_httproute_enabled: false
-metal_httproute_annotations: {}
-metal_httproute_parent_refs: []
-metal_httproute_https_redirect: {}
-# enabled: false
-# redirectParentRefs: []
-
-# GatewayAPI TCPRoute for GRPC metal-api(v1)
-metal_tcproute_enabled: false
-metal_tcproute_annotations: {}
-metal_tcproute_parent_refs: []
 
 # headscale
 metal_api_headscale_enabled: false
