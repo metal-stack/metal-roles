@@ -11,4 +11,9 @@ loki.relabel "alloy_self" {
 		target_label = "job"
 		replacement  = "alloy"
 	}
+
+	rule {
+		target_label = "partition"
+		replacement  = "{{ metal_partition_id }}"
+	}
 }

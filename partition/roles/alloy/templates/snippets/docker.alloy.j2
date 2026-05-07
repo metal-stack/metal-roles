@@ -1,9 +1,9 @@
-discovery.docker "leaf_node_docker" {
+discovery.docker "docker" {
 	host             = "unix:///var/run/docker.sock"
 	refresh_interval = "5s"
 }
 
-discovery.relabel "leaf_node_docker" {
+discovery.relabel "docker" {
 	targets = []
 
 	rule {
@@ -16,12 +16,22 @@ discovery.relabel "leaf_node_docker" {
 		target_label = "node_name"
 		replacement  = "{{ inventory_hostname }}"
 	}
+
+	rule {
+		target_label = "job"
+		replacement  = "docker"
+	}
+
+	rule {
+		target_label = "partition"
+		replacement  = "{{ metal_partition_id }}"
+	}
 }
 
-loki.source.docker "leaf_node_docker" {
+loki.source.docker "docker" {
 	host             = "unix:///var/run/docker.sock"
-	targets          = discovery.docker.leaf_node_docker.targets
+	targets          = discovery.docker.docker.targets
 	forward_to       = [loki.write.default.receiver]
-	relabel_rules    = discovery.relabel.leaf_node_docker.rules
+	relabel_rules    = discovery.relabel.docker.rules
 	refresh_interval = "5s"
 }
