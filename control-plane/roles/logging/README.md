@@ -99,4 +99,8 @@ Alloy replaces Promtail as the log collector. Key differences:
 | `pipelineStages: [cri, docker]`              | Not needed — `loki.source.kubernetes` uses the Kubernetes API, CRI framing is already stripped |
 | `pipelineStages: [match(eventrouter)]`       | `loki.source.kubernetes_events` (built-in, always enabled)                                     |
 
-**Recommended approach — parallel run:** Deploy Alloy alongside the existing Promtail installation first. Both will ship logs to Loki simultaneously, so expect duplicate log entries during the transition window. Once you have verified that logs arrive with the correct labels and dashboards show data correctly, remove the Promtail Helm release.
+**Recommended approach — parallel run:** Deploy Alloy alongside the existing Promtail installation first. Both will ship logs to Loki simultaneously, so expect duplicate log entries during the transition window. Before removing the Promtail Helm release, verify:
+- Logs arrive correctly in Loki
+- Dashboards that filter by log labels (e.g. `job`, `app`) still work — the label set has changed, see [Labels](#labels)
+- Alerts that query log streams by label still fire as expected
+- Any custom LogQL queries saved in Grafana still return results
