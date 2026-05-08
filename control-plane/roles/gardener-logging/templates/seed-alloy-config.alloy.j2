@@ -36,6 +36,11 @@ discovery.relabel "pods" {
   }
 
   rule {
+    source_labels = ["__meta_kubernetes_pod_label_app"]
+    target_label  = "app"
+  }
+
+  rule {
     source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_label_app"]
     separator     = "/"
     target_label  = "job"
