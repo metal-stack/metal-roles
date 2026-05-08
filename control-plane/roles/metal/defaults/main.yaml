@@ -67,11 +67,8 @@ metal_apiserver_pdb_enabled: true
 metal_apiserver_pdb_min_available: 2
 metal_apiserver_httproute_enabled: false
 metal_apiserver_httproute_hostnames: []
-metal_apiserver_httproute_annotations: {}
 metal_apiserver_httproute_parent_refs: []
 metal_apiserver_httproute_https_redirect: {}
-# enabled: false
-# redirectParentRefs: []
 
 
 # metal-api
@@ -121,15 +118,11 @@ metal_api_pdb_enabled: true
 metal_api_pdb_min_available: 2
 metal_api_httproute_enabled: false
 metal_api_httproute_hostnames: []
-metal_api_httproute_annotations: {}
 metal_api_httproute_parent_refs: []
 metal_api_httproute_https_redirect: {}
-# enabled: false
-# redirectParentRefs: []
 
 # GatewayAPI TCPRoute for GRPC metal-api(v1)
 metal_api_tcproute_enabled: false
-metal_api_tcproute_annotations: {}
 metal_api_tcproute_parent_refs: []
 
 # masterdata-api
@@ -179,7 +172,6 @@ metal_deploy_ingress: true
 metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
 metal_ingress_v2_dns: v2.api.{{ metal_control_plane_ingress_dns }}
-
 
 # headscale
 metal_api_headscale_enabled: false
