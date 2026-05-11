@@ -45,6 +45,12 @@ discovery.relabel "pods" {
     separator     = "/"
     target_label  = "job"
   }
+
+  // Force cluster label to prevent pod kubernetes labels from overriding this value.
+  rule {
+    target_label = "cluster"
+    replacement  = "{{ gardener_logging_alloy_cluster_label }}"
+  }
 }
 
 loki.source.kubernetes "pods" {
@@ -65,6 +71,11 @@ loki.relabel "events" {
     action = "labeldrop"
     regex  = "instance"
   }
+
+  rule {
+    target_label = "cluster"
+    replacement  = "{{ gardener_logging_alloy_cluster_label }}"
+  }
 }
 
 // default loki endpoints
@@ -83,9 +94,6 @@ loki.write "default" {
 {% endif %}
   }
 {% endfor %}
-  external_labels = {
-    cluster = "{{ gardener_logging_alloy_cluster_label }}",
-  }
 }
 
 // write metrics to remote Prometheus endpoint
@@ -94,7 +102,16 @@ prometheus.exporter.self "alloy" {}
 
 prometheus.scrape "alloy_self" {
   targets    = prometheus.exporter.self.alloy.targets
+  forward_to = [prometheus.relabel.alloy_self.receiver]
+}
+
+prometheus.relabel "alloy_self" {
   forward_to = [prometheus.remote_write.default.receiver]
+
+  rule {
+    target_label = "cluster"
+    replacement  = "{{ gardener_logging_alloy_cluster_label }}"
+  }
 }
 
 prometheus.remote_write "default" {
@@ -118,9 +135,6 @@ prometheus.remote_write "default" {
     // Maximum time to keep undelivered samples in the WAL before dropping them.
     // Increase if you expect control-plane outages longer than the default.
     max_keepalive_time = "{{ gardener_logging_alloy_prometheus_wal_max_keepalive_time }}"
-  }
-  external_labels = {
-    cluster = "{{ gardener_logging_alloy_cluster_label }}",
   }
 }
 {% endif %}
