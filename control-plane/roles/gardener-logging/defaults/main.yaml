@@ -1,6 +1,10 @@
 ---
 gardener_logging_namespace: monitoring
 
+# Set to true to deploy Alloy. Set to false to skip Alloy deployment entirely
+# (e.g. when keeping only Promtail before migrating).
+# gardener_logging_alloy_enabled: true
+
 gardener_logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 
 gardener_logging_garden_name: "{{ gardener_defaults_garden_name }}"
@@ -41,6 +45,12 @@ gardener_logging_alloy_prometheus_wal_max_keepalive_time: "8h"
 
 # Full Alloy River config override. When set, bypasses the seed-alloy-config.alloy.j2 template.
 # gardener_logging_alloy_config_raw: |
+
+# Set to true to also deploy Promtail alongside Alloy during a migration window.
+# Both DaemonSets will ship logs simultaneously — Loki will receive duplicate entries.
+# Requires gardener_logging_promtail_chart_version and gardener_logging_promtail_chart_repo to be set.
+# See the Migration from Promtail section in README.md.
+# gardener_logging_promtail_enabled: false
 
 gardener_logging_deploy_to_garden_cluster: true
 gardener_logging_shooted_seeds: []

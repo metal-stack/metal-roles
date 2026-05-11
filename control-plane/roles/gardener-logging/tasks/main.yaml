@@ -4,18 +4,35 @@
 
 - name: Check mandatory variables for this role are set
   assert:
-    fail_msg: "not all mandatory variables given, check role documentation"
+    fail_msg: >-
+      gardener_logging_alloy_enabled and gardener_logging_promtail_enabled must be
+      explicitly set — there are no defaults, to force a conscious migration decision.
+      At least one must be true.
+      Fresh install: set gardener_logging_alloy_enabled: true, gardener_logging_promtail_enabled: false.
+      Existing Promtail install: set gardener_logging_promtail_enabled: true to keep current
+      behavior (deprecated), then migrate to Alloy at your own pace.
+      See README.md for the full migration guide.
     quiet: true
     that:
-      - gardener_logging_promtail_chart_repo is defined
-      - gardener_logging_promtail_chart_version is defined
-      - gardener_logging_alloy_chart_repo is defined
-      - gardener_logging_alloy_chart_version is defined
+      - gardener_logging_alloy_enabled is defined
+      - gardener_logging_promtail_enabled is defined
+      - gardener_logging_alloy_enabled | default(false) | bool or gardener_logging_promtail_enabled | default(false) | bool
+      - not gardener_logging_alloy_enabled | default(false) | bool or gardener_logging_alloy_chart_version is defined
+      - not gardener_logging_alloy_enabled | default(false) | bool or gardener_logging_alloy_chart_repo is defined
+      - not gardener_logging_promtail_enabled | default(false) | bool or gardener_logging_promtail_chart_version is defined
+      - not gardener_logging_promtail_enabled | default(false) | bool or gardener_logging_promtail_chart_repo is defined
+
+- name: Promtail deprecation warning
+  ansible.builtin.debug:
+    msg: >-
+      DEPRECATION: gardener_logging_promtail_enabled is true. Promtail support is deprecated
+      and will be removed in a future release. Migrate to Alloy — see README.md.
+  when: gardener_logging_promtail_enabled | default(false) | bool
 
 - name: Build Alloy config for garden cluster
   set_fact:
     gardener_logging_alloy_config: "{{ lookup('template', 'seed-alloy-config.alloy.j2') if (gardener_logging_alloy_config_raw | default('') | length == 0) else gardener_logging_alloy_config_raw }}"
-  when: gardener_logging_deploy_to_garden_cluster
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_alloy_enabled
   vars:
     gardener_logging_shooted_seed:
       name: "{{ gardener_logging_garden_name }}"
@@ -29,12 +46,12 @@
     namespace: "{{ gardener_logging_namespace }}"
     values: "{{ lookup('template', 'seed-alloy-values.yaml') | from_yaml }}"
     create_namespace: true
-  when: gardener_logging_deploy_to_garden_cluster
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_alloy_enabled
   vars:
     gardener_logging_shooted_seed:
       name: "{{ gardener_logging_garden_name }}"
 
-- name: Deploy Promtail
+- name: Deploy Promtail to garden cluster (parallel migration window)
   kubernetes.core.helm:
     name: promtail
     chart_repo_url: "{{ gardener_logging_promtail_chart_repo }}"
@@ -43,7 +60,7 @@
     namespace: "{{ gardener_logging_namespace }}"
     values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
     create_namespace: true
-  when: gardener_logging_deploy_to_garden_cluster
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_promtail_enabled
   vars:
     gardener_logging_shooted_seed:
       name: "{{ gardener_logging_garden_name }}"

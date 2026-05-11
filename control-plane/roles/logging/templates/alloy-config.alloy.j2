@@ -99,6 +99,11 @@ loki.relabel "events" {
     target_label = "cluster"
     replacement  = "{{ logging_alloy_cluster_label }}"
   }
+
+  rule {
+    target_label = "job"
+    replacement  = "monitoring/event-exporter"
+  }
 }
 
 // default loki endpoints
