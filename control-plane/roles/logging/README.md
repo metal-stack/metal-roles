@@ -40,17 +40,17 @@ The following variables can be set to configure the role:
 
 ### Alloy
 
-| Name                                            | Mandatory | Description                                                                                                                                                                                                                                                           |
-| ----------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| logging_alloy_chart_version                     | yes       | Helm chart version for alloy (release vector)                                                                                                                                                                                                                         |
-| logging_alloy_chart_repo                        | yes       | Repository for alloy (release vector)                                                                                                                                                                                                                                 |
-| logging_alloy_port                              |           | Alloy listen port (default: `12345`)                                                                                                                                                                                                                                  |
-| logging_alloy_loki_write_endpoints              |           | List of Loki push endpoints. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` (default: `http://loki:3100/loki/api/v1/push`)                                                                                                         |
-| logging_alloy_cluster_label                     |           | Value for the `cluster=` external label on all log streams (default: `{{ metal_control_plane_stage_name }}`)                                                                                                                                                          |
-| logging_alloy_prometheus_write_endpoints        |           | List of Prometheus remote_write endpoints for Alloy self-metrics. When set, Alloy exports its own metrics via `prometheus.exporter.self` and pushes them. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` (default: `[]`, disabled) |
-| logging_alloy_prometheus_wal_truncate_frequency |           | How often the WAL is compacted. Samples older than `max_keepalive_time` are dropped (default: `2h`)                                                                                                                                                                   |
-| logging_alloy_prometheus_wal_max_keepalive_time |           | Maximum time undelivered samples are kept in the WAL before being dropped. Increase if you expect remote endpoint outages longer than this window (default: `8h`)                                                                                                     |
-| logging_alloy_config_raw                        |           | Full Alloy River config string override. When set, bypasses all structured vars above.                                                                                                                                                                                |
+| Name                                            | Mandatory | Description                                                                                                                                                                                                                                                       |
+| ----------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| logging_alloy_chart_version                     | yes       | Helm chart version for alloy (release vector)                                                                                                                                                                                                                     |
+| logging_alloy_chart_repo                        | yes       | Repository for alloy (release vector)                                                                                                                                                                                                                             |
+| logging_alloy_port                              |           | Alloy listen port (default: `12345`)                                                                                                                                                                                                                              |
+| logging_alloy_loki_write_endpoints              |           | List of Loki push endpoints. Default: `[{url: "http://loki:3100/loki/api/v1/push"}]` (in-cluster Loki). Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                                                                         |
+| logging_alloy_cluster_label                     |           | Value for the `cluster=` external label on all log streams (default: `{{ metal_control_plane_stage_name }}`)                                                                                                                                                      |
+| logging_alloy_prometheus_write_endpoints        |           | List of Prometheus remote_write endpoints for Alloy self-metrics. Auto-populated with in-cluster Thanos Receive when `monitoring_thanos_receive_enabled: true`, otherwise `[]`. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` |
+| logging_alloy_prometheus_wal_truncate_frequency |           | How often the WAL is compacted. Samples older than `max_keepalive_time` are dropped (default: `2h`)                                                                                                                                                               |
+| logging_alloy_prometheus_wal_max_keepalive_time |           | Maximum time undelivered samples are kept in the WAL before being dropped. Increase if you expect remote endpoint outages longer than this window (default: `8h`)                                                                                                 |
+| logging_alloy_config_raw                        |           | Full Alloy River config string override. When set, bypasses all structured vars above.                                                                                                                                                                            |
 
 Alloy's positions file (tracking the read offset for each container log) is persisted via a `hostPath` volume at `/var/lib/alloy/data`. This ensures `loki.source.kubernetes` does not re-read already-shipped logs after a pod restart. The directory is created automatically on first run (`DirectoryOrCreate`).
 
@@ -83,7 +83,13 @@ Alloy watches events in all namespaces, which requires cluster-scope RBAC. The A
 
 ### Metrics
 
-Alloy exposes Prometheus metrics on port `{{ logging_alloy_port }}/metrics`. To collect them without a ServiceMonitor dependency, set `logging_alloy_prometheus_write_endpoints` — Alloy will scrape its own metrics via `prometheus.exporter.self` and push them via `prometheus.remote_write` to the configured endpoint (e.g. the in-cluster Prometheus or Thanos receive).
+Alloy exposes Prometheus metrics on port `{{ logging_alloy_port }}/metrics`. When `monitoring_thanos_receive_enabled: true` in the monitoring role, Alloy automatically pushes metrics to the in-cluster Thanos Receive. Otherwise the list is empty and self-metrics are disabled. Override to customise:
+
+```yaml
+logging_alloy_prometheus_write_endpoints:
+  # automatically included when monitoring_thanos_receive_enabled: true
+  - url: "http://thanos-receive.{{ logging_namespace }}.svc.cluster.local:19291/api/v1/receive"
+```
 
 ### Logs
 
