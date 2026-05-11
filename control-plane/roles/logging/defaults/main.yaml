@@ -2,21 +2,20 @@
 logging_namespace: monitoring
 logging_alloy_port: 12345
 
-# Loki push endpoints (same format as the partition alloy role)
+# Loki push endpoints.
 logging_alloy_loki_write_endpoints:
   - url: "http://loki:3100/loki/api/v1/push"
-  #   basic_auth:
-  #     username: "promtail"
-  #     password: "secret"
 
 # Value for the cluster= external label attached to all log streams
 logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
 
 # Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
-# When set, Alloy scrapes its own /metrics and pushes them via remote_write.
-# Typical value: the in-cluster Prometheus remote_write receiver or Thanos receive.
+# Alloy scrapes its own /metrics and pushes them via remote_write.
 # Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
-logging_alloy_prometheus_write_endpoints: []
+# Thanos Receive endpoint is included automatically when monitoring_thanos_receive_enabled: true.
+logging_alloy_prometheus_write_endpoints: >-
+  {{ [{'url': 'http://thanos-receive.' ~ logging_namespace ~ '.svc.cluster.local:19291/api/v1/receive'}]
+     if monitoring_thanos_receive_enabled | default(false) | bool else [] }}
 
 # WAL retention for prometheus.remote_write. Controls how long undelivered samples
 # are buffered on disk before being dropped during a remote endpoint outage.
