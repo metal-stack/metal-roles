@@ -57,8 +57,10 @@ Alloy's positions file (tracking the read offset for each container log) is pers
 | `container` | `__meta_kubernetes_pod_container_name`                                         |
 | `pod_uid`   | `__meta_kubernetes_pod_uid`                                                    |
 | `node_name` | `__meta_kubernetes_pod_node_name`                                              |
-| `app`       | `__meta_kubernetes_pod_label_app` (empty if pod has no `app` label)            |
-| `job`       | `namespace/app` (from pod `app` label; empty suffix if pod has no `app` label) |
+| `app`       | `app.kubernetes.io/name` pod label, falling back to `app` label, controller name (hash stripped), then pod name |
+| `instance`  | `app.kubernetes.io/instance` pod label, falling back to `instance` label (empty if neither is set) |
+| `component` | `app.kubernetes.io/component` pod label, falling back to `component` label (empty if neither is set) |
+| `job`       | `namespace/app` (using the computed `app` value above)                         |
 
 ### Kubernetes events (`loki.source.kubernetes_events`)
 
@@ -82,17 +84,31 @@ Alloy runs as a Kubernetes DaemonSet, so its own pod logs are captured by `loki.
 
 ## Migration from Promtail
 
-Alloy replaces Promtail as the log collector. Key differences:
+Alloy replaces Promtail as the log collector. The following things have changed:
 
-| Promtail                                     | Alloy                                                                                                                |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `config.clients[].url` + `basic_auth`        | `gardener_logging_alloy_loki_write_endpoints[].url` + `basic_auth`                                                   |
-| `-client.external-labels=cluster=…` extraArg | `gardener_logging_alloy_cluster_label` → relabel rule in `discovery.relabel` / `loki.relabel` / `prometheus.relabel` |
-| `pipelineStages: [cri, docker]`              | Not needed — `loki.source.kubernetes` uses the Kubernetes API                                                        |
+- **Log labels are consistent with Promtail.** The label derivation rules (`app`, `instance`, `component`, `job`) are identical to Promtail's chart defaults. The only addition is `pod_uid`. See [Labels](#labels) for the full set.
+- **Kubernetes events are now built-in.** Promtail required a separate `eventrouter` sidecar and a pipeline stage to capture events. Alloy collects events natively via `loki.source.kubernetes_events`. Events now appear under `job="kubernetes-events"` instead of `job="monitoring/event-exporter"` — update any queries or dashboards accordingly.
+- **Alloy pushes its own metrics.** Promtail exposed metrics, but enabling the ServiceMonitor was impractical because Prometheus typically deploys after the logging stack (the option was intentionally commented out). Alloy scrapes itself and pushes metrics via `prometheus.remote_write` to the control-plane Thanos Receive ingress instead, removing the ordering dependency. When `monitoring_thanos_receive_ingress_enabled: true`, this is wired automatically.
+- **Metric WAL is new.** Alloy buffers undelivered self-metrics in a WAL on disk (default retention: 8h). Promtail had no equivalent — if the remote endpoint was unreachable, metric data was simply lost.
 
-**Recommended approach — parallel run:** Deploy Alloy alongside the existing Promtail installation first. Both will ship logs to Loki simultaneously, so expect duplicate log entries during the transition window. Before removing the Promtail Helm releases, verify:
+**Recommended approach — parallel run:** Deploy Alloy alongside the existing Promtail installation first. Both will ship logs to Loki simultaneously, so expect duplicate log entries during the transition window. Before removing Promtail, verify:
 
 - Logs arrive correctly in Loki
-- Dashboards that filter by log labels (e.g. `job`, `app`) still work — the label set has changed, see [Labels](#labels)
+- Dashboards and alerts that filter by log labels work as expected — labels are consistent with Promtail
 - Alerts that query log streams by label still fire as expected
 - Any custom LogQL queries saved in Grafana still return results
+
+### Thanos Receive credentials
+
+If you push Alloy self-metrics to Thanos Receive (`monitoring_thanos_receive_ingress_enabled: true`), the monitoring role's basic auth configuration has changed. The old raw htpasswd string `monitoring_thanos_receive_ingress_basic_auth` has been replaced by two plaintext variables:
+
+```yaml
+# Before
+monitoring_thanos_receive_ingress_basic_auth: "myuser:$apr1$..."
+
+# After
+monitoring_thanos_receive_ingress_basic_auth_user: myuser       # default: thanos-receive
+monitoring_thanos_receive_ingress_basic_auth_password: mysecret
+```
+
+The htpasswd entry is now generated automatically. The monitoring role will fail immediately if the old variable is still set — see the [monitoring role migration guide](../monitoring/README.md#migration) for details.

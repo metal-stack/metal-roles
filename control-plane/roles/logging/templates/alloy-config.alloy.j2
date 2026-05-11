@@ -35,13 +35,36 @@ discovery.relabel "pods" {
     target_label  = "node_name"
   }
 
+  // Derive app: app.kubernetes.io/name → app label → controller name (hash stripped) → pod name
   rule {
-    source_labels = ["__meta_kubernetes_pod_label_app"]
+    source_labels = ["__meta_kubernetes_pod_controller_name"]
+    regex         = "([0-9a-z-.]+?)(-[0-9a-f]{8,10})?"
+    target_label  = "__tmp_controller_name"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name", "__meta_kubernetes_pod_label_app", "__tmp_controller_name", "__meta_kubernetes_pod_name"]
+    regex         = "^;*([^;]+)(;.*)?$"
+    replacement   = "$1"
     target_label  = "app"
   }
 
   rule {
-    source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_label_app"]
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_instance", "__meta_kubernetes_pod_label_instance"]
+    regex         = "^;*([^;]+)(;.*)?$"
+    replacement   = "$1"
+    target_label  = "instance"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component", "__meta_kubernetes_pod_label_component"]
+    regex         = "^;*([^;]+)(;.*)?$"
+    replacement   = "$1"
+    target_label  = "component"
+  }
+
+  rule {
+    source_labels = ["namespace", "app"]
     separator     = "/"
     target_label  = "job"
   }
