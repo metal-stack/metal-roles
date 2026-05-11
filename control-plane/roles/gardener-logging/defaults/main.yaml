@@ -14,7 +14,7 @@ gardener_logging_alloy_loki_write_endpoints:
       username: "{{ gardener_logging_ingress_loki_basic_auth_user }}"
       password: "{{ gardener_logging_ingress_loki_basic_auth_password }}"
 
-# Value for the cluster= external label attached to all log streams
+# Value for the cluster= label attached to all log and metric streams via relabel rules
 gardener_logging_alloy_cluster_label: "{{ gardener_logging_shooted_seed.name }}"
 
 gardener_logging_alloy_port: 12345
@@ -26,9 +26,10 @@ gardener_logging_alloy_port: 12345
 # Endpoint is included automatically when monitoring_thanos_receive_ingress_enabled: true.
 # Credentials come from monitoring_thanos_receive_ingress_basic_auth_user/password (monitoring role).
 gardener_logging_alloy_prometheus_write_endpoints: >-
-  {{ [{'url': 'https://' ~ monitoring_thanos_receive_ingress_dns ~ '/api/v1/receive',
-       'basic_auth': {'username': monitoring_thanos_receive_ingress_basic_auth_user,
-                      'password': monitoring_thanos_receive_ingress_basic_auth_password}}]
+  {{ [{'url': 'https://' ~ monitoring_thanos_receive_ingress_dns ~ '/api/v1/receive'} |
+      combine({'basic_auth': {'username': monitoring_thanos_receive_ingress_basic_auth_user,
+                              'password': monitoring_thanos_receive_ingress_basic_auth_password}}
+              if monitoring_thanos_receive_ingress_basic_auth_password else {})]
      if monitoring_thanos_receive_ingress_enabled | default(false) | bool else [] }}
 
 # WAL retention for prometheus.remote_write. Controls how long undelivered samples

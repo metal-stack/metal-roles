@@ -37,7 +37,7 @@ The following variables can be set to configure the role:
 | gardener_logging_alloy_chart_repo                        | yes       | Repository for alloy (release vector)                                                                                                                                                                                                                                                                           |
 | gardener_logging_alloy_port                              |           | Alloy listen port (default: `12345`)                                                                                                                                                                                                                                                                            |
 | gardener_logging_alloy_loki_write_endpoints              |           | List of Loki push endpoints. Default: `https://{{ gardener_logging_ingress_dns }}/loki/api/v1/push` with `basic_auth` using `gardener_logging_ingress_loki_basic_auth_user/password`. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                                         |
-| gardener_logging_alloy_cluster_label                     |           | Value for the `cluster=` external label on all log streams (default: `gardener_logging_shooted_seed.name`)                                                                                                                                                                                                      |
+| gardener_logging_alloy_cluster_label                     |           | Value for the `cluster=` label set on all log and metric streams via relabel rules (default: `gardener_logging_shooted_seed.name`)                                                                                                                                                                              |
 | gardener_logging_alloy_prometheus_write_endpoints        |           | List of Prometheus remote_write endpoints for Alloy self-metrics. Default: Thanos receive ingress (`{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive`). Requires `monitoring_thanos_receive_ingress_enabled: true`. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` |
 | gardener_logging_alloy_prometheus_wal_truncate_frequency |           | How often the WAL is compacted. Samples older than `max_keepalive_time` are dropped (default: `2h`)                                                                                                                                                                                                             |
 | gardener_logging_alloy_prometheus_wal_max_keepalive_time |           | Maximum time undelivered samples are kept in the WAL before being dropped. Increase if you expect remote endpoint outages longer than this window (default: `8h`)                                                                                                                                               |
@@ -51,7 +51,7 @@ Alloy's positions file (tracking the read offset for each container log) is pers
 
 | Label       | Source                                                                         |
 | ----------- | ------------------------------------------------------------------------------ |
-| `cluster`   | `gardener_logging_alloy_cluster_label` (external label)                        |
+| `cluster`   | `gardener_logging_alloy_cluster_label` (relabel rule in `discovery.relabel`)   |
 | `namespace` | `__meta_kubernetes_namespace`                                                  |
 | `pod`       | `__meta_kubernetes_pod_name`                                                   |
 | `container` | `__meta_kubernetes_pod_container_name`                                         |
@@ -62,11 +62,11 @@ Alloy's positions file (tracking the read offset for each container log) is pers
 
 ### Kubernetes events (`loki.source.kubernetes_events`)
 
-| Label       | Value                                                   |
-| ----------- | ------------------------------------------------------- |
-| `cluster`   | `gardener_logging_alloy_cluster_label` (external label) |
-| `job`       | `kubernetes-events`                                     |
-| `namespace` | Namespace of the event                                  |
+| Label       | Value                                                                   |
+| ----------- | ----------------------------------------------------------------------- |
+| `cluster`   | `gardener_logging_alloy_cluster_label` (relabel rule in `loki.relabel`) |
+| `job`       | `kubernetes-events`                                                     |
+| `namespace` | Namespace of the event                                                  |
 
 Alloy watches events in all namespaces, which requires cluster-scope RBAC. The Alloy Helm chart includes the required `events` rule in its default `rbac.rules`, so no additional configuration is needed.
 
@@ -84,11 +84,11 @@ Alloy runs as a Kubernetes DaemonSet, so its own pod logs are captured by `loki.
 
 Alloy replaces Promtail as the log collector. Key differences:
 
-| Promtail                                     | Alloy                                                                      |
-| -------------------------------------------- | -------------------------------------------------------------------------- |
-| `config.clients[].url` + `basic_auth`        | `gardener_logging_alloy_loki_write_endpoints[].url` + `basic_auth`         |
-| `-client.external-labels=cluster=…` extraArg | `gardener_logging_alloy_cluster_label` → `external_labels` in River config |
-| `pipelineStages: [cri, docker]`              | Not needed — `loki.source.kubernetes` uses the Kubernetes API              |
+| Promtail                                     | Alloy                                                                                                                |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `config.clients[].url` + `basic_auth`        | `gardener_logging_alloy_loki_write_endpoints[].url` + `basic_auth`                                                   |
+| `-client.external-labels=cluster=…` extraArg | `gardener_logging_alloy_cluster_label` → relabel rule in `discovery.relabel` / `loki.relabel` / `prometheus.relabel` |
+| `pipelineStages: [cri, docker]`              | Not needed — `loki.source.kubernetes` uses the Kubernetes API                                                        |
 
 **Recommended approach — parallel run:** Deploy Alloy alongside the existing Promtail installation first. Both will ship logs to Loki simultaneously, so expect duplicate log entries during the transition window. Before removing the Promtail Helm releases, verify:
 
