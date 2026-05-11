@@ -10,6 +10,7 @@
 - name: Build alloy config
   set_fact:
     gardener_logging_alloy_config: "{{ lookup('template', 'seed-alloy-config.alloy.j2') if (gardener_logging_alloy_config_raw | default('') | length == 0) else gardener_logging_alloy_config_raw }}"
+  when: gardener_logging_alloy_enabled
 
 - name: Deploy alloy
   kubernetes.core.helm:
@@ -21,8 +22,9 @@
     values: "{{ lookup('template', 'seed-alloy-values.yaml') | from_yaml }}"
     kubeconfig: "{{ _shoot_kubeconfig }}"
     create_namespace: true
+  when: gardener_logging_alloy_enabled
 
-- name: Deploy Promtail
+- name: Deploy Promtail (parallel migration window)
   kubernetes.core.helm:
     name: promtail
     chart_repo_url: "{{ gardener_logging_promtail_chart_repo }}"
@@ -32,3 +34,4 @@
     values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
     kubeconfig: "{{ _shoot_kubeconfig }}"
     create_namespace: true
+  when: gardener_logging_promtail_enabled

@@ -22,8 +22,8 @@ The following variables can be set to configure the role:
 | ------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | rethinkdb_exporter_name                                | yes       | rethinkdb exporter image name                                                                                                                                                                                                   |
 | rethinkdb_exporter_tag                                 | yes       | rethinkdb exporter image tag                                                                                                                                                                                                    |
-| event_exporter_name                                    | yes       | event exporter image name                                                                                                                                                                                                       |
-| event_exporter_tag                                     | yes       | event exporter image tag                                                                                                                                                                                                        |
+| event_exporter_name                                    |           | event exporter image name — only deployed when set; not needed when using Alloy for log collection                                                                                                                              |
+| event_exporter_tag                                     |           | event exporter image tag — only deployed when set; not needed when using Alloy for log collection                                                                                                                               |
 | gardener_metrics_exporter_image_name                   | yes       | gardener metrics exporter image name                                                                                                                                                                                            |
 | gardener_metrics_exporter_image_tag                    | yes       | gardener metrics exporter image tag                                                                                                                                                                                             |
 | prometheus_chart_version                               | yes       | version of the prometheus stack chart                                                                                                                                                                                           |
@@ -107,3 +107,9 @@ monitoring_thanos_receive_ingress_basic_auth_password: mysecret
 ```
 
 The `gardener-logging` role automatically picks up these credentials for Alloy's `prometheus.remote_write` when `monitoring_thanos_receive_ingress_enabled: true`.
+
+### event-exporter is now opt-in
+
+The event-exporter Deployment (which wrote Kubernetes events to stdout for Promtail to scrape) is now only deployed when `event_exporter_name` and `event_exporter_tag` are set. When using Alloy, events are collected natively via `loki.source.kubernetes_events` and the event-exporter is no longer needed.
+
+Once you have verified that Alloy is collecting events correctly, remove `event_exporter_name` and `event_exporter_tag` from your config. The monitoring role will skip the event-exporter Deployment on the next run.

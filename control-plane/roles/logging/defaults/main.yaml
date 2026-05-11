@@ -2,6 +2,10 @@
 logging_namespace: monitoring
 logging_alloy_port: 12345
 
+# Set to true to deploy Alloy. Set to false to skip Alloy deployment entirely
+# (e.g. when keeping only Promtail before migrating).
+# logging_alloy_enabled: true
+
 # Loki push endpoints.
 logging_alloy_loki_write_endpoints:
   - url: "http://loki:3100/loki/api/v1/push"
@@ -27,9 +31,15 @@ logging_alloy_prometheus_wal_max_keepalive_time: "8h"
 # Full Alloy River config override. When set, bypasses all structured vars above.
 # logging_alloy_config_raw: |
 
+# Set to true to also deploy Promtail alongside Alloy during a migration window.
+# Both DaemonSets will ship logs simultaneously — Loki will receive duplicate entries.
+# Requires logging_promtail_chart_version and logging_promtail_chart_repo to be set.
+# See the Migration from Promtail section in README.md.
+# logging_promtail_enabled: false
+
 logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 logging_ingress_loki_tls: true
-logging_ingress_loki_basic_auth_user: promtail
+logging_ingress_loki_basic_auth_user: promtail # TODO rename to alloy or generic
 logging_ingress_loki_basic_auth_password:
 logging_ingress_loki_basic_auth_password_salt: "{{ logging_ingress_loki_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
 logging_ingress_annotations: {}
