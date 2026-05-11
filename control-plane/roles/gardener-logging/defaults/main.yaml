@@ -7,7 +7,7 @@ gardener_logging_garden_name: "{{ gardener_defaults_garden_name }}"
 gardener_logging_ingress_loki_basic_auth_user: promtail
 gardener_logging_ingress_loki_basic_auth_password:
 
-# Loki push endpoints (same format as the partition alloy role)
+# Loki push endpoints.
 gardener_logging_alloy_loki_write_endpoints:
   - url: "https://{{ gardener_logging_ingress_dns }}/loki/api/v1/push"
     basic_auth:
@@ -20,10 +20,16 @@ gardener_logging_alloy_cluster_label: "{{ gardener_logging_shooted_seed.name }}"
 gardener_logging_alloy_port: 12345
 
 # Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
-# When set, Alloy scrapes its own /metrics and pushes them via remote_write.
-# Typical value: the Thanos receive ingress on the metal-stack control plane.
+# Alloy scrapes its own /metrics and pushes them via remote_write.
+# Seed clusters have no local Prometheus, so metrics are pushed to the control-plane Thanos Receive.
 # Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
-gardener_logging_alloy_prometheus_write_endpoints: []
+# Endpoint is included automatically when monitoring_thanos_receive_ingress_enabled: true.
+# Credentials come from monitoring_thanos_receive_ingress_basic_auth_user/password (monitoring role).
+gardener_logging_alloy_prometheus_write_endpoints: >-
+  {{ [{'url': 'https://' ~ monitoring_thanos_receive_ingress_dns ~ '/api/v1/receive',
+       'basic_auth': {'username': monitoring_thanos_receive_ingress_basic_auth_user,
+                      'password': monitoring_thanos_receive_ingress_basic_auth_password}}]
+     if monitoring_thanos_receive_ingress_enabled | default(false) | bool else [] }}
 
 # WAL retention for prometheus.remote_write. Controls how long undelivered samples
 # are buffered on disk before being dropped during a remote endpoint outage.

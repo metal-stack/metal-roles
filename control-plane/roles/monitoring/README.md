@@ -65,7 +65,8 @@ The following variables can be set to configure the role:
 | monitoring_thanos_receive_enabled                      |           | Enable Thanos Receive component                                                                                                                                                                                                                                                                                                                                                                            |
 | monitoring_thanos_receive_ingress_enabled              |           | Enable Ingress for Thanos Receive                                                                                                                                                                                                                                                                                                                                                                          |
 | monitoring_thanos_receive_ingress_annotations          |           | Annotations that will be attached to the ingress resource for the Thanos Receive component                                                                                                                                                                                                                                                                                                                 |
-| monitoring_thanos_receive_ingress_basic_auth           |           | Set basic authentication on the Ingress for Thanos Receive                                                                                                                                                                                                                                                                                                                                                 |
+| monitoring_thanos_receive_ingress_basic_auth_user      |           | Basic auth username for the Thanos Receive ingress (default: `thanos-receive`). Used by nginx and automatically by `gardener-logging` Alloy for `prometheus.remote_write`.                                                                                                                                                                                                                                 |
+| monitoring_thanos_receive_ingress_basic_auth_password  |           | Basic auth password for the Thanos Receive ingress. When set, nginx basic auth is enabled and the htpasswd entry is generated automatically. Also used by `gardener-logging` Alloy for `prometheus.remote_write`.                                                                                                                                                                                          |
 | monitoring_thanos_receive_ingress_dns                  |           | The DNS name used for exposing Thanos Receive via Ingress                                                                                                                                                                                                                                                                                                                                                  |
 | monitoring_thanos_receive_ingress_tls                  |           | If enabled, exposes Thanos Receive through HTTPS on the Ingress                                                                                                                                                                                                                                                                                                                                            |
 | monitoring_thanos_receive_ingress_tls_gardener_managed |           | If enabled, the TLS certificate for the Thanos Receive Ingress will be managed by Gardener's certificate management, by providing a host and secret name to the `extraTls` helm values. This requires that `monitoring_thanos_receive_ingress_tls` is also enabled and the according `monitoring_thanos_receive_ingress_annotations` are set. This is not needed for certificates managed by cert-manager. |
@@ -84,3 +85,26 @@ The following variables can be set to configure the role:
 | monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
 | monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
 | monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |
+
+## Migration
+
+### `monitoring_thanos_receive_ingress_basic_auth` removed
+
+The old `monitoring_thanos_receive_ingress_basic_auth` variable (a raw htpasswd-format string) has been replaced by `monitoring_thanos_receive_ingress_basic_auth_user` and `monitoring_thanos_receive_ingress_basic_auth_password`. The htpasswd entry for nginx is now generated automatically from these, following the same pattern as Alertmanager.
+
+> **The role will fail immediately** with a clear error message if the old variable is still set. Nothing is deployed until you migrate.
+
+**Before:**
+
+```yaml
+monitoring_thanos_receive_ingress_basic_auth: "myuser:$apr1$..."
+```
+
+**After:**
+
+```yaml
+monitoring_thanos_receive_ingress_basic_auth_user: myuser # default: thanos-receive
+monitoring_thanos_receive_ingress_basic_auth_password: mysecret
+```
+
+The `gardener-logging` role automatically picks up these credentials for Alloy's `prometheus.remote_write` when `monitoring_thanos_receive_ingress_enabled: true`.
