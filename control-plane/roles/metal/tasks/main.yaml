@@ -22,8 +22,8 @@
       - metal_ipam_image_tag is defined
       - metal_console_image_name is defined
       - metal_console_image_tag is defined
-      - metal_helm_chart_local_path is not none or metal_helm_chart_repo is defined
-      - metal_helm_chart_local_path is not none or metal_helm_chart_version is defined
+      - metal_helm_chart_local_path is not none or metal_helm_chart is defined
+      - metal_helm_chart_local_path is not none or metal_helm_chart_tag is defined
       - not metal_api_s3_enabled or metal_api_s3_address is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_id is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_secret is not none
@@ -32,10 +32,9 @@
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "{{ metal_helm_chart_repo | default(omit) }}"
-    helm_chart_version: "{{ metal_helm_chart_version | default(omit) }}"
+    helm_chart_version: "{{ metal_helm_chart_version if metal_helm_chart_local_path is not none else metal_helm_chart_tag }}"
     helm_chart_custom_folder: "{{ metal_helm_chart_local_path | default(omit) }}"
-    helm_chart: "{{ './' if metal_helm_chart_local_path is not none }}metal-control-plane"
+    helm_chart: "{{ './metal-control-plane' if metal_helm_chart_local_path is not none else 'oci://' + metal_helm_chart }}"
     helm_release_name: metal-control-plane
     helm_target_namespace: "{{ metal_control_plane_namespace }}"
     helm_value_file_template: metal-values.j2

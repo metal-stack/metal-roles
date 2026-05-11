@@ -81,6 +81,11 @@ spec:
       metadata:
         labels:
           name: "{{ _config.name }}"
+{% if _config.additional_labels is defined %}
+{% for key, value in _config.additional_labels.items() %}
+          {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
       spec:
         backup:
           provider: {{ _config.backup_infrastructure.provider }}
@@ -119,10 +124,12 @@ spec:
           excessCapacityReservation:
             enabled: false
           scheduling:
-            visible: false
+            visible: {{ _config.visible | default(false, true) | to_json }}
           topologyAwareRouting:
             enabled: false
           verticalPodAutoscaler:
             enabled: {{ _config.vertical_pod_autoscaler_enabled | lower }}
         taints:
-          - key: seed.gardener.cloud/protected
+{% for taint in _config.taints | default(["seed.gardener.cloud/protected"]) %}
+          - key: {{ taint }}
+{% endfor %}

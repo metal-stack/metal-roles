@@ -20,6 +20,7 @@ gardener_shoots: []
 #     - internet
 #     - e77400fe-e993-47b1-a0dd-64c9b7457b76
 #   k8s_version: 1.23.4
+#   machine_creation_timeout: 300h
 #   worker_groups:
 #   - worker_count: 1
 #     worker_size: size
@@ -29,6 +30,7 @@ gardener_shoots: []
 #     worker_image:
 #       name: debian
 #       version: "12.0"
+#     machine_creation_timeout: 300h
 #   firewall_size: size
 #   firewall_image: firewall-ubuntu-3.0
 #   firewall_controller_version: auto
