@@ -76,7 +76,7 @@ gardener_shoots: []
 #     default_storage_class:
 #   xdr_extension:
 #     enabled: true
-#     tenant: ft
+#     tenant: "{{ metal_control_plane_provider_tenant }}"
 
 gardener_shoot_defaults:
   namespace: garden
