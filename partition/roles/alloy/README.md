@@ -53,7 +53,16 @@ If your needs are more custom (e.g. you have a non-standard log source, or want 
 
 #### Metrics
 
-Alloy always exposes Prometheus metrics on `0.0.0.0:{{ alloy_port }}/metrics`, regardless of which snippets are enabled. Add the host targets to `prometheus_alloy_targets` in the prometheus role to scrape them.
+Alloy always exposes Prometheus metrics on `0.0.0.0:{{ alloy_port }}/metrics`, regardless of which snippets are enabled. Add the host targets to `prometheus_alloy_targets` in your inventory to have the prometheus role scrape them.
+
+Scraped metrics will carry the following labels (set by the prometheus role, not the alloy role):
+
+| Label | Value |
+| --------- | ------------------------------------------------- |
+| `job` | `alloy` |
+| `instance` | hostname of the target (port stripped) |
+| `partition` | `metal_partition_id` (from Prometheus `external_labels`) |
+| `replica` | `inventory_hostname` of the Prometheus host (from Prometheus `external_labels`) |
 
 #### Labels
 
