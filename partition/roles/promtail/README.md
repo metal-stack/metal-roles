@@ -1,6 +1,7 @@
 # promtail
 
-> **Deprecated:** This role is superseded by the `alloy` role. New deployments should use `metal-roles/partition/roles/alloy` instead. This role is kept for migration purposes only and may be removed in a future release. See the [alloy role README](../alloy/README.md) for migration instructions.
+> [!IMPORTANT]
+> This role is deprecated and superseded by the `alloy` role. New deployments should use `metal-roles/partition/roles/alloy` instead. This role is kept for migration purposes only and may be removed in a future release. See the [alloy role README](../alloy/README.md) for migration instructions.
 
 Deploys promtail in a systemd-managed Docker container.
 
