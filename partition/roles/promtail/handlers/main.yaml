@@ -4,3 +4,4 @@
     name: promtail
     enabled: true
     state: restarted
+  when: promtail_enabled | default(true)

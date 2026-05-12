@@ -1,4 +1,9 @@
 ---
+# Set to false during alloy migration to prevent this role from re-deploying promtail
+# after alloy_migrate_stop_promtail has stopped it. Once migration is complete, remove
+# this role from the playbook entirely.
+promtail_enabled: true
+
 promtail_config_host_dir: "/etc/promtail"
 
 promtail_clients: []

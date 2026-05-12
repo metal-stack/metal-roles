@@ -19,12 +19,14 @@ loki.source.journal "journal" {
 	labels        = {
 		job = "systemd-journal",
 	}
-
-	// read once on first start after migration to resume from where promtail left off;
-	// ignored if the file does not exist. alloy then tracks the cursor in its own wal.
+{% if alloy_migrate_from_promtail | default(false) %}
+	// migration only: resumes reading from where promtail left off on first start.
+	// ignored if the file does not exist on the host.
+	// once alloy has written its own positions file, this can be removed.
 	// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.journal/#legacy_position
 	legacy_position {
 		file = "{{ alloy_journal_legacy_positions_file }}"
 		name = "{{ alloy_journal_legacy_position_name }}"
 	}
+{% endif %}
 }
