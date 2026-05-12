@@ -1,5 +1,32 @@
 ---
 logging_namespace: monitoring
+logging_alloy_port: 12345
+
+# Loki push endpoints.
+logging_alloy_loki_write_endpoints:
+  - url: "http://loki:3100/loki/api/v1/push"
+
+# Value for the cluster= label attached to all log and metric streams via relabel rules
+logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
+
+# Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
+# Alloy scrapes its own /metrics and pushes them via remote_write.
+# Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
+# Thanos Receive endpoint is included automatically when monitoring_thanos_receive_enabled: true.
+logging_alloy_prometheus_write_endpoints: >-
+  {{ [{'url': 'http://thanos-receive.' ~ logging_namespace ~ '.svc.cluster.local:19291/api/v1/receive'}]
+     if monitoring_thanos_receive_enabled | default(false) | bool else [] }}
+
+# WAL retention for prometheus.remote_write. Controls how long undelivered samples
+# are buffered on disk before being dropped during a remote endpoint outage.
+# truncate_frequency: how often the WAL is compacted (default: Alloy built-in 2h)
+# max_keepalive_time: samples older than this are dropped even if not yet delivered (default: Alloy built-in 8h)
+logging_alloy_prometheus_wal_truncate_frequency: "2h"
+logging_alloy_prometheus_wal_max_keepalive_time: "8h"
+
+# Full Alloy River config override. When set, bypasses all structured vars above.
+# logging_alloy_config_raw: |
+
 logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 logging_ingress_loki_tls: yes
 logging_ingress_loki_basic_auth_user: promtail

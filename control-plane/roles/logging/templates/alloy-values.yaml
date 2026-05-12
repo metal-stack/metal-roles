@@ -1,0 +1,41 @@
+# Source with all the defaults: https://raw.githubusercontent.com/grafana/alloy/main/operations/helm/charts/alloy/values.yaml
+alloy:
+  configMap:
+    # -- Create a new ConfigMap for the config file.
+    create: true
+    # -- Content to assign to the new ConfigMap.  This is passed into `tpl` allowing for templating from values.
+    content: |-
+      {{ logging_alloy_config | indent(6) }}
+
+  # -- Port to listen for traffic on.
+  listenPort: {{ logging_alloy_port }}
+
+  # -- Path to where Alloy stores its state (e.g. log positions file for loki.source.kubernetes).
+  # Backed by a hostPath volume so positions survive pod restarts on the same node.
+  storagePath: /var/lib/alloy/data
+
+  mounts:
+    extra:
+      - name: alloy-data
+        mountPath: /var/lib/alloy/data
+
+  # -- Enables sending Grafana Labs anonymous usage stats to help improve Grafana
+  # Alloy.
+  enableReporting: false
+
+controller:
+  volumes:
+    extra:
+      - name: alloy-data
+        hostPath:
+          path: /var/lib/alloy/data
+          type: DirectoryOrCreate
+
+  # -- Tolerations to apply to Grafana Alloy pods.
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      operator: Exists
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule

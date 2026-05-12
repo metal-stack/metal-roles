@@ -7,10 +7,33 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: yes
     that:
-      - gardener_logging_promtail_chart_repo is defined
-      - gardener_logging_promtail_chart_version is defined
+      - gardener_logging_alloy_chart_version is defined or gardener_logging_promtail_chart_version is defined
+      - gardener_logging_alloy_chart_version is not defined or gardener_logging_alloy_chart_repo is defined
+      - gardener_logging_promtail_chart_version is not defined or gardener_logging_promtail_chart_repo is defined
 
-- name: Deploy Promtail
+- name: Build Alloy config for garden cluster
+  set_fact:
+    gardener_logging_alloy_config: "{{ lookup('template', 'seed-alloy-config.alloy.j2') if (gardener_logging_alloy_config_raw | default('') | length == 0) else gardener_logging_alloy_config_raw }}"
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_alloy_chart_version is defined
+  vars:
+    gardener_logging_shooted_seed:
+      name: "{{ gardener_logging_garden_name }}"
+
+- name: Deploy Alloy to garden cluster
+  kubernetes.core.helm:
+    name: alloy
+    chart_repo_url: "{{ gardener_logging_alloy_chart_repo }}"
+    chart_version: "{{ gardener_logging_alloy_chart_version }}"
+    chart_ref: alloy
+    namespace: "{{ gardener_logging_namespace }}"
+    values: "{{ lookup('template', 'seed-alloy-values.yaml') | from_yaml }}"
+    create_namespace: true
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_alloy_chart_version is defined
+  vars:
+    gardener_logging_shooted_seed:
+      name: "{{ gardener_logging_garden_name }}"
+
+- name: Deploy Promtail to garden cluster
   kubernetes.core.helm:
     name: promtail
     chart_repo_url: "{{ gardener_logging_promtail_chart_repo }}"
@@ -19,7 +42,7 @@
     namespace: "{{ gardener_logging_namespace }}"
     values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
     create_namespace: true
-  when: gardener_logging_deploy_to_garden_cluster
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_promtail_chart_version is defined
   vars:
     gardener_logging_shooted_seed:
       name: "{{ gardener_logging_garden_name }}"
