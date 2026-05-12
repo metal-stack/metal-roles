@@ -74,6 +74,9 @@ gardener_shoots: []
 #   csi_driver_lvm_extension:
 #     enabled: true
 #     default_storage_class:
+#   xdr_extension:
+#     enabled: true
+#     tenant: ft
 
 gardener_shoot_defaults:
   namespace: garden
