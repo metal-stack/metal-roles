@@ -1,13 +1,13 @@
-local.file_match "syslog" {
-	path_targets = [{
+loki.source.file "syslog" {
+	targets = [{
 		__path__ = "/var/log/syslog",
 		job      = "syslog",
 	}]
-}
+	forward_to = [loki.write.default.receiver]
 
-loki.source.file "syslog" {
-	targets               = local.file_match.syslog.targets
-	forward_to            = [loki.write.default.receiver]
+	file_match {
+		enabled = true
+	}
 {% if alloy_migrate_from_promtail | default(false) %}
 	// migration only: resumes tailing from where promtail left off on first start.
 	// ignored if the file does not exist on the host.
