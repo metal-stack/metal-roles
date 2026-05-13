@@ -18,12 +18,10 @@ zitadel_db_backup_restore_sidecar_log_level: debug
 zitadel_db_backup_restore_sidecar_object_prefix: "{{ zitadel_db_name }}-{{ metal_control_plane_stage_name }}"
 zitadel_db_backup_restore_sidecar_object_max_keep: 480
 zitadel_db_backup_restore_sidecar_encryption_key:
-
 zitadel_db_backup_restore_sidecar_gcp_bucket_name:
 zitadel_db_backup_restore_sidecar_gcp_backup_location:
 zitadel_db_backup_restore_sidecar_gcp_project_id:
 zitadel_db_backup_restore_sidecar_gcp_serviceaccount_json:
-
 zitadel_db_backup_restore_sidecar_s3_bucket_name:
 zitadel_db_backup_restore_sidecar_s3_region:
 zitadel_db_backup_restore_sidecar_s3_endpoint:
@@ -31,7 +29,6 @@ zitadel_db_backup_restore_sidecar_s3_access_key:
 zitadel_db_backup_restore_sidecar_s3_secret_key:
 zitadel_db_backup_restore_sidecar_s3_insecure_skip_verify:
 zitadel_db_backup_restore_sidecar_s3_trusted_ca_cert:
-
 zitadel_db_resources:
   requests:
     memory: "128Mi"

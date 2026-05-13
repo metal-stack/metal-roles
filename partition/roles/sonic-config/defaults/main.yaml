@@ -1,8 +1,8 @@
+---
 sonic_config_bgp_ports: []
 sonic_config_breakouts: {}
 sonic_config_docker_routing_config_mode: split
 sonic_config_features: {}
-
 sonic_config_frr_l2vpn_evpn: false
 sonic_config_frr_mgmt_framework_config: true
 sonic_config_frr_render: true

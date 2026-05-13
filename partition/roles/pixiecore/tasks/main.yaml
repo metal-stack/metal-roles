@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - pixiecore_image_name is defined
       - pixiecore_image_tag is defined
@@ -22,9 +22,9 @@
 - name: copy gRPC certificates
   copy:
     dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
-    mode: 0640
+    mode: "0640"
     content: "{{ item.content }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: ca.pem
       content: "{{ pixiecore_grpc_ca_cert }}"
@@ -39,9 +39,9 @@
 - name: copy logging certificates
   copy:
     dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
-    mode: 0640
+    mode: "0640"
     content: "{{ item.content }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: logging-client.crt
       content: "{{ pixiecore_metal_hammer_logging_cert }}"

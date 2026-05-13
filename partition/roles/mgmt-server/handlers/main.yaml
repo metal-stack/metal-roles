@@ -24,7 +24,7 @@
 
 - name: reload systemd
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: save iptables v4 rules
   shell: iptables-save > /etc/iptables/rules.v4

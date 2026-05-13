@@ -1,9 +1,12 @@
 ---
 - name: Set cidrs from garden
   set_fact:
-    _gardener_gardenlet_node_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.nodes[0] }}"
-    _gardener_gardenlet_pod_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.pods[0] }}"
-    _gardener_gardenlet_service_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.services[0] }}"
+    _gardener_gardenlet_node_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.nodes[0]
+      }}"
+    _gardener_gardenlet_pod_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.pods[0]
+      }}"
+    _gardener_gardenlet_service_cidr: "{{ lookup('k8s', api_version='operator.gardener.cloud/v1alpha1', kind='Garden', resource_name=gardener_gardenlet_garden_name).spec.runtimeCluster.networking.services[0]
+      }}"
 
 - name: Create backup infrastructure secret
   k8s:
@@ -16,7 +19,7 @@
       type: Opaque
       data: "{{ _gardenlet.backup_infrastructure_secret }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
+    apply: true
   when: _gardenlet.backup_infrastructure_secret
 
 - name: Deploy Gardenlet

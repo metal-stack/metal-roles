@@ -3,5 +3,4 @@ promtail_config_host_dir: "/etc/promtail"
 
 promtail_clients: []
 promtail_scrape_configs: []
-
 promtail_docker_log_driver: json-file
