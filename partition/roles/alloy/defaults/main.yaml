@@ -28,12 +28,6 @@ alloy_port: 12345
 # migrating from promtail; leave false for fresh deployments.
 alloy_migrate_from_promtail: false
 
-# Stop and disable the promtail systemd service as part of this role run.
-# Use together with alloy_migrate_from_promtail: true for an immediate cutover,
-# or set independently after a successful parallel run to remove promtail.
-# Does not remove promtail files or images — cleanup is left to the operator.
-alloy_migrate_stop_promtail: false
-
 # Path to the legacy promtail positions file used by the syslog snippet on first start
 # after migration to continue tailing /var/log/syslog from where promtail left off.
 # Only active when alloy_migrate_from_promtail is true.

@@ -1,6 +1,6 @@
 ---
 # Set to false during alloy migration to prevent this role from re-deploying promtail
-# after alloy_migrate_stop_promtail has stopped it. Once migration is complete, remove
+# after promtail_migrate_stop has stopped it. Once migration is complete, remove
 # this role from the playbook entirely.
 promtail_enabled: true
 
@@ -10,3 +10,13 @@ promtail_clients: []
 promtail_scrape_configs: []
 
 promtail_docker_log_driver: json-file
+
+# Stop and disable the promtail systemd service. Use during alloy cutover to stop
+# promtail without removing its files. Implied by promtail_migrate_cleanup.
+promtail_migrate_stop: false
+
+# Remove all promtail remnants: stops and disables the service, removes the systemd
+# unit file (and triggers daemon-reload), removes the container, and deletes
+# promtail_config_host_dir and /var/log/promtail-positions.yaml.
+# Only set this once migration to alloy is fully complete, then remove this role from the playbook.
+promtail_migrate_cleanup: false

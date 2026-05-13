@@ -5,3 +5,7 @@
     enabled: true
     state: restarted
   when: promtail_enabled | default(true)
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true

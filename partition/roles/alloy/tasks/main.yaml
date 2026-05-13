@@ -28,14 +28,6 @@
     that:
       - not ('journal' in alloy_config_snippets and 'journal-file' in alloy_config_snippets)
 
-- name: Stop and disable promtail service
-  systemd:
-    name: promtail
-    state: stopped
-    enabled: false
-  when: alloy_migrate_stop_promtail | default(false)
-  ignore_errors: true  # service may not exist on hosts that never had promtail
-
 - name: Create alloy config directory
   file:
     path: "{{ alloy_config_host_dir }}"
