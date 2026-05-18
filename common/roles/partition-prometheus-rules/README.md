@@ -15,3 +15,4 @@ Contains default variables for partition prometheus alert manager rules. This wa
 | partition_prometheus_rules_pixiecore         |           | pixiecore alert rules                  |
 | partition_prometheus_rules_sonic             |           | sonic switch recording and alert rules |
 | partition_prometheus_rules_sonic_exporter    |           | sonic-exporter alert rules             |
+| partition_prometheus_rules_goflow2           |           | goflow2 sFlow collector rules          |
