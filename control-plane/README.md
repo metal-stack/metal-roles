@@ -60,9 +60,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [postgres-backup-restore](roles/postgres-backup-restore)               | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar)    |
 | [prepare](roles/prepare)                                               | Contains tasks for preparing the deployment of the metal-control-plane                                                             |
 | [rethinkdb-backup-restore](roles/rethinkdb-backup-restore)             | A role for deploying a rethinkdb database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar)   |
-| [sflow-collector](roles/sflow-collector)                               | Deploys a goflow2 sFlow collector with a Vector enrichment sidecar                                                                 |
 | [valkey](roles/valkey)                                                 | Deploys a valkey cluster                                                                                                           |
-| [vector-goflow2](roles/vector-goflow2)                                 | Deploys Vector ConfigMaps for sFlow flow enrichment (VRF, ports, geo-IP)                                                           |
 
 ## Examples
 

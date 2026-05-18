@@ -168,6 +168,19 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/blackbox-exporter.yaml"
   notify: Restart prometheus
 
+- name: Generate prometheus_goflow2_sd
+  ansible.builtin.set_fact:
+    prometheus_goflow2_sd:
+      - labels:
+          job: goflow2
+        targets: "{{ prometheus_goflow2_targets }}"
+
+- name: Create goflow2.yaml
+  ansible.builtin.copy:
+    content: "{{ prometheus_goflow2_sd | to_nice_yaml(indent=2) }}"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/goflow2.yaml"
+  notify: Restart prometheus
+
 - name: Ensure rules directory
   ansible.builtin.file:
     path: "{{ prometheus_config_host_dir }}/rules"
@@ -196,6 +209,8 @@
       content_var: partition_prometheus_rules_sonic_exporter
     - file: sonic-systemd.yaml
       content_var: partition_prometheus_rules_sonic_systemd
+    - file: goflow2.yaml
+      content_var: partition_prometheus_rules_goflow2
   notify: Restart prometheus
 
 - name: Deploy prometheus service
