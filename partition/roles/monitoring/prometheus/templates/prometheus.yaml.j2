@@ -106,6 +106,15 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
+- job_name: goflow2
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/goflow2.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
 - job_name: blackbox-exporter
   metrics_path: /metrics
   static_configs:
