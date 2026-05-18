@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-import json
+import csv
 import os
 import subprocess
 import time
 import redis
-from datetime import datetime, timezone
 
-LOG_FILE = "/var/log/vrf-interface-mapping.log"
-LOG_FILE_TMP = LOG_FILE + ".tmp"
+CSV_FILE = "/var/lib/sflow-collector/ifindex.csv"
+CSV_FILE_TMP = CSV_FILE + ".tmp"
+CSV_FIELDS = ["sampler_address", "ifindex", "interface", "vrf", "vni"]
 INTERVAL = 60
 CONFIG_DB = 4
 
@@ -43,7 +43,6 @@ def get_vni(db, vrf):
 
 
 def get_vrf_mappings(db, sampler_address):
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     mappings = []
 
     for key in db.keys("INTERFACE|*"):
@@ -55,7 +54,7 @@ def get_vrf_mappings(db, sampler_address):
         ifindex = get_ifindex(interface)
         if vrf and ifindex is not None:
             vni = get_vni(db, vrf)
-            mappings.append({"ts": ts, "interface": interface, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
+            mappings.append({"interface": interface, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
 
     for key in db.keys("VLAN_MEMBER|*"):
         try:
@@ -66,9 +65,27 @@ def get_vrf_mappings(db, sampler_address):
         ifindex = get_ifindex(interface)
         if vrf and ifindex is not None:
             vni = get_vni(db, vrf)
-            mappings.append({"ts": ts, "interface": interface, "vlan": vlan, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
+            mappings.append({"interface": interface, "vlan": vlan, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
 
     return mappings
+
+
+def write_csv(mappings):
+    # Vector's ifindex_vrf enrichment table is keyed on (sampler_address, ifindex);
+    # Duplicaste may appear on hybrid ports. Not expected in production.
+    deduped = {}
+    for entry in mappings:
+        key = (entry.get("sampler_address") or "", entry.get("ifindex"))
+        deduped[key] = entry
+    try:
+        with open(CSV_FILE_TMP, "w", newline="") as csv_fp:
+            writer = csv.DictWriter(csv_fp, fieldnames=CSV_FIELDS, extrasaction="ignore")
+            writer.writeheader()
+            for entry in deduped.values():
+                writer.writerow({k: ("" if entry.get(k) is None else entry.get(k)) for k in CSV_FIELDS})
+        os.replace(CSV_FILE_TMP, CSV_FILE)
+    except OSError as exc:
+        print(f"vrf-port-export: skipping CSV write: {exc}", flush=True)
 
 
 def main():
@@ -76,10 +93,7 @@ def main():
 
     while True:
         sampler_address = get_sampler_address(db)
-        with open(LOG_FILE_TMP, "w") as log:
-            for entry in get_vrf_mappings(db, sampler_address):
-                log.write(json.dumps(entry) + "\n")
-        os.replace(LOG_FILE_TMP, LOG_FILE)
+        write_csv(get_vrf_mappings(db, sampler_address))
         time.sleep(INTERVAL)
 
 

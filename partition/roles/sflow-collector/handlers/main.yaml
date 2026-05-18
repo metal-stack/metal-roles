@@ -1,0 +1,14 @@
+---
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: restart goflow2
+  systemd:
+    name: goflow2
+    state: restarted
+
+- name: restart vector
+  systemd:
+    name: vector
+    state: restarted
