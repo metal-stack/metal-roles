@@ -134,7 +134,6 @@
     - metal-api.yaml
     - metal-db.yaml
     - metal-metrics-exporter.yaml
-    - goflow2.yaml
 
 - name: Create service monitors for Gardener
   kubernetes.core.k8s:
