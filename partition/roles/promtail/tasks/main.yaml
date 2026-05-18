@@ -26,6 +26,32 @@
     dest: "{{ promtail_config_host_dir }}/promtail.yaml"
   notify: restart promtail
 
+- name: Deploy vrf-port-export script
+  copy:
+    src: vrf-port-export.py
+    dest: /usr/local/bin/vrf-port-export.py
+    owner: root
+    group: root
+    mode: "0755"
+  notify: restart vrf-port-export
+
+- name: Deploy vrf-port-export systemd service
+  copy:
+    src: vrf-port-export.service
+    dest: /etc/systemd/system/vrf-port-export.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - reload systemd
+    - restart vrf-port-export
+
+- name: Ensure vrf-port-export service is started
+  systemd:
+    name: vrf-port-export
+    enabled: yes
+    state: started
+
 - name: Deploy promtail service
   include_role:
     name: ansible-common/roles/systemd-docker-service

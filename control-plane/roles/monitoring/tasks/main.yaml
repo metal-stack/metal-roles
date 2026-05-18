@@ -79,6 +79,7 @@
      - rethinkdb.yaml
      - alertmanager.yaml
      - sonic-exporter.yaml
+     - goflow2-dashboard.yaml
 
 - name: Deploy Grafana dashboards for Gardener
   k8s:

@@ -22,9 +22,13 @@
         target_port: "{{ monitoring_node_exporter_port }}"
     systemd_docker_volumes:
       - "/:/host:ro,rslave"
+      - "/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket"
     systemd_docker_command:
       - --path.rootfs=/host
       - --path.procfs=/host/proc
       - --path.sysfs=/host/sys
+      - --collector.systemd
+      - --collector.systemd.enable-start-time-metrics
+      - "--collector.systemd.unit-include={{ monitoring_node_exporter_systemd_unit }}"
     systemd_docker_log_driver: "{{ monitoring_node_exporter_docker_log_driver }}"
       
