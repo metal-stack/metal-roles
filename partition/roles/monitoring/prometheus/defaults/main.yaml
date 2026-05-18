@@ -23,6 +23,7 @@ prometheus_ping_targets: []
 prometheus_ipmi_exporter_targets: []
 prometheus_sonic_exporter_targets: []
 prometheus_blackbox_exporter_targets: []
+prometheus_goflow2_targets: []
 prometheus_lightbox_exporter_targets: []
 prometheus_lightos_smart_targets: []
 
