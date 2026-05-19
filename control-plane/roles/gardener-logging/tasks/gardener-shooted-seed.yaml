@@ -35,3 +35,11 @@
     kubeconfig: "{{ _shoot_kubeconfig }}"
     create_namespace: true
   when: gardener_logging_promtail_enabled
+
+- name: Remove Promtail from seed
+  kubernetes.core.helm:
+    name: promtail
+    namespace: "{{ gardener_logging_namespace }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    state: absent
+  when: gardener_logging_promtail_migrate_cleanup | default(false) | bool
