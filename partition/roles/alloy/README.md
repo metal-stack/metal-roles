@@ -141,7 +141,7 @@ Use the inventory flags below to control the deployment based on your situation:
 | **Existing promtail — cutover**      | `true`          | `true`                        | `true`                  | `false`            | Alloy starts resuming from promtail's cursor; promtail service is stopped and disabled. Promtail files and container are left in place. There is a brief gap between promtail stopping and Alloy starting — entries written in this window are not shipped immediately but are safe as long as the log source persists across the gap (journal file, syslog on disk). With a volatile journal this is unlikely to matter in practice since the system stays running, but a reboot in this window would lose those entries. |
 | **Stage config (dry run)**           | `false`         | `true` or `false`             | `false`                 | `true`             | Config files are written but the Alloy service is not started. Promtail keeps running unaffected. Setting `alloy_migrate_from_promtail: true` here is safe and recommended — the migration config (including `legacy_position`) is written to the leaf and inspectable before Alloy ever starts.                                                                                                                                                                                                                           |
 
-1. **Add the `alloy` role** to your playbook. Keep `promtail` alongside it for a gradual migration, or remove it for a hard cut-over.
+1. **Add the `alloy` role** to your playbook. Keep `promtail` alongside it for a gradual migration, or set `promtail_enabled: false` for a hard cut-over.
 
 2. **Configure the Loki endpoint.** Set `alloy_loki_write_endpoints` in your inventory:
 
@@ -162,7 +162,7 @@ Use the inventory flags below to control the deployment based on your situation:
    If your environment deploys Alloy on different host groups with different scrape needs (e.g. leaf switches vs. management servers), set `alloy_config_snippets` in per-group inventory files:
 
    ```text
-   group_vars/leaves/alloy.yaml       ← alloy_config_snippets: [docker, journal]
+   group_vars/leaves/alloy.yaml       ← alloy_config_snippets: [journal]
    group_vars/mgmtservers/alloy.yaml  ← alloy_config_snippets: [journal-file]
    group_vars/partition/alloy.yaml    ← alloy_loki_write_endpoints: [...] (shared by all)
    ```
@@ -189,6 +189,6 @@ Use the inventory flags below to control the deployment based on your situation:
 
 7. **Cut over from promtail** _(parallel run only)_. Set `promtail_migrate_stop: true` and `promtail_enabled: false` in your inventory and re-run the playbook — the promtail role will stop and disable the service. You can also set `alloy_migrate_from_promtail: false` at this point since the cursor state has already been imported on first start.
 
-   When you are ready, clean up all promtail remnants by setting `promtail_migrate_cleanup: true` and re-running the playbook — the promtail role will remove the systemd unit file, container, config directory, and positions file. Then remove the `promtail` role from your playbook entirely.
+   When you are ready, clean up all promtail remnants by setting `promtail_migrate_cleanup: true` and re-running the playbook — the promtail role will remove the systemd unit file, container, config directory, and positions file. Keep `promtail_enabled: false` in your inventory to prevent re-deployment.
 
-   The `promtail` role is deprecated and will be removed in a future release. Once all environments are migrated, remove it from your playbook.
+   The `promtail` role is deprecated and will be removed in a future release. Once all environments are migrated, keep `promtail_enabled: false` in your inventory.

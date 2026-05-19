@@ -1,7 +1,7 @@
 ---
-# Set to false during alloy migration to prevent this role from re-deploying promtail
-# after promtail_migrate_stop has stopped it. Once migration is complete, remove
-# this role from the playbook entirely.
+# Set to false to skip promtail deployment. Required for new deployments that use alloy
+# exclusively, and during alloy migration after promtail_migrate_stop has stopped the
+# service. Keep this set to false in your inventory once migration is complete.
 promtail_enabled: true
 
 promtail_config_host_dir: "/etc/promtail"
@@ -18,5 +18,6 @@ promtail_migrate_stop: false
 # Remove all promtail remnants: stops and disables the service, removes the systemd
 # unit file (and triggers daemon-reload), removes the container, and deletes
 # promtail_config_host_dir and /var/log/promtail-positions.yaml.
-# Only set this once migration to alloy is fully complete, then remove this role from the playbook.
+# Only set this once migration to alloy is fully complete, then set promtail_enabled: false
+# in your inventory to prevent re-deployment.
 promtail_migrate_cleanup: false
