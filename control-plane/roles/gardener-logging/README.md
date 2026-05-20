@@ -111,7 +111,7 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 3. When ready: set `gardener_logging_alloy_enabled: true` and add `gardener_logging_alloy_chart_version` and `gardener_logging_alloy_chart_repo`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window.
 4. Verify Alloy is working: logs arrive in Loki and existing dashboards, alerts, and LogQL queries return results as expected.
 5. Set `gardener_logging_promtail_enabled: false` and `gardener_logging_promtail_migrate_cleanup: true` and re-run. The role will uninstall the Promtail Helm release from the garden cluster and every shooted seed automatically. Remove `gardener_logging_promtail_migrate_cleanup` from your inventory afterwards.
-6. Remove `event_exporter_name`/`event_exporter_tag` from your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#event-exporter-is-now-opt-in).
+6. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#event-exporter-is-now-opt-in).
 
 ### Thanos Receive credentials
 
