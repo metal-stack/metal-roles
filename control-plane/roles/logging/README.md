@@ -125,4 +125,4 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 2. When ready: set `logging_alloy_enabled: true` and add `logging_alloy_chart_version` and `logging_alloy_chart_repo`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window.
 3. Verify Alloy is working: logs arrive in Loki and existing dashboards, alerts, and LogQL queries return results as expected.
 4. Set `logging_promtail_enabled: false` and `logging_promtail_migrate_cleanup: true` and re-run. The role will uninstall the Promtail Helm release automatically. Remove `logging_promtail_migrate_cleanup` from your inventory afterwards.
-5. Remove `event_exporter_name`/`event_exporter_tag` from your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#event-exporter-is-now-opt-in).
+5. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#event-exporter-is-now-opt-in).
