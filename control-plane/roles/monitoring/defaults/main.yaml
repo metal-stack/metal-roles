@@ -37,7 +37,7 @@ monitoring_alertmanager_webhook_logger_repeat_interval: 60m
 monitoring_alertmanager_webhook_slack_repeat_interval: 24h
 
 # event exporter
-event_exporter_enabled: false
+event_exporter_enabled: true
 
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"

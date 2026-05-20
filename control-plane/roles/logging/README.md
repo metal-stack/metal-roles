@@ -8,7 +8,7 @@ Components:
 - **Alloy** — log collector (DaemonSet), collects pod logs via the Kubernetes API (`loki.source.kubernetes`) and forwards them to Loki
 - Loki ingress with optional TLS and basic auth
 
-This role supports deploying Alloy and/or Promtail as log collectors. Both `logging_alloy_enabled` and `logging_promtail_enabled` **must be set explicitly** — there are no defaults. See [Migration from Promtail](#migration-from-promtail) for guidance.
+This role supports deploying Alloy and/or Promtail as log collectors. Promtail is deployed by default for backward compatibility. See [Migration from Promtail](#migration-from-promtail) for guidance on switching to Alloy.
 
 ## Configuration
 
@@ -24,24 +24,24 @@ The following variables can be set to configure the role:
 
 ### General
 
-| Name                                          | Mandatory | Default | Description                                                                                                                                                                                                    |
-| --------------------------------------------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| logging_chart_version                         | yes       |         | Helm chart version for loki (release vector)                                                                                                                                                                   |
-| logging_chart_repo                            | yes       |         | Repository for loki (release vector)                                                                                                                                                                           |
-| logging_alloy_enabled                         | yes       |         | Deploy Alloy. Set `true` for new installs and Alloy-only setups. Requires `logging_alloy_chart_version` and `logging_alloy_chart_repo`.                                                                        |
-| logging_promtail_enabled                      | yes       |         | Deploy Promtail. Set `true` to keep existing behavior (**deprecated** — see [Migration from Promtail](#migration-from-promtail)). Requires `logging_promtail_chart_version` and `logging_promtail_chart_repo`. |
-| logging_alloy_chart_version                   |           |         | Helm chart version for alloy — required when `logging_alloy_enabled: true`                                                                                                                                     |
-| logging_alloy_chart_repo                      |           |         | Repository for alloy — required when `logging_alloy_enabled: true`                                                                                                                                             |
-| logging_promtail_chart_version                |           |         | Helm chart version for promtail — required when `logging_promtail_enabled: true`                                                                                                                               |
-| logging_promtail_chart_repo                   |           |         | Repository for promtail — required when `logging_promtail_enabled: true`                                                                                                                                       |
-| logging_promtail_migrate_cleanup              |           | `false` | Uninstall the Promtail Helm release. Set `true` after cutover to let the role remove the release automatically. Idempotent — safe to run even if the release is already gone.                                  |
-| logging_namespace                             |           |         | The deployment's target namespace                                                                                                                                                                              |
-| logging_loki_size                             |           |         | The size of the volume that loki will use for storing logs                                                                                                                                                     |
-| logging_ingress_dns                           |           |         | DNS for loki ingress                                                                                                                                                                                           |
-| logging_ingress_loki_tls                      |           |         | If enabled, exposes loki through HTTPS on the ingress                                                                                                                                                          |
-| logging_ingress_loki_basic_auth_password_salt |           |         | The basic auth password salt used for stable password hashes                                                                                                                                                   |
-| logging_ingress_loki_basic_auth_password      |           |         | The basic auth password for the external loki ingress                                                                                                                                                          |
-| logging_ingress_loki_basic_auth_user          |           |         | The basic auth user for the external loki ingress                                                                                                                                                              |
+| Name                                          | Mandatory | Default | Description                                                                                                                                                                   |
+| --------------------------------------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| logging_chart_version                         | yes       |         | Helm chart version for loki (release vector)                                                                                                                                  |
+| logging_chart_repo                            | yes       |         | Repository for loki (release vector)                                                                                                                                          |
+| logging_alloy_enabled                         |           | `false` | Deploy Alloy. Set `true` for new installs and Alloy-only setups. Requires `logging_alloy_chart_version` and `logging_alloy_chart_repo`.                                       |
+| logging_promtail_enabled                      |           | `true`  | Deploy Promtail (**deprecated** — see [Migration from Promtail](#migration-from-promtail)). Requires `logging_promtail_chart_version` and `logging_promtail_chart_repo`.      |
+| logging_alloy_chart_version                   |           |         | Helm chart version for alloy — required when `logging_alloy_enabled: true`                                                                                                    |
+| logging_alloy_chart_repo                      |           |         | Repository for alloy — required when `logging_alloy_enabled: true`                                                                                                            |
+| logging_promtail_chart_version                |           |         | Helm chart version for promtail — required when `logging_promtail_enabled: true`                                                                                              |
+| logging_promtail_chart_repo                   |           |         | Repository for promtail — required when `logging_promtail_enabled: true`                                                                                                      |
+| logging_promtail_migrate_cleanup              |           | `false` | Uninstall the Promtail Helm release. Set `true` after cutover to let the role remove the release automatically. Idempotent — safe to run even if the release is already gone. |
+| logging_namespace                             |           |         | The deployment's target namespace                                                                                                                                             |
+| logging_loki_size                             |           |         | The size of the volume that loki will use for storing logs                                                                                                                    |
+| logging_ingress_dns                           |           |         | DNS for loki ingress                                                                                                                                                          |
+| logging_ingress_loki_tls                      |           |         | If enabled, exposes loki through HTTPS on the ingress                                                                                                                         |
+| logging_ingress_loki_basic_auth_password_salt |           |         | The basic auth password salt used for stable password hashes                                                                                                                  |
+| logging_ingress_loki_basic_auth_password      |           |         | The basic auth password for the external loki ingress                                                                                                                         |
+| logging_ingress_loki_basic_auth_user          |           |         | The basic auth user for the external loki ingress                                                                                                                             |
 
 ### Alloy
 
@@ -102,7 +102,7 @@ Alloy runs as a Kubernetes DaemonSet, so its own pod logs are captured by `loki.
 
 ## Migration from Promtail
 
-Alloy is the recommended log collector. Both `logging_alloy_enabled` and `logging_promtail_enabled` must be **explicitly set in your inventory** — the role will fail immediately on upgrade if they are missing, forcing a conscious migration decision.
+Alloy is the recommended log collector. Promtail is deployed by default — existing installations continue to work without changes after upgrading.
 
 > **Promtail is deprecated.** Setting `logging_promtail_enabled: true` emits a deprecation warning on every run. Promtail support will be removed in a future release.
 
@@ -116,13 +116,13 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 | --------------------------------- | ----------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Fresh deployment**              | `true`                  | `false`                    | Alloy only.                                                                                                                                                 |
 | **Parallel run**                  | `true`                  | `true`                     | Both DaemonSets ship logs. Loki receives duplicate entries during this window. Requires `logging_promtail_chart_version` and `logging_promtail_chart_repo`. |
-| **Promtail only** (keep existing) | `false`                 | `true`                     | Promtail only. Deprecated — emits a warning on every run.                                                                                                   |
+| **Promtail only** (keep existing) | `false`                 | `true`                     | Promtail only. **Default behavior** — existing installs work without changes. Deprecated — emits a warning on every run.                                    |
 | **Cutover complete**              | `true`                  | `false`                    | Remove Promtail: `helm uninstall promtail -n {{ logging_namespace }}`.                                                                                      |
 
 **To migrate an existing Promtail installation:**
 
-1. Add to your inventory: `logging_promtail_enabled: true, logging_alloy_enabled: false`. The role will continue deploying Promtail and emit a deprecation warning each run.
-2. When ready: set `logging_alloy_enabled: true` and add `logging_alloy_chart_version` and `logging_alloy_chart_repo`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window.
+1. Promtail runs by default and a deprecation warning fires on every run as a reminder. Proceed when ready.
+2. Set `logging_alloy_enabled: true` and add `logging_alloy_chart_version` and `logging_alloy_chart_repo`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window.
 3. Verify Alloy is working: logs arrive in Loki and existing dashboards, alerts, and LogQL queries return results as expected.
 4. Set `logging_promtail_enabled: false` and `logging_promtail_migrate_cleanup: true` and re-run. The role will uninstall the Promtail Helm release automatically. Remove `logging_promtail_migrate_cleanup` from your inventory afterwards.
-5. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#event-exporter-is-now-opt-in).
+5. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#disabling-the-event-exporter-after-alloy-migration).
