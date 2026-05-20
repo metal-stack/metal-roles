@@ -104,6 +104,7 @@
       - run
       - --server.http.listen-addr=0.0.0.0:{{ alloy_port }}
       - --storage.path=/var/lib/alloy
+      - --disable-reporting
       - /etc/alloy/config.alloy
     systemd_docker_log_driver: "{{ alloy_docker_log_driver }}"
   when: alloy_enabled | default(false)
