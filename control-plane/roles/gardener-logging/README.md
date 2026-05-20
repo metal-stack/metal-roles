@@ -4,7 +4,7 @@ Deploys [Grafana Alloy](https://grafana.com/docs/alloy/latest/) into Gardener sh
 
 Expects the [logging role](../logging/) to have been deployed first.
 
-This role supports deploying Alloy and/or Promtail as log collectors. Both `gardener_logging_alloy_enabled` and `gardener_logging_promtail_enabled` **must be set explicitly** — there are no defaults. See [Migration from Promtail](#migration-from-promtail) for guidance.
+This role supports deploying Alloy and/or Promtail as log collectors. Promtail is deployed by default for backward compatibility. See [Migration from Promtail](#migration-from-promtail) for guidance on switching to Alloy.
 
 ## Configuration
 
@@ -18,21 +18,21 @@ The following variables can be set to configure the role:
 
 ### General
 
-| Name                                              | Mandatory | Default | Description                                                                                                                                                                                                                      |
-| ------------------------------------------------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| gardener_logging_alloy_enabled                    | yes       |         | Deploy Alloy. Set `true` for new installs and Alloy-only setups. Requires `gardener_logging_alloy_chart_version` and `gardener_logging_alloy_chart_repo`.                                                                        |
-| gardener_logging_promtail_enabled                 | yes       |         | Deploy Promtail. Set `true` to keep existing behavior (**deprecated** — see [Migration from Promtail](#migration-from-promtail)). Requires `gardener_logging_promtail_chart_version` and `gardener_logging_promtail_chart_repo`. |
-| gardener_logging_alloy_chart_version              |           |         | Helm chart version for alloy — required when `gardener_logging_alloy_enabled: true`                                                                                                                                              |
-| gardener_logging_alloy_chart_repo                 |           |         | Repository for alloy — required when `gardener_logging_alloy_enabled: true`                                                                                                                                                      |
-| gardener_logging_promtail_chart_version           |           |         | Helm chart version for promtail — required when `gardener_logging_promtail_enabled: true`                                                                                                                                        |
-| gardener_logging_promtail_chart_repo              |           |         | Repository for promtail — required when `gardener_logging_promtail_enabled: true`                                                                                                                                                |
-| gardener_logging_promtail_migrate_cleanup         |           | `false` | Uninstall the Promtail Helm release from the garden cluster and all shooted seeds. Set `true` after cutover to let the role remove the releases automatically. Idempotent — safe to run even if the releases are already gone.   |
-| gardener_logging_namespace                        |           |         | The deployment's target namespace                                                                                                                                                                                                |
-| gardener_logging_ingress_dns                      |           |         | DNS for loki ingress                                                                                                                                                                                                             |
-| gardener_logging_ingress_loki_basic_auth_password |           |         | The basic auth password for the external loki ingress                                                                                                                                                                            |
-| gardener_logging_ingress_loki_basic_auth_user     |           |         | The basic auth user for the external loki ingress                                                                                                                                                                                |
-| gardener_logging_deploy_to_garden_cluster         |           | `true`  | Deploys Alloy also into the garden cluster                                                                                                                                                                                       |
-| gardener_logging_shooted_seeds                    |           |         | Shooted seed names on which to deploy Alloy that logs to loki                                                                                                                                                                    |
+| Name                                              | Mandatory | Default | Description                                                                                                                                                                                                                    |
+| ------------------------------------------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| gardener_logging_alloy_enabled                    |           | `false` | Deploy Alloy. Set `true` for new installs and Alloy-only setups. Requires `gardener_logging_alloy_chart_version` and `gardener_logging_alloy_chart_repo`.                                                                      |
+| gardener_logging_promtail_enabled                 |           | `true`  | Deploy Promtail (**deprecated** — see [Migration from Promtail](#migration-from-promtail)). Requires `gardener_logging_promtail_chart_version` and `gardener_logging_promtail_chart_repo`.                                     |
+| gardener_logging_alloy_chart_version              |           |         | Helm chart version for alloy — required when `gardener_logging_alloy_enabled: true`                                                                                                                                            |
+| gardener_logging_alloy_chart_repo                 |           |         | Repository for alloy — required when `gardener_logging_alloy_enabled: true`                                                                                                                                                    |
+| gardener_logging_promtail_chart_version           |           |         | Helm chart version for promtail — required when `gardener_logging_promtail_enabled: true`                                                                                                                                      |
+| gardener_logging_promtail_chart_repo              |           |         | Repository for promtail — required when `gardener_logging_promtail_enabled: true`                                                                                                                                              |
+| gardener_logging_promtail_migrate_cleanup         |           | `false` | Uninstall the Promtail Helm release from the garden cluster and all shooted seeds. Set `true` after cutover to let the role remove the releases automatically. Idempotent — safe to run even if the releases are already gone. |
+| gardener_logging_namespace                        |           |         | The deployment's target namespace                                                                                                                                                                                              |
+| gardener_logging_ingress_dns                      |           |         | DNS for loki ingress                                                                                                                                                                                                           |
+| gardener_logging_ingress_loki_basic_auth_password |           |         | The basic auth password for the external loki ingress                                                                                                                                                                          |
+| gardener_logging_ingress_loki_basic_auth_user     |           |         | The basic auth user for the external loki ingress                                                                                                                                                                              |
+| gardener_logging_deploy_to_garden_cluster         |           | `true`  | Deploys Alloy also into the garden cluster                                                                                                                                                                                     |
+| gardener_logging_shooted_seeds                    |           |         | Shooted seed names on which to deploy Alloy that logs to loki                                                                                                                                                                  |
 
 ### Alloy
 
@@ -87,7 +87,7 @@ Alloy runs as a Kubernetes DaemonSet, so its own pod logs are captured by `loki.
 
 ## Migration from Promtail
 
-Alloy is the recommended log collector. Both `gardener_logging_alloy_enabled` and `gardener_logging_promtail_enabled` must be **explicitly set in your inventory** — the role will fail immediately on upgrade if they are missing, forcing a conscious migration decision.
+Alloy is the recommended log collector. Promtail is deployed by default — existing installations continue to work without changes after upgrading.
 
 > **Promtail is deprecated.** Setting `gardener_logging_promtail_enabled: true` emits a deprecation warning on every run. Promtail support will be removed in a future release.
 
@@ -101,17 +101,17 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 | --------------------------------- | -------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Fresh deployment**              | `true`                           | `false`                             | Alloy only.                                                                                                                                                                   |
 | **Parallel run**                  | `true`                           | `true`                              | Both DaemonSets ship logs. Loki receives duplicate entries during this window. Requires `gardener_logging_promtail_chart_version` and `gardener_logging_promtail_chart_repo`. |
-| **Promtail only** (keep existing) | `false`                          | `true`                              | Promtail only. Deprecated — emits a warning on every run.                                                                                                                     |
+| **Promtail only** (keep existing) | `false`                          | `true`                              | Promtail only. **Default behavior** — existing installs work without changes. Deprecated — emits a warning on every run.                                                      |
 | **Cutover complete**              | `true`                           | `false`                             | Remove Promtail from each seed: `helm uninstall promtail -n {{ gardener_logging_namespace }}`.                                                                                |
 
 **To migrate an existing Promtail installation:**
 
 1. If you are pushing Alloy self-metrics to Thanos Receive, migrate the credentials first — see [Thanos Receive credentials](#thanos-receive-credentials) below.
-2. Add to your inventory: `gardener_logging_promtail_enabled: true, gardener_logging_alloy_enabled: false`. The role will continue deploying Promtail and emit a deprecation warning each run.
-3. When ready: set `gardener_logging_alloy_enabled: true` and add `gardener_logging_alloy_chart_version` and `gardener_logging_alloy_chart_repo`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window.
+2. Promtail runs by default and a deprecation warning fires on every run as a reminder. Proceed when ready.
+3. Set `gardener_logging_alloy_enabled: true` and add `gardener_logging_alloy_chart_version` and `gardener_logging_alloy_chart_repo`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window.
 4. Verify Alloy is working: logs arrive in Loki and existing dashboards, alerts, and LogQL queries return results as expected.
 5. Set `gardener_logging_promtail_enabled: false` and `gardener_logging_promtail_migrate_cleanup: true` and re-run. The role will uninstall the Promtail Helm release from the garden cluster and every shooted seed automatically. Remove `gardener_logging_promtail_migrate_cleanup` from your inventory afterwards.
-6. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#event-exporter-is-now-opt-in).
+6. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#disabling-the-event-exporter-after-alloy-migration).
 
 ### Thanos Receive credentials
 

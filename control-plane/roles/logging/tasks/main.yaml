@@ -4,31 +4,23 @@
 
 - name: Check mandatory variables for this role are set
   assert:
-    fail_msg: >-
-      logging_alloy_enabled and logging_promtail_enabled must be explicitly set — there
-      are no defaults, to force a conscious migration decision. At least one must be true.
-      Fresh install: set logging_alloy_enabled: true, logging_promtail_enabled: false.
-      Existing Promtail install: set logging_promtail_enabled: true to keep current
-      behavior (deprecated), then migrate to Alloy at your own pace.
-      See README.md for the full migration guide.
+    fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
       - logging_chart_version is defined
       - logging_chart_repo is defined
-      - logging_alloy_enabled is defined
-      - logging_promtail_enabled is defined
-      - logging_alloy_enabled | default(false) | bool or logging_promtail_enabled | default(false) | bool
-      - not logging_alloy_enabled | default(false) | bool or logging_alloy_chart_version is defined
-      - not logging_alloy_enabled | default(false) | bool or logging_alloy_chart_repo is defined
-      - not logging_promtail_enabled | default(false) | bool or logging_promtail_chart_version is defined
-      - not logging_promtail_enabled | default(false) | bool or logging_promtail_chart_repo is defined
+      - not logging_alloy_enabled | bool or logging_alloy_chart_version is defined
+      - not logging_alloy_enabled | bool or logging_alloy_chart_repo is defined
+      - not logging_promtail_enabled | bool or logging_promtail_chart_version is defined
+      - not logging_promtail_enabled | bool or logging_promtail_chart_repo is defined
 
 - name: Promtail deprecation warning
-  ansible.builtin.debug:
+  ansible.builtin.fail:
     msg: >-
       DEPRECATION: logging_promtail_enabled is true. Promtail support is deprecated
       and will be removed in a future release. Migrate to Alloy — see README.md.
-  when: logging_promtail_enabled | default(false) | bool
+  when: logging_promtail_enabled | bool
+  ignore_errors: true
 
 - name: Create namespace {{ logging_namespace }}
   k8s:
