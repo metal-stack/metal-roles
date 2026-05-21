@@ -3,7 +3,6 @@ gardener_monitoring_certs_garden_name: "{{ gardener_defaults_garden_name }}"
 
 gardener_monitoring_certs_certificate_cluster_issuer:
 gardener_monitoring_certs_ingress_domain:
-
 gardener_monitoring_certs_shooted_seeds: []
   # - name: "seed-a"
   #   ingress_domain: ingress.my-domain.com

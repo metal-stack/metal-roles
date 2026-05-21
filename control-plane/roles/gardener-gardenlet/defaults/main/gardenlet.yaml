@@ -6,7 +6,6 @@ gardener_gardenlet_helm_chart_tag: "{{ gardener_gardenlet_image_tag }}"
 gardener_gardenlet_default_dns_domain:
 gardener_gardenlet_default_dns_provider:
 gardener_gardenlet_default_dns_credentials:
-
 gardener_gardenlets: []
   # - name:
   #   kubeconfigSecretRef: <if-this-is-a-remote-gardenlet>
@@ -60,14 +59,14 @@ gardener_gardenlet_defaults:
   vertical_pod_autoscaler_enabled: true
   image_vector_overwrite: []
   component_image_vector_overwrite: []
-    # components:
-    # - name: etcd-druid
-    #   imageVectorOverwrite: |
-    #     images:
-    #     - name: etcd-backup-restore
-    #       sourceRepository: github.com/gardener/etcd-backup-restore
-    #       repository: europe-docker.pkg.dev/gardener-project/public/gardener/etcdbrctl
-    #       tag: "v0.36.3"
+  # components:
+  # - name: etcd-druid
+  #   imageVectorOverwrite: |
+  #     images:
+  #     - name: etcd-backup-restore
+  #       sourceRepository: github.com/gardener/etcd-backup-restore
+  #       repository: europe-docker.pkg.dev/gardener-project/public/gardener/etcdbrctl
+  #       tag: "v0.36.3"
   kubeconfigSecretRef:
   garden_client_connection:
   feature_gates: {}

@@ -8,14 +8,14 @@
 mgmt_server_registry_mirror: https://mirror.gcr.io
 
 mgmt_server_nameservers:
-- 193.110.81.0#dns0.eu
-- 2a0f:fc80::#dns0.eu
-- 185.253.5.0#dns0.eu
-- 2a0f:fc81::#dns0.eu
+  - 193.110.81.0#dns0.eu
+  - 2a0f:fc80::#dns0.eu
+  - 185.253.5.0#dns0.eu
+  - 2a0f:fc81::#dns0.eu
 mgmt_server_dns_over_tls: true
 
 mgmt_server_frr_match_interfaces:
-- lo
+  - lo
 
 mgmt_server_frr_version: 8.5-0
 mgmt_server_frr_repo: frr-8
