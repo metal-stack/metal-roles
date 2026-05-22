@@ -19,7 +19,7 @@
 
 - name: Get kubeconfig for virtual garden access
   virtual_garden_kubeconfig:
-    garden_name: "{{ gardener_monitoring_certs_garden_name }}"
+    garden_name: "{{ monitoring_garden_name }}"
   when: monitoring_gardener_enabled
 
 - name: Deploy seed-kubecfg secret
