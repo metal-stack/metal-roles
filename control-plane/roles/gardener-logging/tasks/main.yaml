@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - gardener_logging_promtail_chart_repo is defined
       - gardener_logging_promtail_chart_version is defined

@@ -2,7 +2,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - gardener_cloud_profile_kubernetes is not none
       - gardener_cloud_profile_regions is not none
@@ -39,7 +39,7 @@
   k8s:
     definition: "{{ lookup('template', '30-cloud-profile-metal.yaml') }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    apply: yes
+    apply: true
   register: result
   until: result is success
   retries: 10

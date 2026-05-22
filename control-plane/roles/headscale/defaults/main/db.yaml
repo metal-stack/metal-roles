@@ -13,12 +13,10 @@ headscale_db_backup_restore_sidecar_backup_cron_schedule: "0 0 * * *"
 headscale_db_backup_restore_sidecar_log_level: debug
 headscale_db_backup_restore_sidecar_object_prefix: "{{ headscale_db_name }}"
 headscale_db_backup_restore_sidecar_encryption_key:
-
 headscale_db_backup_restore_sidecar_gcp_bucket_name:
 headscale_db_backup_restore_sidecar_gcp_backup_location:
 headscale_db_backup_restore_sidecar_gcp_project_id:
 headscale_db_backup_restore_sidecar_gcp_serviceaccount_json:
-
 headscale_db_backup_restore_sidecar_s3_bucket_name:
 headscale_db_backup_restore_sidecar_s3_region:
 headscale_db_backup_restore_sidecar_s3_endpoint:
@@ -26,7 +24,6 @@ headscale_db_backup_restore_sidecar_s3_access_key:
 headscale_db_backup_restore_sidecar_s3_secret_key:
 headscale_db_backup_restore_sidecar_s3_insecure_skip_verify:
 headscale_db_backup_restore_sidecar_s3_trusted_ca_cert:
-
 headscale_db_resources:
   requests:
     memory: "256Mi"
