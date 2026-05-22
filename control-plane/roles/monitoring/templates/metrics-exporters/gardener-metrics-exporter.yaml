@@ -37,13 +37,6 @@ roleRef:
   name: gardener.cloud:metrics-exporter
   apiGroup: rbac.authorization.k8s.io
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: seed-kubecfg
-data:
-  kubecfg.yaml: {{ monitoring_gardener_virtual_garden_kubeconfig }}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
