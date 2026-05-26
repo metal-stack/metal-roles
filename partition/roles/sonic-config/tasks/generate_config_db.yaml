@@ -12,6 +12,7 @@
 - name: Check ntp status
   command: show ntp
   register: ntp_status
+  failed_when: never
 
 - name: Set time if ntp is not synchronized
   command: "date -s '{{ now() }}'"
