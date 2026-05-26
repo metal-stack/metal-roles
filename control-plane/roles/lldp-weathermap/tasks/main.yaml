@@ -16,7 +16,7 @@
         {%- for iface in (res.stdout | from_json).lldp[0].interface -%}
           {%- set remote_host = iface.chassis[0].name[0].value -%}
           {%- if remote_host | regex_search(filter_re) -%}
-            {%- set _ = topology.append({'local': res.item, 'remote': remote_host, 'local_port': iface.name}) -%}
+            {%- set _ = topology.append({'local': res.item, 'remote': remote_host, 'local_port': iface.name, 'remote_port': iface.port[0].id[0].value}) -%}
           {%- endif -%}
         {%- endfor -%}
       {%- endfor -%}
@@ -129,7 +129,7 @@
           "config": {},
           "links": [{
             "title": "Select link: " ~ link.local_port,
-            "url": "/d/network-weathermap?var-selected_instance=" ~ link.local ~ "&var-selected_device=" ~ link.local_port,
+            "url": "/d/network-weathermap?var-selected_instance=" ~ link.local ~ "&var-selected_device=" ~ link.local_port ~ "&var-selected_remote_instance=" ~ link.remote ~ "&var-selected_remote_device=" ~ (link.remote_port | default('')),
             "targetBlank": false,
             "oneClick": true
           }]
@@ -193,14 +193,66 @@
       {%- set ds_var = {"hide": 0, "includeAll": false, "label": "Prometheus", "multi": false, "name": "DS_PROMETHEUS", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource"} -%}
       {%- set inst_var = {"name": "selected_instance", "label": "Selected Switch", "type": "textbox", "current": {"value": ""}, "hide": 2, "skipUrlSync": false} -%}
       {%- set dev_var = {"name": "selected_device", "label": "Selected Interface", "type": "textbox", "current": {"value": ""}, "hide": 2, "skipUrlSync": false} -%}
+      {%- set rinst_var = {"name": "selected_remote_instance", "label": "Selected Remote Switch", "type": "textbox", "current": {"value": ""}, "hide": 2, "skipUrlSync": false} -%}
+      {%- set rdev_var = {"name": "selected_remote_device", "label": "Selected Remote Interface", "type": "textbox", "current": {"value": ""}, "hide": 2, "skipUrlSync": false} -%}
+      {%- set base_y = lldp_weathermap_panel_grid_rows + 1 + 8 -%}
+      {%- set detail_row = {"type": "row", "title": "Selected Link Detail", "gridPos": {"h": 1, "w": 24, "x": 0, "y": base_y}, "collapsed": false} -%}
+      {%- set status_mappings = [{"type": "value", "options": {"1": {"color": "red", "index": 0, "text": "down"}, "2": {"color": "green", "index": 1, "text": "up"}}}] -%}
+      {%- set status_thresholds = {"mode": "absolute", "steps": [{"color": "red", "value": none}, {"color": "green", "value": 2}]} -%}
+      {%- set sides = [
+        {"label": "Local", "x": 0, "instance": "$selected_instance", "device": "$selected_device"},
+        {"label": "Remote", "x": 12, "instance": "$selected_remote_instance", "device": "$selected_remote_device"}
+      ] -%}
+      {%- set _link_detail_panels = [detail_row] -%}
+      {%- for side in sides -%}
+        {%- set sel = '{instance="' ~ side.instance ~ '",interface="' ~ side.device ~ '"}' -%}
+        {%- set _ = _link_detail_panels.append({
+          "type": "state-timeline",
+          "title": side.label ~ " Operational Status",
+          "gridPos": {"h": 4, "w": 12, "x": side.x, "y": base_y + 1},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "fieldConfig": {"defaults": {"mappings": status_mappings, "color": {"mode": "thresholds"}, "thresholds": status_thresholds}, "overrides": []},
+          "options": {"mergeValues": true, "showValue": "auto", "alignValue": "left", "rowHeight": 0.9, "legend": {"displayMode": "hidden"}},
+          "targets": [{"refId": "A", "legendFormat": "oper", "range": true, "format": "time_series", "expr": "sonic_interface_operational_status" ~ sel, "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}}]
+        }) -%}
+        {%- set _ = _link_detail_panels.append({
+          "type": "state-timeline",
+          "title": side.label ~ " Admin Status",
+          "gridPos": {"h": 4, "w": 12, "x": side.x, "y": base_y + 5},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "fieldConfig": {"defaults": {"mappings": status_mappings, "color": {"mode": "thresholds"}, "thresholds": status_thresholds}, "overrides": []},
+          "options": {"mergeValues": true, "showValue": "auto", "alignValue": "left", "rowHeight": 0.9, "legend": {"displayMode": "hidden"}},
+          "targets": [{"refId": "A", "legendFormat": "admin", "range": true, "format": "time_series", "expr": "sonic_interface_admin_status" ~ sel, "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}}]
+        }) -%}
+        {%- set _ = _link_detail_panels.append({
+          "type": "stat",
+          "title": side.label ~ " Last Flapped",
+          "gridPos": {"h": 4, "w": 12, "x": side.x, "y": base_y + 9},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "fieldConfig": {"defaults": {"unit": "s", "color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": none}]}}, "overrides": []},
+          "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "colorMode": "value", "textMode": "value"},
+          "targets": [{"refId": "A", "expr": "sonic_interface_last_flapped_seconds_total" ~ sel, "instant": true, "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}}]
+        }) -%}
+        {%- set _ = _link_detail_panels.append({
+          "type": "timeseries",
+          "title": side.label ~ " Interface Errors (rate /s)",
+          "gridPos": {"h": 7, "w": 12, "x": side.x, "y": base_y + 13},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "fieldConfig": {"defaults": {"unit": "pps"}, "overrides": []},
+          "targets": [
+            {"refId": "RX", "legendFormat": "RX errors", "expr": "rate(sonic_interface_receive_error_input_packets_total" ~ sel ~ "[2m])", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}},
+            {"refId": "TX", "legendFormat": "TX errors", "expr": "rate(sonic_interface_transmit_error_output_packets_total" ~ sel ~ "[2m])", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}}
+          ]
+        }) -%}
+      {%- endfor -%}
       {{
         {
           "uid": "network-weathermap",
           "title": lldp_weathermap_dashboard_name,
           "editable": true,
           "schemaVersion": 38,
-          "panels": [topo_row, canvas_panel, traffic_panel],
-          "templating": {"list": [ds_var, inst_var, dev_var]},
+          "panels": [topo_row, canvas_panel, traffic_panel] + _link_detail_panels,
+          "templating": {"list": [ds_var, inst_var, dev_var, rinst_var, rdev_var]},
           "time": {"from": "now-1h", "to": "now"},
           "refresh": "1m",
           "tags": ["weathermap", "network"]

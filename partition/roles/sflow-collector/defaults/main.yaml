@@ -7,7 +7,7 @@ sflow_collector_image_name: netsampler/goflow2
 sflow_collector_image_tag: latest
 
 sflow_collector_vector_image_name: timberio/vector
-sflow_collector_vector_image_tag: latest
+sflow_collector_vector_image_tag: 0.55.0-distroless-libc
 
 sflow_collector_vector_geo_sample_rate: 10
 
@@ -22,3 +22,7 @@ sflow_collector_loki_tls_verify: true
 sflow_collector_geoip_download_image: alpine:3
 
 sflow_collector_docker_log_driver: json-file
+
+sflow_collector_spool_tmpfs_size: 256m
+
+sflow_collector_vector_buffer_max_events: 100000
