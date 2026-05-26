@@ -33,6 +33,14 @@
     group: "65533"
     mode: "0755"
 
+- name: Mount tmpfs on goflow2 spool
+  mount:
+    path: "{{ sflow_collector_data_host_dir }}/spool"
+    src: tmpfs
+    fstype: tmpfs
+    opts: "size={{ sflow_collector_spool_tmpfs_size }},uid=100,gid=65533,mode=0755"
+    state: mounted
+
 - name: Deploy well-known-ports enrichment CSV
   copy:
     src: well_known_ports.csv
@@ -103,7 +111,6 @@
           missingok
           notifempty
           copytruncate
-          compress
       }
     dest: /etc/logrotate.d/sflow-collector
     owner: root
