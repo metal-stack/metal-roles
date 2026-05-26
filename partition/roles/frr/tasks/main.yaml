@@ -2,7 +2,7 @@
 - name: check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - frr_version is not none
       - frr_repo is not none
@@ -14,7 +14,8 @@
 
 - name: check if frr is installed
   set_fact:
-    frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version|string in (ansible_facts.packages['frr'][0].version))) | bool }}"
+    frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version|string in (ansible_facts.packages['frr'][0].version)))
+      | bool }}"
 
 - import_tasks: install/debian.yaml
   when: not frr_installed and ansible_os_family == 'Debian'
@@ -43,7 +44,7 @@
 - name: ensure frr is started
   systemd:
     name: frr
-    enabled: yes
+    enabled: true
     state: started
 
 - name: copy frr conf

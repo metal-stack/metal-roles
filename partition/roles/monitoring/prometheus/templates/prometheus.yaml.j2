@@ -160,12 +160,13 @@ scrape_configs:
 
 - job_name: 'ipmi'
   metrics_path: /ipmi
+  scrape_timeout: {{ prometheus_ipmi_scrape_timeout }}
+  scrape_interval: {{ prometheus_ipmi_scrape_interval }}
   params:
     module: [default]
   file_sd_configs:
   - files:
     - '/etc/prometheus/file_sd/ipmi.yaml'
-    refresh_interval: 5m
   relabel_configs:
   - source_labels: [__address__]
     separator: ;
@@ -195,7 +196,7 @@ scrape_configs:
 - job_name: 'lightbox-exporter'
   metrics_path: /metrics
   scrape_timeout: 25s
-  scrape_interval: 30s
+  scrape_interval: 60s
   params:
     collect[]:
     - clustering

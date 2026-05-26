@@ -5,15 +5,26 @@ metadata:
   namespace: "{{ _config.namespace }}"
   annotations:
 {% if 'managed_seed' in _config %}
-      shoot.gardener.cloud/managed-seed-api-server: "{{ _config.managed_seed.api_server | managed_seed_api_server_annotation() }}"
+    shoot.gardener.cloud/managed-seed-api-server: "{{ _config.managed_seed.api_server | managed_seed_api_server_annotation() }}"
 {% endif %}
-      cluster.metal-stack.io/name: "{{ _config.name }}"
-      cluster.metal-stack.io/project: "{{ _config.project_id }}"
-      cluster.metal-stack.io/tenant: "{{ metal_control_plane_provider_tenant }}"
-      cluster.metal-stack.io/partition: "{{ _config.partition }}"
+    cluster.metal-stack.io/name: "{{ _config.name }}"
+    cluster.metal-stack.io/project: "{{ _config.project_id }}"
+    cluster.metal-stack.io/tenant: "{{ _config.tenant | default(metal_control_plane_provider_tenant) }}"
+    cluster.metal-stack.io/partition: "{{ _config.partition }}"
+{% if _config.additional_annotations is defined %}
+{% for key, value in _config.additional_annotations.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+{% if _config.additional_labels is defined %}
+  labels:
+{% for key, value in _config.additional_labels.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
 spec:
   seedName: "{{ _config.seed_name }}"
-  secretBindingName: "{{ _config.name }}-provider-secret"
+  secretBindingName: "{{ _config.secret_binding_name | default(_config.name + '-provider-secret') }}"
   cloudProfileName: metal
   region: "{{ _config.region }}"
   purpose: "{{ _config.purpose }}"
@@ -57,8 +68,16 @@ spec:
       nodeCIDRMaskSize: {{ _config.node_cidr_mask_size }}
     verticalPodAutoscaler:
       enabled: {{ _config.vertical_pod_autoscaler }}
-{% if 'audit_extension_splunk' in _config or 'csi_driver_lvm_extension' in _config %}
+{% if 'audit_extension_splunk' in _config or 'csi_driver_lvm_extension' in _config or 'xdr_extension' in _config %}
   extensions:
+{% if 'xdr_extension' in _config %}
+  - type: xdr
+    disabled: {{ not _config.xdr_extension.enabled | lower }}
+    providerConfig:
+      apiVersion: xdr.metal.extensions.gardener.cloud/v1alpha1
+      kind: XDRConfig
+      tenant: {{ _config.xdr_extension.tenant }}
+{% endif %}
 {% if 'audit_extension_splunk' in _config %}
   - type: audit
     providerConfig:
@@ -105,13 +124,17 @@ spec:
       kubernetes:
         version: "{{ worker_group.k8s_version }}"
 {% endif %}
-      maximum: {{ worker_group.worker_count }}
-      minimum: {{ worker_group.worker_count }}
+      maximum: {{ worker_group.worker_count_maximum | default(worker_group.worker_count) }}
+      minimum: {{ worker_group.worker_count_minimum | default(worker_group.worker_count) }}
       maxSurge: {{ worker_group.worker_max_surge }}
       maxUnavailable: {{ worker_group.worker_max_unavailable }}
       machine:
         type: "{{ worker_group.worker_size }}"
         image: {{ worker_group.worker_image | to_json }}
+{% if 'machine_creation_timeout' in worker_group or 'machine_creation_timeout' in _config %}
+      machineControllerManager:
+        machineCreationTimeout: {{ worker_group.machine_creation_timeout | default(_config.machine_creation_timeout) }}
+{% endif %}
 {% endfor %}
     infrastructureConfig:
       apiVersion: metal.provider.extensions.gardener.cloud/v1alpha1

@@ -5,13 +5,13 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - zitadel_admin_password is not none
       - zitadel_master_key is not none
       - zitadel_db_password is not none
       - zitadel_chart_version is not none
-      - zitadel_init_image is not none
+      - zitadel_init_image_name is not none
       - zitadel_init_image_tag is not none
       - zitadel_external_domain is not none
 
