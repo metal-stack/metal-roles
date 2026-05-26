@@ -40,24 +40,18 @@ sources:
     read_from: beginning
 
 transforms:
-  decode_goflow2:
+  parse_goflow2:
     type: remap
     inputs:
       - goflow2_raw
     source: |
       parsed, err = parse_json(.message)
-      if err == null {
-        . = parsed
-      } else {
+      if err != null {
         log("failed to parse goflow2 line: " + err, level: "warn")
         abort
       }
+      . = parsed
 
-  parse_goflow2:
-    type: remap
-    inputs:
-      - decode_goflow2
-    source: |
       .dst_port = to_int(.dst_port) ?? 0
       .src_port = to_int(.src_port) ?? 0
       .in_if    = to_int(.in_if)    ?? 0
@@ -112,8 +106,6 @@ transforms:
     inputs:
       - enrich_vrf
     source: |
-      # Short-circuit private/loopback/link-local — DB-IP ASN DB only covers public space.
-      # Flow is kept (unlike geo path), tagged so dashboard can filter PRIVATE out.
       src_private = (ip_cidr_contains("10.0.0.0/8",     .src_addr) ?? false) ||
                     (ip_cidr_contains("172.16.0.0/12",  .src_addr) ?? false) ||
                     (ip_cidr_contains("192.168.0.0/16", .src_addr) ?? false) ||
@@ -192,10 +184,12 @@ sinks:
     labels:
       app: goflow2
       partition: "{{ metal_partition_id }}"
-      proto_name:      "{{ '{{' }} .proto_name {{ '}}' }}"
-      app_proto:       "{{ '{{' }} .app_proto {{ '}}' }}"
-      vrf:             "{{ '{{' }} .vrf {{ '}}' }}"
-      sampler_address: "{{ '{{' }} .sampler_address {{ '}}' }}"
+{% raw %}
+      proto_name:      "{{ .proto_name }}"
+      app_proto:       "{{ .app_proto }}"
+      vrf:             "{{ .vrf }}"
+      sampler_address: "{{ .sampler_address }}"
+{% endraw %}
     remove_label_fields: true
     healthcheck:
       enabled: false
@@ -205,9 +199,9 @@ sinks:
     request:
       retry_attempts: 5
     buffer:
-      type: disk
-      max_size: 536870912
-      when_full: block
+      type: memory
+      max_events: {{ sflow_collector_vector_buffer_max_events }}
+      when_full: drop_newest
 
   loki_geo:
     type: loki
@@ -238,6 +232,6 @@ sinks:
     request:
       retry_attempts: 5
     buffer:
-      type: disk
-      max_size: 536870912
-      when_full: block
+      type: memory
+      max_events: {{ sflow_collector_vector_buffer_max_events }}
+      when_full: drop_newest
