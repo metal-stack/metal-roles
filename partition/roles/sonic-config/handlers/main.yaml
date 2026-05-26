@@ -17,3 +17,4 @@
   systemd:
     name: frr-reload.service
     state: restarted
+  retries: 2
