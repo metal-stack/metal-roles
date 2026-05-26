@@ -1,4 +1,11 @@
 ---
+- name: Check usage of deprecated secret binding
+  assert:
+    fail_msg: "secret bindings are deprecated, please use credentials_binding_name instead of secret_binding_name in your shoot config"
+    quiet: true
+    that:
+      - "'secret_binding_name' not in _config"
+
 - name: Get kubeconfig for virtual garden access
   virtual_garden_kubeconfig:
     garden_name: "{{ gardener_shoots_garden_name }}"
@@ -22,21 +29,21 @@
 - name: Add shoot secret binding
   k8s:
     definition:
-      apiVersion: core.gardener.cloud/v1beta1
-      kind: SecretBinding
+      apiVersion: security.gardener.cloud/v1alpha1
+      kind: CredentialsBinding
       metadata:
-        labels:
-          cloudprofile.garden.sapcloud.io/name: metal
         name: "{{ _config.name }}-provider-secret"
         namespace: "{{ _config.namespace }}"
-      secretRef:
+      credentialsRef:
+        apiVersion: v1
+        kind: Secret
         name: "{{ _config.name }}-provider-secret"
         namespace: "{{ _config.namespace }}"
       provider:
         type: metal
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true
-  when: _config.secret_binding_name is not defined
+  when: _config.credentials_binding_name is not defined
 
 - name: Deploy audit policy config map
   k8s:

@@ -69,7 +69,7 @@ gardener_shoots: []
 #     tls:
 #     secret_name:
 #   structured_auth_config:
-#   secret_binding_name:
+#   credentials_binding_name:
 #   csi_driver_lvm_extension:
 #     enabled: true
 #     default_storage_class:
