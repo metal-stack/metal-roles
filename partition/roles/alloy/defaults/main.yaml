@@ -10,6 +10,10 @@ alloy_docker_log_driver: json-file
 # Each entry: {url: <push-url>, remote_timeout?: <duration>, basic_auth?: {username, password}}
 # alloy_loki_write_endpoints:
 #   - url: http://loki.example.com:8080/loki/api/v1/push
+#     remote_timeout: 10s
+#     basic_auth:
+#       username: "username"
+#       password: "password"
 
 # List of snippet names to enable. Each entry must correspond to
 # templates/snippets/<name>.alloy.j2 in this role.
