@@ -365,3 +365,17 @@ partition_prometheus_rules_sonic_systemd: |
         description: "SONiC service {{ $labels.name }} on {{ $labels.instance }} has restarted in the last 8 hours."
   {% endraw %}
 
+partition_prometheus_rules_goflow2: |
+  {% raw %}
+  - name: goflow2-collector.rules
+    rules:
+    - alert: GoflowCollectorDown
+      expr: up{job="goflow2"} == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "goflow2 sFlow collector down ({{ $labels.instance }})"
+        description: "goflow2 instance {{ $labels.instance }} has been unreachable for more than 2 minutes. sFlow ingestion is halted."
+  {% endraw %}
+
