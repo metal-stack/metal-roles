@@ -48,7 +48,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [ipam-db](roles/ipam-db)                                               | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                         |
 | [isolated-clusters](roles/isolated-clusters)                           | Deploys services for Gardener isolated clusters                                                                                    |
 | [logging](roles/logging)                                               | Deploys metal-stack control plane logging components                                                                               |
-| [masterdata-db](roles/masterdata-db)                                   | Deploys a database for the masterdata-api                                                                                          |
+| [masterdata-db](roles/masterdata-db)                                   | Deploys a database for the masterdata-api and tenant-apiserver                                                                     |
 | [meili-backup-restore](roles/meili-backup-restore)                     | A role for deploying a meilisearch database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |
 | [metal-db](roles/metal-db)                                             | Deploys a database for the metal-api                                                                                               |
 | [metal-python](roles/metal-python)                                     | Installs metal-python                                                                                                              |
