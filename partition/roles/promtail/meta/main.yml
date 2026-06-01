@@ -1,9 +1,4 @@
 ---
-deprecated:
-  removed_in: "a future release"
-  why: "Superseded by the alloy role."
-  alternative: "metal-roles/partition/roles/alloy"
-
 galaxy_info:
   role_name: promtail
   author: metal-stack
