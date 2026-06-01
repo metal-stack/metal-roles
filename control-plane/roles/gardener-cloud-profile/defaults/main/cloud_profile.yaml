@@ -4,7 +4,7 @@ gardener_cloud_profile_wait_until_available: true
 
 gardener_cloud_profile_stage_name: "{{ metal_control_plane_stage_name }}"
 gardener_cloud_profile_metal_api_url: >-
-  {% if metal_api_httproute_enabled -%}
+  {% if metal_api_httproute_enabled is defined and metal_api_httproute_enabled -%}
   https://api.{{ metal_control_plane_gateway_dns }}
   {%- else -%}
   https://api.{{ metal_control_plane_ingress_dns }}
