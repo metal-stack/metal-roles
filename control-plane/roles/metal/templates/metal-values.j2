@@ -22,6 +22,10 @@ images:
     image: "{{ metal_masterdata_api_image_name }}"
     imagePullPolicy: "{{ metal_masterdata_api_image_pull_policy }}"
     tag: "{{ metal_masterdata_api_image_tag }}"
+  tenant_apiserver:
+    image: "{{ metal_tenant_apiserver_image_name }}"
+    imagePullPolicy: "{{ metal_tenant_apiserver_image_pull_policy }}"
+    tag: "{{ metal_tenant_apiserver_image_tag }}"
   ipam:
     image: "{{ metal_ipam_image_name }}"
     imagePullPolicy: "{{ metal_console_image_pull_policy }}"
@@ -231,6 +235,14 @@ masterdata_api:
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% endfor %}
 
+tenant_apiserver:
+  db_address: {{ metal_tenant_apiserver_db_address }}
+  db_port: {{ metal_tenant_apiserver_db_port }}
+  db_name: {{ metal_tenant_apiserver_db_name }}
+  db_user: {{ metal_tenant_apiserver_db_user }}
+  db_password: {{ metal_tenant_apiserver_db_password }}
+  replicas: {{ metal_tenant_apiserver_replicas }}
+
 ingress_public_dns: "{{ metal_ingress_dns }}"
 v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
 
@@ -331,6 +343,9 @@ pod_disruption_budget:
   masterdata_api:
     enabled: {{ metal_masterdata_api_pdb_enabled | lower }}
     min_available: {{ metal_masterdata_api_pdb_min_available }}
+  tenant_apiserver:
+    enabled: {{ metal_tenant_apiserver_pdb_enabled | lower }}
+    min_available: {{ metal_tenant_apiserver_pdb_min_available }}
   metal_console:
     enabled: {{ metal_console_pdb_enabled | lower }}
     min_available: {{ metal_console_pdb_min_available }}
