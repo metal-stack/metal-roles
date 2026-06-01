@@ -13,5 +13,5 @@ spec:
     matchNames:
     - {{ metal_control_plane_namespace }}
   endpoints:
-  - port: "2113"
+  - port: "2112"
     interval: 15s

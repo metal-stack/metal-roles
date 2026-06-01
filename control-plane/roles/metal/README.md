@@ -55,8 +55,6 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_api_metrics_port              |           | Service port of the metal-api metrics server        |
 | metal_masterdata_api_port           |           | Service port of the masterdata-api                  |
 | metal_masterdata_api_metrics_port   |           | Service port of the masterdata-api metrics server   |
-| metal_tenant_apiserver_port         |           | Service port of the tenant-apiserver                |
-| metal_tenant_apiserver_metrics_port |           | Service port of the tenant-apiserver metrics server |
 | metal_console_port                  |           | Service port of the metal-console                   |
 
 ### metal-api
@@ -161,16 +159,16 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### tenant-apiserver
 
 | Name                                     | Mandatory | Description                                                                         |
-|------------------------------------------|-----------|-------------------------------------------------------------------------------------|
+| ---------------------------------------- | --------- | ----------------------------------------------------------------------------------- |
 | metal_tenant_apiserver_db_address        |           | The URL to the masterdata database                                                  |
 | metal_tenant_apiserver_db_port           |           | The port of the masterdata database                                                 |
 | metal_tenant_apiserver_db_name           |           | The database name of the masterdata database                                        |
 | metal_tenant_apiserver_db_user           |           | The user of the masterdata database                                                 |
 | metal_tenant_apiserver_db_password       |           | The password of the masterdata database                                             |
-| metal_tenant_apiserver_provider_tenant   |           | The name of the provider tenant                                                     |
 | metal_tenant_apiserver_resources         |           | Sets the given container resources                                                  |
 | metal_tenant_apiserver_pdb_enabled       |           | Enables the Pod Disruption Budget for the tenant-apiserver                          |
 | metal_tenant_apiserver_pdb_min_available |           | The minimum number of available pods for the tenant-apiserver Pod Disruption Budget |
+| metal_tenant_apiserver_replicas          |           | The number of deployed replicas for the tenant-apiserver                            |
 
 ### metal-console
 

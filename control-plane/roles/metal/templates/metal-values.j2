@@ -223,12 +223,12 @@ masterdata_api:
 {% endfor %}
 
 tenant_apiserver:
-  provider_tenant: {{ metal_tenant_apiserver_provider_tenant }}
   db_address: {{ metal_tenant_apiserver_db_address }}
   db_port: {{ metal_tenant_apiserver_db_port }}
   db_name: {{ metal_tenant_apiserver_db_name }}
   db_user: {{ metal_tenant_apiserver_db_user }}
   db_password: {{ metal_tenant_apiserver_db_password }}
+  replicas: {{ metal_tenant_apiserver_replicas }}
 
 ingress_public_dns: "{{ metal_ingress_dns }}"
 v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"

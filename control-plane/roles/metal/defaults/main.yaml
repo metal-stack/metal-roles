@@ -135,10 +135,10 @@ metal_tenant_apiserver_db_port: 5432
 metal_tenant_apiserver_db_name: masterdata
 metal_tenant_apiserver_db_user: postgres
 metal_tenant_apiserver_db_password: change-me
-metal_tenant_apiserver_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
 metal_tenant_apiserver_resources:
 metal_tenant_apiserver_pdb_enabled: true
 metal_tenant_apiserver_pdb_min_available: 1
+metal_tenant_apiserver_replicas: 2
 
 # ipam
 metal_ipam_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
