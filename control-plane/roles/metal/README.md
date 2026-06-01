@@ -106,6 +106,12 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | minimum_client_version              |           | minimum metalctl version which is required to talk to this metal-api instance                  |
 | metal_api_pdb_enabled               |           | Enables the Pod Disruption Budget for the metal-api                                            |
 | metal_api_pdb_min_available         |           | The minimum number of available pods for the metal-api Pod Disruption Budget                   |
+| metal_api_httproute_enabled         |           | Deploys a Gateway API HTTPRoute exposing the metal-api HTTP endpoint                           |
+| metal_api_httproute_hostnames       |           | List of hostnames for the metal-api HTTPRoute                                                  |
+| metal_api_httproute_parent_refs     |           | List of `parentRefs` (Gateways) the metal-api HTTPRoute attaches to                            |
+| metal_api_httproute_https_redirect  |           | Optional config to deploy an extra HTTPRoute that redirects HTTP to HTTPS                      |
+| metal_api_tcproute_enabled          |           | Deploys a Gateway API TCPRoute exposing the metal-api gRPC endpoint                            |
+| metal_api_tcproute_parent_refs      |           | List of `parentRefs` (Gateways) the metal-api TCPRoute attaches to                             |
 
 ### metal-apiserver
 
@@ -133,6 +139,10 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users                |
 | metal_apiserver_pdb_enabled                                           |           | Enables the Pod Disruption Budget for the metal-apiserver                          |
 | metal_apiserver_pdb_min_available                                     |           | The minimum number of available pods for the metal-apiserver Pod Disruption Budget |
+| metal_apiserver_httproute_enabled                                     |           | Deploys a Gateway API HTTPRoute exposing the metal-apiserver                       |
+| metal_apiserver_httproute_hostnames                                   |           | List of hostnames for the metal-apiserver HTTPRoute                                |
+| metal_apiserver_httproute_parent_refs                                 |           | List of `parentRefs` (Gateways) the metal-apiserver HTTPRoute attaches to          |
+| metal_apiserver_httproute_https_redirect                              |           | Optional config to deploy an extra HTTPRoute that redirects HTTP to HTTPS          |
 
 ### masterdata-api
 
@@ -184,6 +194,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_console_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string (required if enabled)                       |
 | metal_console_pdb_enabled                 |           | Enables the Pod Disruption Budget for the metal-console                          |
 | metal_console_pdb_min_available           |           | The minimum number of available pods for the metal-console Pod Disruption Budget |
+| metal_console_tcproute_enabled            |           | Deploys a Gateway API TCPRoute exposing the metal-console                        |
+| metal_console_tcproute_parent_refs        |           | List of `parentRefs` (Gateways) the metal-console TCPRoute attaches to           |
 
 ### ipam
 
