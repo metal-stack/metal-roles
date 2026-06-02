@@ -106,7 +106,7 @@ receive:
 {% endfor %}
 {% endif %}
     tls: {{ monitoring_thanos_receive_ingress_tls | lower }}
-{% if monitoring_thanos_receive_ingress_tls %}
+{% if monitoring_thanos_receive_ingress_tls and monitoring_thanos_receive_ingress_tls_gardener_managed %}
     extraTls:
       - hosts:
           - {{ monitoring_thanos_receive_ingress_dns }}
