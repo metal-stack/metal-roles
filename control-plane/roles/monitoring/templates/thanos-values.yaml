@@ -107,7 +107,11 @@ receive:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-    tls: {{ monitoring_thanos_receive_ingress_tls }}
+    tls: {{ monitoring_thanos_receive_ingress_tls | lower }}
+{% if monitoring_thanos_receive_ingress_tls %}
+    secretName: thanos-receive-ingress-tls
+{% endif %}
+
 
   persistence:
     size: {{ monitoring_thanos_receive_size }}
