@@ -197,6 +197,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_console_pdb_min_available           |           | The minimum number of available pods for the metal-console Pod Disruption Budget |
 | metal_console_tcproute_enabled            |           | Deploys a Gateway API TCPRoute exposing the metal-console                        |
 | metal_console_tcproute_parent_refs        |           | List of `parentRefs` (Gateways) the metal-console TCPRoute attaches to           |
+| metal_console_token                       |           | The metal-apiserver token for the metal-console                                  |
+| metal_console_token_renewal               |           | Configuration regarding the renewal of the metal-apiserver token in Kubernetes   |
 
 ### ipam
 

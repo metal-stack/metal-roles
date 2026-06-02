@@ -192,6 +192,8 @@ metal_console_pdb_enabled: false
 metal_console_pdb_min_available: 1
 metal_console_tcproute_enabled: false
 metal_console_tcproute_parent_refs: []
+metal_console_token:
+metal_console_token_renewal: {}
 
 # ingress
 metal_deploy_ingress: true
