@@ -154,6 +154,8 @@ Use the inventory flags below to control the deployment based on your situation:
          password: "test"
    ```
 
+   The `username` and `password` here must match `logging_ingress_loki_basic_auth_user` and `logging_ingress_loki_basic_auth_password` configured in the control-plane [logging role](../../../control-plane/roles/logging/README.md). The default username on the control-plane side is `promtail` and can optionally be changed there — update both sides together to avoid auth failures.
+
 3. **Choose snippets** that match your legacy `promtail_scrape_configs` — see [Available snippets](#available-snippets). If the available snippets are close enough to your old setup, enable the relevant ones and adjust with the provided variables. Otherwise, continue with step 4.
 
    Set `alloy_migrate_from_promtail: true` to import cursor state from the legacy promtail positions file so Alloy resumes from where promtail left off. See [Cursor/positions persistence](#cursorpositions-persistence) for per-snippet details and the relevant variables.
