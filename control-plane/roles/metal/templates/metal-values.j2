@@ -69,6 +69,8 @@ metal_console:
       client_key_enc: "{{ metal_console_bmc_proxy_certs_client_key | b64encode }}"
       client_cert_enc: "{{ metal_console_bmc_proxy_certs_client_cert | b64encode }}"
       ca_cert_enc: "{{ metal_console_bmc_proxy_certs_ca_cert | b64encode }}"
+  token: {{ metal_console_token | to_json }}
+  token_renewal: {{ metal_console_token_renewal | to_json }}
 
 ports:
   metal_api: {{ metal_api_port }}
