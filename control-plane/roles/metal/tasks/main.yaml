@@ -56,3 +56,10 @@
   retries: 60
   delay: 10
   when: metal_check_api_available
+
+- name: Create metal-apiserver token for metal-console
+  include_role:
+    name: metal-roles/common/roles/metal-deployment-token
+  vars:
+    metal_deployment_token_admin_role: "ADMIN_ROLE_VIEWER"
+    metal_deployment_token_expiration: "1h"
