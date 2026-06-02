@@ -247,10 +247,10 @@ sonic_config_features:
     # If enabled the container_checker will monitor the container.
     enabled: true
 
-# Whether to enable l2vpn evpn address family
+# Whether to enable l2vpn evpn address family.
 sonic_config_frr_l2vpn_evpn: true
 
-# Whether to enable frr_mgmt_framework_config
+# Whether to enable frr_mgmt_framework_config.
 sonic_config_frr_mgmt_framework_config: true
 
 # Whether to render the frr.conf.j2 template file.
@@ -265,6 +265,10 @@ sonic_config_frr_route_map:
 
   # Name of the routemap.
   name: LOOPBACKS
+
+# Whether to set the default source address to the loopback address via frr.conf.
+# This will only be applied if `sonic_config_frr_render` is `true`.
+sonic_config_frr_set_source_address_loopback: true
 
 # Static routes to be injected through FRR.
 sonic_config_frr_static_routes:

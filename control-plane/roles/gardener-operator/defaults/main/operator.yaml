@@ -52,14 +52,13 @@ gardener_operator_shoot_admin_kubeconfig_max_expiration: "24h"
 
 gardener_operator_dashboard_enabled: false
 gardener_operator_dashboard_oidc_session_lifetime: 12h
-gardener_operator_dashboard_oidc_additional_scopes: [ profile, offline_access ]
+gardener_operator_dashboard_oidc_additional_scopes: [profile, offline_access]
 gardener_operator_dashboard_oidc_client_id:
 gardener_operator_dashboard_oidc_client_id_public:
 gardener_operator_dashboard_oidc_client_secret:
 gardener_operator_dashboard_log_level: debug
 gardener_operator_dashboard_ingress_enabled: true
 gardener_operator_wildcard_ingress_certificate_cluster_issuer:
-
 gardener_operator_dashboard_config_frontend:
   # landingPageUrl:
   # branding:

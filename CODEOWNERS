@@ -8,4 +8,4 @@ monitoring/ @metal-stack/metal-roles-maintainers-monitoring
 logging/ @metal-stack/metal-roles-maintainers-monitoring
 
 # isolated clusters
-control-plane/isolated-clusters/ @metal-stack/metal-roles-maintainers-isolated-clusters
+control-plane/roles/isolated-clusters/ @metal-stack/metal-roles-maintainers-isolated-clusters

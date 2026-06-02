@@ -7,7 +7,6 @@ gardener_shoot_rollout_wait_delay: 10
 gardener_shoot_rollout_wait_enabled: true
 
 gardener_shoot_default_metal_api_hmac:
-
 gardener_shoots: []
 # - name: shoot-a
 #   seed_name: seed-a
@@ -70,10 +69,13 @@ gardener_shoots: []
 #     tls:
 #     secret_name:
 #   structured_auth_config:
-#   secret_binding_name:
+#   credentials_binding_name:
 #   csi_driver_lvm_extension:
 #     enabled: true
 #     default_storage_class:
+#   xdr_extension:
+#     enabled: true
+#     tenant: "{{ metal_control_plane_provider_tenant }}"
 
 gardener_shoot_defaults:
   namespace: garden
