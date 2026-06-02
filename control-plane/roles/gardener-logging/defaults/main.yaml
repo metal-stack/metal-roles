@@ -8,6 +8,8 @@ gardener_logging_alloy_enabled: false
 gardener_logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 
 gardener_logging_garden_name: "{{ gardener_defaults_garden_name }}"
+# is not renamed to alloy for backward compatibility with existing installs.
+# if updated, the shooted seed`s alloy/promtail need their loki endpoints updated to match.
 gardener_logging_ingress_loki_basic_auth_user: promtail
 gardener_logging_ingress_loki_basic_auth_password:
 
