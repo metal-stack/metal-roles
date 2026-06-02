@@ -5,7 +5,7 @@
 - name: Check mandatory variables for this role are set
   assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - alloy_image_tag is defined
       - alloy_image_name is defined
@@ -14,7 +14,7 @@
 - name: Check alloy_journal_legacy_position_name is set when migrating journal-file from promtail
   assert:
     fail_msg: "alloy_journal_legacy_position_name must be set — it must match the job_name of the journal scrape_config in your old promtail config"
-    quiet: yes
+    quiet: true
     that:
       - alloy_journal_legacy_position_name is defined
   when:
@@ -24,7 +24,7 @@
 - name: Check journal and journal-file are not both enabled
   assert:
     fail_msg: "journal and journal-file snippets cannot both be enabled — this will produce duplicate log entries in Loki"
-    quiet: yes
+    quiet: true
     that:
       - not ('journal' in alloy_config_snippets and 'journal-file' in alloy_config_snippets)
 
