@@ -19,7 +19,7 @@
       Please migrate to 'monitoring_thanos_receive_ingress_basic_auth_user' and
       'monitoring_thanos_receive_ingress_basic_auth_password' — the htpasswd entry
       is now generated automatically. See the Migration section in the role README.
-    quiet: yes
+    quiet: true
     that:
       - monitoring_thanos_receive_ingress_basic_auth is not defined or monitoring_thanos_receive_ingress_basic_auth == {}
 
