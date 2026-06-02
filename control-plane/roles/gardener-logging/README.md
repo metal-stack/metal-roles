@@ -112,6 +112,8 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 4. Verify Alloy is working: logs arrive in Loki and existing dashboards, alerts, and LogQL queries return results as expected.
 5. Set `gardener_logging_promtail_enabled: false` and `gardener_logging_promtail_migrate_cleanup: true` and re-run. The role will uninstall the Promtail Helm release from the garden cluster and every shooted seed automatically. Remove `gardener_logging_promtail_migrate_cleanup` from your inventory afterwards.
 6. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#disabling-the-event-exporter-after-alloy-migration).
+7. Verify Promtail is removed: the DaemonSet and related resources are gone. Verify the event-exporter Deployment is removed if you also migrated that.
+8. **Optional:** Rotate the external Loki ingress credentials. The `loki-basic-auth` Kubernetes Secret is fully managed by Helm and holds a single entry derived from `logging_ingress_loki_basic_auth_user` and `logging_ingress_loki_basic_auth_password`. The default username remains `promtail` for backward compatibility — there is no need to change it. If you do want to rename the user (e.g. to `alloy`), re-running the logging role with updated variables replaces the secret automatically. If those credentials are also configured in `gardener_logging_ingress_loki_basic_auth_user` / `gardener_logging_ingress_loki_basic_auth_password` for Alloy/Promtail on the shooted seeds, update all of them in the same deployment to avoid auth failures.
 
 ### Thanos Receive credentials
 
