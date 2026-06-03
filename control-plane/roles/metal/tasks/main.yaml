@@ -69,14 +69,20 @@
     that:
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
+- name: Create metal-console token
+  import_tasks: console-token.yaml
+
+- name: Set metal console token
+  set_fact:
+    metal_console_token: "{{ _token.secret }}"
+
 - name: Deploy metal console
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_chart_version: "{{ metal_helm_chart_version if metal_helm_chart_local_path
-      is not none else metal_helm_chart_tag }}"
+    helm_chart_version: "v0.1.0-pull-request.161"
     helm_chart_custom_folder: "{{ metal_helm_chart_local_path | default(omit) }}"
-    helm_chart: "oci://ghcr.io/metal-stack/helm-charts/metal-console:v0.8.3-pull-request.161"
+    helm_chart: "oci://ghcr.io/metal-stack/helm-charts/metal-console:v0.1.0-pull-request.161"
     helm_release_name: metal-console
     helm_target_namespace: "{{ metal_control_plane_namespace }}"
     helm_value_file_template: metal-values.j2
