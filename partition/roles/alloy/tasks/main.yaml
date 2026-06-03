@@ -50,6 +50,22 @@
     dest: "{{ alloy_config_host_dir }}/conf.d/00-base.alloy"
   when: alloy_config_raw is not defined
 
+- name: Find existing alloy config snippet files
+  find:
+    paths: "{{ alloy_config_host_dir }}/conf.d"
+    patterns: "50-*.alloy"
+  register: existing_snippets
+  when: alloy_config_raw is not defined
+
+- name: Remove stale alloy config snippets
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ existing_snippets.files | default([]) }}"
+  when:
+    - alloy_config_raw is not defined
+    - item.path | basename | regex_replace('^50-(.+)\.alloy$', '\1') not in alloy_config_snippets
+
 - name: Template alloy config snippets
   template:
     src: "snippets/{{ item }}.alloy.j2"
