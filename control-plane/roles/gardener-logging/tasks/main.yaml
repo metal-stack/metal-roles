@@ -11,12 +11,13 @@
       - not gardener_logging_alloy_enabled | bool or gardener_logging_alloy_chart_repo is defined
       - not gardener_logging_promtail_enabled | bool or gardener_logging_promtail_chart_version is defined
       - not gardener_logging_promtail_enabled | bool or gardener_logging_promtail_chart_repo is defined
+      - not gardener_logging_alloy_enabled | bool or gardener_logging_alloy_loki_write_endpoints is defined or gardener_logging_alloy_config_raw is defined
 
 - name: Promtail deprecation warning
   ansible.builtin.fail:
     msg: >-
       DEPRECATION: gardener_logging_promtail_enabled is true. Promtail support is deprecated
-      and will be removed in a future release. Migrate to Alloy — see README.md.
+      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/gardener-logging#migration-from-promtail for instructions.
   when: gardener_logging_promtail_enabled | bool
   ignore_errors: true
 

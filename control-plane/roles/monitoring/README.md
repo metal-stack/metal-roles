@@ -89,7 +89,7 @@ The following variables can be set to configure the role:
 
 ## Migration
 
-### `monitoring_thanos_receive_ingress_basic_auth` removed
+### Thanos Receive ingress credentials
 
 The old `monitoring_thanos_receive_ingress_basic_auth` variable (a raw htpasswd-format string) has been replaced by `monitoring_thanos_receive_ingress_basic_auth_user` and `monitoring_thanos_receive_ingress_basic_auth_password`. The htpasswd entry for nginx is now generated automatically from these, following the same pattern as Alertmanager.
 
@@ -107,8 +107,6 @@ monitoring_thanos_receive_ingress_basic_auth: "myuser:$apr1$..."
 monitoring_thanos_receive_ingress_basic_auth_user: myuser # default: thanos-receive
 monitoring_thanos_receive_ingress_basic_auth_password: mysecret
 ```
-
-The `gardener-logging` role automatically picks up these credentials for Alloy's `prometheus.remote_write` when `monitoring_thanos_receive_ingress_enabled: true`.
 
 ### Disabling the event-exporter after Alloy migration
 

@@ -36,15 +36,15 @@ The following variables can be set to configure the role:
 
 ### Alloy
 
-| Name                                                     | Mandatory | Default                                                                               | Description                                                                                                                                                                                                     |
-| -------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| gardener_logging_alloy_port                              |           | `12345`                                                                               | Alloy listen port                                                                                                                                                                                               |
-| gardener_logging_alloy_loki_write_endpoints              |           | `https://{{ gardener_logging_ingress_dns }}/loki/api/v1/push` with basic auth         | List of Loki push endpoints. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                                                                                                  |
-| gardener_logging_alloy_cluster_label                     |           | `gardener_logging_shooted_seed.name`                                                  | Value for the `cluster=` label set on all log and metric streams via relabel rules                                                                                                                              |
-| gardener_logging_alloy_prometheus_write_endpoints        |           | Thanos receive ingress (`{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive`) | List of Prometheus remote_write endpoints for Alloy self-metrics. Requires `monitoring_thanos_receive_ingress_enabled: true`. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` |
-| gardener_logging_alloy_prometheus_wal_truncate_frequency |           | `2h`                                                                                  | How often the WAL is compacted. Samples older than `max_keepalive_time` are dropped                                                                                                                             |
-| gardener_logging_alloy_prometheus_wal_max_keepalive_time |           | `8h`                                                                                  | Maximum time undelivered samples are kept in the WAL before being dropped. Increase if you expect remote endpoint outages longer than this window                                                               |
-| gardener_logging_alloy_config_raw                        |           |                                                                                       | Full Alloy River config string override. When set, bypasses all structured vars above.                                                                                                                          |
+| Name                                                     | Mandatory | Default                              | Description                                                                                                                                                                                |
+| -------------------------------------------------------- | --------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| gardener_logging_alloy_port                              |           | `12345`                              | Alloy listen port                                                                                                                                                                          |
+| gardener_logging_alloy_loki_write_endpoints              |           |                                      | List of Loki push endpoints. Required when `gardener_logging_alloy_enabled: true`. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                       |
+| gardener_logging_alloy_cluster_label                     |           | `gardener_logging_shooted_seed.name` | Value for the `cluster=` label set on all log and metric streams via relabel rules                                                                                                         |
+| gardener_logging_alloy_prometheus_write_endpoints        |           |                                      | List of Prometheus remote_write endpoints for Alloy self-metrics. When unset, self-metrics are disabled. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` |
+| gardener_logging_alloy_prometheus_wal_truncate_frequency |           | `2h`                                 | How often the WAL is compacted. Samples older than `max_keepalive_time` are dropped                                                                                                        |
+| gardener_logging_alloy_prometheus_wal_max_keepalive_time |           | `8h`                                 | Maximum time undelivered samples are kept in the WAL before being dropped. Increase if you expect remote endpoint outages longer than this window                                          |
+| gardener_logging_alloy_config_raw                        |           |                                      | Full Alloy River config string override. When set, bypasses all structured vars above.                                                                                                     |
 
 Alloy's positions file (tracking the read offset for each container log) is persisted via a `hostPath` volume at `/var/lib/alloy/data`. This ensures `loki.source.kubernetes` does not re-read already-shipped logs after a pod restart. The directory is created automatically on first run (`DirectoryOrCreate`).
 
@@ -79,7 +79,7 @@ Alloy watches events in all namespaces, which requires cluster-scope RBAC. The A
 
 ### Metrics
 
-Alloy exposes Prometheus metrics on port `{{ gardener_logging_alloy_port }}/metrics`. Seed clusters have no local Prometheus, so metrics are pushed to the control-plane Thanos Receive ingress. The endpoint and credentials are wired automatically when `monitoring_thanos_receive_ingress_enabled: true` — credentials are taken from `monitoring_thanos_receive_ingress_basic_auth_user` and `monitoring_thanos_receive_ingress_basic_auth_password` in the monitoring role. Override `gardener_logging_alloy_prometheus_write_endpoints` only if you need custom credentials or a different URL.
+Alloy exposes Prometheus metrics on port `{{ gardener_logging_alloy_port }}/metrics`. Seed clusters have no local Prometheus. Self-metrics are disabled by default — set `gardener_logging_alloy_prometheus_write_endpoints` to push them to a remote endpoint such as the control-plane Thanos Receive ingress. Credentials can be taken from `monitoring_thanos_receive_ingress_basic_auth_user` and `monitoring_thanos_receive_ingress_basic_auth_password` (monitoring role).
 
 ### Logs
 
@@ -106,7 +106,7 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 
 **To migrate an existing Promtail installation:**
 
-1. If you are pushing Alloy self-metrics to Thanos Receive, migrate the credentials first — see [Thanos Receive credentials](#thanos-receive-credentials) below.
+1. If you are pushing Alloy self-metrics to Thanos Receive, migrate the credentials first — see the [monitoring role migration guide](../monitoring/README.md#thanos-receive-ingress-credentials).
 2. Promtail runs by default and a deprecation warning fires on every run as a reminder. Proceed when ready.
 3. Set `gardener_logging_alloy_enabled: true` and add `gardener_logging_alloy_chart_version` and `gardener_logging_alloy_chart_repo`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window.
 4. Verify Alloy is working: logs arrive in Loki and existing dashboards, alerts, and LogQL queries return results as expected.
@@ -114,18 +114,3 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 6. Set `event_exporter_enabled: false` in your monitoring config and set `event_exporter_migrate_cleanup: true` — only needed for Promtail's event pipeline. See the [monitoring role migration guide](../monitoring/README.md#disabling-the-event-exporter-after-alloy-migration).
 7. Verify Promtail is removed: the DaemonSet and related resources are gone. Verify the event-exporter Deployment is removed if you also migrated that.
 8. **Optional:** Rotate the external Loki ingress credentials. The `loki-basic-auth` Kubernetes Secret is fully managed by Helm and holds a single entry derived from `logging_ingress_loki_basic_auth_user` and `logging_ingress_loki_basic_auth_password`. The default username remains `promtail` for backward compatibility — there is no need to change it. If you do want to rename the user (e.g. to `alloy`), re-running the logging role with updated variables replaces the secret automatically. If those credentials are also configured in `gardener_logging_ingress_loki_basic_auth_user` / `gardener_logging_ingress_loki_basic_auth_password` for Alloy/Promtail on the shooted seeds, update all of them in the same deployment to avoid auth failures.
-
-### Thanos Receive credentials
-
-If you push Alloy self-metrics to Thanos Receive (`monitoring_thanos_receive_ingress_enabled: true`), the monitoring role's basic auth configuration has changed. The old raw htpasswd string `monitoring_thanos_receive_ingress_basic_auth` has been replaced by two plaintext variables:
-
-```yaml
-# Before
-monitoring_thanos_receive_ingress_basic_auth: "myuser:$apr1$..."
-
-# After
-monitoring_thanos_receive_ingress_basic_auth_user: myuser # default: thanos-receive
-monitoring_thanos_receive_ingress_basic_auth_password: mysecret
-```
-
-The htpasswd entry is now generated automatically. The monitoring role will fail immediately if the old variable is still set — see the [monitoring role migration guide](../monitoring/README.md#migration) for details.

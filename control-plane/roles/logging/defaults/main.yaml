@@ -7,8 +7,12 @@ logging_alloy_port: 12345
 logging_alloy_enabled: false
 
 # Loki push endpoints.
-logging_alloy_loki_write_endpoints:
-  - url: "http://loki:3100/loki/api/v1/push"
+# logging_alloy_loki_write_endpoints:
+  # - url: "https://{{ logging_ingress_dns }}/loki/api/v1/push"
+  #   remote_timeout: 60s
+  #   basic_auth:
+  #     username: "{{ logging_ingress_loki_basic_auth_user }}"
+  #     password: "{{ logging_ingress_loki_basic_auth_password }}"
 
 # Value for the cluster= label attached to all log and metric streams via relabel rules
 logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
@@ -16,10 +20,12 @@ logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
 # Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
 # Alloy scrapes its own /metrics and pushes them via remote_write.
 # Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
-# Thanos Receive endpoint is included automatically when monitoring_thanos_receive_enabled: true.
-logging_alloy_prometheus_write_endpoints: >-
-  {{ [{'url': 'http://thanos-receive.' ~ logging_namespace ~ '.svc.cluster.local:19291/api/v1/receive'}]
-     if monitoring_thanos_receive_enabled | default(false) | bool else [] }}
+# logging_alloy_prometheus_write_endpoints:
+# - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
+#     remote_timeout: 60s
+#     basic_auth:
+#       username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
+#       password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
 
 # WAL retention for prometheus.remote_write. Controls how long undelivered samples
 # are buffered on disk before being dropped during a remote endpoint outage.
