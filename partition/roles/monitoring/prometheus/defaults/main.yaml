@@ -16,6 +16,11 @@ prometheus_alertmanager_target:
 prometheus_alertmanager_basic_auth_username: alertmanager
 prometheus_alertmanager_basic_auth_password:
 prometheus_remote_write: []
+  # - url: "https://monitoring.{{ metal_control_plane_ingress_dns }}/api/v1/receive"
+  #   basic_auth:
+  #     username: thanos-receive
+  #     password: "{{ basic_auth_pass }}"
+
 prometheus_frr_exporter_targets: []
 prometheus_metal_core_targets: []
 prometheus_node_exporter_targets: []

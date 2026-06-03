@@ -192,5 +192,6 @@ Use the inventory flags below to control the deployment based on your situation:
 7. **Cut over from promtail** _(parallel run only)_. Set `promtail_migrate_stop: true` and `promtail_enabled: false` in your inventory and re-run the playbook — the promtail role will stop and disable the service. You can also set `alloy_migrate_from_promtail: false` at this point since the cursor state has already been imported on first start.
 
    When you are ready, clean up all promtail remnants by setting `promtail_migrate_cleanup: true` and re-running the playbook — the promtail role will remove the systemd unit file, container, config directory, and positions file. Keep `promtail_enabled: false` in your inventory to prevent re-deployment.
+   We do not recommend doing the cleanup at the same time as the alloy deployment and migration steps, as the promtail positions file may be needed for the migration and the cleanup removes it. If you anyway choose to set the cleanup flag at the same time as the migration, make sure that the alloy role runs first to avoid migration failures due to the missing positions files.
 
    The `promtail` role is deprecated and will be removed in a future release. Once all environments are migrated, keep `promtail_enabled: false` in your inventory.
