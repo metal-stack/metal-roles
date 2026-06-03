@@ -48,7 +48,6 @@
   template:
     src: config.alloy.j2
     dest: "{{ alloy_config_host_dir }}/conf.d/00-base.alloy"
-  notify: restart alloy
   when: alloy_config_raw is not defined
 
 - name: Template alloy config snippets
@@ -56,7 +55,6 @@
     src: "snippets/{{ item }}.alloy.j2"
     dest: "{{ alloy_config_host_dir }}/conf.d/50-{{ item }}.alloy"
   loop: "{{ alloy_config_snippets }}"
-  notify: restart alloy
   when: alloy_config_raw is not defined
 
 - name: Assemble alloy config
