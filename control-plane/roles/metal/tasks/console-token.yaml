@@ -1,0 +1,27 @@
+---
+- name: create api token for metal-console
+  block:
+
+    - name: create metal-console tenant
+      metal_v2_admin_tenant:
+        name: metal-console
+        description: tenant used by the metal-console service in the metal-stack control
+          plane
+      register: _tenant
+
+    - name: create metal-console api token
+      metal_v2_admin_token:
+        user: "{{ _tenant.id }}"
+        description: "metal-console token"
+        expires: "{{ metal_console_token_expiration }}"
+        permissions:
+          - subject: "*"
+            methods:
+              - /metalstack.admin.v2.MachineService/Get
+              - /metalstack.api.v2.TokenService/Refresh
+      register: metal_console_token
+
+  delegate_to: localhost
+  environment:
+    METALCTLV2_API_URL: "{{ metal_console_metal_apiserver_url }}"
+    METALCTLV2_API_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"

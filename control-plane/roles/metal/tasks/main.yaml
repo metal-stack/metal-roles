@@ -58,8 +58,28 @@
   when: metal_check_api_available
 
 - name: Create metal-apiserver token for metal-console
-  include_role:
+  import_role:
     name: metal-roles/common/roles/metal-deployment-token
+
+- name: Check metal-deployment-token has run
+  assert:
+    fail_msg: "this role requires the metal-deployment-token role to be run before
+      execution, check role documentation"
+    quiet: yes
+    that:
+      - "'metal_deployment_admin_token' in hostvars['localhost']"
+
+- name: Deploy metal console
+  include_role:
+    name: ansible-common/roles/helm-chart
   vars:
-    metal_deployment_token_admin_role: "ADMIN_ROLE_VIEWER"
-    metal_deployment_token_expiration: "1h"
+    helm_chart_version: "{{ metal_helm_chart_version if metal_helm_chart_local_path
+      is not none else metal_helm_chart_tag }}"
+    helm_chart_custom_folder: "{{ metal_helm_chart_local_path | default(omit) }}"
+    helm_chart: "oci://ghcr.io/metal-stack/helm-charts/metal-console:v0.8.3-pull-request.161"
+    helm_release_name: metal-console
+    helm_target_namespace: "{{ metal_control_plane_namespace }}"
+    helm_value_file_template: metal-values.j2
+    # deployment can take a while due to post install hooks, therefore increasing the timeout for this chart...
+    helm_timeout: "{{ metal_helm_chart_timeout }}"
+    helm_chart_inject_config_hash: true
