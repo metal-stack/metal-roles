@@ -118,6 +118,9 @@ router bgp {{ sonic_config_asn }}
 router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
  bgp router-id {{ sonic_config_loopback_address }}
  bgp bestpath as-path multipath-relax
+ {% if i.no_default_ipv4family is defined and i.no_default_ipv4family %}
+ no bgp default ipv4-unicast
+ {% endif %}
  neighbor {{ i.peer_group | default("EXTERNAL") }} peer-group
  neighbor {{ i.peer_group | default("EXTERNAL") }} remote-as {{ i.remote_as | default("external") }}
  neighbor {{ i.peer_group | default("EXTERNAL") }} timers {{ i.bgp_timers | default("1 3") }}
@@ -157,18 +160,59 @@ router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
   neighbor {{ i.peer_group | default("EXTERNAL") }} remove-private-AS all
   {% endif %}
   {% if i.routemap_in is defined %}
+  {% if i.routemap_in.families is not defined or "v4" in i.routemap_in.families %}
   neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_in.name }} in
   {% endif %}
+  {% endif %}
   {% if i.routemap_out is defined %}
+  {% if i.routemap_out.families is not defined or "v4" in i.routemap_out.families %}
   neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_out.name }} out
+  {% endif %}
   {% endif %}
   {% if i.extended_neighbors is defined %}
   {% for ext in i.extended_neighbors %}
+  {% if i.no_default_ipv4family is not defined or not i.no_default_ipv4family or ext.families is defined and "v4" in ext.families %}
+  {% if i.no_default_ipv4family is defined and i.no_default_ipv4family %}
+  neighbor {{ ext.ip }} activate
+  {% endif %}
   {% if ext.routemap_in is defined %}
   neighbor {{ ext.ip }} route-map {{ ext.routemap_in.name }} in
   {% endif %}
   {% if ext.routemap_out is defined %}
   neighbor {{ ext.ip }} route-map {{ ext.routemap_out.name }} out
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+ exit-address-family
+ !
+ address-family ipv6 unicast
+  {% for a in i.announcements_ipv6family|default([]) %}
+  {{ a }}
+  {% endfor %}
+  {% if not i.keep_private_as|default(false) %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} remove-private-AS all
+  {% endif %}
+  {% if i.routemap_in is defined %}
+  {% if i.routemap_in.families is defined and "v6" in i.routemap_in.families %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_in.name }} in
+  {% endif %}
+  {% endif %}
+  {% if i.routemap_out is defined %}
+  {% if i.routemap_out.families is defined and "v6" in i.routemap_out.families %}
+  neighbor {{ i.peer_group | default("EXTERNAL") }} route-map {{ i.routemap_out.name }} out
+  {% endif %}
+  {% endif %}
+  {% if i.extended_neighbors is defined %}
+  {% for ext in i.extended_neighbors %}
+  {% if ext.families is defined and "v6" in ext.families %}
+  neighbor {{ ext.ip }} activate
+  {% if ext.routemap_in is defined %}
+  neighbor {{ ext.ip }} route-map {{ ext.routemap_in.name }} in
+  {% endif %}
+  {% if ext.routemap_out is defined %}
+  neighbor {{ ext.ip }} route-map {{ ext.routemap_out.name }} out
+  {% endif %}
   {% endif %}
   {% endfor %}
   {% endif %}
