@@ -72,9 +72,20 @@
 - name: Create metal-console token
   import_tasks: console-token.yaml
 
-- name: Set metal console token
-  set_fact:
-    metal_console_token: "{{ _token.secret }}"
+- name: Create metal-console-token secret
+  when: '"secret" in _token'
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "metal-console-token"
+        namespace: "{{ metal_control_plane_namespace }}"
+        labels:
+          app: metal-console
+      data:
+        "token": "{{ _token.secret | b64encode }}"
+    apply: true
 
 - name: Deploy metal console
   include_role:
