@@ -36,9 +36,6 @@ monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertma
 monitoring_alertmanager_webhook_logger_repeat_interval: 60m
 monitoring_alertmanager_webhook_slack_repeat_interval: 24h
 
-# event exporter
-event_exporter_enabled: true
-
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
 monitoring_metal_api_hmac: "metal-view"
@@ -73,9 +70,7 @@ monitoring_thanos_receive_enabled: false
 monitoring_thanos_receive_ingress_enabled: false
 monitoring_thanos_receive_ingress_dns: "thanos-receive.{{ metal_control_plane_ingress_dns }}"
 monitoring_thanos_receive_ingress_annotations: []
-monitoring_thanos_receive_ingress_basic_auth_user: thanos-receive
-monitoring_thanos_receive_ingress_basic_auth_password:
-monitoring_thanos_receive_ingress_basic_auth_password_salt: "{{ monitoring_thanos_receive_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
+monitoring_thanos_receive_ingress_basic_auth: {}
 monitoring_thanos_receive_ingress_tls: {}
 monitoring_thanos_receive_size: 50Gi
 monitoring_thanos_receive_resource_preset: "large"

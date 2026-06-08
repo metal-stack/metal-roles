@@ -89,14 +89,14 @@ receive:
     enabled: {{ monitoring_thanos_receive_ingress_enabled }}
     hostname: {{ monitoring_thanos_receive_ingress_dns }}
     ingressClassName: nginx
-{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth_password or monitoring_thanos_receive_ingress_tls %}
+{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth or monitoring_thanos_receive_ingress_tls %}
     annotations:
 {% endif %}
 {% if monitoring_thanos_receive_ingress_tls %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
-{% if monitoring_thanos_receive_ingress_basic_auth_password %}
+{% if monitoring_thanos_receive_ingress_basic_auth %}
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: thanos-receive-basic-auth
 {% endif %}
@@ -119,13 +119,13 @@ receive:
   replicaCount: 2
 
 
-{% if monitoring_thanos_receive_ingress_basic_auth_password %}
+{% if monitoring_thanos_receive_ingress_basic_auth %}
 extraDeploy:
 - apiVersion: v1
   kind: Secret
   metadata:
     name: thanos-receive-basic-auth
   type: Opaque
-  stringData:
-    auth: "{{ monitoring_thanos_receive_ingress_basic_auth_user ~ ':' ~ monitoring_thanos_receive_ingress_basic_auth_password | string | password_hash('bcrypt', salt=monitoring_thanos_receive_ingress_basic_auth_password_salt) }}"
+  data:
+    auth: "{{ monitoring_thanos_receive_ingress_basic_auth | b64encode }}"
 {% endif %}
