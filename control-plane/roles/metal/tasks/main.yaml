@@ -75,7 +75,7 @@
   import_tasks: console-token.yaml
 
 - name: Create metal-console-token secret
-  when: '"secret" in _token'
+  when: '"secret" in _token and metal_console_enabled'
   k8s:
     definition:
       apiVersion: v1
@@ -90,6 +90,7 @@
     apply: true
 
 - name: Deploy metal console
+  when: 'metal_console_enabled'
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
