@@ -165,8 +165,6 @@ metal_stack_release:
     logging_chart_repo: "helm-charts.logging.loki.repository"
     logging_alloy_chart_version: "helm-charts.logging.alloy.version"
     logging_alloy_chart_repo: "helm-charts.logging.alloy.repository"
-    gardener_logging_alloy_chart_version: "helm-charts.logging.alloy.version"
-    gardener_logging_alloy_chart_repo: "helm-charts.logging.alloy.repository"
     logging_promtail_chart_version: "helm-charts.logging.promtail.version"
     logging_promtail_chart_repo: "helm-charts.logging.promtail.repository"
     gardener_logging_promtail_chart_version: "helm-charts.logging.promtail.version"

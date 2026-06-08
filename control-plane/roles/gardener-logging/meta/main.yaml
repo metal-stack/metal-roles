@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: gardener-logging
   author: metal-stack
-  description: Deploys Alloy into a Gardener seed.
+  description: Deploys promtail into a Gardener seed.
   license: MIT
   min_ansible_version: "2.18"
   galaxy_tags: []
