@@ -199,6 +199,11 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_console_tcproute_parent_refs        |           | List of `parentRefs` (Gateways) the metal-console TCPRoute attaches to           |
 | metal_console_token                       |           | The metal-apiserver token for the metal-console                                  |
 | metal_console_token_renewal               |           | Configuration regarding the renewal of the metal-apiserver token in Kubernetes   |
+| metal_console_helm_chart                  |           | The repository URL of the metal console oci helm chart                           |
+| metal_console_helm_chart_tag              |           | The tag of the metal console oci helm chart                                      |
+| metal_console_helm_chart_version          |           | The version of the metal console helm chart                                      |
+| metal_console_helm_chart_local_path       |           | Local path to the metal console helm chart, useful for development purposes      |
+| metal_console_helm_chart_timeout          |           | Timeout for deploying the metal console helm chart                               |
 
 ### ipam
 
