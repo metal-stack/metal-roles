@@ -1,0 +1,167 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - sflow_collector_loki_endpoint is defined and sflow_collector_loki_endpoint | length > 0
+      - sflow_collector_image_tag is defined
+      - sflow_collector_vector_image_tag is defined
+
+- name: Create sflow-collector directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ sflow_collector_config_host_dir }}"
+    - "{{ sflow_collector_data_host_dir }}"
+    - "{{ sflow_collector_data_host_dir }}/geoip"
+    - "{{ sflow_collector_data_host_dir }}/asn"
+    - "{{ sflow_collector_data_host_dir }}/vector"
+
+- name: Create goflow2 spool directory owned by the in-container flow user
+  file:
+    path: "{{ sflow_collector_data_host_dir }}/spool"
+    state: directory
+    owner: "100"
+    group: "65533"
+    mode: "0755"
+
+- name: Mount tmpfs on goflow2 spool
+  mount:
+    path: "{{ sflow_collector_data_host_dir }}/spool"
+    src: tmpfs
+    fstype: tmpfs
+    opts: "size={{ sflow_collector_spool_tmpfs_size }},uid=100,gid=65533,mode=0755"
+    state: mounted
+
+- name: Deploy well-known-ports enrichment CSV
+  copy:
+    src: well_known_ports.csv
+    dest: "{{ sflow_collector_data_host_dir }}/well_known_ports.csv"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart vector
+
+- name: Writing initial empty ifindex.csv
+  copy:
+    content: "sampler_address,ifindex,interface,vrf,vni\n"
+    dest: "{{ sflow_collector_data_host_dir }}/ifindex.csv"
+    force: no
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Template Vector configuration
+  template:
+    src: vector.yaml.j2
+    dest: "{{ sflow_collector_config_host_dir }}/vector.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart vector
+
+- name: Deploy mmdb refresh script
+  copy:
+    src: sflow-mmdb-refresh.sh
+    dest: /usr/local/bin/sflow-mmdb-refresh.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy mmdb refresh systemd service + timer
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - sflow-mmdb-refresh.service
+    - sflow-mmdb-refresh.timer
+
+- name: Enable mmdb refresh timer
+  systemd:
+    name: sflow-mmdb-refresh.timer
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: Fetch GeoIP and ASN databases on first deploy
+  command: /usr/local/bin/sflow-mmdb-refresh.sh "{{ item }}"
+  args:
+    creates: "{{ sflow_collector_data_host_dir }}/{{ item }}/{{ item }}.mmdb"
+  loop:
+    - geoip
+    - asn
+
+- name: Deploy logrotate config for goflow2 spool
+  copy:
+    content: |
+      {{ sflow_collector_data_host_dir }}/spool/flows.jsonl {
+          daily
+          rotate 1
+          missingok
+          notifempty
+          copytruncate
+      }
+    dest: /etc/logrotate.d/sflow-collector
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy goflow2 service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: goflow2
+    systemd_docker_image_name: "{{ sflow_collector_image_name }}"
+    systemd_docker_image_tag: "{{ sflow_collector_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      - "{{ sflow_collector_data_host_dir }}/spool:/spool"
+    systemd_docker_command:
+      - "-listen=sflow://:{{ sflow_collector_port }}"
+      - "-addr=:{{ sflow_collector_metrics_port }}"
+      - "-format=json"
+      - "-transport.file=/spool/flows.jsonl"
+    systemd_docker_log_driver: "{{ sflow_collector_docker_log_driver }}"
+
+- name: Deploy vector service
+  include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: vector
+    systemd_docker_image_name: "{{ sflow_collector_vector_image_name }}"
+    systemd_docker_image_tag: "{{ sflow_collector_vector_image_tag }}"
+    systemd_service_after: docker.service goflow2.service
+    systemd_service_requires: docker.service
+    systemd_docker_network: host
+    systemd_service_environment:
+      VECTOR_LOG: info
+    systemd_docker_volumes:
+      - "{{ sflow_collector_config_host_dir }}/vector.yaml:/etc/vector/vector.yaml:ro"
+      - "{{ sflow_collector_data_host_dir }}/well_known_ports.csv:/etc/vector/enrichment/well_known_ports.csv:ro"
+      - "{{ sflow_collector_data_host_dir }}/geoip:/etc/vector/enrichment/geoip:ro"
+      - "{{ sflow_collector_data_host_dir }}/asn:/etc/vector/enrichment/asn:ro"
+      - "/var/lib/sflow-collector/ifindex.csv:/etc/vector/enrichment/ifindex.csv:ro"
+      - "{{ sflow_collector_data_host_dir }}/spool:/spool:ro"
+      - "{{ sflow_collector_data_host_dir }}/vector:/var/lib/vector"
+    systemd_docker_command:
+      - --config-dir
+      - /etc/vector/
+    systemd_docker_log_driver: "{{ sflow_collector_docker_log_driver }}"
+
+- name: Wait for goflow2 metrics endpoint
+  wait_for:
+    port: "{{ sflow_collector_metrics_port }}"
+    timeout: 60

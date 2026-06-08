@@ -75,11 +75,12 @@
     definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
-    - machine-capacity.yaml
-    - metal-api.yaml
-    - rethinkdb.yaml
-    - alertmanager.yaml
-    - sonic-exporter.yaml
+     - machine-capacity.yaml
+     - metal-api.yaml
+     - rethinkdb.yaml
+     - alertmanager.yaml
+     - sonic-exporter.yaml
+     - goflow2-dashboard.yaml
 
 - name: Deploy Grafana dashboards for Gardener
   k8s:

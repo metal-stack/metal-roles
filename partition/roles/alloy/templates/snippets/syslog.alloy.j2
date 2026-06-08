@@ -1,0 +1,18 @@
+loki.source.file "syslog" {
+	targets = [{
+		__path__ = "/var/log/syslog",
+		job      = "syslog",
+	}]
+	forward_to = [loki.write.default.receiver]
+
+	file_match {
+		enabled = true
+	}
+{% if alloy_migrate_from_promtail | default(false) %}
+	// migration only: resumes tailing from where promtail left off on first start.
+	// ignored if the file does not exist on the host.
+	// once alloy has written its own positions file, this can be removed.
+	// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.file/#arguments
+	legacy_positions_file = "{{ alloy_syslog_legacy_positions_file }}"
+{% endif %}
+}
