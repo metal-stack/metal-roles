@@ -79,7 +79,23 @@ Alloy watches events in all namespaces, which requires cluster-scope RBAC. The A
 
 ### Metrics
 
-Alloy exposes Prometheus metrics on port `{{ gardener_logging_alloy_port }}/metrics`. Seed clusters have no local Prometheus. Self-metrics are disabled by default — set `gardener_logging_alloy_prometheus_write_endpoints` to push them to a remote endpoint such as the control-plane Thanos Receive ingress. Credentials can be taken from `monitoring_thanos_receive_ingress_basic_auth_user` and `monitoring_thanos_receive_ingress_basic_auth_password` (monitoring role).
+Alloy exposes Prometheus metrics on port `{{ gardener_logging_alloy_port }}/metrics`. Self-metrics are disabled by default.
+
+Alloy can scrape itself and push metrics to a remote_write endpoint. This works regardless of the Prometheus setup on the seed. The target just needs to support remote_write.
+Set `gardener_logging_alloy_prometheus_write_endpoints` to push to a remote_write endpoint.
+
+Example for Thanos Receive ingress:
+
+```yaml
+gardener_logging_alloy_prometheus_write_endpoints:
+  - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
+    remote_timeout: 60s
+    basic_auth:
+      username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
+      password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
+```
+
+Gardener's Prometheus instances use annotation-based pod discovery restricted to extension namespaces (Seed Prometheus) or scrape their own known targets (Aggregate Prometheus). Neither reliably reaches the `monitoring` namespace where Alloy runs, so pull-based collection is not a supported option.
 
 ### Logs
 

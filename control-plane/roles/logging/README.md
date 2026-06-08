@@ -51,6 +51,7 @@ The following variables can be set to configure the role:
 | logging_alloy_loki_write_endpoints              |           |                                        | List of Loki push endpoints. Required when `logging_alloy_enabled: true`. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                                |
 | logging_alloy_cluster_label                     |           | `{{ metal_control_plane_stage_name }}` | Value for the `cluster=` label set on all log and metric streams via relabel rules                                                                                                         |
 | logging_alloy_prometheus_write_endpoints        |           |                                        | List of Prometheus remote_write endpoints for Alloy self-metrics. When unset, self-metrics are disabled. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` |
+| logging_alloy_service_monitor_enabled           |           | `false`                                | Enable a Prometheus ServiceMonitor for Alloy self-metrics (pull model). Requires an in-cluster Prometheus. Mutually exclusive with `logging_alloy_prometheus_write_endpoints`.             |
 | logging_alloy_prometheus_wal_truncate_frequency |           | `2h`                                   | How often the WAL is compacted. Samples older than `max_keepalive_time` are dropped                                                                                                        |
 | logging_alloy_prometheus_wal_max_keepalive_time |           | `8h`                                   | Maximum time undelivered samples are kept in the WAL before being dropped. Increase if you expect remote endpoint outages longer than this window                                          |
 | logging_alloy_config_raw                        |           |                                        | Full Alloy River config string override. When set, bypasses all structured vars above.                                                                                                     |
@@ -88,16 +89,25 @@ Alloy watches events in all namespaces, which requires cluster-scope RBAC. The A
 
 ### Metrics
 
-Alloy exposes Prometheus metrics on port `{{ logging_alloy_port }}/metrics`. Self-metrics are disabled by default — set `logging_alloy_prometheus_write_endpoints` to enable them. Example for in-cluster Thanos Receive:
+Alloy exposes Prometheus metrics on port `{{ logging_alloy_port }}/metrics`. Self-metrics are disabled by default. Two collection approaches are supported:
+
+**Option A — Push (remote_write).** Alloy scrapes itself and pushes metrics to a remote_write endpoint. This is the primary option for clusters, which have no local Prometheus.
+Set `logging_alloy_prometheus_write_endpoints` to push to the control-plane Thanos Receive ingress, for example:
 
 ```yaml
 logging_alloy_prometheus_write_endpoints:
-  - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
-      timeout: 60s
+    url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
+    remote_timeout: 60s
       basic_auth:
         username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
         password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
 ```
+
+**Option B — Pull (ServiceMonitor).** Set `logging_alloy_service_monitor_enabled: true`.
+This is an option if you have an in-cluster Prometheus that can scrape Alloy directly — for example, if you also deploy the monitoring role on the control-plane cluster.
+The role then enables the Alloy ServiceMonitor, and the in-cluster Prometheus deployed by the [monitoring role](../monitoring/) will scrape the `/metrics` endpoint automatically.
+
+No `logging_alloy_prometheus_write_endpoints` is needed in this case.
 
 ### Logs
 
