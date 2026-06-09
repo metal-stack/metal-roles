@@ -1,0 +1,24 @@
+---
+- name: Gather switch facts
+  switch_facts:
+
+- name: Check mandatory variables for this role are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: yes
+    that:
+      - sonic_boot_to_onie_bootentry is defined
+      - metal_stack_switch_os_is_sonic
+
+- name: Set next boot entry to ONIE
+  command: efibootmgr -n {{ sonic_boot_to_onie_bootentry }}
+
+- name: Boot into ONIE
+  reboot:
+
+- name: Wait until ZTP has completed
+  command: "show ztp status"
+  register: result
+  until: "'SUCCESS' in result.stdout"
+  retries: 30
+  delay: 20
