@@ -76,7 +76,8 @@ monitoring_thanos_receive_ingress_annotations: []
 monitoring_thanos_receive_ingress_basic_auth_user: thanos-receive
 monitoring_thanos_receive_ingress_basic_auth_password:
 monitoring_thanos_receive_ingress_basic_auth_password_salt: "{{ monitoring_thanos_receive_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
-monitoring_thanos_receive_ingress_tls: {}
+monitoring_thanos_receive_ingress_tls: false
+monitoring_thanos_receive_ingress_tls_gardener_managed: false
 monitoring_thanos_receive_size: 50Gi
 monitoring_thanos_receive_resource_preset: "large"
 monitoring_thanos_receive_probe_failure_threshold: 30
