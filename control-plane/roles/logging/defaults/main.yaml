@@ -7,7 +7,7 @@ logging_alloy_service_monitor_enabled: false
 logging_alloy_enabled: false
 
 # Loki push endpoints.
-# logging_alloy_loki_write_endpoints:
+logging_alloy_loki_write_endpoints: []
   # - url: "https://{{ logging_ingress_dns }}/loki/api/v1/push"
   #   remote_timeout: 60s
   #   basic_auth:
@@ -22,7 +22,7 @@ logging_alloy_port: 12345
 # Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
 # Alloy scrapes its own /metrics and pushes them via remote_write.
 # Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
-# logging_alloy_prometheus_write_endpoints:
+logging_alloy_prometheus_write_endpoints: []
 # - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
 #     remote_timeout: 60s
 #     basic_auth:
