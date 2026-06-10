@@ -1,6 +1,5 @@
 ---
 logging_namespace: monitoring
-logging_alloy_port: 12345
 logging_alloy_service_monitor_enabled: false
 
 # Alloy deployment (default false). Set true to deploy Alloy.
@@ -17,6 +16,8 @@ logging_alloy_enabled: false
 
 # Value for the cluster= label attached to all log and metric streams via relabel rules
 logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
+
+logging_alloy_port: 12345
 
 # Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
 # Alloy scrapes its own /metrics and pushes them via remote_write.

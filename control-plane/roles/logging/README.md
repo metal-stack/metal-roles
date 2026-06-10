@@ -89,25 +89,23 @@ Alloy watches events in all namespaces, which requires cluster-scope RBAC. The A
 
 ### Metrics
 
-Alloy exposes Prometheus metrics on port `{{ logging_alloy_port }}/metrics`. Self-metrics are disabled by default. Two collection approaches are supported:
+Alloy exposes Prometheus metrics on port `{{ logging_alloy_port }}/metrics`. Self-metrics are **disabled by default** — neither option below is active until explicitly configured.
 
-**Option A — Push (remote_write).** Alloy scrapes itself and pushes metrics to a remote_write endpoint. This is the primary option for clusters, which have no local Prometheus.
-Set `logging_alloy_prometheus_write_endpoints` to push to the control-plane Thanos Receive ingress, for example:
+**Option A — Pull (ServiceMonitor).** Set `logging_alloy_service_monitor_enabled: true`.
+The recommended option when the [monitoring role](../monitoring/) is deployed on the same control-plane cluster. The role enables the Alloy ServiceMonitor and the in-cluster Prometheus scrapes `/metrics` automatically. No additional endpoint configuration is needed.
+
+**Option B — Push (remote_write).** Set `logging_alloy_prometheus_write_endpoints` to push to an external remote_write endpoint, for example the control-plane Thanos Receive ingress:
 
 ```yaml
 logging_alloy_prometheus_write_endpoints:
-    url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
+  - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
     remote_timeout: 60s
-      basic_auth:
-        username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
-        password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
+    basic_auth:
+      username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
+      password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
 ```
 
-**Option B — Pull (ServiceMonitor).** Set `logging_alloy_service_monitor_enabled: true`.
-This is an option if you have an in-cluster Prometheus that can scrape Alloy directly — for example, if you also deploy the monitoring role on the control-plane cluster.
-The role then enables the Alloy ServiceMonitor, and the in-cluster Prometheus deployed by the [monitoring role](../monitoring/) will scrape the `/metrics` endpoint automatically.
-
-No `logging_alloy_prometheus_write_endpoints` is needed in this case.
+See the [monitoring role migration guide](../monitoring/README.md#thanos-receive-ingress-credentials) for credential setup. Do not set both options simultaneously — `logging_alloy_service_monitor_enabled` and `logging_alloy_prometheus_write_endpoints` are mutually exclusive.
 
 ### Logs
 
@@ -122,7 +120,7 @@ Alloy is the recommended log collector. Promtail is deployed by default — exis
 Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and LogQL queries continue to work without changes. What has changed compared to Promtail:
 
 - **Kubernetes events are now built-in.** Promtail required a separate event-exporter Deployment. Alloy collects events natively via `loki.source.kubernetes_events` and labels them `job="monitoring/event-exporter"` for full backward compatibility.
-- **Metrics are now push-based.** Promtail exposed a `/metrics` endpoint and relied on Prometheus scraping it via a ServiceMonitor. Alloy instead scrapes itself and pushes metrics via `prometheus.remote_write` to in-cluster Thanos Receive, removing the ServiceMonitor ordering dependency. Wired automatically when `monitoring_thanos_receive_enabled: true`.
+- **Metric collection is now explicit.** Promtail exposed a `/metrics` endpoint and relied on a ServiceMonitor being deployed alongside it. Alloy self-metrics are disabled by default and require an explicit choice: push via `prometheus.remote_write` (set `logging_alloy_prometheus_write_endpoints`) or pull via ServiceMonitor (set `logging_alloy_service_monitor_enabled: true`). See [Meta-monitoring](#meta-monitoring).
 - **Metric WAL is new.** Alloy buffers undelivered self-metrics on disk (default: 8h). Promtail had no equivalent.
 
 | Scenario                          | `logging_alloy_enabled` | `logging_promtail_enabled` | Notes                                                                                                                                                                                                 |
