@@ -163,6 +163,8 @@ metal_stack_release:
     metal_helm_chart_tag: "helm-charts.metal-stack.metal-control-plane.tag"
     logging_chart_version: "helm-charts.logging.loki.version"
     logging_chart_repo: "helm-charts.logging.loki.repository"
+    gardener_logging_alloy_chart_version: "helm-charts.logging.alloy.version"
+    gardener_logging_alloy_chart_repo: "helm-charts.logging.alloy.repository"
     logging_promtail_chart_version: "helm-charts.logging.promtail.version"
     logging_promtail_chart_repo: "helm-charts.logging.promtail.repository"
     gardener_logging_promtail_chart_version: "helm-charts.logging.promtail.version"
