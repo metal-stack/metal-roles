@@ -490,40 +490,34 @@ additionalPrometheusRulesMap:
         annotations:
           summary: "Alloy component is {{ $labels.health_type }} on {{ $labels.instance }}"
           description: "{{ $value }} Alloy component(s) in {{ $labels.health_type }} state on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }}. Log collection may be interrupted."
-      # ingester_error and queue_is_full drops are permanently lost.
+      # All drop reasons except rate_limited/stream_limited (which have dedicated alerts) are permanent data loss.
+      # ingester_error = Loki rejected the data (out-of-order, bad labels, etc.) — distinct from push failures.
       - alert: AlloyLogsDropped
-        expr: rate(loki_write_dropped_entries_total{reason=~"ingester_error|queue_is_full"}[5m]) > 0
-        for: 5m
+        expr: rate(loki_write_dropped_entries_total{reason!~"rate_limited|stream_limited"}[15m]) > 0
+        for: 0m
         labels:
           severity: critical
         annotations:
           summary: "Alloy is permanently dropping log entries on {{ $labels.instance }}"
           description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} is dropping entries with reason={{ $labels.reason }}. These entries are lost and cannot be recovered."
-      # rate_limited/stream_limited entries are lost but the condition may recover; escalate after 30 m.
+      # rate_limited/stream_limited drops are also permanent data loss; same window as AlloyLogsDropped.
       - alert: AlloyLogsRateLimitedCritical
-        expr: rate(loki_write_dropped_entries_total{reason=~"rate_limited|stream_limited"}[5m]) > 0
-        for: 30m
+        expr: rate(loki_write_dropped_entries_total{reason=~"rate_limited|stream_limited"}[15m]) > 0
+        for: 0m
         labels:
           severity: critical
         annotations:
-          summary: "Alloy has been rate-limited by Loki for 30m on {{ $labels.instance }}"
-          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been dropping entries due to {{ $labels.reason }} for over 30 minutes. Raise Loki ingestion limits or scale the Loki write tier."
+          summary: "Alloy is dropping log entries due to rate limiting on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} is dropping entries due to {{ $labels.reason }}. Raise Loki ingestion limits or scale the Loki write tier."
+      # Push failing is diagnostic context for why drops are occurring; single alert suffices.
       - alert: AlloyLokiPushFailing
         expr: rate(loki_write_request_duration_seconds_count{status_code!~"2.."}[5m]) > 0
-        for: 15m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Alloy failing to push logs to Loki on {{ $labels.instance }}"
-          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been receiving HTTP {{ $labels.status_code }} from Loki for more than 15 minutes. Entries will start being dropped if the condition persists."
-      - alert: AlloyLokiPushFailingCritical
-        expr: rate(loki_write_request_duration_seconds_count{status_code!~"2.."}[5m]) > 0
-        for: 30m
+        for: 5m
         labels:
           severity: critical
         annotations:
-          summary: "Alloy has been unable to reach Loki for 30m on {{ $labels.instance }}"
-          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been receiving HTTP {{ $labels.status_code }} from Loki for over 30 minutes. Log entries are now being dropped. Check Loki availability and network connectivity."
+          summary: "Alloy failing to push logs to Loki on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been receiving HTTP {{ $labels.status_code }} from Loki for more than 5 minutes. Check Loki availability and network connectivity."
 {% endraw %}
 {% if monitoring_gardener_enabled %}
 {% raw %}
