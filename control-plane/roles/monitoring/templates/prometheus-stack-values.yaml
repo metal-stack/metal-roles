@@ -478,6 +478,52 @@ additionalPrometheusRulesMap:
         annotations:
           summary: "Switch sync is slow on {{ $labels.switchname }}"
           description: "Average sync duration of {{ $labels.switchname }} in partition {{ $labels.partition }} is exceeding two seconds for more than 5 minutes."
+  "alloy.rules":
+    groups:
+    - name: alloy.rules
+      rules:
+      - alert: AlloyComponentUnhealthy
+        expr: alloy_component_controller_running_components{health_type=~"exited|unhealthy"} > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alloy component is {{ $labels.health_type }} on {{ $labels.instance }}"
+          description: "{{ $value }} Alloy component(s) in {{ $labels.health_type }} state on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }}. Log collection may be interrupted."
+      # ingester_error and queue_is_full drops are permanently lost.
+      - alert: AlloyLogsDropped
+        expr: rate(loki_write_dropped_entries_total{reason=~"ingester_error|queue_is_full"}[5m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alloy is permanently dropping log entries on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} is dropping entries with reason={{ $labels.reason }}. These entries are lost and cannot be recovered."
+      # rate_limited/stream_limited entries are lost but the condition may recover; escalate after 30 m.
+      - alert: AlloyLogsRateLimitedCritical
+        expr: rate(loki_write_dropped_entries_total{reason=~"rate_limited|stream_limited"}[5m]) > 0
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alloy has been rate-limited by Loki for 30m on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been dropping entries due to {{ $labels.reason }} for over 30 minutes. Raise Loki ingestion limits or scale the Loki write tier."
+      - alert: AlloyLokiPushFailing
+        expr: rate(loki_write_request_duration_seconds_count{status_code!~"2.."}[5m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alloy failing to push logs to Loki on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been receiving HTTP {{ $labels.status_code }} from Loki for more than 15 minutes. Entries will start being dropped if the condition persists."
+      - alert: AlloyLokiPushFailingCritical
+        expr: rate(loki_write_request_duration_seconds_count{status_code!~"2.."}[5m]) > 0
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alloy has been unable to reach Loki for 30m on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been receiving HTTP {{ $labels.status_code }} from Loki for over 30 minutes. Log entries are now being dropped. Check Loki availability and network connectivity."
 {% endraw %}
 {% if monitoring_gardener_enabled %}
 {% raw %}
