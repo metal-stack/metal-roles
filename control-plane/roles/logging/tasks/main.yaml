@@ -9,8 +9,19 @@
     that:
       - logging_chart_version is defined
       - logging_chart_repo is defined
-      - logging_promtail_chart_version is defined
-      - logging_promtail_chart_repo is defined
+      - not logging_alloy_enabled | bool or logging_alloy_chart_version is defined
+      - not logging_alloy_enabled | bool or logging_alloy_chart_repo is defined
+      - not logging_promtail_enabled | bool or logging_promtail_chart_version is defined
+      - not logging_promtail_enabled | bool or logging_promtail_chart_repo is defined
+      - not logging_alloy_enabled | bool or logging_alloy_loki_write_endpoints is defined or logging_alloy_config_raw is defined
+
+- name: Promtail deprecation warning
+  ansible.builtin.fail:
+    msg: >-
+      DEPRECATION: logging_promtail_enabled is true. Promtail support is deprecated
+      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/logging#migration-from-promtail for instructions.
+  when: logging_promtail_enabled | bool
+  ignore_errors: true
 
 - name: Create namespace {{ logging_namespace }}
   k8s:
@@ -33,7 +44,24 @@
     helm_chart_version: "{{ logging_chart_version }}"
     helm_value_file_template: "loki-values.yaml"
 
-- name: Deploy Promtail
+- name: Build Alloy config
+  set_fact:
+    logging_alloy_config: "{{ lookup('template', 'alloy-config.alloy.j2') if (logging_alloy_config_raw | default('') | length == 0) else logging_alloy_config_raw }}"
+  when: logging_alloy_enabled
+
+- name: Deploy Alloy
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_repo: "{{ logging_alloy_chart_repo }}"
+    helm_chart: "alloy"
+    helm_release_name: alloy
+    helm_target_namespace: "{{ logging_namespace }}"
+    helm_chart_version: "{{ logging_alloy_chart_version }}"
+    helm_value_file_template: "alloy-values.yaml"
+  when: logging_alloy_enabled
+
+- name: Deploy Promtail (parallel migration window)
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
@@ -43,3 +71,11 @@
     helm_target_namespace: "{{ logging_namespace }}"
     helm_chart_version: "{{ logging_promtail_chart_version }}"
     helm_value_file_template: "promtail-values.yaml"
+  when: logging_promtail_enabled
+
+- name: Remove Promtail
+  kubernetes.core.helm:
+    name: promtail
+    namespace: "{{ logging_namespace }}"
+    state: absent
+  when: logging_promtail_migrate_cleanup | default(false) | bool

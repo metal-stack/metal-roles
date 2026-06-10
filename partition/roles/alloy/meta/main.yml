@@ -1,11 +1,12 @@
 ---
 galaxy_info:
-  role_name: promtail
+  role_name: alloy
   author: metal-stack
-  description: "DEPRECATED: Deploys promtail. Use metal-roles/partition/roles/alloy instead."
+  description: Deploys alloy.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
+
   platforms:
     - name: Debian
       versions:

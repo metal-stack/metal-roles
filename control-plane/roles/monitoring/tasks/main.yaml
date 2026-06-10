@@ -9,10 +9,19 @@
     that:
       - rethinkdb_exporter_name is defined
       - rethinkdb_exporter_tag is defined
-      - event_exporter_name is defined
-      - event_exporter_tag is defined
       - gardener_metrics_exporter_image_name is defined
       - gardener_metrics_exporter_image_tag is defined
+
+- name: Check deprecated variables are not set
+  assert:
+    fail_msg: >
+      'monitoring_thanos_receive_ingress_basic_auth' has been removed.
+      Please migrate to 'monitoring_thanos_receive_ingress_basic_auth_user' and
+      'monitoring_thanos_receive_ingress_basic_auth_password' — the htpasswd entry
+      is now generated automatically. See the Migration section in the role README.
+    quiet: true
+    that:
+      - monitoring_thanos_receive_ingress_basic_auth is not defined or monitoring_thanos_receive_ingress_basic_auth == {}
 
 - name: Create namespace {{ monitoring_namespace }}
   k8s:
@@ -27,6 +36,7 @@
 - name: Determine app version for prometheus operator CRDs
   command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
   register: helm_output
+  when: monitoring_prometheus_operator_crds_enabled
 
 - name: Apply prometheus operator CRDs
   k8s:
@@ -43,6 +53,7 @@
     - monitoring.coreos.com_scrapeconfigs.yaml
     - monitoring.coreos.com_servicemonitors.yaml
     - monitoring.coreos.com_thanosrulers.yaml
+  when: monitoring_prometheus_operator_crds_enabled
 
 - name: Deploy kube-prometheus-stack
   include_role:

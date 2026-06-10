@@ -1,6 +1,22 @@
 ---
+# Set to false to skip promtail deployment. Required for new deployments that use alloy
+# exclusively, and during alloy migration after promtail_migrate_stop has stopped the
+# service. Keep this set to false in your inventory once migration is complete.
+promtail_enabled: true
+
 promtail_config_host_dir: "/etc/promtail"
 
 promtail_clients: []
 promtail_scrape_configs: []
 promtail_docker_log_driver: json-file
+
+# Stop and disable the promtail systemd service. Use during alloy cutover to stop
+# promtail without removing its files. Implied by promtail_migrate_cleanup.
+promtail_migrate_stop: false
+
+# Remove all promtail remnants: stops and disables the service, removes the systemd
+# unit file (and triggers daemon-reload), removes the container, and deletes
+# promtail_config_host_dir and /var/log/promtail-positions.yaml.
+# Only set this once migration to alloy is fully complete, then set promtail_enabled: false
+# in your inventory to prevent re-deployment.
+promtail_migrate_cleanup: false

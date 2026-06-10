@@ -29,10 +29,6 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/gardener/node-agent
       match:
         semver: ">= v1.128.7"
-    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/vpn-client
-      destination: http://registry:5000/gardener-project/releases/gardener/vpn-client
-      match:
-        semver: ">= 0.42.0"
     - source: europe-docker.pkg.dev/gardener-project/releases/3rd/alpine
       destination: http://registry:5000/gardener-project/releases/3rd/alpine
       match:

@@ -25,8 +25,7 @@ metadata:
 spec:
   seedName: "{{ _config.seed_name }}"
   credentialsBindingName: "{{ _config.credentials_binding_name | default(_config.name + '-provider-secret') }}"
-  cloudProfile:
-    name: metal
+  cloudProfileName: metal
   region: "{{ _config.region }}"
   purpose: "{{ _config.purpose }}"
 {% if 'managed_seed' in _config %}
