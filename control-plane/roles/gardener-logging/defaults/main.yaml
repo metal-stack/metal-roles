@@ -1,13 +1,15 @@
 ---
 gardener_logging_namespace: monitoring
+gardener_logging_garden_name: "{{ gardener_defaults_garden_name }}"
+gardener_logging_deploy_to_garden_cluster: true
+gardener_logging_shooted_seeds: []
+  # - name: my-shooted-seed
 
 # Alloy deployment (default false). Set true to deploy Alloy.
 # Requires gardener_logging_alloy_chart_version and gardener_logging_alloy_chart_repo when enabled.
 gardener_logging_alloy_enabled: false
 
 gardener_logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
-
-gardener_logging_garden_name: "{{ gardener_defaults_garden_name }}"
 # is not renamed to alloy for backward compatibility with existing installs.
 # if updated, the shooted seed`s alloy/promtail need their loki endpoints updated to match.
 gardener_logging_ingress_loki_basic_auth_user: promtail
@@ -51,7 +53,3 @@ gardener_logging_alloy_prometheus_wal_max_keepalive_time: "8h"
 # Requires gardener_logging_promtail_chart_version and gardener_logging_promtail_chart_repo when enabled.
 # See the Migration from Promtail section in README.md.
 gardener_logging_promtail_enabled: true
-
-gardener_logging_deploy_to_garden_cluster: true
-gardener_logging_shooted_seeds: []
-  # - name: my-shooted-seed
