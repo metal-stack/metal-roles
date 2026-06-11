@@ -4,4 +4,4 @@
     name: alloy
     enabled: true
     state: restarted
-  when: alloy_enabled | default(false)
+  when: alloy_enabled

@@ -19,7 +19,7 @@ loki.source.journal "journal" {
 	labels        = {
 		job = "systemd-journal",
 	}
-{% if alloy_migrate_from_promtail | default(false) %}
+{% if alloy_migrate_from_promtail %}
 	// migration only: resumes reading from where promtail left off on first start.
 	// ignored if the file does not exist on the host.
 	// once alloy has written its own positions file, this can be removed.
