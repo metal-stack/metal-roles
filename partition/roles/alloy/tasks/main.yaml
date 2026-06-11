@@ -106,7 +106,9 @@
     systemd_docker_image_tag: "{{ alloy_image_tag }}"
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
-    systemd_docker_network: host
+    systemd_docker_ports:
+      - host_port: "{{ alloy_port }}"
+        target_port: "{{ alloy_port }}"
     systemd_docker_volumes:
       - "{{ alloy_config_host_dir }}:/etc/alloy:ro"
       - "/var/lib/alloy:/var/lib/alloy"
@@ -121,4 +123,11 @@
       - --disable-reporting
       - /etc/alloy/config.alloy
     systemd_docker_log_driver: "{{ alloy_docker_log_driver }}"
+  when: alloy_enabled
+
+- name: Wait for alloy to listen on port
+  wait_for:
+    port: "{{ alloy_port }}"
+    timeout: 300
+    msg: "alloy did not come up"
   when: alloy_enabled
