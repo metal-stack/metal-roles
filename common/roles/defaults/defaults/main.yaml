@@ -26,6 +26,8 @@ metal_stack_release:
     metal_tenant_apiserver_image_name: "docker-images.metal-stack.control-plane.tenant-apiserver.name"
     metal_console_image_tag: "docker-images.metal-stack.control-plane.metal-console.tag"
     metal_console_image_name: "docker-images.metal-stack.control-plane.metal-console.name"
+    metal_console_v2_image_tag: "docker-images.metal-stack.control-plane.metal-console-v2.tag"
+    metal_console_v2_image_name: "docker-images.metal-stack.control-plane.metal-console-v2.name"
     metal_ipam_image_tag: "docker-images.metal-stack.control-plane.ipam.tag"
     metal_ipam_image_name: "docker-images.metal-stack.control-plane.ipam.name"
     metal_metrics_exporter_image_tag: "docker-images.metal-stack.control-plane.metal-metrics-exporter.tag"
