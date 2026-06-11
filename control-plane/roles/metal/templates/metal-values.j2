@@ -57,7 +57,7 @@ hpa:
     cpu_percentage: {{ metal_api_hpa_cpu_percentage }}
 
 metal_console:
-  enabled: {{ metal_console_enabled }}
+  enabled: {{ metal_console_enabled and not metal_console_use_apiserver }}
   replicas: "{{ metal_console_replicas }}"
   tcpRoute:
     enabled: {{ metal_console_tcproute_enabled }}
