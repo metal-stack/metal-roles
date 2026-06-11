@@ -1,8 +1,4 @@
 ---
-# Set to true to deploy and start the Alloy service.
-# Set to false to skip service deployment — useful when alloy is being staged or promtail is still running.
-alloy_enabled: false
-
 alloy_config_host_dir: "/etc/alloy"
 alloy_docker_log_driver: json-file
 
@@ -50,3 +46,12 @@ alloy_journal_legacy_positions_file: "/var/log/promtail-positions.yaml"
 # Required when alloy_migrate_from_promtail is true and the journal-file snippet is used.
 # No default — must be set explicitly.
 # alloy_journal_legacy_position_name:
+
+# Stop and disable the promtail systemd service during alloy cutover.
+# Implied by promtail_migrate_cleanup.
+promtail_migrate_stop: false
+
+# Remove all promtail remnants: stops and disables the service, removes the systemd unit
+# file, removes the container, and deletes promtail_config_host_dir and
+# /var/log/promtail-positions.yaml. Only set once migration to alloy is fully complete.
+promtail_migrate_cleanup: false

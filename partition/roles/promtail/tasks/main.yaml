@@ -18,7 +18,6 @@
       - promtail_image_tag is defined
       - promtail_image_name is defined
       - promtail_scrape_configs is defined and (promtail_scrape_configs|length>0)
-  when: promtail_enabled | default(true)
 
 - name: Create promtail config directory
   file:
@@ -27,14 +26,12 @@
     owner: "nobody"
     group: "nogroup"
     mode: "0755"
-  when: promtail_enabled | default(true)
 
 - name: Template promtail configuration file
   template:
     src: promtail.yaml.j2
     dest: "{{ promtail_config_host_dir }}/promtail.yaml"
   notify: restart promtail
-  when: promtail_enabled | default(true)
 
 - name: Deploy promtail service
   include_role:
@@ -53,38 +50,3 @@
     systemd_docker_command:
       - -config.file=/etc/promtail/promtail.yaml
     systemd_docker_log_driver: "{{ promtail_docker_log_driver }}"
-  when: promtail_enabled | default(true)
-
-- name: Stop and disable promtail service
-  systemd:
-    name: promtail
-    state: stopped
-    enabled: false
-  when: promtail_migrate_stop | default(false) or promtail_migrate_cleanup | default(false)
-  ignore_errors: true  # service may not exist on all hosts
-
-- name: Remove promtail systemd unit file
-  file:
-    path: /etc/systemd/system/promtail.service
-    state: absent
-  when: promtail_migrate_cleanup | default(false)
-  notify: reload systemd
-
-- name: Remove promtail container
-  community.docker.docker_container:
-    name: promtail.service
-    state: absent
-  when: promtail_migrate_cleanup | default(false)
-  ignore_errors: true  # container may not exist
-
-- name: Remove promtail config directory
-  file:
-    path: "{{ promtail_config_host_dir }}"
-    state: absent
-  when: promtail_migrate_cleanup | default(false)
-
-- name: Remove promtail positions file
-  file:
-    path: /var/log/promtail-positions.yaml
-    state: absent
-  when: promtail_migrate_cleanup | default(false)

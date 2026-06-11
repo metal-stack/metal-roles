@@ -64,7 +64,6 @@
     owner: "nobody"
     group: "nogroup"
     mode: "0755"
-  when: alloy_enabled
 
 - name: Deploy alloy service
   include_role:
@@ -92,11 +91,44 @@
       - --disable-reporting
       - /etc/alloy/config.alloy
     systemd_docker_log_driver: "{{ alloy_docker_log_driver }}"
-  when: alloy_enabled
 
 - name: Wait for alloy to listen on port
   wait_for:
     port: "{{ alloy_port }}"
     timeout: 300
     msg: "alloy did not come up"
-  when: alloy_enabled
+
+# promtail migration
+- name: Stop and disable promtail service
+  systemd:
+    name: promtail
+    state: stopped
+    enabled: false
+  when: promtail_migrate_stop or promtail_migrate_cleanup
+  ignore_errors: true  # service may not exist on all hosts
+
+- name: Remove promtail systemd unit file
+  file:
+    path: /etc/systemd/system/promtail.service
+    state: absent
+  when: promtail_migrate_cleanup
+  notify: reload systemd
+
+- name: Remove promtail container
+  community.docker.docker_container:
+    name: promtail.service
+    state: absent
+  when: promtail_migrate_cleanup
+  ignore_errors: true  # container may not exist
+
+- name: Remove promtail config directory
+  file:
+    path: "{{ promtail_config_host_dir }}"
+    state: absent
+  when: promtail_migrate_cleanup
+
+- name: Remove promtail positions file
+  file:
+    path: /var/log/promtail-positions.yaml
+    state: absent
+  when: promtail_migrate_cleanup
