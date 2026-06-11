@@ -43,48 +43,10 @@
     group: "nogroup"
     mode: "0755"
 
-- name: Create alloy config snippets directory
-  file:
-    path: "{{ alloy_config_host_dir }}/conf.d"
-    state: directory
-    owner: "nobody"
-    group: "nogroup"
-    mode: "0755"
-
-- name: Template alloy base configuration
+- name: Template alloy config
   template:
     src: config.alloy.j2
-    dest: "{{ alloy_config_host_dir }}/conf.d/00-base.alloy"
-  when: alloy_config_raw is not defined
-
-- name: Find existing alloy config snippet files
-  find:
-    paths: "{{ alloy_config_host_dir }}/conf.d"
-    patterns: "50-*.alloy"
-  register: existing_snippets
-  when: alloy_config_raw is not defined
-
-- name: Remove stale alloy config snippets
-  file:
-    path: "{{ item.path }}"
-    state: absent
-  loop: "{{ existing_snippets.files | default([]) }}"
-  when:
-    - alloy_config_raw is not defined
-    - item.path | basename | regex_replace('^50-(.+)\.alloy$', '\1') not in alloy_config_snippets
-
-- name: Template alloy config snippets
-  template:
-    src: "snippets/{{ item }}.alloy.j2"
-    dest: "{{ alloy_config_host_dir }}/conf.d/50-{{ item }}.alloy"
-  loop: "{{ alloy_config_snippets }}"
-  when: alloy_config_raw is not defined
-
-- name: Assemble alloy config
-  assemble:
-    src: "{{ alloy_config_host_dir }}/conf.d"
     dest: "{{ alloy_config_host_dir }}/config.alloy"
-    delimiter: "\n"
   notify: restart alloy
   when: alloy_config_raw is not defined
 

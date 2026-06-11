@@ -6,14 +6,9 @@ This role replaces the deprecated `promtail` role. Alloy is configured to forwar
 
 ## Configuration
 
-The Alloy configuration is assembled from a base template plus a list of opt-in snippets:
+The Alloy configuration is driven by a single template `templates/config.alloy.j2`, which contains all supported sections as conditional blocks. At deploy time the template is rendered into `{{ alloy_config_host_dir }}/config.alloy`, with each section included only when the corresponding name appears in `alloy_config_snippets`.
 
-- `templates/config.alloy.j2` — base config, always rendered. Defines the shared `loki.write "default"` endpoint.
-- `templates/snippets/<name>.alloy.j2` — opt-in snippets, enabled via `alloy_config_snippets`.
-
-At deploy time each enabled snippet is rendered into `{{ alloy_config_host_dir }}/conf.d/` and concatenated into a single `config.alloy` file.
-
-The snippets can be configured with variables defined in the [Variables](#variables) section below. This allows you to enable only the features you need without having to maintain a full custom config.
+The sections can be configured with variables defined in the [Variables](#variables) section below. This allows you to enable only the features you need without having to maintain a full custom config.
 
 ### Available snippets
 
@@ -114,9 +109,9 @@ There is no way to inject a custom snippet purely from inventory. Your options a
 
 Set `alloy_config_raw` to a full Alloy River config string in your inventory. The role will write it verbatim and skip snippet assembly entirely. `alloy_loki_write_endpoints` and `alloy_config_snippets` are ignored. You own the complete config, including the base `loki.write "default"` block.
 
-**Option B — Add the snippet to this role** (requires editing this repo)
+**Option B — Add a section to this role** (requires editing this repo)
 
-Add the template to `templates/snippets/` and reference it by name in `alloy_config_snippets`:
+Add a new `{% if "<name>" in alloy_config_snippets %}...{% endif %}` block to `templates/config.alloy.j2` and reference it by name in `alloy_config_snippets`:
 
 ```yaml
 alloy_config_snippets:
@@ -124,9 +119,9 @@ alloy_config_snippets:
   - docker
 ```
 
-A snippet template can use any Ansible variables available on the host. It does not need to define `loki.write "default"` as it is already in the base config.
+A section can use any Ansible variables available on the host. It does not need to define `loki.write "default"` as it is already in the base template.
 
-Contributions of new snippets are welcome — since all snippets are opt-in via `alloy_config_snippets`, adding one to the role has no impact on existing deployments.
+Contributions of new sections are welcome — since all sections are opt-in via `alloy_config_snippets`, adding one to the role has no impact on existing deployments.
 
 ## Migration from `promtail`
 
