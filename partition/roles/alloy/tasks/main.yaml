@@ -21,6 +21,13 @@
     - "'journal-file' in alloy_config_snippets"
     - alloy_migrate_from_promtail
 
+- name: Check alloy_config_raw and alloy_config_snippets are not both set
+  assert:
+    fail_msg: "alloy_config_raw and alloy_config_snippets cannot both be set — use either raw config or snippets, not both"
+    quiet: true
+    that:
+      - not (alloy_config_raw is defined and alloy_config_snippets | length > 0)
+
 - name: Check journal and journal-file are not both enabled
   assert:
     fail_msg: "journal and journal-file snippets cannot both be enabled — this will produce duplicate log entries in Loki"
