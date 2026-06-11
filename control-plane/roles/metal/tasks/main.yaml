@@ -24,8 +24,6 @@
       - metal_ipam_image_tag is defined
       - metal_console_image_name is defined
       - metal_console_image_tag is defined
-      - metal_console_v2_image_name is defined
-      - metal_console_v2_image_tag is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart_tag is defined
       - metal_console_helm_chart_local_path is not none or metal_console_helm_chart is defined
@@ -62,25 +60,26 @@
   when: metal_check_api_available
 
 - name: Create metal-apiserver token for metal-console
-  when: metal_console_v2_enabled
+  when: metal_console_use_apiserver
   import_role:
     name: metal-roles/common/roles/metal-deployment-token
 
 - name: Check metal-deployment-token has run
-  when: metal_console_v2_enabled
+  when: metal_console_use_apiserver
   assert:
-    fail_msg: "this role requires the metal-deployment-token role to be run before
+    fail_msg:
+      "this role requires the metal-deployment-token role to be run before
       execution, check role documentation"
     quiet: yes
     that:
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
 - name: Create metal-console token
-  when: metal_console_v2_enabled
+  when: metal_console_use_apiserver
   import_tasks: console-token.yaml
 
 - name: Create metal-console-token secret
-  when: '"secret" in _token and metal_console_v2_enabled'
+  when: '"secret" in _token and metal_console_use_apiserver'
   k8s:
     definition:
       apiVersion: v1
@@ -95,7 +94,7 @@
     apply: true
 
 - name: Deploy metal console v2
-  when: 'metal_console_v2_enabled'
+  when: metal_console_use_apiserver
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
