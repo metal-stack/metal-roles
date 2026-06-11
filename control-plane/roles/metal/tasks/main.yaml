@@ -24,6 +24,8 @@
       - metal_ipam_image_tag is defined
       - metal_console_image_name is defined
       - metal_console_image_tag is defined
+      - metal_console_v2_image_name is defined
+      - metal_console_v2_image_tag is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart_tag is defined
       - metal_console_helm_chart_local_path is not none or metal_console_helm_chart is defined
@@ -60,10 +62,12 @@
   when: metal_check_api_available
 
 - name: Create metal-apiserver token for metal-console
+  when: metal_console_v2_enabled
   import_role:
     name: metal-roles/common/roles/metal-deployment-token
 
 - name: Check metal-deployment-token has run
+  when: metal_console_v2_enabled
   assert:
     fail_msg: "this role requires the metal-deployment-token role to be run before
       execution, check role documentation"
@@ -72,10 +76,11 @@
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
 - name: Create metal-console token
+  when: metal_console_v2_enabled
   import_tasks: console-token.yaml
 
 - name: Create metal-console-token secret
-  when: '"secret" in _token and metal_console_enabled'
+  when: '"secret" in _token and metal_console_v2_enabled'
   k8s:
     definition:
       apiVersion: v1
@@ -89,8 +94,8 @@
         "token": "{{ _token.secret | b64encode }}"
     apply: true
 
-- name: Deploy metal console
-  when: 'metal_console_enabled'
+- name: Deploy metal console v2
+  when: 'metal_console_v2_enabled'
   include_role:
     name: ansible-common/roles/helm-chart
   vars:
@@ -99,7 +104,7 @@
     helm_chart: "{{ './metal-console' if metal_console_helm_chart_local_path is not none else 'oci://' + metal_console_helm_chart }}"
     helm_release_name: metal-console
     helm_target_namespace: "{{ metal_control_plane_namespace }}"
-    helm_value_file_template: metal-values.j2
+    helm_value_file_template: metal-console-values.j2
     # deployment can take a while due to post install hooks, therefore increasing the timeout for this chart...
     helm_timeout: "{{ metal_console_helm_chart_timeout }}"
     helm_chart_inject_config_hash: true
