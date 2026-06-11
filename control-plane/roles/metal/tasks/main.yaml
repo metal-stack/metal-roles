@@ -26,6 +26,8 @@
       - metal_console_image_tag is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart_tag is defined
+      - metal_console_helm_chart_local_path is not none or metal_console_helm_chart is defined
+      - metal_console_helm_chart_local_path is not none or metal_console_helm_chart_tag is defined
       - not metal_api_s3_enabled or metal_api_s3_address is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_id is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_secret is not none
@@ -56,3 +58,52 @@
   retries: 60
   delay: 10
   when: metal_check_api_available
+
+- name: Create metal-apiserver token for metal-console
+  when: metal_console_use_apiserver
+  import_role:
+    name: metal-roles/common/roles/metal-deployment-token
+
+- name: Check metal-deployment-token has run
+  when: metal_console_use_apiserver
+  assert:
+    fail_msg:
+      "this role requires the metal-deployment-token role to be run before
+      execution, check role documentation"
+    quiet: yes
+    that:
+      - "'metal_deployment_admin_token' in hostvars['localhost']"
+
+- name: Create metal-console token
+  when: metal_console_use_apiserver
+  import_tasks: console-token.yaml
+
+- name: Create metal-console-token secret
+  when: '"secret" in _token and metal_console_use_apiserver'
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "metal-console-token"
+        namespace: "{{ metal_control_plane_namespace }}"
+        labels:
+          app: metal-console
+      data:
+        "token": "{{ _token.secret | b64encode }}"
+    apply: true
+
+- name: Deploy metal console v2
+  when: metal_console_use_apiserver
+  include_role:
+    name: ansible-common/roles/helm-chart
+  vars:
+    helm_chart_version: "{{ metal_console_helm_chart_version if metal_console_helm_chart_local_path is not none else metal_console_helm_chart_tag }}"
+    helm_chart_custom_folder: "{{ metal_console_helm_chart_local_path | default(omit) }}"
+    helm_chart: "{{ './metal-console' if metal_console_helm_chart_local_path is not none else 'oci://' + metal_console_helm_chart }}"
+    helm_release_name: metal-console
+    helm_target_namespace: "{{ metal_control_plane_namespace }}"
+    helm_value_file_template: metal-console-values.j2
+    # deployment can take a while due to post install hooks, therefore increasing the timeout for this chart...
+    helm_timeout: "{{ metal_console_helm_chart_timeout }}"
+    helm_chart_inject_config_hash: true

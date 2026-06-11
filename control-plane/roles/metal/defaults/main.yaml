@@ -179,6 +179,9 @@ metal_ipam_pdb_enabled: true
 metal_ipam_pdb_min_available: 1
 
 # metal-console
+metal_console_use_apiserver: false
+metal_console_helm_chart_local_path:
+metal_console_helm_chart_timeout: "600s"
 metal_console_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_console_enabled: false
 metal_console_replicas: 3
@@ -192,6 +195,9 @@ metal_console_pdb_enabled: false
 metal_console_pdb_min_available: 1
 metal_console_tcproute_enabled: false
 metal_console_tcproute_parent_refs: []
+metal_console_token_expiration: 8h
+metal_console_token:
+metal_console_token_renewal: {}
 
 # ingress
 metal_deploy_ingress: true
