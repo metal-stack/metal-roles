@@ -501,9 +501,10 @@ additionalPrometheusRulesMap:
           summary: "Alloy is permanently dropping log entries on {{ $labels.instance }}"
           description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} is dropping entries with reason={{ $labels.reason }}. These entries are lost and cannot be recovered."
       # rate_limited/stream_limited drops are also permanent data loss; same window as AlloyLogsDropped.
+      # for: 5m avoids paging on brief traffic bursts; sustained rate limiting still fires promptly.
       - alert: AlloyLogsRateLimitedCritical
         expr: rate(loki_write_dropped_entries_total{reason=~"rate_limited|stream_limited"}[15m]) > 0
-        for: 0m
+        for: 5m
         labels:
           severity: critical
         annotations:
@@ -514,7 +515,7 @@ additionalPrometheusRulesMap:
         expr: rate(loki_write_request_duration_seconds_count{status_code!~"2.."}[5m]) > 0
         for: 5m
         labels:
-          severity: critical
+          severity: warning
         annotations:
           summary: "Alloy failing to push logs to Loki on {{ $labels.instance }}"
           description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been receiving HTTP {{ $labels.status_code }} from Loki for more than 5 minutes. Check Loki availability and network connectivity."
