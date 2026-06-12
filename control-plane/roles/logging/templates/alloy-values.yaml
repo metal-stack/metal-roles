@@ -7,11 +7,19 @@ alloy:
     content: |-
       {{ logging_alloy_config | indent(6) }}
 
+  # -- Enable clustering so DaemonSet peers use leader election for API-based sources
+  # (loki.source.kubernetes_events). Without clustering every pod independently watches
+  # the events API, duplicating every event N times (once per node).
+  clustering:
+    enabled: true
+
   # -- Path to where Alloy stores its state (e.g. log positions file for loki.source.kubernetes).
   # Backed by a hostPath volume so positions survive pod restarts on the same node.
   storagePath: /var/lib/alloy/data
 
   mounts:
+    # -- Mount /var/log from the host to give Alloy access to /var/log/pods for file-based log collection.
+    varlog: true
     extra:
       - name: alloy-data
         mountPath: /var/lib/alloy/data
@@ -27,6 +35,13 @@ serviceMonitor:
       replacement: "{{ logging_alloy_cluster_label }}"
 
 controller:
+  # -- Inject the node name so the River config can filter discovery to local pods only.
+  extraEnv:
+    - name: NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+
   volumes:
     extra:
       - name: alloy-data

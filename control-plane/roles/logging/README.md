@@ -5,7 +5,7 @@ Deploys the control-plane logging stack into the Kubernetes control-plane cluste
 Components:
 
 - **Loki** — log storage and query backend
-- **Alloy** — log collector (DaemonSet), collects pod logs via the Kubernetes API (`loki.source.kubernetes`) and forwards them to Loki
+- **Alloy** — log collector (DaemonSet), reads pod logs from the node filesystem (`/var/log/pods`, `loki.source.file`) and collects Kubernetes events via the API (`loki.source.kubernetes_events` with clustering-based leader election to avoid duplication), forwarding everything to Loki
 - Loki ingress with optional TLS and basic auth
 
 This role supports deploying Alloy and/or Promtail as log collectors. Alloy is deployed by default. Existing Promtail installations are automatically removed when the role runs — no manual cleanup steps are required. See [Migration from Promtail](#migration-from-promtail) for details.
@@ -54,11 +54,13 @@ The following variables can be set to configure the role:
 | logging_alloy_prometheus_wal_max_keepalive_time |           | `8h`                                   | Maximum time undelivered samples are kept in the WAL before being dropped. Increase if you expect remote endpoint outages longer than this window                                                                                                                                                                |
 | logging_alloy_config_raw                        |           |                                        | Full Alloy River config string override. When set, bypasses all structured vars above.                                                                                                                                                                                                                           |
 
-Alloy's positions file (tracking the read offset for each container log) is persisted via a `hostPath` volume at `/var/lib/alloy/data`. This ensures `loki.source.kubernetes` does not re-read already-shipped logs after a pod restart. The directory is created automatically on first run (`DirectoryOrCreate`).
+Alloy's positions file (tracking the read offset for each log file on the node) is persisted via a `hostPath` volume at `/var/lib/alloy/data`. This ensures already-shipped log lines are not re-read after a pod restart. The directory is created automatically on first run (`DirectoryOrCreate`).
+
+Pod discovery is limited to the local node via a `spec.nodeName` field selector in `discovery.kubernetes`. The node name is injected as a `NODE_NAME` environment variable using the Kubernetes downward API. Without this filter every DaemonSet pod would discover all pods cluster-wide, generating unnecessary API load and memory overhead for targets it can never reach on remote nodes.
 
 ## Labels
 
-### Pod logs (`loki.source.kubernetes`)
+### Pod logs (`loki.source.file`)
 
 | Label       | Source                                                                                                          |
 | ----------- | --------------------------------------------------------------------------------------------------------------- |
@@ -82,6 +84,8 @@ Alloy's positions file (tracking the read offset for each container log) is pers
 | `namespace` | Namespace of the event                                              |
 
 Alloy watches events in all namespaces, which requires cluster-scope RBAC. The Alloy Helm chart includes the required `events` rule in its default `rbac.rules`, so no additional configuration is needed.
+
+`loki.source.kubernetes_events` uses Alloy's built-in clustering to elect a single leader across all DaemonSet pods — only that leader actively watches the events API and ships events to Loki. The other pods stand by and take over if the leader is restarted or evicted. Without this, every DaemonSet pod would independently watch the same events API and produce N duplicate copies in Loki (one per node). Clustering is enabled in both the River config (`clustering { enabled = true }` on the events source) and the Helm values (`alloy.clustering.enabled: true`).
 
 ## Meta-monitoring
 
@@ -109,7 +113,7 @@ See the [monitoring role migration guide](../monitoring/README.md#thanos-receive
 
 ### Logs
 
-Alloy runs as a Kubernetes DaemonSet, so its own pod logs are captured by `loki.source.kubernetes` automatically — no additional configuration is needed.
+Alloy runs as a Kubernetes DaemonSet, so its own pod logs are captured by `loki.source.file` automatically — no additional configuration is needed.
 
 ## Migration from Promtail
 
@@ -126,7 +130,7 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 | Scenario                   | `logging_alloy_enabled` | `logging_promtail_enabled` | Notes                                                                                                                                                                                                  |
 | -------------------------- | ----------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Default**                | `true`                  | `false`                    | Alloy is deployed; any existing Promtail release is removed automatically. **Default behavior.**                                                                                                       |
-| **Parallel run**           | `true`                  | `true`                     | Both DaemonSets ship logs. Loki receives duplicate entries during this window. Requires `logging_promtail_chart_version` and `logging_promtail_chart_repo`. Deprecated — emits a warning on every run. |
+| **Parallel run**           | `true`                  | `true`                     | Both collectors ship logs. Loki receives duplicate entries during this window. Requires `logging_promtail_chart_version` and `logging_promtail_chart_repo`. Deprecated — emits a warning on every run. |
 | **Promtail only** (legacy) | `false`                 | `true`                     | Promtail only. Deprecated — emits a warning on every run.                                                                                                                                              |
 
 **To migrate an existing Promtail installation:**
@@ -139,4 +143,4 @@ From the current release, Alloy is the default. Re-running the logging and monit
 4. Verify Alloy is working: logs and Kubernetes events arrive in Loki and existing dashboards, alerts, and LogQL queries return results as expected.
 5. **Optional:** Rotate the external Loki ingress credentials. The `loki-basic-auth` Kubernetes Secret is fully managed by Helm and holds a single entry derived from `logging_ingress_loki_basic_auth_user` and `logging_ingress_loki_basic_auth_password`. The default username remains `promtail` for backward compatibility — there is no need to change it. If you do want to rename the user (e.g. to `alloy`), re-running the role with updated variables replaces the secret automatically. If those credentials are also used by partition Promtail or Alloy to authenticate the `remote_write` to Loki, update both in the same deployment to avoid auth failures.
 
-If you want a controlled parallel window to verify Alloy before cutting over, set `logging_promtail_enabled: true` and `event_exporter_enabled: true`. Both DaemonSets will ship logs — Loki receives duplicate entries during this window. Once satisfied, remove the variable overrides from your inventory and re-run to have Promtail and the event-exporter removed automatically.
+If you want a controlled parallel window to verify Alloy before cutting over, set `logging_promtail_enabled: true` and `event_exporter_enabled: true`. Both collectors will ship logs — Loki receives duplicate entries during this window. Once satisfied, remove the variable overrides from your inventory and re-run to have Promtail and the event-exporter removed automatically.
