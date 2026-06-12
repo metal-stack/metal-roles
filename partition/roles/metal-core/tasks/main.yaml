@@ -13,6 +13,7 @@
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
+      - metal_core_room_id is not none
 
 - name: create gRPC certs directory
   file:
