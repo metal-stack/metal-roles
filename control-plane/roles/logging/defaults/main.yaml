@@ -17,8 +17,6 @@ logging_alloy_loki_write_endpoints: []
 # Value for the cluster= label attached to all log and metric streams via relabel rules
 logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
 
-logging_alloy_port: 12345
-
 # Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
 # Alloy scrapes its own /metrics and pushes them via remote_write.
 # Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
