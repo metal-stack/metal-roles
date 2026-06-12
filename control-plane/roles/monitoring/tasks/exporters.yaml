@@ -16,6 +16,36 @@
     definition: "{{ lookup('template', 'metrics-exporters/event-exporter.yaml') }}"
     namespace: "{{ monitoring_namespace }}"
     apply: true
+  when: event_exporter_enabled | bool
+
+- name: Remove event-exporter
+  k8s:
+    state: absent
+    definition:
+      - apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: event-exporter
+          namespace: "{{ monitoring_namespace }}"
+      - apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: event-exporter
+          namespace: "{{ monitoring_namespace }}"
+      - apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: event-exporter-cfg
+          namespace: "{{ monitoring_namespace }}"
+      - apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: event-exporter
+      - apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: event-exporter
+  when: not event_exporter_enabled | bool
 
 # TODO: Fix to make compatible with gardener-operator
 # - name: Deploy gardener-metrics-exporter

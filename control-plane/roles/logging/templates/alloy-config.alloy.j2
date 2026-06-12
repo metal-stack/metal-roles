@@ -1,0 +1,206 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+discovery.kubernetes "pods" {
+  role = "pod"
+
+  // Limit discovery to pods scheduled on this node only.
+  // NODE_NAME is injected via the downward API (see alloy-values.yaml).
+  // Without this, every DaemonSet pod discovers all pods cluster-wide and
+  // generates targets for nodes it cannot reach — wasting API quota and memory.
+  selectors {
+    role  = "pod"
+    field = "spec.nodeName=" + env("NODE_NAME")
+  }
+}
+
+discovery.relabel "pods" {
+  targets = discovery.kubernetes.pods.targets
+
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label  = "namespace"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "pod"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_name"]
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_uid"]
+    target_label  = "pod_uid"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_node_name"]
+    target_label  = "node_name"
+  }
+
+  // Derive app: app.kubernetes.io/name → app label → controller name (hash stripped) → pod name
+  rule {
+    source_labels = ["__meta_kubernetes_pod_controller_name"]
+    regex         = "([0-9a-z-.]+?)(-[0-9a-f]{8,10})?"
+    target_label  = "__tmp_controller_name"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name", "__meta_kubernetes_pod_label_app", "__tmp_controller_name", "__meta_kubernetes_pod_name"]
+    regex         = "^;*([^;]+)(;.*)?$"
+    replacement   = "$1"
+    target_label  = "app"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_instance", "__meta_kubernetes_pod_label_instance"]
+    regex         = "^;*([^;]+)(;.*)?$"
+    replacement   = "$1"
+    target_label  = "instance"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component", "__meta_kubernetes_pod_label_component"]
+    regex         = "^;*([^;]+)(;.*)?$"
+    replacement   = "$1"
+    target_label  = "component"
+  }
+
+  rule {
+    source_labels = ["namespace", "app"]
+    separator     = "/"
+    target_label  = "job"
+  }
+
+  // Force cluster label to prevent pod kubernetes labels from overriding this value.
+  rule {
+    target_label = "cluster"
+    replacement  = "{{ logging_alloy_cluster_label }}"
+  }
+
+  // Map pod UID and container name to the log file path on the node filesystem.
+  // The field selector on discovery.kubernetes already limits targets to local pods,
+  // so __path__ will always resolve to a file that exists on this node.
+  rule {
+    source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+    separator     = "/"
+    target_label  = "__path__"
+    replacement   = "/var/log/pods/*$1/*.log"
+  }
+}
+
+local.file_match "pods" {
+  path_targets = discovery.relabel.pods.output
+}
+
+loki.source.file "pods" {
+  targets    = local.file_match.pods.targets
+  forward_to = [loki.process.pods.receiver]
+}
+
+// Parse the CRI log format written by the container runtime to /var/log/pods.
+// Each line is: <timestamp> <stream> <flags> <log content>
+loki.process "pods" {
+  forward_to = [loki.write.default.receiver]
+
+  stage.cri {}
+}
+
+loki.source.kubernetes_events "events" {
+  job_name   = "kubernetes-events"
+  log_format = "json"
+  forward_to = [loki.relabel.events.receiver]
+
+  // Cluster-aware: only the elected leader pod collects events.
+  // Without this, every DaemonSet pod would independently watch the API and
+  // duplicate every event N times (once per node).
+  clustering {
+    enabled = true
+  }
+}
+
+loki.relabel "events" {
+  forward_to = [loki.write.default.receiver]
+
+  rule {
+    action = "labeldrop"
+    regex  = "instance"
+  }
+
+  rule {
+    target_label = "cluster"
+    replacement  = "{{ logging_alloy_cluster_label }}"
+  }
+
+  rule {
+    target_label = "job"
+    replacement  = "monitoring/event-exporter"
+  }
+}
+
+// default loki endpoints
+loki.write "default" {
+{% for endpoint in logging_alloy_loki_write_endpoints %}
+  endpoint {
+    url = "{{ endpoint.url }}"
+{% if endpoint.remote_timeout is defined %}
+    remote_timeout = "{{ endpoint.remote_timeout }}"
+{% endif %}
+{% if endpoint.basic_auth is defined %}
+    basic_auth {
+      username = "{{ endpoint.basic_auth.username }}"
+      password = "{{ endpoint.basic_auth.password }}"
+    }
+{% endif %}
+  }
+{% endfor %}
+}
+
+// write metrics to remote Prometheus endpoint
+{% if logging_alloy_prometheus_write_endpoints %}
+prometheus.exporter.self "alloy" {}
+
+prometheus.scrape "alloy_self" {
+  targets    = prometheus.exporter.self.alloy.targets
+  forward_to = [prometheus.relabel.alloy_self.receiver]
+}
+
+prometheus.relabel "alloy_self" {
+  forward_to = [prometheus.remote_write.default.receiver]
+
+  rule {
+    target_label = "cluster"
+    replacement  = "{{ logging_alloy_cluster_label }}"
+  }
+}
+
+prometheus.remote_write "default" {
+{% for endpoint in logging_alloy_prometheus_write_endpoints %}
+  endpoint {
+    url = "{{ endpoint.url }}"
+{% if endpoint.remote_timeout is defined %}
+    remote_timeout = "{{ endpoint.remote_timeout }}"
+{% endif %}
+{% if endpoint.basic_auth is defined %}
+    basic_auth {
+      username = "{{ endpoint.basic_auth.username }}"
+      password = "{{ endpoint.basic_auth.password }}"
+    }
+{% endif %}
+  }
+{% endfor %}
+  wal {
+    // How often to truncate the WAL. Samples older than max_keepalive_time are dropped.
+    truncate_frequency = "{{ logging_alloy_prometheus_wal_truncate_frequency }}"
+    // Maximum time to keep undelivered samples in the WAL before dropping them.
+    // Increase if you expect control-plane outages longer than the default.
+    max_keepalive_time = "{{ logging_alloy_prometheus_wal_max_keepalive_time }}"
+  }
+}
+{% endif %}
