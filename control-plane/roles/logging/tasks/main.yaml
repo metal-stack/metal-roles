@@ -78,4 +78,4 @@
     name: promtail
     namespace: "{{ logging_namespace }}"
     state: absent
-  when: logging_promtail_migrate_cleanup | default(false) | bool
+  when: not logging_promtail_enabled | bool
