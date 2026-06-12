@@ -7,9 +7,6 @@ alloy:
     content: |-
       {{ logging_alloy_config | indent(6) }}
 
-  # -- Port to listen for traffic on.
-  listenPort: 12345
-
   # -- Path to where Alloy stores its state (e.g. log positions file for loki.source.kubernetes).
   # Backed by a hostPath volume so positions survive pod restarts on the same node.
   storagePath: /var/lib/alloy/data
