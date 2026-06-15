@@ -43,7 +43,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | logging_alloy_cluster_label           |           | `{{ metal_control_plane_stage_name }}` | Value for the `cluster=` label on all log and metric streams. Overrides the [logging-common](../logging-common/) default.                                                                                             |
 | logging_alloy_service_monitor_enabled |           | `false`                                | Enable a Prometheus ServiceMonitor for Alloy self-metrics (pull model). **Available in this role only** — not supported in seed clusters. Requires the [monitoring role](../monitoring/) to have been deployed first. |
 
-For all other `logging_alloy_*` variables (`loki_write_endpoints`, `prometheus_write_endpoints`, WAL settings, `config_raw`), see [logging-common](../logging-common/).
+For all other `logging_alloy_*` variables (`loki_write_endpoints`, `prometheus_write_endpoints`, WAL settings, `config_raw`), see [logging-common](../logging-common/). Because this role and logging-common share the `logging_alloy_*` variable prefix and the role uses `import_role` (static inclusion), all `logging_alloy_*` variables set in your inventory are visible to logging-common directly — no explicit mapping is needed.
 
 ### Promtail (deprecated)
 
