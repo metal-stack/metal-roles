@@ -120,7 +120,7 @@ The path is resolved through Ansible's normal template search path (relative to 
 
 Example `templates/my_custom_source.alloy.j2`:
 
-```
+```river
 loki.source.file "custom" {
   targets    = [{ __path__ = "/var/log/myapp/*.log", job = "myapp" }]
   forward_to = [loki.write.default.receiver]
