@@ -23,6 +23,23 @@ gardener_logging_alloy_loki_write_endpoints: []
   #       username: "{{ gardener_logging_ingress_loki_basic_auth_user }}"
   #       password: "{{ gardener_logging_ingress_loki_basic_auth_password }}"
 
+# Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
+# Alloy scrapes its own /metrics and pushes them via remote_write.
+# Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
+gardener_logging_alloy_prometheus_write_endpoints: []
+# - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
+#     remote_timeout: 60s
+#     basic_auth:
+#       username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
+#       password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
+
+# WAL retention for prometheus.remote_write.
+gardener_logging_alloy_prometheus_wal_truncate_frequency: "2h"
+gardener_logging_alloy_prometheus_wal_max_keepalive_time: "8h"
+
+# Full Alloy River config override. When set, bypasses all structured vars and the template.
+# gardener_logging_alloy_config_raw: |
+
 # Promtail deployment (deprecated). Set true only if still on Promtail.
 # Requires gardener_logging_promtail_chart_version and gardener_logging_promtail_chart_repo when enabled.
 # When false, any existing Promtail release is automatically uninstalled.
