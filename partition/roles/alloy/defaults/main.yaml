@@ -11,9 +11,19 @@ alloy_docker_log_driver: json-file
 #       username: "username"
 #       password: "password"
 
-# List of snippet names to enable. Each entry must correspond to
+# List of built-in snippet names to enable. Each entry must correspond to
 # templates/snippets/<name>.alloy.j2 in this role.
+# Available snippets: syslog, journal, journal-file, docker, alloy-meta
 alloy_config_snippets: []
+
+# List of paths to custom Alloy River config snippets. Each entry is a
+# template path resolved via Ansible's normal template search path (i.e.
+# relative to the playbook's templates/ directory, or an absolute path).
+# Custom snippets are appended after all built-in snippets.
+# Example:
+#   alloy_config_custom_snippets:
+#     - my_custom_source.alloy.j2
+alloy_config_custom_snippets: []
 
 # Provide a fully custom Alloy River config as a string to bypass the
 # snippet assembly system entirely. When set, alloy_loki_write_endpoints

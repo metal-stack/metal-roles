@@ -16,7 +16,7 @@ loki.write "default" {
 {% for endpoint in alloy_loki_write_endpoints %}
 	endpoint {
 		url = "{{ endpoint.url }}"
-{%if endpoint.remote_timeout is defined %}
+{% if endpoint.remote_timeout is defined %}
 		remote_timeout = "{{ endpoint.remote_timeout }}"
 {% endif %}
 {% if endpoint.basic_auth is defined %}
@@ -29,124 +29,9 @@ loki.write "default" {
 {% endfor %}
 }
 
-{% if "syslog" in alloy_config_snippets %}
-loki.source.file "syslog" {
-	targets = [{
-		__path__ = "/var/log/syslog",
-		job      = "syslog",
-	}]
-	forward_to = [loki.write.default.receiver]
-
-	file_match {
-		enabled = true
-	}
-{% if alloy_migrate_from_promtail %}
-	// migration only: resumes tailing from where promtail left off on first start.
-	// ignored if the file does not exist on the host.
-	// once alloy has written its own positions file, this can be removed.
-	// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.file/#arguments
-	legacy_positions_file = "{{ alloy_syslog_legacy_positions_file }}"
-{% endif %}
-}
-{% endif %}
-
-{% if "journal" in alloy_config_snippets %}
-discovery.relabel "journal" {
-	targets = []
-
-	rule {
-		source_labels = ["__journal__systemd_unit"]
-		target_label  = "unit"
-	}
-
-	rule {
-		source_labels = ["__journal_priority_keyword"]
-		target_label  = "level"
-	}
-}
-
-loki.source.journal "journal" {
-	relabel_rules = discovery.relabel.journal.rules
-	forward_to    = [loki.write.default.receiver]
-	labels        = {
-		job = "systemd-journal",
-	}
-}
-{% endif %}
-
-{% if "journal-file" in alloy_config_snippets %}
-discovery.relabel "journal" {
-	targets = []
-
-	rule {
-		source_labels = ["__journal__systemd_unit"]
-		target_label  = "unit"
-	}
-
-	rule {
-		source_labels = ["__journal_priority_keyword"]
-		target_label  = "level"
-	}
-}
-
-loki.source.journal "journal" {
-	path          = "{{ alloy_journal_path }}"
-	relabel_rules = discovery.relabel.journal.rules
-	forward_to    = [loki.write.default.receiver]
-	labels        = {
-		job = "systemd-journal",
-	}
-{% if alloy_migrate_from_promtail %}
-	// migration only: resumes reading from where promtail left off on first start.
-	// ignored if the file does not exist on the host.
-	// once alloy has written its own positions file, this can be removed.
-	// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.journal/#legacy_position
-	legacy_position {
-		file = "{{ alloy_journal_legacy_positions_file }}"
-		name = "{{ alloy_journal_legacy_position_name }}"
-	}
-{% endif %}
-}
-{% endif %}
-
-{% if "docker" in alloy_config_snippets %}
-discovery.docker "docker" {
-	host             = "unix:///var/run/docker.sock"
-	refresh_interval = "5s"
-}
-
-discovery.relabel "docker" {
-	targets = []
-
-	rule {
-		source_labels = ["__meta_docker_container_name"]
-		regex         = "/(.*)"
-		target_label  = "container"
-	}
-
-	rule {
-		target_label = "job"
-		replacement  = "docker"
-	}
-}
-
-loki.source.docker "docker" {
-	host             = "unix:///var/run/docker.sock"
-	targets          = discovery.docker.docker.targets
-	forward_to       = [loki.write.default.receiver]
-	relabel_rules    = discovery.relabel.docker.rules
-	refresh_interval = "5s"
-}
-{% endif %}
-
-{% if "alloy-meta" in alloy_config_snippets %}
-// Meta-monitoring: forward Alloy's own logs to Loki
-loki.relabel "alloy_self" {
-	forward_to = [loki.write.default.receiver]
-
-	rule {
-		target_label = "job"
-		replacement  = "alloy"
-	}
-}
-{% endif %}
+{% for snippet in alloy_config_snippets %}
+{% include "snippets/" + snippet + ".alloy.j2" %}
+{% endfor %}
+{% for snippet in alloy_config_custom_snippets %}
+{% include snippet %}
+{% endfor %}

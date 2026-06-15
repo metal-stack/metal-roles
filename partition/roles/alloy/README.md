@@ -33,7 +33,8 @@ If your needs are more custom (e.g. you have a non-standard log source, or want 
 | alloy_image_tag                     | yes                                    |                                    | Image tag of alloy                                                                                                                                                                                                                                                                        |
 | alloy_loki_write_endpoints          | yes (unless `alloy_config_raw` is set) |                                    | List of Loki push endpoints. Each entry: `{url, remote_timeout?: <duration>, basic_auth?: {username, password}}`                                                                                                                                                                          |
 | alloy_docker_log_driver             |                                        | `json-file`                        | Docker log driver for the alloy container                                                                                                                                                                                                                                                 |
-| alloy_config_snippets               |                                        | `[]`                               | List of snippet names to enable                                                                                                                                                                                                                                                           |
+| alloy_config_snippets               |                                        | `[]`                               | List of built-in snippet names to enable. Available: `syslog`, `journal`, `journal-file`, `docker`, `alloy-meta`                                                                                                                                                                          |
+| alloy_config_custom_snippets        |                                        | `[]`                               | List of paths to custom Alloy River snippet templates. Resolved via Ansible's template search path (relative to the playbook's `templates/` directory, or absolute). Appended after built-in snippets. See [Customizing the config](#customizing-the-config).                             |
 | alloy_port                          |                                        | `12345`                            | Port for Alloy metrics and HTTP API                                                                                                                                                                                                                                                       |
 | alloy_migrate_from_promtail         |                                        | `false`                            | Enable migration mode: imports cursor state from the legacy promtail positions file on first start. Set to `true` when migrating from promtail; leave `false` for fresh deployments. Without this, Alloy starts from the current tail and previously shipped log data will be re-shipped. |
 | alloy_syslog_legacy_positions_file  |                                        | `/var/log/promtail-positions.yaml` | Path to the legacy promtail positions file. Used by `syslog` when `alloy_migrate_from_promtail` is `true`.                                                                                                                                                                                |
@@ -104,15 +105,31 @@ Once migration is complete, the old promtail positions files can be cleaned up f
 
 ## Customizing the config
 
-There is no way to inject a custom snippet purely from inventory. Your options are:
+Your options, from least to most invasive:
 
-**Option A — Use `alloy_config_raw`** (inventory only, no role change)
+**Option A — Custom snippets via inventory** (no role change required)
 
-Set `alloy_config_raw` to a full Alloy River config string in your inventory. The role will write it verbatim and skip snippet assembly entirely. `alloy_loki_write_endpoints` and `alloy_config_snippets` are ignored. You own the complete config, including the base `loki.write "default"` block.
+Add a Jinja2 template file to your playbook's `templates/` directory and reference it via `alloy_config_custom_snippets`:
 
-**Option B — Add a section to this role** (requires editing this repo)
+```yaml
+alloy_config_custom_snippets:
+  - my_custom_source.alloy.j2
+```
 
-Add a new `{% if "<name>" in alloy_config_snippets %}...{% endif %}` block to `templates/config.alloy.j2` and reference it by name in `alloy_config_snippets`:
+The path is resolved through Ansible's normal template search path (relative to the playbook's `templates/` directory, or an absolute path). The snippet is rendered after all built-in snippets and has access to all Ansible variables on the host. It does not need to define `loki.write "default"` — that is already in the base template.
+
+Example `templates/my_custom_source.alloy.j2`:
+
+```
+loki.source.file "custom" {
+  targets    = [{ __path__ = "/var/log/myapp/*.log", job = "myapp" }]
+  forward_to = [loki.write.default.receiver]
+}
+```
+
+**Option B — Contribute a built-in snippet to this role** (requires editing this repo)
+
+Add a new file `templates/snippets/<name>.alloy.j2` and reference it by name in `alloy_config_snippets`:
 
 ```yaml
 alloy_config_snippets:
@@ -120,9 +137,13 @@ alloy_config_snippets:
   - docker
 ```
 
-A section can use any Ansible variables available on the host. It does not need to define `loki.write "default"` as it is already in the base template.
+A snippet can use any Ansible variables available on the host. It does not need to define `loki.write "default"` as it is already in the base template.
 
-Contributions of new sections are welcome — since all sections are opt-in via `alloy_config_snippets`, adding one to the role has no impact on existing deployments.
+Contributions of new snippets are welcome — since all snippets are opt-in via `alloy_config_snippets`, adding one to the role has no impact on existing deployments.
+
+**Option C — Use `alloy_config_raw`** (inventory only, no role change)
+
+Set `alloy_config_raw` to a full Alloy River config string in your inventory. The role will write it verbatim and skip snippet assembly entirely. `alloy_loki_write_endpoints`, `alloy_config_snippets`, and `alloy_config_custom_snippets` are ignored. You own the complete config, including the base `loki.write "default"` block.
 
 ## Migration from `promtail`
 
