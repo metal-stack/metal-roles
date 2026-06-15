@@ -52,7 +52,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | Label       | Value                                                               |
 | ----------- | ------------------------------------------------------------------- |
 | `cluster`   | `logging_alloy_cluster_label` (relabel rule in `loki.relabel`)      |
-| `job`       | `monitoring/event-exporter` (relabelled for Promtail compatibility) |
+| `job`       | `events`                                                            |
 | `namespace` | Namespace of the event                                              |
 
 Alloy watches events in all namespaces, which requires cluster-scope RBAC. The Alloy Helm chart includes the required `events` rule in its default `rbac.rules`, so no additional configuration is needed.
@@ -93,7 +93,8 @@ Alloy is deployed by default by both the logging and gardener-logging roles. Exi
 
 Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and LogQL queries continue to work without changes. What has changed compared to Promtail:
 
-- **Kubernetes events are now built-in.** Alloy collects events natively via `loki.source.kubernetes_events`, labelled `job="monitoring/event-exporter"` for backward compatibility. _(logging role)_ The separate event-exporter Deployment is no longer needed — `event_exporter_enabled` defaults to `false` in the monitoring role and any existing resources are **removed automatically** when the monitoring role runs.
+- **Kubernetes events are now built-in.** Alloy collects events natively via `loki.source.kubernetes_events`, labelled `job="events"`. _(logging role)_ The separate event-exporter Deployment is no longer needed — `event_exporter_enabled` defaults to `false` in the monitoring role and any existing resources are **removed automatically** when the monitoring role runs.
+  > **Breaking change:** The event `job` label was renamed from `monitoring/event-exporter` to `events`. Update any existing LogQL queries, dashboard filters, and alert rules that reference `{job="monitoring/event-exporter"}` to `{job="events"}`.
 - **Metric collection is now explicit.** Alloy self-metrics are disabled by default. Configure push via `logging_alloy_prometheus_write_endpoints` or _(logging role only)_ pull via `logging_alloy_service_monitor_enabled`. See [Meta-monitoring](#meta-monitoring).
 - **Metric WAL is new.** Alloy buffers undelivered self-metrics on disk (default: 8h). Promtail had no equivalent.
 
