@@ -5,9 +5,9 @@ gardener_logging_deploy_to_garden_cluster: true
 gardener_logging_shooted_seeds: []
   # - name: my-shooted-seed
 
-# Alloy deployment (default false). Set true to deploy Alloy.
+# Alloy deployment.
 # Requires gardener_logging_alloy_chart_version and gardener_logging_alloy_chart_repo when enabled.
-gardener_logging_alloy_enabled: false
+gardener_logging_alloy_enabled: true
 
 gardener_logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 # is not renamed to alloy for backward compatibility with existing installs.
@@ -23,33 +23,8 @@ gardener_logging_alloy_loki_write_endpoints: []
   #       username: "{{ gardener_logging_ingress_loki_basic_auth_user }}"
   #       password: "{{ gardener_logging_ingress_loki_basic_auth_password }}"
 
-# Value for the cluster= label attached to all log and metric streams via relabel rules
-gardener_logging_alloy_cluster_label: "{{ gardener_logging_shooted_seed.name }}"
-
-gardener_logging_alloy_port: 12345
-
-# Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
-# Alloy scrapes its own /metrics and pushes them via remote_write.
-# Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
-gardener_logging_alloy_prometheus_write_endpoints: []
-# - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
-#     remote_timeout: 60s
-#     basic_auth:
-#       username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
-#       password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
-
-# WAL retention for prometheus.remote_write. Controls how long undelivered samples
-# are buffered on disk before being dropped during a remote endpoint outage.
-# truncate_frequency: how often the WAL is compacted (default: Alloy built-in 2h)
-# max_keepalive_time: samples older than this are dropped even if not yet delivered (default: Alloy built-in 8h)
-gardener_logging_alloy_prometheus_wal_truncate_frequency: "2h"
-gardener_logging_alloy_prometheus_wal_max_keepalive_time: "8h"
-
-# Full Alloy River config override. When set, bypasses the seed-alloy-config.alloy.j2 template.
-# gardener_logging_alloy_config_raw: |
-
-# Promtail deployment (default true, deprecated). Enabled by default for backward
-# compatibility with existing installs. Set false once migrated to Alloy.
+# Promtail deployment (deprecated). Set true only if still on Promtail.
 # Requires gardener_logging_promtail_chart_version and gardener_logging_promtail_chart_repo when enabled.
+# When false, any existing Promtail release is automatically uninstalled.
 # See the Migration from Promtail section in README.md.
-gardener_logging_promtail_enabled: true
+gardener_logging_promtail_enabled: false
