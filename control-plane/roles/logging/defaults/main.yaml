@@ -1,13 +1,13 @@
 ---
 logging_namespace: monitoring
-logging_alloy_service_monitor_enabled: false
+# logging_alloy_service_monitor_enabled: false
 
 # Alloy deployment.
 # Requires logging_alloy_chart_version and logging_alloy_chart_repo when enabled.
 logging_alloy_enabled: true
 
 # Loki push endpoints.
-logging_alloy_loki_write_endpoints: []
+# logging_alloy_loki_write_endpoints: []
   # - url: "https://{{ logging_ingress_dns }}/loki/api/v1/push"
   #   remote_timeout: 60s
   #   basic_auth:
@@ -20,22 +20,12 @@ logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
 # Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
 # Alloy scrapes its own /metrics and pushes them via remote_write.
 # Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
-logging_alloy_prometheus_write_endpoints: []
+# logging_alloy_prometheus_write_endpoints: []
 # - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
 #     remote_timeout: 60s
 #     basic_auth:
 #       username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
 #       password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
-
-# WAL retention for prometheus.remote_write. Controls how long undelivered samples
-# are buffered on disk before being dropped during a remote endpoint outage.
-# truncate_frequency: how often the WAL is compacted (default: Alloy built-in 2h)
-# max_keepalive_time: samples older than this are dropped even if not yet delivered (default: Alloy built-in 8h)
-logging_alloy_prometheus_wal_truncate_frequency: "2h"
-logging_alloy_prometheus_wal_max_keepalive_time: "8h"
-
-# Full Alloy River config override. When set, bypasses all structured vars above.
-# logging_alloy_config_raw: |
 
 # Promtail deployment (deprecated). Set true only if still on Promtail.
 # Requires logging_promtail_chart_version and logging_promtail_chart_repo when enabled.
