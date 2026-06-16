@@ -14,4 +14,3 @@ galaxy_info:
 dependencies:
   - role: metal-roles/common/roles/defaults
   - role: metal-roles/control-plane/roles/defaults
-  - role: metal-roles/control-plane/roles/logging-common
