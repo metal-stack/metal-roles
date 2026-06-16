@@ -569,8 +569,10 @@ sonic_config_timezone: Europe/Berlin
 # Subinterfaces on a port with .1q VLAN tag. For subinterfaces where there is no
 # local VLAN on the switch.
 sonic_config_vlan_subinterfaces:
-  # The IP/prefixlength CIDR of the subinterface.
-  - cidr: 1.2.3.0/24
+  # The IP/prefixlength CIDRs of the subinterface. May be mixed address families.
+  - cidrs:
+      - 1.2.3.0/24
+      - 1:2:3::1/64
 
     # The parent port.
     port: Ethernet0

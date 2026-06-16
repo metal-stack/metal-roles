@@ -1,7 +1,52 @@
 ---
 logging_namespace: monitoring
+
+# Requires monitoring role to be deployed already. Is false per default,
+# to prevent accidental enabling without the monitoring stack in place.
+# logging_alloy_service_monitor_enabled: true
+
+# Alloy deployment.
+# Requires logging_alloy_chart_version and logging_alloy_chart_repo when enabled.
+logging_alloy_enabled: true
+
+# Loki push endpoints. Override example:
+# logging_alloy_loki_write_endpoints:
+  # - url: "https://{{ logging_ingress_dns }}/loki/api/v1/push"
+  #   remote_timeout: 60s
+  #   basic_auth:
+  #     username: "{{ logging_ingress_loki_basic_auth_user }}"
+  #     password: "{{ logging_ingress_loki_basic_auth_password }}"
+
+# Value for the cluster= label attached to all log and metric streams via relabel rules
+logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
+
+# Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
+# Alloy scrapes its own /metrics and pushes them via remote_write.
+# Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
+# logging_alloy_prometheus_write_endpoints: []
+# - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
+#     remote_timeout: 60s
+#     basic_auth:
+#       username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
+#       password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
+
+# WAL retention for prometheus.remote_write.
+# logging_alloy_prometheus_wal_truncate_frequency: "2h"
+# logging_alloy_prometheus_wal_max_keepalive_time: "8h"
+
+# Full Alloy River config override. When set, bypasses all structured vars and the template.
+# logging_alloy_config_raw: |
+
+# Promtail deployment (deprecated). Set true only if still on Promtail.
+# Requires logging_promtail_chart_version and logging_promtail_chart_repo when enabled.
+# When false, any existing Promtail release is automatically uninstalled.
+# See the Migration from Promtail section in README.md.
+logging_promtail_enabled: false
+
 logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 logging_ingress_loki_tls: true
+# is not renamed to alloy for backward compatibility with existing installs.
+# if updated, partition alloy/promtail need their loki endpoints updated to match.
 logging_ingress_loki_basic_auth_user: promtail
 logging_ingress_loki_basic_auth_password:
 logging_ingress_loki_basic_auth_password_salt: "{{ logging_ingress_loki_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
