@@ -24,7 +24,12 @@ metal_console_port: 10001
 
 # metal-apiserver
 metal_apiserver_enabled: false
-metal_apiserver_url: https://v2.api.{{ metal_control_plane_ingress_dns }}
+metal_apiserver_url: >-
+  {% if metal_apiserver_httproute_enabled -%}
+  https://v2.api.{{ metal_control_plane_gateway_dns }}
+  {%- else -%}
+  https://v2.api.{{ metal_control_plane_ingress_dns }}
+  {%- endif %}
 metal_apiserver_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_apiserver_db_addresses:
   - metal-db
@@ -62,9 +67,16 @@ metal_apiserver_oidc_client_id: "{{ lookup('k8s', api_version='v1', namespace=me
 metal_apiserver_oidc_client_secret: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='zitadel-client-credentials').data.client_secret
   | default('') | b64decode }}"
 metal_apiserver_session_secret: secret
+metal_apiserver_secure_cookie: true
 metal_apiserver_admin_subjects: []
 metal_apiserver_pdb_enabled: true
 metal_apiserver_pdb_min_available: 2
+metal_apiserver_httproute_enabled: false
+metal_apiserver_httproute_hostnames:
+- "v2.api.{{ metal_control_plane_gateway_dns }}"
+metal_apiserver_httproute_parent_refs: []
+metal_apiserver_httproute_https_redirect: {}
+
 
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -79,7 +91,12 @@ metal_api_dex_clientid: ""
 metal_api_db_address: metal-db
 metal_api_db_password: change-me
 metal_api_ipam_grpc_server_endpoint: http://ipam:9090
-metal_api_nsq_tcp_address: "{{ metal_control_plane_ingress_dns }}:4150"
+metal_api_nsq_tcp_address: >-
+  {% if nsq_tcproute_enabled -%}
+  {{ metal_control_plane_gateway_dns }}:4150
+  {%- else -%}
+  {{ metal_control_plane_ingress_dns }}:4150
+  {%- endif %}
 metal_api_nsq_http_address: "nsqd:4151"
 metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tls_enabled: true
@@ -111,6 +128,15 @@ metal_api_release_version: "{{ metal_stack_release_version }}"
 minimum_client_version: "{{ metalctl_version }}"
 metal_api_pdb_enabled: true
 metal_api_pdb_min_available: 2
+metal_api_httproute_enabled: false
+metal_api_httproute_hostnames:
+- "api.{{ metal_control_plane_gateway_dns }}"
+metal_api_httproute_parent_refs: []
+metal_api_httproute_https_redirect: {}
+
+# GatewayAPI TCPRoute for GRPC metal-api(v1)
+metal_api_tcproute_enabled: false
+metal_api_tcproute_parent_refs: []
 
 # masterdata-api
 metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
@@ -127,6 +153,19 @@ metal_masterdata_api_pdb_min_available: 1
 
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
+
+# tenant-apiserver
+metal_tenant_apiserver_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+metal_tenant_apiserver_db_address: masterdata-db
+metal_tenant_apiserver_db_port: 5432
+metal_tenant_apiserver_db_name: masterdata
+metal_tenant_apiserver_db_user: postgres
+metal_tenant_apiserver_db_password: "{{ metal_masterdata_api_db_password | default('change-me', true) }}"
+metal_tenant_apiserver_resources:
+metal_tenant_apiserver_pdb_enabled: true
+metal_tenant_apiserver_pdb_min_available: 1
+metal_tenant_apiserver_replicas: 2
+
 # ipam
 metal_ipam_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_ipam_db_address: ipam-db
@@ -151,6 +190,8 @@ metal_console_bmc_proxy_certs_client_cert:
 metal_console_bmc_proxy_certs_ca_cert:
 metal_console_pdb_enabled: false
 metal_console_pdb_min_available: 1
+metal_console_tcproute_enabled: false
+metal_console_tcproute_parent_refs: []
 
 # ingress
 metal_deploy_ingress: true
@@ -163,7 +204,12 @@ metal_api_headscale_enabled: false
 metal_api_headscale_tls: true
 metal_api_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data',
   {}).get('key') | b64decode if metal_api_headscale_enabled else '' }}"
-metal_api_headscale_control_plane_address: "http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_ingress_dns }}"
+metal_api_headscale_control_plane_address: >-
+  {% if headscale_httproute_enabled -%}
+  http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_gateway_dns }}
+  {%- else -%}
+  http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_ingress_dns }}
+  {%- endif %}
 metal_api_headscale_internal_api_address: "headscale:50443"
 
 # auditing
