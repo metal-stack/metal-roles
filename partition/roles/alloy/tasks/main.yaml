@@ -28,6 +28,13 @@
     that:
       - not (alloy_config_raw is defined and (alloy_config_snippets | length > 0 or alloy_config_custom_snippets | length > 0))
 
+- name: Check alloy_config_snippets only contains supported snippets
+  assert:
+    fail_msg: "alloy_config_snippets contains unsupported snippet(s): {{ alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta']) | join(', ') }}"
+    quiet: true
+    that:
+      - alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta']) | length == 0
+
 - name: Check journal and journal-file are not both enabled
   assert:
     fail_msg: "journal and journal-file snippets cannot both be enabled — this will produce duplicate log entries in Loki"
