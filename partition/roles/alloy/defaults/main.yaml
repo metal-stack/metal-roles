@@ -1,0 +1,67 @@
+---
+alloy_config_host_dir: "/etc/alloy"
+alloy_docker_log_driver: json-file
+
+# List of Loki push endpoints used by the base loki.write component.
+# Each entry: {url: <push-url>, remote_timeout?: <duration>, basic_auth?: {username, password}}
+# alloy_loki_write_endpoints:
+#   - url: http://loki.example.com:8080/loki/api/v1/push
+#     remote_timeout: 10s
+#     basic_auth:
+#       username: "username"
+#       password: "password"
+
+# List of built-in snippet names to enable. Each entry must correspond to
+# templates/snippets/<name>.alloy.j2 in this role.
+# Available snippets: syslog, journal, journal-file, docker, alloy-meta
+alloy_config_snippets: []
+
+# List of paths to custom Alloy River config snippets. Each entry is a
+# template path resolved via Ansible's normal template search path (i.e.
+# relative to the playbook's templates/ directory, or an absolute path).
+# Custom snippets are appended after all built-in snippets.
+# Example:
+#   alloy_config_custom_snippets:
+#     - my_custom_source.alloy.j2
+alloy_config_custom_snippets: []
+
+# Provide a fully custom Alloy River config as a string to bypass the
+# snippet assembly system entirely. When set, alloy_loki_write_endpoints
+# and alloy_config_snippets are ignored.
+# alloy_config_raw: |
+
+# Port to listen for metrics and HTTP API traffic on
+alloy_port: 12345
+
+# Enable migration mode: imports cursor state from the legacy promtail positions file
+# on first start so Alloy resumes from where promtail left off. Set to true when
+# migrating from promtail; leave false for fresh deployments.
+alloy_migrate_from_promtail: false
+
+# Path to the legacy promtail positions file used by the syslog snippet on first start
+# after migration to continue tailing /var/log/syslog from where promtail left off.
+# Only active when alloy_migrate_from_promtail is true.
+alloy_syslog_legacy_positions_file: "/var/log/promtail-positions.yaml"
+
+# Path to the persistent journal directory used by the journal-file snippet.
+alloy_journal_path: "/var/log/journal"
+
+# Path to the legacy promtail positions file used by the journal-file snippet on first
+# start after migration to resume from where promtail left off.
+# Only active when alloy_migrate_from_promtail is true.
+alloy_journal_legacy_positions_file: "/var/log/promtail-positions.yaml"
+
+# Job name used in the legacy promtail positions file for the journal scrape config.
+# Must match the job_name of the journal scrape_config in your old promtail config.
+# Required when alloy_migrate_from_promtail is true and the journal-file snippet is used.
+# No default — must be set explicitly.
+# alloy_journal_legacy_position_name:
+
+# Stop and disable the promtail systemd service during alloy cutover.
+# Implied by promtail_migrate_cleanup.
+promtail_migrate_stop: false
+
+# Remove all promtail remnants: stops and disables the service, 
+# removes the systemd unit file, deletes promtail_config_host_dir and
+# the legacy positions files. Only set once migration to alloy is fully complete.
+promtail_migrate_cleanup: false

@@ -1,0 +1,10 @@
+---
+- name: restart alloy
+  service:
+    name: alloy
+    enabled: true
+    state: restarted
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true
