@@ -22,6 +22,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | ------------------------------------- | --------- | --------------------------------------------------------------------------------------------------- |
 | metal_control_plane_provider_tenant   |           | The name of the provider tenant, has extended privileges                                            |
 | metal_control_plane_ingress_dns       | yes       | The dns name used for exposing services via ingress                                                 |
+| metal_control_plane_gateway_dns       |           | The dns name used for exposing services via Gateway API routes (when *_httproute_enabled is set)    |
 | metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                            |
 | metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                |
 | metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                       |
@@ -48,7 +49,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [ipam-db](roles/ipam-db)                                               | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                         |
 | [isolated-clusters](roles/isolated-clusters)                           | Deploys services for Gardener isolated clusters                                                                                    |
 | [logging](roles/logging)                                               | Deploys metal-stack control plane logging components                                                                               |
-| [masterdata-db](roles/masterdata-db)                                   | Deploys a database for the masterdata-api                                                                                          |
+| [masterdata-db](roles/masterdata-db)                                   | Deploys a database for the masterdata-api and tenant-apiserver                                                                     |
 | [meili-backup-restore](roles/meili-backup-restore)                     | A role for deploying a meilisearch database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar) |
 | [metal-db](roles/metal-db)                                             | Deploys a database for the metal-api                                                                                               |
 | [metal-python](roles/metal-python)                                     | Installs metal-python                                                                                                              |
