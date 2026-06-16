@@ -88,10 +88,28 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
+- job_name: alloy
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/alloy.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
 - job_name: sonic-exporter
   file_sd_configs:
   - files:
     - '/etc/prometheus/file_sd/sonic-exporter.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: goflow2
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/goflow2.yaml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+

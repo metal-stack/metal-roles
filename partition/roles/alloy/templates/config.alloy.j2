@@ -1,0 +1,30 @@
+// Log level and format; write_to forwards Alloy's own logs to Loki when alloy-meta is enabled
+logging {
+	level  = "info"
+	format = "logfmt"
+{% if "alloy-meta" in alloy_config_snippets %}
+	write_to = [loki.relabel.alloy_self.receiver]
+{% endif %}
+}
+
+// Loki write endpoint shared by all snippets; external_labels are appended to every log entry
+loki.write "default" {
+	external_labels = {
+		host      = "{{ inventory_hostname }}",
+		partition = "{{ metal_partition_id }}",
+	}
+{% for endpoint in alloy_loki_write_endpoints %}
+	endpoint {
+		url = "{{ endpoint.url }}"
+{%if endpoint.remote_timeout is defined %}
+		remote_timeout = "{{ endpoint.remote_timeout }}"
+{% endif %}
+{% if endpoint.basic_auth is defined %}
+		basic_auth {
+			username = "{{ endpoint.basic_auth.username }}"
+			password = "{{ endpoint.basic_auth.password }}"
+		}
+{% endif %}
+	}
+{% endfor %}
+}

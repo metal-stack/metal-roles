@@ -514,6 +514,18 @@ sonic_config_ports:
       # The VRF the port is bound to.
       vrf: Vrf46
 
+# Additional prefix lists.
+sonic_config_frr_prefix_lists:
+  - ip prefix-list PL_FABRIC_OUT seq 5 permit 0.0.0.0/0
+  - ip prefix-list PL_FABRIC_OUT seq 10 permit 10.0.0.0/24 le 32
+
+# Route map to apply when redistributing connected routes in the default VRF.
+sonic_config_frr_route_map:
+  # Name of the route map.
+  name: RM_FABRIC_OUT
+  # Matcher for the route map.
+  match: ip address prefix-list PL_FABRIC_OUT
+
 # Whether a `config reload` should be triggered. If `false` a simple `config load` will be
 # performed. Keep in mind that a config reload is a disruptive process.
 # Active connections will be interrupted and it may take up to several minutes for the
@@ -614,4 +626,39 @@ sonic_config_vtep:
 
       # The local VLAN interface.
       vlan: Vlan1001
+
+# sFlow configuration. An empty dict disables sFlow.
+sonic_config_sflow:
+  # Whether sFlow is enabled globally on the switch.
+  enabled: true
+
+  # Polling interval in seconds (0 disables polling).
+  polling_interval: 20
+
+  # List of sFlow collectors that receive the samples.
+  collectors:
+    # Name of the collector entry.
+    - name: collector0
+
+      # IP address of the collector.
+      ip: 10.1.2.3
+
+      # UDP port of the collector. SONiC default is 6343.
+      port: 6343
+
+      # VRF used to reach the collector (e.g. `default` or `mgmt`).
+      vrf: default
+
+  # Per-interface sFlow sessions. Only interfaces that should differ from the
+  # global defaults need to be listed here.
+  sessions:
+    # Interface to sample on.
+    - interface: Ethernet0
+
+      # Enable or disable sampling on this interface.
+      # Omit to inherit the global state.
+      enabled: true
+
+      # Packet sampling rate (1 sample per N packets).
+      sample_rate: 4096
 ```
