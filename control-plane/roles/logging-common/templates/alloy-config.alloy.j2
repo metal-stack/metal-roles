@@ -7,12 +7,12 @@ discovery.kubernetes "pods" {
   role = "pod"
 
   // Limit discovery to pods scheduled on this node only.
-  // NODE_NAME is injected via the downward API (see alloy-values.yaml).
+  // K8S_NODE_NAME is injected by the Alloy Helm chart via the downward API.
   // Without this, every DaemonSet pod discovers all pods cluster-wide and
   // generates targets for nodes it cannot reach — wasting API quota and memory.
   selectors {
     role  = "pod"
-    field = "spec.nodeName=" + env("NODE_NAME")
+    field = "spec.nodeName=" + sys.env("K8S_NODE_NAME")
   }
 }
 

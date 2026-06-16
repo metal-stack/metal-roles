@@ -6,7 +6,7 @@ Provides the shared Alloy DaemonSet deployment used by the [logging](../logging/
 
 Alloy runs as a Kubernetes DaemonSet. It:
 
-- **Collects pod logs** from the node filesystem (`/var/log/pods`, `loki.source.file`). Pod discovery is limited to the local node via a `spec.nodeName` field selector — each DaemonSet pod only collects logs for pods scheduled on its own node. The node name is injected as `NODE_NAME` via the Kubernetes downward API.
+- **Collects pod logs** from the node filesystem (`/var/log/pods`, `loki.source.file`). Pod discovery is limited to the local node via a `spec.nodeName` field selector — each DaemonSet pod only collects logs for pods scheduled on its own node. The node name is read from `K8S_NODE_NAME`, which the Alloy Helm chart injects automatically via the Kubernetes downward API.
 - **Collects Kubernetes events** cluster-wide via `loki.source.kubernetes_events`. Alloy's built-in peer clustering elects a single leader — only that pod watches the events API and ships events to Loki. Without clustering every pod would independently watch the API and produce N duplicate copies in Loki.
 - **Forwards everything to Loki** via `logging_alloy_loki_write_endpoints`.
 

@@ -35,13 +35,6 @@ serviceMonitor:
       replacement: "{{ logging_alloy_cluster_label }}"
 
 controller:
-  # -- Inject the node name so the River config can filter discovery to local pods only.
-  extraEnv:
-    - name: NODE_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
-
   volumes:
     extra:
       - name: alloy-data
