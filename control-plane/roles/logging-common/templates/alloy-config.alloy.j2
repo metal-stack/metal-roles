@@ -81,7 +81,7 @@ discovery.relabel "pods" {
   // Force cluster label to prevent pod kubernetes labels from overriding this value.
   rule {
     target_label = "cluster"
-    replacement  = "{{ logging_alloy_cluster_label }}"
+    replacement  = "{{ logging_common_alloy_cluster_label }}"
   }
 
   // Map pod UID and container name to the log file path on the node filesystem.
@@ -135,7 +135,7 @@ loki.relabel "events" {
 
   rule {
     target_label = "cluster"
-    replacement  = "{{ logging_alloy_cluster_label }}"
+    replacement  = "{{ logging_common_alloy_cluster_label }}"
   }
 
   rule {
@@ -146,7 +146,7 @@ loki.relabel "events" {
 
 // default loki endpoints
 loki.write "default" {
-{% for endpoint in logging_alloy_loki_write_endpoints %}
+{% for endpoint in logging_common_alloy_loki_write_endpoints %}
   endpoint {
     url = "{{ endpoint.url }}"
 {% if endpoint.remote_timeout is defined %}
@@ -163,7 +163,7 @@ loki.write "default" {
 }
 
 // write metrics to remote Prometheus endpoint
-{% if logging_alloy_prometheus_write_endpoints %}
+{% if logging_common_alloy_prometheus_write_endpoints %}
 prometheus.exporter.self "alloy" {}
 
 prometheus.scrape "alloy_self" {
@@ -176,12 +176,12 @@ prometheus.relabel "alloy_self" {
 
   rule {
     target_label = "cluster"
-    replacement  = "{{ logging_alloy_cluster_label }}"
+    replacement  = "{{ logging_common_alloy_cluster_label }}"
   }
 }
 
 prometheus.remote_write "default" {
-{% for endpoint in logging_alloy_prometheus_write_endpoints %}
+{% for endpoint in logging_common_alloy_prometheus_write_endpoints %}
   endpoint {
     url = "{{ endpoint.url }}"
 {% if endpoint.remote_timeout is defined %}
@@ -197,10 +197,10 @@ prometheus.remote_write "default" {
 {% endfor %}
   wal {
     // How often to truncate the WAL. Samples older than max_keepalive_time are dropped.
-    truncate_frequency = "{{ logging_alloy_prometheus_wal_truncate_frequency }}"
+    truncate_frequency = "{{ logging_common_alloy_prometheus_wal_truncate_frequency }}"
     // Maximum time to keep undelivered samples in the WAL before dropping them.
     // Increase if you expect control-plane outages longer than the default.
-    max_keepalive_time = "{{ logging_alloy_prometheus_wal_max_keepalive_time }}"
+    max_keepalive_time = "{{ logging_common_alloy_prometheus_wal_max_keepalive_time }}"
   }
 }
 {% endif %}

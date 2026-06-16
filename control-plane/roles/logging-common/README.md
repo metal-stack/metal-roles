@@ -8,7 +8,7 @@ Alloy runs as a Kubernetes DaemonSet. It:
 
 - **Collects pod logs** from the node filesystem (`/var/log/pods`, `loki.source.file`). Pod discovery is limited to the local node via a `spec.nodeName` field selector — each DaemonSet pod only collects logs for pods scheduled on its own node. The node name is read from `K8S_NODE_NAME`, which the Alloy Helm chart injects automatically via the Kubernetes downward API.
 - **Collects Kubernetes events** cluster-wide via `loki.source.kubernetes_events`. Alloy's built-in peer clustering elects a single leader — only that pod watches the events API and ships events to Loki. Without clustering every pod would independently watch the API and produce N duplicate copies in Loki.
-- **Forwards everything to Loki** via `logging_alloy_loki_write_endpoints`.
+- **Forwards everything to Loki** via `logging_common_alloy_loki_write_endpoints`.
 
 Alloy's positions file (tracking the read offset for each log file) is persisted via a `hostPath` volume at `/var/lib/alloy/data`, so already-shipped lines are not re-read after a pod restart. The directory is created automatically on first run (`DirectoryOrCreate`).
 
@@ -16,19 +16,19 @@ Alloy's positions file (tracking the read offset for each log file) is persisted
 
 You can look up all the default values of this role [here](defaults/main.yaml).
 
-| Name                                            | Mandatory | Default      | Description                                                                                                                                                                                        |
-| ----------------------------------------------- | --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| logging_alloy_namespace                         |           | `monitoring` | Target namespace                                                                                                                                                                                   |
-| logging_alloy_chart_version                     | yes       |              | Helm chart version for alloy (release vector)                                                                                                                                                      |
-| logging_alloy_chart_repo                        | yes       |              | Repository for alloy (release vector)                                                                                                                                                              |
-| logging_alloy_cluster_label                     | yes       |              | Value for the `cluster=` label set on all log and metric streams                                                                                                                                   |
-| logging_alloy_loki_write_endpoints              | yes\*     | `[]`         | List of Loki push endpoints. Required unless `logging_alloy_config_raw` is set. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                                  |
-| logging_alloy_service_monitor_enabled           |           | `false`      | Enable a Prometheus ServiceMonitor for Alloy self-metrics. **_(logging role only)_** — not supported in seed clusters. Requires the [monitoring role](../monitoring/) to have been deployed first. |
-| logging_alloy_prometheus_write_endpoints        |           | `[]`         | Prometheus remote_write endpoints for Alloy self-metrics. When empty, self-metrics are disabled. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                 |
-| logging_alloy_prometheus_wal_truncate_frequency |           | `2h`         | How often the WAL is compacted                                                                                                                                                                     |
-| logging_alloy_prometheus_wal_max_keepalive_time |           | `8h`         | Maximum time undelivered samples are kept in the WAL before being dropped                                                                                                                          |
-| logging_alloy_config_raw                        |           |              | Full Alloy River config override. When set, bypasses all structured vars and the template.                                                                                                         |
-| logging_alloy_kubeconfig                        |           |              | Kubeconfig dict for the target cluster. Omit for the local cluster; required for remote clusters (e.g. shooted seeds).                                                                             |
+| Name                                                   | Mandatory | Default      | Description                                                                                                                                                                                        |
+| ------------------------------------------------------ | --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| logging_common_alloy_namespace                         |           | `monitoring` | Target namespace                                                                                                                                                                                   |
+| logging_common_alloy_chart_version                     | yes       |              | Helm chart version for alloy (release vector)                                                                                                                                                      |
+| logging_common_alloy_chart_repo                        | yes       |              | Repository for alloy (release vector)                                                                                                                                                              |
+| logging_common_alloy_cluster_label                     | yes       |              | Value for the `cluster=` label set on all log and metric streams                                                                                                                                   |
+| logging_common_alloy_loki_write_endpoints              | yes\*     | `[]`         | List of Loki push endpoints. Required unless `logging_common_alloy_config_raw` is set. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                           |
+| logging_common_alloy_service_monitor_enabled           |           | `false`      | Enable a Prometheus ServiceMonitor for Alloy self-metrics. **_(logging role only)_** — not supported in seed clusters. Requires the [monitoring role](../monitoring/) to have been deployed first. |
+| logging_common_alloy_prometheus_write_endpoints        |           | `[]`         | Prometheus remote_write endpoints for Alloy self-metrics. When empty, self-metrics are disabled. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                 |
+| logging_common_alloy_prometheus_wal_truncate_frequency |           | `2h`         | How often the WAL is compacted                                                                                                                                                                     |
+| logging_common_alloy_prometheus_wal_max_keepalive_time |           | `8h`         | Maximum time undelivered samples are kept in the WAL before being dropped                                                                                                                          |
+| logging_common_alloy_config_raw                        |           |              | Full Alloy River config override. When set, bypasses all structured vars and the template.                                                                                                         |
+| logging_common_alloy_kubeconfig                        |           |              | Kubeconfig dict for the target cluster. Omit for the local cluster; required for remote clusters (e.g. shooted seeds).                                                                             |
 
 ## Labels
 
@@ -36,7 +36,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Label       | Source                                                                                                          |
 | ----------- | --------------------------------------------------------------------------------------------------------------- |
-| `cluster`   | `logging_alloy_cluster_label` (relabel rule in `discovery.relabel`)                                             |
+| `cluster`   | `logging_common_alloy_cluster_label` (relabel rule in `discovery.relabel`)                                      |
 | `namespace` | `__meta_kubernetes_namespace`                                                                                   |
 | `pod`       | `__meta_kubernetes_pod_name`                                                                                    |
 | `container` | `__meta_kubernetes_pod_container_name`                                                                          |
@@ -49,11 +49,11 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### Kubernetes events (`loki.source.kubernetes_events`)
 
-| Label       | Value                                                               |
-| ----------- | ------------------------------------------------------------------- |
-| `cluster`   | `logging_alloy_cluster_label` (relabel rule in `loki.relabel`)      |
-| `job`       | `events`                                                            |
-| `namespace` | Namespace of the event                                              |
+| Label       | Value                                                                 |
+| ----------- | --------------------------------------------------------------------- |
+| `cluster`   | `logging_common_alloy_cluster_label` (relabel rule in `loki.relabel`) |
+| `job`       | `events`                                                              |
+| `namespace` | Namespace of the event                                                |
 
 Alloy watches events in all namespaces, which requires cluster-scope RBAC. The Alloy Helm chart includes the required `events` rule in its default `rbac.rules`, so no additional configuration is needed.
 
@@ -63,13 +63,14 @@ Alloy watches events in all namespaces, which requires cluster-scope RBAC. The A
 
 Self-metrics are **disabled by default**. Choose one option when needed:
 
-**Option A — Pull (ServiceMonitor).** Set `logging_alloy_service_monitor_enabled: true`. **Available in the logging role only** — Gardener seed Prometheus instances use annotation-based discovery restricted to extension namespaces and do not reach the `monitoring` namespace where Alloy runs.
+**Option A — Pull (ServiceMonitor).** Set `logging_alloy_service_monitor_enabled: true` (logging role) or `gardener_logging_alloy_service_monitor_enabled: true` (gardener-logging role). **Available in the logging role only** — Gardener seed Prometheus instances use annotation-based discovery restricted to extension namespaces and do not reach the `monitoring` namespace where Alloy runs.
 
 > **Requires the monitoring role to have been deployed first.** The `ServiceMonitor` CRD is installed by kube-prometheus-stack. If it does not exist yet, Ansible fails with "no kind ServiceMonitor is registered".
 
-**Option B — Push (remote_write).** Set `logging_alloy_prometheus_write_endpoints`. Works in both roles.
+**Option B — Push (remote_write).** Set `logging_alloy_prometheus_write_endpoints` (logging role) or `gardener_logging_alloy_prometheus_write_endpoints` (gardener-logging role). Works in both roles.
 
 ```yaml
+# logging role (same for gardener_logging_alloy_prometheus_write_endpoints in gardener-logging role)
 logging_alloy_prometheus_write_endpoints:
   - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
     remote_timeout: 60s
@@ -79,7 +80,7 @@ logging_alloy_prometheus_write_endpoints:
 ```
 
 See the [monitoring role migration guide](../monitoring/README.md#thanos-receive-ingress-credentials) for credential setup.
-Do not set both options simultaneously — `logging_alloy_service_monitor_enabled` and `logging_alloy_prometheus_write_endpoints` are mutually exclusive.
+Do not set both options simultaneously — for the logging role, `logging_alloy_service_monitor_enabled` and `logging_alloy_prometheus_write_endpoints` are mutually exclusive; for the gardener-logging role, `gardener_logging_alloy_prometheus_write_endpoints` is the only option.
 
 ### Logs
 
@@ -95,7 +96,7 @@ Alloy's label derivation is identical to Promtail's, so dashboards, alerts, and 
 
 - **Kubernetes events are now built-in.** Alloy collects events natively via `loki.source.kubernetes_events`, labelled `job="events"`. _(logging role)_ The separate event-exporter Deployment is no longer needed — `event_exporter_enabled` defaults to `false` in the monitoring role and any existing resources are **removed automatically** when the monitoring role runs.
   > **Breaking change:** The event `job` label was renamed from `monitoring/event-exporter` to `events`. Update any existing LogQL queries, dashboard filters, and alert rules that reference `{job="monitoring/event-exporter"}` to `{job="events"}`.
-- **Metric collection is now explicit.** Alloy self-metrics are disabled by default. Configure push via `logging_alloy_prometheus_write_endpoints` or _(logging role only)_ pull via `logging_alloy_service_monitor_enabled`. See [Meta-monitoring](#meta-monitoring).
+- **Metric collection is now explicit.** Alloy self-metrics are disabled by default. Configure push via `logging_alloy_prometheus_write_endpoints` (logging role) or `gardener_logging_alloy_prometheus_write_endpoints` (gardener-logging role), or _(logging role only)_ pull via `logging_alloy_service_monitor_enabled`. See [Meta-monitoring](#meta-monitoring).
 - **Metric WAL is new.** Alloy buffers undelivered self-metrics on disk (default: 8h). Promtail had no equivalent.
 
 | Scenario                   | `*_alloy_enabled` | `*_promtail_enabled` | Notes                                                                                                                     |
