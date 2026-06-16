@@ -65,7 +65,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | gardener_logging_alloy_prometheus_wal_max_keepalive_time |           | `8h`    | Maximum time undelivered samples are kept in the WAL before being dropped                                                                                                          |
 | gardener_logging_alloy_config_raw                        |           |         | Full Alloy River config override for all targets. Bypasses all structured vars and the template.                                                                                   |
 
-All `gardener_logging_alloy_*` variables are explicitly mapped to their `logging_alloy_*` counterparts when calling [logging-common](../logging-common/). This is necessary because the two roles use different variable prefixes — unlike the [logging role](../logging/) which shares the `logging_alloy_*` prefix with logging-common and therefore does not need an explicit mapping.
+All `gardener_logging_alloy_*` variables are explicitly mapped to their `logging_common_alloy_*` counterparts when calling [logging-common](../logging-common/). This is necessary because the two roles use different variable prefixes — the [logging role](../logging/) similarly maps its `logging_alloy_*` variables to `logging_common_alloy_*`.
 
 ## Migration from Promtail
 

@@ -12,17 +12,17 @@
     name: metal-roles/control-plane/roles/logging-common
     tasks_from: deploy-alloy.yaml
   vars:
-    logging_alloy_namespace: "{{ gardener_logging_namespace }}"
-    logging_alloy_chart_repo: "{{ gardener_logging_alloy_chart_repo }}"
-    logging_alloy_chart_version: "{{ gardener_logging_alloy_chart_version }}"
-    logging_alloy_loki_write_endpoints: "{{ gardener_logging_alloy_loki_write_endpoints }}"
-    logging_alloy_cluster_label: "{{ gardener_logging_shooted_seed.name }}"
-    logging_alloy_service_monitor_enabled: false
-    logging_alloy_prometheus_write_endpoints: "{{ gardener_logging_alloy_prometheus_write_endpoints }}"
-    logging_alloy_prometheus_wal_truncate_frequency: "{{ gardener_logging_alloy_prometheus_wal_truncate_frequency }}"
-    logging_alloy_prometheus_wal_max_keepalive_time: "{{ gardener_logging_alloy_prometheus_wal_max_keepalive_time }}"
-    logging_alloy_config_raw: "{{ gardener_logging_alloy_config_raw | default('') }}"
-    logging_alloy_kubeconfig: "{{ _shoot_kubeconfig }}"
+    logging_common_alloy_namespace: "{{ gardener_logging_namespace }}"
+    logging_common_alloy_chart_repo: "{{ gardener_logging_alloy_chart_repo }}"
+    logging_common_alloy_chart_version: "{{ gardener_logging_alloy_chart_version }}"
+    logging_common_alloy_loki_write_endpoints: "{{ gardener_logging_alloy_loki_write_endpoints }}"
+    logging_common_alloy_cluster_label: "{{ gardener_logging_shooted_seed.name }}"
+    logging_common_alloy_service_monitor_enabled: false
+    logging_common_alloy_prometheus_write_endpoints: "{{ gardener_logging_alloy_prometheus_write_endpoints }}"
+    logging_common_alloy_prometheus_wal_truncate_frequency: "{{ gardener_logging_alloy_prometheus_wal_truncate_frequency }}"
+    logging_common_alloy_prometheus_wal_max_keepalive_time: "{{ gardener_logging_alloy_prometheus_wal_max_keepalive_time }}"
+    logging_common_alloy_config_raw: "{{ gardener_logging_alloy_config_raw | default('') }}"
+    logging_common_alloy_kubeconfig: "{{ _shoot_kubeconfig }}"
   when: gardener_logging_alloy_enabled
 
 - name: Deploy Promtail (parallel migration window)
