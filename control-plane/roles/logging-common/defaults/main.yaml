@@ -1,0 +1,41 @@
+---
+# Alloy target namespace.
+logging_common_alloy_namespace: monitoring
+
+# Whether to create a ServiceMonitor for Alloy self-metrics scraping.
+# Only applicable in environments where Prometheus can reach the monitoring namespace.
+# Never enable in Gardener seed clusters.
+logging_common_alloy_service_monitor_enabled: false
+
+# Loki push endpoints.
+logging_common_alloy_loki_write_endpoints: []
+  # - url: "https://loki.example.com/loki/api/v1/push"
+  #   remote_timeout: 60s
+  #   basic_auth:
+  #     username: alloy
+  #     password: secret
+
+# Value for the cluster= label attached to all log and metric streams via relabel rules.
+# Override per consuming role or pass via include_role vars.
+logging_common_alloy_cluster_label: ""
+
+# Prometheus remote_write endpoints for Alloy self-metrics (prometheus.exporter.self).
+# Alloy scrapes its own /metrics and pushes them via remote_write.
+# Each entry: {url, remote_timeout?: duration, basic_auth?: {username, password}}
+logging_common_alloy_prometheus_write_endpoints: []
+# - url: "https://thanos.example.com/api/v1/receive"
+#     remote_timeout: 60s
+#     basic_auth:
+#       username: alloy
+#       password: secret
+
+# WAL retention for prometheus.remote_write. Controls how long undelivered samples
+# are buffered on disk before being dropped during a remote endpoint outage.
+# truncate_frequency: how often the WAL is compacted (default: Alloy built-in 2h)
+# max_keepalive_time: samples older than this are dropped even if not yet delivered (default: Alloy built-in 8h)
+logging_common_alloy_prometheus_wal_truncate_frequency: "2h"
+logging_common_alloy_prometheus_wal_max_keepalive_time: "8h"
+
+# Full Alloy River config override. When set, bypasses all structured vars above
+# and the alloy-config.alloy.j2 template entirely.
+# logging_common_alloy_config_raw: |
