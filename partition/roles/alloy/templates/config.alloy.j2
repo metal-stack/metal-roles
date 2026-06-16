@@ -30,8 +30,10 @@ loki.write "default" {
 }
 
 {% for snippet in alloy_config_snippets %}
+// snippet: {{ snippet }}
 {% include "snippets/" + snippet + ".alloy.j2" %}
 {% endfor %}
 {% for snippet in alloy_config_custom_snippets %}
+// snippet: {{ snippet }}
 {% include snippet %}
 {% endfor %}
