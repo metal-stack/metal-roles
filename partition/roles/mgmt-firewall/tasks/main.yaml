@@ -117,7 +117,7 @@
 
 - name: Create authorized keys file in /etc/dropbear
   ansible.builtin.raw: |
-    echo '{{mgmt_firewall_public_key}}' > ../etc/dropbear/authorized_keys
+    echo '{{ mgmt_firewall_public_key }}' > ../etc/dropbear/authorized_keys
 
 - name: Adjust Lan Default to not Bridge
   ansible.builtin.raw: |
@@ -132,9 +132,9 @@
 
 - name: Configure Default wan
   ansible.builtin.raw: |
-    uci set network.wan.ipaddr='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.ip_address}}'
-    uci set network.wan.netmask='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.net_mask}}'
-    uci set network.wan.gateway='{{mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway}}'
+    uci set network.wan.ipaddr='{{ mgmt_firewall_interfaces.mgmt_firewall_wan.default.ip_address }}'
+    uci set network.wan.netmask='{{ mgmt_firewall_interfaces.mgmt_firewall_wan.default.net_mask }}'
+    uci set network.wan.gateway='{{ mgmt_firewall_interfaces.mgmt_firewall_wan.default.gateway }}'
     uci add_list network.wan.dns='1.1.1.1'
     uci add_list network.wan.dns='1.0.0.1' # Hardcoded for now
     uci set network.wan.peerdns='0'
