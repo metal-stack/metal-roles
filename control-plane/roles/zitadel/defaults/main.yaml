@@ -10,7 +10,6 @@ zitadel_endpoint: >-
   {%- endif %}
 zitadel_namespace: "{{ metal_control_plane_namespace }}"
 zitadel_external_domain:
-
 zitadel_ingress_dns: >-
   {% if zitadel_httproute_enabled -%}
   https://zitadel.{{ metal_control_plane_gateway_dns }}:443
@@ -35,7 +34,6 @@ zitadel_enabled_ingress: true
 
 zitadel_httproute_enabled: false
 zitadel_httproute_parent_refs: []
-
 zitadel_init_config: {}
   # static_users:
   #   - first_name: Olli

@@ -30,7 +30,8 @@
 
 - name: Check alloy_config_snippets only contains supported snippets
   assert:
-    fail_msg: "alloy_config_snippets contains unsupported snippet(s): {{ alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta']) | join(', ') }}"
+    fail_msg: "alloy_config_snippets contains unsupported snippet(s): {{ alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta'])
+      | join(', ') }}"
     quiet: true
     that:
       - alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta']) | length == 0

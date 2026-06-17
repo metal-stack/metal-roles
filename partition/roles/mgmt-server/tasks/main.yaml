@@ -47,13 +47,13 @@
   block:
     - name: add docker gpg key
       get_url:
-        url: "https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg"
+        url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
         dest: /etc/apt/keyrings/docker.asc
 
     - name: add docker repository
       apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release|lower
-          }} stable"
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release
+          | lower }} stable"
 
     - name: install docker
       apt:
@@ -112,7 +112,7 @@
   copy:
     content: "{{ item.content }}"
     dest: "{{ item.dest }}"
-    mode: "{{ item.mode}}"
+    mode: "{{ item.mode }}"
     owner: metal
     group: metal
   no_log: true
@@ -150,7 +150,7 @@
   lineinfile:
     dest: /etc/hosts
     regexp: ".*\\s{{ item }}$"
-    line: "{{ hostvars[item].ansible_host }} {{ item }} {{ hostvars[item].host_alias|default('') }}"
+    line: "{{ hostvars[item].ansible_host }} {{ item }} {{ hostvars[item].host_alias | default('') }}"
     owner: root
     group: root
     mode: "0644"

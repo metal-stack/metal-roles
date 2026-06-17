@@ -50,7 +50,6 @@ nsq_registry_auth:
 
 nsq_tcproute_enabled: false
 nsq_tcproute_parent_refs: []
-
 nsq_enable_security_context: false
 
 nsq_sts_security_context:
