@@ -33,7 +33,7 @@
     dest: /etc/sonic/frr/frr.conf
   when: sonic_config_frr_render
   notify:
-    - restart bgp
+    - reload frr
 
 - name: Render iptables.json
   template:
@@ -47,7 +47,7 @@
   copy:
     src: frr-reload.service
     dest: /etc/systemd/system/frr-reload.service
-  notify:
-    - reload systemd daemon
-    - reload frr
-  changed_when: true
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true

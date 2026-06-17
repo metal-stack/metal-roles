@@ -1,0 +1,28 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for logging-common are set
+  assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - logging_common_alloy_chart_version is defined
+      - logging_common_alloy_chart_repo is defined
+      - logging_common_alloy_loki_write_endpoints | length > 0 or logging_common_alloy_config_raw | default('') | length > 0
+      - logging_common_alloy_cluster_label | length > 0
+
+- name: Build Alloy config
+  set_fact:
+    logging_common_alloy_config: "{{ lookup('template', role_path + '/templates/alloy-config.alloy.j2') if (logging_common_alloy_config_raw | default('') | length == 0) else logging_common_alloy_config_raw }}"
+
+- name: Deploy Alloy
+  kubernetes.core.helm:
+    name: alloy
+    chart_repo_url: "{{ logging_common_alloy_chart_repo }}"
+    chart_version: "{{ logging_common_alloy_chart_version }}"
+    chart_ref: alloy
+    namespace: "{{ logging_common_alloy_namespace }}"
+    values: "{{ lookup('template', role_path + '/templates/alloy-values.yaml') | from_yaml }}"
+    kubeconfig: "{{ logging_common_alloy_kubeconfig | default(omit) }}"
+    create_namespace: true
