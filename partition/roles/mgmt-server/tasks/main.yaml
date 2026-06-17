@@ -20,7 +20,7 @@
 
 # Note: systemd timedatectl does not modify /etc/timezone but /etc/localtime. This is "ok"!
 - name: apply timezone to align with the global setting
-  timezone:
+  community.general.timezone:
     name: UTC
 
 - name: collect facts about system services
