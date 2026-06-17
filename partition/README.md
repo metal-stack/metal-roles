@@ -40,7 +40,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | [metal-bmc](roles/metal-bmc)                 | Deploys metal-bmc                           |
 | [metal-core](roles/metal-core)               | Deploys metal-core                          |
 | [pixiecore](roles/pixiecore)                 | Deploys pixiecore                           |
-| [promtail](roles/promtail)                   | Deploys promtail                            |
+| [alloy](roles/alloy)                         | Deploys alloy                               |
 
 ## Examples
 

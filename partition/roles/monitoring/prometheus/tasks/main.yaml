@@ -88,7 +88,7 @@
       dest: /etc/systemd/system/ipmi-exporter-targets.timer
     - template: ipmi-exporter-targets.py
       dest: "{{ prometheus_config_host_dir }}/ipmi-exporter-targets.py"
-      mode: 'a+x'
+      mode: "a+x"
   loop_control:
     label: "{{ item.dest }}"
   when: not prometheus_ipmi_exporter_targets
@@ -120,13 +120,26 @@
   set_fact:
     prometheus_promtail_sd:
       - labels:
-          job: frr
+          job: promtail
         targets: "{{ prometheus_promtail_targets }}"
 
 - name: create promtail.yaml
   copy:
     content: "{{ prometheus_promtail_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/promtail.yaml"
+  notify: restart prometheus
+
+- name: generate prometheus_alloy_sd
+  set_fact:
+    prometheus_alloy_sd:
+      - labels:
+          job: alloy
+        targets: "{{ prometheus_alloy_targets }}"
+
+- name: create alloy.yaml
+  copy:
+    content: "{{ prometheus_alloy_sd | to_nice_yaml(indent=2) }}"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/alloy.yaml"
   notify: restart prometheus
 
 - name: generate prometheus_sonic_exporter_sd

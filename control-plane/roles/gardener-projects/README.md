@@ -1,6 +1,6 @@
-# gardener-shoots
+# gardener-projects
 
-Deploys shoots into the virtual garden. This can also be used for shooted seeds.
+Deploys projects into the virtual garden.
 
 Please refer to the metal-stack gardener integration in
 our [documentation](https://docs.metal-stack.io/stable/overview/kubernetes/).

@@ -1,10 +1,14 @@
 ---
 headscale_namespace: "{{ metal_control_plane_namespace }}"
-headscale_ingress_dns: "headscale.{{ metal_control_plane_ingress_dns }}"
+headscale_ingress_dns: >-
+  {% if headscale_httproute_enabled -%}
+  headscale.{{ metal_control_plane_gateway_dns }}
+  {%- else -%}
+  headscale.{{ metal_control_plane_ingress_dns }}
+  {%- endif %}
 
-headscale_tls: yes
+headscale_tls: true
 headscale_ingress_annotations: {}
-
 headscale_resources:
   requests:
     cpu: 100m
@@ -17,3 +21,8 @@ headscale_api_key_expiration: 365d
 
 headscale_ipv4_prefix: 100.64.0.0/10
 headscale_ipv6_prefix: fd7a:115c:a1e0::/48
+
+headscale_httproute_enabled: false
+headscale_httproute_hostnames: []
+headscale_httproute_parent_refs: []
+headscale_httproute_https_redirect: {}
