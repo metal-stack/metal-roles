@@ -34,6 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@main
+        uses: ansible/ansible-lint@v26.1.1
         with:
           requirements_file: requirements.yaml
