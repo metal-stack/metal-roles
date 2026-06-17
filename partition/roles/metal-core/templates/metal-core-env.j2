@@ -4,7 +4,9 @@ METAL_CORE_ASN: "{{ asn }}"
 METAL_CORE_CIDR: "{{ metal_core_cidr }}"
 METAL_CORE_PARTITION_ID: "{{ metal_partition_id }}"
 METAL_CORE_RACK_ID: "{{ metal_core_rack_id }}"
+{% if metal_core_room_id is defined and metal_core_room_id %}
 METAL_CORE_ROOM_ID: "{{ metal_core_room_id }}"
+{% endif %}
 METAL_CORE_BIND_ADDRESS: 0.0.0.0
 METAL_CORE_METAL_API_IP: "{{ metal_partition_metal_api_addr }}"
 METAL_CORE_METAL_API_PORT: "{{ metal_partition_metal_api_port }}"
