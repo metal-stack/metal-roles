@@ -28,11 +28,7 @@ nsq_nsq_admin_resources:
 
 nsq_log_level: info
 nsq_broadcast_address: >-
-  {% if nsq_tcproute_enabled -%}
-  {{ metal_control_plane_gateway_dns }}
-  {%- else -%}
-  {{ metal_control_plane_ingress_dns }}
-  {%- endif %}
+  {% if nsq_tcproute_enabled -%}{{ metal_control_plane_gateway_dns }}{%- else -%}{{ metal_control_plane_ingress_dns }}{%- endif %}
 nsq_nsqd_data_size: 100Mi
 
 nsq_tls_enabled: false
