@@ -98,6 +98,8 @@ metal_stack_release:
     capms_controller_name: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.name"
     capms_controller_tag: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.tag"
     # third party
+    alloy_image_tag: "docker-images.third-party.partition.alloy.tag"
+    alloy_image_name: "docker-images.third-party.partition.alloy.name"
     event_exporter_name: "docker-images.third-party.control-plane.event-exporter.name"
     event_exporter_tag: "docker-images.third-party.control-plane.event-exporter.tag"
     nsq_image_tag: "docker-images.third-party.control-plane.nsq.tag"
@@ -165,6 +167,8 @@ metal_stack_release:
     logging_chart_repo: "helm-charts.logging.loki.repository"
     gardener_logging_alloy_chart_version: "helm-charts.logging.alloy.version"
     gardener_logging_alloy_chart_repo: "helm-charts.logging.alloy.repository"
+    logging_alloy_chart_version: "helm-charts.logging.alloy.version"
+    logging_alloy_chart_repo: "helm-charts.logging.alloy.repository"
     logging_promtail_chart_version: "helm-charts.logging.promtail.version"
     logging_promtail_chart_repo: "helm-charts.logging.promtail.repository"
     gardener_logging_promtail_chart_version: "helm-charts.logging.promtail.version"
