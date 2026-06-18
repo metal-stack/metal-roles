@@ -44,6 +44,8 @@
     force_apt_get: true
 
 - name: install docker
+  when: "'docker.service' not in services"
+
   block:
     - name: add docker gpg key
       get_url:
@@ -59,8 +61,6 @@
       apt:
         name:
           - docker-ce
-  when: "'docker.service' not in services"
-
 - name: copy docker daemon.json
   template:
     src: daemon.json.j2
