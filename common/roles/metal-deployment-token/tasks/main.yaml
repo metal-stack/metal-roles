@@ -1,5 +1,8 @@
 ---
 - name: Create admin api token for the deployment
+  delegate_to: localhost
+  run_once: true
+  when: metal_deployment_admin_token is not defined
   block:
     - name: Wait until the metal-apiserver is running
       kubernetes.core.k8s_info:
@@ -30,7 +33,3 @@
     - name: Set deployment token
       set_fact:
         metal_deployment_admin_token: "{{ _generated_token.stdout_lines[-1] }}"
-
-  delegate_to: localhost
-  run_once: true
-  when: metal_deployment_admin_token is not defined

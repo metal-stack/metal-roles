@@ -12,7 +12,6 @@ exclude_paths:
 # TODO: we need to gradually fix these!
 warn_list:
   - role-name
-  - key-order
   - schema
   - name
   - var-naming
