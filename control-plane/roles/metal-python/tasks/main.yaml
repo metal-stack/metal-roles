@@ -26,7 +26,7 @@
         name: metal_python=={{ metal_python_version }}
       when: not metal_python_install_from_git_repository | bool
 
-    - name: Install metal-python {{ metal_python_version }} from git repository
+    - name: Install metal-python from git repository {{ metal_python_version }}
       ansible.builtin.pip:
         name: git+https://github.com/metal-stack/metal-python.git@{{ metal_python_version }}
       when: metal_python_install_from_git_repository | bool

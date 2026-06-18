@@ -15,7 +15,7 @@
       - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
 
-- name: render resolv.conf
+- name: Render resolv.conf
   ansible.builtin.template:
     src: resolv.conf.j2
     dest: /etc/resolv.conf
@@ -52,7 +52,7 @@
   notify:
     - restart bgp
 
-- name: render iptables.json
+- name: Render iptables.json
   ansible.builtin.template:
     src: iptables.json.j2
     dest: /etc/sonic/iptables.json

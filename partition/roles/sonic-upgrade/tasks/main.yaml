@@ -40,5 +40,5 @@
   ansible.builtin.wait_for:
     timeout: 60
 
-- name: clean up images
+- name: Clean up images
   ansible.builtin.command: sonic-installer cleanup -y

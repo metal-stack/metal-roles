@@ -1,5 +1,5 @@
 ---
-- name: check mandatory variables for this role are set
+- name: Check mandatory variables for this role are set
   ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
@@ -10,23 +10,23 @@
       - mgmt_server_metal_ssh_privkey is not none
       - mgmt_server_metal_ssh_pubkey is not none
 
-- name: gather package facts
+- name: Gather package facts
   ansible.builtin.package_facts:
     manager: auto
 
-- name: set hostname
+- name: Set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
 # Note: systemd timedatectl does not modify /etc/timezone but /etc/localtime. This is "ok"!
-- name: apply timezone to align with the global setting
+- name: Apply timezone to align with the global setting
   community.general.timezone:
     name: UTC
 
-- name: collect facts about system services
+- name: Collect facts about system services
   ansible.builtin.service_facts:
 
-- name: set name servers to resolve dns
+- name: Set name servers to resolve dns
   ansible.builtin.template:
     src: resolved.conf.j2
     dest: /etc/systemd/resolved.conf
@@ -34,7 +34,7 @@
     - restart systemd-resolved
   when: "'systemd-resolved.service' in services"
 
-- name: install required packages to have the network stack in place
+- name: Install required packages to have the network stack in place
   ansible.builtin.apt:
     name:
       - net-tools
@@ -43,31 +43,31 @@
     update_cache: true
     force_apt_get: true
 
-- name: install docker
+- name: Install docker
   when: "'docker.service' not in services"
 
   block:
-    - name: add docker gpg key
+    - name: Add docker gpg key
       ansible.builtin.get_url:
         url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
         dest: /etc/apt/keyrings/docker.asc
 
-    - name: add docker repository
+    - name: Add docker repository
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release
           | lower }} stable"
 
-    - name: install docker
+    - name: Install docker
       ansible.builtin.apt:
         name:
           - docker-ce
-- name: copy docker daemon.json
+- name: Copy docker daemon.json
   ansible.builtin.template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
   notify: reload docker
 
-- name: enable ipv4 forward to route packages as required
+- name: Enable ipv4 forward to route packages as required
   ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -78,28 +78,29 @@
     - key: net.ipv4.ip_forward
       value: "1"
 
-- name: configure forward chain to accept to route packages
+- name: Configure forward chain to accept to route packages
   ansible.builtin.iptables:
     chain: FORWARD
     policy: ACCEPT
   notify: persist iptables
 
-- name: configure forward chain of docker-user to accept
+- name: Configure forward chain of docker-user to accept
   ansible.builtin.iptables:
     chain: DOCKER-USER
     jump: ACCEPT
   notify: persist iptables
 
-- name: flush handlers
+- name: Flush handlers
   ansible.builtin.meta: flush_handlers
-- name: check if FRR is installed
+- name: Check if FRR is installed
   ansible.builtin.set_fact:
     frr_installed: "{{ ('frr' in ansible_facts and ansible_facts.packages['frr'] == mgmt_server_frr_version) | bool }}"
 
-- ansible.builtin.include_tasks: install_frr.yaml
+- name: Import tasks for deploying FRR
+  ansible.builtin.import_tasks: install_frr.yaml
   when: not frr_installed
 
-- name: render FRR conf to apply the required BGP setup
+- name: Render FRR conf to apply the required BGP setup
   ansible.builtin.template:
     src: frr.conf.j2
     dest: /etc/frr/frr.conf
@@ -132,7 +133,7 @@
     regexp: "^{{ mgmt_server_metal_ssh_pubkey }}$"
     line: "{{ mgmt_server_metal_ssh_pubkey }}"
 
-- name: configure sshd to avoid root login and password authentication, hide OS information
+- name: Configure sshd to avoid root login and password authentication, hide OS information
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
@@ -165,9 +166,9 @@
     owner: metal
     group: metal
 
-- name: flush handlers to complete the mgmt-server setup
+- name: Flush handlers to complete the mgmt-server setup
   ansible.builtin.meta: flush_handlers
-- name: flush dhcp routes if we have a bgp session to the firewall
+- name: Flush dhcp routes if we have a bgp session to the firewall
   ansible.builtin.command: ip route flush proto dhcp
   when:
     - mgmt_server_firewall_ip is defined

@@ -12,12 +12,12 @@
       - ztp_authorized_keys is not none
       - "'user.sh' not in ztp_additional_files | map(attribute='name')"
 
-- name: create ztp config directory
+- name: Create ztp config directory
   ansible.builtin.file:
     path: "{{ ztp_host_dir_path }}/config"
     state: directory
 
-- name: render templates
+- name: Render templates
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ ztp_host_dir_path }}/config/{{ item | splitext | first }}"
@@ -26,7 +26,7 @@
     - ztp.json.j2
     - user.sh.j2
 
-- name: copy static files
+- name: Copy static files
   ansible.builtin.copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item }}"
     src: "{{ item }}"
@@ -35,7 +35,7 @@
     - frr.conf
     - config_db.json
 
-- name: copy additional files
+- name: Copy additional files
   ansible.builtin.copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
     content: "{{ item.data }}"
@@ -44,7 +44,7 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: deploy server for serving ztp files
+- name: Deploy server for serving ztp files
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:

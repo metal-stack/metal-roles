@@ -1,5 +1,5 @@
 ---
-- name: check mandatory variables for this role are set
+- name: Check mandatory variables for this role are set
   ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
@@ -8,46 +8,48 @@
       - frr_repo is not none
       - ansible_os_family in ['Debian', 'RedHat']
 
-- name: gather package facts
+- name: Gather package facts
   ansible.builtin.package_facts:
     manager: auto
 
-- name: check if frr is installed
+- name: Check if frr is installed
   ansible.builtin.set_fact:
     frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version | string in (ansible_facts.packages['frr'][0].version)))
       | bool }}"
 
-- ansible.builtin.import_tasks: install/debian.yaml
+- name: Import tasks for Debian
+  ansible.builtin.import_tasks: install/debian.yaml
   when: not frr_installed and ansible_os_family == 'Debian'
 
-- ansible.builtin.import_tasks: install/redhat.yaml
+- name: Import tasks for RedHat
+  ansible.builtin.import_tasks: install/redhat.yaml
   when: not frr_installed and ansible_os_family == 'RedHat'
 
-- name: copy sysctls for frr
+- name: Copy sysctls for frr
   ansible.builtin.copy:
     src: sysctl.conf
     dest: /etc/sysctl.d/98-frr.conf
   notify: reload sysctls
 
-- name: enable vtysh
+- name: Enable vtysh
   ansible.builtin.copy:
     src: vtysh.conf
     dest: /etc/frr/
   notify: restart frr
 
-- name: enable frr daemons
+- name: Enable frr daemons
   ansible.builtin.copy:
     src: daemons
     dest: /etc/frr/daemons
   notify: restart frr
 
-- name: ensure frr is started
+- name: Ensure frr is started
   ansible.builtin.systemd:
     name: frr
     enabled: true
     state: started
 
-- name: copy frr conf
+- name: Copy frr conf
   ansible.builtin.copy:
     content: "{{ frr_conf }}"
     dest: /etc/frr/frr.conf

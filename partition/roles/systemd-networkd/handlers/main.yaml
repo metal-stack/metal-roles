@@ -1,5 +1,5 @@
 ---
-- name: restart systemd-networkd
+- name: Restart systemd-networkd
   ansible.builtin.service:
     name: systemd-networkd
     state: restarted
@@ -7,7 +7,7 @@
   poll: 0
   notify: wait for new connection
 
-- name: restart systemd-udev-trigger
+- name: Restart systemd-udev-trigger
   ansible.builtin.service:
     name: systemd-udev-trigger
     state: restarted
@@ -15,14 +15,14 @@
   poll: 0
   notify: wait for new connection
 
-- name: wait for new connection
+- name: Wait for new connection
   ansible.builtin.wait_for_connection:
     connect_timeout: 20
     sleep: 5
     delay: 5
     timeout: 300
 
-- name: copy rename script to host
+- name: Copy rename script to host
   ansible.builtin.copy:
     src: rename-interfaces.sh
     dest: /root/rename-interfaces.sh
@@ -31,7 +31,7 @@
     mode: "0755"
   listen: rename interfaces
 
-- name: execute interface rename script
+- name: Execute interface rename script
   ansible.builtin.command: /root/rename-interfaces.sh
   async: 300
   poll: 10

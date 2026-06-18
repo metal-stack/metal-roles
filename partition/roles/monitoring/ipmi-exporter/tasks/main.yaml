@@ -7,7 +7,7 @@
       - monitoring_ipmi_bmc_superuser is defined
       - monitoring_ipmi_bmc_superuser_pwd is defined
 
-- name: create ipmi_exporter directories
+- name: Create ipmi_exporter directories
   ansible.builtin.file:
     path: "{{ monitoring_ipmi_exporter_etc_host_dir }}"
     state: directory
@@ -15,13 +15,13 @@
     group: "root"
     mode: "0755"
 
-- name: copy ipmi_exporter config
+- name: Copy ipmi_exporter config
   ansible.builtin.template:
     src: config.yml.j2
     dest: "{{ monitoring_ipmi_exporter_etc_host_dir }}/config.yml"
   register: ipmi_config
 
-- name: deploy ipmi_exporter service
+- name: Deploy ipmi_exporter service
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
@@ -39,13 +39,13 @@
       - --config.file=/etc/ipmi_exporter/config.yml
     systemd_docker_log_driver: "{{ monitoring_ipmi_exporter_docker_log_driver }}"
 
-- name: wait for ipmi_exporter to listen on port
+- name: Wait for ipmi_exporter to listen on port
   ansible.builtin.wait_for:
     port: "{{ monitoring_ipmi_exporter_port }}"
     timeout: 300
     msg: "ipmi_exporter did not come up"
 
-- name: restart ipmi_exporter
+- name: Restart ipmi_exporter
   ansible.builtin.systemd:
     name: "ipmi_exporter"
     state: restarted

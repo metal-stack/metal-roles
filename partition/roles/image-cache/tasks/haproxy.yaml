@@ -1,12 +1,12 @@
 ---
-- name: create haproxy directories
+- name: Create haproxy directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   loop:
     - "{{ image_cache_haproxy_host_dir_path }}/config"
 
-- name: template haproxy config
+- name: Template haproxy config
   ansible.builtin.template:
     src: haproxy.j2
     dest: "{{ image_cache_haproxy_host_dir_path }}/config/haproxy.cfg"
@@ -15,7 +15,7 @@
     mode: "0755"
   register: result
 
-- name: deploy haproxy service
+- name: Deploy haproxy service
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
