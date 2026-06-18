@@ -1,0 +1,51 @@
+---
+set_resource_limits: {{ metal_set_resource_limits }}
+
+images:
+  metal_console:
+    image: "{{ metal_console_image_name }}"
+    imagePullPolicy: "{{ metal_console_image_pull_policy }}"
+    tag: "{{ metal_console_image_tag }}"
+
+resources:
+{% if metal_console_resources %}
+  metal_console: {{ metal_console_resources | to_json }}
+{% endif %}
+  placeholder: "prevents setting .resources to {} if no values are specified"
+
+metal_console:
+  enabled: {{ metal_console_enabled and metal_console_use_apiserver }}
+  replicas: "{{ metal_console_replicas }}"
+  tcpRoute:
+    enabled: {{ metal_console_tcproute_enabled }}
+    parentRefs: {{ metal_console_tcproute_parent_refs | to_json }}
+  bmc_proxy:
+    tls:
+      server_key_enc: "{{ metal_console_bmc_proxy_certs_server_key | b64encode }}"
+      server_pub_enc: "{{ metal_console_bmc_proxy_certs_server_pub | b64encode }}"
+      client_key_enc: "{{ metal_console_bmc_proxy_certs_client_key | b64encode }}"
+      client_cert_enc: "{{ metal_console_bmc_proxy_certs_client_cert | b64encode }}"
+      ca_cert_enc: "{{ metal_console_bmc_proxy_certs_ca_cert | b64encode }}"
+  token: {{ metal_console_token | to_json }}
+  token_renewal: {{ metal_console_token_renewal | to_json }}
+
+ports:
+  metal_apiserver: {{ metal_apiserver_port }}
+  metal_console: {{ metal_console_port }}
+
+metal_apiserver:
+  base_path: ""
+
+metal_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
+metal_registry_auth:
+  auths:
+    "{{ metal_registry_url }}":
+      username: "{{ metal_registry_auth_user }}"
+      password: "{{ metal_registry_auth_password }}"
+      auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
+
+pod_disruption_budget:
+  metal_console:
+    enabled: {{ metal_console_pdb_enabled | lower }}
+    min_available: {{ metal_console_pdb_min_available }}
+

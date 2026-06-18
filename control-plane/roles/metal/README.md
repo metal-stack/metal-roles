@@ -186,6 +186,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | Name                                      | Mandatory | Description                                                                      |
 |-------------------------------------------|-----------|----------------------------------------------------------------------------------|
 | metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console                             |
+| metal_console_use_apiserver               |           | Determines if the metal-console should use the new v2 chart and setup            |
 | metal_console_replicas                    |           | The number of deployed replicas of the metal-console                             |
 | metal_console_resources                   |           | Sets the given container resources                                               |
 | metal_console_bmc_proxy_certs_ca_cert     |           | The bmc-proxy ca certificate as a string (required if enabled)                   |
@@ -197,6 +198,13 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_console_pdb_min_available           |           | The minimum number of available pods for the metal-console Pod Disruption Budget |
 | metal_console_tcproute_enabled            |           | Deploys a Gateway API TCPRoute exposing the metal-console                        |
 | metal_console_tcproute_parent_refs        |           | List of `parentRefs` (Gateways) the metal-console TCPRoute attaches to           |
+| metal_console_token                       |           | The metal-apiserver token for the metal-console                                  |
+| metal_console_token_renewal               |           | Configuration regarding the renewal of the metal-apiserver token in Kubernetes   |
+| metal_console_helm_chart                  |           | The repository URL of the metal console oci helm chart                           |
+| metal_console_helm_chart_tag              |           | The tag of the metal console oci helm chart                                      |
+| metal_console_helm_chart_version          |           | The version of the metal console helm chart                                      |
+| metal_console_helm_chart_local_path       |           | Local path to the metal console helm chart, useful for development purposes      |
+| metal_console_helm_chart_timeout          |           | Timeout for deploying the metal console helm chart                               |
 
 ### ipam
 
