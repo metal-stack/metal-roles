@@ -16,7 +16,8 @@
   ansible.builtin.fail:
     msg: >-
       DEPRECATION: logging_promtail_enabled is true. Promtail support is deprecated
-      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/logging#migration-from-promtail for instructions.
+      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/logging#migration-from-promtail
+      for instructions.
   when: logging_promtail_enabled | bool
   ignore_errors: true
 

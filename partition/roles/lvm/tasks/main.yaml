@@ -9,7 +9,7 @@
       - lvm_lvs is not none
 
 - name: create volumegroup
-  lvg:
+  community.general.lvg:
     vg: "{{ lvm_vg }}"
     pvs: "{{ lvm_pvs }}"
 
