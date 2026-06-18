@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.import_tasks: redhat.yaml
+- name: Import tasks for RedHat
+  ansible.builtin.import_tasks: redhat.yaml
   when: ansible_os_family == 'RedHat'
 
 - name: Enable systemd-networkd
@@ -77,7 +78,8 @@
   loop_control:
     index_var: i
 
-- ansible.builtin.include_tasks: vxlans.yaml
+- name: Import tasks for VXLANs
+  ansible.builtin.import_tasks: vxlans.yaml
   when: systemd_networkd_vxlans
 
 - name: Flush handlers

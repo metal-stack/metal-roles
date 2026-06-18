@@ -16,7 +16,7 @@
 
       when: not metal_v2_client_install_from_git_repository | bool
 
-    - name: Install metal-stack-api client library {{ metal_api_version }} from git repository
+    - name: Install metal-stack-api client library from git repository {{ metal_api_version }}
       ansible.builtin.pip:
         name: git+https://github.com/metal-stack/api.git@{{ metal_api_version }}#subdirectory=python
       when: metal_v2_client_install_from_git_repository | bool

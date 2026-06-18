@@ -1,5 +1,5 @@
 ---
-- name: install frr
+- name: Install frr
   ansible.builtin.dnf:
     name: frr
     state: present

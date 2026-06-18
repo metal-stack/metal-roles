@@ -8,16 +8,19 @@
 
 # config is written to /etc/default/isc-dhcp-relay
 
-- name: add dhcp relay interface
+- name: Add dhcp relay interface
   ansible.builtin.command: net add dhcp relay interface {{ dhcp_relay_interface }}
-- name: remove priorly configured dhcp relay servers
+
+- name: Remove priorly configured dhcp relay servers
   ansible.builtin.command: net del dhcp relay server
-- ansible.builtin.set_fact:
+
+- name: Listify dhcp relays servers
+  ansible.builtin.set_fact:
     _dhcp_relay_servers: "{{ [dhcp_relay_server] if dhcp_relay_server is string else dhcp_relay_server }}"
 
-- name: add dhcp relay server
+- name: Add dhcp relay server
   ansible.builtin.command: net add dhcp relay server {{ item }}
   loop: "{{ _dhcp_relay_servers }}"
 
-- name: commit configuration
+- name: Commit configuration
   ansible.builtin.command: net commit

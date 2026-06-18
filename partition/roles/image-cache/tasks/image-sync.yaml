@@ -1,5 +1,5 @@
 ---
-- name: deploy image-sync service
+- name: Deploy image-sync service
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:

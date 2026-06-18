@@ -17,7 +17,7 @@
   when:
     - metal_control_plane_host_provider == "gcp"
 
-- name: metal control plane service cidr
+- name: Metal control plane service cidr
   ansible.builtin.import_tasks: control-plane-networks/metal.yaml
   when:
     - metal_control_plane_host_provider == "metal"

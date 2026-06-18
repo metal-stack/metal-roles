@@ -1,40 +1,40 @@
 ---
-- name: restart systemd-resolved
+- name: Restart systemd-resolved
   ansible.builtin.service:
     name: systemd-resolved
     state: restarted
 
-- name: reload frr
+- name: Reload frr
   ansible.builtin.service:
     name: frr
     enabled: true
     state: reloaded
 
-- name: restart frr
+- name: Restart frr
   ansible.builtin.service:
     name: frr
     enabled: true
     state: restarted
 
-- name: reload docker
+- name: Reload docker
   ansible.builtin.service:
     name: docker
     enabled: true
     state: reloaded
 
-- name: reload systemd
+- name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: save iptables v4 rules
+- name: Save iptables v4 rules
   ansible.builtin.shell: iptables-save > /etc/iptables/rules.v4
   listen: persist iptables
 
-- name: save iptables v6 rules
+- name: Save iptables v6 rules
   ansible.builtin.shell: ip6tables-save > /etc/iptables/rules.v6
   listen: persist iptables
 
-- name: restart sshd
+- name: Restart sshd
   ansible.builtin.service:
     name: sshd
     enabled: true
