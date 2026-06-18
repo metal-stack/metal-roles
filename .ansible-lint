@@ -21,5 +21,4 @@ warn_list:
   - risky-shell-pipe
   - no-changed-when
   - no-handler
-  - fqcn
   - ignore-errors

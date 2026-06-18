@@ -1,13 +1,13 @@
 ---
 - name: check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
       - wireguard_ip is not none
 
 - name: install wireguard
-  apt:
+  ansible.builtin.apt:
     name: wireguard
     update_cache: true
     state: latest
@@ -18,7 +18,7 @@
   tags: wg-install
 
 - name: enable packet forwarding for IPv4
-  sysctl:
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: "1"
     sysctl_set: true
@@ -27,7 +27,7 @@
   tags: wg-install
 
 - name: create wireguard certificates directory
-  file:
+  ansible.builtin.file:
     dest: "{{ wireguard_cert_directory }}"
     state: directory
     owner: "{{ wireguard_cert_owner }}"
@@ -36,7 +36,7 @@
   tags: wg-generate-keys
 
 - name: set path to private key file
-  set_fact:
+  ansible.builtin.set_fact:
     _private_key_file_path: "{{ wireguard_cert_directory }}/{{ inventory_hostname }}.private.key"
     _public_key_file_path: "{{ wireguard_cert_directory }}/{{ inventory_hostname }}.public.key"
   tags: wg-generate-keys
@@ -48,17 +48,17 @@
 
   block:
     - name: store public key file
-      copy:
+      ansible.builtin.copy:
         content: "{{ wireguard_public_key }}"
         dest: "{{ _public_key_file_path }}"
         mode: "0600"
     - name: store private key file
-      copy:
+      ansible.builtin.copy:
         content: "{{ wireguard_private_key }}"
         dest: "{{ _private_key_file_path }}"
         mode: "0600"
 - name: register if private key already exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ _private_key_file_path }}"
   register: private_key_file_stat
   tags: wg-generate-keys
@@ -74,19 +74,19 @@
       tags: skip_ansible_lint
 
     - name: set private key fact
-      set_fact:
+      ansible.builtin.set_fact:
         _wg_private_key: "{{ _wg_private_key_result.stdout }}"
 
     - name: generate wireguard public key
-      shell: "echo {{ _wg_private_key }} | wg pubkey | tee {{ _public_key_file_path }}"
+      ansible.builtin.shell: "echo {{ _wg_private_key }} | wg pubkey | tee {{ _public_key_file_path }}"
       register: _wg_public_key_result
 
     - name: set public key fact
-      set_fact:
+      ansible.builtin.set_fact:
         _wg_public_key: "{{ _wg_public_key_result.stdout }}"
 
     - name: print out public key
-      debug:
+      ansible.builtin.debug:
         msg: "generated wireguard public key: {{ _wg_public_key }}"
 
 - name: write wireguard configuration
@@ -94,16 +94,16 @@
 
   block:
     - name: slurp private key file
-      slurp:
+      ansible.builtin.slurp:
         src: "{{ _private_key_file_path }}"
       register: slurped_private_key
 
     - name: read private key
-      set_fact:
+      ansible.builtin.set_fact:
         private_key: "{{ slurped_private_key.content | b64decode }}"
 
     - name: render wireguard configuration
-      template:
+      ansible.builtin.template:
         dest: /etc/wireguard/wg0.conf
         src: wireguard_server.conf.j2
         owner: root
@@ -111,7 +111,7 @@
         mode: 640
       notify: enable and restart wireguard
 - name: start wireguard
-  service:
+  ansible.builtin.service:
     name: wg-quick@wg0
     enabled: true
     state: started

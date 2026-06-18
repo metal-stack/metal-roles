@@ -1,6 +1,6 @@
 ---
 - name: create node_exporter directories
-  file:
+  ansible.builtin.file:
     path: "{{ monitoring_node_exporter_dir }}/host"
     state: directory
     owner: "root"
@@ -8,7 +8,7 @@
     mode: "0755"
 
 - name: deploy node_exporter service
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: node_exporter

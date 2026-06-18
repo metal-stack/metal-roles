@@ -1,6 +1,6 @@
 ---
 - name: create blackbox_exporter directories
-  file:
+  ansible.builtin.file:
     path: "{{ monitoring_blackbox_exporter_etc_host_dir }}"
     state: directory
     owner: "root"
@@ -8,13 +8,13 @@
     mode: "0755"
 
 - name: copy blackbox_exporter config
-  template:
+  ansible.builtin.template:
     src: config.yml
     dest: "{{ monitoring_blackbox_exporter_etc_host_dir }}/config.yml"
   register: blackbox_config
 
 - name: deploy blackbox_exporter service
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: blackbox_exporter
@@ -33,13 +33,13 @@
     systemd_docker_log_driver: "{{ monitoring_blackbox_exporter_docker_log_driver }}"
 
 - name: wait for blackbox_exporter to listen on port
-  wait_for:
+  ansible.builtin.wait_for:
     port: "{{ monitoring_blackbox_exporter_port }}"
     timeout: 300
     msg: "blackbox_exporter did not come up"
 
 - name: restart blackbox_exporter
-  systemd:
+  ansible.builtin.systemd:
     name: "blackbox_exporter"
     state: restarted
     enabled: true

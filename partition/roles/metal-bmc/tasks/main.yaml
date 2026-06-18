@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -20,13 +20,13 @@
       - metal_bmc_console_key is not none
 
 - name: create nsq certs directory
-  file:
+  ansible.builtin.file:
     path: "{{ metal_bmc_nsq_cert_dir }}"
     state: directory
   when: metal_bmc_nsq_tls_enabled
 
 - name: copy nsq certificates
-  copy:
+  ansible.builtin.copy:
     dest: "{{ metal_bmc_nsq_cert_dir }}/{{ item.filename }}"
     mode: "0640"
     content: "{{ item.content }}"
@@ -44,7 +44,7 @@
   register: nsq_certs
 
 - name: create metal-bmc console certificates directory
-  file:
+  ansible.builtin.file:
     dest: "{{ metal_bmc_console_cert_dir }}"
     state: directory
     owner: "{{ metal_bmc_console_cert_owner }}"
@@ -52,7 +52,7 @@
     mode: "0700"
 
 - name: copy metal-bmc console certificates
-  copy:
+  ansible.builtin.copy:
     dest: "{{ metal_bmc_console_cert_dir }}/{{ item.filename }}"
     content: "{{ item.content }}"
     mode: "0640"
@@ -70,7 +70,7 @@
     label: "{{ item.filename }}"
 
 - name: deploy metal-bmc service
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_start: "{{ ensure_started.metal_bmc | default(true) }}"
