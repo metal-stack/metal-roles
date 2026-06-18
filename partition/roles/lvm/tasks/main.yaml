@@ -1,6 +1,6 @@
 ---
 - name: check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -14,7 +14,7 @@
     pvs: "{{ lvm_pvs }}"
 
 - name: create logical volumes
-  include_tasks: lv.yaml
+  ansible.builtin.include_tasks: lv.yaml
   loop: "{{ lvm_lvs }}"
   loop_control:
     loop_var: lv

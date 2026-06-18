@@ -1,6 +1,6 @@
 ---
 - name: restart caclmgrd
-  systemd:
+  ansible.builtin.systemd:
     name: caclmgrd
     state: restarted
 
@@ -14,13 +14,13 @@
   notify: wait for new connection
 
 - name: wait for new connection
-  wait_for_connection:
+  ansible.builtin.wait_for_connection:
     connect_timeout: 20
     sleep: 5
     delay: 30
     timeout: 300
 
 - name: restart bgp
-  systemd:
+  ansible.builtin.systemd:
     name: bgp
     state: restarted

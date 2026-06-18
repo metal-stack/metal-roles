@@ -1,6 +1,6 @@
 ---
 - name: Create proxy DNS secret
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -12,7 +12,7 @@
     apply: true
 
 - name: Deploy partition proxy in shooted seeds
-  include_tasks: proxy.yaml
+  ansible.builtin.include_tasks: proxy.yaml
   loop: "{{ gardener_partition_proxy_shooted_seeds }}"
   loop_control:
     loop_var: gardener_shooted_seed

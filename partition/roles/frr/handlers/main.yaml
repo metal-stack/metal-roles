@@ -1,13 +1,13 @@
 ---
 - name: reload frr
-  service:
+  ansible.builtin.service:
     name: frr
     state: reloaded
 
 - name: restart frr
-  service:
+  ansible.builtin.service:
     name: frr
     state: restarted
 
 - name: reload sysctls
-  command: sysctl --system
+  ansible.builtin.command: sysctl --system

@@ -1,6 +1,6 @@
 ---
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -9,17 +9,15 @@
 # config is written to /etc/default/isc-dhcp-relay
 
 - name: add dhcp relay interface
-  command: net add dhcp relay interface {{ dhcp_relay_interface }}
-
+  ansible.builtin.command: net add dhcp relay interface {{ dhcp_relay_interface }}
 - name: remove priorly configured dhcp relay servers
-  command: net del dhcp relay server
-
-- set_fact:
+  ansible.builtin.command: net del dhcp relay server
+- ansible.builtin.set_fact:
     _dhcp_relay_servers: "{{ [dhcp_relay_server] if dhcp_relay_server is string else dhcp_relay_server }}"
 
 - name: add dhcp relay server
-  command: net add dhcp relay server {{ item }}
+  ansible.builtin.command: net add dhcp relay server {{ item }}
   loop: "{{ _dhcp_relay_servers }}"
 
 - name: commit configuration
-  command: net commit
+  ansible.builtin.command: net commit

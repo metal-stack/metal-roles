@@ -1,6 +1,6 @@
 ---
 - name: check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -11,11 +11,11 @@
       - mgmt_server_metal_ssh_pubkey is not none
 
 - name: gather package facts
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 - name: set hostname
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
 # Note: systemd timedatectl does not modify /etc/timezone but /etc/localtime. This is "ok"!
@@ -24,10 +24,10 @@
     name: UTC
 
 - name: collect facts about system services
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: set name servers to resolve dns
-  template:
+  ansible.builtin.template:
     src: resolved.conf.j2
     dest: /etc/systemd/resolved.conf
   notify:
@@ -35,7 +35,7 @@
   when: "'systemd-resolved.service' in services"
 
 - name: install required packages to have the network stack in place
-  apt:
+  ansible.builtin.apt:
     name:
       - net-tools
       - ipmitool
@@ -48,27 +48,27 @@
 
   block:
     - name: add docker gpg key
-      get_url:
+      ansible.builtin.get_url:
         url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
         dest: /etc/apt/keyrings/docker.asc
 
     - name: add docker repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release
           | lower }} stable"
 
     - name: install docker
-      apt:
+      ansible.builtin.apt:
         name:
           - docker-ce
 - name: copy docker daemon.json
-  template:
+  ansible.builtin.template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
   notify: reload docker
 
 - name: enable ipv4 forward to route packages as required
-  sysctl:
+  ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     sysctl_set: true
@@ -79,29 +79,28 @@
       value: "1"
 
 - name: configure forward chain to accept to route packages
-  iptables:
+  ansible.builtin.iptables:
     chain: FORWARD
     policy: ACCEPT
   notify: persist iptables
 
 - name: configure forward chain of docker-user to accept
-  iptables:
+  ansible.builtin.iptables:
     chain: DOCKER-USER
     jump: ACCEPT
   notify: persist iptables
 
 - name: flush handlers
-  meta: flush_handlers
-
+  ansible.builtin.meta: flush_handlers
 - name: check if FRR is installed
-  set_fact:
+  ansible.builtin.set_fact:
     frr_installed: "{{ ('frr' in ansible_facts and ansible_facts.packages['frr'] == mgmt_server_frr_version) | bool }}"
 
-- include_tasks: install_frr.yaml
+- ansible.builtin.include_tasks: install_frr.yaml
   when: not frr_installed
 
 - name: render FRR conf to apply the required BGP setup
-  template:
+  ansible.builtin.template:
     src: frr.conf.j2
     dest: /etc/frr/frr.conf
     validate: "/usr/bin/vtysh --dryrun --inputfile %s"
@@ -109,7 +108,7 @@
     - reload frr
 
 - name: Copy ssh key pair for metal user
-  copy:
+  ansible.builtin.copy:
     content: "{{ item.content }}"
     dest: "{{ item.dest }}"
     mode: "{{ item.mode }}"
@@ -128,13 +127,13 @@
 
 # This is so that self connect and cross connect to the other mgmtserver is possible
 - name: Add own ssh key to authorized_keys
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /home/metal/.ssh/authorized_keys
     regexp: "^{{ mgmt_server_metal_ssh_pubkey }}$"
     line: "{{ mgmt_server_metal_ssh_pubkey }}"
 
 - name: configure sshd to avoid root login and password authentication, hide OS information
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
     regexp: "{{ item.regexp }}"
@@ -147,7 +146,7 @@
     - { regexp: "^DebianBanner .+", line: "DebianBanner no" }
 
 - name: Add IPs of all hosts to /etc/hosts to use those hostnames for connections
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/hosts
     regexp: ".*\\s{{ item }}$"
     line: "{{ hostvars[item].ansible_host }} {{ item }} {{ hostvars[item].host_alias | default('') }}"
@@ -159,7 +158,7 @@
   loop: "{{ mgmt_server_metal_ssh_groups }}"
 
 - name: Create ssh configuration for easier access to mgmt components
-  template:
+  ansible.builtin.template:
     src: ssh_config.j2
     dest: /home/metal/.ssh/config
     mode: "0644"
@@ -167,10 +166,9 @@
     group: metal
 
 - name: flush handlers to complete the mgmt-server setup
-  meta: flush_handlers
-
+  ansible.builtin.meta: flush_handlers
 - name: flush dhcp routes if we have a bgp session to the firewall
-  command: ip route flush proto dhcp
+  ansible.builtin.command: ip route flush proto dhcp
   when:
     - mgmt_server_firewall_ip is defined
     - mgmt_server_preserve_dhcp_route is undefined or not mgmt_server_preserve_dhcp_route

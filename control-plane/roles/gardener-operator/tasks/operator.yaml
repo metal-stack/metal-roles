@@ -1,6 +1,6 @@
 ---
 - name: Create backup infrastructure secret
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -13,7 +13,7 @@
   no_log: true
 
 - name: Create DNS provider secrets
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -30,7 +30,7 @@
   no_log: true
 
 - name: Create kube-apiserver authentication configmap
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: ConfigMap
@@ -45,7 +45,7 @@
   no_log: true
 
 - name: Create gardener dashboard oidc secret
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -61,7 +61,7 @@
   no_log: true
 
 - name: Create gardener dashboard frontend configmap
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: ConfigMap
@@ -76,7 +76,7 @@
     - gardener_operator_dashboard_config_frontend
 
 - name: Create gardener dashboard assets configmap
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: ConfigMap
@@ -95,7 +95,7 @@
     - gardener_operator_dashboard_config_assets
 
 - name: Deploy Gardener Operator
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
   vars:
     helm_timeout: "600s"
@@ -106,6 +106,6 @@
     helm_value_file_template: gardener-operator-values.j2
 
 - name: Create Garden
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'garden.yaml') }}"
     apply: true
