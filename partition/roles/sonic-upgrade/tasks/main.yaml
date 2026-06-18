@@ -31,7 +31,7 @@
   reboot:
 
 - name: Wait until sonic has become ready
-  shell: "show system status"
+  command: "show system status"
   register: result
   until: result is not failed
   retries: 30

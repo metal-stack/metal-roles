@@ -41,7 +41,7 @@
   when: sonic_render_config_db_template
 
 - name: Set NTP timezone
-  timezone:
+  community.general.timezone:
     name: "{{ sonic_timezone }}"
 
 - name: Render frr config

@@ -14,7 +14,7 @@
 - name: Render netdev for vxlan svi
   template:
     src: svi.netdev.j2
-    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.svi.iface }}.netdev"
+    dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.svi.iface }}.netdev"
   notify: restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:
@@ -23,7 +23,7 @@
 - name: Render network for vxlan svi
   template:
     src: svi.network.j2
-    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.svi.iface }}.network"
+    dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.svi.iface }}.network"
   notify: restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:
@@ -32,7 +32,7 @@
 - name: Render netdev for vxlan vtep
   template:
     src: vtep.netdev.j2
-    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.vtep.iface }}.netdev"
+    dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.vtep.iface }}.netdev"
   notify: restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:
@@ -41,7 +41,7 @@
 - name: Render network for vxlan vtep
   template:
     src: vtep.network.j2
-    dest: "/etc/systemd/network/{{ (i+81) }}-{{ item.vtep.iface }}.network"
+    dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.vtep.iface }}.network"
   notify: restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:

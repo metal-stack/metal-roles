@@ -12,6 +12,7 @@ galaxy_info:
         - all
 
 dependencies:
+  - role: ansible-common
   - role: metal-roles/common/roles/defaults
   - role: metal-roles/common/roles/partition-prometheus-rules
   - role: metal-roles/control-plane/roles/defaults

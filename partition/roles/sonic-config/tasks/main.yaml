@@ -24,7 +24,7 @@
   import_tasks: generate_config_db.yaml
 
 - name: Set NTP timezone
-  timezone:
+  community.general.timezone:
     name: "{{ sonic_config_timezone }}"
 
 - name: Render frr config

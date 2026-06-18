@@ -3,7 +3,8 @@
   ansible.builtin.fail:
     msg: >-
       The promtail role is deprecated and will be removed in a future release.
-      New deployments should use metal-roles/partition/roles/alloy instead - see https://github.com/metal-stack/metal-roles/tree/main/partition/roles/alloy#migration-from-promtail for instructions.
+      New deployments should use metal-roles/partition/roles/alloy instead - see https://github.com/metal-stack/metal-roles/tree/main/partition/roles/alloy#migration-from-promtail
+      for instructions.
   ignore_errors: true
 
 - name: Gather release versions

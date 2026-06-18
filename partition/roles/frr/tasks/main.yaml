@@ -14,7 +14,7 @@
 
 - name: check if frr is installed
   set_fact:
-    frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version|string in (ansible_facts.packages['frr'][0].version)))
+    frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version | string in (ansible_facts.packages['frr'][0].version)))
       | bool }}"
 
 - import_tasks: install/debian.yaml
