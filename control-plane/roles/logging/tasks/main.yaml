@@ -13,13 +13,14 @@
       - not logging_promtail_enabled | bool or logging_promtail_chart_repo is defined
 
 - name: Promtail deprecation warning
-  ansible.builtin.fail:
+  run_once: true
+  deprecate_role:
     msg: >-
-      DEPRECATION: logging_promtail_enabled is true. Promtail support is deprecated
-      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/logging#migration-from-promtail
-      for instructions.
+      logging_promtail_enabled is true. Promtail support is deprecated and will be removed in a future release.
+    alternative: |
+      Migrate to Alloy — see README for instructions:
+      https://github.com/metal-stack/metal-roles/tree/master/control-plane/roles/logging-common#migration-from-promtail.
   when: logging_promtail_enabled | bool
-  ignore_errors: true
 
 - name: Create namespace {{ logging_namespace }}
   kubernetes.core.k8s:

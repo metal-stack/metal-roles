@@ -1,11 +1,12 @@
 ---
 - name: Deprecation warning
-  ansible.builtin.fail:
+  run_once: true
+  deprecate_role:
     msg: >-
       The promtail role is deprecated and will be removed in a future release.
-      New deployments should use metal-roles/partition/roles/alloy instead - see https://github.com/metal-stack/metal-roles/tree/main/partition/roles/alloy#migration-from-promtail
-      for instructions.
-  ignore_errors: true
+    alternative: |
+      Use metal-roles/partition/roles/alloy instead - see README for instructions:
+      https://github.com/metal-stack/metal-roles/tree/master/partition/roles/alloy#migration-from-promtail.
 
 - name: Gather release versions
   setup_yaml:
