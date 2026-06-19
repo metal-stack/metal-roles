@@ -20,8 +20,15 @@
     src: resolv.conf.j2
     dest: /etc/resolv.conf
 
+- name: Copy platform.json file
+  ansible.builtin.copy:
+    src: "{{ sonic_config_platform_file }}"
+    dest: "/usr/share/sonic/device/{{ sonic_config_platform }}/"
+  when: sonic_config_platform_file is defined and sonic_config_platform
+
 - name: Generate config_db.json
   ansible.builtin.import_tasks: generate_config_db.yaml
+
 - name: Set NTP timezone
   community.general.timezone:
     name: "{{ sonic_config_timezone }}"
