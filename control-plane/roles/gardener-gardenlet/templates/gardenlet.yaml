@@ -98,12 +98,10 @@ spec:
           providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}
         dns:
           provider:
-            credentialsRef:
-              apiVersion: v1
-              kind: Secret
+            type: "{{ gardener_gardenlet_default_dns_provider }}"
+            secretRef:
               name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
               namespace: garden
-            type: "{{ gardener_gardenlet_default_dns_provider }}"
           internal:
             credentialsRef:
               apiVersion: v1
