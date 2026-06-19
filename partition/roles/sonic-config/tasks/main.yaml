@@ -3,32 +3,31 @@
   setup_yaml:
 
 - name: Check mandatory variables are set
-  assert:
+  ansible.builtin.assert:
     quiet: true
     that:
       - sonic_config_loopback_address
 
 - name: Check mandatory variables for frr.conf are set
-  assert:
+  ansible.builtin.assert:
     quiet: true
     that:
       - sonic_config_asn is defined
   when: sonic_config_frr_render
 
 - name: Render resolv.conf
-  template:
+  ansible.builtin.template:
     src: resolv.conf.j2
     dest: /etc/resolv.conf
 
 - name: Generate config_db.json
-  import_tasks: generate_config_db.yaml
-
+  ansible.builtin.import_tasks: generate_config_db.yaml
 - name: Set NTP timezone
-  timezone:
+  community.general.timezone:
     name: "{{ sonic_config_timezone }}"
 
 - name: Render frr config
-  template:
+  ansible.builtin.template:
     src: frr.conf.j2
     dest: /etc/sonic/frr/frr.conf
   when: sonic_config_frr_render
@@ -36,7 +35,7 @@
     - reload frr
 
 - name: Render iptables.json
-  template:
+  ansible.builtin.template:
     src: iptables.json.j2
     dest: /etc/sonic/iptables.json
   when: sonic_config_extended_cacl is defined
@@ -44,10 +43,10 @@
     - restart caclmgrd
 
 - name: Install frr-reload.service
-  copy:
+  ansible.builtin.copy:
     src: frr-reload.service
     dest: /etc/systemd/system/frr-reload.service
 
 - name: Reload systemd daemon
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true

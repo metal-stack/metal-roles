@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -16,12 +16,13 @@
   ansible.builtin.fail:
     msg: >-
       DEPRECATION: logging_promtail_enabled is true. Promtail support is deprecated
-      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/logging#migration-from-promtail for instructions.
+      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/logging#migration-from-promtail
+      for instructions.
   when: logging_promtail_enabled | bool
   ignore_errors: true
 
 - name: Create namespace {{ logging_namespace }}
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
@@ -31,7 +32,7 @@
           name: "{{ logging_namespace }}"
 
 - name: Deploy loki
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
   vars:
     helm_repo: "{{ logging_chart_repo }}"
@@ -42,7 +43,7 @@
     helm_value_file_template: "loki-values.yaml"
 
 - name: Deploy Alloy
-  import_role:
+  ansible.builtin.import_role:
     name: metal-roles/control-plane/roles/logging-common
     tasks_from: deploy-alloy.yaml
   vars:
@@ -59,7 +60,7 @@
   when: logging_alloy_enabled
 
 - name: Deploy Promtail (parallel migration window)
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
   vars:
     helm_repo: "{{ logging_promtail_chart_repo }}"
