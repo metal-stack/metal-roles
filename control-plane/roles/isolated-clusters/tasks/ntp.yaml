@@ -1,6 +1,6 @@
 ---
 - name: Create namespace {{ isolated_clusters_ntp_namespace }}
-  k8s:
+  kubernetes.core.k8s:
     definition:
       kind: Namespace
       metadata:
@@ -8,14 +8,14 @@
         labels:
           app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    apply: yes
+    apply: true
 
 - name: Deploy NTP service
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'ntp/' + item) }}"
     namespace: "{{ isolated_clusters_ntp_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
-    apply: yes
+    apply: true
   loop:
     - chrony-configmap.yaml
     - chrony-deployment.yaml

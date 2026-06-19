@@ -88,6 +88,15 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
+- job_name: alloy
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/alloy.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
 - job_name: sonic-exporter
   file_sd_configs:
   - files:
@@ -160,14 +169,13 @@ scrape_configs:
 
 - job_name: 'ipmi'
   metrics_path: /ipmi
-  scrape_timeout: 25s
-  scrape_interval: 5m
+  scrape_timeout: {{ prometheus_ipmi_scrape_timeout }}
+  scrape_interval: {{ prometheus_ipmi_scrape_interval }}
   params:
     module: [default]
   file_sd_configs:
   - files:
     - '/etc/prometheus/file_sd/ipmi.yaml'
-    refresh_interval: 5m
   relabel_configs:
   - source_labels: [__address__]
     separator: ;

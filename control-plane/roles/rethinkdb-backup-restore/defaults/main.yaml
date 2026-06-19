@@ -17,7 +17,6 @@ rethinkdb_backup_restore_sidecar_gcp_bucket_name:
 rethinkdb_backup_restore_sidecar_gcp_backup_location:
 rethinkdb_backup_restore_sidecar_gcp_project_id:
 rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json:
-
 rethinkdb_backup_restore_sidecar_s3_bucket_name:
 rethinkdb_backup_restore_sidecar_s3_region:
 rethinkdb_backup_restore_sidecar_s3_endpoint:
@@ -25,11 +24,9 @@ rethinkdb_backup_restore_sidecar_s3_access_key:
 rethinkdb_backup_restore_sidecar_s3_secret_key:
 rethinkdb_backup_restore_sidecar_s3_insecure_skip_verify:
 rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert:
-
 rethinkdb_backup_restore_sidecar_object_max_keep: 480
 rethinkdb_backup_restore_sidecar_encryption_key:
-
-rethinkdb_expose_frontend: no
+rethinkdb_expose_frontend: false
 rethinkdb_ingress_dns: rethinkdb.{{ metal_control_plane_ingress_dns }}
 
 rethinkdb_resources:
@@ -39,6 +36,20 @@ rethinkdb_resources:
   limits:
     memory: "4Gi"
     cpu: "500m"
+rethinkdb_backup_restore_sidecar_resources:
+#  requests:
+#    cpu: "100m"       
+#    memory: "64Mi"
+#  limits:
+#    cpu: "300m"
+#    memory: "256Mi"
+rethinkdb_init_resources:
+#  requests:
+#    cpu: "10m"
+#    memory: "16Mi"
+#  limits:
+#    cpu: "100m"
+#    memory: "64Mi" 
 
 rethinkdb_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 rethinkdb_registry_auth:
@@ -47,3 +58,19 @@ rethinkdb_registry_auth:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
+
+rethinkdb_enable_security_context: false
+
+rethinkdb_sts_security_context:
+  fsGroup: 2000
+  fsGroupChangePolicy: "OnRootMismatch"
+  runAsUser: 1001
+  runAsNonRoot: true
+  runAsGroup: 2000
+  seccompProfile:
+    type: RuntimeDefault
+
+rethinkdb_container_security_context:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]

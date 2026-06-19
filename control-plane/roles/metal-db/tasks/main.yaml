@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - metal_db_image_name is defined
       - metal_db_image_tag is defined
@@ -13,7 +13,7 @@
       - metal_db_backup_restore_sidecar_image_tag is defined
 
 - name: Deploy metal db
-  include_role:
+  ansible.builtin.include_role:
     name: metal-roles/control-plane/roles/rethinkdb-backup-restore
   vars:
     rethinkdb_name: "{{ metal_db_name }}"

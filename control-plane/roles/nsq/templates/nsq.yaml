@@ -34,6 +34,9 @@ spec:
       imagePullSecrets:
       - name: nsq-registry-credentials
 {% endif %}
+{% if nsq_enable_security_context %}
+      securityContext: {{ nsq_sts_security_context | to_json}}
+{% endif %}
       containers:
       - name: nsqd
         args:
@@ -51,6 +54,9 @@ spec:
 {% endif %}
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
+{% if nsq_enable_security_context %}
+        securityContext: {{ nsq_container_security_context | to_json}}
+{% endif %}
         ports:
         - containerPort: 4150
         - containerPort: 4151
@@ -66,9 +72,15 @@ spec:
       - name: nsq-admin
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
+{% if nsq_enable_security_context %}
+        securityContext: {{ nsq_container_security_context | to_json}}
+{% endif %}
         ports:
         - containerPort: 4171
           name: http
+{% if nsq_set_resource_limits %}
+        resources: {{ nsq_nsq_admin_resources | to_json }}
+{% endif %}
         livenessProbe:
           httpGet:
             path: /ping
@@ -123,6 +135,21 @@ spec:
     targetPort: 4171
   selector:
     app: nsqd
+{% if nsq_tcproute_enabled %}
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  labels:
+    app: nsqd
+  name: nsqd
+spec:
+  parentRefs: {{ nsq_tcproute_parent_refs | to_json }}
+  rules:
+  - backendRefs:
+    - name: nsqd
+      port: 4150
+{% endif %}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -142,6 +169,9 @@ spec:
       labels:
         app: nsq-lookupd
     spec:
+{% if nsq_enable_security_context %}
+      securityContext: {{ nsq_sts_security_context | to_json}}
+{% endif %}
       containers:
       - name: nsq-lookupd
         args:
@@ -150,6 +180,9 @@ spec:
         - -broadcast-address={{ nsq_broadcast_address }}
         image: {{ nsq_image_name }}:{{ nsq_image_tag }}
         imagePullPolicy: {{ nsq_image_pull_policy }}
+{% if nsq_enable_security_context %}
+        securityContext: {{ nsq_container_security_context | to_json}}
+{% endif %}
         ports:
         - containerPort: 4160
         - containerPort: 4161

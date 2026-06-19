@@ -38,7 +38,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: zitadel-init
-          image: "{{ zitadel_init_image }}:{{ zitadel_init_image_tag }}"
+          image: "{{ zitadel_init_image_name }}:{{ zitadel_init_image_tag }}"
           imagePullPolicy: "{{ zitadel_image_pull_policy }}"
           args:
             - "zitadel-init"

@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - metal_control_plane_host_provider in ["gcp", "metal"]
       - gardener_operator_image_name is defined
@@ -13,22 +13,64 @@
       - gardener_operator_backup_infrastructure is not none and gardener_operator_backup_infrastructure.provider in ["gcp", "S3"]
 
 - name: GCP control plane service cidr
-  import_tasks: control-plane-networks/gcp.yaml
+  ansible.builtin.import_tasks: control-plane-networks/gcp.yaml
   when:
     - metal_control_plane_host_provider == "gcp"
 
-- name: metal control plane service cidr
-  import_tasks: control-plane-networks/metal.yaml
+- name: Metal control plane service cidr
+  ansible.builtin.import_tasks: control-plane-networks/metal.yaml
   when:
     - metal_control_plane_host_provider == "metal"
 
 - name: Create garden namespace
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
       metadata:
         name: garden
 
+- name: Add trusted wildcard certificate for garden
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: wildcard-garden-ingress
+        namespace: garden
+        labels:
+          use-clouddns-solver: "true"
+      spec:
+        dnsNames:
+          - "*.{{ gardener_operator_ingress_dns_domain }}"
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: "{{ gardener_operator_wildcard_ingress_certificate_cluster_issuer }}"
+        secretName: wildcard-garden-ingress-certificate
+  when: gardener_operator_dashboard_enabled
+
+- name: Wait until ingress secret for garden is ready
+  ansible.builtin.command: echo
+  changed_when: false
+  retries: 60
+  delay: 10
+  until:
+    - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='wildcard-garden-ingress-certificate')
+  when: gardener_operator_dashboard_enabled
+
+- name: Prepare certificate secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        labels:
+          gardener.cloud/role: garden-cert
+        name: wildcard-garden-ingress-certificate
+        namespace: garden
+      type: kubernetes.io/tls
+  when: gardener_operator_dashboard_enabled
+
 - name: Deploy Gardener Operator
-  import_tasks: operator.yaml
+  ansible.builtin.import_tasks: operator.yaml

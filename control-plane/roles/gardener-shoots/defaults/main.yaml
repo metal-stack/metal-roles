@@ -7,7 +7,6 @@ gardener_shoot_rollout_wait_delay: 10
 gardener_shoot_rollout_wait_enabled: true
 
 gardener_shoot_default_metal_api_hmac:
-
 gardener_shoots: []
 # - name: shoot-a
 #   seed_name: seed-a
@@ -20,6 +19,7 @@ gardener_shoots: []
 #     - internet
 #     - e77400fe-e993-47b1-a0dd-64c9b7457b76
 #   k8s_version: 1.23.4
+#   machine_creation_timeout: 300h
 #   worker_groups:
 #   - worker_count: 1
 #     worker_size: size
@@ -29,6 +29,7 @@ gardener_shoots: []
 #     worker_image:
 #       name: debian
 #       version: "12.0"
+#     machine_creation_timeout: 300h
 #   firewall_size: size
 #   firewall_image: firewall-ubuntu-3.0
 #   firewall_controller_version: auto
@@ -68,10 +69,13 @@ gardener_shoots: []
 #     tls:
 #     secret_name:
 #   structured_auth_config:
-#   secret_binding_name:
+#   credentials_binding_name:
 #   csi_driver_lvm_extension:
 #     enabled: true
 #     default_storage_class:
+#   xdr_extension:
+#     enabled: true
+#     tenant: "{{ metal_control_plane_provider_tenant }}"
 
 gardener_shoot_defaults:
   namespace: garden

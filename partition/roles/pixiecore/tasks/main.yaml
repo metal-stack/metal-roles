@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - pixiecore_image_name is defined
       - pixiecore_image_tag is defined
@@ -14,17 +14,17 @@
       - pixiecore_grpc_client_key is not none
       - pixiecore_api_host is defined
 
-- name: create gRPC certs directory
-  file:
+- name: Create gRPC certs directory
+  ansible.builtin.file:
     path: "{{ pixiecore_grpc_cert_dir }}"
     state: directory
 
-- name: copy gRPC certificates
-  copy:
+- name: Copy gRPC certificates
+  ansible.builtin.copy:
     dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
-    mode: 0640
+    mode: "0640"
     content: "{{ item.content }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: ca.pem
       content: "{{ pixiecore_grpc_ca_cert }}"
@@ -36,12 +36,12 @@
     label: "{{ item.filename }}"
   register: grpc_certs
 
-- name: copy logging certificates
-  copy:
+- name: Copy logging certificates
+  ansible.builtin.copy:
     dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
-    mode: 0640
+    mode: "0640"
     content: "{{ item.content }}"
-  no_log: yes
+  no_log: true
   loop:
     - filename: logging-client.crt
       content: "{{ pixiecore_metal_hammer_logging_cert }}"
@@ -54,8 +54,8 @@
     - pixiecore_metal_hammer_logging_cert
     - pixiecore_metal_hammer_logging_key
 
-- name: deploy pixiecore
-  include_role:
+- name: Deploy pixiecore
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: pixiecore

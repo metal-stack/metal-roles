@@ -1,53 +1,56 @@
 ---
-- name: check mandatory variables for this role are set
-  assert:
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - frr_version is not none
       - frr_repo is not none
       - ansible_os_family in ['Debian', 'RedHat']
 
-- name: gather package facts
-  package_facts:
+- name: Gather package facts
+  ansible.builtin.package_facts:
     manager: auto
 
-- name: check if frr is installed
-  set_fact:
-    frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version|string in (ansible_facts.packages['frr'][0].version))) | bool }}"
+- name: Check if frr is installed
+  ansible.builtin.set_fact:
+    frr_installed: "{{ ('packages' in ansible_facts and ('frr' in ansible_facts.packages) and (frr_version | string in (ansible_facts.packages['frr'][0].version)))
+      | bool }}"
 
-- import_tasks: install/debian.yaml
+- name: Import tasks for Debian
+  ansible.builtin.import_tasks: install/debian.yaml
   when: not frr_installed and ansible_os_family == 'Debian'
 
-- import_tasks: install/redhat.yaml
+- name: Import tasks for RedHat
+  ansible.builtin.import_tasks: install/redhat.yaml
   when: not frr_installed and ansible_os_family == 'RedHat'
 
-- name: copy sysctls for frr
-  copy:
+- name: Copy sysctls for frr
+  ansible.builtin.copy:
     src: sysctl.conf
     dest: /etc/sysctl.d/98-frr.conf
   notify: reload sysctls
 
-- name: enable vtysh
-  copy:
+- name: Enable vtysh
+  ansible.builtin.copy:
     src: vtysh.conf
     dest: /etc/frr/
   notify: restart frr
 
-- name: enable frr daemons
-  copy:
+- name: Enable frr daemons
+  ansible.builtin.copy:
     src: daemons
     dest: /etc/frr/daemons
   notify: restart frr
 
-- name: ensure frr is started
-  systemd:
+- name: Ensure frr is started
+  ansible.builtin.systemd:
     name: frr
-    enabled: yes
+    enabled: true
     state: started
 
-- name: copy frr conf
-  copy:
+- name: Copy frr conf
+  ansible.builtin.copy:
     content: "{{ frr_conf }}"
     dest: /etc/frr/frr.conf
   notify: reload frr

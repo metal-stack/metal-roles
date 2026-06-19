@@ -16,7 +16,9 @@ metadata:
   namespace: partition-proxy
 type: Opaque
 data:
+{% if conf.mtls | default(true) %}
   ca.pem: "{{ conf.ca | b64encode }}"
+{% endif %}
   cert.pem: "{{ conf.cert | b64encode }}"
   cert.key: "{{ conf.cert_key | b64encode }}"
 {% endfor %}
