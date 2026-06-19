@@ -14,28 +14,6 @@
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
 
-- name: create gRPC certs directory
-  file:
-    path: "{{ metal_core_grpc_cert_dir }}"
-    state: directory
-
-- name: copy gRPC certificates
-  copy:
-    dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
-    mode: 0640
-    content: "{{ item.content }}"
-  no_log: true
-  loop:
-    - filename: ca.pem
-      content: "{{ metal_core_grpc_ca_cert }}"
-    - filename: client.pem
-      content: "{{ metal_core_grpc_client_cert }}"
-    - filename: client-key.pem
-      content: "{{ metal_core_grpc_client_key }}"
-  loop_control:
-    label: "{{ item.filename }}"
-  register: grpc_certs
-
 - name: Install services
   copy:
     src: "{{ item }}"
@@ -104,7 +82,6 @@
       - sys_admin
       - net_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
-    systemd_external_config_changed: "{{ grpc_certs is changed }}"
     systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"

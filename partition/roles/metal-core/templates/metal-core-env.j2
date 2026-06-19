@@ -14,10 +14,6 @@ METAL_CORE_TIMEOUT: "{{ metal_core_timeout }}"
 {% if metal_partition_mgmt_gateway %}
 METAL_CORE_MANAGEMENT_GATEWAY: "{{ metal_partition_mgmt_gateway }}"
 {% endif %}
-METAL_CORE_GRPC_ADDRESS: "{{ metal_core_grpc_address }}"
-METAL_CORE_GRPC_CA_CERT_FILE: "{{ metal_core_grpc_cert_dir }}/ca.pem"
-METAL_CORE_GRPC_CLIENT_CERT_FILE: "{{ metal_core_grpc_cert_dir }}/client.pem"
-METAL_CORE_GRPC_CLIENT_KEY_FILE: "{{ metal_core_grpc_cert_dir }}/client-key.pem"
 METAL_CORE_ADDITIONAL_BRIDGE_VIDS: "{{ metal_core_additional_bridge_vids | join(',') }}"
 METAL_CORE_ADDITIONAL_BRIDGE_PORTS: "{{ metal_core_additional_bridge_ports | join(',') }}"
 {% if metal_core_spine_uplinks is defined %}
