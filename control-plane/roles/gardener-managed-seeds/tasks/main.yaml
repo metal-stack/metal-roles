@@ -1,4 +1,11 @@
 ---
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "the managed seed default domain is now required, it is used in the internal seed dns domain"
+    quiet: true
+    that:
+      - gardener_managed_seed_default_dns_domain is not none
+
 - name: Get kubeconfig for virtual garden access
   virtual_garden_kubeconfig:
     garden_name: "{{ gardener_managed_seeds_garden_name }}"
