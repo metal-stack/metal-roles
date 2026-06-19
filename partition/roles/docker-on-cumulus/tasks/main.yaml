@@ -1,6 +1,6 @@
 ---
-- name: ensure dependencies are installed
-  apt:
+- name: Ensure dependencies are installed
+  ansible.builtin.apt:
     update_cache: true
     allow_unauthenticated: true
     name:
@@ -11,79 +11,79 @@
       - libltdl7
   when: ansible_distribution_major_version == "3"
 
-- name: setup key for docker
-  apt_key:
+- name: Setup key for docker
+  ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 
-- name: add docker engine repo for debian jessie
-  apt_repository:
+- name: Add docker engine repo for debian jessie
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64] https://download.docker.com/linux/debian jessie edge"
     update_cache: true
   when: ansible_distribution_major_version == "3"
 
-- name: add docker engine repo for debian buster
-  apt_repository:
+- name: Add docker engine repo for debian buster
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
     update_cache: true
   when: ansible_distribution_major_version == "4"
 
-- name: install docker
-  apt:
+- name: Install docker
+  ansible.builtin.apt:
     name: docker-ce
     force_apt_get: true
 
-- name: add docker as systemd service which can run in a vrf
-  lineinfile:
+- name: Add docker as systemd service which can run in a vrf
+  ansible.builtin.lineinfile:
     path: /etc/vrf/systemd.conf
     regexp: "^docker$"
     line: "docker"
 
-- name: ensure /etc/docker directory
-  file:
+- name: Ensure /etc/docker directory
+  ansible.builtin.file:
     path: /etc/docker
     state: directory
 
-- name: template daemon.json
-  template:
+- name: Template daemon.json
+  ansible.builtin.template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
 
-- name: create override directory to systemd
-  file:
+- name: Create override directory to systemd
+  ansible.builtin.file:
     path: /etc/systemd/system/docker.service.d/
     state: directory
 
-- name: override systemd service startup
-  template:
+- name: Override systemd service startup
+  ansible.builtin.template:
     src: docker-no-socket-mgmt-vrf.conf.j2
     dest: /etc/systemd/system/docker.service.d/docker-no-socket-mgmt-vrf.conf
 
-- name: enable and start docker.service
-  systemd:
+- name: Enable and start docker.service
+  ansible.builtin.systemd:
     state: started
     enabled: true
     daemon_reload: true
     name: docker
 
-- name: create docker-system-prune.service
-  copy:
+- name: Create docker-system-prune.service
+  ansible.builtin.copy:
     src: docker-system-prune.service
     dest: /etc/systemd/system/docker-system-prune.service
     owner: root
     group: root
     mode: "0644"
 
-- name: create docker-system-prune.timer
-  copy:
+- name: Create docker-system-prune.timer
+  ansible.builtin.copy:
     src: docker-system-prune.timer
     dest: /etc/systemd/system/docker-system-prune.timer
     owner: root
     group: root
     mode: "0644"
 
-- name: docker-system-prune.timer must be enabled and running
-  systemd:
+- name: Docker-system-prune.timer must be enabled and running
+  ansible.builtin.systemd:
     name: docker-system-prune.timer
     enabled: true
     state: started

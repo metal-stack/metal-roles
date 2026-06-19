@@ -5,7 +5,7 @@
   changed_when: false
 
 - name: Deploy sonic_exporter service
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: sonic_exporter

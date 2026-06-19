@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -14,7 +14,7 @@
       - isolated_clusters_registry_oci_mirror_image_tag is not none
 
 - name: Check mandatory variables for ingress controller
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory ingress controller variables given, check role documentation"
     quiet: true
     that:
@@ -25,7 +25,7 @@
   when: isolated_clusters_ingress_controller_enabled | bool
 
 - name: Check mandatory variables for envoy gateway
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory envoy gateway variables given, check role documentation"
     quiet: true
     that:
@@ -34,7 +34,7 @@
   when: isolated_clusters_envoy_gateway_enabled | bool
 
 - name: Loop over clusters to install services
-  include_tasks: services.yaml
+  ansible.builtin.include_tasks: services.yaml
   loop: "{{ isolated_clusters_partition_services_cluster }}"
   loop_control:
     loop_var: cluster
