@@ -11,11 +11,11 @@ logging_alloy_enabled: true
 
 # Loki push endpoints. Override example:
 # logging_alloy_loki_write_endpoints:
-  # - url: "https://{{ logging_ingress_dns }}/loki/api/v1/push"
-  #   remote_timeout: 60s
-  #   basic_auth:
-  #     username: "{{ logging_ingress_loki_basic_auth_user }}"
-  #     password: "{{ logging_ingress_loki_basic_auth_password }}"
+# - url: "https://{{ logging_ingress_dns }}/loki/api/v1/push"
+#   remote_timeout: 60s
+#   basic_auth:
+#     username: "{{ logging_ingress_loki_basic_auth_user }}"
+#     password: "{{ logging_ingress_loki_basic_auth_password }}"
 
 # Value for the cluster= label attached to all log and metric streams via relabel rules
 logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"

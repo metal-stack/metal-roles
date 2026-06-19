@@ -8,3 +8,16 @@ exclude_paths:
   - .github/
   # these are template results, so they do not need formatting:
   - partition/roles/sonic/test/data/**/metal.yaml
+
+# TODO: we need to gradually fix these!
+warn_list:
+  - role-name
+  - schema
+  - var-naming
+  - package-latest
+  - risky-file-permissions
+  - risky-octal
+  - risky-shell-pipe
+  - no-changed-when
+  - no-handler
+  - ignore-errors

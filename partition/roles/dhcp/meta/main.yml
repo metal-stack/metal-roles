@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: alloy
+  role_name: dhcp
   author: metal-stack
-  description: Deploys alloy.
+  description: Configures and starts dhcpd.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
@@ -13,5 +13,3 @@ galaxy_info:
 
 dependencies:
   - role: ansible-common
-  - role: metal-roles/common/roles/defaults
-  - role: metal-roles/partition/roles/defaults

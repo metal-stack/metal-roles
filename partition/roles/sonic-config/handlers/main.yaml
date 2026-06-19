@@ -1,11 +1,11 @@
 ---
-- name: restart caclmgrd
-  systemd:
+- name: Restart caclmgrd
+  ansible.builtin.systemd:
     name: caclmgrd
     state: restarted
 
-- name: reload frr
-  systemd:
+- name: Reload frr
+  ansible.builtin.systemd:
     name: frr-reload.service
     state: restarted
   retries: 2
