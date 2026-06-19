@@ -1,6 +1,6 @@
 ---
-- name: check mandatory variables for this role are set
-  assert:
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -8,13 +8,13 @@
       - lvm_pvs is not none
       - lvm_lvs is not none
 
-- name: create volumegroup
+- name: Create volumegroup
   community.general.lvg:
     vg: "{{ lvm_vg }}"
     pvs: "{{ lvm_pvs }}"
 
-- name: create logical volumes
-  include_tasks: lv.yaml
+- name: Create logical volumes
+  ansible.builtin.include_tasks: lv.yaml
   loop: "{{ lvm_lvs }}"
   loop_control:
     loop_var: lv

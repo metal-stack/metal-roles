@@ -1,6 +1,6 @@
 ---
 - name: Check usage of deprecated secret binding
-  assert:
+  ansible.builtin.assert:
     fail_msg: "secret bindings are deprecated, please use credentials_binding_name instead of secret_binding_name in your shoot config"
     quiet: true
     that:
@@ -11,7 +11,7 @@
     garden_name: "{{ gardener_shoots_garden_name }}"
 
 - name: Add shoot provider secret
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -27,7 +27,7 @@
     apply: true
 
 - name: Add shoot secret binding
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: security.gardener.cloud/v1alpha1
       kind: CredentialsBinding
@@ -46,7 +46,7 @@
   when: _config.credentials_binding_name is not defined
 
 - name: Deploy audit policy config map
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: ConfigMap
@@ -60,7 +60,7 @@
   when: "'audit_policy' in _config"
 
 - name: Deploy structured auth config map
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: ConfigMap
@@ -74,13 +74,13 @@
   when: "'structured_auth_config' in _config"
 
 - name: Deploy shoot
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'shoot.yaml.j2') }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true
 
 - name: Wait until shoot reconciled
-  k8s_info:
+  kubernetes.core.k8s_info:
     api_version: core.gardener.cloud/v1beta1
     kind: Shoot
     name: "{{ _config.name }}"

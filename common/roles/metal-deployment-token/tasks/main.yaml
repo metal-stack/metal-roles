@@ -1,5 +1,8 @@
 ---
 - name: Create admin api token for the deployment
+  delegate_to: localhost
+  run_once: true
+  when: metal_deployment_admin_token is not defined
   block:
     - name: Wait until the metal-apiserver is running
       kubernetes.core.k8s_info:
@@ -11,7 +14,7 @@
         wait_timeout: 60
 
     - name: Get metal-apiserver pods
-      set_fact:
+      ansible.builtin.set_fact:
         _metal_apiserver_pod: "{{ (lookup('k8s', api_version='v1', kind='Pod', namespace=metal_control_plane_namespace, label_selector='app=metal-apiserver') | list_wrap)[0].get('metadata',
           {}).get('name') }}"
 
@@ -28,9 +31,5 @@
       register: _generated_token
 
     - name: Set deployment token
-      set_fact:
+      ansible.builtin.set_fact:
         metal_deployment_admin_token: "{{ _generated_token.stdout_lines[-1] }}"
-
-  delegate_to: localhost
-  run_once: true
-  when: metal_deployment_admin_token is not defined

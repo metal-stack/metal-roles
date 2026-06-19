@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -25,7 +25,7 @@
       name: "{{ gardener_logging_garden_name }}"
 
 - name: Loop over Gardener shooted seeds
-  include_tasks: gardener-shooted-seed.yaml
+  ansible.builtin.include_tasks: gardener-shooted-seed.yaml
   loop: "{{ gardener_logging_shooted_seeds }}"
   loop_control:
     loop_var: gardener_logging_shooted_seed

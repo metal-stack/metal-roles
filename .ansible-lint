@@ -12,9 +12,7 @@ exclude_paths:
 # TODO: we need to gradually fix these!
 warn_list:
   - role-name
-  - key-order
   - schema
-  - name
   - var-naming
   - package-latest
   - risky-file-permissions
@@ -22,5 +20,4 @@ warn_list:
   - risky-shell-pipe
   - no-changed-when
   - no-handler
-  - fqcn
   - ignore-errors

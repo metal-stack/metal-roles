@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -17,7 +17,7 @@
       - headscale_ingress_dns is not none
 
 - name: Create namespace for headscale
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
@@ -27,7 +27,7 @@
           name: "{{ headscale_namespace }}"
 
 - name: Deploy headscale db
-  include_role:
+  ansible.builtin.include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
   vars:
     postgres_name: "{{ headscale_db_name }}"
@@ -61,17 +61,17 @@
     postgres_resources: "{{ headscale_db_resources }}"
 
 - name: Deploy headscale
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'headscale.yaml') }}"
     namespace: "{{ headscale_namespace }}"
     apply: true
 
 - name: Determine if api key secret was already created
-  set_fact:
+  ansible.builtin.set_fact:
     headscale_api_key_already_created: "{{ lookup('k8s', api_version='v1', namespace=headscale_namespace, kind='Secret', resource_name='headscale-api-key') }}"
 
 - name: Wait until headscale deployment is ready
-  command: echo
+  ansible.builtin.command: echo
   changed_when: false
   retries: 20
   delay: 12
@@ -93,7 +93,7 @@
     - not headscale_api_key_already_created
 
 - name: Create namespace for headscale
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret

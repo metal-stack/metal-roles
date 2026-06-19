@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -13,17 +13,17 @@
       - gardener_operator_backup_infrastructure is not none and gardener_operator_backup_infrastructure.provider in ["gcp", "S3"]
 
 - name: GCP control plane service cidr
-  import_tasks: control-plane-networks/gcp.yaml
+  ansible.builtin.import_tasks: control-plane-networks/gcp.yaml
   when:
     - metal_control_plane_host_provider == "gcp"
 
-- name: metal control plane service cidr
-  import_tasks: control-plane-networks/metal.yaml
+- name: Metal control plane service cidr
+  ansible.builtin.import_tasks: control-plane-networks/metal.yaml
   when:
     - metal_control_plane_host_provider == "metal"
 
 - name: Create garden namespace
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
@@ -31,7 +31,7 @@
         name: garden
 
 - name: Add trusted wildcard certificate for garden
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: cert-manager.io/v1
       kind: Certificate
@@ -51,7 +51,7 @@
   when: gardener_operator_dashboard_enabled
 
 - name: Wait until ingress secret for garden is ready
-  command: echo
+  ansible.builtin.command: echo
   changed_when: false
   retries: 60
   delay: 10
@@ -60,7 +60,7 @@
   when: gardener_operator_dashboard_enabled
 
 - name: Prepare certificate secret
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -73,4 +73,4 @@
   when: gardener_operator_dashboard_enabled
 
 - name: Deploy Gardener Operator
-  import_tasks: operator.yaml
+  ansible.builtin.import_tasks: operator.yaml
