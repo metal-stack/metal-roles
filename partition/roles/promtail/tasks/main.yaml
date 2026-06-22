@@ -32,7 +32,7 @@
   ansible.builtin.template:
     src: promtail.yaml.j2
     dest: "{{ promtail_config_host_dir }}/promtail.yaml"
-  notify: restart promtail
+  notify: Restart promtail
 
 - name: Deploy promtail service
   ansible.builtin.include_role:

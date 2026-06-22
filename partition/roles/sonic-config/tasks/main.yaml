@@ -32,7 +32,7 @@
     dest: /etc/sonic/frr/frr.conf
   when: sonic_config_frr_render
   notify:
-    - reload frr
+    - Reload frr
 
 - name: Render iptables.json
   ansible.builtin.template:
@@ -40,7 +40,7 @@
     dest: /etc/sonic/iptables.json
   when: sonic_config_extended_cacl is defined
   notify:
-    - restart caclmgrd
+    - Restart caclmgrd
 
 - name: Install frr-reload.service
   ansible.builtin.copy:
