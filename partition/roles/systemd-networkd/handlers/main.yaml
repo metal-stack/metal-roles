@@ -5,7 +5,7 @@
     state: restarted
   async: 1
   poll: 0
-  notify: wait for new connection
+  notify: Wait for new connection
 
 - name: Restart systemd-udev-trigger
   ansible.builtin.service:
@@ -13,7 +13,7 @@
     state: restarted
   async: 1
   poll: 0
-  notify: wait for new connection
+  notify: Wait for new connection
 
 - name: Wait for new connection
   ansible.builtin.wait_for_connection:
