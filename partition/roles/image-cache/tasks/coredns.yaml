@@ -1,13 +1,13 @@
 ---
-- name: create coredns directories
-  file:
+- name: Create coredns directories
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   loop:
     - "{{ image_cache_coredns_host_dir_path }}/config"
 
-- name: template coredns config
-  template:
+- name: Template coredns config
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ image_cache_coredns_host_dir_path }}/config/{{ item.dest }}"
     owner: "root"
@@ -20,8 +20,8 @@
       dest: metal-image-cache.db
   register: result
 
-- name: deploy coredns service
-  include_role:
+- name: Deploy coredns service
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: coredns

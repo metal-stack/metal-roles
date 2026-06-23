@@ -1,6 +1,6 @@
 ---
 - name: Create namespace {{ isolated_clusters_registry_namespace }}
-  k8s:
+  kubernetes.core.k8s:
     definition:
       kind: Namespace
       metadata:
@@ -11,7 +11,7 @@
     apply: true
 
 - name: Deploy registry
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'registry/' + item) }}"
     namespace: "{{ isolated_clusters_registry_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
@@ -22,7 +22,7 @@
     - registry-oci-mirror.yaml
 
 - name: Deploy registry ingress
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'registry/registry-ingress.yaml') }}"
     namespace: "{{ isolated_clusters_registry_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"

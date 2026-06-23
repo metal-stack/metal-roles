@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: dhcp
+  author: metal-stack
+  description: Configures and starts dhcpd.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: ansible-common

@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -11,7 +11,7 @@
       - valkey_chart_tag is defined
 
 - name: Deploy valkey image pull secret
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'valkey-secret.yaml') }}"
     namespace: "{{ metal_control_plane_namespace }}"
   when: valkey_registry_auth_enabled
