@@ -10,7 +10,7 @@
   ansible.builtin.apt:
     name: wireguard
     update_cache: true
-    state: latest
+    state: present
   with_items:
     - wireguard
     - wireguard-dkms
@@ -78,7 +78,11 @@
         _wg_private_key: "{{ _wg_private_key_result.stdout }}"
 
     - name: Generate wireguard public key
-      ansible.builtin.shell: "echo {{ _wg_private_key }} | wg pubkey | tee {{ _public_key_file_path }}"
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          echo {{ _wg_private_key }} | wg pubkey | tee {{ _public_key_file_path }}
+        executable: /bin/bash
       register: _wg_public_key_result
 
     - name: Set public key fact
@@ -107,7 +111,7 @@
         src: wireguard_server.conf.j2
         owner: root
         group: root
-        mode: 640
+        mode: "0640"
       notify: Enable and restart wireguard
 
 - name: Start wireguard
