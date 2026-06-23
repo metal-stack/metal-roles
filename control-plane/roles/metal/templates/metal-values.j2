@@ -267,7 +267,6 @@ metal_apiserver:
   redis:
     addr: {{ metal_apiserver_redis_addr }}
     password: {{ metal_apiserver_redis_password }}
-  admin_subjects: {{ metal_apiserver_admin_subjects | to_json }}
   auditing:
 {% if metal_apiserver_auditing_timescaledb_enabled %}
     timescaledb:
