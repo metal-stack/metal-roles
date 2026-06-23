@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -15,7 +15,7 @@
       - postgres_backup_restore_sidecar_provider in ["local", "gcp", "s3"]
 
 - name: Create namespace
-  k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
       apiVersion: v1
@@ -26,7 +26,7 @@
           name: "{{ postgres_namespace }}"
 
 - name: Deploy postgres (backup-restore)
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'postgres.yaml') }}"
     namespace: "{{ postgres_namespace }}"
     apply: true

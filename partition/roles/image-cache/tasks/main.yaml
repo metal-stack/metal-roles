@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -17,10 +17,8 @@
       - image_cache_sync_metal_api_view_hmac is not none
 
 - name: Setup CoreDNS
-  import_tasks: coredns.yaml
-
+  ansible.builtin.import_tasks: coredns.yaml
 - name: Setup image-sync
-  import_tasks: image-sync.yaml
-
+  ansible.builtin.import_tasks: image-sync.yaml
 - name: Setup haproxy
-  import_tasks: haproxy.yaml
+  ansible.builtin.import_tasks: haproxy.yaml

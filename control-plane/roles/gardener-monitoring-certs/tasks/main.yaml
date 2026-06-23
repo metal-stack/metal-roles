@@ -1,6 +1,6 @@
 ---
 - name: Add ingress certificate for shooted seeds
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: cert-manager.io/v1
       kind: Certificate
@@ -19,7 +19,7 @@
         secretName: seed-ingress-certificate
 
 - name: Wait until ingress secret for shooted seeds is ready
-  command: echo
+  ansible.builtin.command: echo
   changed_when: false
   retries: 60
   delay: 10
@@ -27,7 +27,7 @@
     - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='seed-ingress-certificate')
 
 - name: Prepare seed ingress certificate secret for shooted seeds
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -39,7 +39,7 @@
       type: kubernetes.io/tls
 
 - name: Loop over shooted seeds
-  include_tasks: deploy_shooted_seed.yaml
+  ansible.builtin.include_tasks: deploy_shooted_seed.yaml
   loop: "{{ gardener_monitoring_certs_shooted_seeds }}"
   loop_control:
     loop_var: gardener_shooted_seed

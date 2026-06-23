@@ -22,6 +22,10 @@ images:
     image: "{{ metal_masterdata_api_image_name }}"
     imagePullPolicy: "{{ metal_masterdata_api_image_pull_policy }}"
     tag: "{{ metal_masterdata_api_image_tag }}"
+  tenant_apiserver:
+    image: "{{ metal_tenant_apiserver_image_name }}"
+    imagePullPolicy: "{{ metal_tenant_apiserver_image_pull_policy }}"
+    tag: "{{ metal_tenant_apiserver_image_tag }}"
   ipam:
     image: "{{ metal_ipam_image_name }}"
     imagePullPolicy: "{{ metal_console_image_pull_policy }}"
@@ -55,6 +59,9 @@ hpa:
 metal_console:
   enabled: {{ metal_console_enabled }}
   replicas: "{{ metal_console_replicas }}"
+  tcpRoute:
+    enabled: {{ metal_console_tcproute_enabled }}
+    parentRefs: {{ metal_console_tcproute_parent_refs | to_json }}
   bmc_proxy:
     tls:
       server_key_enc: "{{ metal_console_bmc_proxy_certs_server_key | b64encode }}"
@@ -180,6 +187,16 @@ metal_api:
     ---
     {{ entity | to_json | indent(width=4, first=false) }}
 {% endfor %}
+  httpRoute:
+    enabled: {{ metal_api_httproute_enabled }}
+    parentRefs: {{ metal_api_httproute_parent_refs | to_json }}
+    hostnames: {{ metal_api_httproute_hostnames | to_json }}
+{% if metal_api_httproute_https_redirect %}
+    httpsRedirect: {{ metal_api_httproute_https_redirect | to_json }}
+{% endif %}
+  tcpRoute:
+    enabled: {{ metal_api_tcproute_enabled }}
+    parentRefs: {{ metal_api_tcproute_parent_refs | to_json }}
 
 masterdata_api:
   provider_tenant: {{ metal_masterdata_api_provider_tenant }}
@@ -218,6 +235,14 @@ masterdata_api:
     tenant_id: {{ metal_masterdata_api_provider_tenant }}
 {% endfor %}
 
+tenant_apiserver:
+  db_address: {{ metal_tenant_apiserver_db_address }}
+  db_port: {{ metal_tenant_apiserver_db_port }}
+  db_name: {{ metal_tenant_apiserver_db_name }}
+  db_user: {{ metal_tenant_apiserver_db_user }}
+  db_password: {{ metal_tenant_apiserver_db_password }}
+  replicas: {{ metal_tenant_apiserver_replicas }}
+
 ingress_public_dns: "{{ metal_ingress_dns }}"
 v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
 
@@ -238,6 +263,7 @@ metal_apiserver:
     discovery_url: {{ metal_apiserver_oidc_discovery_url }}
     end_session_url: {{ metal_apiserver_oidc_end_session_url }}
   session_secret: {{ metal_apiserver_session_secret }}
+  secure_cookie: {{ metal_apiserver_secure_cookie | lower }}
   redis:
     addr: {{ metal_apiserver_redis_addr }}
     password: {{ metal_apiserver_redis_password }}
@@ -267,6 +293,13 @@ metal_apiserver:
   rateLimit:
     maxRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_requests_per_minute }}
     maxUnauthenticatedRequestsPerMinute: {{ metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute }}
+  httpRoute:
+    enabled: {{ metal_apiserver_httproute_enabled }}
+    parentRefs: {{ metal_apiserver_httproute_parent_refs | to_json }}
+    hostnames: {{ metal_apiserver_httproute_hostnames | to_json }}
+{% if metal_apiserver_httproute_https_redirect %}
+    httpsRedirect: {{ metal_apiserver_httproute_https_redirect | to_json }}
+{% endif %}
 
 auditing:
   enabled: {{ 'true' if metal_auditing_timescaledb_enabled else 'false' }}
@@ -311,6 +344,9 @@ pod_disruption_budget:
   masterdata_api:
     enabled: {{ metal_masterdata_api_pdb_enabled | lower }}
     min_available: {{ metal_masterdata_api_pdb_min_available }}
+  tenant_apiserver:
+    enabled: {{ metal_tenant_apiserver_pdb_enabled | lower }}
+    min_available: {{ metal_tenant_apiserver_pdb_min_available }}
   metal_console:
     enabled: {{ metal_console_pdb_enabled | lower }}
     min_available: {{ metal_console_pdb_min_available }}

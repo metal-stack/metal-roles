@@ -1,13 +1,22 @@
 ---
 - name: Create temporary directory
-  file:
+  ansible.builtin.file:
     path: /tmp/sonic
     state: directory
 
 - name: Render input values template
-  template:
+  ansible.builtin.template:
     src: sonic-config.yaml.j2
     dest: /tmp/sonic/sonic-config.yaml
+
+- name: Check ntp status
+  ansible.builtin.command: show ntp
+  register: ntp_status
+  failed_when: false
+
+- name: Set time if ntp is not synchronized
+  ansible.builtin.command: "date -s '{{ now() }}'"
+  when: "'unsynchronised' in ntp_status.stdout"
 
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
@@ -24,7 +33,7 @@
       - /tmp/sonic:/sonic
 
 - name: Override the existing config_db.json with the newly generated one
-  copy:
+  ansible.builtin.copy:
     src: /tmp/sonic/config_db.json
     dest: /etc/sonic/config_db.json
     mode: "0644"
@@ -34,7 +43,7 @@
   register: _config_db_json
 
 - name: Reload config if reload is required
-  command: config reload --yes
+  ansible.builtin.command: config reload --yes
   async: 120
   poll: 0
   when:
@@ -42,13 +51,13 @@
     - _config_db_json is changed
 
 - name: Load config if not reloaded
-  command: config load --yes
+  ansible.builtin.command: config load --yes
   when:
     - not sonic_config_reload_config
     - _config_db_json is changed
 
-- name: wait for new connection
-  wait_for_connection:
+- name: Wait for new connection
+  ansible.builtin.wait_for_connection:
     connect_timeout: 20
     sleep: 5
     delay: 30
@@ -56,6 +65,6 @@
   when: _config_db_json is changed
 
 - name: Remove temporary directory
-  file:
+  ansible.builtin.file:
     path: /tmp/sonic/
     state: absent

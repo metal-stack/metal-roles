@@ -98,10 +98,26 @@ spec:
           providerConfig: {{ _config.backup_infrastructure.providerConfig | default(None, true) | to_json }}
         dns:
           provider:
+            type: "{{ gardener_gardenlet_default_dns_provider }}"
             secretRef:
               name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
               namespace: garden
+          internal:
+            credentialsRef:
+              apiVersion: v1
+              kind: Secret
+              name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
+              namespace: garden
+            domain: "{{ gardener_gardenlet_default_dns_domain }}"
             type: "{{ gardener_gardenlet_default_dns_provider }}"
+          defaults:
+            - credentialsRef:
+                apiVersion: v1
+                kind: Secret
+                name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
+                namespace: garden
+              domain: "{{ gardener_gardenlet_default_dns_domain }}"
+              type: "{{ gardener_gardenlet_default_dns_provider }}"
         ingress:
           controller:
             kind: nginx

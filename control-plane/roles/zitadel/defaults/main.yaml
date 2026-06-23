@@ -2,10 +2,13 @@
 zitadel_image_tag:
 zitadel_tools_kubectl_tag: "1.35.1"
 
-zitadel_endpoint: zitadel.{{ metal_control_plane_ingress_dns }}
+zitadel_endpoint: >-
+  {% if zitadel_httproute_enabled -%}zitadel.{{ metal_control_plane_gateway_dns }}{%- else -%}zitadel.{{ metal_control_plane_ingress_dns }}{%- endif %}
 zitadel_namespace: "{{ metal_control_plane_namespace }}"
 zitadel_external_domain:
-zitadel_ingress_dns: https://zitadel.{{ metal_control_plane_ingress_dns }}:443
+zitadel_ingress_dns: >-
+  {% if zitadel_httproute_enabled -%}https://zitadel.{{ metal_control_plane_gateway_dns }}:443{%- else -%}https://zitadel.{{ metal_control_plane_ingress_dns }}:443{%-
+  endif %}
 zitadel_ingress_annotations: {}
 zitadel_port: 443
 zitadel_skip_verify_tls: false
@@ -22,6 +25,8 @@ zitadel_db_password: change-me
 
 zitadel_enabled_ingress: true
 
+zitadel_httproute_enabled: false
+zitadel_httproute_parent_refs: []
 zitadel_init_config: {}
   # static_users:
   #   - first_name: Olli

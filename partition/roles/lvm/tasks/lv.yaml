@@ -1,25 +1,25 @@
 ---
-- name: create logical volume
-  lvol:
+- name: Create logical volume
+  community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv.name }}"
     size: "{{ lv.size }}"
     opts: "{{ lv.opts | default('') }}"
     resizefs: true
 
-- name: create filesystem
-  filesystem:
+- name: Create filesystem
+  community.general.filesystem:
     fstype: "{{ lv.fstype }}"
     dev: "/dev/{{ lvm_vg }}/{{ lv.name }}"
 
-- name: create mountpath
-  file:
+- name: Create mountpath
+  ansible.builtin.file:
     path: "{{ lv.mountpath }}"
     state: directory
     mode: "0750"
 
-- name: mount logical volume
-  mount:
+- name: Mount logical volume
+  ansible.posix.mount:
     path: "{{ lv.mountpath }}"
     src: "/dev/{{ lvm_vg }}/{{ lv.name }}"
     fstype: "{{ lv.fstype }}"
