@@ -91,7 +91,6 @@
 
 - name: Write wireguard configuration
   tags: wg-config
-
   block:
     - name: Slurp private key file
       ansible.builtin.slurp:
@@ -109,7 +108,8 @@
         owner: root
         group: root
         mode: 640
-      notify: enable and restart wireguard
+      notify: Enable and restart wireguard
+
 - name: Start wireguard
   ansible.builtin.service:
     name: wg-quick@wg0
