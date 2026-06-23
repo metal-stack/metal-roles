@@ -1,17 +1,59 @@
 ---
-valkey_chart_ref: valkey
-# for testing the chart locally in the mini-lab
-# valkey_chart_ref: /helm-charts/charts/valkey
-
+valkey_name: valkey
 valkey_namespace: "{{ metal_control_plane_namespace }}"
 
-valkey_replicas: 3
-valkey_password: change-me-soon
-
-valkey_size: 10Gi
-valkey_storage_class: ""
-
 valkey_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
+# TODO: move to release vector:
+valkey_image_name: ghcr.io/valkey-io/valkey
+valkey_image_tag: 9.1-alpine
+valkey_backup_restore_sidecar_image_name: ghcr.io/metal-stack/backup-restore-sidecar
+valkey_backup_restore_sidecar_image_tag: latest
+
+valkey_storage_size: 10Gi
+valkey_storage_class:
+
+valkey_backup_restore_sidecar_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+valkey_backup_restore_sidecar_provider: local
+valkey_backup_restore_sidecar_backup_cron_schedule: "*/3 * * * *"
+valkey_backup_restore_sidecar_log_level: debug
+
+valkey_backup_restore_sidecar_gcp_bucket_name:
+valkey_backup_restore_sidecar_gcp_backup_location:
+valkey_backup_restore_sidecar_gcp_project_id:
+valkey_backup_restore_sidecar_gcp_serviceaccount_json:
+valkey_backup_restore_sidecar_s3_bucket_name:
+valkey_backup_restore_sidecar_s3_region:
+valkey_backup_restore_sidecar_s3_endpoint:
+valkey_backup_restore_sidecar_s3_access_key:
+valkey_backup_restore_sidecar_s3_secret_key:
+valkey_backup_restore_sidecar_s3_insecure_skip_verify:
+valkey_backup_restore_sidecar_s3_trusted_ca_cert:
+valkey_backup_restore_sidecar_object_max_keep: 480
+valkey_backup_restore_sidecar_encryption_key:
+
+valkey_resources:
+  requests:
+    memory: "512M"
+    cpu: "400m"
+  limits:
+    memory: "1Gi"
+    cpu: "800m"
+
+valkey_backup_restore_sidecar_resources:
+#  requests:
+#    cpu: "100m"
+#    memory: "64Mi"
+#  limits:
+#    cpu: "300m"
+#    memory: "256Mi"
+valkey_init_resources:
+#  requests:
+#    cpu: "10m"
+#    memory: "16Mi"
+#  limits:
+#    cpu: "100m"
+#    memory: "64Mi"
 
 valkey_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 valkey_registry_auth:
@@ -20,3 +62,19 @@ valkey_registry_auth:
       username: "{{ metal_registry_auth_user }}"
       password: "{{ metal_registry_auth_password }}"
       auth: "{{ (metal_registry_auth_user + ':' + metal_registry_auth_password) | b64encode }}"
+
+valkey_enable_security_context: true
+
+valkey_sts_security_context:
+  fsGroup: 1000
+  fsGroupChangePolicy: "OnRootMismatch"
+  runAsUser: 1000
+  runAsNonRoot: true
+  runAsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+valkey_container_security_context:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
