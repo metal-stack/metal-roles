@@ -38,7 +38,7 @@ rethinkdb_resources:
     cpu: "500m"
 rethinkdb_backup_restore_sidecar_resources:
 #  requests:
-#    cpu: "100m"       
+#    cpu: "100m"
 #    memory: "64Mi"
 #  limits:
 #    cpu: "300m"
@@ -49,7 +49,7 @@ rethinkdb_init_resources:
 #    memory: "16Mi"
 #  limits:
 #    cpu: "100m"
-#    memory: "64Mi" 
+#    memory: "64Mi"
 
 rethinkdb_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 rethinkdb_registry_auth:

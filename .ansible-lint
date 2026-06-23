@@ -1,7 +1,6 @@
 ---
 skip_list:
   - galaxy[no-changelog]
-  - yaml[line-length]
 
 exclude_paths:
   - .cache/

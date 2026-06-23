@@ -43,7 +43,7 @@ postgres_resources:
     cpu: "100m"
 postgres_backup_restore_sidecar_resources:
 #  requests:
-#    cpu: "50m"       
+#    cpu: "50m"
 #    memory: "64Mi"
 #  limits:
 #    cpu: "300m"
