@@ -55,6 +55,7 @@
   ansible.builtin.template:
     src: config.alloy.j2
     dest: "{{ alloy_config_host_dir }}/config.alloy"
+    mode: "0644"
   notify: Restart alloy
   when: alloy_config_raw is not defined
 
@@ -62,6 +63,7 @@
   ansible.builtin.copy:
     content: "{{ alloy_config_raw }}"
     dest: "{{ alloy_config_host_dir }}/config.alloy"
+    mode: "0644"
   notify: Restart alloy
   when: alloy_config_raw is defined
 
