@@ -17,6 +17,10 @@ data:
       urls:
         - https://controlplane.tailscale.com/derpmap/default
 
+    # tell connected tailscale clients to enable auto-update
+    auto_update:
+      enabled: true
+
     database:
       type: postgres
       postgres:
