@@ -20,18 +20,49 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### Loki
 
-| Name                                          | Mandatory | Default                                      | Description                                       |
-| --------------------------------------------- | --------- | -------------------------------------------- | ------------------------------------------------- |
-| logging_chart_version                         | yes       |                                              | Helm chart version for loki (release vector)      |
-| logging_chart_repo                            | yes       |                                              | Repository for loki (release vector)              |
-| logging_namespace                             |           | `monitoring`                                 | Target namespace                                  |
-| logging_loki_size                             |           | `30Gi`                                       | Size of the Loki storage volume                   |
-| logging_ingress_dns                           |           | `loki.{{ metal_control_plane_ingress_dns }}` | DNS for loki ingress                              |
-| logging_ingress_loki_tls                      |           | `true`                                       | Expose loki through HTTPS on the ingress          |
-| logging_ingress_loki_basic_auth_user          |           | `promtail`                                   | Basic auth user for the external loki ingress     |
-| logging_ingress_loki_basic_auth_password      | yes       |                                              | Basic auth password for the external loki ingress |
-| logging_ingress_loki_basic_auth_password_salt |           | derived from password                        | Salt for stable bcrypt password hashes            |
-| logging_ingress_annotations                   |           | `{}`                                         | Additional ingress annotations                    |
+| Name                                          | Mandatory | Default                                      | Description                                                                                                    |
+| --------------------------------------------- | --------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| logging_chart_version                         | yes       |                                              | Helm chart version for loki (release vector)                                                                   |
+| logging_chart_repo                            | yes       |                                              | Repository for loki (release vector)                                                                           |
+| logging_namespace                             |           | `monitoring`                                 | Target namespace                                                                                               |
+| logging_loki_size                             |           | `30Gi`                                       | Size of the Loki PVC (index, chunks, compactor scratch and ruler rules are all stored on this volume)          |
+| logging_loki_storage_class                    |           | `premium-rwo`                                | StorageClass for the Loki PVC — must support `ReadWriteOnce`; use a fast block-storage class in production     |
+| logging_loki_retention_enabled                |           | `true`                                       | Set to `false` to disable the compactor retention entirely — logs are kept forever.                            |
+| logging_loki_retention_period                 |           | `14d`                                        | Global log retention TTL. Minimum `24h`. Only used when `logging_loki_retention_enabled` is `true`.            |
+| logging_loki_deletion_mode                    |           | `filter-and-delete`                          | `filter-and-delete`: deletes from storage. `filter-only`: filters at query time only. `disabled`: no deletion. |
+| logging_loki_retention_stream                 |           | `[]`                                         | Per-stream retention rules evaluated before the global period. See retention section below.                    |
+| logging_ingress_dns                           |           | `loki.{{ metal_control_plane_ingress_dns }}` | DNS for loki ingress                                                                                           |
+| logging_ingress_loki_tls                      |           | `true`                                       | Expose loki through HTTPS on the ingress                                                                       |
+| logging_ingress_loki_basic_auth_user          |           | `promtail`                                   | Basic auth user for the external loki ingress                                                                  |
+| logging_ingress_loki_basic_auth_password      | yes       |                                              | Basic auth password for the external loki ingress                                                              |
+| logging_ingress_loki_basic_auth_password_salt |           | derived from password                        | Salt for stable bcrypt password hashes                                                                         |
+| logging_ingress_annotations                   |           | `{}`                                         | Additional ingress annotations                                                                                 |
+
+Loki runs as a single-binary `StatefulSet` backed by a `ReadWriteOnce` PVC mounted at `/var/loki`. All log data is stored persistently under that path.
+
+> **Warning:** When the PVC runs full, Loki will fail to flush chunks and may crash-loop. Keep `logging_loki_retention_enabled: true` and set `logging_loki_retention_period` to a value that keeps disk usage bounded. If retention is disabled, ensure the PVC is large enough to hold logs indefinitely.
+
+#### Retention
+
+The compactor marks expired chunks after each compaction cycle and physically removes them after a 2h grace period. Storage usage therefore decreases with a short delay after the TTL expires.
+
+**Sizing the PVC:** estimate daily compressed log volume × retention days, then add ~20% headroom for the compactor working directory and boltdb-shipper cache.
+
+**Per-stream retention** can be configured via `logging_loki_retention_stream`. Rules are evaluated before the global `logging_loki_retention_period` — the highest-priority matching rule wins. Example:
+
+```yaml
+logging_loki_retention_stream:
+  - selector: '{namespace="dev"}'
+    priority: 1
+    period: 24h
+  - selector: '{namespace="prod"}'
+    priority: 1
+    period: 720h # 30 days
+```
+
+Since `auth_enabled: false` uses a single synthetic tenant, per-tenant overrides via `overrides.yaml` do not apply without enabling multi-tenancy.
+
+See the [Loki 2.8 retention docs](https://archive.grafana.com/docs/loki/v2.8.x/operations/storage/retention/) and [log deletion docs](https://github.com/grafana/loki/blob/v2.8.2/docs/sources/operations/storage/logs-deletion.md) for full configuration options.
 
 ### Alloy
 
