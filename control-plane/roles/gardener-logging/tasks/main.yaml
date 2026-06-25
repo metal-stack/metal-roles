@@ -14,7 +14,7 @@
   ansible.builtin.fail:
     msg: >-
       DEPRECATION: gardener_logging_promtail_enabled is true. Promtail support is deprecated
-      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/main/control-plane/roles/gardener-logging#migration-from-promtail for instructions.
+      and will be removed in a future release. Migrate to Alloy — see https://github.com/metal-stack/metal-roles/tree/master/control-plane/roles/logging-common#migration-from-promtail for instructions.
   when: gardener_logging_promtail_enabled | bool
   ignore_errors: true
 
