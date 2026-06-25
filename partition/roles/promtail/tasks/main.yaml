@@ -3,14 +3,15 @@
   ansible.builtin.fail:
     msg: >-
       The promtail role is deprecated and will be removed in a future release.
-      New deployments should use metal-roles/partition/roles/alloy instead - see https://github.com/metal-stack/metal-roles/tree/main/partition/roles/alloy#migration-from-promtail for instructions.
+      New deployments should use metal-roles/partition/roles/alloy instead - see https://github.com/metal-stack/metal-roles/tree/main/partition/roles/alloy#migration-from-promtail
+      for instructions.
   ignore_errors: true
 
 - name: Gather release versions
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -20,7 +21,7 @@
       - promtail_scrape_configs is defined and (promtail_scrape_configs|length>0)
 
 - name: Create promtail config directory
-  file:
+  ansible.builtin.file:
     path: "{{ promtail_config_host_dir }}"
     state: directory
     owner: "nobody"
@@ -28,13 +29,13 @@
     mode: "0755"
 
 - name: Template promtail configuration file
-  template:
+  ansible.builtin.template:
     src: promtail.yaml.j2
     dest: "{{ promtail_config_host_dir }}/promtail.yaml"
-  notify: restart promtail
+  notify: Restart promtail
 
 - name: Deploy promtail service
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: promtail

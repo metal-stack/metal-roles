@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -12,7 +12,7 @@
       - alloy_config_raw is defined or (alloy_loki_write_endpoints is defined and (alloy_loki_write_endpoints | length > 0))
 
 - name: Check alloy_journal_legacy_position_name is set when migrating journal-file from promtail
-  assert:
+  ansible.builtin.assert:
     fail_msg: "alloy_journal_legacy_position_name must be set — it must match the job_name of the journal scrape_config in your old promtail config"
     quiet: true
     that:
@@ -22,28 +22,29 @@
     - alloy_migrate_from_promtail
 
 - name: Check alloy_config_raw and alloy_config_snippets are not both set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "alloy_config_raw and alloy_config_snippets/alloy_config_custom_snippets cannot both be set — use either raw config or snippets, not both"
     quiet: true
     that:
       - not (alloy_config_raw is defined and (alloy_config_snippets | length > 0 or alloy_config_custom_snippets | length > 0))
 
 - name: Check alloy_config_snippets only contains supported snippets
-  assert:
-    fail_msg: "alloy_config_snippets contains unsupported snippet(s): {{ alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta']) | join(', ') }}"
+  ansible.builtin.assert:
+    fail_msg: "alloy_config_snippets contains unsupported snippet(s): {{ alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta'])
+      | join(', ') }}"
     quiet: true
     that:
       - alloy_config_snippets | difference(['syslog', 'journal', 'journal-file', 'docker', 'alloy-meta']) | length == 0
 
 - name: Check journal and journal-file are not both enabled
-  assert:
+  ansible.builtin.assert:
     fail_msg: "journal and journal-file snippets cannot both be enabled — this will produce duplicate log entries in Loki"
     quiet: true
     that:
       - not ('journal' in alloy_config_snippets and 'journal-file' in alloy_config_snippets)
 
 - name: Create alloy config directory
-  file:
+  ansible.builtin.file:
     path: "{{ alloy_config_host_dir }}"
     state: directory
     owner: "nobody"
@@ -51,21 +52,21 @@
     mode: "0755"
 
 - name: Template alloy config
-  template:
+  ansible.builtin.template:
     src: config.alloy.j2
     dest: "{{ alloy_config_host_dir }}/config.alloy"
-  notify: restart alloy
+  notify: Restart alloy
   when: alloy_config_raw is not defined
 
 - name: Write raw alloy config
-  copy:
+  ansible.builtin.copy:
     content: "{{ alloy_config_raw }}"
     dest: "{{ alloy_config_host_dir }}/config.alloy"
-  notify: restart alloy
+  notify: Restart alloy
   when: alloy_config_raw is defined
 
 - name: Create alloy storage directory
-  file:
+  ansible.builtin.file:
     path: /var/lib/alloy
     state: directory
     owner: "nobody"
@@ -73,7 +74,7 @@
     mode: "0755"
 
 - name: Deploy alloy service
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: alloy
@@ -100,20 +101,20 @@
     systemd_docker_log_driver: "{{ alloy_docker_log_driver }}"
 
 - name: Wait for alloy to listen on port
-  wait_for:
+  ansible.builtin.wait_for:
     port: "{{ alloy_port }}"
     timeout: 300
     msg: "alloy did not come up"
 
 # promtail migration
 - name: Check if promtail systemd unit file is present
-  stat:
+  ansible.builtin.stat:
     path: /etc/systemd/system/promtail.service
   register: promtail_unit_file
   when: promtail_migrate_stop or promtail_migrate_cleanup
 
 - name: Stop and disable promtail service
-  systemd:
+  ansible.builtin.systemd:
     name: promtail
     state: stopped
     enabled: false
@@ -122,20 +123,20 @@
     - promtail_unit_file.stat.exists
 
 - name: Remove promtail systemd unit file
-  file:
+  ansible.builtin.file:
     path: /etc/systemd/system/promtail.service
     state: absent
   when: promtail_migrate_cleanup
-  notify: reload systemd
+  notify: Reload systemd
 
 - name: Remove promtail config directory
-  file:
+  ansible.builtin.file:
     path: "{{ promtail_config_host_dir }}"
     state: absent
   when: promtail_migrate_cleanup
 
 - name: Remove promtail positions file
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   loop: "{{ [alloy_syslog_legacy_positions_file, alloy_journal_legacy_positions_file] | unique }}"

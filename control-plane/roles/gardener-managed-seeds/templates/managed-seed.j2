@@ -26,6 +26,14 @@ spec:
                 name: {{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}
                 namespace: garden
               type: {{ gardener_managed_seed_default_dns_provider }}
+            internal:
+              credentialsRef:
+                apiVersion: v1
+                kind: Secret
+                name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
+                namespace: garden
+              domain: "{{ gardener_managed_seed_default_dns_domain }}"
+              type: "{{ gardener_managed_seed_default_dns_provider }}"
           ingress:
 {% if 'ingress_domain' in _config %}
             domain: {{ _config.ingress_domain }}

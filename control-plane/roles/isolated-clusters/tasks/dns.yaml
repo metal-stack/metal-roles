@@ -1,6 +1,6 @@
 ---
 - name: Create namespace {{ isolated_clusters_dns_namespace }}
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
@@ -12,7 +12,7 @@
     apply: true
 
 - name: Deploy DNS service
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'dns/' + item) }}"
     namespace: "{{ isolated_clusters_dns_namespace }}"
     kubeconfig: "{{ cluster.kubeconfig }}"

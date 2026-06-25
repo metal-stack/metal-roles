@@ -25,11 +25,8 @@ metal_console_port: 10001
 # metal-apiserver
 metal_apiserver_enabled: false
 metal_apiserver_url: >-
-  {% if metal_apiserver_httproute_enabled -%}
-  https://v2.api.{{ metal_control_plane_gateway_dns }}
-  {%- else -%}
-  https://v2.api.{{ metal_control_plane_ingress_dns }}
-  {%- endif %}
+  {% if metal_apiserver_httproute_enabled -%}https://v2.api.{{ metal_control_plane_gateway_dns }}{%- else -%}https://v2.api.{{ metal_control_plane_ingress_dns }}{%-
+  endif %}
 metal_apiserver_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_apiserver_db_addresses:
   - metal-db
@@ -73,11 +70,9 @@ metal_apiserver_pdb_enabled: true
 metal_apiserver_pdb_min_available: 2
 metal_apiserver_httproute_enabled: false
 metal_apiserver_httproute_hostnames:
-- "v2.api.{{ metal_control_plane_gateway_dns }}"
+  - "v2.api.{{ metal_control_plane_gateway_dns }}"
 metal_apiserver_httproute_parent_refs: []
 metal_apiserver_httproute_https_redirect: {}
-
-
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_api_replicas: 3
@@ -92,11 +87,7 @@ metal_api_db_address: metal-db
 metal_api_db_password: change-me
 metal_api_ipam_grpc_server_endpoint: http://ipam:9090
 metal_api_nsq_tcp_address: >-
-  {% if nsq_tcproute_enabled -%}
-  {{ metal_control_plane_gateway_dns }}:4150
-  {%- else -%}
-  {{ metal_control_plane_ingress_dns }}:4150
-  {%- endif %}
+  {% if nsq_tcproute_enabled -%}{{ metal_control_plane_gateway_dns }}:4150{%- else -%}{{ metal_control_plane_ingress_dns }}:4150{%- endif %}
 metal_api_nsq_http_address: "nsqd:4151"
 metal_api_nsq_lookupd_address: "nsq-lookupd:4161"
 metal_api_nsq_tls_enabled: true
@@ -130,14 +121,12 @@ metal_api_pdb_enabled: true
 metal_api_pdb_min_available: 2
 metal_api_httproute_enabled: false
 metal_api_httproute_hostnames:
-- "api.{{ metal_control_plane_gateway_dns }}"
+  - "api.{{ metal_control_plane_gateway_dns }}"
 metal_api_httproute_parent_refs: []
 metal_api_httproute_https_redirect: {}
-
 # GatewayAPI TCPRoute for GRPC metal-api(v1)
 metal_api_tcproute_enabled: false
 metal_api_tcproute_parent_refs: []
-
 # masterdata-api
 metal_masterdata_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_masterdata_api_db_address: masterdata-db
@@ -153,7 +142,6 @@ metal_masterdata_api_pdb_min_available: 1
 
 metal_masterdata_api_tenants: []
 metal_masterdata_api_projects: []
-
 # tenant-apiserver
 metal_tenant_apiserver_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_tenant_apiserver_db_address: masterdata-db
@@ -192,7 +180,6 @@ metal_console_pdb_enabled: false
 metal_console_pdb_min_available: 1
 metal_console_tcproute_enabled: false
 metal_console_tcproute_parent_refs: []
-
 # ingress
 metal_deploy_ingress: true
 metal_ingress: {}

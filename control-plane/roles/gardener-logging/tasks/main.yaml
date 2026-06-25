@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -57,7 +57,7 @@
   when: gardener_logging_deploy_to_garden_cluster and not gardener_logging_promtail_enabled | bool
 
 - name: Loop over Gardener shooted seeds
-  include_tasks: gardener-shooted-seed.yaml
+  ansible.builtin.include_tasks: gardener-shooted-seed.yaml
   loop: "{{ gardener_logging_shooted_seeds }}"
   loop_control:
     loop_var: gardener_logging_shooted_seed
