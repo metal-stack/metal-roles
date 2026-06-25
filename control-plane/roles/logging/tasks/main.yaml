@@ -12,6 +12,24 @@
       - not logging_promtail_enabled | bool or logging_promtail_chart_version is defined
       - not logging_promtail_enabled | bool or logging_promtail_chart_repo is defined
 
+- name: Check Loki retention period is valid
+  ansible.builtin.assert:
+    fail_msg: >-
+      logging_loki_retention_period is invalid (got: '{{ logging_loki_retention_period }}').
+      Must be a duration string of the form Nd (days) or Nh (hours, multiple of 24),
+      with a minimum of 24h. Examples: 24h, 14d, 720h.
+    quiet: true
+    that:
+      # Must match Nd or Nh (no mixed units — Loki requires multiples of 24h)
+      - logging_loki_retention_period is match('^[1-9][0-9]*[dh]$')
+      # When expressed in hours, value must be a multiple of 24
+      - not logging_loki_retention_period is match('^[0-9]+h$') or
+        (logging_loki_retention_period[:-1] | int) % 24 == 0
+      # Minimum 24h: days >= 1 always satisfy this; hours must be >= 24
+      - not logging_loki_retention_period is match('^[0-9]+h$') or
+        (logging_loki_retention_period[:-1] | int) >= 24
+  when: logging_loki_retention_enabled | bool
+
 - name: Promtail deprecation warning
   ansible.builtin.fail:
     msg: >-

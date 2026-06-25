@@ -4,6 +4,7 @@
 singleBinary:
   replicas: 1
   persistence:
+    enableStatefulSetAutoDeletePVC: true
     size: {{ logging_loki_size }}
 {% if logging_loki_storage_class %}
     storageClass: {{ logging_loki_storage_class }}
@@ -14,7 +15,7 @@ loki:
 
   # See README.md "Persistent storage" for the rationale behind these settings.
   commonConfig:
-    # path_prefix: /var/loki
+    path_prefix: /var/loki
     replication_factor: 1
     ring:
       instance_addr: 127.0.0.1
@@ -28,12 +29,17 @@ loki:
     chunk_retain_period: 30s
 
   limits_config:
+    enforce_metric_name: false
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
     ingestion_rate_mb: 32
     ingestion_burst_size_mb: 64
     per_stream_rate_limit: "16MB"
     per_stream_rate_limit_burst: "32MB"
 {% if logging_loki_retention_enabled %}
+    # https://archive.grafana.com/docs/loki/v2.8.x/operations/storage/retention/
     retention_period: {{ logging_loki_retention_period }}
+    # https://archive.grafana.com/docs/loki/v2.8.x/operations/storage/logs-deletion/
     deletion_mode: {{ logging_loki_deletion_mode }}
 {% if logging_loki_retention_stream %}
     retention_stream:

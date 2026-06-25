@@ -55,7 +55,7 @@ logging_loki_size: 30Gi
 # if null, the cluster default provisioner is used
 logging_loki_storage_class: null
 logging_loki_retention_enabled: true
-logging_loki_retention_period: 14d  # minimum 24h; only used when logging_loki_retention_enabled is true
+logging_loki_retention_period: 14d  # minimum 24h, must be a multiple of 24h; use Nd (days) or Nh (hours, e.g. 48h); only used when logging_loki_retention_enabled is true
 logging_loki_deletion_mode: filter-and-delete  # filter-only: filter at query time only, no storage deletion; disabled: disables the deletion API
 # Per-stream retention rules, evaluated before the global retention_period.
 # Example:
