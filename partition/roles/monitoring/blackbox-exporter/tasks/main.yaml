@@ -11,7 +11,8 @@
   ansible.builtin.template:
     src: config.yml
     dest: "{{ monitoring_blackbox_exporter_etc_host_dir }}/config.yml"
-  register: blackbox_config
+  notify:
+    - Restart blackbox_exporter
 
 - name: Deploy blackbox_exporter service
   ansible.builtin.include_role:
@@ -37,11 +38,3 @@
     port: "{{ monitoring_blackbox_exporter_port }}"
     timeout: 300
     msg: "blackbox_exporter did not come up"
-
-- name: Restart blackbox_exporter
-  ansible.builtin.systemd:
-    name: "blackbox_exporter"
-    state: restarted
-    enabled: true
-    daemon_reload: true
-  when: blackbox_config is changed
