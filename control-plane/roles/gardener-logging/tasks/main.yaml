@@ -19,7 +19,7 @@
   ignore_errors: true
 
 - name: Deploy Alloy to garden cluster
-  include_role:
+  ansible.builtin.include_role:
     name: metal-roles/control-plane/roles/logging-common
     tasks_from: deploy-alloy.yaml
   vars:

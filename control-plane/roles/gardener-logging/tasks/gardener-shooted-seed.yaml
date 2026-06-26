@@ -8,7 +8,7 @@
     _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_logging_shooted_seed.name) | from_yaml }}"
 
 - name: Deploy Alloy to seed
-  include_role:
+  ansible.builtin.include_role:
     name: metal-roles/control-plane/roles/logging-common
     tasks_from: deploy-alloy.yaml
   vars:
