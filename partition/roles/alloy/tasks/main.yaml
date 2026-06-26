@@ -55,14 +55,14 @@
   ansible.builtin.template:
     src: config.alloy.j2
     dest: "{{ alloy_config_host_dir }}/config.alloy"
-  notify: restart alloy
+  notify: Restart alloy
   when: alloy_config_raw is not defined
 
 - name: Write raw alloy config
   ansible.builtin.copy:
     content: "{{ alloy_config_raw }}"
     dest: "{{ alloy_config_host_dir }}/config.alloy"
-  notify: restart alloy
+  notify: Restart alloy
   when: alloy_config_raw is defined
 
 - name: Create alloy storage directory
@@ -127,7 +127,7 @@
     path: /etc/systemd/system/promtail.service
     state: absent
   when: promtail_migrate_cleanup
-  notify: reload systemd
+  notify: Reload systemd
 
 - name: Remove promtail config directory
   ansible.builtin.file:

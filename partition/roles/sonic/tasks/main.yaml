@@ -50,7 +50,7 @@
     dest: /etc/sonic/frr/frr.conf
   when: sonic_frr_render
   notify:
-    - restart bgp
+    - Restart bgp
 
 - name: Render iptables.json
   ansible.builtin.template:
@@ -58,7 +58,7 @@
     dest: /etc/sonic/iptables.json
   when: sonic_extended_cacl is defined
   notify:
-    - restart caclmgrd
+    - Restart caclmgrd
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

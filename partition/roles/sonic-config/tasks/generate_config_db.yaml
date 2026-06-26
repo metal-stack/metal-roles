@@ -62,7 +62,7 @@
     sleep: 5
     delay: 30
     timeout: 300
-  when: _config_db_json is changed
+  when: _config_db_json is changed # noqa: no-handler
 
 - name: Remove temporary directory
   ansible.builtin.file:
