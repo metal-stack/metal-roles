@@ -59,7 +59,11 @@ alloy_journal_legacy_positions_file: "/var/log/promtail-positions.yaml"
 # Implied by promtail_migrate_cleanup.
 promtail_migrate_stop: false
 
-# Remove all promtail remnants: stops and disables the service, 
+# Remove all promtail remnants: stops and disables the service,
 # removes the systemd unit file, deletes promtail_config_host_dir and
 # the legacy positions files. Only set once migration to alloy is fully complete.
 promtail_migrate_cleanup: false
+
+# Allows passing additional security opts to the docker container.
+# This might be required on some older switches to run alloy.
+alloy_docker_security_opts: []

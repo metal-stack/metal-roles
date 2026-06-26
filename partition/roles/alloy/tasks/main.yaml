@@ -82,6 +82,7 @@
     systemd_docker_image_tag: "{{ alloy_image_tag }}"
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
+    systemd_docker_security_opts: "{{ alloy_docker_security_opts }}"
     systemd_docker_ports:
       - host_port: "{{ alloy_port }}"
         target_port: "{{ alloy_port }}"
