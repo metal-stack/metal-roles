@@ -1,10 +1,11 @@
 ---
 - name: Deprecation warning
   run_once: true
-  deprecate_role:
+  print_message:
+    type: deprecate
     msg: >-
       The promtail role is deprecated and will be removed in a future release.
-    alternative: |
+    action: |
       Use metal-roles/partition/roles/alloy instead - see README for instructions:
       https://github.com/metal-stack/metal-roles/tree/master/partition/roles/alloy#migration-from-promtail.
 

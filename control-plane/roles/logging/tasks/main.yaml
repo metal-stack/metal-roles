@@ -14,10 +14,11 @@
 
 - name: Promtail deprecation warning
   run_once: true
-  deprecate_role:
+  print_message:
+    type: deprecate
     msg: >-
       logging_promtail_enabled is true. Promtail support is deprecated and will be removed in a future release.
-    alternative: |
+    action: |
       Migrate to Alloy — see README for instructions:
       https://github.com/metal-stack/metal-roles/tree/master/control-plane/roles/logging-common#migration-from-promtail.
   when: logging_promtail_enabled | bool
