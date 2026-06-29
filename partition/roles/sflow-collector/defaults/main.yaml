@@ -25,4 +25,8 @@ sflow_collector_docker_log_driver: json-file
 
 sflow_collector_spool_tmpfs_size: 256m
 
+sflow_collector_logrotate_size: 32M
+sflow_collector_logrotate_keep: 1
+sflow_collector_logrotate_interval: 2min
+
 sflow_collector_vector_buffer_max_events: 100000
