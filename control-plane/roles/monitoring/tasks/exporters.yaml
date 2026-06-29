@@ -48,7 +48,7 @@
   when: not event_exporter_enabled | bool
 
 - name: Deploy gardener-metrics-exporter
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'metrics-exporters/gardener-metrics-exporter.yaml') }}"
     namespace: "{{ monitoring_namespace }}"
     apply: true
