@@ -79,7 +79,12 @@ spec:
         - name: seed-kubecfg
           secret:
             defaultMode: 420
-            secretName: seed-kubecfg
+            secretName: virtual-garden-kubeconfig
+            items:
+              - key: kubeconfig
+                path: kubecfg.yaml
+              - key: token
+                path: token
 ---
 apiVersion: v1
 kind: Service

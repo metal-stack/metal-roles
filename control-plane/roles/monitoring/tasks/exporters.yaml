@@ -47,24 +47,6 @@
           name: event-exporter
   when: not event_exporter_enabled | bool
 
-- name: Get kubeconfig for virtual garden access
-  virtual_garden_kubeconfig:
-    garden_name: "{{ monitoring_garden_name }}"
-  when: monitoring_gardener_enabled
-
-- name: Deploy seed-kubecfg secret
-  k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: seed-kubecfg
-        namespace: "{{ monitoring_namespace }}"
-      stringData:
-        kubecfg.yaml: "{{ virtual_garden_kubeconfig }}"
-  when: monitoring_gardener_enabled
-
 - name: Deploy gardener-metrics-exporter
   k8s:
     definition: "{{ lookup('template', 'metrics-exporters/gardener-metrics-exporter.yaml') }}"
