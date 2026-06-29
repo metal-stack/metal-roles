@@ -10,18 +10,3 @@ gardener_extension_admission_calico_helm_chart_application_tag: "{{ gardener_ext
 #   sourceRepository: /source/repository
 #   repository: /repository
 #   tag: <tag>
-
-# Default Calico images are pinned to v3.30.7.
-# Calico eBPF < v3.30.5 fails on newer kernels because of a known bug,
-# see: https://github.com/projectcalico/calico/issues/11302#issuecomment-3663319534
-# TODO:
-# Can be removed with gardener-extension-networking-calico v1.54.0, which includes Calico v3.30.5.
-gardener_extension_networking_calico_image_vector_overwrite:
-  - name: calico-node
-    sourceRepository: github.com/projectcalico/calico
-    repository: quay.io/calico/node
-    tag: v3.30.7
-  - name: calico-cni
-    sourceRepository: github.com/projectcalico/cni-plugin
-    repository: quay.io/calico/cni
-    tag: v3.30.7
