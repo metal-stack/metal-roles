@@ -102,20 +102,47 @@
     - geoip
     - asn
 
+- name: Remove legacy logrotate.d config
+  file:
+    path: /etc/logrotate.d/sflow-collector
+    state: absent
+
 - name: Deploy logrotate config for goflow2 spool
   copy:
     content: |
       {{ sflow_collector_data_host_dir }}/spool/flows.jsonl {
-          daily
-          rotate 1
+          size {{ sflow_collector_logrotate_size }}
+          rotate {{ sflow_collector_logrotate_keep }}
           missingok
           notifempty
-          copytruncate
+          nocompress
+          create 0644
+          postrotate
+              /usr/bin/systemctl reload goflow2.service
+          endscript
       }
-    dest: /etc/logrotate.d/sflow-collector
+    dest: "{{ sflow_collector_config_host_dir }}/flows.logrotate"
     owner: root
     group: root
     mode: "0644"
+
+- name: Deploy sflow spool logrotate systemd service + timer
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - sflow-logrotate.service
+    - sflow-logrotate.timer
+
+- name: Enable sflow spool logrotate timer
+  systemd:
+    name: sflow-logrotate.timer
+    enabled: yes
+    state: started
+    daemon_reload: yes
 
 - name: Deploy goflow2 service
   include_role:
