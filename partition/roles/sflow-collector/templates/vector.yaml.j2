@@ -36,7 +36,7 @@ sources:
   goflow2_raw:
     type: file
     include:
-      - /spool/flows.jsonl
+      - /spool/flows*.jsonl
     read_from: beginning
 
 transforms:
@@ -186,9 +186,20 @@ sinks:
       partition: "{{ metal_partition_id }}"
 {% raw %}
       proto_name:      "{{ .proto_name }}"
-      app_proto:       "{{ .app_proto }}"
       vrf:             "{{ .vrf }}"
       sampler_address: "{{ .sampler_address }}"
+    structured_metadata:
+      app_proto:   "{{ .app_proto }}"
+      src_addr:    "{{ .src_addr }}"
+      dst_addr:    "{{ .dst_addr }}"
+      src_port:    "{{ .src_port }}"
+      dst_port:    "{{ .dst_port }}"
+      src_asn:     "{{ .src_asn }}"
+      src_asn_org: "{{ .src_asn_org }}"
+      interface:   "{{ .interface }}"
+      vni:         "{{ .vni }}"
+      bytes:       "{{ .bytes }}"
+      packets:     "{{ .packets }}"
 {% endraw %}
     remove_label_fields: true
     healthcheck:

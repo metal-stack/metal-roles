@@ -43,7 +43,7 @@ for URL in \
   "https://download.db-ip.com/free/${SLUG}-${YEAR}-${MONTH}.mmdb.gz" \
   "https://download.db-ip.com/free/${SLUG}-${PREV_YEAR}-${PREV_MONTH}.mmdb.gz"; do
   echo "Trying $URL ..."
-  if docker run --rm -v "$TMP:/out" "$IMAGE" \
+  if docker run --rm --network host -v "$TMP:/out" "$IMAGE" \
       sh -c "wget -q -O /out/db.gz '$URL' && gunzip /out/db.gz"; then
     mv -f "$TMP/db" "$OUT_DIR/$OUT_FILE.new"
     chmod 644 "$OUT_DIR/$OUT_FILE.new"
