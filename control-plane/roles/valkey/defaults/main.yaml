@@ -4,12 +4,6 @@ valkey_namespace: "{{ metal_control_plane_namespace }}"
 
 valkey_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 
-# TODO: move to release vector:
-valkey_image_name: ghcr.io/valkey-io/valkey
-valkey_image_tag: 9.1-alpine
-valkey_backup_restore_sidecar_image_name: ghcr.io/metal-stack/backup-restore-sidecar
-valkey_backup_restore_sidecar_image_tag: latest
-
 valkey_storage_size: 10Gi
 valkey_storage_class:
 
