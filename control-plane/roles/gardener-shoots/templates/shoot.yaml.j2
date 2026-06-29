@@ -32,9 +32,6 @@ spec:
 {% if 'managed_seed' in _config %}
   tolerations: {{ _config.managed_seed.tolerations | to_json }}
 {% endif %}
-  addons:
-    kubernetesDashboard:
-      enabled: false
 {% if 'high_availability_control_plane' in _config %}
   controlPlane:
     highAvailability:
