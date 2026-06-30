@@ -33,8 +33,8 @@ metal_apiserver_db_addresses:
 metal_apiserver_db_password: "{{ metal_api_db_password }}"
 metal_apiserver_provider_tenant: "{{ metal_control_plane_provider_tenant }}"
 metal_apiserver_redis_addr: valkey:6379
-metal_apiserver_replicas: 1
-metal_apiserver_hpa_enabled: false
+metal_apiserver_replicas: 3
+metal_apiserver_hpa_enabled: true
 metal_apiserver_hpa_max: 5
 metal_apiserver_hpa_min: 3
 metal_apiserver_hpa_cpu_percentage: 70
