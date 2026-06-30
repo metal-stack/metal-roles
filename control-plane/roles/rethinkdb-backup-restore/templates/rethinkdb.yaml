@@ -252,6 +252,12 @@ data:
 {% if rethinkdb_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ rethinkdb_backup_restore_sidecar_object_max_keep }}
 {% endif %}
+{% if rethinkdb_backup_restore_sidecar_object_days_max_keep %}
+    object-days-max-keep: {{ rethinkdb_backup_restore_sidecar_object_days_max_keep }}
+{% endif %}
+{% if rethinkdb_backup_restore_sidecar_s3_request_checksum_calculation %}
+    s3-request-checksum-calculation: {{ rethinkdb_backup_restore_sidecar_s3_request_checksum_calculation }}
+{% endif %}
 ---
 apiVersion: v1
 kind: Secret
