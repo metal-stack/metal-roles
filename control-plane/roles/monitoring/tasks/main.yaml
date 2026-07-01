@@ -78,6 +78,7 @@
 
 - name: Deploy metrics exporters
   ansible.builtin.import_tasks: exporters.yaml
+  
 - name: Deploy Grafana dashboards
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"
