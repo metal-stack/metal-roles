@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0666"
   loop:
     - "{{ image_cache_coredns_host_dir_path }}/config"
 

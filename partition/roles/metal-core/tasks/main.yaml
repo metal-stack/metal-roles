@@ -18,6 +18,7 @@
   ansible.builtin.file:
     path: "{{ metal_core_grpc_cert_dir }}"
     state: directory
+    mode: "0640"
 
 - name: Copy gRPC certificates
   ansible.builtin.copy:
@@ -40,6 +41,7 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/systemd/system/{{ item }}"
+    mode: "0644"
   notify: Reload systemd daemon
   loop:
     - bgp-validation@.service
