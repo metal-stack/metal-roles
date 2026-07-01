@@ -23,6 +23,7 @@
   ansible.builtin.file:
     path: "{{ metal_bmc_nsq_cert_dir }}"
     state: directory
+    mode: "0640"
   when: metal_bmc_nsq_tls_enabled
 
 - name: Copy nsq certificates

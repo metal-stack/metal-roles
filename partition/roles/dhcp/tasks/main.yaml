@@ -30,18 +30,21 @@
   ansible.builtin.template:
     src: dhcpd.conf.j2
     dest: /etc/dhcp/dhcpd.conf
+    mode: "0644"
   register: _dhcpd_conf
 
 - name: Render isc-dhcp-server config
   ansible.builtin.template:
     src: isc-dhcp-server.j2
     dest: /etc/default/isc-dhcp-server
+    mode: "0644"
   register: _isc_dhcp_server
 
 - name: Render static hosts config
   ansible.builtin.template:
     src: dhcpd.hosts.j2
     dest: /etc/dhcp/dhcpd.hosts
+    mode: "0644"
   when: dhcp_static_hosts is defined
   register: _hosts_conf
 
