@@ -34,6 +34,7 @@
   ansible.builtin.template:
     src: promtail.yaml.j2
     dest: "{{ promtail_config_host_dir }}/promtail.yaml"
+    mode: "0644"
   notify: Restart promtail
 
 - name: Deploy promtail service
