@@ -20,7 +20,7 @@ jobs:
     uses: metal-stack/actions-common/.github/workflows/release-drafter.yaml@v1
 
   oci-ansible-role:
-    uses: metal-stack/actions-common/.github/workflows/oci-release-vector-artifact.yaml@oci-action
+    uses: metal-stack/actions-common/.github/workflows/oci-release-vector-artifact.yaml@v1
     secrets: inherit
     with:
       artifact-type: ansible-role
