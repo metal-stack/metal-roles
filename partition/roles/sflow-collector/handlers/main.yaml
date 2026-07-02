@@ -12,3 +12,8 @@
   systemd:
     name: vector
     state: restarted
+
+- name: restart vrf-port-export
+  systemd:
+    name: vrf-port-export
+    state: restarted
