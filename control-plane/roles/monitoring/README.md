@@ -80,12 +80,22 @@ The following variables can be set to configure the role:
 
 ### Gardener
 
-| Name                                            | Mandatory | Description                                                 |
-| ----------------------------------------------- | --------- | ----------------------------------------------------------- |
-| monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
-| monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
-| monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
-| monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |
+| Name                                                             | Mandatory | Description                                                             |
+| ---------------------------------------------------------------- | --------- | ----------------------------------------------------------------------- |
+| monitoring_gardener_enabled                                      |           | Enables monitoring for Gardener                                         |
+| monitoring_gardener_metrics_exporter_image_name                  |           | gardener-metrics-exporter image name                                    |
+| monitoring_gardener_metrics_exporter_image_tag                   |           | gardener-metrics-exporter image tag                                     |
+| monitoring_gardener_virtual_garden_kubeconfig                    |           | The kubeconfig for the kube-apiserver of the virtual garden             |
+| virtual_garden_kubeconfig_refresher_gcp_enabled                  |           | Enabled if the Garden cluster is on GCP                                 |
+| virtual_garden_kubeconfig_refresher_gcp_project_id               |           | The GCP project id used for retrieving cluster credentials              |
+| virtual_garden_kubeconfig_refresher_gcp_location                 |           | The GCP location used for retrieving cluster credentials                |
+| virtual_garden_kubeconfig_refresher_gcp_cluster_name             |           | The GCP cluster name used for retrieving cluster credentials            |
+| virtual_garden_kubeconfig_refresher_metal_stack_cloud_enabled    |           | Enabled if the Garden cluster is on metalstack.cloud                    |
+| virtual_garden_kubeconfig_refresher_metal_stack_cloud_project_id |           | The metalstack.cloud project id used for retrieving cluster credentials |
+| virtual_garden_kubeconfig_refresher_metal_stack_cloud_api_token  |           | The metalstack.cloud API token to retrieve cluster credentials with     |
+| virtual_garden_kubeconfig_refresher_metal_stack_cloud_cluster_id |           | The metalstack.cloud cluster id used for retrieving cluster credentials |
+| virtual_garden_kubeconfig_refresher_garden_cluster_enabled       |           | Enabled if the Garden cluster is access via static credentials          |
+| virtual_garden_kubeconfig_refresher_garden_cluster_kubeconfig    |           | Kubeconfig for the cluster hosting Gardener                             |
 
 ## Migration
 
