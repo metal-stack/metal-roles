@@ -31,7 +31,6 @@ metadata:
   name: zitadel-metal-init-job
 spec:
   backoffLimit: 0
-  ttlSecondsAfterFinished: 60
   template:
     spec:
       serviceAccountName: zitadel-metal-init
@@ -48,8 +47,8 @@ spec:
             - "--zitadel-pat=$(ZITADEL_PAT)"
             - "--namespace={{ zitadel_namespace }}"
             - "--secret=zitadel-client-credentials"
-            - "--zitadel-skip-verify-tls={{ zitadel_skip_verify_tls }}"
-            - "--zitadel-insecure={{ zitadel_insecure }}"
+            - "--zitadel-skip-verify-tls={{ zitadel_skip_verify_tls | lower }}"
+            - "--zitadel-insecure={{ zitadel_insecure | lower }}"
             - "--config-path=/zitadel/config.yaml"
           env:
             - name: ZITADEL_PAT
