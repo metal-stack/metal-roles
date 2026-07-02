@@ -88,6 +88,8 @@
     - rethinkdb.yaml
     - alertmanager.yaml
     - sonic-exporter.yaml
+    - goflow2-north-south.yaml
+    - goflow2-east-west.yaml
 
 - name: Deploy Grafana dashboards for Gardener
   kubernetes.core.k8s:
