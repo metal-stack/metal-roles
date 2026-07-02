@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grafana-dashboard-goflow2
+  name: grafana-dashboard-goflow2-north-south
   labels:
     grafana_dashboard: "1"
 data:
-  goflow2-dashboard.json: |
+  goflow2-north-south.json: |
     {% raw %}
     {
       "editable": true,
@@ -66,7 +66,7 @@ data:
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-              "expr": "rate(goflow2_flow_process_sf_total[5m])",
+              "expr": "rate(goflow2_flow_process_sf_total{partition=~\"$partition\"}[5m])",
               "legendFormat": "{{instance}}",
               "refId": "A"
             }
@@ -85,7 +85,7 @@ data:
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-              "expr": "rate(goflow2_flow_process_sf_samples_total{type=\"unknown\"}[5m])",
+              "expr": "rate(goflow2_flow_process_sf_samples_total{type=\"unknown\", partition=~\"$partition\"}[5m])",
               "legendFormat": "{{agent}}",
               "refId": "A"
             }
@@ -103,7 +103,7 @@ data:
         },
         {
           "collapsed": false,
-          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 42 },
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 50 },
           "id": 23,
           "panels": [],
           "title": "IP & Protocol Top Talkers",
@@ -111,7 +111,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 43 },
+          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 51 },
           "id": 5,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -138,19 +138,18 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "topk(10, sum by (src_addr) (count_over_time({app=\"goflow2\", app_proto!=\"\"} | json src_addr | src_addr != \"\" [$__range])))",
+              "expr": "topk(10, sum by (src_addr) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto != \"\" | src_addr != \"\" [$__range])))",
               "legendFormat": "{{src_addr}}",
               "queryType": "instant",
               "refId": "A"
             }
           ],
           "title": "Top 10 Source IPs",
-          "description": "Top 10 source IPs by total flow count over the selected time range.",
           "type": "table"
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 43 },
+          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 51 },
           "id": 15,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -177,19 +176,18 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "topk(10, sum by (dst_addr) (count_over_time({app=\"goflow2\", app_proto!=\"\"} | json dst_addr | dst_addr != \"\" [$__range])))",
+              "expr": "topk(10, sum by (dst_addr) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto != \"\" | dst_addr != \"\" [$__range])))",
               "legendFormat": "{{dst_addr}}",
               "queryType": "instant",
               "refId": "A"
             }
           ],
           "title": "Top 10 Destination IPs",
-          "description": "Top 10 destination IPs by total flow count over the selected time range.",
           "type": "table"
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 43 },
+          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 51 },
           "id": 16,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -216,19 +214,18 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "topk(10, sum by (src_addr, dst_addr) (count_over_time({app=\"goflow2\", app_proto!=\"\"} | json src_addr, dst_addr | src_addr != \"\" | dst_addr != \"\" [$__range])))",
+              "expr": "topk(10, sum by (src_addr, dst_addr) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto != \"\" | src_addr != \"\" | dst_addr != \"\" [$__range])))",
               "legendFormat": "{{src_addr}} → {{dst_addr}}",
               "queryType": "instant",
               "refId": "A"
             }
           ],
           "title": "Top 10 Conversations",
-          "description": "Top 10 source→destination pairs by total flow count over the selected time range.",
           "type": "table"
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 55 },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 63 },
           "id": 7,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -239,18 +236,17 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", app_proto!~\"UNCLASSIFIED|UNKNOWN|\", vrf=~\"$vrf\"} [$__range]))",
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto!~\"UNCLASSIFIED|UNKNOWN|\" [$__range]))",
               "legendFormat": "{{app_proto}}",
               "refId": "A"
             }
           ],
           "title": "Application Protocol Breakdown",
-          "description": "Breakdown by app_proto stream label derived from well-known port lookup by Vector. Uses $__range for a single total-count value per protocol — gives correct pie proportions.",
           "type": "piechart"
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 55 },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 63 },
           "id": 17,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -261,17 +257,17 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (vrf) (count_over_time({app=\"goflow2\", vrf!=\"\"} [$__range]))",
-              "legendFormat": "{{vrf}}",
+              "expr": "sum by (country_code) (count_over_time({app=\"goflow2-geo\", partition=~\"$partition\"} | json country_code [$__range]))",
+              "legendFormat": "{{country_code}}",
               "refId": "A"
             }
           ],
-          "title": "Traffic by VRF",
+          "title": "Traffic by Country",
           "type": "piechart"
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 55 },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 63 },
           "id": 9,
           "options": {
             "displayLabels": ["percent", "name"],
@@ -282,13 +278,12 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (sampler_address) (count_over_time({app=\"goflow2\", sampler_address!=\"\", vrf=~\"$vrf\"} [$__range]))",
+              "expr": "sum by (sampler_address) (count_over_time({app=\"goflow2\", partition=~\"$partition\", sampler_address!=\"\", scope=\"inbound\"} [$__range]))",
               "legendFormat": "{{sampler_address}}",
               "refId": "A"
             }
           ],
           "title": "Traffic by Sampler (Device)",
-          "description": "Breakdown by sampler_address stream label set by Vector. Uses $__range for correct pie proportions.",
           "type": "piechart"
         },
         {
@@ -321,23 +316,22 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 63 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 71 },
           "id": 12,
           "maxDataPoints": 60,
           "options": {
-            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+            "legend": { "calcs": ["sum", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
             "tooltip": { "mode": "multi", "sort": "desc" }
           },
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", app_proto!=\"\", app_proto!~\"UNCLASSIFIED|UNKNOWN\", vrf=~\"$vrf\"} [$__interval]))",
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto!=\"\" | app_proto!~\"UNCLASSIFIED|UNKNOWN\" [$__interval]))",
               "legendFormat": "{{app_proto}}",
               "refId": "A"
             }
           ],
           "title": "Protocol Traffic over Time",
-          "description": "Stacked area chart of flow rate per application protocol. Uses app_proto stream label — no JSON parsing.",
           "type": "timeseries"
         },
         {
@@ -371,28 +365,27 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 71 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 79 },
           "id": 13,
           "maxDataPoints": 60,
           "options": {
-            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
             "tooltip": { "mode": "multi", "sort": "desc" }
           },
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (app_proto) (rate({app=\"goflow2\", app_proto!=\"\", app_proto!~\"UNCLASSIFIED|UNKNOWN\", vrf=~\"$vrf\"} | json bytes | unwrap bytes [$__interval])) * 256 * 8",
+              "expr": "sum by (app_proto) (rate({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto!=\"\" | app_proto!~\"UNCLASSIFIED|UNKNOWN\" | unwrap bytes [$__interval])) * 256 * 8",
               "legendFormat": "{{app_proto}}",
               "refId": "A"
             }
           ],
           "title": "Estimated Bandwidth by Protocol",
-          "description": "Extrapolated bits/second per protocol. Derived from sampled packet bytes × sample rate (256) × 8. Requires JSON parsing — heavier than the flow count panel.",
           "type": "timeseries"
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 20, "w": 24, "x": 0, "y": 9 },
+          "gridPos": { "h": 28, "w": 24, "x": 0, "y": 9 },
           "id": 14,
           "fieldConfig": {
             "defaults": {
@@ -410,27 +403,24 @@ data:
             "overrides": []
           },
           "options": {
-            "view": { "id": "zero", "lat": 0, "lon": 0, "zoom": 1 },
+            "view": { "id": "coords", "lat": 48.1374, "lon": 11.5755, "zoom": 3 },
             "controls": { "showZoom": true, "showAttribution": true },
             "layers": [
               {
-                "type": "markers",
-                "name": "Source IPs",
+                "type": "heatmap",
+                "name": "Source density",
                 "config": {
-                  "style": {
-                    "size": { "field": "Value #A", "fixed": 5, "min": 3, "max": 20 },
-                    "color": { "field": "Value #A", "fixed": "dark-orange" },
-                    "opacity": 0.7,
-                    "symbol": { "fixed": "img/icons/marker/circle.svg", "mode": "fixed" }
-                  },
-                  "showLegend": true
+                  "weight": { "field": "Value #A", "fixed": 1, "min": 0, "max": 1 },
+                  "radius": 25,
+                  "blur": 15,
+                  "opacity": 0.9
                 },
                 "location": {
                   "mode": "coords",
                   "latitude": "latitude",
                   "longitude": "longitude"
                 },
-                "tooltip": true
+                "tooltip": false
               }
             ]
           },
@@ -445,19 +435,19 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "sum by (latitude, longitude) (count_over_time({app=\"goflow2-geo\"} | json latitude, longitude [$__range]))",
+              "expr": "sum by (latitude, longitude) (count_over_time({app=\"goflow2-geo\", partition=~\"$partition\"} | json latitude, longitude [$__range]))",
               "legendFormat": "{{country_code}}",
               "queryType": "instant",
               "refId": "A"
             }
           ],
           "title": "Source IP Geolocation",
-          "description": "Geographic distribution of sFlow source IPs. GeoIP data by DB-IP (https://db-ip.com), licensed CC BY 4.0.",
+          "description": "GeoIP by DB-IP, CC BY 4.0.",
           "type": "geomap"
         },
         {
           "collapsed": false,
-          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
           "id": 19,
           "panels": [],
           "title": "ASN Top Talkers (DB-IP)",
@@ -465,7 +455,7 @@ data:
         },
         {
           "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 30 },
+          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 38 },
           "id": 20,
           "fieldConfig": {
             "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
@@ -497,14 +487,14 @@ data:
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "topk(10, sum by (src_asn, src_asn_org) (count_over_time({app=\"goflow2\", vrf=~\"$vrf\"} | json src_asn, src_asn_org | __error__=\"\" | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__range])))",
+              "expr": "topk(10, sum by (src_asn, src_asn_org) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__range])))",
               "legendFormat": "{{src_asn_org}}",
               "queryType": "instant",
               "refId": "A"
             }
           ],
           "title": "Top 10 Source ASNs",
-          "description": "Top 10 source ASNs by total flow count over the selected time range. PRIVATE/UNKNOWN excluded. ASN data by DB-IP (https://db-ip.com), CC BY 4.0.",
+          "description": "ASN data by DB-IP, CC BY 4.0.",
           "type": "table"
         },
         {
@@ -537,23 +527,22 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 30 },
+          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 38 },
           "id": 21,
           "maxDataPoints": 60,
           "options": {
-            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+            "legend": { "calcs": ["sum", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
             "tooltip": { "mode": "multi", "sort": "desc" }
           },
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "topk(10, sum by (src_asn_org) (count_over_time({app=\"goflow2\", vrf=~\"$vrf\"} | json src_asn_org | __error__=\"\" | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__interval])))",
+              "expr": "topk(10, sum by (src_asn_org) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__interval])))",
               "legendFormat": "{{src_asn_org}}",
               "refId": "A"
             }
           ],
           "title": "Top ASN Traffic over Time",
-          "description": "Stacked flow rate of the top 10 source ASNs over time. Requires JSON parsing of src_asn_org.",
           "type": "timeseries"
         },
         {
@@ -587,30 +576,29 @@ data:
             },
             "overrides": []
           },
-          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 30 },
+          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 38 },
           "id": 22,
           "maxDataPoints": 60,
           "options": {
-            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
             "tooltip": { "mode": "multi", "sort": "desc" }
           },
           "targets": [
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-              "expr": "topk(10, sum by (src_asn_org) (rate({app=\"goflow2\", vrf=~\"$vrf\"} | json bytes, src_asn_org | __error__=\"\" | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" | unwrap bytes [$__interval])) * 256 * 8)",
+              "expr": "topk(10, sum by (src_asn_org) (rate({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" | unwrap bytes [$__interval])) * 256 * 8)",
               "legendFormat": "{{src_asn_org}}",
               "refId": "A"
             }
           ],
           "title": "Estimated Bandwidth by Source ASN",
-          "description": "Extrapolated bits/second per source ASN. Sampled packet bytes × sample rate (256) × 8. ASN data by DB-IP (https://db-ip.com), CC BY 4.0.",
           "type": "timeseries"
         }
       ],
       "refresh": "1m",
       "schemaVersion": 38,
       "style": "dark",
-      "tags": ["sflow", "goflow2", "vector"],
+      "tags": ["sflow", "goflow2", "vector", "north-south"],
       "templating": {
         "list": [
           {
@@ -641,32 +629,15 @@ data:
           },
           {
             "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-            "definition": "label_values({app=\"goflow2\"}, vrf)",
+            "definition": "label_values({app=\"goflow2\"}, partition)",
             "hide": 0,
             "includeAll": true,
             "allValue": ".*",
-            "label": "VRF",
-            "multi": false,
-            "name": "vrf",
-            "options": [],
-            "query": "label_values({app=\"goflow2\"}, vrf)",
-            "refresh": 2,
-            "regex": "",
-            "skipUrlSync": false,
-            "sort": 1,
-            "type": "query"
-          },
-          {
-            "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-            "definition": "label_values({app=\"goflow2\"}, app_proto)",
-            "hide": 0,
-            "includeAll": true,
-            "allValue": ".*",
-            "label": "App Protocol",
+            "label": "Partition",
             "multi": true,
-            "name": "app_proto",
+            "name": "partition",
             "options": [],
-            "query": "label_values({app=\"goflow2\"}, app_proto)",
+            "query": "label_values({app=\"goflow2\"}, partition)",
             "refresh": 2,
             "regex": "",
             "skipUrlSync": false,
@@ -678,8 +649,8 @@ data:
       "time": { "from": "now-1h", "to": "now" },
       "timepicker": {},
       "timezone": "",
-      "title": "sFlow / goflow2 Dashboard",
-      "uid": "goflow2-sflow",
+      "title": "sFlow — North/South (Edge)",
+      "uid": "goflow2-north-south",
       "version": 10
     }
     {% endraw %}
