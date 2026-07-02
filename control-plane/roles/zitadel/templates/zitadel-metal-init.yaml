@@ -31,6 +31,7 @@ metadata:
   name: zitadel-metal-init-job
 spec:
   backoffLimit: 0
+  ttlSecondsAfterFinished: 1800
   template:
     spec:
       serviceAccountName: zitadel-metal-init
