@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: zitadel-init
+  name: zitadel-metal-init
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: zitadel-init
+  name: zitadel-metal-init
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -16,28 +16,28 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: zitadel-init
+  name: zitadel-metal-init
 subjects:
   - kind: ServiceAccount
-    name: zitadel-init
+    name: zitadel-metal-init
 roleRef:
   kind: Role
-  name: zitadel-init
+  name: zitadel-metal-init
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: zitadel-init-job
+  name: zitadel-metal-init-job
 spec:
   backoffLimit: 0
-  ttlSecondsAfterFinished: 60
+  ttlSecondsAfterFinished: 1800
   template:
     spec:
-      serviceAccountName: zitadel-init
+      serviceAccountName: zitadel-metal-init
       restartPolicy: Never
       containers:
-        - name: zitadel-init
+        - name: zitadel-metal-init
           image: "{{ zitadel_init_image_name }}:{{ zitadel_init_image_tag }}"
           imagePullPolicy: "{{ zitadel_image_pull_policy }}"
           args:
@@ -48,8 +48,8 @@ spec:
             - "--zitadel-pat=$(ZITADEL_PAT)"
             - "--namespace={{ zitadel_namespace }}"
             - "--secret=zitadel-client-credentials"
-            - "--zitadel-skip-verify-tls={{ zitadel_skip_verify_tls }}"
-            - "--zitadel-insecure={{ zitadel_insecure }}"
+            - "--zitadel-skip-verify-tls={{ zitadel_skip_verify_tls | lower }}"
+            - "--zitadel-insecure={{ zitadel_insecure | lower }}"
             - "--config-path=/zitadel/config.yaml"
           env:
             - name: ZITADEL_PAT
@@ -63,4 +63,4 @@ spec:
       volumes:
         - name: config
           secret:
-            secretName: zitadel-init-config
+            secretName: zitadel-metal-init-config
