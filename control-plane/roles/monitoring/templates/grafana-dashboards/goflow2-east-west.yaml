@@ -1,0 +1,644 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-goflow2-east-west
+  labels:
+    grafana_dashboard: "1"
+data:
+  goflow2-east-west.json: |
+    {% raw %}
+    {
+      "annotations": {
+        "list": []
+      },
+      "editable": true,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "displayLabels": [
+              "percent",
+              "name"
+            ],
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "calcs": [
+                "percent"
+              ]
+            },
+            "pieType": "donut",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "sum by (vrf) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf!=\"\"} [$__range]))",
+              "legendFormat": "{{vrf}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Traffic by Tenant (VRF)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 8,
+            "y": 0
+          },
+          "id": 2,
+          "options": {
+            "displayLabels": [
+              "percent",
+              "name"
+            ],
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "calcs": [
+                "percent"
+              ]
+            },
+            "pieType": "donut",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "sum by (vni) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\"} | vni != \"\" [$__range]))",
+              "legendFormat": "{{vni}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Traffic by VNI",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 16,
+            "y": 0
+          },
+          "id": 3,
+          "maxDataPoints": 60,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "lineInterpolation": "linear",
+                "fillOpacity": 80,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" }
+              },
+              "unit": "bps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "topk(10, sum by (vrf) (rate({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf!=\"\"} | unwrap bytes [$__interval])) * 256 * 8)",
+              "legendFormat": "{{vrf}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Bandwidth by Tenant (VRF)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 8,
+            "x": 0,
+            "y": 8
+          },
+          "id": 4,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "filterable": true
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "showHeader": true,
+            "sortBy": [
+              {
+                "displayName": "Flow Count",
+                "desc": true
+              }
+            ]
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "topk(10, sum by (src_addr) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf=~\"$vrf\"} | src_addr != \"\" [$__range])))",
+              "queryType": "instant",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "src_addr": "Source IP",
+                  "Value #A": "Flow Count",
+                  "Value": "Flow Count"
+                }
+              }
+            }
+          ],
+          "title": "Top 10 Source IPs (tenant)",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 8,
+            "x": 8,
+            "y": 8
+          },
+          "id": 5,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "filterable": true
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "showHeader": true,
+            "sortBy": [
+              {
+                "displayName": "Flow Count",
+                "desc": true
+              }
+            ]
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "topk(10, sum by (dst_addr) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf=~\"$vrf\"} | dst_addr != \"\" [$__range])))",
+              "queryType": "instant",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "dst_addr": "Destination IP",
+                  "Value #A": "Flow Count",
+                  "Value": "Flow Count"
+                }
+              }
+            }
+          ],
+          "title": "Top 10 Destination IPs (tenant)",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 8,
+            "x": 16,
+            "y": 8
+          },
+          "id": 6,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "filterable": true
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "showHeader": true,
+            "sortBy": [
+              {
+                "displayName": "Flow Count",
+                "desc": true
+              }
+            ]
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "topk(10, sum by (src_addr, dst_addr) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf=~\"$vrf\"} | src_addr != \"\" | dst_addr != \"\" [$__range])))",
+              "queryType": "instant",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "src_addr": "Source IP",
+                  "dst_addr": "Destination IP",
+                  "Value #A": "Flow Count",
+                  "Value": "Flow Count"
+                }
+              }
+            }
+          ],
+          "title": "Top 10 Conversations (tenant)",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 18
+          },
+          "id": 7,
+          "options": {
+            "displayLabels": [
+              "percent",
+              "name"
+            ],
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "calcs": [
+                "percent"
+              ]
+            },
+            "pieType": "donut",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf=~\"$vrf\"} | app_proto!~\"UNCLASSIFIED|UNKNOWN|\" [$__range]))",
+              "legendFormat": "{{app_proto}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Application Protocol Breakdown (tenant)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 18
+          },
+          "id": 8,
+          "options": {
+            "displayLabels": [
+              "percent",
+              "name"
+            ],
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "calcs": [
+                "percent"
+              ]
+            },
+            "pieType": "donut",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "sum by (sampler_address) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf=~\"$vrf\", sampler_address!=\"\"} [$__range]))",
+              "legendFormat": "{{sampler_address}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Traffic by Sampler (Device)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 26
+          },
+          "id": 9,
+          "maxDataPoints": 60,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "lineInterpolation": "linear",
+                "fillOpacity": 80,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf=~\"$vrf\"} | app_proto!=\"\" | app_proto!~\"UNCLASSIFIED|UNKNOWN\" [$__interval]))",
+              "legendFormat": "{{app_proto}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Protocol Traffic over Time (tenant)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 34
+          },
+          "id": 10,
+          "maxDataPoints": 60,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "lineInterpolation": "linear",
+                "fillOpacity": 80,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" }
+              },
+              "unit": "bps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "sum by (app_proto) (rate({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\", vrf=~\"$vrf\"} | app_proto!=\"\" | app_proto!~\"UNCLASSIFIED|UNKNOWN\" | unwrap bytes [$__interval])) * 256 * 8",
+              "legendFormat": "{{app_proto}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Estimated Bandwidth over Time (tenant)",
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "1m",
+      "schemaVersion": 39,
+      "tags": [
+        "sflow",
+        "goflow2",
+        "vector",
+        "east-west",
+        "tenant"
+      ],
+      "templating": {
+        "list": [
+          {
+            "hide": 0,
+            "includeAll": false,
+            "label": "Loki",
+            "multi": false,
+            "name": "DS_LOKI",
+            "options": [],
+            "query": "loki",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          },
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "${DS_LOKI}"
+            },
+            "definition": "label_values({app=\"goflow2\", scope=\"internal\"}, partition)",
+            "hide": 0,
+            "includeAll": true,
+            "allValue": ".*",
+            "label": "Partition",
+            "multi": true,
+            "name": "partition",
+            "options": [],
+            "query": "label_values({app=\"goflow2\", scope=\"internal\"}, partition)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 1,
+            "type": "query"
+          },
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "${DS_LOKI}"
+            },
+            "definition": "label_values({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\"}, vrf)",
+            "hide": 0,
+            "includeAll": true,
+            "allValue": ".*",
+            "label": "Tenant (VRF)",
+            "multi": true,
+            "name": "vrf",
+            "options": [],
+            "query": "label_values({app=\"goflow2\", scope=\"internal\", partition=~\"$partition\"}, vrf)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "",
+      "title": "sFlow \u2014 East/West (Tenant)",
+      "uid": "goflow2-east-west",
+      "version": 1,
+      "weekStart": ""
+    }
+    {% endraw %}
