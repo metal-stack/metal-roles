@@ -1,5 +1,5 @@
 [Unit]
-Description=VRF to port mapping exporter for Promtail
+Description=VRF/VNI to interface mapping exporter for the sFlow collector (ifindex enrichment)
 After=network.target
 
 [Service]
