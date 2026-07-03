@@ -1,7 +1,8 @@
 ---
+profile: production
+
 skip_list:
   - galaxy[no-changelog]
-  - yaml[line-length]
 
 exclude_paths:
   - .cache/
@@ -14,6 +15,4 @@ warn_list:
   - role-name
   - schema
   - var-naming
-  - risky-file-permissions
   - no-changed-when
-  - ignore-errors

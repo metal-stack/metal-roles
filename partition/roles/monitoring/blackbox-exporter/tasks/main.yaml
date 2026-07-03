@@ -11,6 +11,7 @@
   ansible.builtin.template:
     src: config.yml
     dest: "{{ monitoring_blackbox_exporter_etc_host_dir }}/config.yml"
+    mode: "0644"
   notify:
     - Restart blackbox_exporter
 
