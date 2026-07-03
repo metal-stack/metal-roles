@@ -1,10 +1,18 @@
 ---
-# https://archive.grafana.com/docs/loki/v2.8.x/installation/helm/reference/
-# https://archive.grafana.com/docs/loki/v2.8.x/installation/helm/install-monolithic/
+# Helm chart: grafana-community/loki (v17+, Loki 3.x)
+# Deployment mode: Monolithic (single StatefulSet, filesystem storage)
+# https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/
+# https://grafana.com/docs/loki/latest/setup/install/helm/reference/
+# Migration notes: see README.md "Helm chart migration" section.
+
+deploymentMode: Monolithic
+
 singleBinary:
   replicas: 1
   persistence:
-    enableStatefulSetAutoDeletePVC: true
+    # false (Retain) is intentional — prevents accidental PVC deletion on helm uninstall.
+    # All 30 days of log data would be permanently lost otherwise.
+    enableStatefulSetAutoDeletePVC: false
     size: {{ logging_loki_size }}
 {% if logging_loki_storage_class %}
     storageClass: {{ logging_loki_storage_class }}
@@ -13,7 +21,13 @@ singleBinary:
 loki:
   auth_enabled: false
 
-  # See README.md "Persistent storage" for the rationale behind these settings.
+  analytics:
+    reporting_enabled: false
+
+  server:
+    log_level: {{ logging_loki_log_level }}
+
+  # Single-replica ring using in-memory KV — no external coordination needed.
   commonConfig:
     path_prefix: /var/loki
     replication_factor: 1
@@ -21,26 +35,39 @@ loki:
       instance_addr: 127.0.0.1
       kvstore:
         store: inmemory
-  storage:
-    type: 'filesystem'
 
-  ingester:
-    chunk_idle_period: 1h
-    chunk_retain_period: 30s
+  # TSDB is required for compactor-based retention and structured metadata.
+  schemaConfig:
+    configs:
+      - from: "2024-04-01"
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+
+  storage:
+    type: filesystem
 
   limits_config:
-    enforce_metric_name: false
     reject_old_samples: true
     reject_old_samples_max_age: 168h
     ingestion_rate_mb: 32
     ingestion_burst_size_mb: 64
     per_stream_rate_limit: "16MB"
     per_stream_rate_limit_burst: "32MB"
+    allow_structured_metadata: true
 {% if logging_loki_retention_enabled %}
-    # https://archive.grafana.com/docs/loki/v2.8.x/operations/storage/retention/
-    retention_period: {{ logging_loki_retention_period }}
-    # https://archive.grafana.com/docs/loki/v2.8.x/operations/storage/logs-deletion/
-    deletion_mode: {{ logging_loki_deletion_mode }}
+    # https://grafana.com/docs/loki/latest/operations/storage/retention/
+    retention_period: "{{ logging_loki_retention_period }}"
+    # https://grafana.com/docs/loki/latest/operations/storage/logs-deletion/
+    # deletion_mode controls the log-deletion API behaviour:
+    #   filter-and-delete  — filters at query time AND removes from storage (default)
+    #   filter-only        — filters at query time only, no storage deletion
+    #   disabled           — disables the deletion API entirely
+    deletion_mode: "{{ logging_loki_deletion_mode }}"
+    # Per-stream rules evaluated before retention_period; highest priority wins.
 {% if logging_loki_retention_stream %}
     retention_stream:
 {{ logging_loki_retention_stream | to_yaml | indent(6, first=true) }}
@@ -48,39 +75,113 @@ loki:
 {% endif %}
 
   compactor:
-    shared_store: filesystem
     retention_enabled: {{ logging_loki_retention_enabled | lower }}
+    retention_delete_delay: 2h
+    # Required when retention_enabled is true; must match storage.type.
+    delete_request_store: filesystem
 
 gateway:
-  enabled: false
-
-ingress:
-  enabled: true
-  ingressClassName: "nginx"
-  annotations:
+  enabled: {{ logging_ingress_enabled | lower }}
+  ingress:
+    enabled: {{ logging_ingress_enabled | lower }}
+    ingressClassName: "nginx"
+    annotations:
 {% for key, value in logging_ingress_annotations.items() %}
-    {{ key }}: "{{ value }}"
+      {{ key }}: "{{ value }}"
 {% endfor %}
 {% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
-    nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
 {% endif %}
-  hosts:
-    - {{ logging_ingress_dns }}
+    hosts:
+      - host: {{ logging_ingress_dns }}
+        paths:
+          - path: /
+            pathType: Prefix
 {% if logging_ingress_loki_tls %}
-  tls:
-    - hosts:
-      - {{ logging_ingress_dns }}
-      secretName: monitoring-loki-ingress-tls
+    tls:
+      - hosts:
+          - {{ logging_ingress_dns }}
+        secretName: monitoring-loki-ingress-tls
+{% endif %}
+{% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
+  basicAuth:
+    enabled: true
+    username: {{ logging_ingress_loki_basic_auth_user }}
+    password: {{ logging_ingress_loki_basic_auth_password }}
 {% endif %}
 
 {% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
+# The nginx ingress auth-secret annotation references this Secret by name.
+# gateway.basicAuth handles gateway-internal auth; this htpasswd Secret is
+# consumed by the nginx ingress controller for external access.
 extraObjects:
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: loki-basic-auth
-  type: Opaque
-  stringData:
-    auth: "{{ logging_ingress_loki_basic_auth_user }}:{{ logging_ingress_loki_basic_auth_password | string | password_hash('bcrypt', salt=logging_ingress_loki_basic_auth_password_salt) }}"
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: loki-basic-auth
+      namespace: {{ logging_namespace }}
+    type: Opaque
+    stringData:
+      auth: "{{ logging_ingress_loki_basic_auth_user }}:{{ logging_ingress_loki_basic_auth_password | string | password_hash('bcrypt', salt=logging_ingress_loki_basic_auth_password_salt) }}"
 {% endif %}
+
+# Requires monitoring role (kube-prometheus-stack). Label selectors match its defaults.
+# https://grafana.com/docs/loki/latest/setup/install/helm/concepts/#monitoring-loki
+monitoring:
+  # Must match the namespace where the Grafana sidecar watches for ConfigMaps.
+  # kube-prometheus-stack defaults to the release namespace (monitoring).
+  # If logging_namespace differs from the monitoring namespace, dashboards won't load.
+  namespace: "{{ logging_namespace }}"
+
+  serviceMonitor:
+    enabled: {{ logging_loki_monitoring_enabled | lower }}
+    labels:
+      release: kube-prometheus-stack
+    interval: 30s
+  rules:
+    enabled: {{ logging_loki_monitoring_enabled | lower }}
+    labels:
+      release: kube-prometheus-stack
+  alerts:
+    enabled: {{ logging_loki_monitoring_enabled | lower }}
+    labels:
+      release: kube-prometheus-stack
+  dashboards:
+    enabled: {{ logging_loki_monitoring_enabled | lower }}
+    labels:
+      grafana_dashboard: "1"
+
+# In-process caching is sufficient for monolithic mode; external Memcached not needed.
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
+# Zero out replica counts of other deployment modes
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomPlanner:
+  replicas: 0
+bloomBuilder:
+  replicas: 0
+bloomGateway:
+  replicas: 0
