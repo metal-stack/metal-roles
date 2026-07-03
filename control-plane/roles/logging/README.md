@@ -4,13 +4,15 @@ Deploys the control-plane logging stack into the Kubernetes control-plane cluste
 
 Components:
 
-- **Loki** — log storage and query backend
+- **Loki** — log storage and query backend, running in [monolithic mode](https://grafana.com/docs/loki/latest/get-started/deployment-modes/#monolithic-mode) on a persistent volume
 - **Alloy** — log collector (DaemonSet) via [logging-common](../logging-common/)
-- Loki ingress with optional TLS and basic auth
+- Loki gateway (NGINX) with ingress, optional TLS and basic auth
 
-Alloy is deployed by default. Existing Promtail installations are automatically removed when the role runs. Alloy configuration, labels, meta-monitoring, and migration guidance are in [logging-common](../logging-common/).
+Alloy is deployed by default. Existing Promtail installations are automatically removed when the role runs.
+Alloy configuration, labels, meta-monitoring, and migration guidance are in [logging-common](../logging-common/).
 
-> **Promtail is deprecated.** Setting `logging_promtail_enabled: true` emits a deprecation warning on every run. See the [migration guide](../logging-common/README.md#migration-from-promtail).
+> **Promtail is deprecated.** Setting `logging_promtail_enabled: true` emits a deprecation warning on every
+> run. See the [migration guide](../logging-common/README.md#migration-from-promtail).
 
 ## Variables
 
@@ -20,61 +22,93 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### Loki
 
-| Name                                          | Mandatory | Default                                      | Description                                                                                                                                                                                                                                                           |
-| --------------------------------------------- | --------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| logging_chart_version                         | yes       |                                              | Helm chart version for loki (release vector)                                                                                                                                                                                                                          |
-| logging_chart_repo                            | yes       |                                              | Repository for loki (release vector)                                                                                                                                                                                                                                  |
-| logging_namespace                             |           | `monitoring`                                 | Target namespace                                                                                                                                                                                                                                                      |
-| logging_loki_size                             |           | `30Gi`                                       | Size of the Loki PVC (index, chunks, compactor scratch and ruler rules are all stored on this volume)                                                                                                                                                                 |
-| logging_loki_storage_class                    |           | `null` (cluster default)                     | StorageClass for the Loki PVC — must support `ReadWriteOnce`. When `null`, the cluster's default StorageClass is used. **Set this explicitly** to a fast block-storage class (e.g. `premium-rwo`) in production to avoid being assigned a slow or shared provisioner. |
-| logging_loki_retention_enabled                |           | `true`                                       | Set to `false` to disable the compactor retention entirely — logs are kept forever.                                                                                                                                                                                   |
-| logging_loki_retention_period                 |           | `14d`                                        | Global log retention TTL. Minimum `24h`, **must be a multiple of 24h**. Use `Nd` (days) or `Nh` (hours, e.g. `48h`). Only used when `logging_loki_retention_enabled` is `true`.                                                                                       |
-| logging_loki_deletion_mode                    |           | `filter-and-delete`                          | `filter-and-delete`: deletes from storage. `filter-only`: filters at query time only. `disabled`: no deletion.                                                                                                                                                        |
-| logging_loki_retention_stream                 |           | `[]`                                         | Per-stream retention rules evaluated before the global period. See retention section below.                                                                                                                                                                           |
-| logging_ingress_dns                           |           | `loki.{{ metal_control_plane_ingress_dns }}` | DNS for loki ingress                                                                                                                                                                                                                                                  |
-| logging_ingress_loki_tls                      |           | `true`                                       | Expose loki through HTTPS on the ingress                                                                                                                                                                                                                              |
-| logging_ingress_loki_basic_auth_user          |           | `promtail`                                   | Basic auth user for the external loki ingress                                                                                                                                                                                                                         |
-| logging_ingress_loki_basic_auth_password      | yes       |                                              | Basic auth password for the external loki ingress                                                                                                                                                                                                                     |
-| logging_ingress_loki_basic_auth_password_salt |           | derived from password                        | Salt for stable bcrypt password hashes                                                                                                                                                                                                                                |
-| logging_ingress_annotations                   |           | `{}`                                         | Additional ingress annotations                                                                                                                                                                                                                                        |
+| Name                                          | Mandatory | Default                                      | Description                                                                                                                                                             |
+| --------------------------------------------- | --------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| logging_chart_version                         | yes       |                                              | Helm chart version for loki (release vector)                                                                                                                            |
+| logging_chart_repo                            | yes       |                                              | Repository for loki (release vector)                                                                                                                                    |
+| logging_namespace                             |           | `monitoring`                                 | Target namespace                                                                                                                                                        |
+| logging_loki_size                             |           | `30Gi`                                       | PVC size for all Loki data (chunks, index, WAL, compactor scratch). Size as: `daily_compressed_volume × retention_days × 1.2`.                                          |
+| logging_loki_storage_class                    |           | `null` (cluster default)                     | StorageClass for the Loki PVC — must support `ReadWriteOnce`. **Set explicitly** in production to a fast block-storage class (e.g. `premium-rwo`).                      |
+| logging_loki_log_level                        |           | `warn`                                       | Loki server log level: `debug`, `info`, `warn`, `error`.                                                                                                                |
+| logging_loki_retention_enabled                |           | `true`                                       | Enable automatic log expiry via the compactor. When `false`, logs are kept forever and the deletion API is disabled.                                                    |
+| logging_loki_retention_period                 |           | `30d`                                        | Global retention TTL. Minimum `24h`, must be a multiple of `24h`. Use `Nd` or `Nh` format (e.g. `30d`, `48h`). Only active when `logging_loki_retention_enabled: true`. |
+| logging_loki_deletion_mode                    |           | `filter-and-delete`                          | `filter-and-delete`: physically removes data from storage (required for GDPR). `filter-only`: hides from queries only. `disabled`: deletion API off.                    |
+| logging_loki_retention_stream                 |           | `[]`                                         | Per-stream retention rules evaluated before the global period. See [Retention](#retention) below.                                                                       |
+| logging_loki_monitoring_enabled               |           | `false`                                      | Enable ServiceMonitor, PrometheusRule (alerts + recording rules) and Grafana dashboard ConfigMaps. Requires the [monitoring role](../monitoring/) to be deployed first. |
+| logging_ingress_enabled                       |           | `false`                                      | If enabled, deploys an Ingress resource for Loki.                                                                                                                       |
+| logging_ingress_dns                           |           | `loki.{{ metal_control_plane_ingress_dns }}` | DNS name for the Loki ingress                                                                                                                                           |
+| logging_ingress_loki_tls                      |           | `true`                                       | Expose Loki over HTTPS on the ingress                                                                                                                                   |
+| logging_ingress_loki_basic_auth_user          |           | `promtail`                                   | Basic auth username for the external Loki ingress                                                                                                                       |
+| logging_ingress_loki_basic_auth_password      | yes       |                                              | Basic auth password for the external Loki ingress                                                                                                                       |
+| logging_ingress_loki_basic_auth_password_salt |           | derived from password                        | Salt for stable bcrypt hashes — prevents unnecessary Secret updates on every run                                                                                        |
+| logging_ingress_annotations                   |           | `{}`                                         | Additional annotations for the Loki ingress resource                                                                                                                    |
 
-Loki runs as a single-binary `StatefulSet` backed by a `ReadWriteOnce` PVC mounted at `/var/loki`. All log data is stored persistently under that path.
+#### Persistent storage
 
-> **Warning:** When the PVC runs full, Loki will fail to flush chunks and may crash-loop. Keep `logging_loki_retention_enabled: true` and set `logging_loki_retention_period` to a value that keeps disk usage bounded. If retention is disabled, ensure the PVC is large enough to hold logs indefinitely.
+Loki runs as a single-replica `StatefulSet` with a `ReadWriteOnce` PVC mounted at `/var/loki`. All data — chunks, index, WAL, and compactor state — is stored on this volume.
+
+> **Warning:** When the PVC runs full, Loki will crash-loop. Keep `logging_loki_retention_enabled: true` and size the PVC to cover the full retention window with ~20% headroom.
 
 #### Retention
 
-The compactor marks expired chunks after each compaction cycle and physically removes them after a 2h grace period. Storage usage therefore decreases with a short delay after the TTL expires.
+Log retention is managed by the compactor. Expired chunks are marked during each compaction cycle and physically removed after a ~2 h grace period. This means actual disk usage decreases a few hours after the retention TTL passes.
 
-**Sizing the PVC:** estimate daily compressed log volume × retention days, then add ~20% headroom for the compactor working directory and boltdb-shipper cache.
+The default retention is **30 days** (`filter-and-delete` mode), which satisfies the GDPR requirement to physically remove log data from storage. `filter-only` is not sufficient for GDPR — it only hides data from queries without deleting it.
 
-**Per-stream retention** can be configured via `logging_loki_retention_stream`. Rules are evaluated before the global `logging_loki_retention_period` — the highest-priority matching rule wins. Example:
+> **Note:** Deletion is eventual. After a targeted delete request is submitted via the [Loki deletion API](https://grafana.com/docs/loki/latest/operations/storage/logs-deletion/), it takes up to ~26 h to take effect (24 h cancellation window + one compaction cycle + 2 h sweeper delay).
+
+**Per-stream retention** lets you override the global period for specific log streams. The `selector` uses **LogQL label matchers** against the labels that Alloy attaches to every log stream (see [monitoring/logging docs](https://metal-stack.io/docs/next/monitoring#logging or the `Alloy` and `logging-common` roles for label overview)).
 
 ```yaml
 logging_loki_retention_stream:
+  # Short retention for dev namespace — matches all containers in that namespace
   - selector: '{namespace="dev"}'
     priority: 1
     period: 24h
+  # Longer retention for prod namespace
   - selector: '{namespace="prod"}'
     priority: 1
     period: 720h # 30 days
+  # A noisy sidecar across all namespaces — target by container name
+  - selector: '{container="fluentd-sidecar"}'
+    priority: 1
+    period: 6h
+  # More specific rule overrides the namespace rule above (higher priority wins)
+  - selector: '{namespace="prod", app="ephemeral-job"}'
+    priority: 2
+    period: 24h
+  # Keep Kubernetes events for 7 days regardless of global default
+  - selector: '{job="events"}'
+    priority: 1
+    period: 168h
 ```
 
-Since `auth_enabled: false` uses a single synthetic tenant, per-tenant overrides via `overrides.yaml` do not apply without enabling multi-tenancy.
+The highest `priority` number wins when multiple rules match a stream. Streams matching no rule fall back to `logging_loki_retention_period`.
 
-See the [Loki 2.8 retention docs](https://archive.grafana.com/docs/loki/v2.8.x/operations/storage/retention/) and [log deletion docs](https://github.com/grafana/loki/blob/v2.8.2/docs/sources/operations/storage/logs-deletion.md) for full configuration options.
+See the [Loki retention docs](https://grafana.com/docs/loki/latest/operations/storage/retention/) for full details.
+
+#### Monitoring
+
+Set `logging_loki_monitoring_enabled: true` to deploy the Loki chart's built-in monitoring resources into the existing kube-prometheus-stack. Requires the [monitoring role](../monitoring/) to be deployed first.
+
+| Resource                           | What it creates                                                |
+| ---------------------------------- | -------------------------------------------------------------- |
+| `ServiceMonitor`                   | Scrapes Loki metrics via Prometheus Operator                   |
+| `PrometheusRule` (recording rules) | loki-mixin aggregations used by the dashboards                 |
+| `PrometheusRule` (alerts)          | `LokiRequestErrors`, `LokiRequestPanics`, `LokiRequestLatency` |
+| Dashboard `ConfigMaps`             | Grafana dashboards loaded automatically by the Grafana sidecar |
 
 ### Alloy
 
-| Name                                  | Mandatory | Default                                | Description                                                                                                                                                                                                           |
-| ------------------------------------- | --------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| logging_alloy_enabled                 |           | `true`                                 | Deploy Alloy. Requires `logging_alloy_chart_version` and `logging_alloy_chart_repo`.                                                                                                                                  |
-| logging_alloy_chart_version           |           |                                        | Helm chart version for alloy (release vector)                                                                                                                                                                         |
-| logging_alloy_chart_repo              |           |                                        | Repository for alloy (release vector)                                                                                                                                                                                 |
-| logging_alloy_cluster_label           |           | `{{ metal_control_plane_stage_name }}` | Value for the `cluster=` label on all log and metric streams. Overrides the [logging-common](../logging-common/) default.                                                                                             |
-| logging_alloy_service_monitor_enabled |           | `false`                                | Enable a Prometheus ServiceMonitor for Alloy self-metrics (pull model). **Available in this role only** — not supported in seed clusters. Requires the [monitoring role](../monitoring/) to have been deployed first. |
+| Name                                  | Mandatory | Default                                | Description                                                                                                                            |
+| ------------------------------------- | --------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| logging_alloy_enabled                 |           | `true`                                 | Deploy Alloy. Requires `logging_alloy_chart_version` and `logging_alloy_chart_repo`.                                                   |
+| logging_alloy_chart_version           |           |                                        | Helm chart version for alloy (release vector)                                                                                          |
+| logging_alloy_chart_repo              |           |                                        | Repository for alloy (release vector)                                                                                                  |
+| logging_alloy_cluster_label           |           | `{{ metal_control_plane_stage_name }}` | Value for the `cluster=` label on all log and metric streams. Overrides the [logging-common](../logging-common/) default.              |
+| logging_alloy_service_monitor_enabled |           | `false`                                | Enable a Prometheus ServiceMonitor for Alloy self-metrics. Requires the [monitoring role](../monitoring/) to have been deployed first. |
 
-For all other `logging_alloy_*` variables (`loki_write_endpoints`, `prometheus_write_endpoints`, WAL settings, `config_raw`), see [logging-common](../logging-common/). All `logging_alloy_*` variables set in your inventory are explicitly mapped to their `logging_common_alloy_*` counterparts when calling logging-common.
+For all other `logging_alloy_*` variables (`loki_write_endpoints`, `prometheus_write_endpoints`, WAL settings, `config_raw`), see [logging-common](../logging-common/).
 
 ### Promtail (deprecated)
 
@@ -83,3 +117,18 @@ For all other `logging_alloy_*` variables (`loki_write_endpoints`, `prometheus_w
 | logging_promtail_enabled       |           | `false` | Deploy Promtail. When `false`, any existing Promtail release is removed automatically. See [logging-common migration guide](../logging-common/README.md#migration-from-promtail). |
 | logging_promtail_chart_version |           |         | Helm chart version for promtail — required when `logging_promtail_enabled: true`                                                                                                  |
 | logging_promtail_chart_repo    |           |         | Repository for promtail — required when `logging_promtail_enabled: true`                                                                                                          |
+
+## Migration from grafana/loki 5.x
+
+This role now uses the **grafana-community/loki** Helm chart (v17+, Loki 3.x) instead of the previous `grafana/loki` v5.x (Loki 2.8.x).
+
+**Reinstall required.** The old deployment stored logs in an `emptyDir` volume, so pod restarts already caused complete log loss. There is no data to migrate — the new chart provisions a persistent volume and starts fresh.
+
+Key changes:
+
+- **Persistent log storage** — logs now survive pod restarts on a PVC (the old `emptyDir` already lost everything on restart)
+- **Automatic log retention** — the compactor enforces a configurable TTL (default 30 days) and physically deletes expired logs, satisfying GDPR requirements
+- **Loki 3.x** — newer backend with improved performance, structured metadata support, and TSDB-based storage
+- **Community-maintained chart** — the Helm chart moved to `grafana-community/loki` for ongoing maintenance
+
+See the [upgrade guide](https://grafana.com/docs/loki/latest/setup/upgrade/upgrade-to-community/) for the full list of breaking changes across chart versions.

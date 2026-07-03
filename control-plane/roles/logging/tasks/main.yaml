@@ -53,8 +53,7 @@
   ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
   vars:
-    helm_repo: "{{ logging_chart_repo }}"
-    helm_chart: loki
+    helm_chart: "{{ logging_chart_repo }}"
     helm_target_namespace: "{{ logging_namespace }}"
     helm_release_name: loki
     helm_chart_version: "{{ logging_chart_version }}"
