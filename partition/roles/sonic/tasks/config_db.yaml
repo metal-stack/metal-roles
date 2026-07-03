@@ -76,4 +76,5 @@
   ansible.builtin.copy:
     content: "{{ config_db | from_yaml | to_nice_json }}"
     dest: /etc/sonic/config_db.json
+    mode: "0644"
   notify: "Config {{ sonic_config_action }}"
