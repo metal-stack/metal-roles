@@ -57,7 +57,7 @@ The default retention is **30 days** (`filter-and-delete` mode), which satisfies
 
 > **Note:** Deletion is eventual. After a targeted delete request is submitted via the [Loki deletion API](https://grafana.com/docs/loki/latest/operations/storage/logs-deletion/), it takes up to ~26 h to take effect (24 h cancellation window + one compaction cycle + 2 h sweeper delay).
 
-**Per-stream retention** lets you override the global period for specific log streams. The `selector` uses **LogQL label matchers** against the labels that Alloy attaches to every log stream (see [monitoring/logging docs](https://metal-stack.io/docs/next/monitoring#logging or the `Alloy` and `logging-common` roles for label overview)).
+**Per-stream retention** lets you override the global period for specific log streams. The `selector` uses **LogQL label matchers** against the labels that Alloy attaches to every log stream (see [monitoring/logging docs](<https://metal-stack.io/docs/next/monitoring#logging> or the `Alloy` and `logging-common` roles for label overview)).
 
 ```yaml
 logging_loki_retention_stream:
