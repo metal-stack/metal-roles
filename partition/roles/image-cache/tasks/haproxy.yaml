@@ -13,7 +13,7 @@
     dest: "{{ image_cache_haproxy_host_dir_path }}/config/haproxy.cfg"
     owner: "root"
     group: "root"
-    mode: "0755"
+    mode: "0644"
   register: result
 
 - name: Deploy haproxy service

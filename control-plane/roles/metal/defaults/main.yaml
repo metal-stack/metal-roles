@@ -180,6 +180,8 @@ metal_console_tcproute_enabled: false
 metal_console_tcproute_parent_refs: []
 # ingress
 metal_deploy_ingress: true
+metal_deploy_ingress_api_v1_rules: "{{ True if not metal_api_httproute_enabled else False }}"
+metal_deploy_ingress_api_v2_rules: "{{ True if not metal_apiserver_httproute_enabled else False }}"
 metal_ingress: {}
 metal_ingress_dns: api.{{ metal_control_plane_ingress_dns }}
 metal_ingress_v2_dns: v2.{{ metal_control_plane_ingress_dns }}
