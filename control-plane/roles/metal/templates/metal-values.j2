@@ -247,6 +247,9 @@ ingress_public_dns: "{{ metal_ingress_dns }}"
 v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
 
 deploy_ingress: {{ metal_deploy_ingress }}
+deploy_ingress_api_v1_rules: {{ metal_deploy_ingress_api_v1_rules }}
+deploy_ingress_api_v2_rules: {{ metal_deploy_ingress_api_v2_rules }}
+
 ingress: {{ metal_ingress | to_json }}
 
 metal_apiserver:
