@@ -20,6 +20,11 @@ prometheus:
     probeSelectorNilUsesHelmValues: false
     scrapeConfigSelectorNilUsesHelmValues: false
 
+{% if monitoring_prometheus_remote_write is not equalto "undefined" %}
+    remoteWrite:
+      {{ monitoring_prometheus_remote_write | to_yaml(indent=6) }}
+{% endif %}
+
     additionalArgs:
       - name: "web.enable-remote-write-receiver"
         value: ""
@@ -31,6 +36,7 @@ prometheus:
     storageSpec:
       {{ monitoring_prometheus_storage_spec | indent(6) }}
 {% endif %}
+{% if monitoring_thanos_enabled %}
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
       version: "{{ thanos_image_tag }}"
@@ -40,9 +46,11 @@ prometheus:
           key: objstore.yml
           name: thanos-objstore-secret
 {% endif %}
+{% endif %}
   thanosService:
-    enabled: true
+    enabled: {{ monitoring_thanos_enabled }}
 
+{% if monitoring_prometheus_grafana_enabled %}
 grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
@@ -61,10 +69,12 @@ grafana:
 {% if monitoring_grafana_extra_secret_mounts %}
   extraSecretMounts: {{ monitoring_grafana_extra_secret_mounts | to_json }}
 {% endif %}
+{% if monitoring_thanos_enabled %}
   sidecar:
     datasources:
       uid: prometheus
       url: http://thanos-query-frontend:9090
+{% endif %}
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -90,7 +100,9 @@ grafana:
 {% endif %}
   plugins:
     - camptocamp-prometheus-alertmanager-datasource
+{% endif %}
 
+{% if monitoring_alertmanager_enabled %}
 alertmanager:
   ingress:
     enabled: {{ monitoring_alertmanager_ingress_enabled | lower }}
@@ -284,6 +296,7 @@ alertmanager:
 
       {{- end }}
 {% endraw %}
+{% endif %}
 
 coreDns:
   enabled: {{ monitoring_prometheus_core_dns_enabled | lower }}
@@ -310,12 +323,16 @@ kubeControllerManager:
 kubelet:
   enabled: {{ monitoring_prometheus_kubelet_enabled | lower }}
 
-{% if not monitoring_prometheus_kubelet_enabled %}
+{% if monitoring_prometheus_default_rules_enabled %}
 defaultRules:
+  create: true
+{% if not monitoring_prometheus_kubelet_enabled %}
   disabled:
     KubeletDown: true
 {% endif %}
+{% endif %}
 
+{% if monitoring_alertmanager_enabled %}
 {% raw %}
 additionalPrometheusRulesMap:
   "metal-alertmanager.rules":
@@ -571,4 +588,5 @@ additionalPrometheusRulesMap:
       - record: garden_shoot_condition:namespaced
         expr: label_join(label_replace(garden_shoot_condition,"namespace1","shoot--$1--","project","(.*)"),"namespace","","namespace1","name")
 {% endraw %}
+{% endif %}
 {% endif %}
