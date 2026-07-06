@@ -182,7 +182,7 @@
   ansible.builtin.file:
     path: "{{ prometheus_config_host_dir }}/rules"
     state: directory
-    mode: "0644"
+    mode: "0755"
 
 - name: Copy notification rules
   ansible.builtin.copy:
