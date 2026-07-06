@@ -212,12 +212,14 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### Ingress
 
-| Name                 | Mandatory | Description                                                                |
-|----------------------|-----------|----------------------------------------------------------------------------|
-| metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
-| metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
-| metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
-| metal_ingress_v2_dns |           | The virtual host to reach the metal-apiserver on                           |
+| Name                              | Mandatory | Description                                                                                                             |
+| --------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| metal_deploy_ingress              |           | Whether to deploy or not to deploy the ingress resource                                                                 |
+| metal_ingress                     |           | Alternative configuration of the ingress (can be used for configuring TLS)                                              |
+| metal_ingress_dns                 |           | The virtual host to reach the metal-api on                                                                              |
+| metal_ingress_v2_dns              |           | The virtual host to reach the metal-apiserver on                                                                        |
+| metal_deploy_ingress_api_v1_rules |           | Deploys ingress rules for the metal-stack v1 api, allows fine-grained control for the switchover from ingress to gw API |
+| metal_deploy_ingress_api_v2_rules |           | Deploys ingress rules for the metal-stack v1 api, allows fine-grained control for the switchover from ingress to gw API |
 
 ### Auditing
 
