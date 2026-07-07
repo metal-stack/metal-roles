@@ -50,7 +50,7 @@ prometheus:
   thanosService:
     enabled: {{ monitoring_thanos_enabled }}
 
-{% if monitoring_prometheus_grafana_enabled %}
+{% if monitoring_grafana_enabled %}
 grafana:
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
