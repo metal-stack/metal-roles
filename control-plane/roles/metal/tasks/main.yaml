@@ -47,7 +47,7 @@
 # After the initial metal-apiserver deployment via helm, the configured cronjob will only create the secret after 8h
 # to be able to access the admin-token, create a one-off job based on the cronjob
 - name: Ensure secret metal-apiserver-admin-token exists via one-off Job
-  vars:
+  ansible.builtin.set_fact:
     secret_name: "metal-apiserver-admin-token"
     cronjob_name: "metal-apiserver-token-create"
     job_name: "{{ cronjob_name }}-initial-run"
