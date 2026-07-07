@@ -73,16 +73,16 @@ metal_apiserver_httproute_parent_refs: []
 metal_apiserver_httproute_https_redirect: {}
 metal_apiserver_token_create_schedule:
 metal_apiserver_tokens:
-    admin-editor-token:
-        user: metal-stack
-        tokenCreateRequest:
-            expires: 23040s
-            adminRole: ADMIN_ROLE_EDITOR
-    admin-viewer-token:
-        user: metal-stack
-        tokenCreateRequest:
-            expires: 23040s
-            adminRole: ADMIN_ROLE_VIEWER
+  admin-editor-token:
+    user: metal-stack
+    tokenCreateRequest:
+      expires: 23040s
+      adminRole: ADMIN_ROLE_EDITOR
+  admin-viewer-token:
+    user: metal-stack
+    tokenCreateRequest:
+      expires: 23040s
+      adminRole: ADMIN_ROLE_VIEWER
 
 
 # metal-api
