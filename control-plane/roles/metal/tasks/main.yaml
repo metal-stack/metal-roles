@@ -50,7 +50,7 @@
   ansible.builtin.set_fact:
     secret_name: "metal-apiserver-admin-token"
     cronjob_name: "metal-apiserver-token-create"
-    job_name: "{{ cronjob_name }}-initial-run"
+    job_name: "metal-apiserver-token-create-initial-run"
     cacheable: yes
 
 - name: Check if the secret already exists
