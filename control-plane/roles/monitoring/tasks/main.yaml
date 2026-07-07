@@ -45,7 +45,7 @@
       stringData:
         username: "{{ item.username }}"
         password: "{{ item.password }}"
-  loop: "{{ monitoring_prometheus_remote_write_targets }}"
+  loop: "{{ monitoring_prometheus_remote_write }}"
   loop_control:
     label: "{{ item.name }}"
   no_log: true
