@@ -301,6 +301,12 @@ metal_apiserver:
 {% if metal_apiserver_httproute_https_redirect %}
     httpsRedirect: {{ metal_apiserver_httproute_https_redirect | to_json }}
 {% endif %}
+{% if metal_apiserver_tokens %}
+  tokens: {{ metal_apiserver_tokens | to_json }}
+{% endif %}
+{% if metal_apiserver_token_create_schedule %}
+  tokenCreateSchedule: {{ metal_apiserver_token_create_schedule }}
+{% endif %}
 
 auditing:
   enabled: {{ 'true' if metal_auditing_timescaledb_enabled else 'false' }}
