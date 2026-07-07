@@ -70,7 +70,7 @@ monitoring_prometheus_default_rules_enabled: true
 monitoring_prometheus_remote_write_basic_auth_password:
 monitoring_prometheus_remote_write: []
   # - url: "https://monitoring.{{ metal_control_plane_ingress_dns }}/api/v1/receive"
-  #   basic_auth:
+  #   basicAuth:
   #     username: thanos-receive
   #     password: "{{ monitoring_prometheus_remote_write_basic_auth_password }}"
 

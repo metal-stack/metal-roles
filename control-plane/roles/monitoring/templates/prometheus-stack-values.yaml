@@ -20,9 +20,9 @@ prometheus:
     probeSelectorNilUsesHelmValues: false
     scrapeConfigSelectorNilUsesHelmValues: false
 
-{% if monitoring_prometheus_remote_write is not equalto "undefined" %}
+{% if monitoring_prometheus_remote_write %}
     remoteWrite:
-      {{ monitoring_prometheus_remote_write | to_yaml(indent=6) }}
+      {{ monitoring_prometheus_remote_write | to_json }}
 {% endif %}
 
     additionalArgs:
