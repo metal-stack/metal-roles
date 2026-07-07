@@ -22,7 +22,17 @@ prometheus:
 
 {% if monitoring_prometheus_remote_write %}
     remoteWrite:
-      {{ monitoring_prometheus_remote_write | to_json }}
+{% for target in monitoring_prometheus_remote_write %}
+      - url: "{{ target.url }}"
+        name: "{{ target.name }}"
+        basicAuth:
+          username:
+            name: "remote-write-creds-{{ target.name }}"
+            key: username
+          password:
+            name: "remote-write-creds-{{ target.name }}"
+            key: password
+{% endfor %}
 {% endif %}
 
     additionalArgs:

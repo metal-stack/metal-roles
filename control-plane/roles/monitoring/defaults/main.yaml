@@ -67,12 +67,11 @@ monitoring_prometheus_kube_etcd_enabled: false
 monitoring_prometheus_kube_controller_manager_enabled: false
 monitoring_prometheus_kubelet_enabled: false
 monitoring_prometheus_default_rules_enabled: true
-monitoring_prometheus_remote_write_basic_auth_password:
-monitoring_prometheus_remote_write: []
-  # - url: "https://monitoring.{{ metal_control_plane_ingress_dns }}/api/v1/receive"
-  #   basicAuth:
-  #     username: thanos-receive
-  #     password: "{{ monitoring_prometheus_remote_write_basic_auth_password }}"
+monitoring_prometheus_remote_write_targets: []
+  # - name: rwtarget
+  #   url: "https://monitoring.{{ metal_control_plane_ingress_dns }}/api/v1/receive"
+  #   username: "user"
+  #   password: "change-me"
 
 monitoring_prometheus_kube_proxy_service_selector:
   component: kube-proxy

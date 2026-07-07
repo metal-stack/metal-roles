@@ -33,6 +33,23 @@
         labels:
           name: "{{ monitoring_namespace }}"
 
+- name: Create remote-write basic auth secrets
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      metadata:
+        name: "remote-write-creds-{{ item.name }}"
+        namespace: "{{ monitoring_namespace }}"
+      stringData:
+        username: "{{ item.username }}"
+        password: "{{ item.password }}"
+  loop: "{{ monitoring_prometheus_remote_write_targets }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: true
+
 - name: Determine app version for prometheus operator CRDs
   ansible.builtin.command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
   register: helm_output
