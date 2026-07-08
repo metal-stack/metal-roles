@@ -192,7 +192,7 @@ metal_api_headscale_tls: true
 metal_api_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data',
   {}).get('key') | b64decode if metal_api_headscale_enabled else '' }}"
 metal_api_headscale_control_plane_address: >-
-  {% if headscale_httproute_enabled -%}
+  {% if headscale_httproute_enabled | default(false) -%}
   http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_gateway_dns }}
   {%- else -%}
   http{{ 's' if metal_api_headscale_tls }}://headscale.{{ metal_control_plane_ingress_dns }}
