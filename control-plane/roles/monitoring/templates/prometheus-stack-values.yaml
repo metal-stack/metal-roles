@@ -60,8 +60,9 @@ prometheus:
   thanosService:
     enabled: {{ monitoring_thanos_enabled }}
 
-{% if monitoring_grafana_enabled %}
 grafana:
+  enabled: {{ monitoring_grafana_enabled }}
+{% if monitoring_grafana_enabled %}
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
@@ -112,8 +113,9 @@ grafana:
     - camptocamp-prometheus-alertmanager-datasource
 {% endif %}
 
-{% if monitoring_alertmanager_enabled %}
 alertmanager:
+  enabled: {{ monitoring_alertmanager_enabled }}
+{% if monitoring_alertmanager_enabled %}
   ingress:
     enabled: {{ monitoring_alertmanager_ingress_enabled | lower }}
     ingressClassName: nginx
@@ -333,9 +335,9 @@ kubeControllerManager:
 kubelet:
   enabled: {{ monitoring_prometheus_kubelet_enabled | lower }}
 
-{% if monitoring_prometheus_default_rules_enabled %}
 defaultRules:
-  create: true
+  create: {{ monitoring_prometheus_default_rules_enabled }}
+{% if monitoring_prometheus_default_rules_enabled %}
 {% if not monitoring_prometheus_kubelet_enabled %}
   disabled:
     KubeletDown: true
