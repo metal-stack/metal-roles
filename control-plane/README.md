@@ -46,7 +46,6 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [gardener-shoots](roles/gardener-shoots)                               | Deploys managed shoots into the virtual garden.                                                                                    |
 | [gardener-virtual-garden-access](roles/gardener-virtual-garden-access) | Deploys a managed resource to access the the Virtual Garden with operator setup                                                    |
 | [headscale](roles/headscale)                                           | Deploys headscale for firewall VPN                                                                                                 |
-| [lldp-weathermap](roles/lldp-weathermap)                               | Generates a Grafana network topology dashboard from LLDP data with live link utilization                                           |
 | [ipam-db](roles/ipam-db)                                               | Deploys a database for the [IPAM](https://github.com/metal-stack/go-ipam) of the metal-api                                         |
 | [isolated-clusters](roles/isolated-clusters)                           | Deploys services for Gardener isolated clusters                                                                                    |
 | [logging](roles/logging)                                               | Deploys metal-stack control plane logging components                                                                               |
