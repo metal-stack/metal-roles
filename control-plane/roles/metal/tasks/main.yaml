@@ -24,6 +24,8 @@
       - metal_ipam_image_tag is defined
       - metal_console_image_name is defined
       - metal_console_image_tag is defined
+      - metal_console_token_refresher_image_name is defined
+      - metal_console_token_refresher_image_tag is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart_tag is defined
       - metal_console_helm_chart_local_path is not none or metal_console_helm_chart is defined

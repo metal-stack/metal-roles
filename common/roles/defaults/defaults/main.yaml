@@ -99,6 +99,8 @@ metal_stack_release:
     droptailer_image_name: "docker-images.metal-stack.kubernetes.droptailer.name"
     capms_controller_name: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.name"
     capms_controller_tag: "docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.tag"
+    metal_token_refresher_image_tag: "docker-images.metal-stack.kubernetes.metal-token-refresher.tag"
+    metal_token_refresher_image_name: "docker-images.metal-stack.kubernetes.metal-token-refresher.name"
     # third party
     alloy_image_tag: "docker-images.third-party.partition.alloy.tag"
     alloy_image_name: "docker-images.third-party.partition.alloy.name"

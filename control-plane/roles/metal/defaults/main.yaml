@@ -185,8 +185,12 @@ metal_console_pdb_min_available: 1
 metal_console_tcproute_enabled: false
 metal_console_tcproute_parent_refs: []
 metal_console_token_expiration: 8h
-metal_console_token:
-metal_console_token_renewal: {}
+metal_console_token_refresher_image_name: "{{ metal_token_refresher_image_name }}"
+metal_console_token_refresher_image_tag: "{{ metal_token_refresher_image_tag }}"
+metal_console_token_refresher_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+metal_console_token_refresher_resources:
+metal_console_token_refresher_enabled: false
+metal_console_token_refresher_schedule: "@hourly"
 
 # ingress
 metal_deploy_ingress: true
