@@ -6,11 +6,6 @@
         description: "metal-console token"
         expires: "{{ metal_console_token_expiration }}"
         permissions:
-          - subject: "*"
-            methods:
-              - /metalstack.admin.v2.MachineService/Get
-              - /metalstack.api.v2.TokenService/Refresh
-              - /metalstack.infra.v2.ComponentService/Ping
           - subject: ""
             methods:
               - /metalstack.admin.v2.MachineService/Get
