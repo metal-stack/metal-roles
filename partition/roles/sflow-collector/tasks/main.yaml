@@ -48,7 +48,7 @@
     owner: root
     group: root
     mode: "0644"
-  notify: restart vector
+  notify: Restart vector
 
 - name: Writing initial empty ifindex.csv
   copy:
@@ -66,7 +66,7 @@
     owner: root
     group: root
     mode: "0755"
-  notify: restart vrf-port-export
+  notify: Restart vrf-port-export
 
 - name: Deploy vrf-port-export systemd service
   copy:
@@ -76,8 +76,8 @@
     group: root
     mode: "0644"
   notify:
-    - reload systemd
-    - restart vrf-port-export
+    - Reload systemd
+    - Restart vrf-port-export
 
 - name: Ensure vrf-port-export service is started
   systemd:
@@ -93,7 +93,7 @@
     owner: root
     group: root
     mode: "0644"
-  notify: restart vector
+  notify: Restart vector
 
 - name: Deploy mmdb refresh script
   copy:
