@@ -3,9 +3,9 @@ set_resource_limits: {{ metal_set_resource_limits }}
 
 images:
   metal_console:
-    image: "{{ metal_console_image_name }}"
+    image: "{{ metal_console_v2_image_name }}"
     imagePullPolicy: "{{ metal_console_image_pull_policy }}"
-    tag: "{{ metal_console_image_tag }}"
+    tag: "{{ metal_console_v2_image_tag }}"
   metal_console_token_refresher:
     image: "{{ metal_console_token_refresher_image_name }}"
     imagePullPolicy: "{{ metal_console_token_refresher_image_pull_policy }}"
@@ -21,7 +21,7 @@ resources:
   placeholder: "prevents setting .resources to {} if no values are specified"
 
 metal_console:
-  enabled: {{ metal_console_enabled and metal_console_use_apiserver }}
+  enabled: {{ metal_console_enabled and metal_console_v1_enabled }}
   replicas: "{{ metal_console_replicas }}"
   tcpRoute:
     enabled: {{ metal_console_tcproute_enabled }}
