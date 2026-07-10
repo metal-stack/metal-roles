@@ -58,7 +58,7 @@
       type: Opaque
       stringData:
         GARDEN_CLUSTER_KUBECONFIG: "{{ virtual_garden_kubeconfig_refresher_garden_cluster_kubeconfig }}"
-  when: virtual_garden_kubeconfig_refresher_garden_cluster_enabled
+  when: monitoring_virtual_garden_kubeconfig_refresher_garden_cluster_enabled
 
 - name: Deploy virtual-garden-kubeconfig-refresher
   kubernetes.core.k8s:
