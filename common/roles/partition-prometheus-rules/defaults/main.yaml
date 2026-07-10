@@ -378,4 +378,3 @@ partition_prometheus_rules_goflow2: |
         summary: "goflow2 sFlow collector down ({{ $labels.instance }})"
         description: "goflow2 instance {{ $labels.instance }} has been unreachable for more than 2 minutes. sFlow ingestion is halted."
   {% endraw %}
-
