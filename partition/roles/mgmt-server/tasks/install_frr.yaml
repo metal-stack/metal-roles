@@ -6,14 +6,14 @@
     update_cache: true
     force_apt_get: true
 
-- name: Add FRR apt-key to verify FRR package
-  ansible.builtin.apt_key:
-    url: https://deb.frrouting.org/frr/keys.asc
-    state: present
+- name: Download GPG key
+  ansible.builtin.get_url:
+    url: https://deb.frrouting.org/frr/keys.gpg
+    dest: /usr/share/keyrings/frrouting.gpg
 
 - name: Add mainline FRR repository to install FRR
   ansible.builtin.apt_repository:
-    repo: deb https://deb.frrouting.org/frr {{ ansible_distribution_release }} {{ mgmt_server_frr_repo }}
+    repo: deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_distribution_release }} {{ mgmt_server_frr_repo }}
     state: present
     filename: frr.list
 
