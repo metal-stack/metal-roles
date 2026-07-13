@@ -10,6 +10,7 @@
   ansible.builtin.get_url:
     url: https://deb.frrouting.org/frr/keys.gpg
     dest: /usr/share/keyrings/frrouting.gpg
+    mode: 0644
 
 - name: Add mainline FRR repository to install FRR
   ansible.builtin.apt_repository:
