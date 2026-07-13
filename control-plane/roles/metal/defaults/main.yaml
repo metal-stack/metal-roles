@@ -74,12 +74,12 @@ metal_apiserver_httproute_https_redirect: {}
 metal_apiserver_token_create_schedule:
 metal_apiserver_tokens:
   admin_editor_token:
-    user: metal-stack
+    user: "{{ metal_control_plane_provider_tenant }}"
     tokenCreateRequest:
       expires: 23040s
       adminRole: ADMIN_ROLE_EDITOR
   admin_viewer_token:
-    user: metal-stack
+    user: "{{ metal_control_plane_provider_tenant }}"
     tokenCreateRequest:
       expires: 23040s
       adminRole: ADMIN_ROLE_VIEWER
