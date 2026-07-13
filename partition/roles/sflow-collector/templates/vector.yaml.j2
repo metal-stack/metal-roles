@@ -1,6 +1,9 @@
+{% set sflow_edge = sflow_collector_profile in ['edge', 'combined'] %}
+{% set sflow_fabric = sflow_collector_profile in ['fabric', 'combined'] %}
 data_dir: /var/lib/vector
 
 enrichment_tables:
+{% if sflow_edge %}
   geoip:
     type: mmdb
     path: /etc/vector/enrichment/geoip/geoip.mmdb
@@ -9,6 +12,7 @@ enrichment_tables:
     type: mmdb
     path: /etc/vector/enrichment/asn/asn.mmdb
 
+{% endif %}
   well_known_ports:
     type: file
     file:
@@ -19,6 +23,7 @@ enrichment_tables:
       port: integer
       protocol: string
 
+{% if sflow_fabric %}
   ifindex_vrf:
     type: file
     file:
@@ -31,6 +36,7 @@ enrichment_tables:
       interface: string
       vrf: string
       vni: string
+{% endif %}
 
 sources:
   goflow2_raw:
@@ -62,7 +68,39 @@ transforms:
       .app_proto        = "UNCLASSIFIED"
       .vrf              = "default"
       .vni              = ""
+      .interface        = ""
+      .src_asn          = 0
+      .src_asn_org      = ""
       .sampler_address  = string(.sampler_address) ?? "UNKNOWN"
+      .scope            = ""
+
+      if (string(.src_addr) ?? "") == "" {
+        .scope = "l2"
+        dmac = downcase(string(.dst_mac) ?? "")
+        if dmac == "01:80:c2:00:00:0e" || dmac == "01:80:c2:00:00:03" {
+          .app_proto = "LLDP"
+        } else if dmac == "01:80:c2:00:00:00" {
+          .app_proto = "STP"
+        } else if dmac == "01:80:c2:00:00:01" {
+          .app_proto = "PAUSE"
+        } else if dmac == "01:80:c2:00:00:02" {
+          .app_proto = "LACP"
+        } else if dmac == "01:80:c2:00:00:14" || dmac == "01:80:c2:00:00:15" {
+          .app_proto = "ISIS"
+        } else if dmac == "01:00:0c:cc:cc:cc" {
+          .app_proto = "CDP"
+        } else if dmac == "01:00:0c:cc:cc:cd" {
+          .app_proto = "PVST"
+        } else if dmac == "01:1b:19:00:00:00" {
+          .app_proto = "PTP"
+        } else if dmac == "ff:ff:ff:ff:ff:ff" {
+          .app_proto = "BROADCAST"
+        } else if starts_with(dmac, "01:00:5e") || starts_with(dmac, "33:33") {
+          .app_proto = "MULTICAST"
+        } else {
+          .app_proto = "L2-OTHER"
+        }
+      }
 
   enrich_proto:
     type: remap
@@ -71,24 +109,27 @@ transforms:
     source: |
       # Flow monitoring typically samples uplink ingress, meaning that the dst port is most likely of interest
       # If neither port matches, the lower one is chosen
-      row, err = get_enrichment_table_record("well_known_ports", { "port": .dst_port })
-      if err == null {
-        .app_proto = row.protocol
-      } else {
-        row, err = get_enrichment_table_record("well_known_ports", { "port": .src_port })
+      if .scope != "l2" {
+        row, err = get_enrichment_table_record("well_known_ports", { "port": .dst_port })
         if err == null {
           .app_proto = row.protocol
         } else {
-          dst = to_int(.dst_port) ?? 0
-          src = to_int(.src_port) ?? 0
-          if dst > 0 && (src == 0 || dst <= src) {
-            .app_proto = to_string(dst)
-          } else if src > 0 {
-            .app_proto = to_string(src)
+          row, err = get_enrichment_table_record("well_known_ports", { "port": .src_port })
+          if err == null {
+            .app_proto = row.protocol
+          } else {
+            dst = to_int(.dst_port) ?? 0
+            src = to_int(.src_port) ?? 0
+            if dst > 0 && (src == 0 || dst <= src) {
+              .app_proto = to_string(dst)
+            } else if src > 0 {
+              .app_proto = to_string(src)
+            }
           }
         }
       }
 
+{% if sflow_fabric %}
   enrich_vrf:
     type: remap
     inputs:
@@ -101,54 +142,60 @@ transforms:
         .interface = row.interface
       }
 
+{% endif %}
   enrich_asn:
     type: remap
     inputs:
-      - enrich_vrf
+      - {{ 'enrich_vrf' if sflow_fabric else 'enrich_proto' }}
     source: |
-      src_private = (ip_cidr_contains("10.0.0.0/8",     .src_addr) ?? false) ||
-                    (ip_cidr_contains("172.16.0.0/12",  .src_addr) ?? false) ||
-                    (ip_cidr_contains("192.168.0.0/16", .src_addr) ?? false) ||
-                    (ip_cidr_contains("127.0.0.0/8",    .src_addr) ?? false) ||
-                    (ip_cidr_contains("169.254.0.0/16", .src_addr) ?? false) ||
-                    (ip_cidr_contains("::1/128",        .src_addr) ?? false) ||
-                    (ip_cidr_contains("fc00::/7",       .src_addr) ?? false) ||
-                    (ip_cidr_contains("fe80::/10",      .src_addr) ?? false)
-      if src_private {
-        .src_asn = 0
-        .src_asn_org = "PRIVATE"
-      } else {
-        row, err = get_enrichment_table_record("asn", {"ip": .src_addr})
-        if err == null {
-          .src_asn = to_int(row.autonomous_system_number) ?? 0
-          .src_asn_org = string(row.autonomous_system_organization) ?? "UNKNOWN"
-        } else {
+      if .scope != "l2" {
+        src_private = (ip_cidr_contains("10.0.0.0/8",     .src_addr) ?? false) ||
+                      (ip_cidr_contains("172.16.0.0/12",  .src_addr) ?? false) ||
+                      (ip_cidr_contains("192.168.0.0/16", .src_addr) ?? false) ||
+                      (ip_cidr_contains("127.0.0.0/8",    .src_addr) ?? false) ||
+                      (ip_cidr_contains("169.254.0.0/16", .src_addr) ?? false) ||
+                      (ip_cidr_contains("::1/128",        .src_addr) ?? false) ||
+                      (ip_cidr_contains("fc00::/7",       .src_addr) ?? false) ||
+                      (ip_cidr_contains("fe80::/10",      .src_addr) ?? false)
+{% if sflow_edge %}
+        if src_private {
           .src_asn = 0
-          .src_asn_org = "UNKNOWN"
+          .src_asn_org = "PRIVATE"
+        } else {
+          row, err = get_enrichment_table_record("asn", {"ip": .src_addr})
+          if err == null {
+            .src_asn = to_int(row.autonomous_system_number) ?? 0
+            .src_asn_org = string(row.autonomous_system_organization) ?? "UNKNOWN"
+          } else {
+            .src_asn = 0
+            .src_asn_org = "UNKNOWN"
+          }
+        }
+
+{% endif %}
+        dst_private = (ip_cidr_contains("10.0.0.0/8",     .dst_addr) ?? false) ||
+                      (ip_cidr_contains("172.16.0.0/12",  .dst_addr) ?? false) ||
+                      (ip_cidr_contains("192.168.0.0/16", .dst_addr) ?? false) ||
+                      (ip_cidr_contains("127.0.0.0/8",    .dst_addr) ?? false) ||
+                      (ip_cidr_contains("169.254.0.0/16", .dst_addr) ?? false) ||
+                      (ip_cidr_contains("::1/128",        .dst_addr) ?? false) ||
+                      (ip_cidr_contains("fc00::/7",       .dst_addr) ?? false) ||
+                      (ip_cidr_contains("fe80::/10",      .dst_addr) ?? false)
+
+        if !src_private {
+          .scope = "inbound"
+        } else if dst_private {
+          .scope = "internal"
+        } else {
+          .scope = "outbound"
         }
       }
 
-      dst_private = (ip_cidr_contains("10.0.0.0/8",     .dst_addr) ?? false) ||
-                    (ip_cidr_contains("172.16.0.0/12",  .dst_addr) ?? false) ||
-                    (ip_cidr_contains("192.168.0.0/16", .dst_addr) ?? false) ||
-                    (ip_cidr_contains("127.0.0.0/8",    .dst_addr) ?? false) ||
-                    (ip_cidr_contains("169.254.0.0/16", .dst_addr) ?? false) ||
-                    (ip_cidr_contains("::1/128",        .dst_addr) ?? false) ||
-                    (ip_cidr_contains("fc00::/7",       .dst_addr) ?? false) ||
-                    (ip_cidr_contains("fe80::/10",      .dst_addr) ?? false)
-
-      if !src_private {
-        .scope = "inbound"
-      } else if dst_private {
-        .scope = "internal"
-      } else {
-        .scope = "outbound"
-      }
-
+{% if sflow_edge %}
   geo_sample:
     type: sample
     inputs:
-      - enrich_vrf
+      - {{ 'enrich_vrf' if sflow_fabric else 'enrich_proto' }}
     rate: {{ sflow_collector_vector_geo_sample_rate }}
 
   enrich_geo:
@@ -158,6 +205,9 @@ transforms:
     source: |
       # Drop private, loopback, and link-local addresses. Useful in the lab, in production this can be avoided
       # by using a dedicated WAN facing sample stream.
+      if .scope == "l2" {
+        abort
+      }
       if (ip_cidr_contains("10.0.0.0/8",     .src_addr) ?? false) ||
          (ip_cidr_contains("172.16.0.0/12",  .src_addr) ?? false) ||
          (ip_cidr_contains("192.168.0.0/16", .src_addr) ?? false) ||
@@ -181,6 +231,7 @@ transforms:
       } else {
         .country_code = "UNKNOWN"
       }
+{% endif %}
 
 sinks:
   loki_goflow2:
@@ -228,6 +279,8 @@ sinks:
       vni:         "{{ .vni }}"
       bytes:       "{{ .bytes }}"
       packets:     "{{ .packets }}"
+      src_mac:     "{{ .src_mac }}"
+      dst_mac:     "{{ .dst_mac }}"
 {% endraw %}
     remove_label_fields: true
     healthcheck:
@@ -242,6 +295,7 @@ sinks:
       max_events: {{ sflow_collector_vector_buffer_max_events }}
       when_full: drop_newest
 
+{% if sflow_edge %}
   loki_geo:
     type: loki
     inputs:
@@ -274,3 +328,4 @@ sinks:
       type: memory
       max_events: {{ sflow_collector_vector_buffer_max_events }}
       when_full: drop_newest
+{% endif %}

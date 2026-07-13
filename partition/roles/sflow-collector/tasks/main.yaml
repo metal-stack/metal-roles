@@ -10,6 +10,7 @@
       - sflow_collector_loki_endpoint is defined and sflow_collector_loki_endpoint | length > 0
       - sflow_collector_image_tag is defined
       - sflow_collector_vector_image_tag is defined
+      - sflow_collector_profile in ['fabric', 'edge', 'combined']
 
 - name: Create sflow-collector directories
   ansible.builtin.file:
@@ -58,6 +59,7 @@
     owner: root
     group: root
     mode: "0644"
+  when: sflow_collector_profile in ['fabric', 'combined']
 
 - name: Deploy vrf-port-export script
   ansible.builtin.copy:
@@ -67,6 +69,7 @@
     group: root
     mode: "0755"
   notify: Restart vrf-port-export
+  when: sflow_collector_profile in ['fabric', 'combined']
 
 - name: Deploy vrf-port-export systemd service
   ansible.builtin.copy:
@@ -78,6 +81,7 @@
   notify:
     - Reload systemd
     - Restart vrf-port-export
+  when: sflow_collector_profile in ['fabric', 'combined']
 
 - name: Ensure vrf-port-export service is started
   ansible.builtin.systemd:
@@ -85,6 +89,7 @@
     enabled: true
     state: started
     daemon_reload: true
+  when: sflow_collector_profile in ['fabric', 'combined']
 
 - name: Template Vector configuration
   ansible.builtin.template:
@@ -102,6 +107,7 @@
     owner: root
     group: root
     mode: "0755"
+  when: sflow_collector_profile in ['edge', 'combined']
 
 - name: Deploy mmdb refresh systemd service + timer
   ansible.builtin.copy:
@@ -113,6 +119,7 @@
   loop:
     - sflow-mmdb-refresh.service
     - sflow-mmdb-refresh.timer
+  when: sflow_collector_profile in ['edge', 'combined']
 
 - name: Enable mmdb refresh timer
   ansible.builtin.systemd:
@@ -120,6 +127,7 @@
     enabled: true
     state: started
     daemon_reload: true
+  when: sflow_collector_profile in ['edge', 'combined']
 
 - name: Fetch GeoIP and ASN databases on first deploy
   ansible.builtin.command: /usr/local/bin/sflow-mmdb-refresh.sh "{{ item }}"
@@ -128,6 +136,7 @@
   loop:
     - geoip
     - asn
+  when: sflow_collector_profile in ['edge', 'combined']
 
 - name: Remove legacy logrotate.d config
   ansible.builtin.file:
@@ -202,14 +211,22 @@
     systemd_docker_network: host
     systemd_service_environment:
       VECTOR_LOG: info
-    systemd_docker_volumes:
-      - "{{ sflow_collector_config_host_dir }}/vector.yaml:/etc/vector/vector.yaml:ro"
-      - "{{ sflow_collector_data_host_dir }}/well_known_ports.csv:/etc/vector/enrichment/well_known_ports.csv:ro"
-      - "{{ sflow_collector_data_host_dir }}/geoip:/etc/vector/enrichment/geoip:ro"
-      - "{{ sflow_collector_data_host_dir }}/asn:/etc/vector/enrichment/asn:ro"
-      - "/var/lib/sflow-collector/ifindex.csv:/etc/vector/enrichment/ifindex.csv:ro"
-      - "{{ sflow_collector_data_host_dir }}/spool:/spool:ro"
-      - "{{ sflow_collector_data_host_dir }}/vector:/var/lib/vector"
+    systemd_docker_volumes: >-
+      {{
+        [
+          sflow_collector_config_host_dir + '/vector.yaml:/etc/vector/vector.yaml:ro',
+          sflow_collector_data_host_dir + '/well_known_ports.csv:/etc/vector/enrichment/well_known_ports.csv:ro',
+          sflow_collector_data_host_dir + '/spool:/spool:ro',
+          sflow_collector_data_host_dir + '/vector:/var/lib/vector'
+        ]
+        + ([
+          sflow_collector_data_host_dir + '/geoip:/etc/vector/enrichment/geoip:ro',
+          sflow_collector_data_host_dir + '/asn:/etc/vector/enrichment/asn:ro'
+        ] if sflow_collector_profile in ['edge', 'combined'] else [])
+        + ([
+          sflow_collector_data_host_dir + '/ifindex.csv:/etc/vector/enrichment/ifindex.csv:ro'
+        ] if sflow_collector_profile in ['fabric', 'combined'] else [])
+      }}
     systemd_docker_command:
       - --config-dir
       - /etc/vector/
