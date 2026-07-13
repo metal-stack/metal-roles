@@ -124,11 +124,29 @@ receive:
   readinessProbe:
     failureThreshold: {{ monitoring_thanos_receive_probe_failure_threshold }}
 
-  replicaCount: 2
+  mode: dual-mode
+  replicaCount: 3
+  service:
+    additionalHeadless: true
+
+receiveDistributor:
+  enabled: true
+  replicationFactor: 3
 
 
-{% if monitoring_thanos_receive_ingress_basic_auth_password %}
+{% if monitoring_thanos_receive_ingress_basic_auth_password or monitoring_thanos_object_store_config is not defined %}
 extraDeploy:
+{% endif %}
+{% if monitoring_thanos_object_store_config is not defined %}
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: thanos-objstore-secret
+  type: Opaque
+  stringData:
+    objstore.yml: ""
+{% endif %}
+{% if monitoring_thanos_receive_ingress_basic_auth_password %}
 - apiVersion: v1
   kind: Secret
   metadata:
