@@ -11,7 +11,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### General
 
 | Name                            | Mandatory | Description                                                                                              |
-|---------------------------------|-----------|----------------------------------------------------------------------------------------------------------|
+| ------------------------------- | --------- | -------------------------------------------------------------------------------------------------------- |
 | metal_check_api_available       |           | Checks whether the metal-api is reachable from the outside after deployment                              |
 | metal_check_api_health_endpoint |           | The endpoint to call if the metal-api is reachable from the outside after deployment                     |
 | metal_set_resource_limits       |           | Deploys metal components with or without resource limits (possibly disable for development environments) |
@@ -24,43 +24,47 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### Images
 
-| Name                                     | Mandatory | Description                               |
-|------------------------------------------|-----------|-------------------------------------------|
-| metal_api_image_name                     | yes       | Image version of the metal-api            |
-| metal_api_image_tag                      | yes       | Image tag of the metal-api                |
-| metal_api_image_pull_policy              |           | Image pull policy of the metal-api        |
-| metal_apiserver_image_tag                | yes       | Image version of the metal-apiserver      |
-| metal_apiserver_url                      | yes       | Image tag of the metal-apiserver          |
-| metal_apiserver_image_pull_policy        |           | Image pull policy of the metal-apiserver  |
-| metal_metalctl_image_name                | yes       | Image version of metalctl                 |
-| metal_metalctl_image_tag                 | yes       | Image tag of metalctl                     |
-| metal_metalctl_image_pull_policy         |           | Image pull policy of metalctl             |
-| metal_console_image_name                 | yes       | Image version of the metal-console        |
-| metal_console_image_tag                  | yes       | Image tag of the metal-console            |
-| metal_console_image_pull_policy          |           | Image pull policy of the metal-console    |
-| metal_masterdata_api_image_name          | yes       | Image version of the masterdata-api       |
-| metal_masterdata_api_image_tag           | yes       | Image tag of the masterdata-api           |
-| metal_masterdata_api_image_pull_policy   |           | Image pull policy of the masterdata-api   |
-| metal_tenant_apiserver_image_name        | yes       | Image version of the tenant-apiserver     |
-| metal_tenant_apiserver_image_tag         | yes       | Image tag of the tenant-apiserver         |
-| metal_tenant_apiserver_image_pull_policy |           | Image pull policy of the tenant-apiserver |
-| metal_ipam_image_name                    | yes       | Image version of the ipam                 |
-| metal_ipam_image_tag                     | yes       | Image tag of the ipam                     |
+| Name                                     | Mandatory | Description                                |
+| ---------------------------------------- | --------- | ------------------------------------------ |
+| metal_api_image_name                     | yes       | Image version of the metal-api             |
+| metal_api_image_tag                      | yes       | Image tag of the metal-api                 |
+| metal_api_image_pull_policy              |           | Image pull policy of the metal-api         |
+| metal_apiserver_image_tag                | yes       | Image version of the metal-apiserver       |
+| metal_apiserver_url                      | yes       | Image tag of the metal-apiserver           |
+| metal_apiserver_image_pull_policy        |           | Image pull policy of the metal-apiserver   |
+| metal_metalctl_image_name                | yes       | Image version of metalctl                  |
+| metal_metalctl_image_tag                 | yes       | Image tag of metalctl                      |
+| metal_metalctl_image_pull_policy         |           | Image pull policy of metalctl              |
+| metal_console_image_name                 | yes       | Image version of the metal-console         |
+| metal_console_image_tag                  | yes       | Image tag of the metal-console             |
+| metal_console_v2_image_name              | yes       | Image version of the metal-console v2      |
+| metal_console_v2_image_tag               | yes       | Image tag of the metal-console v2          |
+| metal_console_image_pull_policy          |           | Image pull policy of the metal-console     |
+| metal_token_refresher_image_name         | yes       | Image version of the metal-token-refresher |
+| metal_token_refresher_image_tag          | yes       | Image tag of the metal-token-refresher     |
+| metal_masterdata_api_image_name          | yes       | Image version of the masterdata-api        |
+| metal_masterdata_api_image_tag           | yes       | Image tag of the masterdata-api            |
+| metal_masterdata_api_image_pull_policy   |           | Image pull policy of the masterdata-api    |
+| metal_tenant_apiserver_image_name        | yes       | Image version of the tenant-apiserver      |
+| metal_tenant_apiserver_image_tag         | yes       | Image tag of the tenant-apiserver          |
+| metal_tenant_apiserver_image_pull_policy |           | Image pull policy of the tenant-apiserver  |
+| metal_ipam_image_name                    | yes       | Image version of the ipam                  |
+| metal_ipam_image_tag                     | yes       | Image tag of the ipam                      |
 
 ### Service Ports
 
-| Name                                | Mandatory | Description                                         |
-|-------------------------------------|-----------|-----------------------------------------------------|
-| metal_api_port                      |           | Service port of the metal-api                       |
-| metal_api_metrics_port              |           | Service port of the metal-api metrics server        |
-| metal_masterdata_api_port           |           | Service port of the masterdata-api                  |
-| metal_masterdata_api_metrics_port   |           | Service port of the masterdata-api metrics server   |
-| metal_console_port                  |           | Service port of the metal-console                   |
+| Name                              | Mandatory | Description                                       |
+| --------------------------------- | --------- | ------------------------------------------------- |
+| metal_api_port                    |           | Service port of the metal-api                     |
+| metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
+| metal_masterdata_api_port         |           | Service port of the masterdata-api                |
+| metal_masterdata_api_metrics_port |           | Service port of the masterdata-api metrics server |
+| metal_console_port                |           | Service port of the metal-console                 |
 
 ### metal-api
 
 | Name                                | Mandatory | Description                                                                                    |
-|-------------------------------------|-----------|------------------------------------------------------------------------------------------------|
+| ----------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
 | metal_api_replicas                  |           | The number of deployed replicas of the metal-api                                               |
 | metal_api_hpa_enabled               |           | Enables horizontal pod autoscaling for the metal-api                                           |
 | metal_api_hpa_max                   |           | Max amount of replicas for the HPA of the metal-api                                            |
@@ -116,7 +120,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### metal-apiserver
 
 | Name                                                                  | Mandatory | Description                                                                        |
-|-----------------------------------------------------------------------|-----------|------------------------------------------------------------------------------------|
+| --------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------- |
 | metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                      |
 | metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                             |
 | metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                            |
@@ -146,7 +150,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### masterdata-api
 
 | Name                                   | Mandatory | Description                                                                       |
-|----------------------------------------|-----------|-----------------------------------------------------------------------------------|
+| -------------------------------------- | --------- | --------------------------------------------------------------------------------- |
 | metal_masterdata_api_db_address        |           | The URL to the masterdata database                                                |
 | metal_masterdata_api_db_port           |           | The port of the masterdata database                                               |
 | metal_masterdata_api_db_name           |           | The database name of the masterdata database                                      |
@@ -181,25 +185,38 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### metal-console
 
-| Name                                      | Mandatory | Description                                                                      |
-|-------------------------------------------|-----------|----------------------------------------------------------------------------------|
-| metal_console_enabled                     |           | Whether to deploy or not to deploy the metal-console                             |
-| metal_console_replicas                    |           | The number of deployed replicas of the metal-console                             |
-| metal_console_resources                   |           | Sets the given container resources                                               |
-| metal_console_bmc_proxy_certs_ca_cert     |           | The bmc-proxy ca certificate as a string (required if enabled)                   |
-| metal_console_bmc_proxy_certs_server_key  |           | The bmc-proxy server key as a string (required if enabled)                       |
-| metal_console_bmc_proxy_certs_server_pub  |           | The bmc-proxy server public key as a string (required if enabled)                |
-| metal_console_bmc_proxy_certs_client_cert |           | The bmc-proxy client certificate as a string (required if enabled)               |
-| metal_console_bmc_proxy_certs_client_key  |           | The bmc-proxy client key as a string (required if enabled)                       |
-| metal_console_pdb_enabled                 |           | Enables the Pod Disruption Budget for the metal-console                          |
-| metal_console_pdb_min_available           |           | The minimum number of available pods for the metal-console Pod Disruption Budget |
-| metal_console_tcproute_enabled            |           | Deploys a Gateway API TCPRoute exposing the metal-console                        |
-| metal_console_tcproute_parent_refs        |           | List of `parentRefs` (Gateways) the metal-console TCPRoute attaches to           |
+| Name                                            | Mandatory | Description                                                                           |
+| ----------------------------------------------- | --------- | ------------------------------------------------------------------------------------- |
+| metal_console_enabled                           |           | Whether to deploy or not to deploy the metal-console                                  |
+| metal_console_v1_enabled                        |           | Deploys the metal-console using metal-api                                             |
+| metal_console_v2_enabled                        |           | Deploys the metal-console using metal-apiserver                                       |
+| metal_console_replicas                          |           | The number of deployed replicas of the metal-console                                  |
+| metal_console_resources                         |           | Sets the given container resources                                                    |
+| metal_console_bmc_proxy_certs_ca_cert           |           | The bmc-proxy ca certificate as a string (required if enabled)                        |
+| metal_console_bmc_proxy_certs_server_key        |           | The bmc-proxy server key as a string (required if enabled)                            |
+| metal_console_bmc_proxy_certs_server_pub        |           | The bmc-proxy server public key as a string (required if enabled)                     |
+| metal_console_bmc_proxy_certs_client_cert       |           | The bmc-proxy client certificate as a string (required if enabled)                    |
+| metal_console_bmc_proxy_certs_client_key        |           | The bmc-proxy client key as a string (required if enabled)                            |
+| metal_console_pdb_enabled                       |           | Enables the Pod Disruption Budget for the metal-console                               |
+| metal_console_pdb_min_available                 |           | The minimum number of available pods for the metal-console Pod Disruption Budget      |
+| metal_console_tcproute_enabled                  |           | Deploys a Gateway API TCPRoute exposing the metal-console                             |
+| metal_console_tcproute_parent_refs              |           | List of `parentRefs` (Gateways) the metal-console TCPRoute attaches to                |
+| metal_console_helm_chart                        |           | The repository URL of the metal console oci helm chart                                |
+| metal_console_helm_chart_tag                    |           | The tag of the metal console oci helm chart                                           |
+| metal_console_helm_chart_version                |           | The version of the metal console helm chart                                           |
+| metal_console_helm_chart_local_path             |           | Local path to the metal console helm chart, useful for development purposes           |
+| metal_console_helm_chart_timeout                |           | Timeout for deploying the metal console helm chart                                    |
+| metal_console_token_refresher_image_name        |           | Image version of the metal-console token-refresher, defaults to metal-token-refresher |
+| metal_console_token_refresher_image_tag         |           | Image tag of the metal-console token-refresher, defaults to metal-token-refresher     |
+| metal_console_token_refresher_image_pull_policy |           | Image pull policy of the metal-console_token_refresher                                |
+| metal_console_use_apiserver                     |           |                                                                                       |
+| metal_console_token_refresher_enabled           |           |                                                                                       |
+| metal_console_token_refresher_schedule          |           |                                                                                       |
 
 ### ipam
 
 | Name                         | Mandatory | Description                                                                       |
-|------------------------------|-----------|-----------------------------------------------------------------------------------|
+| ---------------------------- | --------- | --------------------------------------------------------------------------------- |
 | metal_ipam_db_address        |           | The hostname of the ipam service                                                  |
 | metal_ipam_db_port           |           | The port of the ipam service                                                      |
 | metal_ipam_db_name           |           | The database name of the ipam service                                             |
@@ -226,7 +243,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 Configuration for metal-api:
 
 | Name                                 | Mandatory | Description                                                          |
-|--------------------------------------|-----------|----------------------------------------------------------------------|
+| ------------------------------------ | --------- | -------------------------------------------------------------------- |
 | metal_auditing_timescaledb_enabled   |           | Whether or not to configure timescaledb auditing. Default false.     |
 | metal_auditing_timescaledb_host      |           | The timescaledb host                                                 |
 | metal_auditing_timescaledb_port      |           | The timescaledb port                                                 |
@@ -237,7 +254,7 @@ Configuration for metal-api:
 | metal_auditing_search_backend        |           | Explicitly sets a configured audit backend to be used for search     |
 
 | Name                              | Mandatory | Description                                                 |
-|-----------------------------------|-----------|-------------------------------------------------------------|
+| --------------------------------- | --------- | ----------------------------------------------------------- |
 | metal_auditing_splunk_enabled     |           | Whether or not to configure splunk auditing. Default false. |
 | metal_auditing_splunk_endpoint    |           | The splunk endpoint.                                        |
 | metal_auditing_splunk_hec_token   |           | The splunk hec token.                                       |
@@ -250,7 +267,7 @@ Configuration for metal-api:
 Configuration for metal-apiserver:
 
 | Name                                           | Mandatory | Description                                                          |
-|------------------------------------------------|-----------|----------------------------------------------------------------------|
+| ---------------------------------------------- | --------- | -------------------------------------------------------------------- |
 | metal_apiserver_auditing_timescaledb_enabled   |           | Whether or not to configure timescaledb auditing. Default true.      |
 | metal_apiserver_auditing_timescaledb_host      |           | The timescaledb host                                                 |
 | metal_apiserver_auditing_timescaledb_port      |           | The timescaledb port                                                 |

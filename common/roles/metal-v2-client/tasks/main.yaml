@@ -9,8 +9,10 @@
         name:
           - metal-stack-api=={{ metal_api_version }}
           - bufbuild-protovalidate-protocolbuffers-python
+          - protobuf>=7.0
+          - connectrpc>=0.10.0,<0.11.0
       environment:
-        # to install the bug module we need for now a download from the buf.build index:
+        # to install the buffer module we need for now a download from the buf.build index:
         # https://github.com/bufbuild/protovalidate-python/pull/367
         PIP_EXTRA_INDEX_URL: https://buf.build/gen/python
 
@@ -30,6 +32,8 @@
         name:
           - metal-stack-api
           - bufbuild-protovalidate-protocolbuffers-python
+          - protobuf>=7.0
+          - connectrpc>=0.10.0,<0.11.0
       environment:
         PIP_EXTRA_INDEX_URL: https://buf.build/gen/python
       when: metal_v2_client_install_latest_on_version_error | bool
