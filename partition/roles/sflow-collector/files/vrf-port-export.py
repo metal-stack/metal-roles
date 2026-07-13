@@ -72,7 +72,7 @@ def get_vrf_mappings(db, sampler_address):
 
 def write_csv(mappings):
     # Vector's ifindex_vrf enrichment table is keyed on (sampler_address, ifindex);
-    # Duplicaste may appear on hybrid ports. Not expected in production.
+    # Duplicates may appear on hybrid ports. Not expected in production.
     deduped = {}
     for entry in mappings:
         key = (entry.get("sampler_address") or "", entry.get("ifindex"))
