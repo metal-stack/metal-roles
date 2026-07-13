@@ -19,7 +19,7 @@ def get_ifindex(interface):
         return None
 
 
-# The sflow packets contain the sampler address used to send the flow samp€e to the collector.
+# The sflow packets contain the sampler address used to send the flow sample to the collector.
 # This IP can be used to match the Interface to VRF mapping to a flow sample.
 def get_sampler_address(db):
     for key in db.keys("SFLOW_COLLECTOR|*"):
