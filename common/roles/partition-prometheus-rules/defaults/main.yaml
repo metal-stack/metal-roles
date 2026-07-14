@@ -71,6 +71,25 @@ partition_prometheus_rules_frr_exporter: |
         description: "BGP peer configuration on port {{ $labels.peer }} on leaf-pair {{ $labels.leafpair }}01/02 is different"
   {% endraw %}
 
+partition_prometheus_rules_sonic: |
+  {% raw %}
+  - name: sonic-recording.rules
+    rules:
+    - record: sonic_ntp_sync_status
+      expr: node_timex_sync_status{job="node-exporter"}
+    - record: sonic_ntp_offset
+      expr: node_timex_offset_seconds{job="node-exporter"}
+  - name: sonic-alert.rules
+    rules:
+    - alert: BgpMetricsStale
+      expr: time() - node_textfile_mtime_seconds{file="bgp.prom"} > 300
+      for: 5m
+      labels:
+        severity: "critical"
+      annotations:
+        description: "BGP metrics on {{ $labels.instance }} have not been refreshed for more than 5 minutes; the bgp-metrics timer is stuck or broken."
+  {% endraw %}
+
 partition_prometheus_rules_haproxy: |
   {% raw %}
   - name: haproxy.rules

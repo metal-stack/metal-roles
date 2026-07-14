@@ -1,11 +1,12 @@
 ---
 - name: Create node_exporter directories
   ansible.builtin.file:
-    path: "{{ monitoring_node_exporter_dir }}/host"
+    path: "{{ item }}"
     state: directory
     owner: "root"
     group: "root"
     mode: "0755"
+  loop: "{{ [monitoring_node_exporter_dir + '/host'] + ([monitoring_node_exporter_textfile_directory] if monitoring_node_exporter_textfile_directory else []) }}"
 
 - name: Deploy node_exporter service
   ansible.builtin.include_role:
@@ -22,8 +23,6 @@
         target_port: "{{ monitoring_node_exporter_port }}"
     systemd_docker_volumes:
       - "/:/host:ro,rslave"
-    systemd_docker_command:
-      - --path.rootfs=/host
-      - --path.procfs=/host/proc
-      - --path.sysfs=/host/sys
+    systemd_docker_command: "{{ ['--path.rootfs=/host', '--path.procfs=/host/proc', '--path.sysfs=/host/sys']
+      + (['--collector.textfile.directory=/host' + monitoring_node_exporter_textfile_directory] if monitoring_node_exporter_textfile_directory else []) }}"
     systemd_docker_log_driver: "{{ monitoring_node_exporter_docker_log_driver }}"

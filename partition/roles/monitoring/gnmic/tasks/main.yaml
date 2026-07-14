@@ -1,0 +1,62 @@
+---
+- name: Check SONiC distribution is supported
+  ansible.builtin.assert:
+    that: monitoring_gnmic_sonic_distribution in ['broadcom', 'edgecore']
+    fail_msg: "monitoring_gnmic_sonic_distribution must be one of: broadcom, edgecore"
+
+- name: Determine ports
+  ansible.builtin.command: sonic-cfggen -d --var-json PORT
+  register: monitoring_gnmic_port_json
+  changed_when: false
+  when: monitoring_gnmic_ports | length == 0
+
+- name: Set port list
+  ansible.builtin.set_fact:
+    monitoring_gnmic_ports: "{{ (monitoring_gnmic_port_json.stdout | from_json).keys() | select('match', '^Ethernet[0-9]+$') | list }}"
+  when: monitoring_gnmic_ports | length == 0
+
+- name: Create gnmic directories
+  ansible.builtin.file:
+    path: "{{ monitoring_gnmic_etc_host_dir }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: Copy gnmic config
+  ansible.builtin.template:
+    src: gnmic.yaml.j2
+    dest: "{{ monitoring_gnmic_etc_host_dir }}/gnmic.yaml"
+    mode: "0600"
+  notify:
+    - Restart gnmic
+
+- name: Copy lldp-neighbors processor script
+  ansible.builtin.copy:
+    src: lldp-neighbors.star
+    dest: "{{ monitoring_gnmic_etc_host_dir }}/lldp-neighbors.star"
+    mode: "0644"
+  notify:
+    - Restart gnmic
+
+- name: Deploy gnmic service
+  ansible.builtin.include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: gnmic
+    systemd_docker_image_name: "{{ monitoring_gnmic_image_name }}"
+    systemd_docker_image_tag: "{{ monitoring_gnmic_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      - "{{ monitoring_gnmic_etc_host_dir }}:/app/config:ro"
+    systemd_docker_command:
+      - subscribe --config /app/config/gnmic.yaml
+    systemd_docker_log_driver: "{{ monitoring_gnmic_docker_log_driver }}"
+
+- name: Wait for gnmic to listen on port
+  ansible.builtin.wait_for:
+    port: "{{ monitoring_gnmic_prometheus_port }}"
+    timeout: 300
+    msg: "gnmic did not come up"

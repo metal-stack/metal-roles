@@ -106,6 +106,15 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
+- job_name: gnmic
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/gnmic.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
 - job_name: blackbox-exporter
   metrics_path: /metrics
   static_configs:

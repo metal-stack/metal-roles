@@ -1,0 +1,23 @@
+---
+monitoring_gnmic_image_name: "ghcr.io/openconfig/gnmic"
+monitoring_gnmic_image_tag: "0.46.0"
+monitoring_gnmic_etc_host_dir: /etc/gnmic
+monitoring_gnmic_docker_log_driver: json-file
+
+monitoring_gnmic_gnmi_address: 127.0.0.1
+monitoring_gnmic_gnmi_port: 8080
+monitoring_gnmic_gnmi_username: admin
+monitoring_gnmic_gnmi_password: admin
+monitoring_gnmic_gnmi_insecure: false
+monitoring_gnmic_gnmi_skip_verify: true
+
+monitoring_gnmic_prometheus_port: 9102
+
+monitoring_gnmic_ports: []
+monitoring_gnmic_disabled_subscriptions: []
+
+monitoring_gnmic_sonic_distribution: broadcom
+
+monitoring_gnmic_sample_interval_counters: 30s
+monitoring_gnmic_sample_interval_state: 60s
+monitoring_gnmic_sample_interval_config: 300s

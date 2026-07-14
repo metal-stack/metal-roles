@@ -1,0 +1,377 @@
+username: {{ monitoring_gnmic_gnmi_username }}
+password: {{ monitoring_gnmic_gnmi_password }}
+insecure: {{ monitoring_gnmic_gnmi_insecure | bool | lower }}
+skip-verify: {{ monitoring_gnmic_gnmi_skip_verify | bool | lower }}
+encoding: json_ietf
+log: true
+
+{% set monitoring_gnmic_table_subscriptions = [
+    ('others', 'OTHERS', ['/platform/cpu', '/proc/meminfo', '/proc/uptime'], monitoring_gnmic_sample_interval_state),
+    ('cfg-core', 'CONFIG_DB', ['/DEVICE_METADATA/localhost', '/NTP/global', '/PORT'], monitoring_gnmic_sample_interval_config),
+    ('appl', 'APPL_DB', ['/ROUTE_TABLE', '/PORT_TABLE', '/LLDP_ENTRY_TABLE'], monitoring_gnmic_sample_interval_state),
+    ('state-system', 'STATE_DB', ['/SYSTEM_READY', '/CHASSIS_INFO'], monitoring_gnmic_sample_interval_state),
+    ('state-hw', 'STATE_DB', ['/TEMPERATURE_INFO', '/PSU_INFO', '/FAN_INFO'], monitoring_gnmic_sample_interval_state),
+    ('state-transceivers', 'STATE_DB', ['/TRANSCEIVER_INFO', '/TRANSCEIVER_DOM_SENSOR', '/TRANSCEIVER_DOM_THRESHOLD'], monitoring_gnmic_sample_interval_state),
+    ('state-vxlan', 'STATE_DB', ['/VXLAN_TUNNEL_TABLE'], monitoring_gnmic_sample_interval_state),
+    ('counters-crm', 'COUNTERS_DB', ['/CRM/STATS', '/CRM/ACL_STATS'], monitoring_gnmic_sample_interval_state),
+] %}
+{% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_disabled_subscriptions) | list %}
+{% set monitoring_gnmic_distribution_stream_modes = {
+    'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change'}},
+    'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample'}},
+} %}
+{% set monitoring_gnmic_stream_profile = monitoring_gnmic_distribution_stream_modes[monitoring_gnmic_sonic_distribution] %}
+{% set monitoring_gnmic_effective_stream_modes = monitoring_gnmic_stream_profile.overrides %}
+{% set monitoring_gnmic_stream_mode_default = monitoring_gnmic_stream_profile.default %}
+targets:
+{% for name, db, paths, interval in monitoring_gnmic_table_subscriptions %}
+  {{ name }}:
+    address: {{ monitoring_gnmic_gnmi_address }}:{{ monitoring_gnmic_gnmi_port }}
+    subscriptions: [{{ name }}]
+{% endfor %}
+  counters-ports:
+    address: {{ monitoring_gnmic_gnmi_address }}:{{ monitoring_gnmic_gnmi_port }}
+    subscriptions: [counters-ports]
+  counters-queues:
+    address: {{ monitoring_gnmic_gnmi_address }}:{{ monitoring_gnmic_gnmi_port }}
+    subscriptions: [counters-queues]
+
+subscriptions:
+{% for name, db, paths, interval in monitoring_gnmic_table_subscriptions %}
+  {{ name }}:
+    target: {{ db }}
+    paths:
+{% for path in paths %}
+      - {{ path }}
+{% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get(name, monitoring_gnmic_stream_mode_default) %}
+    mode: stream
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
+    sample-interval: {{ interval }}
+{% endif %}
+
+{% endfor %}
+  counters-ports:
+    target: COUNTERS_DB
+    paths:
+{% for port in monitoring_gnmic_ports %}
+      - /COUNTERS/{{ port }}
+{% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get('counters-ports', 'on-change') %}
+    mode: stream
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
+    sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% endif %}
+
+  counters-queues:
+    target: COUNTERS_DB
+    paths:
+{% for port in monitoring_gnmic_ports %}
+      - /COUNTERS/{{ port }}/Queues
+{% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get('counters-queues', monitoring_gnmic_stream_mode_default) %}
+    mode: stream
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
+    sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% endif %}
+
+processors:
+  sonic-jq-counters:
+    event-jq:
+      expression: |
+        . as $evs | $evs + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/COUNTERS/(?<ifc>Ethernet[0-9]+)/SAI_PORT_STAT_(?<f>[A-Z0-9_]+)$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | $c.f as $f
+          | (if $f == "IF_IN_OCTETS" then {n: "sonic_interface_received_bytes_total", t: { }}
+             elif $f == "IF_OUT_OCTETS" then {n: "sonic_interface_transmitted_bytes_total", t: { }}
+             elif ($f | test("^IF_IN_(UCAST|BROADCAST|MULTICAST)_PKTS$")) then {n: "sonic_interface_received_packets_total", t: {method: ($f | capture("IF_IN_(?<m>[A-Z]+)_PKTS").m | ascii_downcase)}}
+             elif ($f | test("^IF_OUT_(UCAST|BROADCAST|MULTICAST)_PKTS$")) then {n: "sonic_interface_transmitted_packets_total", t: {method: ($f | capture("IF_OUT_(?<m>[A-Z]+)_PKTS").m | ascii_downcase)}}
+             elif ($f | test("^ETHER_IN_PKTS_[0-9]")) then {n: "sonic_interface_received_ethernet_packets_total", t: {size: ($f | capture("(?<s>[0-9]+)_OCTETS$").s)}}
+             elif ($f | test("^ETHER_OUT_PKTS_[0-9]")) then {n: "sonic_interface_transmitted_ethernet_packets_total", t: {size: ($f | capture("(?<s>[0-9]+)_OCTETS$").s)}}
+             elif $f == "ETHER_STATS_CRC_ALIGN_ERRORS" then {n: "sonic_interface_receive_error_crc_total", t: { }}
+             elif $f == "IF_IN_ERRORS" then {n: "sonic_interface_receive_error_input_packets_total", t: {type: "error"}}
+             elif $f == "IF_IN_DISCARDS" then {n: "sonic_interface_receive_error_input_packets_total", t: {type: "discard"}}
+             elif $f == "IN_DROPPED_PKTS" then {n: "sonic_interface_receive_error_input_packets_total", t: {type: "drop"}}
+             elif $f == "PAUSE_RX_PKTS" then {n: "sonic_interface_receive_error_input_packets_total", t: {type: "pause"}}
+             elif $f == "IF_OUT_ERRORS" then {n: "sonic_interface_transmit_error_output_packets_total", t: {type: "error"}}
+             elif $f == "IF_OUT_DISCARDS" then {n: "sonic_interface_transmit_error_output_packets_total", t: {type: "discard"}}
+             elif $f == "PAUSE_TX_PKTS" then {n: "sonic_interface_transmit_error_output_packets_total", t: {type: "pause"}}
+             else null end) as $m
+          | select($m != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {interface: $c.ifc} + $m.t), values: {($m.n): $v}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/COUNTERS/(?<ifc>Ethernet[0-9]+)/Queues/[^:]*:(?<q>[0-9]+)/SAI_QUEUE_STAT_(?<f>PACKETS|BYTES)$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + {interface: $c.ifc, queue: $c.q}),
+             values: {(if $c.f == "PACKETS" then "sonic_interface_queue_processed_packets_total" else "sonic_interface_queue_processed_bytes_total" end): $v}}
+        ]
+
+  sonic-jq-ports:
+    event-jq:
+      expression: |
+        . as $evs | $evs + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/PORT_TABLE/(?<ifc>[^/]+)/(?<f>admin_status|oper_status)$")?) as $c
+          | select($c != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {interface: $c.ifc}),
+             values: {(if $c.f == "admin_status" then "sonic_interface_admin_status" else "sonic_interface_operational_status" end): (if (.value | tostring) == "up" then 1 else 0 end)}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/PORT/(?<ifc>[^/]+)/mtu$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {interface: $c.ifc}), values: {"sonic_interface_mtu_bytes": $v}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/PORT/(?<ifc>[^/]+)/speed$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {interface: $c.ifc}), values: {"sonic_interface_speed_bytes": ($v * 125000)}}
+        ] + [
+          $evs[] | . as $e
+          | ([ $e.values | to_entries[] | (.key | capture("^/PORT/(?<ifc>[^/]+)/(?<field>[^/]+)$")?) as $c | select($c != null) | {ifc: $c.ifc, field: $c.field, value: ($e.values[.key] | tostring)} ]
+             | group_by(.ifc)[]) as $g
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + {interface: $g[0].ifc} + (reduce ($g[] | select(.field == "alias" or .field == "index" or .field == "speed" or .field == "mtu")) as $r ({ }; .[$r.field] = $r.value))),
+             values: {"sonic_interface_info": 1}}
+        ]
+
+  sonic-jq-routes-evpn:
+    event-jq:
+      expression: |
+        . as $evs | $evs + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("^/ROUTE_TABLE/")))
+          | {name: $e.name, timestamp: $e.timestamp, tags: $e.tags,
+             values: {"sonic_routes_rib": ([ $e.values | keys[] | select(test("^/ROUTE_TABLE/")) | sub("/(ifname|nexthop|protocol|weight|distance|metric|blackhole|vni_label|router_mac|segment|seg6local_action|nexthop_group)$"; "") ] | unique | length)}}
+        ] + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("^/VXLAN_TUNNEL_TABLE/")))
+          | {name: $e.name, timestamp: $e.timestamp, tags: $e.tags,
+             values: {"sonic_evpn_remote_vteps": ([ $e.values | keys[] | select(test("^/VXLAN_TUNNEL_TABLE/EVPN_")) | capture("VXLAN_TUNNEL_TABLE/(?<k>EVPN_[^/]+)").k ] | unique | length)}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/VXLAN_TUNNEL_TABLE/(?<vtep>[^/]+)/operstatus$")?) as $c
+          | select($c != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {vtep: ($c.vtep | sub("^EVPN_"; ""))}),
+             values: {"sonic_vxlan_operational_status": (if (.value | tostring) == "oper_up" then 1 else 0 end)}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/VXLAN_TUNNEL_TABLE/EVPN_(?<vtep>[^/]+)/operstatus$")?) as $c
+          | select($c != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {vtep: $c.vtep}),
+             values: {"sonic_evpn_status": (if (.value | tostring) == "oper_up" then 1 else 0 end)}}
+        ]
+
+  sonic-jq-crm:
+    event-jq:
+      expression: |
+        . as $evs | $evs + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("^/CRM/STATS/crm_stats_ipv4_route_used$")))
+          | ((first($e.values | to_entries[] | select(.key | test("crm_stats_ipv4_route_used$")) | .value) // 0) | tostring | tonumber? // 0) as $v4
+          | ((first($e.values | to_entries[] | select(.key | test("crm_stats_ipv6_route_used$")) | .value) // 0) | tostring | tonumber? // 0) as $v6
+          | {name: $e.name, timestamp: $e.timestamp, tags: $e.tags, values: {"sonic_routes_fib": ($v4 + $v6)}}
+        ]
+
+  sonic-jq-device:
+    event-jq:
+      expression: |
+        . as $evs | $evs + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("meminfo")))
+          | ((first($e.values | to_entries[] | select(.key | test("mem_total$")) | .value) // null) | tostring | tonumber? // null) as $t
+          | ((first($e.values | to_entries[] | select(.key | test("mem_available$")) | .value) // null) | tostring | tonumber? // null) as $a
+          | select($t != null and $a != null and $t > 0)
+          | {name: $e.name, timestamp: $e.timestamp, tags: $e.tags, values: {"sonic_device_memory_ratio": (($t - $a) / $t)}}
+        ] + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("cpu_all/5min$")))
+          | ((first($e.values | to_entries[] | select(.key | test("cpu_all/5min$")) | .value) // null) | tostring | tonumber? // null) as $c
+          | select($c != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: $e.tags, values: {"sonic_device_cpu_ratio": ($c / 100)}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | select(.key | test("^/SYSTEM_READY/SYSTEM_STATE/Status$"))
+          | {name: $e.name, timestamp: $e.timestamp, tags: $e.tags,
+             values: {"sonic_system_status": (if (.value | tostring | ascii_downcase) == "up" then 1 else 0 end)}}
+        ] + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("^/DEVICE_METADATA/localhost/")))
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + (reduce ($e.values | to_entries[] | select(.key | test("^/DEVICE_METADATA/localhost/(hwsku|platform|mac|type|hostname)$"))) as $kv ({ }; .[$kv.key | sub(".*/"; "")] = ($kv.value | tostring)))),
+             values: {"sonic_device_info": 1}}
+        ] + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("^/NTP/global/")))
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + (reduce ($e.values | to_entries[] | select(.key | test("^/NTP/global/"))) as $kv ({ }; .[$kv.key | sub(".*/"; "")] = ($kv.value | tostring)))),
+             values: {"sonic_ntp_global": 1}}
+        ]
+
+  sonic-jq-hw:
+    event-jq:
+      expression: |
+        . as $evs | $evs + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/PSU_INFO/(?<psu>[^/]+)/(?<f>status|presence|input_voltage|input_current|output_voltage|output_current|temp)$")?) as $c
+          | select($c != null)
+          | (($c.psu | (capture("(?<n>[0-9]+)").n)? // $c.psu)) as $slot
+          | (if $c.f == "status" then {n: "sonic_device_psu_operational_status", v: (if (.value | tostring | ascii_downcase) | test("^(true|ok)$") then 1 else 0 end)}
+             elif $c.f == "presence" then {n: "sonic_device_psu_available_status", v: (if (.value | tostring | ascii_downcase) == "true" then 1 else 0 end)}
+             else {n: ({input_voltage: "sonic_hw_psu_input_voltage_volts", input_current: "sonic_hw_psu_input_current_amperes", output_voltage: "sonic_hw_psu_output_voltage_volts", output_current: "sonic_hw_psu_output_current_amperes", temp: "sonic_device_psu_celsius"}[$c.f]), v: ((.value | tostring | tonumber?) // null)} end) as $m
+          | select($m.v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {slot: $slot}), values: {($m.n): $m.v}}
+        ] + [
+          $evs[] | . as $e
+          | ([ $e.values | to_entries[] | (.key | capture("^/PSU_INFO/(?<psu>[^/]+)/(?<field>[^/]+)$")?) as $c | select($c != null) | {psu: $c.psu, field: $c.field, value: ($e.values[.key] | tostring)} ]
+             | group_by(.psu)[]) as $g
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + {slot: (($g[0].psu | (capture("(?<n>[0-9]+)").n)?) // $g[0].psu)} + (reduce ($g[] | select(.field == "serial" or .field == "model" or .field == "name")) as $r ({ }; .[$r.field] = $r.value))),
+             values: {"sonic_device_psu_info": 1}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/FAN_INFO/(?<fan>[^/]+)/(?<f>status|presence|speed)$")?) as $c
+          | select($c != null)
+          | (if $c.f == "status" then {n: "sonic_device_fan_operational_status", v: (if (.value | tostring | ascii_downcase) | test("^(true|ok)$") then 1 else 0 end)}
+             elif $c.f == "presence" then {n: "sonic_device_fan_available_status", v: (if (.value | tostring | ascii_downcase) == "true" then 1 else 0 end)}
+             else {n: "sonic_device_fan_rpm", v: ((.value | tostring | tonumber?) // null)} end) as $m
+          | select($m.v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {name: $c.fan}), values: {($m.n): $m.v}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/TEMPERATURE_INFO/(?<sensor>[^/]+)/temperature$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {name: $c.sensor}), values: {"sonic_device_sensor_celsius": $v}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/TEMPERATURE_INFO/(?<sensor>[^/]+)/(?<th>(high|low)(_critical)?)_threshold$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {name: $c.sensor, threshold: $c.th}), values: {"sonic_device_sensor_threshold_celsius": $v}}
+        ] + [
+          $evs[] | . as $e
+          | select(any(.values | keys[]; test("^/CHASSIS_INFO/")))
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + (reduce ($e.values | to_entries[] | select(.key | test("^/CHASSIS_INFO/"))) as $kv ({ }; .[$kv.key | sub(".*CHASSIS_INFO/[^/]+/"; "")] = ($kv.value | tostring)))),
+             values: {"sonic_hw_chassis_info": 1}}
+        ]
+
+  sonic-jq-transceivers:
+    event-jq:
+      expression: |
+        . as $evs | $evs + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/TRANSCEIVER_DOM_SENSOR/(?<ifc>[^/]+)/(?<f>temperature|voltage)$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {interface: $c.ifc}),
+             values: {(if $c.f == "temperature" then "sonic_interface_transceiver_temperature_celsius" else "sonic_interface_transceiver_voltage" end): $v}}
+        ] + [
+          $evs[] | . as $e | ($e.values | to_entries[])
+          | (.key | capture("^/TRANSCEIVER_DOM_SENSOR/(?<ifc>[^/]+)/(?<d>rx|tx)(?<lane>[0-9])power$")?) as $c
+          | select($c != null)
+          | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {interface: $c.ifc, lane: $c.lane}),
+             values: {(if $c.d == "rx" then "sonic_interface_optic_receive_power_dbm" else "sonic_interface_optic_transmit_power_dbm" end): $v}}
+        ] + [
+          $evs[] | . as $e
+          | ([ $e.values | to_entries[] | (.key | capture("^/TRANSCEIVER_INFO/(?<ifc>[^/]+)/(?<field>[^/]+)$")?) as $c | select($c != null) | {ifc: $c.ifc, field: $c.field, value: ($e.values[.key] | tostring)} ]
+             | group_by(.ifc)[]) as $g
+          | ((first($g[] | select(.field == "cable_length") | .value) | tonumber?) // null) as $v | select($v != null)
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + {interface: $g[0].ifc,
+                               cable_type: ((first($g[] | select(.field == "connector") | .value) // "") | ascii_downcase),
+                               connector_type: ((first($g[] | select(.field == "connector_type") | .value) // "") | ascii_downcase)}),
+             values: {"sonic_interface_cable_length_meters": $v}}
+        ] + [
+          $evs[] | . as $e
+          | ([ $e.values | to_entries[] | (.key | capture("^/TRANSCEIVER_INFO/(?<ifc>[^/]+)/(?<field>[^/]+)$")?) as $c | select($c != null) | {ifc: $c.ifc, field: $c.field, value: ($e.values[.key] | tostring)} ]
+             | group_by(.ifc)[]) as $g
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + {interface: $g[0].ifc} + (reduce ($g[] | select(.field == "vendor" or .field == "manufacturer" or .field == "serial" or .field == "model")) as $r ({ }; .[$r.field] = $r.value))),
+             values: {"sonic_interface_transceiver_info": 1}}
+        ] + [
+          $evs[] | . as $e
+          | ([ $e.values | to_entries[] | (.key | capture("^/TRANSCEIVER_DOM_THRESHOLD/(?<ifc>[^/]+)/(?<field>[^/]+)$")?) as $c | select($c != null) | {ifc: $c.ifc, field: $c.field, value: ($e.values[.key] | tostring)} ]
+             | group_by(.ifc)[]) as $g
+          | {name: $e.name, timestamp: $e.timestamp,
+             tags: ($e.tags + {interface: $g[0].ifc} + (reduce $g[] as $r ({ }; .[$r.field] = $r.value))),
+             values: {"sonic_transceiver_threshold_info": 1}}
+        ]
+
+  sonic-rename:
+    event-strings:
+      value-names:
+        - ".*"
+      transforms:
+        - replace:
+            apply-on: "name"
+            old: '.*proc/uptime/total$'
+            new: 'sonic_device_uptime_seconds_total'
+        - replace:
+            apply-on: "name"
+            old: '.*CRM/STATS/(crm_stats_.*)$'
+            new: '${1}'
+        - replace:
+            apply-on: "name"
+            old: '.*CRM/ACL_STATS/([^/:]+)[/:]([^/:]+)/(crm_stats_.*)$'
+            new: 'crm_acl_stats_${1}_${2}_${3}'
+
+  sonic-acl-lower:
+    event-strings:
+      value-names:
+        - '(?i)^crm_acl_stats_'
+      transforms:
+        - to-lower:
+            apply-on: "name"
+
+  sonic-lldp:
+    event-starlark:
+      script: /app/config/lldp-neighbors.star
+
+  sonic-convert:
+    event-convert:
+      value-names:
+        - '^sonic_'
+        - '^crm_'
+      type: float
+
+  sonic-filter:
+    event-jq:
+      expression: |
+        [ .[] | .values |= with_entries(select(.key | test("^(sonic_|crm_)"))) | select(.values | length > 0) ]
+
+outputs:
+  prometheus:
+    type: prometheus
+    listen: :{{ monitoring_gnmic_prometheus_port }}
+    path: /metrics
+    metric-prefix: ""
+    append-subscription-name: false
+    export-timestamps: false
+    strings-as-labels: false
+    expiration: -1s
+    event-processors:
+      - sonic-jq-counters
+      - sonic-jq-ports
+      - sonic-jq-routes-evpn
+      - sonic-jq-crm
+      - sonic-jq-device
+      - sonic-jq-hw
+      - sonic-jq-transceivers
+      - sonic-rename
+      - sonic-acl-lower
+      - sonic-lldp
+      - sonic-convert
+      - sonic-filter

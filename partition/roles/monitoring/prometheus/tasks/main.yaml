@@ -164,6 +164,20 @@
     mode: "0644"
   notify: Restart prometheus
 
+- name: Generate prometheus_gnmic_sd
+  ansible.builtin.set_fact:
+    prometheus_gnmic_sd:
+      - labels:
+          job: gnmic
+        targets: "{{ prometheus_gnmic_targets }}"
+
+- name: Create gnmic.yaml
+  ansible.builtin.copy:
+    content: "{{ prometheus_gnmic_sd | to_nice_yaml(indent=2) }}"
+    dest: "{{ prometheus_config_host_dir }}/file_sd/gnmic.yaml"
+    mode: "0644"
+  notify: Restart prometheus
+
 - name: Generate prometheus_blackbox_exporter_sd
   ansible.builtin.set_fact:
     prometheus_blackbox_exporter_sd:
@@ -194,6 +208,8 @@
   loop:
     - file: blackbox-exporter.yaml
       content_var: partition_prometheus_rules_blackbox_exporter
+    - file: sonic.yaml
+      content_var: partition_prometheus_rules_sonic
     - file: haproxy.yaml
       content_var: partition_prometheus_rules_haproxy
     - file: ipmi-rules.yaml
