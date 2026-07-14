@@ -62,7 +62,7 @@ sonic_config_interconnects:
     extended_neighbors:
       - ip: "172.17.146.177"
         families:
-        - v4
+          - v4
         routemap_in:
           name: "ALLOW-INTERNET-2-IN"
           entries:
@@ -75,7 +75,7 @@ sonic_config_interconnects:
             - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}"
       - ip: "172.17.146.161"
         families:
-        - v4
+          - v4
         routemap_in:
           name: "ALLOW-INTERNET-4-IN"
           entries:
@@ -88,15 +88,15 @@ sonic_config_interconnects:
             - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }}"
       - ip: "2a02:c00:ff0:102::1"
         families:
-        - v6
+          - v6
         routemap_in:
           name: "ALLOW-V6INTERNET-2-IN"
           entries:
             - "match ip address prefix-list V6INTERNET_PREFIX_IN"
             - "set as-path prepend last-as 2"
         routemap_out:
-            name: "ALLOW-V6INTERNET-2-OUT"
-            entries:
+          name: "ALLOW-V6INTERNET-2-OUT"
+          entries:
             - "match ip address prefix-list V6INTERNET_PREFIX_OUT"
             - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}"
 
