@@ -15,7 +15,6 @@ alloy_docker_log_driver: json-file
 # templates/snippets/<name>.alloy.j2 in this role.
 # Available snippets: syslog, journal, journal-file, docker, alloy-meta
 alloy_config_snippets: []
-
 # List of paths to custom Alloy River config snippets. Each entry is a
 # template path resolved via Ansible's normal template search path (i.e.
 # relative to the playbook's templates/ directory, or an absolute path).
@@ -24,7 +23,6 @@ alloy_config_snippets: []
 #   alloy_config_custom_snippets:
 #     - my_custom_source.alloy.j2
 alloy_config_custom_snippets: []
-
 # Provide a fully custom Alloy River config as a string to bypass the
 # snippet assembly system entirely. When set, alloy_loki_write_endpoints
 # and alloy_config_snippets are ignored.
@@ -61,7 +59,11 @@ alloy_journal_legacy_positions_file: "/var/log/promtail-positions.yaml"
 # Implied by promtail_migrate_cleanup.
 promtail_migrate_stop: false
 
-# Remove all promtail remnants: stops and disables the service, 
+# Remove all promtail remnants: stops and disables the service,
 # removes the systemd unit file, deletes promtail_config_host_dir and
 # the legacy positions files. Only set once migration to alloy is fully complete.
 promtail_migrate_cleanup: false
+
+# Allows passing additional security opts to the docker container.
+# This might be required on some older switches to run alloy.
+alloy_docker_security_opts: []

@@ -3,7 +3,7 @@
   switch_facts:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -15,10 +15,11 @@
       - sonic_nameservers is defined
       - metal_stack_switch_os_is_sonic
 
-- name: render resolv.conf
-  template:
+- name: Render resolv.conf
+  ansible.builtin.template:
     src: resolv.conf.j2
     dest: /etc/resolv.conf
+    mode: "0644"
 
 - name: Activate IP MASQUERADE on eth0
   ansible.builtin.iptables:
@@ -37,28 +38,30 @@
   when: sonic_ip_masquerade
 
 - name: Render and save config_db
-  import_tasks: config_db.yaml
+  ansible.builtin.import_tasks: config_db.yaml
   when: sonic_render_config_db_template
 
 - name: Set NTP timezone
-  timezone:
+  community.general.timezone:
     name: "{{ sonic_timezone }}"
 
 - name: Render frr config
-  template:
+  ansible.builtin.template:
     src: frr.conf.j2
     dest: /etc/sonic/frr/frr.conf
+    mode: "0644"
   when: sonic_frr_render
   notify:
-    - restart bgp
+    - Restart bgp
 
-- name: render iptables.json
-  template:
+- name: Render iptables.json
+  ansible.builtin.template:
     src: iptables.json.j2
     dest: /etc/sonic/iptables.json
+    mode: "0644"
   when: sonic_extended_cacl is defined
   notify:
-    - restart caclmgrd
+    - Restart caclmgrd
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

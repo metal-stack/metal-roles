@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -31,7 +31,7 @@
       - not gardener_extension_ontap_enabled or gardener_extension_ontap_helm_chart is not none
 
 - name: Check deprecated variables are used
-  fail:
+  ansible.builtin.fail:
     msg: "the variable {{ item.old }} was renamed to {{ item.new }}, please migrate and remove the old variable"
   when: item.old in hostvars[inventory_hostname]
   loop:
@@ -53,7 +53,7 @@
     label: "{{ item.old }}"
 
 - name: Register gardener extension
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml', split_lines=False) }}"
     apply: true
   when: lookup('vars', 'gardener_extension_' + item  | regex_replace('-', '_') + '_enabled')

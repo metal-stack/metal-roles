@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -13,7 +13,7 @@
       - gardener_metrics_exporter_image_tag is defined
 
 - name: Check deprecated variables are not set
-  assert:
+  ansible.builtin.assert:
     fail_msg: >
       'monitoring_thanos_receive_ingress_basic_auth' has been removed.
       Please migrate to 'monitoring_thanos_receive_ingress_basic_auth_user' and
@@ -24,7 +24,7 @@
       - monitoring_thanos_receive_ingress_basic_auth is not defined or monitoring_thanos_receive_ingress_basic_auth == {}
 
 - name: Create namespace {{ monitoring_namespace }}
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
@@ -33,12 +33,29 @@
         labels:
           name: "{{ monitoring_namespace }}"
 
+- name: Create remote-write basic auth secrets
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      metadata:
+        name: "remote-write-creds-{{ item.name }}"
+        namespace: "{{ monitoring_namespace }}"
+      stringData:
+        username: "{{ item.username }}"
+        password: "{{ item.password }}"
+  loop: "{{ monitoring_prometheus_remote_write }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: true
+
 - name: Determine app version for prometheus operator CRDs
-  command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
+  ansible.builtin.command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
   register: helm_output
 
 - name: Apply prometheus operator CRDs
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ (helm_output.stdout | from_yaml).get('appVersion')
       + '/example/prometheus-operator-crd/' + item , split_lines=False) | regex_replace('- =\n', '- \"=\"\n') }}"
   loop:
@@ -54,7 +71,7 @@
     - monitoring.coreos.com_thanosrulers.yaml
 
 - name: Deploy kube-prometheus-stack
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
   vars:
     helm_repo: "{{ prometheus_stack_repo }}"
@@ -66,7 +83,7 @@
     helm_skip_crds: true
 
 - name: Deploy thanos
-  include_role:
+  ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
   vars:
     helm_repo: "{{ thanos_chart_repo }}"
@@ -75,12 +92,12 @@
     helm_release_name: thanos
     helm_chart_version: "{{ thanos_chart_version }}"
     helm_value_file_template: "thanos-values.yaml"
+  when: monitoring_thanos_enabled
 
 - name: Deploy metrics exporters
-  import_tasks: exporters.yaml
-
+  ansible.builtin.import_tasks: exporters.yaml
 - name: Deploy Grafana dashboards
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
@@ -89,9 +106,10 @@
     - rethinkdb.yaml
     - alertmanager.yaml
     - sonic-exporter.yaml
+  when: monitoring_grafana_enabled
 
 - name: Deploy Grafana dashboards for Gardener
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'grafana-dashboards/gardener/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
@@ -100,10 +118,12 @@
     - shoot-states-overview.yaml
     - shoot-customization.yaml
     - shoot-details.yaml
-  when: monitoring_gardener_enabled
+  when:
+    - monitoring_gardener_enabled
+    - monitoring_grafana_enabled
 
 - name: Create service monitors
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:
@@ -115,7 +135,7 @@
     - metal-metrics-exporter.yaml
 
 - name: Create service monitors for Gardener
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'servicemonitors/' + item) }}"
     namespace: "{{ monitoring_namespace }}"
   loop:

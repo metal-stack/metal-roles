@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -19,14 +19,15 @@
       - metal_bmc_console_cert is not none
       - metal_bmc_console_key is not none
 
-- name: create nsq certs directory
-  file:
+- name: Create nsq certs directory
+  ansible.builtin.file:
     path: "{{ metal_bmc_nsq_cert_dir }}"
     state: directory
+    mode: "0755"
   when: metal_bmc_nsq_tls_enabled
 
-- name: copy nsq certificates
-  copy:
+- name: Copy nsq certificates
+  ansible.builtin.copy:
     dest: "{{ metal_bmc_nsq_cert_dir }}/{{ item.filename }}"
     mode: "0640"
     content: "{{ item.content }}"
@@ -43,16 +44,16 @@
   when: metal_bmc_nsq_tls_enabled
   register: nsq_certs
 
-- name: create metal-bmc console certificates directory
-  file:
+- name: Create metal-bmc console certificates directory
+  ansible.builtin.file:
     dest: "{{ metal_bmc_console_cert_dir }}"
     state: directory
     owner: "{{ metal_bmc_console_cert_owner }}"
     group: "{{ metal_bmc_console_cert_group }}"
     mode: "0700"
 
-- name: copy metal-bmc console certificates
-  copy:
+- name: Copy metal-bmc console certificates
+  ansible.builtin.copy:
     dest: "{{ metal_bmc_console_cert_dir }}/{{ item.filename }}"
     content: "{{ item.content }}"
     mode: "0640"
@@ -69,11 +70,11 @@
   loop_control:
     label: "{{ item.filename }}"
 
-- name: deploy metal-bmc service
-  include_role:
+- name: Deploy metal-bmc service
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
-    systemd_start: "{{ ensure_started.metal_bmc|default(true) }}"
+    systemd_start: "{{ ensure_started.metal_bmc | default(true) }}"
     systemd_service_name: metal-bmc
     systemd_external_config_changed: "{{ nsq_certs is changed }}"
     systemd_docker_image_name: "{{ metal_bmc_image_name }}"
@@ -97,11 +98,11 @@
       METAL_BMC_IPMI_PASSWORD: "{{ metal_bmc_bmc_superuser_pwd }}"
       METAL_BMC_MQ_ADDRESS: "{{ metal_bmc_nsqd_addr }}"
       METAL_BMC_MQ_LOGLEVEL: "{{ metal_bmc_nsq_log_level }}"
-      METAL_BMC_MQ_CA_CERT_FILE: "{{metal_bmc_nsq_cert_dir }}/ca.pem"
+      METAL_BMC_MQ_CA_CERT_FILE: "{{ metal_bmc_nsq_cert_dir }}/ca.pem"
       METAL_BMC_MQ_CLIENT_CERT_FILE: "{{ metal_bmc_nsq_cert_dir }}/client.pem"
       METAL_BMC_MQ_CLIENT_CERT_KEY_FILE: "{{ metal_bmc_nsq_cert_dir }}/client-key.pem"
       METAL_BMC_MACHINE_TOPIC: "{{ metal_partition_id }}-machine"
       METAL_BMC_CONSOLE_PORT: "{{ metal_bmc_console_port }}"
-      METAL_BMC_CONSOLE_CA_CERT_FILE: "{{metal_bmc_console_cert_dir }}/ca.pem"
-      METAL_BMC_CONSOLE_CERT_FILE: "{{metal_bmc_console_cert_dir }}/cert.pem"
-      METAL_BMC_CONSOLE_KEY_FILE: "{{metal_bmc_console_cert_dir }}/key.pem"
+      METAL_BMC_CONSOLE_CA_CERT_FILE: "{{ metal_bmc_console_cert_dir }}/ca.pem"
+      METAL_BMC_CONSOLE_CERT_FILE: "{{ metal_bmc_console_cert_dir }}/cert.pem"
+      METAL_BMC_CONSOLE_KEY_FILE: "{{ metal_bmc_console_cert_dir }}/key.pem"

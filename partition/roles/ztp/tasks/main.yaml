@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -12,13 +12,14 @@
       - ztp_authorized_keys is not none
       - "'user.sh' not in ztp_additional_files | map(attribute='name')"
 
-- name: create ztp config directory
-  file:
+- name: Create ztp config directory
+  ansible.builtin.file:
     path: "{{ ztp_host_dir_path }}/config"
+    mode: "0755"
     state: directory
 
-- name: render templates
-  template:
+- name: Render templates
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ ztp_host_dir_path }}/config/{{ item | splitext | first }}"
     mode: "0644"
@@ -26,8 +27,8 @@
     - ztp.json.j2
     - user.sh.j2
 
-- name: copy static files
-  copy:
+- name: Copy static files
+  ansible.builtin.copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item }}"
     src: "{{ item }}"
     mode: "0644"
@@ -35,8 +36,8 @@
     - frr.conf
     - config_db.json
 
-- name: copy additional files
-  copy:
+- name: Copy additional files
+  ansible.builtin.copy:
     dest: "{{ ztp_host_dir_path }}/config/{{ item.name }}"
     content: "{{ item.data }}"
     mode: "0644"
@@ -44,8 +45,8 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: deploy server for serving ztp files
-  include_role:
+- name: Deploy server for serving ztp files
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: ztp-server

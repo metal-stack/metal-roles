@@ -3,7 +3,7 @@
   switch_facts:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -17,8 +17,8 @@
   loop_control:
     label: "{{ item.network }}"
 
-- name: ensure config directories are present
-  file:
+- name: Ensure config directories are present
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: "0755"
@@ -26,43 +26,46 @@
     - /etc/dhcp
     - /etc/default
 
-- name: render dhcpd conf
-  template:
+- name: Render dhcpd conf
+  ansible.builtin.template:
     src: dhcpd.conf.j2
     dest: /etc/dhcp/dhcpd.conf
+    mode: "0644"
   register: _dhcpd_conf
 
-- name: render isc-dhcp-server config
-  template:
+- name: Render isc-dhcp-server config
+  ansible.builtin.template:
     src: isc-dhcp-server.j2
     dest: /etc/default/isc-dhcp-server
+    mode: "0644"
   register: _isc_dhcp_server
 
-- name: render static hosts config
-  template:
+- name: Render static hosts config
+  ansible.builtin.template:
     src: dhcpd.hosts.j2
     dest: /etc/dhcp/dhcpd.hosts
+    mode: "0644"
   when: dhcp_static_hosts is defined
   register: _hosts_conf
 
-- name: install isc-dhcp-server
-  apt:
+- name: Install isc-dhcp-server
+  ansible.builtin.apt:
     name:
       - isc-dhcp-server
     update_cache: true
 
 # we want this task to be run at this point and not at the end of the playbook
 # this is why we don't use a handler here
-- name: restart isc-dhcp-server on config change
-  service:
+- name: Restart isc-dhcp-server on config change
+  ansible.builtin.service:
     name: "{{ dhcp_service_name }}"
     enabled: true
     state: restarted
     daemon-reload: true
   when: _dhcpd_conf is changed or _isc_dhcp_server is changed or _hosts_conf is changed
 
-- name: ensure isc-dhcp-server is running
-  service:
+- name: Ensure isc-dhcp-server is running
+  ansible.builtin.service:
     name: "{{ dhcp_service_name }}"
     enabled: true
     state: started

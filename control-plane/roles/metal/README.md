@@ -49,13 +49,13 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### Service Ports
 
-| Name                                | Mandatory | Description                                         |
-|-------------------------------------|-----------|-----------------------------------------------------|
-| metal_api_port                      |           | Service port of the metal-api                       |
-| metal_api_metrics_port              |           | Service port of the metal-api metrics server        |
-| metal_masterdata_api_port           |           | Service port of the masterdata-api                  |
-| metal_masterdata_api_metrics_port   |           | Service port of the masterdata-api metrics server   |
-| metal_console_port                  |           | Service port of the metal-console                   |
+| Name                              | Mandatory | Description                                       |
+|-----------------------------------|-----------|---------------------------------------------------|
+| metal_api_port                    |           | Service port of the metal-api                     |
+| metal_api_metrics_port            |           | Service port of the metal-api metrics server      |
+| metal_masterdata_api_port         |           | Service port of the masterdata-api                |
+| metal_masterdata_api_metrics_port |           | Service port of the masterdata-api metrics server |
+| metal_console_port                |           | Service port of the metal-console                 |
 
 ### metal-api
 
@@ -115,35 +115,34 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### metal-apiserver
 
-| Name                                                                  | Mandatory | Description                                                                        |
-|-----------------------------------------------------------------------|-----------|------------------------------------------------------------------------------------|
-| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                      |
-| metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                             |
-| metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                            |
-| metal_apiserver_db_password                                           |           | The password of the metal-db                                                       |
-| metal_apiserver_provider_tenant                                       |           | The provider tenant created at startup                                             |
-| metal_apiserver_redis_addr                                            |           | The address to a redis API                                                         |
-| metal_apiserver_redis_password                                        |           | The password to redis                                                              |
-| metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                         |
-| metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                                       |
-| metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                                  |
-| metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                              |
-| metal_apiserver_admin_subjects                                        |           | A list of token subjects that are allowed to create admin tokens                   |
-| metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                         |
-| metal_apiserver_secure_cookie                                         |           | If set to true, auth cookie will only be set on https                              |
-| metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                         |
-| metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                          |
-| metal_apiserver_hpa_min                                               |           | Min amount of replicas for the HPA of the metal-apiserver                          |
-| metal_apiserver_hpa_cpu_percentage:                                   |           | Target CPU utilization percentage for the HPA of the metal-apiserver               |
-| metal_apiserver_resources                                             |           | Sets the given container resources                                                 |
-| metal_apiserver_rate_limiting_max_requests_per_minute                 |           | The amount of requests allowed per minute for users with valid API tokens          |
-| metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users                |
-| metal_apiserver_pdb_enabled                                           |           | Enables the Pod Disruption Budget for the metal-apiserver                          |
-| metal_apiserver_pdb_min_available                                     |           | The minimum number of available pods for the metal-apiserver Pod Disruption Budget |
-| metal_apiserver_httproute_enabled                                     |           | Deploys a Gateway API HTTPRoute exposing the metal-apiserver                       |
-| metal_apiserver_httproute_hostnames                                   |           | List of hostnames for the metal-apiserver HTTPRoute                                |
-| metal_apiserver_httproute_parent_refs                                 |           | List of `parentRefs` (Gateways) the metal-apiserver HTTPRoute attaches to          |
-| metal_apiserver_httproute_https_redirect                              |           | Optional config to deploy an extra HTTPRoute that redirects HTTP to HTTPS          |
+| Name                                                                  | Mandatory | Description                                                                                                      |
+|-----------------------------------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------|
+| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                                                    |
+| metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                                                           |
+| metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                                                          |
+| metal_apiserver_db_password                                           |           | The password of the metal-db                                                                                     |
+| metal_apiserver_provider_tenant                                       |           | The provider tenant created at startup                                                                           |
+| metal_apiserver_redis_addr                                            |           | The address to a redis API                                                                                       |
+| metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                                                       |
+| metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                                                                     |
+| metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                                                                |
+| metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                                                            |
+| metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                                                       |
+| metal_apiserver_secure_cookie                                         |           | If set to true, auth cookie will only be set on https                                                            |
+| metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                                                       |
+| metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                                                        |
+| metal_apiserver_hpa_min                                               |           | Min amount of replicas for the HPA of the metal-apiserver                                                        |
+| metal_apiserver_hpa_cpu_percentage:                                   |           | Target CPU utilization percentage for the HPA of the metal-apiserver                                             |
+| metal_apiserver_resources                                             |           | Sets the given container resources                                                                               |
+| metal_apiserver_rate_limiting_max_requests_per_minute                 |           | The amount of requests allowed per minute for users with valid API tokens                                        |
+| metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users                                              |
+| metal_apiserver_pdb_enabled                                           |           | Enables the Pod Disruption Budget for the metal-apiserver                                                        |
+| metal_apiserver_pdb_min_available                                     |           | The minimum number of available pods for the metal-apiserver Pod Disruption Budget                               |
+| metal_apiserver_httproute_enabled                                     |           | Deploys a Gateway API HTTPRoute exposing the metal-apiserver                                                     |
+| metal_apiserver_httproute_hostnames                                   |           | List of hostnames for the metal-apiserver HTTPRoute                                                              |
+| metal_apiserver_httproute_parent_refs                                 |           | List of `parentRefs` (Gateways) the metal-apiserver HTTPRoute attaches to                                        |
+| metal_apiserver_tokens                                                |           | Optional yaml containing a map of tokenCreateRequests in order to create admin-tokens and store them in a secret |
+| metal_apiserver_token_create_schedule                                 |           | Optional cronjob schedule at which admin-tokens should be created                                                |
 
 ### masterdata-api
 
@@ -170,7 +169,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### tenant-apiserver
 
 | Name                                     | Mandatory | Description                                                                         |
-| ---------------------------------------- | --------- | ----------------------------------------------------------------------------------- |
+|------------------------------------------|-----------|-------------------------------------------------------------------------------------|
 | metal_tenant_apiserver_db_address        |           | The URL to the masterdata database                                                  |
 | metal_tenant_apiserver_db_port           |           | The port of the masterdata database                                                 |
 | metal_tenant_apiserver_db_name           |           | The database name of the masterdata database                                        |
@@ -214,12 +213,14 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### Ingress
 
-| Name                 | Mandatory | Description                                                                |
-|----------------------|-----------|----------------------------------------------------------------------------|
-| metal_deploy_ingress |           | Whether to deploy or not to deploy the ingress resource                    |
-| metal_ingress        |           | Alternative configuration of the ingress (can be used for configuring TLS) |
-| metal_ingress_dns    |           | The virtual host to reach the metal-api on                                 |
-| metal_ingress_v2_dns |           | The virtual host to reach the metal-apiserver on                           |
+| Name                              | Mandatory | Description                                                                                                             |
+|-----------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------------|
+| metal_deploy_ingress              |           | Whether to deploy or not to deploy the ingress resource                                                                 |
+| metal_ingress                     |           | Alternative configuration of the ingress (can be used for configuring TLS)                                              |
+| metal_ingress_dns                 |           | The virtual host to reach the metal-api on                                                                              |
+| metal_ingress_v2_dns              |           | The virtual host to reach the metal-apiserver on                                                                        |
+| metal_deploy_ingress_api_v1_rules |           | Deploys ingress rules for the metal-stack v1 api, allows fine-grained control for the switchover from ingress to gw API |
+| metal_deploy_ingress_api_v2_rules |           | Deploys ingress rules for the metal-stack v1 api, allows fine-grained control for the switchover from ingress to gw API |
 
 ### Auditing
 

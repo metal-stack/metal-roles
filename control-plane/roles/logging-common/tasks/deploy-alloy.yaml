@@ -3,7 +3,7 @@
   setup_yaml:
 
 - name: Check mandatory variables for logging-common are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
@@ -13,8 +13,9 @@
       - logging_common_alloy_cluster_label | length > 0
 
 - name: Build Alloy config
-  set_fact:
-    logging_common_alloy_config: "{{ lookup('template', role_path + '/templates/alloy-config.alloy.j2') if (logging_common_alloy_config_raw | default('') | length == 0) else logging_common_alloy_config_raw }}"
+  ansible.builtin.set_fact:
+    logging_common_alloy_config: "{{ lookup('template', role_path + '/templates/alloy-config.alloy.j2') if (logging_common_alloy_config_raw | default('') | length
+      == 0) else logging_common_alloy_config_raw }}"
 
 - name: Deploy Alloy
   kubernetes.core.helm:

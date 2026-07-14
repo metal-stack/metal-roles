@@ -2,8 +2,8 @@
 - name: Gather release versions
   setup_yaml:
 
-- name: create prometheus directories
-  file:
+- name: Create prometheus directories
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "nobody"
@@ -14,70 +14,76 @@
     - "{{ prometheus_config_host_dir }}/file_sd"
     - "{{ prometheus_data_host_dir }}"
 
-- name: generate /etc/hosts
-  copy:
+- name: Generate /etc/hosts
+  ansible.builtin.copy:
     content: "{{ prometheus_hosts_content }}"
     dest: "{{ prometheus_config_host_dir }}/hosts"
+    mode: "0644"
   when: prometheus_hosts_content
 
-- name: generate prometheus.yaml
-  template:
+- name: Generate prometheus.yaml
+  ansible.builtin.template:
     src: prometheus.yaml.j2
     dest: "{{ prometheus_config_host_dir }}/prometheus.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: generate prometheus_metal_core_sd
-  set_fact:
+- name: Generate prometheus_metal_core_sd
+  ansible.builtin.set_fact:
     prometheus_metal_core_sd:
       - labels:
           job: metal-core
         targets: "{{ prometheus_metal_core_targets }}"
 
-- name: create metal-core.yaml
-  copy:
+- name: Create metal-core.yaml
+  ansible.builtin.copy:
     content: "{{ prometheus_metal_core_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/metal-core.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: generate prometheus_node_exporter_sd
-  set_fact:
+- name: Generate prometheus_node_exporter_sd
+  ansible.builtin.set_fact:
     prometheus_node_exporter_sd:
       - labels:
           job: node-exporter
         targets: "{{ prometheus_node_exporter_targets }}"
 
-- name: create node-exporter.yaml
-  copy:
+- name: Create node-exporter.yaml
+  ansible.builtin.copy:
     content: "{{ prometheus_node_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/node-exporter.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: generate prometheus_frr_exporter_sd
-  set_fact:
+- name: Generate prometheus_frr_exporter_sd
+  ansible.builtin.set_fact:
     prometheus_frr_exporter_sd:
       - labels:
           job: frr
         targets: "{{ prometheus_frr_exporter_targets }}"
 
-- name: create frr-exporter.yaml
-  copy:
+- name: Create frr-exporter.yaml
+  ansible.builtin.copy:
     content: "{{ prometheus_frr_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/frr-exporter.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: create static ipmi-exporter targets file
-  copy:
+- name: Create static ipmi-exporter targets file
+  ansible.builtin.copy:
     content: |
       ---
       - labels:
           job: ipmi
         targets: {{ prometheus_ipmi_exporter_targets | to_json }}
     dest: "{{ prometheus_config_host_dir }}/file_sd/ipmi.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
   when: prometheus_ipmi_exporter_targets
 
-- name: write systemd timer to dynamically write ipmi-exporter-targets file
-  template:
+- name: Write systemd timer to dynamically write ipmi-exporter-targets file
+  ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "{{ item.dest }}"
     mode: "{{ item.mode | default('a=r') }}"
@@ -93,8 +99,8 @@
     label: "{{ item.dest }}"
   when: not prometheus_ipmi_exporter_targets
 
-- name: enable ipmi-exporter-targets
-  systemd:
+- name: Enable ipmi-exporter-targets
+  ansible.builtin.systemd:
     name: ipmi-exporter-targets.{{ item }}
     daemon_reload: true
     enabled: true
@@ -104,8 +110,8 @@
     - timer
   when: not prometheus_ipmi_exporter_targets
 
-- name: disable ipmi-exporter-targets
-  systemd:
+- name: Disable ipmi-exporter-targets
+  ansible.builtin.systemd:
     name: ipmi-exporter-targets.{{ item }}
     enabled: false
     state: stopped
@@ -116,69 +122,75 @@
   register: _result
   when: prometheus_ipmi_exporter_targets
 
-- name: generate prometheus_promtail_sd
-  set_fact:
+- name: Generate prometheus_promtail_sd
+  ansible.builtin.set_fact:
     prometheus_promtail_sd:
       - labels:
           job: promtail
         targets: "{{ prometheus_promtail_targets }}"
 
-- name: create promtail.yaml
-  copy:
+- name: Create promtail.yaml
+  ansible.builtin.copy:
     content: "{{ prometheus_promtail_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/promtail.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: generate prometheus_alloy_sd
-  set_fact:
+- name: Generate prometheus_alloy_sd
+  ansible.builtin.set_fact:
     prometheus_alloy_sd:
       - labels:
           job: alloy
         targets: "{{ prometheus_alloy_targets }}"
 
-- name: create alloy.yaml
-  copy:
+- name: Create alloy.yaml
+  ansible.builtin.copy:
     content: "{{ prometheus_alloy_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/alloy.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: generate prometheus_sonic_exporter_sd
-  set_fact:
+- name: Generate prometheus_sonic_exporter_sd
+  ansible.builtin.set_fact:
     prometheus_sonic_exporter_sd:
       - labels:
           job: sonic-exporter
         targets: "{{ prometheus_sonic_exporter_targets }}"
 
-- name: create sonic-exporter.yaml
-  copy:
+- name: Create sonic-exporter.yaml
+  ansible.builtin.copy:
     content: "{{ prometheus_sonic_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/sonic-exporter.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: generate prometheus_blackbox_exporter_sd
-  set_fact:
+- name: Generate prometheus_blackbox_exporter_sd
+  ansible.builtin.set_fact:
     prometheus_blackbox_exporter_sd:
       - labels:
           job: blackbox-exporter
         targets: "{{ prometheus_blackbox_exporter_targets }}"
 
-- name: create blackbox-exporter.yaml
-  copy:
+- name: Create blackbox-exporter.yaml
+  ansible.builtin.copy:
     content: "{{ prometheus_blackbox_exporter_sd | to_nice_yaml(indent=2) }}"
     dest: "{{ prometheus_config_host_dir }}/file_sd/blackbox-exporter.yaml"
-  notify: restart prometheus
+    mode: "0644"
+  notify: Restart prometheus
 
-- name: ensure rules directory
-  file:
+- name: Ensure rules directory
+  ansible.builtin.file:
     path: "{{ prometheus_config_host_dir }}/rules"
     state: directory
+    mode: "0755"
 
-- name: copy notification rules
-  copy:
+- name: Copy notification rules
+  ansible.builtin.copy:
     content: |
       groups:
       {{ lookup('ansible.builtin.vars', item.content_var) | indent(width=4) }}
     dest: "{{ prometheus_config_host_dir }}/rules/{{ item.file }}"
+    mode: "0644"
   loop:
     - file: blackbox-exporter.yaml
       content_var: partition_prometheus_rules_blackbox_exporter
@@ -194,10 +206,10 @@
       content_var: partition_prometheus_rules_pixiecore
     - file: sonic-exporter.yaml
       content_var: partition_prometheus_rules_sonic_exporter
-  notify: restart prometheus
+  notify: Restart prometheus
 
-- name: deploy prometheus service
-  include_role:
+- name: Deploy prometheus service
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: prometheus
@@ -219,8 +231,8 @@
       - --storage.tsdb.max-block-duration=2h
     systemd_docker_log_driver: "{{ prometheus_docker_log_driver }}"
 
-- name: wait for prometheus to listen on port
-  wait_for:
+- name: Wait for prometheus to listen on port
+  ansible.builtin.wait_for:
     port: "{{ prometheus_port }}"
     timeout: 300
     msg: "prometheus did not come up"
