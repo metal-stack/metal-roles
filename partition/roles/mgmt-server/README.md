@@ -14,7 +14,7 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_frr_repo                  |           | the FRR repo to use.                                                                 |
 | mgmt_server_frr_version               |           | the FRR version to use.                                                              |
 | mgmt_server_nameservers               |           | the nameservers to use (default is dns0.eu).                                         |
-| mgmt_server_router_id                 | yes       | the router-id to use for routing.                                                    |
+| mgmt_server_router_id                 | yes       | the router-id to use for routing (`mgmt_server_routerid` = default fallback).        |
 | mgmt_server_spine_facing_interface    | yes       | the interface where the management spine is connected at the management server.      |
 | mgmt_server_metal_ssh_key_filename    |           | the filename of the private ssh key                                                  |
 | mgmt_server_metal_ssh_groups          |           | the ansible group to include into the ssh config                                     |
