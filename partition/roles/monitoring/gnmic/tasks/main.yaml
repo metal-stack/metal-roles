@@ -31,11 +31,14 @@
   notify:
     - Restart gnmic
 
-- name: Copy lldp-neighbors processor script
+- name: Copy processor scripts
   ansible.builtin.copy:
-    src: lldp-neighbors.star
-    dest: "{{ monitoring_gnmic_etc_host_dir }}/lldp-neighbors.star"
+    src: "{{ item }}"
+    dest: "{{ monitoring_gnmic_etc_host_dir }}/{{ item }}"
     mode: "0644"
+  loop:
+    - lldp-neighbors.star
+    - sonic-metrics.star
   notify:
     - Restart gnmic
 
