@@ -18,6 +18,8 @@ Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker conta
 | monitoring_gnmic_gnmi_skip_verify         |           | Skip TLS certificate verification                  |
 | monitoring_gnmic_prometheus_port          |           | Port of the Prometheus metrics endpoint            |
 | monitoring_gnmic_ports                    |           | Ports to collect counters for, discovered if empty |
+| monitoring_gnmic_temperature_sensors      |           | Temperature sensors on edgecore, discovered if empty |
+| monitoring_gnmic_fans                     |           | Fans on edgecore, discovered if empty              |
 | monitoring_gnmic_disabled_subscriptions   |           | Subscriptions to disable                           |
 | monitoring_gnmic_sonic_distribution       |           | SONiC distribution (broadcom/edgecore)             |
 | monitoring_gnmic_sample_interval_counters |           | Sample interval for port and queue counters        |

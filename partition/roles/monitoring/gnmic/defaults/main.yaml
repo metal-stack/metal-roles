@@ -14,6 +14,8 @@ monitoring_gnmic_gnmi_skip_verify: true
 monitoring_gnmic_prometheus_port: 9102
 
 monitoring_gnmic_ports: []
+monitoring_gnmic_temperature_sensors: []
+monitoring_gnmic_fans: []
 monitoring_gnmic_disabled_subscriptions: []
 
 monitoring_gnmic_sonic_distribution: broadcom
