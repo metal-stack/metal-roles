@@ -51,6 +51,8 @@ subscriptions:
     stream-mode: {{ mode }}
 {% if mode == 'sample' %}
     sample-interval: {{ interval }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
 {% endif %}
 
 {% endfor %}
@@ -65,6 +67,8 @@ subscriptions:
     stream-mode: {{ mode }}
 {% if mode == 'sample' %}
     sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
 {% endif %}
 
   counters-queues:
@@ -78,6 +82,8 @@ subscriptions:
     stream-mode: {{ mode }}
 {% if mode == 'sample' %}
     sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
 {% endif %}
 
 processors:

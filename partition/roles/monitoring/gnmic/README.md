@@ -23,3 +23,4 @@ Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker conta
 | monitoring_gnmic_sample_interval_counters |           | Sample interval for port and queue counters        |
 | monitoring_gnmic_sample_interval_state    |           | Sample interval for state tables                   |
 | monitoring_gnmic_sample_interval_config   |           | Sample interval for config tables                  |
+| monitoring_gnmic_heartbeat_interval       |           | Heartbeat interval for on-change subscriptions     |
