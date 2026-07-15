@@ -90,8 +90,10 @@ processors:
   sonic-jq-counters:
     event-jq:
       expression: |
-        . as $evs | $evs + [
-          $evs[] | . as $e | ($e.values | to_entries[])
+        . as $all | [ $all[] | select(.name == "counters-ports") ] as $ports
+        | [ $all[] | select(.name == "counters-queues") ] as $queues
+        | $all + [
+          $ports[] | . as $e | ($e.values | to_entries[])
           | (.key | capture("^/COUNTERS/(?<ifc>Ethernet[0-9]+)/SAI_PORT_STAT_(?<f>[A-Z0-9_]+)$")?) as $c
           | select($c != null)
           | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
@@ -114,7 +116,7 @@ processors:
           | select($m != null)
           | {name: $e.name, timestamp: $e.timestamp, tags: ($e.tags + {interface: $c.ifc} + $m.t), values: {($m.n): $v}}
         ] + [
-          $evs[] | . as $e | ($e.values | to_entries[])
+          $queues[] | . as $e | ($e.values | to_entries[])
           | (.key | capture("^/COUNTERS/(?<ifc>Ethernet[0-9]+)/Queues/[^:]*:(?<q>[0-9]+)/SAI_QUEUE_STAT_(?<f>PACKETS|BYTES)$")?) as $c
           | select($c != null)
           | ((.value | tostring | tonumber?) // null) as $v | select($v != null)
@@ -126,7 +128,7 @@ processors:
   sonic-jq-ports:
     event-jq:
       expression: |
-        . as $evs | $evs + [
+        . as $all | [ $all[] | select(.name == "appl" or .name == "cfg-core") ] as $evs | $all + [
           $evs[] | . as $e | ($e.values | to_entries[])
           | (.key | capture("^/PORT_TABLE/(?<ifc>[^/]+)/(?<f>admin_status|oper_status)$")?) as $c
           | select($c != null)
@@ -156,7 +158,7 @@ processors:
   sonic-jq-routes-evpn:
     event-jq:
       expression: |
-        . as $evs | $evs + [
+        . as $all | [ $all[] | select(.name == "appl" or .name == "state-vxlan") ] as $evs | $all + [
           $evs[] | . as $e
           | select(any(.values | keys[]; test("^/ROUTE_TABLE/")))
           | {name: $e.name, timestamp: $e.timestamp, tags: $e.tags,
@@ -183,7 +185,7 @@ processors:
   sonic-jq-crm:
     event-jq:
       expression: |
-        . as $evs | $evs + [
+        . as $all | [ $all[] | select(.name == "counters-crm") ] as $evs | $all + [
           $evs[] | . as $e
           | select(any(.values | keys[]; test("^/CRM/STATS/crm_stats_ipv4_route_used$")))
           | ((first($e.values | to_entries[] | select(.key | test("crm_stats_ipv4_route_used$")) | .value) // 0) | tostring | tonumber? // 0) as $v4
@@ -194,7 +196,7 @@ processors:
   sonic-jq-device:
     event-jq:
       expression: |
-        . as $evs | $evs + [
+        . as $all | [ $all[] | select(.name == "others" or .name == "state-system" or .name == "cfg-core") ] as $evs | $all + [
           $evs[] | . as $e
           | select(any(.values | keys[]; test("meminfo")))
           | ((first($e.values | to_entries[] | select(.key | test("mem_total$")) | .value) // null) | tostring | tonumber? // null) as $t
@@ -229,7 +231,7 @@ processors:
   sonic-jq-hw:
     event-jq:
       expression: |
-        . as $evs | $evs + [
+        . as $all | [ $all[] | select(.name == "state-hw" or .name == "state-system") ] as $evs | $all + [
           $evs[] | . as $e | ($e.values | to_entries[])
           | (.key | capture("^/PSU_INFO/(?<psu>[^/]+)/(?<f>status|presence|input_voltage|input_current|output_voltage|output_current|temp)$")?) as $c
           | select($c != null)
@@ -278,7 +280,7 @@ processors:
   sonic-jq-transceivers:
     event-jq:
       expression: |
-        . as $evs | $evs + [
+        . as $all | [ $all[] | select(.name == "state-transceivers") ] as $evs | $all + [
           $evs[] | . as $e | ($e.values | to_entries[])
           | (.key | capture("^/TRANSCEIVER_DOM_SENSOR/(?<ifc>[^/]+)/(?<f>temperature|voltage)$")?) as $c
           | select($c != null)
