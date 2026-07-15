@@ -1,6 +1,6 @@
 # gnmic
 
-Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker container. It subscribes to the SONiC gNMI server and exposes switch telemetry as Prometheus metrics. Replaces the sonic-exporter. 
+Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker container. It subscribes to the SONiC gNMI server and exposes switch telemetry as Prometheus metrics. Replaces the sonic-exporter.
 
 ## Variables
 

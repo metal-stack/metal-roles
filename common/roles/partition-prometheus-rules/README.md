@@ -4,14 +4,14 @@ Contains default variables for partition prometheus alert manager rules. This wa
 
 ## Variables
 
-| Name                                         | Mandatory | Description                   |
-| -------------------------------------------- | --------- | ----------------------------- |
-| partition_prometheus_rules_blackbox_exporter |           | blackbox-exporter alert rules |
-| partition_prometheus_rules_frr_exporter      |           | frr-exporter alert rules      |
-| partition_prometheus_rules_haproxy           |           | haproxyalert rules            |
-| partition_prometheus_rules_ipmi              |           | ipmi-exporter alert rules     |
-| partition_prometheus_rules_leaf              |           | leaf switch alert rules       |
-| partition_prometheus_rules_node_exporter     |           | node-exporter alert rules     |
-| partition_prometheus_rules_pixiecore         |           | pixiecore alert rules         |
+| Name                                         | Mandatory | Description                            |
+| -------------------------------------------- | --------- | -------------------------------------- |
+| partition_prometheus_rules_blackbox_exporter |           | blackbox-exporter alert rules          |
+| partition_prometheus_rules_frr_exporter      |           | frr-exporter alert rules               |
+| partition_prometheus_rules_haproxy           |           | haproxyalert rules                     |
+| partition_prometheus_rules_ipmi              |           | ipmi-exporter alert rules              |
+| partition_prometheus_rules_leaf              |           | leaf switch alert rules                |
+| partition_prometheus_rules_node_exporter     |           | node-exporter alert rules              |
+| partition_prometheus_rules_pixiecore         |           | pixiecore alert rules                  |
 | partition_prometheus_rules_sonic             |           | sonic switch recording and alert rules |
-| partition_prometheus_rules_sonic_exporter    |           | sonic-exporter alert rules    |
+| partition_prometheus_rules_sonic_exporter    |           | sonic-exporter alert rules             |
