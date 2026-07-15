@@ -57,8 +57,8 @@ sonic_config_interconnects:
       - "ip prefix-list INTERNET_PREFIX_OUT seq 10 permit 185.153.67.0/24 ge 32"
       - "ip prefix-list INTERNET_PREFIX_OUT seq 11 permit 212.34.85.0/24 ge 32"
       - "ip prefix-list INTERNET_PREFIX_OUT seq 12 permit 212.34.89.0/24 ge 32"
-      - "ip prefix-list V6INTERNET_PREFIX_IN seq 10 permit ::0/0"
-      - "ip prefix-list V6INTERNET_PREFIX_OUT seq 10 permit 2a02:c00:2f:ff00::/56 ge 128"
+      - "ipv6 prefix-list V6INTERNET_PREFIX_IN seq 10 permit ::0/0"
+      - "ipv6 prefix-list V6INTERNET_PREFIX_OUT seq 10 permit 2a02:c00:2f:ff00::/56 ge 128"
     extended_neighbors:
       - ip: "172.17.146.177"
         families:
@@ -92,12 +92,12 @@ sonic_config_interconnects:
         routemap_in:
           name: "ALLOW-V6INTERNET-2-IN"
           entries:
-            - "match ip address prefix-list V6INTERNET_PREFIX_IN"
+            - "match ipv6 address prefix-list V6INTERNET_PREFIX_IN"
             - "set as-path prepend last-as 2"
         routemap_out:
           name: "ALLOW-V6INTERNET-2-OUT"
           entries:
-            - "match ip address prefix-list V6INTERNET_PREFIX_OUT"
+            - "match ipv6 address prefix-list V6INTERNET_PREFIX_OUT"
             - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}"
 
   croit:
