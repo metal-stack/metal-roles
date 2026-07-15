@@ -1,6 +1,6 @@
 ---
 crds:
-  enabled: {{ monitoring_prometheus_operator_crds_enabled }}
+  enabled: true
 
 prometheus:
   ingress:
