@@ -19,31 +19,23 @@
   ansible.builtin.command: sonic-db-cli STATE_DB KEYS "TEMPERATURE_INFO|*"
   register: monitoring_gnmic_temperature_keys
   changed_when: false
-  when:
-    - monitoring_gnmic_sonic_distribution == 'edgecore'
-    - monitoring_gnmic_temperature_sensors | length == 0
+  when: monitoring_gnmic_temperature_sensors | length == 0
 
 - name: Set temperature sensor list
   ansible.builtin.set_fact:
     monitoring_gnmic_temperature_sensors: "{{ monitoring_gnmic_temperature_keys.stdout_lines | map('regex_replace', '^TEMPERATURE_INFO\\|', '') | list }}"
-  when:
-    - monitoring_gnmic_sonic_distribution == 'edgecore'
-    - monitoring_gnmic_temperature_sensors | length == 0
+  when: monitoring_gnmic_temperature_sensors | length == 0
 
 - name: Determine fans
   ansible.builtin.command: sonic-db-cli STATE_DB KEYS "FAN_INFO|*"
   register: monitoring_gnmic_fan_keys
   changed_when: false
-  when:
-    - monitoring_gnmic_sonic_distribution == 'edgecore'
-    - monitoring_gnmic_fans | length == 0
+  when: monitoring_gnmic_fans | length == 0
 
 - name: Set fan list
   ansible.builtin.set_fact:
     monitoring_gnmic_fans: "{{ monitoring_gnmic_fan_keys.stdout_lines | map('regex_replace', '^FAN_INFO\\|', '') | list }}"
-  when:
-    - monitoring_gnmic_sonic_distribution == 'edgecore'
-    - monitoring_gnmic_fans | length == 0
+  when: monitoring_gnmic_fans | length == 0
 
 - name: Create gnmic directories
   ansible.builtin.file:

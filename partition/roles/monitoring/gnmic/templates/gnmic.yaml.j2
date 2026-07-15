@@ -7,9 +7,8 @@ skip-verify: {{ monitoring_gnmic_gnmi_skip_verify | bool | lower }}
 encoding: json_ietf
 log: true
 
-{% set monitoring_gnmic_per_key_hw = monitoring_gnmic_sonic_distribution == 'edgecore' and monitoring_gnmic_temperature_sensors | length > 0 %}
-{% set monitoring_gnmic_temperature_paths = (monitoring_gnmic_temperature_sensors | map('regex_replace', '^', '/TEMPERATURE_INFO/') | list) if monitoring_gnmic_per_key_hw else ['/TEMPERATURE_INFO'] %}
-{% set monitoring_gnmic_fan_paths = (monitoring_gnmic_fans | map('regex_replace', '^', '/FAN_INFO/') | list) if monitoring_gnmic_per_key_hw else ['/FAN_INFO'] %}
+{% set monitoring_gnmic_temperature_paths = (monitoring_gnmic_temperature_sensors | map('regex_replace', '^', '/TEMPERATURE_INFO/') | list) if monitoring_gnmic_temperature_sensors | length > 0 else ['/TEMPERATURE_INFO'] %}
+{% set monitoring_gnmic_fan_paths = (monitoring_gnmic_fans | map('regex_replace', '^', '/FAN_INFO/') | list) if monitoring_gnmic_fans | length > 0 else ['/FAN_INFO'] %}
 {% set monitoring_gnmic_table_subscriptions = [
     ('others', 'OTHERS', ['/platform/cpu', '/proc/meminfo', '/proc/uptime'], monitoring_gnmic_sample_interval_state),
     ('cfg-core', 'CONFIG_DB', ['/DEVICE_METADATA/localhost', '/NTP/global', '/PORT'], monitoring_gnmic_sample_interval_config),
