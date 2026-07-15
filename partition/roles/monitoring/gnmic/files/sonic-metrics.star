@@ -46,6 +46,8 @@ TRANSCEIVER_INFO_FIELDS = ["vendor", "manufacturer", "serial", "model"]
 
 
 def to_number(value):
+    if type(value) == "int" or type(value) == "float":
+        return value
     text = str(value)
     digits = text[1:] if text.startswith("-") else text
     parts = digits.split(".")
