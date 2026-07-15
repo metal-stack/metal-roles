@@ -20,7 +20,7 @@ log: true
 {% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_disabled_subscriptions) | list %}
 {% set monitoring_gnmic_distribution_stream_modes = {
     'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change'}},
-    'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample'}},
+    'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample', 'state-hw': 'sample'}},
 } %}
 {% set monitoring_gnmic_stream_profile = monitoring_gnmic_distribution_stream_modes[monitoring_gnmic_sonic_distribution] %}
 {% set monitoring_gnmic_effective_stream_modes = monitoring_gnmic_stream_profile.overrides %}
