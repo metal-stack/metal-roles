@@ -1,7 +1,9 @@
 username: {{ monitoring_gnmic_gnmi_username }}
 password: {{ monitoring_gnmic_gnmi_password }}
 insecure: {{ monitoring_gnmic_gnmi_insecure | bool | lower }}
+{% if not (monitoring_gnmic_gnmi_insecure | bool) %}
 skip-verify: {{ monitoring_gnmic_gnmi_skip_verify | bool | lower }}
+{% endif %}
 encoding: json_ietf
 log: true
 
