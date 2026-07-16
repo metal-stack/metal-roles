@@ -12,6 +12,16 @@
       - gardener_metrics_exporter_image_name is defined
       - gardener_metrics_exporter_image_tag is defined
 
+- name: Check virtual-garden-kubeconfig-refresher cluster_provider is valid
+  ansible.builtin.assert:
+    fail_msg: >
+      'monitoring_virtual_garden_kubeconfig_refresher_cluster_provider' must be
+      one of: gcp, metalstackcloud, gardencluster. Actual value: '{{ monitoring_virtual_garden_kubeconfig_refresher_cluster_provider }}'
+    quiet: true
+    that:
+      - monitoring_virtual_garden_kubeconfig_refresher_cluster_provider in ['gcp', 'metalstackcloud', 'gardencluster']
+  when: monitoring_gardener_enabled
+
 - name: Check deprecated variables are not set
   ansible.builtin.assert:
     fail_msg: >
