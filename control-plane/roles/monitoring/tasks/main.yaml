@@ -16,10 +16,10 @@
   ansible.builtin.assert:
     fail_msg: >
       'monitoring_virtual_garden_kubeconfig_refresher_cluster_provider' must be
-      one of: gcp, metalstackcloud, gardencluster. Actual value: '{{ monitoring_virtual_garden_kubeconfig_refresher_cluster_provider }}'
+      one of: gcp, metalstackcloud, static. Actual value: '{{ monitoring_virtual_garden_kubeconfig_refresher_cluster_provider }}'
     quiet: true
     that:
-      - monitoring_virtual_garden_kubeconfig_refresher_cluster_provider in ['gcp', 'metalstackcloud', 'gardencluster']
+      - monitoring_virtual_garden_kubeconfig_refresher_cluster_provider in ['gcp', 'metalstackcloud', 'static']
   when: monitoring_gardener_enabled
 
 - name: Check deprecated variables are not set

@@ -57,8 +57,8 @@
         namespace: "{{ monitoring_namespace }}"
       type: Opaque
       stringData:
-        GARDEN_CLUSTER_KUBECONFIG: "{{ monitoring_virtual_garden_kubeconfig_refresher_garden_cluster_kubeconfig }}"
-  when: monitoring_virtual_garden_kubeconfig_refresher_garden_cluster_enabled
+        STATIC_KUBECONFIG: "{{ monitoring_virtual_garden_kubeconfig_refresher_static_kubeconfig }}"
+  when: monitoring_virtual_garden_kubeconfig_refresher_static_enabled
 
 - name: Deploy virtual-garden-kubeconfig-refresher
   kubernetes.core.k8s:
