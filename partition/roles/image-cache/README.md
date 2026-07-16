@@ -24,7 +24,7 @@ Introducing a partition-local cache for machine images brings the following adva
 
 ## Architecture
 
-- The [metal-image-cache-sync](https://github.com/metal-stack/metal-image-cache-sync) service mirrors images configured in the metal-api from the global-image-store into the local file system
+- The [metal-image-cache-sync](https://github.com/metal-stack/metal-image-cache-sync) service mirrors images configured in the metal-apiserver from the global-image-store into the local file system
 - CoreDNS is deployed on the management server and intercepts DNS requests that are directed to the global image store
   - This approach makes the image cache transparent for the clients
   - The global image store domain resolves to the IP of one of the image cache servers (round-robin)
@@ -60,10 +60,10 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_boot_image_cache_enabled                                   |           | Enables caching partition boot images                                                                                     |
 | image_cache_external_dns_servers                                       |           | DNS servers that are used for resolving all other DNS requests                                                            |
 | image_cache_sync_max_cache_size                                        |           | Maximum size that the cache should have in the end (can exceed if min amount of images for all image variants is reached) |
-| image_cache_sync_expiration_grace_period                               |           | The amount of days to still sync images even if they have already expired in the metal-api                                |
+| image_cache_sync_expiration_grace_period                               |           | The amount of days to still sync images even if they have already expired in the metal-apiserver                                |
 | image_cache_sync_max_images_per_name                                   |           | Maximum amount of images to cache for an image variant                                                                    |
 | image_cache_sync_min_images_per_name                                   |           | Minimum amount of images to keep of an image variant                                                                      |
-| image_cache_sync_metal_api_endpoint                                    | yes       | Endpoint of the metal-api                                                                                                 |
+| image_cache_sync_metal_apiserver_url                                    | yes       | Endpoint of the metal-apiserver                                                                                                 |
 | image_cache_sync_schedule                                              |           | Cron sync schedule                                                                                                        |
 | image_cache_sync_excludes                                              |           | URL paths to exclude from the sync                                                                                        |
 | image_cache_sync_host_path                                             |           | Root path of where to store the images                                                                                    |
