@@ -55,6 +55,7 @@ The `defaults` folder contains defaults that are used by multiple roles in the c
 | [metal-python](roles/metal-python)                                     | Installs metal-python                                                                                                              |
 | [metal](roles/metal)                                                   | Deploys all metal-stack components of the metal-control-plane via Helm chart                                                       |
 | [monitoring](roles/monitoring)                                         | Deploys metal-stack control plane monitoring components                                                                            |
+| [netapp-security-accounts](roles/netapp-security-accounts)             | Creates password-authenticated security accounts through the NetApp ONTAP REST API                                                 |
 | [nsq](roles/nsq)                                                       | Deploys [nsq](https://nsq.io/)                                                                                                     |
 | [postgres-backup-restore](roles/postgres-backup-restore)               | A role for deploying a postgres database with a [backup-restore-sidecar](https://github.com/metal-stack/backup-restore-sidecar)    |
 | [prepare](roles/prepare)                                               | Contains tasks for preparing the deployment of the metal-control-plane                                                             |

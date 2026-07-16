@@ -1,0 +1,124 @@
+---
+- name: Validate NetApp security account connection variables
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - netapp_security_accounts_host is defined
+      - netapp_security_accounts_host | length > 0
+      - netapp_security_accounts_username is defined
+      - netapp_security_accounts_username | length > 0
+      - netapp_security_accounts_password is defined
+      - netapp_security_accounts_password | length > 0
+  no_log: true
+  run_once: true
+  when: netapp_security_accounts | length > 0
+
+- name: Validate NetApp security account definitions
+  ansible.builtin.assert:
+    fail_msg: "invalid account definition, check role documentation"
+    quiet: true
+    that:
+      - item.name is defined
+      - item.name | length > 0
+      - item.password is defined
+      - item.password | length > 0
+      - item.applications is defined
+      - item.applications | length > 0
+      - "'password' in (item.applications | map(attribute='authentication_methods') | flatten | list)"
+      - item.owner is not defined or item.owner.name is defined or item.owner.uuid is defined
+      - item.role is not defined or item.role.name is defined
+  loop: "{{ netapp_security_accounts }}"
+  loop_control:
+    label: "{{ item.name | default('unnamed account') }}"
+  no_log: true
+  run_once: true
+
+- name: Look up NetApp security accounts
+  ansible.builtin.uri:
+    url: "{{ netapp_security_accounts_api_url }}/security/accounts?{{ {'name': item.name} | urlencode }}"
+    method: GET
+    force_basic_auth: true
+    url_username: "{{ netapp_security_accounts_username }}"
+    url_password: "{{ netapp_security_accounts_password }}"
+    headers:
+      Accept: application/json
+    unredirected_headers:
+      - Authorization
+    return_content: true
+    status_code: 200
+    timeout: "{{ netapp_security_accounts_timeout }}"
+    use_proxy: "{{ netapp_security_accounts_use_proxy }}"
+    validate_certs: "{{ netapp_security_accounts_validate_certs }}"
+  check_mode: false
+  changed_when: false
+  delegate_to: localhost
+  loop: "{{ netapp_security_accounts }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: true
+  register: _netapp_security_accounts_lookup
+  run_once: true
+
+- name: Report NetApp security accounts that would be created
+  ansible.builtin.debug:
+    msg: "NetApp security account {{ item.item.name }} would be created"
+  changed_when: true
+  loop: "{{ _netapp_security_accounts_lookup.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when:
+    - ansible_check_mode
+    - _netapp_security_accounts_matches | length == 0
+  run_once: true
+  vars:
+    _netapp_security_accounts_matches: >-
+      {{ item.json.records | default([]) | selectattr('owner.uuid', 'equalto', item.item.owner.uuid) | list
+         if item.item.owner is defined and item.item.owner.uuid is defined
+         else item.json.records | default([]) | selectattr('owner.name', 'equalto', item.item.owner.name) | list
+         if item.item.owner is defined and item.item.owner.name is defined
+         else item.json.records | default([]) | selectattr('scope', 'equalto', 'cluster') | list }}
+
+- name: Create NetApp security accounts
+  ansible.builtin.uri:
+    url: "{{ netapp_security_accounts_api_url }}/security/accounts"
+    method: POST
+    force_basic_auth: true
+    url_username: "{{ netapp_security_accounts_username }}"
+    url_password: "{{ netapp_security_accounts_password }}"
+    headers:
+      Accept: application/json
+    unredirected_headers:
+      - Authorization
+    body:
+      name: "{{ item.item.name }}"
+      password: "{{ item.item.password }}"
+      applications: "{{ item.item.applications }}"
+      owner: "{{ item.item.owner | default(omit) }}"
+      role: "{{ item.item.role | default(omit) }}"
+      comment: "{{ item.item.comment | default(omit) }}"
+      locked: "{{ item.item.locked | default(omit) }}"
+      password_hash_algorithm: "{{ item.item.password_hash_algorithm | default(omit) }}"
+    body_format: json
+    return_content: true
+    status_code: 201
+    timeout: "{{ netapp_security_accounts_timeout }}"
+    use_proxy: "{{ netapp_security_accounts_use_proxy }}"
+    validate_certs: "{{ netapp_security_accounts_validate_certs }}"
+  changed_when: true
+  delegate_to: localhost
+  loop: "{{ _netapp_security_accounts_lookup.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  no_log: true
+  when:
+    - not ansible_check_mode
+    - _netapp_security_accounts_matches | length == 0
+  run_once: true
+  vars:
+    _netapp_security_accounts_matches: >-
+      {{ item.json.records | default([]) | selectattr('owner.uuid', 'equalto', item.item.owner.uuid) | list
+         if item.item.owner is defined and item.item.owner.uuid is defined
+         else item.json.records | default([]) | selectattr('owner.name', 'equalto', item.item.owner.name) | list
+         if item.item.owner is defined and item.item.owner.name is defined
+         else item.json.records | default([]) | selectattr('scope', 'equalto', 'cluster') | list }}

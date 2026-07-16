@@ -1,0 +1,8 @@
+---
+netapp_security_accounts: []
+
+netapp_security_accounts_port: 443
+netapp_security_accounts_api_url: "https://{{ netapp_security_accounts_host }}:{{ netapp_security_accounts_port }}/api"
+netapp_security_accounts_validate_certs: true
+netapp_security_accounts_timeout: 30
+netapp_security_accounts_use_proxy: false

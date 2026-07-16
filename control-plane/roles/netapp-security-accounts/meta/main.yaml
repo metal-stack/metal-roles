@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: netapp_security_accounts
+  author: metal-stack
+  description: Creates password-authenticated security accounts through the NetApp ONTAP REST API.
+  license: MIT
+  min_ansible_version: "2.16"
+  galaxy_tags: []
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies: []
