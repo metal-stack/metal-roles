@@ -66,6 +66,16 @@
     namespace: "{{ headscale_namespace }}"
     apply: true
 
+# for migration to gateway api
+- name: Cleanup headscale ingress
+  kubernetes.core.k8s:
+    api_version: networking.k8s.io/v1
+    kind: Ingress
+    name: headscale
+    namespace: "{{ headscale_namespace }}"
+    state: absent
+  when: not headscale_ingress_enabled
+
 - name: Determine if api key secret was already created
   ansible.builtin.set_fact:
     headscale_api_key_already_created: "{{ lookup('k8s', api_version='v1', namespace=headscale_namespace, kind='Secret', resource_name='headscale-api-key') }}"
