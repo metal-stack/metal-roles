@@ -8,12 +8,6 @@
       ansible.builtin.pip:
         name:
           - metal-stack-api=={{ metal_api_version }}
-          - bufbuild-protovalidate-protocolbuffers-python
-      environment:
-        # to install the bug module we need for now a download from the buf.build index:
-        # https://github.com/bufbuild/protovalidate-python/pull/367
-        PIP_EXTRA_INDEX_URL: https://buf.build/gen/python
-
       when: not metal_v2_client_install_from_git_repository | bool
 
     - name: Install metal-stack-api client library from git repository {{ metal_api_version }}
@@ -29,9 +23,6 @@
       ansible.builtin.pip:
         name:
           - metal-stack-api
-          - bufbuild-protovalidate-protocolbuffers-python
-      environment:
-        PIP_EXTRA_INDEX_URL: https://buf.build/gen/python
       when: metal_v2_client_install_latest_on_version_error | bool
 
     - name: Fail on unavailable version

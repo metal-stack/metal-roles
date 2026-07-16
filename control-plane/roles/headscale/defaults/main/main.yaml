@@ -4,6 +4,7 @@ headscale_ingress_dns: >-
   {% if headscale_httproute_enabled -%}headscale.{{ metal_control_plane_gateway_dns }}{%- else -%}headscale.{{ metal_control_plane_ingress_dns }}{%- endif %}
 
 headscale_tls: true
+headscale_ingress_enabled: true
 headscale_ingress_annotations: {}
 headscale_resources:
   requests:
