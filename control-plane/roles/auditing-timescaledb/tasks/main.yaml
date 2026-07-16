@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - auditing_timescaledb_image_name is defined
       - auditing_timescaledb_image_tag is defined
@@ -13,7 +13,7 @@
       - auditing_timescaledb_backup_restore_sidecar_image_tag is defined
 
 - name: Create namespace
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
@@ -23,7 +23,7 @@
           name: "{{ auditing_timescaledb_namespace }}"
 
 - name: Deploy auditing timescale db
-  include_role:
+  ansible.builtin.include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
   vars:
     postgres_name: "{{ auditing_timescaledb_name }}"
@@ -53,4 +53,6 @@
     postgres_backup_restore_sidecar_gcp_serviceaccount_json: "{{ auditing_timescaledb_backup_restore_sidecar_gcp_serviceaccount_json }}"
     postgres_resources: "{{ auditing_timescaledb_resources }}"
     postgres_backup_restore_sidecar_object_max_keep: "{{ auditing_timescaledb_backup_restore_sidecar_object_max_keep }}"
+    postgres_backup_restore_sidecar_object_days_max_keep: "{{ auditing_timescaledb_backup_restore_sidecar_object_days_max_keep }}"
+    postgres_backup_restore_sidecar_s3_request_checksum_calculation: "{{ auditing_timescaledb_backup_restore_sidecar_s3_request_checksum_calculation }}"
     postgres_backup_restore_sidecar_encryption_key: "{{ auditing_timescaledb_backup_restore_sidecar_encryption_key }}"

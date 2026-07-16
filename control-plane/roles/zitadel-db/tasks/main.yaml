@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - zitadel_db_image_name is defined
       - zitadel_db_image_tag is defined
@@ -13,7 +13,7 @@
       - zitadel_db_backup_restore_sidecar_image_tag is defined
 
 - name: Deploy zitadel db
-  include_role:
+  ansible.builtin.include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
   vars:
     postgres_name: "{{ zitadel_db_name }}"
@@ -49,4 +49,6 @@
     postgres_backup_restore_sidecar_s3_trusted_ca_cert: "{{ zitadel_db_backup_restore_sidecar_s3_trusted_ca_cert }}"
     postgres_resources: "{{ zitadel_db_resources }}"
     postgres_backup_restore_sidecar_object_max_keep: "{{ zitadel_db_backup_restore_sidecar_object_max_keep }}"
+    postgres_backup_restore_sidecar_object_days_max_keep: "{{ zitadel_db_backup_restore_sidecar_object_days_max_keep }}"
+    postgres_backup_restore_sidecar_s3_request_checksum_calculation: "{{ zitadel_db_backup_restore_sidecar_s3_request_checksum_calculation }}"
     postgres_backup_restore_sidecar_encryption_key: "{{ zitadel_db_backup_restore_sidecar_encryption_key }}"

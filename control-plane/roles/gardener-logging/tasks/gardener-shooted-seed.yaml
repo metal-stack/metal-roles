@@ -4,10 +4,28 @@
     garden_name: "{{ gardener_logging_garden_name }}"
 
 - name: Get shooted seed kubeconfig
-  set_fact:
+  ansible.builtin.set_fact:
     _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_logging_shooted_seed.name) | from_yaml }}"
 
-- name: Deploy Promtail
+- name: Deploy Alloy to seed
+  ansible.builtin.include_role:
+    name: metal-roles/control-plane/roles/logging-common
+    tasks_from: deploy-alloy.yaml
+  vars:
+    logging_common_alloy_namespace: "{{ gardener_logging_namespace }}"
+    logging_common_alloy_chart_repo: "{{ gardener_logging_alloy_chart_repo }}"
+    logging_common_alloy_chart_version: "{{ gardener_logging_alloy_chart_version }}"
+    logging_common_alloy_loki_write_endpoints: "{{ gardener_logging_alloy_loki_write_endpoints }}"
+    logging_common_alloy_cluster_label: "{{ gardener_logging_shooted_seed.name }}"
+    logging_common_alloy_service_monitor_enabled: false
+    logging_common_alloy_prometheus_write_endpoints: "{{ gardener_logging_alloy_prometheus_write_endpoints }}"
+    logging_common_alloy_prometheus_wal_truncate_frequency: "{{ gardener_logging_alloy_prometheus_wal_truncate_frequency }}"
+    logging_common_alloy_prometheus_wal_max_keepalive_time: "{{ gardener_logging_alloy_prometheus_wal_max_keepalive_time }}"
+    logging_common_alloy_config_raw: "{{ gardener_logging_alloy_config_raw | default('') }}"
+    logging_common_alloy_kubeconfig: "{{ _shoot_kubeconfig }}"
+  when: gardener_logging_alloy_enabled
+
+- name: Deploy Promtail (parallel migration window)
   kubernetes.core.helm:
     name: promtail
     chart_repo_url: "{{ gardener_logging_promtail_chart_repo }}"
@@ -17,3 +35,12 @@
     values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
     kubeconfig: "{{ _shoot_kubeconfig }}"
     create_namespace: true
+  when: gardener_logging_promtail_enabled
+
+- name: Remove Promtail from seed
+  kubernetes.core.helm:
+    name: promtail
+    namespace: "{{ gardener_logging_namespace }}"
+    kubeconfig: "{{ _shoot_kubeconfig }}"
+    state: absent
+  when: not gardener_logging_promtail_enabled | bool

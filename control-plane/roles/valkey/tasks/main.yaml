@@ -3,25 +3,26 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
-      - valkey_chart is defined
-      - valkey_chart_tag is defined
+      - valkey_image_name is defined
+      - valkey_image_tag is defined
+      - valkey_backup_restore_sidecar_image_name is defined
+      - valkey_backup_restore_sidecar_image_tag is defined
+      - valkey_backup_restore_sidecar_encryption_key is none or valkey_backup_restore_sidecar_encryption_key | length == 32
+      - valkey_backup_restore_sidecar_provider in ["local", "gcp", "s3"]
 
-- name: Deploy valkey image pull secret
-  k8s:
-    definition: "{{ lookup('template', 'valkey-secret.yaml') }}"
-    namespace: "{{ metal_control_plane_namespace }}"
-  when: valkey_registry_auth_enabled
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - valkey_backup_restore_sidecar_image_tag is defined
 
-- name: Deploy valkey
-  kubernetes.core.helm:
-    name: valkey
-    chart_version: "{{ valkey_chart_tag }}"
-    chart_ref: "oci://{{ valkey_chart }}"
-    release_namespace: "{{ valkey_namespace }}"
-    create_namespace: true
-    values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
-    wait: true
+- name: Deploy valkey (backup-restore)
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'valkey.yaml') }}"
+    namespace: "{{ valkey_namespace }}"
+    apply: true

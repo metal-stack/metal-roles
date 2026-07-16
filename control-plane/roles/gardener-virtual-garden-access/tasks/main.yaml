@@ -10,8 +10,8 @@
   delay: 5
 
 - name: Create virtual garden access secret
-  k8s:
-    apply: yes
+  kubernetes.core.k8s:
+    apply: true
     definition:
       apiVersion: v1
       kind: Secret
@@ -28,8 +28,8 @@
           serviceaccount.resources.gardener.cloud/token-expiration-duration: "{{ gardener_virtual_garden_access_expiration }}"
 
 - name: Create virtual garden access managed resource secret
-  k8s:
-    apply: yes
+  kubernetes.core.k8s:
+    apply: true
     definition:
       apiVersion: v1
       kind: Secret
@@ -53,8 +53,8 @@
             namespace: kube-system
 
 - name: Create virtual garden access managed resource
-  k8s:
-    apply: yes
+  kubernetes.core.k8s:
+    apply: true
     definition:
       apiVersion: resources.gardener.cloud/v1alpha1
       kind: ManagedResource
@@ -63,7 +63,7 @@
         namespace: garden
       spec:
         secretRefs:
-        - name: managedresource-virtual-garden-access
+          - name: managedresource-virtual-garden-access
 
 - name: Get kubeconfig for virtual garden access
   virtual_garden_kubeconfig:
@@ -75,16 +75,16 @@
 
 # before we can continue, the virtual garden api server has to be up and running
 - name: Wait for garden namespace in virtual garden
-  k8s:
+  kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
     name: garden
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
-    wait: yes
+    wait: true
     wait_timeout: 300
 
 - name: Deploy cluster role bindings
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ item }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
   loop: "{{ gardener_virtual_garden_access_cluster_role_bindings }}"

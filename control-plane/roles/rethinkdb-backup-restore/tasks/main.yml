@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - rethinkdb_image_name is defined
       - rethinkdb_image_tag is defined
@@ -15,14 +15,14 @@
       - rethinkdb_backup_restore_sidecar_provider in ["local", "gcp", "s3"]
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - rethinkdb_backup_restore_sidecar_image_tag is defined
 
 - name: Deploy rethinkdb (backup-restore)
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'rethinkdb.yaml') }}"
     namespace: "{{ rethinkdb_namespace }}"
-    apply: yes
+    apply: true

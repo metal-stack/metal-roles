@@ -3,14 +3,43 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
-      - gardener_logging_promtail_chart_repo is defined
-      - gardener_logging_promtail_chart_version is defined
+      - not gardener_logging_promtail_enabled | bool or gardener_logging_promtail_chart_version is defined
+      - not gardener_logging_promtail_enabled | bool or gardener_logging_promtail_chart_repo is defined
 
-- name: Deploy Promtail
+- name: Promtail deprecation warning
+  run_once: true
+  print_message:
+    type: deprecate
+    msg: >-
+      gardener_logging_promtail_enabled is true. Promtail support is deprecated
+      and will be removed in a future release.
+    action: |
+      Migrate to Alloy — see README for instructions:
+      https://github.com/metal-stack/metal-roles/tree/master/control-plane/roles/logging-common#migration-from-promtail.
+  when: gardener_logging_promtail_enabled | bool
+
+- name: Deploy Alloy to garden cluster
+  ansible.builtin.include_role:
+    name: metal-roles/control-plane/roles/logging-common
+    tasks_from: deploy-alloy.yaml
+  vars:
+    logging_common_alloy_namespace: "{{ gardener_logging_namespace }}"
+    logging_common_alloy_chart_repo: "{{ gardener_logging_alloy_chart_repo }}"
+    logging_common_alloy_chart_version: "{{ gardener_logging_alloy_chart_version }}"
+    logging_common_alloy_loki_write_endpoints: "{{ gardener_logging_alloy_loki_write_endpoints }}"
+    logging_common_alloy_cluster_label: "{{ gardener_logging_garden_name }}"
+    logging_common_alloy_service_monitor_enabled: false
+    logging_common_alloy_prometheus_write_endpoints: "{{ gardener_logging_alloy_prometheus_write_endpoints }}"
+    logging_common_alloy_prometheus_wal_truncate_frequency: "{{ gardener_logging_alloy_prometheus_wal_truncate_frequency }}"
+    logging_common_alloy_prometheus_wal_max_keepalive_time: "{{ gardener_logging_alloy_prometheus_wal_max_keepalive_time }}"
+    logging_common_alloy_config_raw: "{{ gardener_logging_alloy_config_raw | default('') }}"
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_alloy_enabled
+
+- name: Deploy Promtail to garden cluster (parallel migration window)
   kubernetes.core.helm:
     name: promtail
     chart_repo_url: "{{ gardener_logging_promtail_chart_repo }}"
@@ -19,13 +48,20 @@
     namespace: "{{ gardener_logging_namespace }}"
     values: "{{ lookup('template', 'seed-promtail-values.yaml') | from_yaml }}"
     create_namespace: true
-  when: gardener_logging_deploy_to_garden_cluster
+  when: gardener_logging_deploy_to_garden_cluster and gardener_logging_promtail_enabled
   vars:
     gardener_logging_shooted_seed:
       name: "{{ gardener_logging_garden_name }}"
 
+- name: Remove Promtail from garden cluster
+  kubernetes.core.helm:
+    name: promtail
+    namespace: "{{ gardener_logging_namespace }}"
+    state: absent
+  when: gardener_logging_deploy_to_garden_cluster and not gardener_logging_promtail_enabled | bool
+
 - name: Loop over Gardener shooted seeds
-  include_tasks: gardener-shooted-seed.yaml
+  ansible.builtin.include_tasks: gardener-shooted-seed.yaml
   loop: "{{ gardener_logging_shooted_seeds }}"
   loop_control:
     loop_var: gardener_logging_shooted_seed

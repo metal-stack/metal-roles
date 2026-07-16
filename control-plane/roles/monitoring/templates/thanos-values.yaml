@@ -89,14 +89,14 @@ receive:
     enabled: {{ monitoring_thanos_receive_ingress_enabled }}
     hostname: {{ monitoring_thanos_receive_ingress_dns }}
     ingressClassName: nginx
-{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth or monitoring_thanos_receive_ingress_tls %}
+{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth_password or monitoring_thanos_receive_ingress_tls %}
     annotations:
 {% endif %}
 {% if monitoring_thanos_receive_ingress_tls %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
-{% if monitoring_thanos_receive_ingress_basic_auth %}
+{% if monitoring_thanos_receive_ingress_basic_auth_password %}
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: thanos-receive-basic-auth
 {% endif %}
@@ -105,7 +105,13 @@ receive:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-    tls: {{ monitoring_thanos_receive_ingress_tls }}
+    tls: {{ monitoring_thanos_receive_ingress_tls | lower }}
+{% if monitoring_thanos_receive_ingress_tls and monitoring_thanos_receive_ingress_tls_gardener_managed %}
+    extraTls:
+      - hosts:
+          - {{ monitoring_thanos_receive_ingress_dns }}
+        secretName: monitoring-thanos-receive-ingress-tls
+{% endif %}
 
   persistence:
     size: {{ monitoring_thanos_receive_size }}
@@ -116,16 +122,34 @@ receive:
   readinessProbe:
     failureThreshold: {{ monitoring_thanos_receive_probe_failure_threshold }}
 
-  replicaCount: 2
+  mode: dual-mode
+  replicaCount: 3
+  service:
+    additionalHeadless: true
+
+receiveDistributor:
+  enabled: true
+  replicationFactor: 3
 
 
-{% if monitoring_thanos_receive_ingress_basic_auth %}
+{% if monitoring_thanos_receive_ingress_basic_auth_password or monitoring_thanos_object_store_config is not defined %}
 extraDeploy:
+{% endif %}
+{% if monitoring_thanos_object_store_config is not defined %}
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: thanos-objstore-secret
+  type: Opaque
+  stringData:
+    objstore.yml: ""
+{% endif %}
+{% if monitoring_thanos_receive_ingress_basic_auth_password %}
 - apiVersion: v1
   kind: Secret
   metadata:
     name: thanos-receive-basic-auth
   type: Opaque
-  data:
-    auth: "{{ monitoring_thanos_receive_ingress_basic_auth | b64encode }}"
+  stringData:
+    auth: "{{ monitoring_thanos_receive_ingress_basic_auth_user ~ ':' ~ monitoring_thanos_receive_ingress_basic_auth_password | string | password_hash('bcrypt', salt=monitoring_thanos_receive_ingress_basic_auth_password_salt) }}"
 {% endif %}

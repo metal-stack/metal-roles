@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - zitadel_admin_password is not none
       - zitadel_master_key is not none
@@ -21,7 +21,7 @@
       apiVersion: v1
       kind: Secret
       metadata:
-        name: zitadel-init-config
+        name: zitadel-metal-init-config
         namespace: "{{ zitadel_namespace }}"
       type: Opaque
       stringData:
@@ -41,13 +41,13 @@
 - name: Cleanup previous init job
   kubernetes.core.k8s:
     state: absent
-    definition: "{{ lookup('template', 'zitadel-init.yaml') }}"
+    definition: "{{ lookup('template', 'zitadel-metal-init.yaml') }}"
     namespace: "{{ zitadel_namespace }}"
 
 - name: Create init job
   kubernetes.core.k8s:
     state: present
-    definition: "{{ lookup('template', 'zitadel-init.yaml') }}"
+    definition: "{{ lookup('template', 'zitadel-metal-init.yaml') }}"
     namespace: "{{ zitadel_namespace }}"
 
 - name: Wait for Secret zitadel-client-credentials

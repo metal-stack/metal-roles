@@ -1,5 +1,6 @@
 ---
 monitoring_namespace: monitoring
+monitoring_grafana_enabled: true
 monitoring_grafana_admin_password: admin
 monitoring_grafana_dashboard_timezone: Europe/Berlin
 monitoring_grafana_additional_datasources:
@@ -23,19 +24,22 @@ monitoring_grafana_additional_datasources:
     uid: alertmanager-datasource
 monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
 monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
-monitoring_ingress_grafana_tls: yes
+monitoring_ingress_grafana_tls: true
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
-
+monitoring_alertmanager_enabled: true
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
-monitoring_alertmanager_ingress_tls: yes
+monitoring_alertmanager_ingress_tls: true
 monitoring_alertmanager_ingress_basic_auth_user: alertmanager
 monitoring_alertmanager_ingress_basic_auth_password:
 monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertmanager_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
 
 monitoring_alertmanager_webhook_logger_repeat_interval: 60m
 monitoring_alertmanager_webhook_slack_repeat_interval: 24h
+
+# event exporter
+event_exporter_enabled: false
 
 # metal metrics exporter
 monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
@@ -48,14 +52,15 @@ monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28
 
 # gardener
 monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 else False }}"
-monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data', {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
+monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data',
+  {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
 monitoring_gardener_seeds: []
-
 # alertmanager config
 monitoring_alertmanager_additional_routes: []
 monitoring_alertmanager_additional_receivers: []
 
 # component monitoring
+monitoring_prometheus_operator_enabled: true
 monitoring_prometheus_core_dns_enabled: false
 monitoring_prometheus_kube_dns_enabled: false
 monitoring_prometheus_kube_proxy_enabled: false
@@ -63,17 +68,27 @@ monitoring_prometheus_kube_scheduler_enabled: false
 monitoring_prometheus_kube_etcd_enabled: false
 monitoring_prometheus_kube_controller_manager_enabled: false
 monitoring_prometheus_kubelet_enabled: false
+monitoring_prometheus_default_rules_enabled: true
+monitoring_prometheus_remote_write: []
+  # - name: rwtarget
+  #   url: "https://monitoring.{{ metal_control_plane_ingress_dns }}/api/v1/receive"
+  #   username: "user"
+  #   password: "change-me"
 
 monitoring_prometheus_kube_proxy_service_selector:
   component: kube-proxy
 
 # thanos
+monitoring_thanos_enabled: true
 monitoring_thanos_receive_enabled: false
 monitoring_thanos_receive_ingress_enabled: false
 monitoring_thanos_receive_ingress_dns: "thanos-receive.{{ metal_control_plane_ingress_dns }}"
 monitoring_thanos_receive_ingress_annotations: []
-monitoring_thanos_receive_ingress_basic_auth: {}
-monitoring_thanos_receive_ingress_tls: {}
+monitoring_thanos_receive_ingress_tls: false
+monitoring_thanos_receive_ingress_tls_gardener_managed: false
+monitoring_thanos_receive_ingress_basic_auth_user: thanos-receive
+monitoring_thanos_receive_ingress_basic_auth_password:
+monitoring_thanos_receive_ingress_basic_auth_password_salt: "{{ monitoring_thanos_receive_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
 monitoring_thanos_receive_size: 50Gi
 monitoring_thanos_receive_resource_preset: "large"
 monitoring_thanos_receive_probe_failure_threshold: 30
@@ -81,6 +96,5 @@ monitoring_thanos_receive_probe_failure_threshold: 30
 monitoring_thanos_compactor_size: 20Gi
 monitoring_thanos_compactor_resource_preset: "medium"
 monitoring_thanos_compactor_storage_class:
-
 monitoring_thanos_object_store_resource_preset: "medium"
 monitoring_thanos_object_store_probe_failure_threshold: 30

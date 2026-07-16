@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - headscale_image_name is defined
       - headscale_image_tag is defined
@@ -17,7 +17,7 @@
       - headscale_ingress_dns is not none
 
 - name: Create namespace for headscale
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Namespace
@@ -27,7 +27,7 @@
           name: "{{ headscale_namespace }}"
 
 - name: Deploy headscale db
-  include_role:
+  ansible.builtin.include_role:
     name: metal-roles/control-plane/roles/postgres-backup-restore
   vars:
     postgres_name: "{{ headscale_db_name }}"
@@ -61,23 +61,34 @@
     postgres_resources: "{{ headscale_db_resources }}"
 
 - name: Deploy headscale
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'headscale.yaml') }}"
     namespace: "{{ headscale_namespace }}"
-    apply: yes
+    apply: true
+
+# for migration to gateway api
+- name: Cleanup headscale ingress
+  kubernetes.core.k8s:
+    api_version: networking.k8s.io/v1
+    kind: Ingress
+    name: headscale
+    namespace: "{{ headscale_namespace }}"
+    state: absent
+  when: not headscale_ingress_enabled
 
 - name: Determine if api key secret was already created
-  set_fact:
+  ansible.builtin.set_fact:
     headscale_api_key_already_created: "{{ lookup('k8s', api_version='v1', namespace=headscale_namespace, kind='Secret', resource_name='headscale-api-key') }}"
 
 - name: Wait until headscale deployment is ready
-  command: echo
+  ansible.builtin.command: echo
   changed_when: false
   retries: 20
   delay: 12
   when: not headscale_api_key_already_created
   until:
-    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace=headscale_namespace, resource_name='headscale').get('status', {}).get('readyReplicas', 0) >= 1
+    - lookup('k8s', api_version='apps/v1', kind='Deployment', namespace=headscale_namespace, resource_name='headscale').get('status', {}).get('readyReplicas',
+      0) >= 1
 
 - name: Create headscale API key
   kubernetes.core.k8s_exec:
@@ -92,7 +103,7 @@
     - not headscale_api_key_already_created
 
 - name: Create namespace for headscale
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret

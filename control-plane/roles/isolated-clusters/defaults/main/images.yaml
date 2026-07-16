@@ -29,6 +29,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/gardener-project/releases/gardener/node-agent
       match:
         semver: ">= v1.128.7"
+    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/vpn-client
+      destination: http://registry:5000/gardener-project/releases/gardener/vpn-client
+      match:
+        semver: ">= 0.42.0"
     - source: europe-docker.pkg.dev/gardener-project/releases/3rd/alpine
       destination: http://registry:5000/gardener-project/releases/3rd/alpine
       match:
@@ -129,6 +133,10 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/coredns/coredns
       match:
         semver: ">= v1.12.4"
+    - source: europe-docker.pkg.dev/gardener-project/releases/gardener/coredns-config-adapter
+      destination: http://registry:5000/gardener-project/releases/gardener/coredns-config-adapter
+      match:
+        semver: ">= v0.4.0"
     - source: registry.k8s.io/dns/k8s-dns-node-cache
       destination: http://registry:5000/dns/k8s-dns-node-cache
       match:
@@ -164,4 +172,4 @@ isolated_clusters_registry_oci_mirror_config:
     - source: docker.io/library/busybox
       destination: http://registry:5000/library/busybox
       match:
-        semver: '>= 1.36'
+        semver: ">= 1.36"

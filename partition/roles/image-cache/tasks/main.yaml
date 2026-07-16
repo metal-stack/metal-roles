@@ -10,9 +10,9 @@
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - image_cache_coredns_image_tag is defined
       - image_cache_coredns_image_name is defined
@@ -27,10 +27,8 @@
   import_tasks: token.yaml
 
 - name: Setup CoreDNS
-  import_tasks: coredns.yaml
-
+  ansible.builtin.import_tasks: coredns.yaml
 - name: Setup image-sync
-  import_tasks: image-sync.yaml
-
+  ansible.builtin.import_tasks: image-sync.yaml
 - name: Setup haproxy
-  import_tasks: haproxy.yaml
+  ansible.builtin.import_tasks: haproxy.yaml

@@ -34,6 +34,8 @@ You can look up all the default values of this role in the [defaults folder](def
 | nsq_certs_client_cert          |           | The nsq client certificate as a string                                                      |
 | nsq_certs_ca_cert              |           | The nsq ca certificate as a string                                                          |
 | nsq_image_pull_policy          |           | Image pull policy (defaults to IfNotPresent)                                                |
+| nsq_tcproute_enabled           |           | Deploys a Gateway API TCPRoute exposing nsqd via the configured Gateway                     |
+| nsq_tcproute_parent_refs       |           | List of `parentRefs` (Gateways) the TCPRoute attaches to                                    |
 | nsq_enable_security_context    |           | Enables SecurityContext for the nsq StatefulSet and containers                              |
 | nsq_sts_security_context       |           | The SecurityContext for the StatefulSet                                                     |
 | nsq_container_security_context |           | The SecurityContext for the Containers                                                      |
