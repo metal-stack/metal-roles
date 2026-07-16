@@ -21,6 +21,7 @@
   ansible.builtin.copy:
     src: "{{ sonic_upgrade_image_path }}/{{ sonic_upgrade_image }}"
     dest: "/{{ sonic_upgrade_image }}"
+    mode: "0755"
     remote_src: true
   when: sonic_upgrade_host is not defined and sonic_upgrade_image_path is defined
 

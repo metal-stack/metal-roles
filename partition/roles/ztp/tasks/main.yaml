@@ -15,6 +15,7 @@
 - name: Create ztp config directory
   ansible.builtin.file:
     path: "{{ ztp_host_dir_path }}/config"
+    mode: "0755"
     state: directory
 
 - name: Render templates

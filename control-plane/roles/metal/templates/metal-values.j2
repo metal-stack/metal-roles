@@ -247,6 +247,9 @@ ingress_public_dns: "{{ metal_ingress_dns }}"
 v2_ingress_public_dns: "{{ metal_ingress_v2_dns }}"
 
 deploy_ingress: {{ metal_deploy_ingress }}
+deploy_ingress_api_v1_rules: {{ metal_deploy_ingress_api_v1_rules }}
+deploy_ingress_api_v2_rules: {{ metal_deploy_ingress_api_v2_rules }}
+
 ingress: {{ metal_ingress | to_json }}
 
 metal_apiserver:
@@ -266,8 +269,6 @@ metal_apiserver:
   secure_cookie: {{ metal_apiserver_secure_cookie | lower }}
   redis:
     addr: {{ metal_apiserver_redis_addr }}
-    password: {{ metal_apiserver_redis_password }}
-  admin_subjects: {{ metal_apiserver_admin_subjects | to_json }}
   auditing:
 {% if metal_apiserver_auditing_timescaledb_enabled %}
     timescaledb:
@@ -299,6 +300,12 @@ metal_apiserver:
     hostnames: {{ metal_apiserver_httproute_hostnames | to_json }}
 {% if metal_apiserver_httproute_https_redirect %}
     httpsRedirect: {{ metal_apiserver_httproute_https_redirect | to_json }}
+{% endif %}
+{% if metal_apiserver_tokens %}
+  tokens: {{ metal_apiserver_tokens | to_json }}
+{% endif %}
+{% if metal_apiserver_token_create_schedule %}
+  tokenCreateSchedule: {{ metal_apiserver_token_create_schedule }}
 {% endif %}
 
 auditing:

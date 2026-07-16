@@ -55,6 +55,7 @@
   ansible.builtin.template:
     src: config.alloy.j2
     dest: "{{ alloy_config_host_dir }}/config.alloy"
+    mode: "0644"
   notify: Restart alloy
   when: alloy_config_raw is not defined
 
@@ -62,6 +63,7 @@
   ansible.builtin.copy:
     content: "{{ alloy_config_raw }}"
     dest: "{{ alloy_config_host_dir }}/config.alloy"
+    mode: "0644"
   notify: Restart alloy
   when: alloy_config_raw is defined
 
@@ -82,6 +84,7 @@
     systemd_docker_image_tag: "{{ alloy_image_tag }}"
     systemd_service_after: docker.service
     systemd_service_requires: docker.service
+    systemd_docker_security_opts: "{{ alloy_docker_security_opts }}"
     systemd_docker_ports:
       - host_port: "{{ alloy_port }}"
         target_port: "{{ alloy_port }}"
