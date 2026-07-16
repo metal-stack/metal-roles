@@ -1,0 +1,656 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-goflow2-north-south
+  labels:
+    grafana_dashboard: "1"
+data:
+  goflow2-north-south.json: |
+    {% raw %}
+    {
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "liveNow": false,
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 1,
+          "panels": [],
+          "title": "Collector Health",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": { "group": "A", "mode": "none" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "green", "value": null }]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 7, "w": 12, "x": 0, "y": 1 },
+          "id": 2,
+          "options": {
+            "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "expr": "rate(goflow2_flow_process_sf_total{partition=~\"$partition\"}[5m])",
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ],
+          "title": "sFlow Packets Received per Second",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "gridPos": { "h": 7, "w": 12, "x": 12, "y": 1 },
+          "id": 3,
+          "options": {
+            "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "expr": "rate(goflow2_flow_process_sf_samples_total{type=\"unknown\", partition=~\"$partition\"}[5m])",
+              "legendFormat": "{{agent}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Unknown/Unprocessable Samples per Second",
+          "type": "timeseries"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+          "id": 4,
+          "panels": [],
+          "title": "Flow Analysis (Loki — enriched via Vector)",
+          "type": "row"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 50 },
+          "id": 23,
+          "panels": [],
+          "title": "IP & Protocol Top Talkers",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 51 },
+          "id": 5,
+          "fieldConfig": {
+            "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Flow Count" },
+                "properties": [{ "id": "custom.width", "value": 120 }]
+              }
+            ]
+          },
+          "options": { "showHeader": true, "sortBy": [{ "displayName": "Flow Count", "desc": true }] },
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "renameByName": { "src_addr": "Source IP", "Value": "Flow Count", "Value #A": "Flow Count" }
+              }
+            },
+            { "id": "sortBy", "options": { "fields": [{ "displayName": "Flow Count", "desc": true }] } }
+          ],
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_addr) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto != \"\" | src_addr != \"\" [$__range])))",
+              "legendFormat": "{{src_addr}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Top 10 Source IPs",
+          "type": "table"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 51 },
+          "id": 15,
+          "fieldConfig": {
+            "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Flow Count" },
+                "properties": [{ "id": "custom.width", "value": 120 }]
+              }
+            ]
+          },
+          "options": { "showHeader": true, "sortBy": [{ "displayName": "Flow Count", "desc": true }] },
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "renameByName": { "dst_addr": "Destination IP", "Value": "Flow Count", "Value #A": "Flow Count" }
+              }
+            },
+            { "id": "sortBy", "options": { "fields": [{ "displayName": "Flow Count", "desc": true }] } }
+          ],
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (dst_addr) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto != \"\" | dst_addr != \"\" [$__range])))",
+              "legendFormat": "{{dst_addr}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Top 10 Destination IPs",
+          "type": "table"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 51 },
+          "id": 16,
+          "fieldConfig": {
+            "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Flow Count" },
+                "properties": [{ "id": "custom.width", "value": 120 }]
+              }
+            ]
+          },
+          "options": { "showHeader": true, "sortBy": [{ "displayName": "Flow Count", "desc": true }] },
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "renameByName": { "src_addr": "Source IP", "dst_addr": "Destination IP", "Value": "Flow Count", "Value #A": "Flow Count" }
+              }
+            },
+            { "id": "sortBy", "options": { "fields": [{ "displayName": "Flow Count", "desc": true }] } }
+          ],
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_addr, dst_addr) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto != \"\" | src_addr != \"\" | dst_addr != \"\" [$__range])))",
+              "legendFormat": "{{src_addr}} → {{dst_addr}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Top 10 Conversations",
+          "type": "table"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 63 },
+          "id": 7,
+          "options": {
+            "displayLabels": ["percent", "name"],
+            "legend": { "displayMode": "table", "placement": "right", "calcs": ["percent"] },
+            "pieType": "donut",
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto!~\"UNCLASSIFIED|UNKNOWN|\" [$__range]))",
+              "legendFormat": "{{app_proto}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Application Protocol Breakdown",
+          "type": "piechart"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 63 },
+          "id": 17,
+          "options": {
+            "displayLabels": ["percent", "name"],
+            "legend": { "displayMode": "table", "placement": "right", "calcs": ["percent"] },
+            "pieType": "donut",
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (country_code) (count_over_time({app=\"goflow2-geo\", partition=~\"$partition\"} | json country_code [$__range]))",
+              "legendFormat": "{{country_code}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Traffic by Country",
+          "type": "piechart"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 63 },
+          "id": 9,
+          "options": {
+            "displayLabels": ["percent", "name"],
+            "legend": { "displayMode": "table", "placement": "right", "calcs": ["percent"] },
+            "pieType": "donut",
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (sampler_address) (count_over_time({app=\"goflow2\", partition=~\"$partition\", sampler_address!=\"\", scope=\"inbound\"} [$__range]))",
+              "legendFormat": "{{sampler_address}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Traffic by Sampler (Device)",
+          "type": "piechart"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "flows",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 71 },
+          "id": 12,
+          "maxDataPoints": 60,
+          "options": {
+            "legend": { "calcs": ["sum", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (app_proto) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto!=\"\" | app_proto!~\"UNCLASSIFIED|UNKNOWN\" [$__interval]))",
+              "legendFormat": "{{app_proto}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Protocol Traffic over Time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+              "unit": "bps"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 79 },
+          "id": 13,
+          "maxDataPoints": 60,
+          "options": {
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (app_proto) (rate({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | app_proto!=\"\" | app_proto!~\"UNCLASSIFIED|UNKNOWN\" | unwrap bytes [$__interval])) * 256 * 8",
+              "legendFormat": "{{app_proto}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Estimated Bandwidth by Protocol",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 28, "w": 24, "x": 0, "y": 9 },
+          "id": 14,
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "continuous-RdYlGr" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 10 },
+                  { "color": "orange", "value": 50 },
+                  { "color": "red", "value": 200 }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "view": { "id": "coords", "lat": 48.1374, "lon": 11.5755, "zoom": 3 },
+            "controls": { "showZoom": true, "showAttribution": true },
+            "layers": [
+              {
+                "type": "heatmap",
+                "name": "Source density",
+                "config": {
+                  "weight": { "field": "Value #A", "fixed": 1, "min": 0, "max": 1 },
+                  "radius": 25,
+                  "blur": 15,
+                  "opacity": 0.9
+                },
+                "location": {
+                  "mode": "coords",
+                  "latitude": "latitude",
+                  "longitude": "longitude"
+                },
+                "tooltip": false
+              }
+            ]
+          },
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            { "id": "convertFieldType", "options": { "conversions": [
+              { "targetField": "latitude",  "destinationType": "number" },
+              { "targetField": "longitude", "destinationType": "number" }
+            ]}}
+          ],
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "sum by (latitude, longitude) (count_over_time({app=\"goflow2-geo\", partition=~\"$partition\"} | json latitude, longitude [$__range]))",
+              "legendFormat": "{{country_code}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Source IP Geolocation",
+          "description": "GeoIP by DB-IP, CC BY 4.0.",
+          "type": "geomap"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
+          "id": 19,
+          "panels": [],
+          "title": "ASN Top Talkers (DB-IP)",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "gridPos": { "h": 12, "w": 8, "x": 0, "y": 38 },
+          "id": 20,
+          "fieldConfig": {
+            "defaults": { "custom": { "align": "auto", "displayMode": "auto" } },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Flow Count" },
+                "properties": [{ "id": "custom.width", "value": 120 }]
+              }
+            ]
+          },
+          "options": { "showHeader": true, "sortBy": [{ "displayName": "Flow Count", "desc": true }] },
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "renameByName": {
+                  "src_asn": "ASN",
+                  "src_asn_org": "Organization",
+                  "Value": "Flow Count",
+                  "Value #A": "Flow Count"
+                }
+              }
+            },
+            { "id": "sortBy", "options": { "fields": [{ "displayName": "Flow Count", "desc": true }] } }
+          ],
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_asn, src_asn_org) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__range])))",
+              "legendFormat": "{{src_asn_org}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Top 10 Source ASNs",
+          "description": "ASN data by DB-IP, CC BY 4.0.",
+          "type": "table"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "flows",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 12, "w": 8, "x": 8, "y": 38 },
+          "id": 21,
+          "maxDataPoints": 60,
+          "options": {
+            "legend": { "calcs": ["sum", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_asn_org) (count_over_time({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" [$__interval])))",
+              "legendFormat": "{{src_asn_org}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Top ASN Traffic over Time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+              "unit": "bps"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 12, "w": 8, "x": 16, "y": 38 },
+          "id": 22,
+          "maxDataPoints": 60,
+          "options": {
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "sortBy": "Max", "sortDesc": true, "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+              "expr": "topk(10, sum by (src_asn_org) (rate({app=\"goflow2\", partition=~\"$partition\", scope=\"inbound\"} | src_asn_org != \"PRIVATE\" | src_asn_org != \"UNKNOWN\" | src_asn_org != \"\" | unwrap bytes [$__interval])) * 256 * 8)",
+              "legendFormat": "{{src_asn_org}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Estimated Bandwidth by Source ASN",
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "1m",
+      "schemaVersion": 38,
+      "style": "dark",
+      "tags": ["sflow", "goflow2", "vector", "north-south"],
+      "templating": {
+        "list": [
+          {
+            "hide": 0,
+            "includeAll": false,
+            "label": "Prometheus",
+            "multi": false,
+            "name": "DS_PROMETHEUS",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          },
+          {
+            "hide": 0,
+            "includeAll": false,
+            "label": "Loki",
+            "multi": false,
+            "name": "DS_LOKI",
+            "options": [],
+            "query": "loki",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          },
+          {
+            "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+            "definition": "label_values({app=\"goflow2\"}, partition)",
+            "hide": 0,
+            "includeAll": true,
+            "allValue": ".*",
+            "label": "Partition",
+            "multi": true,
+            "name": "partition",
+            "options": [],
+            "query": "label_values({app=\"goflow2\"}, partition)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
+      },
+      "time": { "from": "now-1h", "to": "now" },
+      "timepicker": {},
+      "timezone": "",
+      "title": "sFlow — North/South (Edge)",
+      "uid": "goflow2-north-south",
+      "version": 10
+    }
+    {% endraw %}
