@@ -13,10 +13,18 @@ monitoring_gnmic_gnmi_skip_verify: true
 
 monitoring_gnmic_prometheus_port: 9102
 
+# Lists left empty are discovered from the switch at deploy time, e.g.:
+# monitoring_gnmic_ports: [Ethernet0, Ethernet4]
+# monitoring_gnmic_temperature_sensors: ["CPU On-board", "ASIC On-board"]
+# monitoring_gnmic_fans: [fan1, fan2]
+# monitoring_gnmic_crm_acl_tables: ["INGRESS:PORT", "EGRESS:LAG"]
 monitoring_gnmic_ports: []
 monitoring_gnmic_temperature_sensors: []
 monitoring_gnmic_fans: []
 monitoring_gnmic_crm_acl_tables: []
+
+# Subscription names as defined in gnmic.yaml.j2, e.g.:
+# monitoring_gnmic_disabled_subscriptions: [state-vxlan, counters-crm-acl]
 monitoring_gnmic_disabled_subscriptions: []
 
 monitoring_gnmic_sonic_distribution: broadcom

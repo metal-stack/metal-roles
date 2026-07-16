@@ -9,7 +9,7 @@ def apply(*events):
             _, _, entry_key, field = segments
             if not field.startswith("lldp_rem_"):
                 continue
-            interface, separator, chassis_mac = entry_key.partition(":")
+            interface, _, chassis_mac = entry_key.partition(":")
             field = field[len("lldp_rem_"):]
             neighbor = (interface, chassis_mac)
             if neighbor not in neighbors:
