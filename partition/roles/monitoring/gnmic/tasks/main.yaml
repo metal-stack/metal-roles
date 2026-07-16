@@ -37,6 +37,17 @@
     monitoring_gnmic_fans: "{{ monitoring_gnmic_fan_keys.stdout_lines | map('regex_replace', '^FAN_INFO\\|', '') | list }}"
   when: monitoring_gnmic_fans | length == 0
 
+- name: Determine CRM ACL tables
+  ansible.builtin.command: sonic-db-cli COUNTERS_DB KEYS "CRM:ACL_STATS:*"
+  register: monitoring_gnmic_crm_acl_keys
+  changed_when: false
+  when: monitoring_gnmic_crm_acl_tables | length == 0
+
+- name: Set CRM ACL table list
+  ansible.builtin.set_fact:
+    monitoring_gnmic_crm_acl_tables: "{{ monitoring_gnmic_crm_acl_keys.stdout_lines | map('regex_replace', '^CRM:ACL_STATS:', '') | list }}"
+  when: monitoring_gnmic_crm_acl_tables | length == 0
+
 - name: Create gnmic directories
   ansible.builtin.file:
     path: "{{ monitoring_gnmic_etc_host_dir }}"

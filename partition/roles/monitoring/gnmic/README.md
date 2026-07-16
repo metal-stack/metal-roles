@@ -20,6 +20,7 @@ Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker conta
 | monitoring_gnmic_ports                    |           | Ports to collect counters for, discovered if empty  |
 | monitoring_gnmic_temperature_sensors      |           | Temperature sensors to collect, discovered if empty |
 | monitoring_gnmic_fans                     |           | Fans to collect, discovered if empty                |
+| monitoring_gnmic_crm_acl_tables           |           | CRM ACL tables to collect, discovered if empty      |
 | monitoring_gnmic_disabled_subscriptions   |           | Subscriptions to disable                            |
 | monitoring_gnmic_sonic_distribution       |           | SONiC distribution (broadcom/edgecore)              |
 | monitoring_gnmic_sample_interval_counters |           | Sample interval for port and queue counters         |
