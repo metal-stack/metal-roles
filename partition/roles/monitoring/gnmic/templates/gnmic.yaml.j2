@@ -106,22 +106,6 @@ processors:
             apply-on: "name"
             old: '.*proc/uptime/total$'
             new: 'sonic_device_uptime_seconds_total'
-        - replace:
-            apply-on: "name"
-            old: '.*CRM/STATS/(crm_stats_.*)$'
-            new: '${1}'
-        - replace:
-            apply-on: "name"
-            old: '.*CRM/ACL_STATS/([^/:]+)[/:]([^/:]+)/(crm_stats_.*)$'
-            new: 'crm_acl_stats_${1}_${2}_${3}'
-
-  sonic-acl-lower:
-    event-strings:
-      value-names:
-        - '(?i)^crm_acl_stats_'
-      transforms:
-        - to-lower:
-            apply-on: "name"
 
   sonic-lldp:
     event-starlark:
@@ -152,7 +136,6 @@ outputs:
     event-processors:
       - sonic-metrics
       - sonic-rename
-      - sonic-acl-lower
       - sonic-lldp
       - sonic-convert
       - sonic-filter

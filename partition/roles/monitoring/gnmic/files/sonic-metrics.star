@@ -173,6 +173,39 @@ def handle_crm(event, output):
     emit(output, event, {}, "sonic_routes_fib", total)
 
 
+def emit_used_with_available(output, event, fields, metric_prefix):
+    for field, value in fields.items():
+        if not field.endswith("_used"):
+            continue
+        used = to_number(value)
+        if used == None:
+            continue
+        tags = {}
+        available = fields.get(field[:-len("_used")] + "_available")
+        if available != None:
+            tags["available"] = str(available)
+        emit(output, event, tags, metric_prefix + field, used)
+
+
+def handle_crm_stats(event, output):
+    for key, fields in grouped_fields(event, "CRM").items():
+        if key == "STATS":
+            emit_used_with_available(output, event, fields, "")
+
+
+def handle_crm_acl(event, output):
+    groups = {}
+    for path, value in event.values.items():
+        segments = path.split("/")
+        if len(segments) == 5 and segments[1] == "CRM" and segments[2] == "ACL_STATS":
+            groups.setdefault(segments[3], {})[segments[4]] = str(value)
+        elif len(segments) == 6 and segments[1] == "CRM" and segments[2] == "ACL_STATS":
+            groups.setdefault(segments[3] + ":" + segments[4], {})[segments[5]] = str(value)
+    for table, fields in groups.items():
+        prefix = "crm_acl_stats_" + table.replace(":", "_").lower() + "_"
+        emit_used_with_available(output, event, fields, prefix)
+
+
 def handle_port_status(event, output):
     for interface, field, value in table_entries(event, "PORT_TABLE"):
         up = 1 if str(value) == "up" else 0
@@ -387,7 +420,8 @@ def handle_transceiver_thresholds(event, output):
 HANDLERS = {
     "counters-ports": [handle_port_counters],
     "counters-queues": [handle_queue_counters],
-    "counters-crm": [handle_crm],
+    "counters-crm": [handle_crm, handle_crm_stats],
+    "counters-crm-acl": [handle_crm_acl],
     "appl": [handle_port_status, handle_routes],
     "cfg-core": [handle_port_config, handle_device_info, handle_ntp],
     "state-system": [handle_system_status, handle_chassis],
