@@ -175,16 +175,17 @@ def handle_crm(event, output):
 
 def emit_used_with_available(output, event, fields, metric_prefix):
     for field, value in fields.items():
-        if not field.endswith("_used"):
+        number = to_number(value)
+        if number == None:
             continue
-        used = to_number(value)
-        if used == None:
-            continue
-        tags = {}
-        available = fields.get(field[:-len("_used")] + "_available")
-        if available != None:
-            tags["available"] = str(available)
-        emit(output, event, tags, metric_prefix + field, used)
+        if field.endswith("_available"):
+            emit(output, event, {}, metric_prefix + field, number)
+        elif field.endswith("_used"):
+            tags = {}
+            available = fields.get(field[:-len("_used")] + "_available")
+            if available != None:
+                tags["available"] = str(available)
+            emit(output, event, tags, metric_prefix + field, number)
 
 
 def handle_crm_stats(event, output):
