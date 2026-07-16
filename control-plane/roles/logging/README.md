@@ -22,7 +22,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 | Name                                          | Mandatory | Default                                      | Description                                       |
 | --------------------------------------------- | --------- | -------------------------------------------- | ------------------------------------------------- |
-| logging_loki_enabled                          |           | `30Gi`                                       | Enables Loki                                      |
+| logging_loki_enabled                          |           | `true`                                       | Enables Loki                                      |
 | logging_chart_version                         | yes       |                                              | Helm chart version for loki (release vector)      |
 | logging_chart_repo                            | yes       |                                              | Repository for loki (release vector)              |
 | logging_namespace                             |           | `monitoring`                                 | Target namespace                                  |
