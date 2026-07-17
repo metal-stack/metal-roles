@@ -17,12 +17,14 @@
 
     - name: create image-cache tenant
       metal_v2_admin_tenant:
+        identifier: image-cache
         name: metal-image-cache-sync-{{ metal_partition_id }}-{{ inventory_hostname }}
         description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
       register: _tenant
 
     - name: create image-cache api token
       metal_v2_admin_token:
+        identifier: image-cache
         user: "{{ _tenant.id }}"
         description: "metal-image-cache-sync token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
         expires: "{{ image_cache_sync_token_expiration }}"
