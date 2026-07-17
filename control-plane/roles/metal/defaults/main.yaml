@@ -62,7 +62,7 @@ metal_apiserver_oidc_client_id: "{{ lookup('k8s', api_version='v1', namespace=me
   | default('') | b64decode }}"
 metal_apiserver_oidc_client_secret: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='zitadel-client-credentials').data.client_secret
   | default('') | b64decode }}"
-metal_apiserver_session_secret: secret
+metal_apiserver_session_secret: alongsecret
 metal_apiserver_secure_cookie: true
 metal_apiserver_pdb_enabled: true
 metal_apiserver_pdb_min_available: 2
