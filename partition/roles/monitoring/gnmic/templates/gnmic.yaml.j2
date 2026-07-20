@@ -24,11 +24,11 @@ log: true
     ('counters-crm-acl', 'COUNTERS_DB', monitoring_gnmic_crm_acl_paths, monitoring_gnmic_sample_interval_state),
 ] %}
 {% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_disabled_subscriptions) | list %}
-{% set monitoring_gnmic_distribution_stream_modes = {
-    'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change'}},
-    'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample'}},
+{% set monitoring_gnmic_distribution_profiles = {
+    'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change'}, 'expiration': '3m'},
+    'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample'}, 'expiration': '-1s'},
 } %}
-{% set monitoring_gnmic_stream_profile = monitoring_gnmic_distribution_stream_modes[monitoring_gnmic_sonic_distribution] %}
+{% set monitoring_gnmic_stream_profile = monitoring_gnmic_distribution_profiles[monitoring_gnmic_sonic_distribution] %}
 {% set monitoring_gnmic_effective_stream_modes = monitoring_gnmic_stream_profile.overrides %}
 {% set monitoring_gnmic_stream_mode_default = monitoring_gnmic_stream_profile.default %}
 targets:
@@ -132,7 +132,7 @@ outputs:
     append-subscription-name: false
     export-timestamps: false
     strings-as-labels: false
-    expiration: -1s
+    expiration: {{ monitoring_gnmic_stream_profile.expiration }}
     event-processors:
       - sonic-metrics
       - sonic-rename

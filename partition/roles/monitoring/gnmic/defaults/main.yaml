@@ -31,6 +31,6 @@ monitoring_gnmic_sonic_distribution: broadcom
 
 monitoring_gnmic_sample_interval_counters: 30s
 monitoring_gnmic_sample_interval_state: 60s
-monitoring_gnmic_sample_interval_config: 300s
+monitoring_gnmic_sample_interval_config: 60s
 
 monitoring_gnmic_heartbeat_interval: 300s

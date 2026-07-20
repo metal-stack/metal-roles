@@ -28,7 +28,7 @@ def apply(*events):
                 tags = {
                     "source": event.tags.get("source", ""),
                     "interface": interface,
-                    "remote_chassis": chassis_mac or fields.get("chassis_id", ""),
+                    "remote_chassis": fields.get("chassis_id", "") or chassis_mac,
                     "remote_system": fields.get("sys_name", ""),
                     "remote_port": fields.get("port_id", ""),
                     "remote_port_desc": fields.get("port_desc", ""),
