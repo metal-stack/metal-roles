@@ -42,9 +42,10 @@ monitoring_alertmanager_webhook_slack_repeat_interval: 24h
 event_exporter_enabled: false
 
 # metal metrics exporter
-monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
-monitoring_metal_api_hmac: "metal-view"
-monitoring_metal_api_authtype: "Metal-View"
+monitoring_metal_apiserver_url: "https://v2.metal-control-plane.svc/"
+monitoring_metal_metrics_exporter_image_tag: latest
+monitoring_metal_metrics_exporter_image_name: ghcr.io/metal-stack/metal-metrics-exporter
+monitoring_metrics_exporter_token_expiration: 8h
 
 # rethinkdb exporter
 monitoring_rethinkdb_exporter_metal_db_password: "change-me"
