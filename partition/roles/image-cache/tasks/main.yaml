@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check metal-deployment-token has run
-  assert:
+  ansible.builtin.assert:
     fail_msg: "this role requires the metal-deployment-token role to be run before execution, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
@@ -24,7 +24,7 @@
       - image_cache_sync_metal_apiserver_token is not none
 
 - name: Create tokens
-  import_tasks: token.yaml
+  ansible.builtin.import_tasks: token.yaml
 
 - name: Setup CoreDNS
   ansible.builtin.import_tasks: coredns.yaml

@@ -1,11 +1,11 @@
 ---
-- name: ensure cache directory
+- name: Ensure cache directory
   ansible.builtin.file:
     path: "{{ image_cache_sync_host_path }}"
     state: directory
     mode: '0755'
 
-- name: store token in credentials file
+- name: Store token in credentials file
   ansible.builtin.copy:
     content: "{{ _token.secret }}"
     dest: "{{ image_cache_sync_host_path }}/metal-apiserver-token"
@@ -14,8 +14,8 @@
     mode: '0644'
   when: '"secret" in _token'
 
-- name: deploy image-sync service
-  include_role:
+- name: Deploy image-sync service
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: metal-image-cache-sync

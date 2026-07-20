@@ -12,9 +12,12 @@
     that:
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
-- name: create api tokens for metal-image-cache-sync
+- name: Create api tokens for metal-image-cache-sync
+  delegate_to: localhost
+  environment:
+    METALCTLV2_API_URL: "{{ image_cache_sync_metal_apiserver_url }}"
+    METALCTLV2_API_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
   block:
-
     - name: Create image-cache tenant
       metal_v2_admin_tenant:
         identifier: image-cache
@@ -36,8 +39,3 @@
               - /metalstack.api.v2.PartitionService/List
               - /metalstack.infra.v2.ComponentService/Ping
       register: _token
-
-  delegate_to: localhost
-  environment:
-    METALCTLV2_API_URL: "{{ image_cache_sync_metal_apiserver_url }}"
-    METALCTLV2_API_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
