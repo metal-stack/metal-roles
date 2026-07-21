@@ -2,8 +2,8 @@
 - name: Create api tokens for metal-image-cache-sync
   delegate_to: localhost
   environment:
-    METALCTLV2_API_URL: "{{ image_cache_sync_metal_apiserver_url }}"
-    METALCTLV2_API_TOKEN: "{{ image_cache_sync_deployment_admin_token }}"
+    METAL_APIV2_URL: "{{ image_cache_sync_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ image_cache_sync_deployment_admin_token }}"
   block:
     - name: Create image-cache tenant
       metal_v2_admin_tenant:
