@@ -8,21 +8,23 @@
     - name: Create image-cache tenant
       metal_v2_admin_tenant:
         identifier: image-cache
-        name: metal-image-cache-sync-{{ metal_partition_id }}-{{ inventory_hostname }}
+        name: metal-image-cache-sync
         description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
       register: _tenant
 
     - name: Create image-cache api token
       metal_v2_admin_token:
-        identifier: image-cache
+        identifier: image-cache-{{ metal_partition_id }}-{{ inventory_hostname }}
         user: "{{ _tenant.id }}"
         description: "metal-image-cache-sync token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
         expires: "{{ image_cache_sync_token_expiration }}"
         permissions:
-          - subject: ""
-            methods:
-              - /metalstack.api.v2.ImageService/List
-              - /metalstack.api.v2.TokenService/Refresh
-              - /metalstack.api.v2.PartitionService/List
-              - /metalstack.infra.v2.ComponentService/Ping
+          - self:
+              methods:
+                - /metalstack.api.v2.ImageService/List
+                - /metalstack.api.v2.TokenService/Refresh
+                - /metalstack.api.v2.PartitionService/List
+          - infra:
+              methods:
+                - /metalstack.infra.v2.ComponentService/Ping
       register: _token
