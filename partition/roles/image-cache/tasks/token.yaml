@@ -18,13 +18,5 @@
         user: "{{ _tenant.id }}"
         description: "metal-image-cache-sync token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
         expires: "{{ image_cache_sync_token_expiration }}"
-        permissions:
-          - self:
-              methods:
-                - /metalstack.api.v2.ImageService/List
-                - /metalstack.api.v2.TokenService/Refresh
-                - /metalstack.api.v2.PartitionService/List
-          - infra:
-              methods:
-                - /metalstack.infra.v2.ComponentService/Ping
+        permissions: "{{ image_cache_sync_permissions }}"
       register: _token
