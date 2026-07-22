@@ -52,9 +52,18 @@ monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28
 
 # gardener
 monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 else False }}"
-monitoring_gardener_virtual_garden_kubeconfig: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace='garden', resource_name='garden-kubeconfig-for-admin').get('data',
-  {}).get('kubeconfig') if monitoring_gardener_enabled else None }}"
 monitoring_gardener_seeds: []
+
+monitoring_virtual_garden_kubeconfig_refresher_cluster_provider:
+monitoring_virtual_garden_kubeconfig_refresher_gcp_project_id:
+monitoring_virtual_garden_kubeconfig_refresher_gcp_location:
+monitoring_virtual_garden_kubeconfig_refresher_gcp_cluster_name:
+monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_project_id:
+monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_api_token:
+monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_cluster_id:
+monitoring_virtual_garden_kubeconfig_refresher_static_kubeconfig:
+monitoring_virtual_garden_kubeconfig_refresher_garden_cluster_local_rbac: false
+
 # alertmanager config
 monitoring_alertmanager_additional_routes: []
 monitoring_alertmanager_additional_receivers: []
