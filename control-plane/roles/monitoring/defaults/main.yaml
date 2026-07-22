@@ -46,6 +46,20 @@ monitoring_metal_apiserver_url: "https://v2.metal-control-plane.svc/"
 monitoring_metal_metrics_exporter_image_tag: latest
 monitoring_metal_metrics_exporter_image_name: ghcr.io/metal-stack/metal-metrics-exporter
 monitoring_metrics_exporter_token_expiration: 8h
+monitoring_metrics_exporter_permissions:
+  - admin:
+      methods:
+        - /metalstack.admin.v2.ImageService/Usage
+        - /metalstack.admin.v2.MachineService/Issues
+        - /metalstack.admin.v2.MachineService/List
+        - /metalstack.admin.v2.MachineService/ListBMC
+        - /metalstack.admin.v2.NetworkService/List
+        - /metalstack.admin.v2.PartitionService/Capacity
+        - /metalstack.admin.v2.ProjectService/List
+        - /metalstack.admin.v2.SwitchService/List
+  - infra:
+      methods:
+      - /metalstack.infra.v2.ComponentService/Ping
 
 # rethinkdb exporter
 monitoring_rethinkdb_exporter_metal_db_password: "change-me"
