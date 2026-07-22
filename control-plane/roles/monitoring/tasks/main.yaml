@@ -97,7 +97,6 @@
     that:
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
-
 - name: create api tokens for metal-metrics-exporter
   block:
     - name: create metrics-exporter tenant
