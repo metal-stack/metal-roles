@@ -64,6 +64,9 @@ promtail_migrate_stop: false
 # the legacy positions files. Only set once migration to alloy is fully complete.
 promtail_migrate_cleanup: false
 
+# The docker network to launch the alloy container in.
+alloy_docker_network: host
+
 # Allows passing additional security opts to the docker container.
 # This might be required on some older switches to run alloy.
 alloy_docker_security_opts: []
