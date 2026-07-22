@@ -86,12 +86,21 @@ The following variables can be set to configure the role:
 
 ### Gardener
 
-| Name                                            | Mandatory | Description                                                 |
-| ----------------------------------------------- | --------- | ----------------------------------------------------------- |
-| monitoring_gardener_enabled                     |           | Enables monitoring for Gardener                             |
-| monitoring_gardener_metrics_exporter_image_name |           | gardener-metrics-exporter image name                        |
-| monitoring_gardener_metrics_exporter_image_tag  |           | gardener-metrics-exporter image tag                         |
-| monitoring_gardener_virtual_garden_kubeconfig   |           | The kubeconfig for the kube-apiserver of the virtual garden |
+| Name                                                                        | Mandatory | Description                                                                                                                    |
+| --------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| monitoring_gardener_enabled                                                 |           | Enables monitoring for Gardener                                                                                                |
+| monitoring_gardener_metrics_exporter_image_name                             |           | gardener-metrics-exporter image name                                                                                           |
+| monitoring_gardener_metrics_exporter_image_tag                              |           | gardener-metrics-exporter image tag                                                                                            |
+| monitoring_gardener_virtual_garden_kubeconfig                               |           | The kubeconfig for the kube-apiserver of the virtual garden                                                                    |
+| monitoring_virtual_garden_kubeconfig_refresher_cluster_provider             | yes       | One of `gcp`, `metalstackcloud` or `static`. Only one provider is supported at a time.                                         |
+| monitoring_virtual_garden_kubeconfig_refresher_gcp_project_id               |           | The GCP project id used for retrieving cluster credentials (only applies when `cluster_provider=gcp`)                          |
+| monitoring_virtual_garden_kubeconfig_refresher_gcp_location                 |           | The GCP location used for retrieving cluster credentials (only applies when `cluster_provider=gcp`)                            |
+| monitoring_virtual_garden_kubeconfig_refresher_gcp_cluster_name             |           | The GCP cluster name used for retrieving cluster credentials (only applies when `cluster_provider=gcp`)                        |
+| monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_project_id |           | The metalstack.cloud project id used for retrieving cluster credentials (only applies when `cluster_provider=metalstackcloud`) |
+| monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_api_token  |           | The metalstack.cloud API token to retrieve cluster credentials with (only applies when `cluster_provider=metalstackcloud`)     |
+| monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_cluster_id |           | The metalstack.cloud cluster id used for retrieving cluster credentials (only applies when `cluster_provider=metalstackcloud`) |
+| monitoring_virtual_garden_kubeconfig_refresher_static_kubeconfig            |           | Kubeconfig for the cluster hosting Gardener (only applies when `cluster_provider=static`)                                      |
+| monitoring_virtual_garden_kubeconfig_refresher_garden_cluster_local_rbac    |           | Creates necessary RBAC, if Gardener is installed in the same cluster as the virtual-garden-kubeconfig-refresher                |
 
 ## Migration
 
