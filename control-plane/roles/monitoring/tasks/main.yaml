@@ -19,6 +19,7 @@
       one of: gcp, metalstackcloud, static. Actual value: '{{ monitoring_virtual_garden_kubeconfig_refresher_cluster_provider }}'
     quiet: true
     that:
+      - monitoring_virtual_garden_kubeconfig_refresher_cluster_provider is not none
       - monitoring_virtual_garden_kubeconfig_refresher_cluster_provider in ['gcp', 'metalstackcloud', 'static']
   when: monitoring_gardener_enabled
 
