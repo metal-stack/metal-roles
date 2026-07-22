@@ -98,6 +98,10 @@
       - "'metal_deployment_admin_token' in hostvars['localhost']"
 
 - name: create api tokens for metal-metrics-exporter
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ monitoring_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ metal_deployment_admin_token }}"
   block:
     - name: create metrics-exporter tenant
       metal_v2_admin_tenant:
