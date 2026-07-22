@@ -84,6 +84,42 @@
     helm_value_file_template: "thanos-values.yaml"
   when: monitoring_thanos_enabled
 
+- name: Create metal-apiserver token for metal-image-cache-sync
+  ansible.builtin.import_role:
+    name: metal-roles/common/roles/metal-deployment-token
+
+- name: Check metal-deployment-token has run
+  ansible.builtin.assert:
+    fail_msg:
+      "this role requires the metal-deployment-token role to be run before
+      execution, check role documentation"
+    quiet: true
+    that:
+      - "'metal_deployment_admin_token' in hostvars['localhost']"
+
+- name: create api tokens for metal-metrics-exporter
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ monitoring_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ metal_deployment_admin_token }}"
+  block:
+    - name: create metrics-exporter tenant
+      metal_v2_admin_tenant:
+        identifier: metrics-exporter
+        name: metal-metrics-exporter
+        description: tenant used by the metrics-exporter service in the metal-stack control-plane
+      register: _tenant
+
+    - name: create metrics-exporter api token
+      metal_v2_admin_token:
+        identifier: metrics-exporter
+        user: "{{ _tenant.id }}"
+        description: "metal-metrics-exporter token"
+        expires: "{{ monitoring_metrics_exporter_token_expiration }}"
+        permissions: "{{ monitoring_metrics_exporter_permissions }}"
+      register: _metal_metrics_exporter_token
+
+
 - name: Deploy metrics exporters
   ansible.builtin.import_tasks: exporters.yaml
 - name: Deploy Grafana dashboards
