@@ -1,0 +1,22 @@
+---
+- name: Create api tokens for metal-image-cache-sync
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ image_cache_sync_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ image_cache_sync_deployment_admin_token }}"
+  block:
+    - name: Create image-cache tenant
+      metal_v2_admin_tenant:
+        identifier: image-cache
+        name: metal-image-cache-sync
+        description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
+      register: _tenant
+
+    - name: Create image-cache api token
+      metal_v2_admin_token:
+        identifier: image-cache-{{ metal_partition_id }}-{{ inventory_hostname }}
+        user: "{{ _tenant.id }}"
+        description: "metal-image-cache-sync token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
+        expires: "{{ image_cache_sync_token_expiration }}"
+        permissions: "{{ image_cache_sync_permissions }}"
+      register: _token
