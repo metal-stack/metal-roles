@@ -1,0 +1,36 @@
+---
+monitoring_gnmic_image_name: "ghcr.io/openconfig/gnmic"
+monitoring_gnmic_image_tag: "0.46.0"
+monitoring_gnmic_etc_host_dir: /etc/gnmic
+monitoring_gnmic_docker_log_driver: json-file
+
+monitoring_gnmic_gnmi_address: 127.0.0.1
+monitoring_gnmic_gnmi_port: 8080
+monitoring_gnmic_gnmi_username: admin
+monitoring_gnmic_gnmi_password: admin
+monitoring_gnmic_gnmi_insecure: false
+monitoring_gnmic_gnmi_skip_verify: true
+
+monitoring_gnmic_prometheus_port: 9102
+
+# Lists left empty are discovered from the switch at deploy time, e.g.:
+# monitoring_gnmic_ports: [Ethernet0, Ethernet4]
+# monitoring_gnmic_temperature_sensors: ["CPU On-board", "ASIC On-board"]
+# monitoring_gnmic_fans: [fan1, fan2]
+# monitoring_gnmic_crm_acl_tables: ["INGRESS:PORT", "EGRESS:LAG"]
+monitoring_gnmic_ports: []
+monitoring_gnmic_temperature_sensors: []
+monitoring_gnmic_fans: []
+monitoring_gnmic_crm_acl_tables: []
+
+# Subscription names as defined in gnmic.yaml.j2, e.g.:
+# monitoring_gnmic_disabled_subscriptions: [state-vxlan, counters-crm-acl]
+monitoring_gnmic_disabled_subscriptions: []
+
+monitoring_gnmic_sonic_distribution: broadcom
+
+monitoring_gnmic_sample_interval_counters: 30s
+monitoring_gnmic_sample_interval_state: 60s
+monitoring_gnmic_sample_interval_config: 60s
+
+monitoring_gnmic_heartbeat_interval: 300s
