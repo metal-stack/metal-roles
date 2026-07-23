@@ -4,11 +4,21 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
-      - mgmt_server_asn is not none
-      - mgmt_server_router_id is not none
-      - mgmt_server_spine_facing_interface is not none
-      - mgmt_server_metal_ssh_privkey is not none
-      - mgmt_server_metal_ssh_pubkey is not none
+      - mgmt_server_asn is defined and mgmt_server_asn is not none
+      - (mgmt_server_router_id is defined and mgmt_server_router_id is not none) or
+        (mgmt_server_routerid is defined and mgmt_server_routerid is not none)
+      - mgmt_server_spine_facing_interface is defined and mgmt_server_spine_facing_interface is not none
+      - mgmt_server_metal_ssh_privkey is defined and mgmt_server_metal_ssh_privkey is not none
+      - mgmt_server_metal_ssh_pubkey is defined and mgmt_server_metal_ssh_pubkey is not none
+
+- name: Deprecation warning for mgmt_server_routerid
+  run_once: true
+  print_message:
+    type: deprecate
+    msg: >-
+      The variable mgmt_server_routerid was renamed to mgmt_server_router_id.
+    action: Please define mgmt_server_router_id instead and remove the old variable.
+  when: mgmt_server_routerid is defined
 
 - name: Gather package facts
   ansible.builtin.package_facts:

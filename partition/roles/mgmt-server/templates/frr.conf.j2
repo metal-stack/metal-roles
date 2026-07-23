@@ -14,7 +14,7 @@ interface {{ mgmt_server_spine_facing_interface }}
  no ipv6 nd suppress-ra
 !
 router bgp {{ mgmt_server_asn }}
- bgp router-id {{ mgmt_server_routerid }}
+ bgp router-id {{ mgmt_server_router_id | default(mgmt_server_routerid) }}
  bgp bestpath as-path multipath-relax
  bgp network import-check
  neighbor FABRIC peer-group
