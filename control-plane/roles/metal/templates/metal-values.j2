@@ -265,6 +265,7 @@ metal_apiserver:
     client_secret: {{ metal_apiserver_oidc_client_secret }}
     discovery_url: {{ metal_apiserver_oidc_discovery_url }}
     end_session_url: {{ metal_apiserver_oidc_end_session_url }}
+    tls_skip_verify: {{ metal_apiserver_tls_skip_verify }}
   session_secret: {{ metal_apiserver_session_secret }}
   secure_cookie: {{ metal_apiserver_secure_cookie | lower }}
   redis:
