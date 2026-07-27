@@ -92,9 +92,7 @@ Below is an example playbook that can be used to roll out gnmic and the bgp-metr
         state: stopped
         enabled: false
       register: sonic_exporter_stop
-      failed_when:
-        - sonic_exporter_stop is failed
-        - "'Could not find the requested service' not in (sonic_exporter_stop.msg | default(''))"
+      failed_when: false
 
 - name: update prometheus scrape config
   hosts: <PROMETHEUS-HOST>
