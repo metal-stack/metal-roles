@@ -25,6 +25,8 @@ rethinkdb_backup_restore_sidecar_s3_secret_key:
 rethinkdb_backup_restore_sidecar_s3_insecure_skip_verify:
 rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert:
 rethinkdb_backup_restore_sidecar_object_max_keep: 480
+rethinkdb_backup_restore_sidecar_object_days_max_keep: 14
+rethinkdb_backup_restore_sidecar_s3_request_checksum_calculation:
 rethinkdb_backup_restore_sidecar_encryption_key:
 rethinkdb_expose_frontend: false
 rethinkdb_ingress_dns: rethinkdb.{{ metal_control_plane_ingress_dns }}
@@ -38,7 +40,7 @@ rethinkdb_resources:
     cpu: "500m"
 rethinkdb_backup_restore_sidecar_resources:
 #  requests:
-#    cpu: "100m"       
+#    cpu: "100m"
 #    memory: "64Mi"
 #  limits:
 #    cpu: "300m"
@@ -49,7 +51,7 @@ rethinkdb_init_resources:
 #    memory: "16Mi"
 #  limits:
 #    cpu: "100m"
-#    memory: "64Mi" 
+#    memory: "64Mi"
 
 rethinkdb_registry_auth_enabled: "{{ metal_registry_auth_enabled }}"
 rethinkdb_registry_auth:

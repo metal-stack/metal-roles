@@ -1,4 +1,7 @@
 ---
+crds:
+  enabled: true
+
 prometheus:
   ingress:
     enabled: {{ monitoring_prometheus_ingress_enabled | lower }}
@@ -20,6 +23,21 @@ prometheus:
     probeSelectorNilUsesHelmValues: false
     scrapeConfigSelectorNilUsesHelmValues: false
 
+{% if monitoring_prometheus_remote_write %}
+    remoteWrite:
+{% for target in monitoring_prometheus_remote_write %}
+      - url: "{{ target.url }}"
+        name: "{{ target.name }}"
+        basicAuth:
+          username:
+            name: "remote-write-creds-{{ target.name }}"
+            key: username
+          password:
+            name: "remote-write-creds-{{ target.name }}"
+            key: password
+{% endfor %}
+{% endif %}
+
     additionalArgs:
       - name: "web.enable-remote-write-receiver"
         value: ""
@@ -31,6 +49,7 @@ prometheus:
     storageSpec:
       {{ monitoring_prometheus_storage_spec | indent(6) }}
 {% endif %}
+{% if monitoring_thanos_enabled %}
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
       version: "{{ thanos_image_tag }}"
@@ -40,10 +59,13 @@ prometheus:
           key: objstore.yml
           name: thanos-objstore-secret
 {% endif %}
+{% endif %}
   thanosService:
-    enabled: true
+    enabled: {{ monitoring_thanos_enabled }}
 
 grafana:
+  enabled: {{ monitoring_grafana_enabled }}
+{% if monitoring_grafana_enabled %}
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
@@ -61,10 +83,12 @@ grafana:
 {% if monitoring_grafana_extra_secret_mounts %}
   extraSecretMounts: {{ monitoring_grafana_extra_secret_mounts | to_json }}
 {% endif %}
+{% if monitoring_thanos_enabled %}
   sidecar:
     datasources:
       uid: prometheus
       url: http://thanos-query-frontend:9090
+{% endif %}
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -90,8 +114,14 @@ grafana:
 {% endif %}
   plugins:
     - camptocamp-prometheus-alertmanager-datasource
+{% endif %}
+
+prometheusOperator:
+  enabled: {{ monitoring_prometheus_operator_enabled }}
 
 alertmanager:
+  enabled: {{ monitoring_alertmanager_enabled }}
+{% if monitoring_alertmanager_enabled %}
   ingress:
     enabled: {{ monitoring_alertmanager_ingress_enabled | lower }}
     ingressClassName: nginx
@@ -284,6 +314,7 @@ alertmanager:
 
       {{- end }}
 {% endraw %}
+{% endif %}
 
 coreDns:
   enabled: {{ monitoring_prometheus_core_dns_enabled | lower }}
@@ -310,12 +341,16 @@ kubeControllerManager:
 kubelet:
   enabled: {{ monitoring_prometheus_kubelet_enabled | lower }}
 
-{% if not monitoring_prometheus_kubelet_enabled %}
 defaultRules:
+  create: {{ monitoring_prometheus_default_rules_enabled }}
+{% if monitoring_prometheus_default_rules_enabled %}
+{% if not monitoring_prometheus_kubelet_enabled %}
   disabled:
     KubeletDown: true
 {% endif %}
+{% endif %}
 
+{% if monitoring_alertmanager_enabled %}
 {% raw %}
 additionalPrometheusRulesMap:
   "metal-alertmanager.rules":
@@ -571,4 +606,5 @@ additionalPrometheusRulesMap:
       - record: garden_shoot_condition:namespaced
         expr: label_join(label_replace(garden_shoot_condition,"namespace1","shoot--$1--","project","(.*)"),"namespace","","namespace1","name")
 {% endraw %}
+{% endif %}
 {% endif %}

@@ -3,18 +3,21 @@
   ansible.builtin.template:
     src: bridge.netdev.j2
     dest: /etc/systemd/network/00-bridge.netdev
+    mode: "0644"
   notify: Restart systemd-networkd
 
 - name: Render bridge network for vxlans
   ansible.builtin.template:
     src: bridge.network.j2
     dest: /etc/systemd/network/00-bridge.network
+    mode: "0644"
   notify: Restart systemd-networkd
 
 - name: Render netdev for vxlan svi
   ansible.builtin.template:
     src: svi.netdev.j2
     dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.svi.iface }}.netdev"
+    mode: "0644"
   notify: Restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:
@@ -24,6 +27,7 @@
   ansible.builtin.template:
     src: svi.network.j2
     dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.svi.iface }}.network"
+    mode: "0644"
   notify: Restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:
@@ -33,6 +37,7 @@
   ansible.builtin.template:
     src: vtep.netdev.j2
     dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.vtep.iface }}.netdev"
+    mode: "0644"
   notify: Restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:
@@ -42,6 +47,7 @@
   ansible.builtin.template:
     src: vtep.network.j2
     dest: "/etc/systemd/network/{{ (i + 81) }}-{{ item.vtep.iface }}.network"
+    mode: "0644"
   notify: Restart systemd-networkd
   loop: "{{ systemd_networkd_vxlans }}"
   loop_control:

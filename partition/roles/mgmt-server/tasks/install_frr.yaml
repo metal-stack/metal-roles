@@ -29,4 +29,5 @@
   ansible.builtin.copy:
     src: daemons
     dest: /etc/frr/daemons
+    mode: "0640"
   notify: Restart frr

@@ -30,6 +30,8 @@
   ansible.builtin.template:
     src: resolved.conf.j2
     dest: /etc/systemd/resolved.conf
+    mode: "0644"
+
   notify:
     - Restart systemd-resolved
   when: "'systemd-resolved.service' in services"
@@ -51,6 +53,7 @@
       ansible.builtin.get_url:
         url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
         dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
 
     - name: Add docker repository
       ansible.builtin.apt_repository:
@@ -61,10 +64,12 @@
       ansible.builtin.apt:
         name:
           - docker-ce
+
 - name: Copy docker daemon.json
   ansible.builtin.template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
+    mode: "0640"
   notify: Reload docker
 
 - name: Enable ipv4 forward to route packages as required
@@ -105,6 +110,7 @@
     src: frr.conf.j2
     dest: /etc/frr/frr.conf
     validate: "/usr/bin/vtysh --dryrun --inputfile %s"
+    mode: "0640"
   notify:
     - Reload frr
 

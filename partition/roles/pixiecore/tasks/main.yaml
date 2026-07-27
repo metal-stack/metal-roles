@@ -18,6 +18,7 @@
   ansible.builtin.file:
     path: "{{ pixiecore_grpc_cert_dir }}"
     state: directory
+    mode: "0640"
 
 - name: Copy gRPC certificates
   ansible.builtin.copy:

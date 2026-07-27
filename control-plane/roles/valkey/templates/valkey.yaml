@@ -1,0 +1,301 @@
+{% if valkey_registry_auth_enabled %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: {{ valkey_name }}-registry-credentials
+  name: {{ valkey_name }}-registry-credentials
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ valkey_registry_auth | to_json | b64encode }}
+{% endif %}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ valkey_name }}
+  name: {{ valkey_name }}
+spec:
+  serviceName: {{ valkey_name }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ valkey_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ valkey_name }}
+    spec:
+{% if valkey_registry_auth_enabled %}
+      imagePullSecrets:
+      - name: {{ valkey_name }}-registry-credentials
+{% endif %}
+{% if valkey_enable_security_context %}
+      securityContext: {{ valkey_sts_security_context | to_json }}
+{% endif %}
+      containers:
+      - name: valkey
+        image: {{ valkey_image_name }}:{{ valkey_image_tag }}
+        imagePullPolicy: {{ valkey_image_pull_policy }}
+        livenessProbe:
+          exec:
+            command:
+            - valkey-cli
+            - ping
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          exec:
+            command:
+            - valkey-cli
+            - ping
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        command:
+        - backup-restore-sidecar
+        - wait
+        ports:
+        - containerPort: 6379
+          name: client
+          protocol: TCP
+        - containerPort: 9121
+          name: metrics
+          protocol: TCP
+        resources: {{ valkey_resources | to_json }}
+{% if valkey_enable_security_context %}
+        securityContext: {{ valkey_container_security_context | to_json }}
+{% endif %}
+        volumeMounts:
+        - name: {{ valkey_name }}
+          mountPath: /data
+        - name: bin-provision
+          subPath: backup-restore-sidecar
+          mountPath: /usr/local/bin/backup-restore-sidecar
+        - name: backup-restore-sidecar-config
+          mountPath: /etc/backup-restore-sidecar
+      - name: backup-restore-sidecar
+        image: {{ valkey_image_name }}:{{ valkey_image_tag }}
+        imagePullPolicy: {{ valkey_image_pull_policy }}
+        command:
+        - backup-restore-sidecar
+        - start
+        ports:
+        - containerPort: 8000
+          name: grpc
+        resources: {{ valkey_backup_restore_sidecar_resources | to_json }}
+{% if valkey_enable_security_context %}
+        securityContext: {{ valkey_container_security_context | to_json }}
+{% endif %}
+        env:
+{% if valkey_backup_restore_sidecar_encryption_key %}
+        - name: BACKUP_RESTORE_SIDECAR_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: encryptionKey
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+{% endif %}
+{% if valkey_backup_restore_sidecar_provider == "gcp" %}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_PROJECT
+          valueFrom:
+            secretKeyRef:
+              key: projectID
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              key: bucketName
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+        - name: BACKUP_RESTORE_SIDECAR_GCP_BUCKET_LOCATION
+          valueFrom:
+            secretKeyRef:
+              key: bucketLocation
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /gcp/credentials/serviceaccount.json
+{% elif valkey_backup_restore_sidecar_provider == "s3" %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              key: bucketName
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              key: endpoint
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: accessKey
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+        - name: BACKUP_RESTORE_SIDECAR_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secretKey
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+{% if valkey_backup_restore_sidecar_s3_insecure_skip_verify %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_INSECURE_SKIP_VERIFY
+          valueFrom:
+            secretKeyRef:
+              key: insecureSkipVerify
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+{% endif %}
+{% if valkey_backup_restore_sidecar_s3_trusted_ca_cert %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_TRUSTED_CA_CERT
+          valueFrom:
+            secretKeyRef:
+              key: trustedCaCert
+              name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+{% endif %}
+{% endif %}
+        volumeMounts:
+        - mountPath: /data
+          name: {{ valkey_name }}
+        - mountPath: /backup
+          name: backup
+        - name: backup-restore-sidecar-config
+          mountPath: /etc/backup-restore-sidecar
+        - name: bin-provision
+          subPath: backup-restore-sidecar
+          mountPath: /usr/local/bin/backup-restore-sidecar
+{% if valkey_backup_restore_sidecar_provider == "gcp" %}
+        - name: gcp-credentials
+          mountPath: /gcp/credentials
+          readOnly: true
+{% endif %}
+      initContainers:
+      - name: backup-restore-sidecar-provider
+        image: {{ valkey_backup_restore_sidecar_image_name }}:{{ valkey_backup_restore_sidecar_image_tag }}
+        imagePullPolicy: {{ valkey_backup_restore_sidecar_image_pull_policy }}
+        resources: {{ valkey_init_resources | to_json }}
+{% if valkey_enable_security_context %}
+        securityContext: {{ valkey_container_security_context | to_json }}
+{% endif %}
+        command:
+        - cp
+        - /backup-restore-sidecar
+        - /bin-provision
+        volumeMounts:
+        - name: bin-provision
+          mountPath: /bin-provision
+      volumes:
+      - name: {{ valkey_name }}
+        persistentVolumeClaim:
+          claimName: {{ valkey_name }}
+      - name: backup
+        persistentVolumeClaim:
+          claimName: backup
+      - name: backup-restore-sidecar-config
+        configMap:
+          name: backup-restore-sidecar-config-valkey-{{ valkey_name }}
+{% if valkey_backup_restore_sidecar_provider == "gcp" %}
+      - name: gcp-credentials
+        secret:
+          secretName: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+          items:
+          - key: serviceaccount.json
+            path: serviceaccount.json
+{% endif %}
+      - name: bin-provision
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ valkey_name }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ valkey_storage_size }}
+{% if valkey_storage_class %}
+      storageClassName: {{ valkey_storage_class }}
+{% endif %}
+  - metadata:
+      name: backup
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ valkey_storage_size }}
+{% if valkey_storage_class %}
+      storageClassName: {{ valkey_storage_class }}
+{% endif %}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-restore-sidecar-config-valkey-{{ valkey_name }}
+data:
+  config.yaml: |
+    bind-addr: 0.0.0.0
+    db: valkey
+    db-data-directory: /data/
+    log-level: {{ valkey_backup_restore_sidecar_log_level }}
+    backup-provider: {{ valkey_backup_restore_sidecar_provider }}
+    backup-cron-schedule: "{{ valkey_backup_restore_sidecar_backup_cron_schedule }}"
+    object-prefix: valkey-{{ metal_control_plane_stage_name }}
+    redis-addr: localhost:6379
+    post-exec-cmds:
+    - valkey-server
+{% if valkey_backup_restore_sidecar_object_max_keep %}
+    object-max-keep: {{ valkey_backup_restore_sidecar_object_max_keep }}
+{% endif %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ valkey_name }}
+  name: {{ valkey_name }}
+spec:
+  ports:
+  - name: "metrics"
+    port: 9121
+    targetPort: 9121
+  - name: "6379"
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: {{ valkey_name }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-restore-sidecar-backup-provider-config-{{ valkey_name }}
+type: Opaque
+data:
+{% if valkey_backup_restore_sidecar_provider == "gcp" %}
+  bucketName: {{ valkey_backup_restore_sidecar_gcp_bucket_name | b64encode }}
+  bucketLocation: {{ valkey_backup_restore_sidecar_gcp_backup_location | b64encode }}
+  projectID: {{ valkey_backup_restore_sidecar_gcp_project_id | b64encode }}
+  serviceaccount.json: {{ valkey_backup_restore_sidecar_gcp_serviceaccount_json | to_json | b64encode }}
+{% elif valkey_backup_restore_sidecar_provider == "s3" %}
+  bucketName: {{ valkey_backup_restore_sidecar_s3_bucket_name | b64encode }}
+  region: {{ valkey_backup_restore_sidecar_s3_region | b64encode }}
+  endpoint: {{ valkey_backup_restore_sidecar_s3_endpoint | b64encode }}
+  accessKey: {{ valkey_backup_restore_sidecar_s3_access_key | b64encode }}
+  secretKey: {{ valkey_backup_restore_sidecar_s3_secret_key | b64encode }}
+{% if valkey_backup_restore_sidecar_s3_insecure_skip_verify %}
+  insecureSkipVerify: {{ valkey_backup_restore_sidecar_s3_insecure_skip_verify | b64encode }}
+{% endif %}
+{% if valkey_backup_restore_sidecar_s3_trusted_ca_cert %}
+  trustedCaCert: {{ valkey_backup_restore_sidecar_s3_trusted_ca_cert | b64encode }}
+{% endif %}
+{% endif %}
+{% if valkey_backup_restore_sidecar_encryption_key %}
+  encryptionKey: {{ valkey_backup_restore_sidecar_encryption_key | b64encode }}
+{% endif %}

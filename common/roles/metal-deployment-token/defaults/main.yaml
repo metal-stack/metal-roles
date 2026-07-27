@@ -1,3 +1,4 @@
 ---
-metal_deployment_token_admin_role: ADMIN_ROLE_EDITOR
-metal_deployment_token_expiration: 1h
+metal_deployment_token_secret_name: metal-apiserver-admin-token
+metal_deployment_token_secret_namespace: "{{ metal_control_plane_namespace }}"
+metal_deployment_token_secret_key: admin_editor_token

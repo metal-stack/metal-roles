@@ -29,18 +29,21 @@
   ansible.builtin.copy:
     src: sysctl.conf
     dest: /etc/sysctl.d/98-frr.conf
+    mode: "0644"
   notify: Reload sysctls
 
 - name: Enable vtysh
   ansible.builtin.copy:
     src: vtysh.conf
     dest: /etc/frr/
+    mode: "0640"
   notify: Restart frr
 
 - name: Enable frr daemons
   ansible.builtin.copy:
     src: daemons
     dest: /etc/frr/daemons
+    mode: "0640"
   notify: Restart frr
 
 - name: Ensure frr is started
@@ -53,4 +56,5 @@
   ansible.builtin.copy:
     content: "{{ frr_conf }}"
     dest: /etc/frr/frr.conf
+    mode: "0640"
   notify: Reload frr
