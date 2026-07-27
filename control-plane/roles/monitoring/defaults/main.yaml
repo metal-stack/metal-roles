@@ -59,7 +59,7 @@ monitoring_metrics_exporter_permissions:
         - /metalstack.admin.v2.SwitchService/List
   - infra:
       methods:
-      - /metalstack.infra.v2.ComponentService/Ping
+        - /metalstack.infra.v2.ComponentService/Ping
 
 # rethinkdb exporter
 monitoring_rethinkdb_exporter_metal_db_password: "change-me"
