@@ -99,9 +99,12 @@ spec:
         dns:
           provider:
             type: "{{ gardener_gardenlet_default_dns_provider }}"
-            secretRef:
+            credentialsRef:
+              apiVersion: v1
+              kind: Secret
               name: "{{ lookup('k8s', kubeconfig=virtual_garden_kubeconfig, api_version='v1', kind='Secret', namespace='garden', label_selector='gardener.cloud/role=internal-domain').get('metadata', {}).get('name') }}"
               namespace: garden
+            domain: "{{ gardener_gardenlet_default_dns_domain }}"
           internal:
             credentialsRef:
               apiVersion: v1
