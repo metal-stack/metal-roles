@@ -100,7 +100,7 @@ grafana:
         hosts:
         - {{ monitoring_grafana_ingress_dns }}
 {% endif %}
-{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
+{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations or monitoring_grafana_ingress_annotations %}
     annotations:
 {% endif %}
 {% if monitoring_ingress_grafana_tls %}
@@ -109,6 +109,11 @@ grafana:
 {% endif %}
 {% if monitoring_additional_ingress_annotations %}
 {% for key, value in monitoring_additional_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+{% if monitoring_grafana_ingress_annotations %}
+{% for key, value in monitoring_grafana_ingress_annotations.items() %}
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
@@ -135,7 +140,9 @@ alertmanager:
         - {{ monitoring_alertmanager_ingress_dns }}
 {% endif %}
 
+{% if monitoring_alertmanager_ingress_tls or monitoring_additional_ingress_annotations or monitoring_alertmanager_ingress_annotations %}
     annotations:
+{% endif %}
 {% if monitoring_alertmanager_ingress_tls %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -143,6 +150,12 @@ alertmanager:
 
 {% if monitoring_additional_ingress_annotations %}
 {% for key, value in monitoring_additional_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+
+{% if monitoring_alertmanager_ingress_annotations %}
+{% for key, value in monitoring_alertmanager_ingress_annotations.items() %}
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
