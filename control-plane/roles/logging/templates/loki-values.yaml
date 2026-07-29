@@ -10,12 +10,17 @@ deploymentMode: Monolithic
 singleBinary:
   replicas: 1
   persistence:
+    # emptyDir on node disk if false — data lost on pod deletion/recreation.
+    # Suitable for dev/test where PVC provisioning is not desired.
+    enabled: {{ logging_loki_persistence_enabled | lower }}
+{% if logging_loki_persistence_enabled %}
     # false (Retain) is intentional — prevents accidental PVC deletion on helm uninstall.
-    # All 30 days of log data would be permanently lost otherwise.
+    # All log data would be permanently lost otherwise.
     enableStatefulSetAutoDeletePVC: false
-    size: {{ logging_loki_size }}
+    size: {{ logging_loki_storage_size }}
 {% if logging_loki_storage_class %}
     storageClass: {{ logging_loki_storage_class }}
+{% endif %}
 {% endif %}
 
 loki:

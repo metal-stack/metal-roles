@@ -62,7 +62,8 @@ logging_loki_monitoring_enabled: false
 # Loki log level. Valid values: debug, info, warn, error.
 logging_loki_log_level: warn
 
-logging_loki_size: 30Gi
+logging_loki_persistence_enabled: true  # false uses emptyDir (no persistence, data lost on pod restart)
+logging_loki_storage_size: 30Gi
 # if null, the cluster default provisioner is used
 logging_loki_storage_class: null
 logging_loki_retention_enabled: true
