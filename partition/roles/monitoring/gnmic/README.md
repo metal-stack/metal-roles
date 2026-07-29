@@ -6,8 +6,8 @@ Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker conta
 
 | Name                                      | Mandatory | Description                                         |
 | ----------------------------------------- | --------- | --------------------------------------------------- |
-| monitoring_gnmic_image_name               |           | Image name of gnmic                                 |
-| monitoring_gnmic_image_tag                |           | Image tag of gnmic                                  |
+| monitoring_gnmic_image_name               | yes       | Image name of gnmic                                 |
+| monitoring_gnmic_image_tag                | yes       | Image tag of gnmic                                  |
 | monitoring_gnmic_etc_host_dir             |           | Host directory for the gnmic configuration          |
 | monitoring_gnmic_docker_log_driver        |           | Indicates where to write the docker logs to         |
 | monitoring_gnmic_gnmi_address             |           | Address of the SONiC gNMI server                    |

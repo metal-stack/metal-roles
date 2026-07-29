@@ -1,4 +1,15 @@
 ---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - monitoring_gnmic_image_name is defined
+      - monitoring_gnmic_image_tag is defined
+
 - name: Check SONiC distribution is supported
   ansible.builtin.assert:
     that: monitoring_gnmic_sonic_distribution in ['broadcom', 'edgecore']

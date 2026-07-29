@@ -1,6 +1,4 @@
 ---
-monitoring_gnmic_image_name: "ghcr.io/openconfig/gnmic"
-monitoring_gnmic_image_tag: "0.46.0"
 monitoring_gnmic_etc_host_dir: /etc/gnmic
 monitoring_gnmic_docker_log_driver: json-file
 
