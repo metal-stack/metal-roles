@@ -44,7 +44,7 @@ This role can deploy on bare metal machines with Debian or Almalinux. It depends
 | systemd_networkd_vlans.id                   |           | The id of this VLAN.                                                                                |
 | systemd_networkd_vlans.mtu                  |           | The MTU for this VLAN.                                                                              |
 | systemd_networkd_vlans.address              |           | The network address for this VLAN.                                                                  |
-
+| systemd_networkd_vlans.vrf                  |           | The VRF to bind this VLAN to.       |
 ## Examples
 
 ```yaml
