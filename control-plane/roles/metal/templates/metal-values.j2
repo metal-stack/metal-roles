@@ -270,6 +270,11 @@ metal_apiserver:
   secure_cookie: {{ metal_apiserver_secure_cookie | lower }}
   redis:
     addr: {{ metal_apiserver_redis_addr }}
+  headscale:
+    enabled: {{ metal_apiserver_headscale_enabled }}
+    api_key: "{{ metal_apiserver_headscale_api_key }}"
+    control_plane_address: "{{ metal_apiserver_headscale_control_plane_address }}"
+    internal_api_address: "{{ metal_apiserver_headscale_internal_api_address }}"
   auditing:
 {% if metal_apiserver_auditing_timescaledb_enabled %}
     timescaledb:
