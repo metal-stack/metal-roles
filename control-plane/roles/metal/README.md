@@ -145,6 +145,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_tokens                                                |           | Optional yaml containing a map of tokenCreateRequests in order to create admin-tokens and store them in a secret |
 | metal_apiserver_token_create_schedule                                 |           | Optional cronjob schedule at which admin-tokens should be created                                                |
 | metal_apiserver_headscale_enabled                                     |           | Optional enable headscale support                                                                                |
+| metal_apiserver_headscale_tls                                         |           | Defaults to true, disable if headscale is exposed with http only                                                 |
 | metal_apiserver_headscale_api_key                                     |           | Headscale API key                                                                                                |
 | metal_apiserver_headscale_control_plane_address                       |           | Headscale control plane address                                                                                  |
 | metal_apiserver_headscale_internal_api_address                        |           | Headscale internal apiserver address                                                                             |
