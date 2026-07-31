@@ -97,7 +97,6 @@ metal_apiserver_headscale_control_plane_address: >-
 metal_apiserver_headscale_internal_api_address: "headscale:50443"
 
 
-
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_api_replicas: 3
