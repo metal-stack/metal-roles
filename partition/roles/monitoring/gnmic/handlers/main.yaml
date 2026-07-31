@@ -1,0 +1,7 @@
+---
+- name: Restart gnmic
+  ansible.builtin.systemd:
+    name: "gnmic"
+    state: restarted
+    enabled: true
+    daemon_reload: true
