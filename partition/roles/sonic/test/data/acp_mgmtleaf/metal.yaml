@@ -1,0 +1,113 @@
+---
+DEVICE_METADATA:
+  localhost:
+    docker_routing_config_mode: "split"
+    hostname: "r03acpmgmtleaf"
+    hwsku: "Accton-AS7726-32X"
+    mac: "e0:01:a6:e3:29:3c"
+    platform: "x86_64-accton_as7726_32x-r0"
+    type: "LeafRouter"
+    frr_mgmt_framework_config: "true"
+
+FEATURE:
+  dhcp_relay:
+    auto_restart: enabled
+    state: enabled
+
+NTP:
+  global:
+    src_intf: "eth0"
+
+NTP_SERVER:
+  1.2.3.4: {}
+
+LOOPBACK_INTERFACE:
+  Loopback0: {}
+  Loopback0|10.0.0.3/32: {}
+
+MGMT_INTERFACE:
+  eth0|10.255.255.250/30:
+    gwaddr: "10.255.255.249"
+
+MGMT_PORT:
+  eth0:
+    alias: "eth0"
+    admin_status: "up"
+    description: "Management Port"
+
+MGMT_VRF_CONFIG:
+  vrf_global:
+    mgmtVrfEnabled: "true"
+
+INTERFACE:
+  Ethernet120:
+    ipv6_use_link_local_only: enable
+  Vlan11:
+    ipv6_use_link_local_only: enable
+    vrf_name: "vrfACPmgmt"
+
+PORT:
+  Ethernet0:
+    alias: Eth1(Port1)
+    autoneg: "off"
+    index: "1"
+    lanes: "1,2,3,4"
+    parent_port: Ethernet0
+    admin_status: up
+    speed: "1000"
+    mtu: "9000"
+    fec: none
+  Ethernet47:
+    alias: Eth12(Port12)
+    autoneg: "off"
+    index: "12"
+    lanes: "45,46,47,48"
+    parent_port: Ethernet47
+    admin_status: up
+    speed: "1000"
+    mtu: "9000"
+    fec: none
+  Ethernet120:
+    alias: Eth31(Port31)
+    autoneg: "off"
+    index: "31"
+    lanes: "121,122,123,124"
+    parent_port: Ethernet120
+    admin_status: up
+    speed: "100000"
+    mtu: "9216"
+    fec: rs
+
+VLAN:
+  Vlan1:
+    dhcp_servers: ['10.255.255.254']
+    vlanid: 1
+  Vlan10:
+    vlanid: 10
+  Vlan11:
+    vlanid: 11
+
+VLAN_INTERFACE:
+  Vlan1: {}
+  Vlan1|10.255.255.1/24: {}
+  Vlan10:
+    vrf_name: "vrfACPmgmt"
+  Vlan10|10.252.253.125/30: {}
+  Vlan11:
+    vrf_name: "vrfACPmgmt"
+
+VLAN_MEMBER:
+  Vlan1|Ethernet0:
+      tagging_mode: untagged
+  Vlan10|Ethernet47:
+      tagging_mode: untagged
+  Vlan11|Ethernet120:
+      tagging_mode: tagged
+
+VRF:
+  vrfACPmgmt: {}
+
+LLDP:
+  Global:
+    hello_timer: 10
+
