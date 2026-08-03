@@ -5,7 +5,7 @@
     state: restarted
   async: 1
   poll: 0
-  notify: wait for new connection
+  notify: Wait for new connection
 
 - name: Restart systemd-udev-trigger
   ansible.builtin.service:
@@ -13,7 +13,7 @@
     state: restarted
   async: 1
   poll: 0
-  notify: wait for new connection
+  notify: Wait for new connection
 
 - name: Wait for new connection
   ansible.builtin.wait_for_connection:
@@ -29,10 +29,10 @@
     owner: root
     group: root
     mode: "0755"
-  listen: rename interfaces
+  listen: Rename interfaces
 
 - name: Execute interface rename script
   ansible.builtin.command: /root/rename-interfaces.sh
   async: 300
   poll: 10
-  listen: rename interfaces
+  listen: Rename interfaces

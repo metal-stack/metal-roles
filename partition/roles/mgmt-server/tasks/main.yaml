@@ -30,8 +30,10 @@
   ansible.builtin.template:
     src: resolved.conf.j2
     dest: /etc/systemd/resolved.conf
+    mode: "0644"
+
   notify:
-    - restart systemd-resolved
+    - Restart systemd-resolved
   when: "'systemd-resolved.service' in services"
 
 - name: Install required packages to have the network stack in place
@@ -51,6 +53,7 @@
       ansible.builtin.get_url:
         url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
         dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
 
     - name: Add docker repository
       ansible.builtin.apt_repository:
@@ -61,11 +64,13 @@
       ansible.builtin.apt:
         name:
           - docker-ce
+
 - name: Copy docker daemon.json
   ansible.builtin.template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
-  notify: reload docker
+    mode: "0640"
+  notify: Reload docker
 
 - name: Enable ipv4 forward to route packages as required
   ansible.posix.sysctl:
@@ -82,13 +87,13 @@
   ansible.builtin.iptables:
     chain: FORWARD
     policy: ACCEPT
-  notify: persist iptables
+  notify: Persist iptables
 
 - name: Configure forward chain of docker-user to accept
   ansible.builtin.iptables:
     chain: DOCKER-USER
     jump: ACCEPT
-  notify: persist iptables
+  notify: Persist iptables
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
@@ -105,8 +110,9 @@
     src: frr.conf.j2
     dest: /etc/frr/frr.conf
     validate: "/usr/bin/vtysh --dryrun --inputfile %s"
+    mode: "0640"
   notify:
-    - reload frr
+    - Reload frr
 
 - name: Copy ssh key pair for metal user
   ansible.builtin.copy:
@@ -130,7 +136,7 @@
 - name: Add own ssh key to authorized_keys
   ansible.builtin.lineinfile:
     path: /home/metal/.ssh/authorized_keys
-    regexp: "^{{ mgmt_server_metal_ssh_pubkey }}$"
+    regexp: "^{{ mgmt_server_metal_ssh_pubkey | regex_escape }}$"
     line: "{{ mgmt_server_metal_ssh_pubkey }}"
 
 - name: Configure sshd to avoid root login and password authentication, hide OS information
@@ -140,7 +146,7 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     validate: /usr/sbin/sshd -t -f %s
-  notify: restart sshd
+  notify: Restart sshd
   loop:
     - { regexp: "^PasswordAuthentication .+", line: "PasswordAuthentication no" }
     - { regexp: "^PermitRootLogin .+", line: "PermitRootLogin no" }

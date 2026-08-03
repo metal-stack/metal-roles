@@ -85,6 +85,11 @@ login:
     - name: ZITADEL_API_URL
       value: {{ zitadel_ingress_dns }}
 
+  gateway:
+    httpRoute:
+      enabled: {{ zitadel_httproute_enabled }}
+      parentRefs: {{ zitadel_httproute_parent_refs | to_json }}
+
   ingress:
     enabled: {{ zitadel_enabled_ingress }}
     className: nginx

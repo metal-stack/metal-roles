@@ -1,3 +1,0 @@
----
-docker_fluentd_logging_enabled: false
-docker_fluentd_endpoint:
