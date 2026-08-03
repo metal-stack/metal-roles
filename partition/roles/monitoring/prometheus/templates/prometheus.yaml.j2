@@ -7,6 +7,9 @@ global:
   external_labels:
     partition: '{{ metal_partition_id }}'
     replica: '{{ inventory_hostname }}'
+{% for key, value in prometheus_additional_external_labels.items() %}
+    {{ key }}: '{{ value }}'
+{% endfor %}
 
 # Alertmanager configuration
 alerting:
