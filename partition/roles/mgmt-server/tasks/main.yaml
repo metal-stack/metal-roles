@@ -136,7 +136,7 @@
 - name: Add own ssh key to authorized_keys
   ansible.builtin.lineinfile:
     path: /home/metal/.ssh/authorized_keys
-    regexp: "^{{ mgmt_server_metal_ssh_pubkey }}$"
+    regexp: "^{{ mgmt_server_metal_ssh_pubkey | regex_escape }}$"
     line: "{{ mgmt_server_metal_ssh_pubkey }}"
 
 - name: Configure sshd to avoid root login and password authentication, hide OS information

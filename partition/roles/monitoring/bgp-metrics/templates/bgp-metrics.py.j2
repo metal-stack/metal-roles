@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+import json
+import os
+import subprocess
+import sys
+import tempfile
+
+OUT = "{{ monitoring_bgp_metrics_textfile_directory }}/bgp.prom"
+{% raw %}
+AF_NAMES = {
+    "ipv4Unicast": ("ipv4", "unicast"),
+    "ipv6Unicast": ("ipv6", "unicast"),
+    "l2VpnEvpn": ("l2vpn", "evpn"),
+}
+
+TYPES = [
+    "# TYPE sonic_bgp_status gauge",
+    "# TYPE sonic_bgp_uptime_seconds_total counter",
+    "# TYPE sonic_bgp_messages_received_total counter",
+    "# TYPE sonic_bgp_messages_transmitted_total counter",
+    "# TYPE sonic_bgp_prefixes_received gauge",
+    "# TYPE sonic_bgp_prefixes_transmitted gauge",
+]
+
+
+def collect():
+    try:
+        raw = subprocess.run(
+            ["vtysh", "-c", "show bgp vrf all summary json"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        ).stdout
+        data = json.loads(raw)
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError):
+        return None
+
+    lines = []
+    for vrf, afs in sorted(data.items()):
+        if not isinstance(afs, dict):
+            continue
+        for af_key, af in sorted(afs.items()):
+            if not isinstance(af, dict):
+                continue
+            afi, safi = AF_NAMES.get(af_key, (af_key.lower(), ""))
+            for peer, p in sorted((af.get("peers") or {}).items()):
+                labels = (
+                    f'vrf="{vrf}",afi="{afi}",safi="{safi}",'
+                    f'peer="{peer}",remote_as="{p.get("remoteAs", "")}"'
+                )
+                established = 1 if p.get("state") == "Established" else 0
+                lines.append(f"sonic_bgp_status{{{labels}}} {established}")
+                lines.append(
+                    f"sonic_bgp_uptime_seconds_total{{{labels}}} "
+                    f"{p.get('peerUptimeMsec', 0) / 1000}"
+                )
+                lines.append(
+                    f"sonic_bgp_messages_received_total{{{labels}}} {p.get('msgRcvd', 0)}"
+                )
+                lines.append(
+                    f"sonic_bgp_messages_transmitted_total{{{labels}}} {p.get('msgSent', 0)}"
+                )
+                lines.append(
+                    f"sonic_bgp_prefixes_received{{{labels}}} {p.get('pfxRcd', 0)}"
+                )
+                lines.append(
+                    f"sonic_bgp_prefixes_transmitted{{{labels}}} {p.get('pfxSnt', 0)}"
+                )
+    return lines
+
+
+def main():
+    lines = collect()
+    if lines is None:
+        sys.exit(1)
+    if lines:
+        lines = TYPES + lines
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(OUT), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write("\n".join(lines) + "\n" if lines else "")
+        os.chmod(tmp, 0o644)
+        os.replace(tmp, OUT)
+    except BaseException:
+        os.unlink(tmp)
+        raise
+
+
+if __name__ == "__main__":
+    main()
+{% endraw %}
