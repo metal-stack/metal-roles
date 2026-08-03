@@ -24,5 +24,6 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_metal_ssh_pubkey          | yes       | the public SSH key of the `metal` admin user for connecting to the other components  |
 | mgmt_server_preserve_dhcp_route       | no        | preserve the dhcp (default) route the mgmt server got from the mgmt firewall         |
 | mgmt_server_provide_default_route     | no        | provide the default route with bgp (`network 0.0.0.0/0`)                             |
-| mgmt_server_vrfs                  | no  | Additional BGP instances in VRFs. Each entry takes name, optional router_id, optional bgp_timers, and lists optional router_id, optional bgp_timers, and lists  |
-| mgmt_server_static_routes         | no  | Static routes, rendered verbatim after "ip route". Supports cross-VRF leaks via nexthop-vrf.        |
+| mgmt_server_vrfs                      | no        | additional BGP instances in VRFs. Each entry takes `name`, optional `router_id`, optional `bgp_timers`, and the lists `unnumbered_interfaces` and `announcements` |
+| mgmt_server_static_routes             | no        | static routes, rendered verbatim after `ip route`. Supports cross-VRF leaks via `nexthop-vrf`         |
+| mgmt_server_masquerade_interfaces     | no        | interfaces on which egressing traffic is masqueraded (`POSTROUTING -o <iface> -j MASQUERADE`)         |
