@@ -1,0 +1,77 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys gnmic on SONiC switches to collect telemetry via gNMI
+    options:
+      monitoring_gnmic_image_name:
+        type: str
+        description: Image name of gnmic. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      monitoring_gnmic_image_tag:
+        type: str
+        description: Image tag of gnmic. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      monitoring_gnmic_etc_host_dir:
+        type: str
+        description: Host directory for the gnmic configuration.
+      monitoring_gnmic_docker_log_driver:
+        type: str
+        description: Docker log driver for the gnmic container.
+      monitoring_gnmic_gnmi_address:
+        type: str
+        description: Address of the gNMI server on the switch.
+      monitoring_gnmic_gnmi_port:
+        type: int
+        description: Port of the gNMI server on the switch.
+      monitoring_gnmic_gnmi_username:
+        type: str
+        description: Username for the gNMI server.
+      monitoring_gnmic_gnmi_password:
+        type: str
+        no_log: true
+        description: Password for the gNMI server.
+      monitoring_gnmic_gnmi_insecure:
+        type: bool
+        description: Whether to connect to the gNMI server without TLS.
+      monitoring_gnmic_gnmi_skip_verify:
+        type: bool
+        description: Whether to skip TLS certificate verification for the gNMI server.
+      monitoring_gnmic_prometheus_port:
+        type: int
+        description: Port on which gnmic exposes prometheus metrics.
+      monitoring_gnmic_ports:
+        type: list
+        elements: str
+        description: Ports to subscribe to. Discovered from the switch at deploy time when left empty.
+      monitoring_gnmic_temperature_sensors:
+        type: list
+        elements: str
+        description: Temperature sensors to subscribe to. Discovered from the switch at deploy time when left empty.
+      monitoring_gnmic_fans:
+        type: list
+        elements: str
+        description: Fans to subscribe to. Discovered from the switch at deploy time when left empty.
+      monitoring_gnmic_crm_acl_tables:
+        type: list
+        elements: str
+        description: CRM ACL tables to subscribe to. Discovered from the switch at deploy time when left empty.
+      monitoring_gnmic_disabled_subscriptions:
+        type: list
+        elements: str
+        description: Subscription names (as defined in gnmic.yaml.j2) to disable.
+      monitoring_gnmic_sonic_distribution:
+        type: str
+        choices:
+          - broadcom
+          - edgecore
+        description: The SONiC distribution running on the switch.
+      monitoring_gnmic_sample_interval_counters:
+        type: str
+        description: Sample interval for counter subscriptions.
+      monitoring_gnmic_sample_interval_state:
+        type: str
+        description: Sample interval for state subscriptions.
+      monitoring_gnmic_sample_interval_config:
+        type: str
+        description: Sample interval for config subscriptions.
+      monitoring_gnmic_heartbeat_interval:
+        type: str
+        description: Heartbeat interval for on-change subscriptions.

@@ -1,0 +1,18 @@
+---
+argument_specs:
+  main:
+    short_description: Reads the metal-apiserver admin token from a secret and provides it as metal_deployment_admin_token
+    options:
+      metal_deployment_token_secret_name:
+        type: str
+        description: Name of the secret containing the metal-apiserver admin token.
+      metal_deployment_token_secret_namespace:
+        type: str
+        description: Namespace of the secret containing the metal-apiserver admin token.
+      metal_deployment_token_secret_key:
+        type: str
+        description: Key within the secret data that contains the token.
+      metal_deployment_admin_token:
+        type: str
+        no_log: true
+        description: The admin token to use for deployment. When unset, it is read from the referenced secret.

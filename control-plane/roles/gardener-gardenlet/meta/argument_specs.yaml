@@ -1,0 +1,31 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys gardenlets into the garden
+    options:
+      gardener_gardenlet_garden_name:
+        type: str
+        description: Name of the garden to deploy the gardenlets to.
+      gardener_gardenlet_helm_chart_tag:
+        type: str
+        description: Tag of the gardenlet helm chart. Derived from the gardenlet image tag of the release vector by default.
+      gardener_gardenlet_default_dns_domain:
+        type: str
+        required: true
+        description: The default DNS domain used for the seed DNS entries.
+      gardener_gardenlet_default_dns_provider:
+        type: str
+        required: true
+        description: The default DNS provider used for the seed DNS entries.
+      gardener_gardenlet_default_dns_credentials:
+        type: str
+        required: true
+        no_log: true
+        description: The credentials for the default DNS provider.
+      gardener_gardenlets:
+        type: list
+        elements: dict
+        description: The gardenlets to deploy.
+      gardener_gardenlet_defaults:
+        type: dict
+        description: Default configuration merged into every gardenlet entry.

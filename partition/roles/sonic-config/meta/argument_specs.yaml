@@ -1,0 +1,107 @@
+---
+argument_specs:
+  main:
+    short_description: Generates the SONiC config_db and FRR configuration
+    options:
+      sonic_config_loopback_address:
+        type: str
+        required: true
+        description: The loopback (router) IP address of the switch.
+      sonic_config_asn:
+        type: int
+        description: The ASN of the switch used for BGP. Required when sonic_config_frr_render is true.
+      sonic_config_bgp_ports:
+        type: list
+        elements: str
+        description: The ports on which BGP unnumbered sessions are configured.
+      sonic_config_breakouts:
+        type: dict
+        description: Port breakout configuration keyed by port name.
+      sonic_config_docker_routing_config_mode:
+        type: str
+        description: The docker_routing_config_mode of the BGP container.
+      sonic_config_features:
+        type: dict
+        description: Feature flags rendered into the config_db.
+      sonic_config_frr_l2vpn_evpn:
+        type: bool
+        description: Whether to activate the l2vpn evpn address family.
+      sonic_config_frr_mgmt_framework_config:
+        type: bool
+        description: Whether the frr_mgmt_framework_config flag is set in the config_db.
+      sonic_config_frr_render:
+        type: bool
+        description: Whether to render and deploy the FRR configuration.
+      sonic_config_frr_set_source_address_loopback:
+        type: bool
+        description: Whether the loopback address is set as default BGP source address.
+      sonic_config_frr_route_map:
+        type: dict
+        description: Route map (name, match) used for redistributing connected routes.
+      sonic_config_frr_prefixlists:
+        type: list
+        description: Prefix lists rendered into frr.conf.
+      sonic_config_frr_static_routes:
+        type: list
+        elements: str
+        description: Static routes rendered into frr.conf.
+      sonic_config_frr_static_routes_mgmt:
+        type: list
+        elements: str
+        description: Static routes rendered into frr.conf for the management VRF.
+      sonic_config_frr_syslog_level:
+        type: str
+        description: The FRR syslog level.
+      sonic_config_interconnects:
+        type: dict
+        description: Interconnect BGP configuration.
+      sonic_config_lldp_hello_timer:
+        type: int
+        description: The LLDP hello timer in seconds.
+      sonic_config_mclag:
+        type: dict
+        description: MCLAG configuration.
+      sonic_config_mgmt_interface:
+        type: dict
+        description: Management interface configuration (ip, gateway).
+      sonic_config_mgmt_vrf:
+        type: bool
+        description: Whether the management interface is placed in the management VRF.
+      sonic_config_nameservers:
+        type: list
+        elements: str
+        description: Nameservers written to /etc/resolv.conf.
+      sonic_config_ntp:
+        type: dict
+        description: NTP configuration.
+      sonic_config_portchannels:
+        type: dict
+        description: Port channel configuration.
+      sonic_config_ports:
+        type: list
+        description: Physical port configuration.
+      sonic_config_reload_config:
+        type: bool
+        description: Whether the generated config_db is applied with config reload.
+      sonic_config_sag:
+        type: dict
+        description: Static anycast gateway configuration (mac).
+      sonic_config_ssh_sourceranges:
+        type: list
+        elements: str
+        description: Source ranges from which SSH access is allowed.
+      sonic_config_extended_cacl:
+        type: dict
+        description: Extended control plane ACLs (ipv4, ipv6 rule lists) rendered into iptables.json.
+      sonic_config_timezone:
+        type: str
+        description: The timezone to configure on the switch.
+      sonic_config_vlan_subinterfaces:
+        type: list
+        description: VLAN subinterface configuration.
+      sonic_config_vlans:
+        type: list
+        description: VLAN configuration.
+      sonic_config_vtep:
+        type: dict
+        description: VTEP configuration for EVPN.
