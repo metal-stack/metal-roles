@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal
   author: metal-stack
   description: This role basically deploys the metal-control-plane.
   license: MIT

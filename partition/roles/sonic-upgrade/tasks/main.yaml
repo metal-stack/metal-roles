@@ -15,6 +15,7 @@
 - name: Download the new sonic image
   ansible.builtin.command: ip vrf exec {{ sonic_upgrade_vrf }} wget {{ sonic_upgrade_protocol }}://{{ sonic_upgrade_host }}:{{ sonic_upgrade_port }}/{{
     sonic_upgrade_image }} -O /{{ sonic_upgrade_image }}
+  changed_when: true
   when: sonic_upgrade_host is defined and sonic_upgrade_image_path is not defined
 
 - name: Push the new sonic image to the device
@@ -27,12 +28,14 @@
 
 - name: Install new sonic image
   ansible.builtin.command: "sonic-installer install -y --skip_migration --skip-package-migration /{{ sonic_upgrade_image }}"
+  changed_when: true
 - name: Reboot the system to complete the upgrade
   ansible.builtin.reboot:
 
 - name: Wait until sonic has become ready
   ansible.builtin.command: "show system status"
   register: result
+  changed_when: false
   until: result is not failed
   retries: 30
   delay: 20
@@ -43,3 +46,4 @@
 
 - name: Clean up images
   ansible.builtin.command: sonic-installer cleanup -y
+  changed_when: true
