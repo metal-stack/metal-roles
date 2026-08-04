@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: metal-stack
-  description: Deploys an image cache to a partition.
+  description: Deploys gnmic for switch telemetry.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []

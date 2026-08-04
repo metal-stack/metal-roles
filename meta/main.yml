@@ -1,9 +1,9 @@
 ---
 galaxy_info:
   author: metal-stack
-  company:
+  description: Ansible roles for deploying and operating metal-stack.
   license: "license (MIT)"
-  min_ansible_version: 2.9
+  min_ansible_version: "2.9"
   platforms:
     - name: Ubuntu
       versions:
