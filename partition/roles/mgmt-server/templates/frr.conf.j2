@@ -9,12 +9,18 @@ debug bgp nht
 debug bgp update-groups
 debug bgp zebra
 !
+{% for route in mgmt_server_frr_static_routes %}
+ip route {{ route }}
+{% endfor %}
+{% if mgmt_server_frr_static_routes | length > 0 %}
+!
+{% endif %}
 interface {{ mgmt_server_spine_facing_interface }}
  ipv6 nd ra-interval 6
  no ipv6 nd suppress-ra
 !
 router bgp {{ mgmt_server_asn }}
- bgp router-id {{ mgmt_server_routerid }}
+ bgp router-id {{ mgmt_server_router_id }}
  bgp bestpath as-path multipath-relax
  bgp network import-check
  neighbor FABRIC peer-group

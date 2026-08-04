@@ -12,6 +12,17 @@
       - gardener_metrics_exporter_image_name is defined
       - gardener_metrics_exporter_image_tag is defined
 
+- name: Check virtual-garden-kubeconfig-refresher cluster_provider is valid
+  ansible.builtin.assert:
+    fail_msg: >
+      'monitoring_virtual_garden_kubeconfig_refresher_cluster_provider' must be
+      one of: gcp, metalstackcloud, static. Actual value: '{{ monitoring_virtual_garden_kubeconfig_refresher_cluster_provider }}'
+    quiet: true
+    that:
+      - monitoring_virtual_garden_kubeconfig_refresher_cluster_provider is not none
+      - monitoring_virtual_garden_kubeconfig_refresher_cluster_provider in ['gcp', 'metalstackcloud', 'static']
+  when: monitoring_gardener_enabled
+
 - name: Check deprecated variables are not set
   ansible.builtin.assert:
     fail_msg: >
@@ -50,26 +61,6 @@
     label: "{{ item.name }}"
   no_log: true
 
-- name: Determine app version for prometheus operator CRDs
-  ansible.builtin.command: helm show chart --repo {{ prometheus_stack_repo }} --version {{ prometheus_chart_version }} kube-prometheus-stack
-  register: helm_output
-
-- name: Apply prometheus operator CRDs
-  kubernetes.core.k8s:
-    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/'+ (helm_output.stdout | from_yaml).get('appVersion')
-      + '/example/prometheus-operator-crd/' + item , split_lines=False) | regex_replace('- =\n', '- \"=\"\n') }}"
-  loop:
-    - monitoring.coreos.com_alertmanagerconfigs.yaml
-    - monitoring.coreos.com_alertmanagers.yaml
-    - monitoring.coreos.com_podmonitors.yaml
-    - monitoring.coreos.com_probes.yaml
-    - monitoring.coreos.com_prometheusagents.yaml
-    - monitoring.coreos.com_prometheuses.yaml
-    - monitoring.coreos.com_prometheusrules.yaml
-    - monitoring.coreos.com_scrapeconfigs.yaml
-    - monitoring.coreos.com_servicemonitors.yaml
-    - monitoring.coreos.com_thanosrulers.yaml
-
 - name: Deploy kube-prometheus-stack
   ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
@@ -80,7 +71,6 @@
     helm_release_name: kube-prometheus-stack
     helm_chart_version: "{{ prometheus_chart_version }}"
     helm_value_file_template: "prometheus-stack-values.yaml"
-    helm_skip_crds: true
 
 - name: Deploy thanos
   ansible.builtin.include_role:

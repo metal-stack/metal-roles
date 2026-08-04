@@ -19,6 +19,7 @@ The role should take the same variables as the wrapped role, but prefixed with `
 | headscale_db_backup_restore_sidecar_image_name | yes       | Image name of init container for headscale DB                                                                  |
 | headscale_db_backup_restore_sidecar_image_tag  | yes       | Image version of init container for headscale DB                                                               |
 | headscale_noise_private_key                    | yes       | Noise Protocol Private key for TS2021 compatibility                                                            |
+| headscale_ingress_enabled                      |           | Disable deployment of the ingress resource, this also cleans up an existing resource                           |
 | headscale_ingress_dns                          |           | Domain name                                                                                                    |
 | headscale_namespace                            |           | The deployment's target namespace                                                                              |
 | headscale_tls                                  |           | Enables TLS for headscale                                                                                      |

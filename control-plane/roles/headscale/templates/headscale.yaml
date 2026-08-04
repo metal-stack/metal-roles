@@ -128,6 +128,7 @@ spec:
       - name: private-key
         secret:
           secretName: headscale
+{% if headscale_ingress_enabled %}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -162,6 +163,7 @@ spec:
                 name: headscale
                 port:
                   number: 8080
+{% endif %}
 {% if headscale_httproute_enabled %}
 ---
 apiVersion: gateway.networking.k8s.io/v1
