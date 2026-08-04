@@ -1,15 +1,4 @@
 ---
-- name: Check mandatory variables for this role are set
-  ansible.builtin.assert:
-    fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: true
-    that:
-      - mgmt_server_asn is defined and mgmt_server_asn is not none
-      - mgmt_server_router_id is defined and mgmt_server_router_id is not none
-      - mgmt_server_spine_facing_interface is defined and mgmt_server_spine_facing_interface is not none
-      - mgmt_server_metal_ssh_privkey is defined and mgmt_server_metal_ssh_privkey is not none
-      - mgmt_server_metal_ssh_pubkey is defined and mgmt_server_metal_ssh_pubkey is not none
-
 - name: Gather package facts
   ansible.builtin.package_facts:
     manager: auto

@@ -1,0 +1,19 @@
+---
+argument_specs:
+  main:
+    short_description: Manages a server's disks with LVM
+    options:
+      lvm_vg:
+        type: str
+        required: true
+        description: The volume group to be created and managed.
+      lvm_pvs:
+        type: list
+        elements: str
+        required: true
+        description: The physical disks that should be managed.
+      lvm_lvs:
+        type: list
+        elements: dict
+        required: true
+        description: The logical volumes to create. Each entry supports name, size, fstype, mountpath and optionally opts.

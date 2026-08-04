@@ -1,0 +1,96 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the gardener-operator and the virtual garden
+    options:
+      gardener_operator_garden_name:
+        type: str
+        description: Name of the garden resource.
+      gardener_operator_repo_url:
+        type: str
+        description: URL of the gardener git repository used for applying the operator CRDs.
+      gardener_operator_repo_ref:
+        type: str
+        description: Git reference of the gardener repository.
+      gardener_operator_runtime_cluster_provider:
+        type: str
+        description: The provider of the runtime cluster.
+      gardener_operator_backup_infrastructure:
+        type: dict
+        description: Backup infrastructure configuration for the virtual garden etcd (provider gcp or S3). Mandatory, must not be none.
+      gardener_operator_backup_infrastructure_secret:
+        type: dict
+        no_log: true
+        description: Secret data for the backup infrastructure.
+      gardener_operator_dns_providers:
+        type: list
+        elements: dict
+        description: DNS providers configured in the garden resource.
+      gardener_operator_high_availability_control_plane:
+        type: bool
+        description: Whether the virtual garden control plane is deployed highly available.
+      gardener_operator_image_vector_overwrite:
+        type: raw
+        description: Image vector overwrite for the gardener components.
+      gardener_operator_component_image_vector_overwrite:
+        type: raw
+        description: Component image vector overwrite for the gardener components.
+      gardener_operator_helm_chart_tag:
+        type: str
+        description: Tag of the gardener-operator helm chart. Derived from the operator image tag of the release vector by default.
+      gardener_operator_image_name:
+        type: str
+        description: Image name of the gardener-operator. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      gardener_operator_image_tag:
+        type: str
+        description: Image tag of the gardener-operator. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      gardener_operator_shoot_admin_kubeconfig_max_expiration:
+        type: str
+        description: Maximum expiration of shoot admin kubeconfigs.
+      gardener_operator_dashboard_enabled:
+        type: bool
+        description: Whether the gardener dashboard is deployed.
+      gardener_operator_dashboard_oidc_session_lifetime:
+        type: str
+        description: OIDC session lifetime of the gardener dashboard.
+      gardener_operator_dashboard_oidc_additional_scopes:
+        type: list
+        elements: str
+        description: Additional OIDC scopes of the gardener dashboard.
+      gardener_operator_dashboard_oidc_client_id:
+        type: str
+        description: OIDC client id of the gardener dashboard.
+      gardener_operator_dashboard_oidc_client_id_public:
+        type: str
+        description: Public OIDC client id of the gardener dashboard.
+      gardener_operator_dashboard_oidc_client_secret:
+        type: str
+        no_log: true
+        description: OIDC client secret of the gardener dashboard.
+      gardener_operator_dashboard_log_level:
+        type: str
+        description: Log level of the gardener dashboard.
+      gardener_operator_dashboard_ingress_enabled:
+        type: bool
+        description: Whether to create an ingress for the gardener dashboard.
+      gardener_operator_wildcard_ingress_certificate_cluster_issuer:
+        type: str
+        description: Name of the cert-manager ClusterIssuer used for the wildcard ingress certificate.
+      gardener_operator_dashboard_config_frontend:
+        type: dict
+        description: Frontend configuration of the gardener dashboard.
+      gardener_operator_dashboard_config_assets:
+        type: dict
+        description: Asset configuration (e.g. logos) of the gardener dashboard.
+      gardener_operator_virtual_garden_public_dns:
+        type: str
+        description: Public DNS name of the virtual garden kube-apiserver.
+      gardener_operator_virtual_garden_etcd_storage_class:
+        type: str
+        description: Storage class of the virtual garden etcd.
+      gardener_operator_expose_virtual_garden_through_ingress_nginx:
+        type: bool
+        description: Whether the virtual garden kube-apiserver is exposed through ingress-nginx.
+      gardener_operator_virtual_garden_api_server_structured_authentication:
+        type: dict
+        description: Structured authentication configuration for the virtual garden kube-apiserver.

@@ -1,0 +1,122 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys a partition-local image cache (CoreDNS, haproxy and metal-image-cache-sync)
+    options:
+      image_cache_coredns_image_name:
+        type: str
+        description: Image name of CoreDNS. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      image_cache_coredns_image_tag:
+        type: str
+        description: Image tag of CoreDNS. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      image_cache_haproxy_image_name:
+        type: str
+        description: Image name of haproxy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      image_cache_haproxy_image_tag:
+        type: str
+        description: Image tag of haproxy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      image_cache_sync_image_name:
+        type: str
+        description: Image name of metal-image-cache-sync. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      image_cache_sync_image_tag:
+        type: str
+        description: Image tag of metal-image-cache-sync. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      image_cache_intercept_domains:
+        type: list
+        elements: str
+        description: Domains for which DNS requests are intercepted and resolved to the image cache.
+      image_cache_kernel_cache_enabled:
+        type: bool
+        description: Whether to cache metal-hammer kernels.
+      image_cache_kernel_route_prefix:
+        type: str
+        description: HTTP route prefix under which cached kernels are served.
+      image_cache_boot_image_cache_enabled:
+        type: bool
+        description: Whether to cache metal-hammer boot images.
+      image_cache_boot_image_route_prefix:
+        type: str
+        description: HTTP route prefix under which cached boot images are served.
+      image_cache_external_dns_servers:
+        type: list
+        elements: dict
+        description: External DNS servers (name, ip) used for forwarding non-intercepted DNS requests.
+      image_cache_backend_hosts:
+        type: list
+        elements: str
+        description: The hosts serving as image cache backends.
+      image_cache_internal_ip:
+        type: str
+        description: Alternative IP (default is ansible_host) used for resolving DNS requests to image cache hosts and for internal component communication.
+      image_cache_coredns_host_dir_path:
+        type: str
+        description: Host directory for the CoreDNS configuration.
+      image_cache_coredns_docker_log_driver:
+        type: str
+        description: Docker log driver for the CoreDNS container.
+      image_cache_haproxy_host_dir_path:
+        type: str
+        description: Host directory for the haproxy configuration.
+      image_cache_haproxy_docker_log_driver:
+        type: str
+        description: Docker log driver for the haproxy container.
+      image_cache_sync_max_cache_size:
+        type: str
+        description: Maximum size of the image cache (e.g. 100G).
+      image_cache_sync_max_images_per_name:
+        type: int
+        description: Maximum amount of images to keep per image name (-1 for unlimited).
+      image_cache_sync_min_images_per_name:
+        type: int
+        description: Minimum amount of images to keep per image name.
+      image_cache_sync_expiration_grace_period:
+        type: int
+        description: Grace period for expired images before removal from the cache.
+      image_cache_sync_metal_api_endpoint:
+        type: str
+        description: The metal-api endpoint used for looking up images to sync.
+      image_cache_sync_metal_api_view_hmac:
+        type: str
+        required: true
+        no_log: true
+        description: The metal-api view HMAC used for authenticating against the metal-api.
+      image_cache_sync_schedule:
+        type: str
+        description: Cron schedule for the image sync.
+      image_cache_sync_host_path:
+        type: str
+        description: Host path where synced images are stored.
+      image_cache_sync_port:
+        type: int
+        description: Port on which cached OS images are served.
+      image_cache_sync_kernel_port:
+        type: int
+        description: Port on which cached kernels are served.
+      image_cache_sync_boot_image_port:
+        type: int
+        description: Port on which cached boot images are served.
+      image_cache_sync_excludes:
+        type: list
+        elements: str
+        description: Image path substrings excluded from syncing.
+      image_cache_sync_docker_log_driver:
+        type: str
+        description: Docker log driver for the image sync container.
+      image_cache_haproxy_fallback_backend_server:
+        type: str
+        description: Fallback backend server (must be reachable over https with a valid certificate) used when the local image cache is unavailable.
+      image_cache_haproxy_fallback_backend_server_health_endpoint:
+        type: str
+        description: Health check endpoint of the fallback backend server.
+      image_cache_haproxy_kernel_fallback_backend_server:
+        type: str
+        description: Fallback backend server for kernels.
+      image_cache_haproxy_kernel_fallback_backend_server_health_endpoint:
+        type: str
+        description: Health check endpoint of the kernel fallback backend server.
+      image_cache_haproxy_boot_image_fallback_backend_server:
+        type: str
+        description: Fallback backend server for boot images.
+      image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint:
+        type: str
+        description: Health check endpoint of the boot image fallback backend server.

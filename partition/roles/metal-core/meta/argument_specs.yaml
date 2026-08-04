@@ -1,0 +1,88 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys metal-core in a systemd-managed Docker container
+    options:
+      metal_core_image_name:
+        type: str
+        description: Image name of metal-core. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_core_image_tag:
+        type: str
+        description: Image tag of metal-core. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_core_cidr:
+        type: str
+        required: true
+        description: The CIDR of the switch used by metal-core (rendered into METAL_CORE_CIDR).
+      metal_core_rack_id:
+        type: str
+        required: true
+        description: The rack id describing the rack in which the leaf switches are contained.
+      metal_core_room_id:
+        type: str
+        description: The room id describing the room in which the rack is located.
+      metal_core_log_driver:
+        type: str
+        description: The log driver used for the metal-core container log.
+      metal_core_log_level:
+        type: str
+        description: The metal-core log level.
+      metal_core_hmac_key:
+        type: str
+        no_log: true
+        description: Legacy HMAC key variable, no longer rendered into the metal-core environment.
+      metal_core_reconfigure_switch:
+        type: bool
+        description: If set to true, metal-core will automatically reconfigure files on the switch.
+      metal_core_reconfigure_switch_interval:
+        type: str
+        description: The interval in which the switch config gets applied from information received from the metal-api.
+      metal_core_timeout:
+        type: str
+        description: The reconfigure timeout after which a reconfiguration run returns an error.
+      metal_core_set_src_loopback:
+        type: bool
+        description: If true, metal-core sets the default source address to loopback in frr.conf (SONiC only).
+      metal_core_grpc_address:
+        type: str
+        description: The address (host:port) of the metal-api gRPC server.
+      metal_core_grpc_cert_dir:
+        type: str
+        description: Path to the gRPC certificate files on the host machine.
+      metal_core_grpc_ca_cert:
+        type: str
+        description: The gRPC CA certificate content.
+      metal_core_grpc_client_cert:
+        type: str
+        description: The gRPC client certificate content.
+      metal_core_grpc_client_key:
+        type: str
+        no_log: true
+        description: The gRPC client certificate key content.
+      metal_core_additional_bridge_vids:
+        type: list
+        elements: str
+        description: Additional VLAN ids to add to the bridge.
+      metal_core_additional_bridge_ports:
+        type: list
+        elements: str
+        description: Additional ports to add to the bridge.
+      metal_core_spine_uplinks:
+        type: list
+        elements: str
+        description: The switch ports that connect a leaf to a spine switch or other ports that need to be part of the EVPN underlay fabric.
+      metal_core_additional_volume_mounts:
+        type: list
+        elements: str
+        description: Volumes to mount into metal-core, besides the default ones.
+      metal_core_consider_hosts_file_resolution:
+        type: bool
+        description: If set to true, mounts /etc/nsswitch.conf into the container to enable DNS resolution with the hosts file.
+      metal_core_interfaces_tpl_file:
+        type: str
+        description: The golang template file used for rendering /etc/network/interfaces. Empty uses the default template shipped with metal-core.
+      metal_core_frr_tpl_file:
+        type: str
+        description: The golang template file used for rendering /etc/frr/frr.conf. Empty uses the default template shipped with metal-core.
+      metal_core_pxe_vlan_id:
+        type: int
+        description: The VLAN ID for the PXE machines.

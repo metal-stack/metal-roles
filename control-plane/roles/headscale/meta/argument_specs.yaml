@@ -1,0 +1,145 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys headscale with a postgres database for machine VPN access
+    options:
+      headscale_image_name:
+        type: str
+        description: Image name of headscale. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      headscale_image_tag:
+        type: str
+        description: Image tag of headscale. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      headscale_namespace:
+        type: str
+        description: The namespace to deploy headscale to.
+      headscale_ingress_dns:
+        type: str
+        description: Ingress DNS name of headscale.
+      headscale_tls:
+        type: bool
+        description: Whether TLS is enabled on the headscale ingress.
+      headscale_ingress_enabled:
+        type: bool
+        description: Whether to create an ingress for headscale.
+      headscale_ingress_annotations:
+        type: dict
+        description: Additional annotations for the headscale ingress.
+      headscale_resources:
+        type: dict
+        description: Resource requests and limits for the headscale container.
+      headscale_noise_private_key:
+        type: str
+        required: true
+        no_log: true
+        description: The headscale noise protocol private key.
+      headscale_api_key_expiration:
+        type: str
+        description: Expiration duration of the created headscale API key.
+      headscale_ipv4_prefix:
+        type: str
+        description: IPv4 prefix assigned to VPN clients.
+      headscale_ipv6_prefix:
+        type: str
+        description: IPv6 prefix assigned to VPN clients.
+      headscale_httproute_enabled:
+        type: bool
+        description: Whether to expose headscale through a GatewayAPI HTTPRoute instead of an ingress.
+      headscale_httproute_hostnames:
+        type: list
+        elements: str
+        description: Hostnames for the headscale HTTPRoute.
+      headscale_httproute_parent_refs:
+        type: list
+        elements: dict
+        description: Parent references for the headscale HTTPRoute.
+      headscale_httproute_https_redirect:
+        type: dict
+        description: HTTPS redirect configuration for the headscale HTTPRoute.
+      headscale_db_name:
+        type: str
+        description: Name of the headscale db deployment.
+      headscale_db_image_name:
+        type: str
+        description: Image name of the headscale db. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      headscale_db_image_tag:
+        type: str
+        description: Image tag of the headscale db. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      headscale_db_storage_size:
+        type: str
+        description: Size of the headscale db persistent volume.
+      headscale_db_storage_class:
+        type: str
+        description: Storage class of the headscale db persistent volume.
+      headscale_db_db:
+        type: str
+        description: Name of the headscale database to create.
+      headscale_db_user:
+        type: str
+        description: User of the headscale database.
+      headscale_db_password:
+        type: str
+        no_log: true
+        description: Password of the headscale database.
+      headscale_db_max_connections:
+        type: raw
+        description: Maximum amount of database connections.
+      headscale_db_backup_restore_sidecar_image_name:
+        type: str
+        description: Image name of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      headscale_db_backup_restore_sidecar_image_tag:
+        type: str
+        description: Image tag of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      headscale_db_backup_restore_sidecar_provider:
+        type: str
+        description: Backup provider used by the backup-restore-sidecar (local, gcp or s3).
+      headscale_db_backup_restore_sidecar_backup_cron_schedule:
+        type: str
+        description: Cron schedule for creating backups.
+      headscale_db_backup_restore_sidecar_log_level:
+        type: str
+        description: Log level of the backup-restore-sidecar.
+      headscale_db_backup_restore_sidecar_object_prefix:
+        type: str
+        description: Object prefix used for backups in the object store.
+      headscale_db_backup_restore_sidecar_encryption_key:
+        type: str
+        no_log: true
+        description: Encryption key (32 characters) for encrypting backups.
+      headscale_db_backup_restore_sidecar_gcp_bucket_name:
+        type: str
+        description: GCP bucket name for storing backups.
+      headscale_db_backup_restore_sidecar_gcp_backup_location:
+        type: str
+        description: GCP bucket location for storing backups.
+      headscale_db_backup_restore_sidecar_gcp_project_id:
+        type: str
+        description: GCP project id of the backup bucket.
+      headscale_db_backup_restore_sidecar_gcp_serviceaccount_json:
+        type: str
+        no_log: true
+        description: GCP service account JSON used for accessing the backup bucket.
+      headscale_db_backup_restore_sidecar_s3_bucket_name:
+        type: str
+        description: S3 bucket name for storing backups.
+      headscale_db_backup_restore_sidecar_s3_region:
+        type: str
+        description: S3 region of the backup bucket.
+      headscale_db_backup_restore_sidecar_s3_endpoint:
+        type: str
+        description: S3 endpoint of the backup bucket.
+      headscale_db_backup_restore_sidecar_s3_access_key:
+        type: str
+        description: S3 access key for the backup bucket.
+      headscale_db_backup_restore_sidecar_s3_secret_key:
+        type: str
+        no_log: true
+        description: S3 secret key for the backup bucket.
+      headscale_db_backup_restore_sidecar_s3_insecure_skip_verify:
+        type: raw
+        description: Whether to skip TLS certificate verification for the S3 endpoint.
+      headscale_db_backup_restore_sidecar_s3_trusted_ca_cert:
+        type: str
+        description: Trusted CA certificate for the S3 endpoint.
+      headscale_db_resources:
+        type: dict
+        description: Resource requests and limits for the headscale db container.

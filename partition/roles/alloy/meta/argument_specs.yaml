@@ -1,0 +1,66 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys Grafana Alloy in a systemd-managed Docker container
+    options:
+      alloy_image_name:
+        type: str
+        description: Image name of alloy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      alloy_image_tag:
+        type: str
+        description: Image tag of alloy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      alloy_config_host_dir:
+        type: str
+        description: The location of the alloy config on the host.
+      alloy_docker_log_driver:
+        type: str
+        description: Docker log driver for the alloy container.
+      alloy_loki_write_endpoints:
+        type: list
+        elements: dict
+        description: List of Loki push endpoints. Each entry supports url, remote_timeout and basic_auth (username, password). Required unless alloy_config_raw is set.
+      alloy_config_snippets:
+        type: list
+        elements: str
+        description: "List of built-in snippet names to enable. Available: syslog, journal, journal-file, docker, alloy-meta."
+      alloy_config_custom_snippets:
+        type: list
+        elements: str
+        description: List of paths to custom Alloy River snippet templates, resolved via Ansible's template search path. Appended after built-in snippets.
+      alloy_config_raw:
+        type: str
+        description: Full Alloy River config as a string. When set, bypasses snippet assembly entirely.
+      alloy_port:
+        type: int
+        description: Port for Alloy metrics and HTTP API.
+      alloy_migrate_from_promtail:
+        type: bool
+        description: Enable migration mode that imports cursor state from the legacy promtail positions file on first start.
+      alloy_syslog_legacy_positions_file:
+        type: str
+        description: Path to the legacy promtail positions file used by the syslog snippet during migration.
+      alloy_journal_path:
+        type: str
+        description: Path to the persistent journal directory used by the journal-file snippet.
+      alloy_journal_legacy_positions_file:
+        type: str
+        description: Path to the legacy promtail positions file used by the journal-file snippet during migration.
+      alloy_journal_legacy_position_name:
+        type: str
+        description: Job name from the old promtail journal scrape_config. Required when alloy_migrate_from_promtail is true and the journal-file snippet is used.
+      alloy_docker_network:
+        type: str
+        description: The docker network to launch the alloy container in.
+      alloy_docker_security_opts:
+        type: list
+        elements: str
+        description: Additional security opts passed to the docker container.
+      promtail_migrate_stop:
+        type: bool
+        description: Stop and disable the promtail systemd service during alloy cutover. Implied by promtail_migrate_cleanup.
+      promtail_migrate_cleanup:
+        type: bool
+        description: Remove all promtail remnants (service, unit file, config directory, positions files). Only set once migration to alloy is fully complete.
+      promtail_config_host_dir:
+        type: str
+        description: The promtail config directory removed when promtail_migrate_cleanup is enabled (defined by the deprecated promtail role).

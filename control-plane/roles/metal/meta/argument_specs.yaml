@@ -1,0 +1,687 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the metal control plane (metal-api, metal-apiserver, masterdata-api, tenant-apiserver, ipam, metal-console) via helm
+    options:
+      metal_check_api_available:
+        type: bool
+        description: Whether to wait for the metal-api health endpoint after deployment.
+      metal_check_api_health_endpoint:
+        type: str
+        description: The health endpoint URL that is probed after deployment.
+      metal_helm_chart:
+        type: str
+        description: OCI reference of the metal-control-plane helm chart. Required unless metal_helm_chart_local_path is set. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_helm_chart_tag:
+        type: str
+        description: Tag of the metal-control-plane helm chart. Required unless metal_helm_chart_local_path is set. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_helm_chart_local_path:
+        type: str
+        description: Local path to the metal-control-plane helm chart, used instead of the OCI chart when set.
+      metal_helm_chart_version:
+        type: str
+        description: Version of the local metal-control-plane helm chart. Only evaluated when metal_helm_chart_local_path is set.
+      metal_helm_chart_timeout:
+        type: str
+        description: Timeout for the helm deployment.
+      metal_set_resource_limits:
+        type: bool
+        description: Whether to set resource requests and limits on the control plane containers.
+      metal_log_level:
+        type: str
+        description: Log level of the metal control plane components.
+      metal_metalctl_image_pull_policy:
+        type: str
+        description: Image pull policy for the metalctl container.
+      metal_metalctl_image_name:
+        type: str
+        description: Image name of metalctl. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_metalctl_image_tag:
+        type: str
+        description: Image tag of metalctl. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_api_port:
+        type: int
+        description: Service port of the metal-api.
+      metal_apiserver_port:
+        type: int
+        description: Service port of the metal-apiserver.
+      metal_api_grpc_port:
+        type: int
+        description: gRPC port of the metal-api.
+      metal_api_metrics_port:
+        type: int
+        description: Metrics port of the metal-api.
+      metal_masterdata_api_port:
+        type: int
+        description: Service port of the masterdata-api.
+      metal_masterdata_api_metrics_port:
+        type: int
+        description: Metrics port of the masterdata-api.
+      metal_console_port:
+        type: int
+        description: Service port of the metal-console.
+      metal_apiserver_enabled:
+        type: bool
+        description: Whether to deploy the metal-apiserver (v2 API).
+      metal_apiserver_url:
+        type: str
+        description: The external URL of the metal-apiserver.
+      metal_apiserver_image_pull_policy:
+        type: str
+        description: Image pull policy for the metal-apiserver container.
+      metal_apiserver_image_name:
+        type: str
+        description: Image name of the metal-apiserver. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_apiserver_image_tag:
+        type: str
+        description: Image tag of the metal-apiserver. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_apiserver_db_addresses:
+        type: list
+        elements: str
+        description: Addresses of the metal-db instances used by the metal-apiserver.
+      metal_apiserver_db_password:
+        type: str
+        no_log: true
+        description: Password of the metal-db used by the metal-apiserver.
+      metal_apiserver_provider_tenant:
+        type: str
+        description: The provider tenant of the metal-apiserver.
+      metal_apiserver_redis_addr:
+        type: str
+        description: Address of the redis/valkey instance used by the metal-apiserver.
+      metal_apiserver_replicas:
+        type: int
+        description: Amount of metal-apiserver replicas.
+      metal_apiserver_hpa_enabled:
+        type: bool
+        description: Whether a horizontal pod autoscaler is deployed for the metal-apiserver.
+      metal_apiserver_hpa_max:
+        type: int
+        description: Maximum replicas of the metal-apiserver HPA.
+      metal_apiserver_hpa_min:
+        type: int
+        description: Minimum replicas of the metal-apiserver HPA.
+      metal_apiserver_hpa_cpu_percentage:
+        type: int
+        description: Target CPU utilization percentage of the metal-apiserver HPA.
+      metal_apiserver_resources:
+        type: dict
+        description: Resource requests and limits for the metal-apiserver container.
+      metal_apiserver_auditing_timescaledb_enabled:
+        type: raw
+        description: Whether auditing to timescaledb is enabled for the metal-apiserver.
+      metal_apiserver_auditing_timescaledb_host:
+        type: str
+        description: Host of the auditing timescaledb for the metal-apiserver.
+      metal_apiserver_auditing_timescaledb_port:
+        type: str
+        description: Port of the auditing timescaledb for the metal-apiserver.
+      metal_apiserver_auditing_timescaledb_db:
+        type: str
+        description: Database name of the auditing timescaledb for the metal-apiserver.
+      metal_apiserver_auditing_timescaledb_user:
+        type: str
+        description: User of the auditing timescaledb for the metal-apiserver.
+      metal_apiserver_auditing_timescaledb_password:
+        type: str
+        no_log: true
+        description: Password of the auditing timescaledb for the metal-apiserver.
+      metal_apiserver_auditing_timescaledb_retention:
+        type: str
+        description: Retention period for audit traces of the metal-apiserver.
+      metal_apiserver_auditing_splunk_enabled:
+        type: raw
+        description: Whether auditing to splunk is enabled for the metal-apiserver.
+      metal_apiserver_auditing_splunk_endpoint:
+        type: str
+        description: Splunk HEC endpoint for metal-apiserver auditing.
+      metal_apiserver_auditing_splunk_hec_token:
+        type: str
+        no_log: true
+        description: Splunk HEC token for metal-apiserver auditing.
+      metal_apiserver_auditing_splunk_source:
+        type: str
+        description: Splunk source for metal-apiserver auditing.
+      metal_apiserver_auditing_splunk_source_type:
+        type: str
+        description: Splunk source type for metal-apiserver auditing.
+      metal_apiserver_auditing_splunk_index:
+        type: str
+        description: Splunk index for metal-apiserver auditing.
+      metal_apiserver_auditing_splunk_host:
+        type: str
+        description: Splunk host field for metal-apiserver auditing.
+      metal_apiserver_auditing_splunk_ca:
+        type: str
+        description: CA certificate for the splunk endpoint of metal-apiserver auditing.
+      metal_apiserver_rate_limiting_max_requests_per_minute:
+        type: int
+        description: Maximum authenticated requests per minute for the metal-apiserver.
+      metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute:
+        type: int
+        description: Maximum unauthenticated requests per minute for the metal-apiserver.
+      metal_apiserver_oidc_discovery_url:
+        type: str
+        description: OIDC discovery URL for the metal-apiserver.
+      metal_apiserver_oidc_end_session_url:
+        type: str
+        description: OIDC end session URL for the metal-apiserver.
+      metal_apiserver_oidc_client_id:
+        type: str
+        description: OIDC client id for the metal-apiserver. Required when metal_apiserver_enabled is true. Read from the zitadel-client-credentials secret by default.
+      metal_apiserver_oidc_client_secret:
+        type: str
+        no_log: true
+        description: OIDC client secret for the metal-apiserver. Required when metal_apiserver_enabled is true. Read from the zitadel-client-credentials secret by default.
+      metal_apiserver_tls_skip_verify:
+        type: bool
+        description: Whether the metal-apiserver skips TLS certificate verification.
+      metal_apiserver_session_secret:
+        type: str
+        no_log: true
+        description: Session secret of the metal-apiserver.
+      metal_apiserver_secure_cookie:
+        type: bool
+        description: Whether the metal-apiserver uses secure cookies.
+      metal_apiserver_pdb_enabled:
+        type: bool
+        description: Whether a pod disruption budget is deployed for the metal-apiserver.
+      metal_apiserver_pdb_min_available:
+        type: int
+        description: Minimum available pods of the metal-apiserver PDB.
+      metal_apiserver_httproute_enabled:
+        type: bool
+        description: Whether to expose the metal-apiserver through a GatewayAPI HTTPRoute instead of an ingress.
+      metal_apiserver_httproute_hostnames:
+        type: list
+        elements: str
+        description: Hostnames for the metal-apiserver HTTPRoute.
+      metal_apiserver_httproute_parent_refs:
+        type: list
+        elements: dict
+        description: Parent references for the metal-apiserver HTTPRoute.
+      metal_apiserver_httproute_https_redirect:
+        type: dict
+        description: HTTPS redirect configuration for the metal-apiserver HTTPRoute.
+      metal_apiserver_token_create_schedule:
+        type: str
+        description: Cron schedule for the metal-apiserver token creation job.
+      metal_apiserver_tokens:
+        type: dict
+        description: Admin tokens created by the metal-apiserver token creation job.
+      metal_apiserver_headscale_enabled:
+        type: bool
+        description: Whether headscale VPN integration is enabled for the metal-apiserver.
+      metal_apiserver_headscale_tls:
+        type: bool
+        description: Whether the headscale control plane address of the metal-apiserver uses https.
+      metal_apiserver_headscale_api_key:
+        type: str
+        no_log: true
+        description: The headscale API key used by the metal-apiserver. Read from the headscale-api-key secret by default.
+      metal_apiserver_headscale_control_plane_address:
+        type: str
+        description: The external headscale control plane address used by the metal-apiserver.
+      metal_apiserver_headscale_internal_api_address:
+        type: str
+        description: The internal headscale API address used by the metal-apiserver.
+      metal_api_image_pull_policy:
+        type: str
+        description: Image pull policy for the metal-api container.
+      metal_api_image_name:
+        type: str
+        description: Image name of the metal-api. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_api_image_tag:
+        type: str
+        description: Image tag of the metal-api. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_api_replicas:
+        type: int
+        description: Amount of metal-api replicas.
+      metal_api_hpa_enabled:
+        type: bool
+        description: Whether a horizontal pod autoscaler is deployed for the metal-api.
+      metal_api_hpa_max:
+        type: int
+        description: Maximum replicas of the metal-api HPA.
+      metal_api_hpa_min:
+        type: int
+        description: Minimum replicas of the metal-api HPA.
+      metal_api_hpa_cpu_percentage:
+        type: int
+        description: Target CPU utilization percentage of the metal-api HPA.
+      metal_api_base_path:
+        type: str
+        description: The base path of the metal-api.
+      metal_api_dex_address:
+        type: str
+        description: The dex address used by the metal-api for OIDC.
+      metal_api_dex_clientid:
+        type: str
+        description: The dex client id used by the metal-api for OIDC.
+      metal_api_db_address:
+        type: str
+        description: Address of the metal-db.
+      metal_api_db_password:
+        type: str
+        no_log: true
+        description: Password of the metal-db.
+      metal_api_ipam_grpc_server_endpoint:
+        type: str
+        description: Endpoint of the ipam gRPC server.
+      metal_api_nsq_tcp_address:
+        type: str
+        description: The external nsqd TCP address.
+      metal_api_nsq_http_address:
+        type: str
+        description: The internal nsqd HTTP address.
+      metal_api_nsq_lookupd_address:
+        type: str
+        description: The internal nsq-lookupd address.
+      metal_api_nsq_tls_enabled:
+        type: bool
+        description: Whether TLS is used for the nsqd connection.
+      metal_api_nsq_tls_secret_name:
+        type: str
+        description: Name of the secret containing the nsqd TLS certificates.
+      metal_api_nsq_tls_checksum:
+        type: str
+        description: Checksum over the nsqd TLS secret used to trigger pod restarts on certificate changes.
+      metal_api_grpc_tls_enabled:
+        type: bool
+        description: Whether TLS is enabled for the metal-api gRPC server.
+      metal_api_grpc_certs_ca_cert:
+        type: str
+        required: true
+        description: The metal-api gRPC CA certificate content.
+      metal_api_grpc_certs_server_cert:
+        type: str
+        required: true
+        description: The metal-api gRPC server certificate content.
+      metal_api_grpc_certs_server_key:
+        type: str
+        required: true
+        no_log: true
+        description: The metal-api gRPC server certificate key content.
+      metal_api_bmc_superuser_enabled:
+        type: bool
+        description: Whether the BMC superuser is enabled.
+      metal_api_bmc_superuser_pwd:
+        type: str
+        no_log: true
+        description: Password of the BMC superuser.
+      metal_api_view_key:
+        type: str
+        no_log: true
+        description: HMAC key for the metal-api view access role.
+      metal_api_edit_key:
+        type: str
+        no_log: true
+        description: HMAC key for the metal-api edit access role.
+      metal_api_admin_key:
+        type: str
+        no_log: true
+        description: HMAC key for the metal-api admin access role.
+      metal_api_sizes:
+        type: list
+        elements: dict
+        description: Machine sizes applied to the metal-api.
+      metal_api_images:
+        type: list
+        elements: dict
+        description: Machine images applied to the metal-api.
+      metal_api_partitions:
+        type: list
+        elements: dict
+        description: Partitions applied to the metal-api.
+      metal_api_networks:
+        type: list
+        elements: dict
+        description: Networks applied to the metal-api.
+      metal_api_ips:
+        type: list
+        elements: dict
+        description: IPs applied to the metal-api.
+      metal_api_filesystemlayouts:
+        type: list
+        elements: dict
+        description: Filesystem layouts applied to the metal-api.
+      metal_api_sizeimageconstraints:
+        type: list
+        elements: dict
+        description: Size image constraints applied to the metal-api.
+      metal_api_size_reservations:
+        type: list
+        elements: dict
+        description: Size reservations applied to the metal-api.
+      metal_api_resources:
+        type: dict
+        description: Resource requests and limits for the metal-api container.
+      metal_api_s3_enabled:
+        type: bool
+        description: Whether S3 is configured for serving firmware.
+      metal_api_s3_address:
+        type: str
+        description: Address of the S3 endpoint for firmware. Required when metal_api_s3_enabled is true.
+      metal_api_s3_key:
+        type: str
+        description: Access key of the S3 endpoint for firmware.
+      metal_api_s3_secret:
+        type: str
+        no_log: true
+        description: Secret key of the S3 endpoint for firmware.
+      metal_api_s3_firmware_bucket:
+        type: str
+        description: S3 bucket containing the firmware.
+      metal_api_password_reason_minlength:
+        type: int
+        description: Minimum length of the reason for requesting the machine console password.
+      metal_api_release_version:
+        type: str
+        description: The metal-stack release version reported by the metal-api.
+      minimum_client_version:
+        type: str
+        description: The minimum metalctl client version required by the metal-api.
+      metal_api_pdb_enabled:
+        type: bool
+        description: Whether a pod disruption budget is deployed for the metal-api.
+      metal_api_pdb_min_available:
+        type: int
+        description: Minimum available pods of the metal-api PDB.
+      metal_api_httproute_enabled:
+        type: bool
+        description: Whether to expose the metal-api through a GatewayAPI HTTPRoute instead of an ingress.
+      metal_api_httproute_hostnames:
+        type: list
+        elements: str
+        description: Hostnames for the metal-api HTTPRoute.
+      metal_api_httproute_parent_refs:
+        type: list
+        elements: dict
+        description: Parent references for the metal-api HTTPRoute.
+      metal_api_httproute_https_redirect:
+        type: dict
+        description: HTTPS redirect configuration for the metal-api HTTPRoute.
+      metal_api_tcproute_enabled:
+        type: bool
+        description: Whether to expose the metal-api gRPC server through a GatewayAPI TCPRoute.
+      metal_api_tcproute_parent_refs:
+        type: list
+        elements: dict
+        description: Parent references for the metal-api TCPRoute.
+      metal_api_headscale_enabled:
+        type: bool
+        description: Whether headscale VPN integration is enabled for the metal-api.
+      metal_api_headscale_tls:
+        type: bool
+        description: Whether the headscale control plane address of the metal-api uses https.
+      metal_api_headscale_api_key:
+        type: str
+        no_log: true
+        description: The headscale API key used by the metal-api. Read from the headscale-api-key secret by default.
+      metal_api_headscale_control_plane_address:
+        type: str
+        description: The external headscale control plane address used by the metal-api.
+      metal_api_headscale_internal_api_address:
+        type: str
+        description: The internal headscale API address used by the metal-api.
+      metal_masterdata_api_image_pull_policy:
+        type: str
+        description: Image pull policy for the masterdata-api container.
+      metal_masterdata_api_image_name:
+        type: str
+        description: Image name of the masterdata-api. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_masterdata_api_image_tag:
+        type: str
+        description: Image tag of the masterdata-api. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_masterdata_api_tls_ca:
+        type: str
+        required: true
+        description: The masterdata-api CA certificate content.
+      metal_masterdata_api_tls_cert:
+        type: str
+        required: true
+        description: The masterdata-api server certificate content.
+      metal_masterdata_api_tls_cert_key:
+        type: str
+        required: true
+        no_log: true
+        description: The masterdata-api server certificate key content.
+      metal_masterdata_api_tls_client_cert:
+        type: str
+        required: true
+        description: The masterdata-api client certificate content.
+      metal_masterdata_api_tls_client_key:
+        type: str
+        required: true
+        no_log: true
+        description: The masterdata-api client certificate key content.
+      metal_masterdata_api_db_address:
+        type: str
+        description: Address of the masterdata-db.
+      metal_masterdata_api_db_port:
+        type: int
+        description: Port of the masterdata-db.
+      metal_masterdata_api_db_name:
+        type: str
+        description: Database name of the masterdata-db.
+      metal_masterdata_api_db_user:
+        type: str
+        description: User of the masterdata-db.
+      metal_masterdata_api_db_password:
+        type: str
+        no_log: true
+        description: Password of the masterdata-db.
+      metal_masterdata_api_provider_tenant:
+        type: str
+        description: The provider tenant of the masterdata-api.
+      metal_masterdata_api_hmac:
+        type: str
+        no_log: true
+        description: HMAC key of the masterdata-api.
+      metal_masterdata_api_resources:
+        type: dict
+        description: Resource requests and limits for the masterdata-api container.
+      metal_masterdata_api_pdb_enabled:
+        type: bool
+        description: Whether a pod disruption budget is deployed for the masterdata-api.
+      metal_masterdata_api_pdb_min_available:
+        type: int
+        description: Minimum available pods of the masterdata-api PDB.
+      metal_masterdata_api_tenants:
+        type: list
+        elements: dict
+        description: Tenants applied to the masterdata-api.
+      metal_masterdata_api_projects:
+        type: list
+        elements: dict
+        description: Projects applied to the masterdata-api.
+      metal_tenant_apiserver_image_pull_policy:
+        type: str
+        description: Image pull policy for the tenant-apiserver container.
+      metal_tenant_apiserver_image_name:
+        type: str
+        description: Image name of the tenant-apiserver. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_tenant_apiserver_image_tag:
+        type: str
+        description: Image tag of the tenant-apiserver. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_tenant_apiserver_db_address:
+        type: str
+        description: Address of the database used by the tenant-apiserver.
+      metal_tenant_apiserver_db_port:
+        type: int
+        description: Port of the database used by the tenant-apiserver.
+      metal_tenant_apiserver_db_name:
+        type: str
+        description: Database name used by the tenant-apiserver.
+      metal_tenant_apiserver_db_user:
+        type: str
+        description: Database user used by the tenant-apiserver.
+      metal_tenant_apiserver_db_password:
+        type: str
+        no_log: true
+        description: Database password used by the tenant-apiserver.
+      metal_tenant_apiserver_resources:
+        type: dict
+        description: Resource requests and limits for the tenant-apiserver container.
+      metal_tenant_apiserver_pdb_enabled:
+        type: bool
+        description: Whether a pod disruption budget is deployed for the tenant-apiserver.
+      metal_tenant_apiserver_pdb_min_available:
+        type: int
+        description: Minimum available pods of the tenant-apiserver PDB.
+      metal_tenant_apiserver_replicas:
+        type: int
+        description: Amount of tenant-apiserver replicas.
+      metal_ipam_image_pull_policy:
+        type: str
+        description: Image pull policy for the ipam container.
+      metal_ipam_image_name:
+        type: str
+        description: Image name of the ipam service. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_ipam_image_tag:
+        type: str
+        description: Image tag of the ipam service. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_ipam_db_address:
+        type: str
+        description: Address of the ipam-db.
+      metal_ipam_db_port:
+        type: int
+        description: Port of the ipam-db.
+      metal_ipam_db_name:
+        type: str
+        description: Database name of the ipam-db.
+      metal_ipam_db_user:
+        type: str
+        description: User of the ipam-db.
+      metal_ipam_db_password:
+        type: str
+        no_log: true
+        description: Password of the ipam-db.
+      metal_ipam_log_level:
+        type: str
+        description: Log level of the ipam service.
+      metal_ipam_resources:
+        type: dict
+        description: Resource requests and limits for the ipam container.
+      metal_ipam_pdb_enabled:
+        type: bool
+        description: Whether a pod disruption budget is deployed for the ipam service.
+      metal_ipam_pdb_min_available:
+        type: int
+        description: Minimum available pods of the ipam PDB.
+      metal_console_image_pull_policy:
+        type: str
+        description: Image pull policy for the metal-console container.
+      metal_console_image_name:
+        type: str
+        description: Image name of the metal-console. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_console_image_tag:
+        type: str
+        description: Image tag of the metal-console. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_console_enabled:
+        type: bool
+        description: Whether to deploy the metal-console.
+      metal_console_replicas:
+        type: int
+        description: Amount of metal-console replicas.
+      metal_console_resources:
+        type: dict
+        description: Resource requests and limits for the metal-console container.
+      metal_console_bmc_proxy_certs_server_key:
+        type: str
+        no_log: true
+        description: The metal-console BMC proxy server certificate key content.
+      metal_console_bmc_proxy_certs_server_pub:
+        type: str
+        description: The metal-console BMC proxy server public key content.
+      metal_console_bmc_proxy_certs_client_key:
+        type: str
+        no_log: true
+        description: The metal-console BMC proxy client certificate key content.
+      metal_console_bmc_proxy_certs_client_cert:
+        type: str
+        description: The metal-console BMC proxy client certificate content.
+      metal_console_bmc_proxy_certs_ca_cert:
+        type: str
+        description: The metal-console BMC proxy CA certificate content.
+      metal_console_pdb_enabled:
+        type: bool
+        description: Whether a pod disruption budget is deployed for the metal-console.
+      metal_console_pdb_min_available:
+        type: int
+        description: Minimum available pods of the metal-console PDB.
+      metal_console_tcproute_enabled:
+        type: bool
+        description: Whether to expose the metal-console through a GatewayAPI TCPRoute.
+      metal_console_tcproute_parent_refs:
+        type: list
+        elements: dict
+        description: Parent references for the metal-console TCPRoute.
+      metal_deploy_ingress:
+        type: bool
+        description: Whether to deploy the ingress resources.
+      metal_deploy_ingress_api_v1_rules:
+        type: raw
+        description: Whether ingress rules for the v1 metal-api are rendered.
+      metal_deploy_ingress_api_v2_rules:
+        type: raw
+        description: Whether ingress rules for the v2 metal-apiserver are rendered.
+      metal_ingress:
+        type: dict
+        description: Additional ingress configuration (e.g. annotations).
+      metal_ingress_dns:
+        type: str
+        description: Ingress DNS name of the metal-api.
+      metal_ingress_v2_dns:
+        type: str
+        description: Ingress DNS name of the metal-apiserver.
+      metal_auditing_timescaledb_enabled:
+        type: bool
+        description: Whether auditing to timescaledb is enabled.
+      metal_auditing_timescaledb_host:
+        type: str
+        description: Host of the auditing timescaledb.
+      metal_auditing_timescaledb_port:
+        type: str
+        description: Port of the auditing timescaledb.
+      metal_auditing_timescaledb_db:
+        type: str
+        description: Database name of the auditing timescaledb.
+      metal_auditing_timescaledb_user:
+        type: str
+        description: User of the auditing timescaledb.
+      metal_auditing_timescaledb_password:
+        type: str
+        no_log: true
+        description: Password of the auditing timescaledb.
+      metal_auditing_timescaledb_retention:
+        type: str
+        description: Retention period for audit traces.
+      metal_auditing_splunk_enabled:
+        type: bool
+        description: Whether auditing to splunk is enabled.
+      metal_auditing_splunk_endpoint:
+        type: str
+        description: Splunk HEC endpoint for auditing.
+      metal_auditing_splunk_hec_token:
+        type: str
+        no_log: true
+        description: Splunk HEC token for auditing.
+      metal_auditing_splunk_source:
+        type: str
+        description: Splunk source for auditing.
+      metal_auditing_splunk_source_type:
+        type: str
+        description: Splunk source type for auditing.
+      metal_auditing_splunk_index:
+        type: str
+        description: Splunk index for auditing.
+      metal_auditing_splunk_host:
+        type: str
+        description: Splunk host field for auditing.
+      metal_auditing_splunk_ca:
+        type: str
+        description: CA certificate for the splunk endpoint.
+      metal_auditing_search_backend:
+        type: str
+        description: The auditing backend used for searching audit traces.
