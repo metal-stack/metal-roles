@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: gardener-cloud-profile
   author: metal-stack
   description: Deploys Gardener cloud profile for a metal-stack installation.
   license: MIT
