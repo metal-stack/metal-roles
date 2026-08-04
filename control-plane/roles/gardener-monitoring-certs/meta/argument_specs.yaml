@@ -1,0 +1,18 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys ingress certificates for Gardener seed monitoring
+    options:
+      gardener_monitoring_certs_garden_name:
+        type: str
+        description: Name of the garden.
+      gardener_monitoring_certs_certificate_cluster_issuer:
+        type: str
+        description: Name of the cert-manager ClusterIssuer used for issuing the seed ingress certificate.
+      gardener_monitoring_certs_ingress_domain:
+        type: str
+        description: The ingress domain for which the wildcard certificate is issued.
+      gardener_monitoring_certs_shooted_seeds:
+        type: list
+        elements: dict
+        description: The shooted seeds (name, ingress_domain) to distribute the certificates to.

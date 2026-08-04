@@ -1,13 +1,4 @@
 ---
-- name: Check mandatory variables for this role are set
-  ansible.builtin.assert:
-    fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: true
-    that:
-      - lvm_vg is not none
-      - lvm_pvs is not none
-      - lvm_lvs is not none
-
 - name: Create volumegroup
   community.general.lvg:
     vg: "{{ lvm_vg }}"

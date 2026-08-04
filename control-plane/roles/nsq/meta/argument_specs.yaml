@@ -1,0 +1,77 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys nsq (nsqd, nsq-lookupd, nsq-admin) to the control plane cluster
+    options:
+      nsq_image_name:
+        type: str
+        description: Image name of nsq. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      nsq_image_tag:
+        type: str
+        description: Image tag of nsq. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      nsq_namespace:
+        type: str
+        description: The namespace to deploy nsq to.
+      nsq_image_pull_policy:
+        type: str
+        description: Image pull policy for the nsq containers.
+      nsq_set_resource_limits:
+        type: bool
+        description: Whether to set resource requests and limits on the nsq containers.
+      nsq_nsqd_resources:
+        type: dict
+        description: Resource requests and limits for the nsqd container.
+      nsq_nsq_lookupd_resources:
+        type: dict
+        description: Resource requests and limits for the nsq-lookupd container.
+      nsq_nsq_admin_resources:
+        type: dict
+        description: Resource requests and limits for the nsq-admin container.
+      nsq_log_level:
+        type: str
+        description: Log level of the nsq components.
+      nsq_broadcast_address:
+        type: str
+        description: The address nsqd broadcasts to consumers.
+      nsq_nsqd_data_size:
+        type: str
+        description: Size of the nsqd data volume.
+      nsq_tls_enabled:
+        type: bool
+        description: Whether TLS is enabled for nsqd.
+      nsq_tls_require:
+        type: str
+        description: The nsqd tls-required setting.
+      nsq_certs_client_key:
+        type: str
+        no_log: true
+        description: The nsq client certificate key content.
+      nsq_certs_client_cert:
+        type: str
+        description: The nsq client certificate content.
+      nsq_certs_ca_cert:
+        type: str
+        description: The nsq CA certificate content.
+      nsq_registry_auth_enabled:
+        type: raw
+        description: Whether to deploy an image pull secret for the registry.
+      nsq_registry_auth:
+        type: dict
+        no_log: true
+        description: Docker auth configuration for the image pull secret.
+      nsq_tcproute_enabled:
+        type: bool
+        description: Whether to expose nsqd through a GatewayAPI TCPRoute instead of an ingress.
+      nsq_tcproute_parent_refs:
+        type: list
+        elements: dict
+        description: Parent references for the nsqd TCPRoute.
+      nsq_enable_security_context:
+        type: bool
+        description: Whether to render the pod and container security contexts.
+      nsq_sts_security_context:
+        type: dict
+        description: Pod security context for the statefulset.
+      nsq_container_security_context:
+        type: dict
+        description: Security context for the containers.

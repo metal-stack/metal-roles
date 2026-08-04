@@ -1,0 +1,11 @@
+---
+argument_specs:
+  main:
+    short_description: Installs the metal-stack-api python client library
+    options:
+      metal_v2_client_install_latest_on_version_error:
+        type: bool
+        description: Install the latest available client as fallback when the requested version is not available.
+      metal_v2_client_install_from_git_repository:
+        type: bool
+        description: Install the client from the git repository instead of PyPI.

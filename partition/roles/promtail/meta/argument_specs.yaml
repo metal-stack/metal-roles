@@ -1,0 +1,25 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys promtail in a systemd-managed Docker container (deprecated, use alloy instead)
+    options:
+      promtail_image_name:
+        type: str
+        description: Image name of promtail. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      promtail_image_tag:
+        type: str
+        description: Image tag of promtail. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      promtail_config_host_dir:
+        type: str
+        description: The location of the promtail config on the host.
+      promtail_clients:
+        type: list
+        elements: dict
+        description: Loki client configurations rendered into the promtail configuration. Must not be empty.
+      promtail_scrape_configs:
+        type: list
+        elements: dict
+        description: Scrape configs rendered into the promtail configuration. Must not be empty.
+      promtail_docker_log_driver:
+        type: str
+        description: Docker log driver for the promtail container.

@@ -1,0 +1,11 @@
+---
+argument_specs:
+  main:
+    short_description: Installs a systemd timer that writes BGP metrics for the node-exporter textfile collector
+    options:
+      monitoring_bgp_metrics_textfile_directory:
+        type: str
+        description: The node-exporter textfile collector directory the metrics are written to.
+      monitoring_bgp_metrics_interval:
+        type: str
+        description: The interval in which the BGP metrics are collected.
