@@ -13,6 +13,7 @@
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
+      - metal_core_metal_apiserver_api_url is not none
 
 - name: Install services
   ansible.builtin.copy:
@@ -63,6 +64,9 @@
     name: bgp-neighbor-stats.timer
     enabled: true
     state: started
+
+- name: Create metal-apiserver token for metal-core
+  ansible.builtin.import_tasks: token.yaml
 
 - name: Deploy metal-core
   ansible.builtin.include_role:
