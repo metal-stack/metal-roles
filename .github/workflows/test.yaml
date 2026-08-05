@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     container: metalstack/metal-deployment-base:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Test
         run: |
           make test
@@ -16,14 +16,14 @@ jobs:
   spelling:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Check spelling
         uses: crate-ci/typos@master
 
   markdown-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: markdownlint-cli
         uses: DavidAnson/markdownlint-cli2-action@main
         with:
@@ -32,7 +32,7 @@ jobs:
   ansible-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v26.1.1
         with:
