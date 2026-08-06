@@ -70,11 +70,5 @@ route-map LOCAL_INTERFACES permit {{ loop.index }}0
   match interface {{ iface }}
 !
 {% endfor %}
-{% for route in mgmt_server_static_routes %}
-ip route {{ route }}
-{% endfor %}
-{% if mgmt_server_static_routes %}
-!
-{% endif %}
 line vty
 !
