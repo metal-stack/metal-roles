@@ -95,8 +95,6 @@
     jump: ACCEPT
   notify: Persist iptables
 
-# Always qualified on the egress interface: an unqualified MASQUERADE would also
-# rewrite traffic leaving on any other interface of the mgmt server.
 - name: Masquerade traffic leaving the given interfaces
   ansible.builtin.iptables:
     chain: POSTROUTING
