@@ -49,7 +49,7 @@ router bgp {{ mgmt_server_asn }}
 !
 {% for vrf in mgmt_server_vrfs %}
 router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
- bgp router-id {{ vrf.router_id | default(mgmt_server_routerid) }}
+ bgp router-id {{ vrf.router_id | default(mgmt_server_router_id) }}
  bgp bestpath as-path multipath-relax
  neighbor FABRIC peer-group
  neighbor FABRIC remote-as external
