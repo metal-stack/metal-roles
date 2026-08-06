@@ -195,6 +195,13 @@ spec:
               key: insecureSkipVerify
               name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
 {% endif %}
+{% if postgres_backup_restore_sidecar_s3_request_checksum_calculation %}
+        - name: BACKUP_RESTORE_SIDECAR_S3_REQUEST_CHECKSUM_CALCULATION
+          valueFrom:
+            secretKeyRef:
+              key: requestChecksumCalculation
+              name: backup-restore-sidecar-backup-provider-config-{{ postgres_name }}
+{% endif %}
 {% if postgres_backup_restore_sidecar_s3_trusted_ca_cert %}
         - name: BACKUP_RESTORE_SIDECAR_S3_TRUSTED_CA_CERT
           valueFrom:
@@ -296,9 +303,6 @@ data:
 {% if postgres_backup_restore_sidecar_object_days_max_keep %}
     object-days-max-keep: {{ postgres_backup_restore_sidecar_object_days_max_keep }}
 {% endif %}
-{% if postgres_backup_restore_sidecar_s3_request_checksum_calculation %}
-    s3-request-checksum-calculation: {{ postgres_backup_restore_sidecar_s3_request_checksum_calculation }}
-{% endif %}
     post-exec-cmds:
       - docker-entrypoint.sh postgres {% if postgres_shared_libraries_preload %} -c shared_preload_libraries={{ postgres_shared_libraries_preload | join(',') }}{% endif %}{% if postgres_maintenance_work_mem %} -c maintenance_work_mem={{ postgres_maintenance_work_mem }}{% endif %}{% if postgres_shared_buffers %} -c shared_buffers={{ postgres_shared_buffers }}{% endif %}{% if postgres_effective_cache_size %} -c effective_cache_size={{ postgres_effective_cache_size }}{% endif %}{% if postgres_work_mem %} -c work_mem={{ postgres_work_mem }}{% endif %} -c max_connections={{ postgres_max_connections }}
 ---
@@ -334,6 +338,9 @@ data:
 {% endif %}
 {% if postgres_backup_restore_sidecar_s3_trusted_ca_cert %}
   trustedCaCert: {{ postgres_backup_restore_sidecar_s3_trusted_ca_cert | b64encode }}
+{% endif %}
+{% if postgres_backup_restore_sidecar_s3_request_checksum_calculation %}
+    s3RequestChecksumCalculation: {{ postgres_backup_restore_sidecar_s3_request_checksum_calculation }}
 {% endif %}
 {% endif %}
 {% if postgres_backup_restore_sidecar_encryption_key %}
