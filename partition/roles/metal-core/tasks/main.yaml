@@ -13,29 +13,7 @@
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
-
-- name: Create gRPC certs directory
-  ansible.builtin.file:
-    path: "{{ metal_core_grpc_cert_dir }}"
-    state: directory
-    mode: "0755"
-
-- name: Copy gRPC certificates
-  ansible.builtin.copy:
-    dest: "{{ metal_core_grpc_cert_dir }}/{{ item.filename }}"
-    mode: "0640"
-    content: "{{ item.content }}"
-  no_log: true
-  loop:
-    - filename: ca.pem
-      content: "{{ metal_core_grpc_ca_cert }}"
-    - filename: client.pem
-      content: "{{ metal_core_grpc_client_cert }}"
-    - filename: client-key.pem
-      content: "{{ metal_core_grpc_client_key }}"
-  loop_control:
-    label: "{{ item.filename }}"
-  register: grpc_certs
+      - metal_core_metal_apiserver_api_url is not none
 
 - name: Install services
   ansible.builtin.copy:
@@ -87,6 +65,9 @@
     enabled: true
     state: started
 
+- name: Create metal-apiserver token for metal-core
+  ansible.builtin.import_tasks: token.yaml
+
 - name: Deploy metal-core
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -106,7 +87,6 @@
       - sys_admin
       - net_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
-    systemd_external_config_changed: "{{ grpc_certs is changed }}"
     systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"

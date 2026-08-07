@@ -1,0 +1,33 @@
+---
+- name: Create api token for metal-core
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ metal_core_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ metal_core_deployment_admin_token }}"
+  block:
+    - name: Create metal-core tenant
+      metal_v2_admin_tenant:
+        identifier: metal-core
+        name: metal-core
+        description: tenant used by the metal-core service in the metal-stack partitions
+      register: _tenant
+
+    - name: Create token
+      metal_v2_infra_token:
+        identifier: metal-core-{{ inventory_hostname }}
+        user: "{{ _tenant.id }}"
+        description: "metal-core token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
+        expires: 1h
+        permissions:
+          - subject: "*"
+            methods:
+              - /metalstack.infra.v2.SwitchService/Get
+              - /metalstack.infra.v2.SwitchService/Heartbeat
+              - /metalstack.infra.v2.SwitchService/Register
+              - /metalstack.infra.v2.ComponentService/Ping
+      register: _token
+
+    - name: Write token to filesystem
+      ansible.builtin.copy:
+        content: "{{ _token }}"
+        dest: "{{ metal_core_metal_apiserver_token_file }}"
