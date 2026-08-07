@@ -27,6 +27,7 @@ METAL_CORE_GRPC_CLIENT_CERT_FILE: "{{ metal_core_grpc_cert_dir }}/client.pem"
 METAL_CORE_GRPC_CLIENT_KEY_FILE: "{{ metal_core_grpc_cert_dir }}/client-key.pem"
 METAL_CORE_ADDITIONAL_BRIDGE_VIDS: "{{ metal_core_additional_bridge_vids | join(',') }}"
 METAL_CORE_ADDITIONAL_BRIDGE_PORTS: "{{ metal_core_additional_bridge_ports | join(',') }}"
+METAL_CORE_ADDITIONAL_MGMT_ROUTES: "{{ metal_core_additional_mgmt_routes | join(',') }}"
 {% if metal_core_spine_uplinks is defined %}
 METAL_CORE_SPINE_UPLINKS: "{{ metal_core_spine_uplinks | join(',') }}"
 {% endif %}
