@@ -1,4 +1,18 @@
 ---
+# Presence and types are validated by meta/argument_specs.yaml. Argument specs
+# cannot express "not null", and a variable declared without a value in
+# group_vars is null rather than undefined, so that check stays here.
+- name: Check mandatory variables for this role are not empty
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - mgmt_server_asn is not none
+      - mgmt_server_router_id is not none
+      - mgmt_server_spine_facing_interface is not none
+      - mgmt_server_metal_ssh_privkey is not none
+      - mgmt_server_metal_ssh_pubkey is not none
+
 - name: Gather package facts
   ansible.builtin.package_facts:
     manager: auto
