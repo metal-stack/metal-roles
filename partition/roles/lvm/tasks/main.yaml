@@ -1,4 +1,16 @@
 ---
+# Presence and types are validated by meta/argument_specs.yaml. Argument specs
+# cannot express "not null", and a variable declared without a value in
+# group_vars is null rather than undefined, so that check stays here.
+- name: Check mandatory variables for this role are not empty
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - lvm_vg is not none
+      - lvm_pvs is not none
+      - lvm_lvs is not none
+
 - name: Create volumegroup
   community.general.lvg:
     vg: "{{ lvm_vg }}"
