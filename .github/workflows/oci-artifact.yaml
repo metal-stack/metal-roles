@@ -1,15 +1,16 @@
 name: Publish OCI Artifact
 
 on:
-  pull_request:
-    branches:
-      - master
+  # pull_request:
+  #   branches:
+  #     - master
   release:
     types:
       - published
   push:
     branches:
       - master
+      - backport-v0.30.0
 
 env:
   REGISTRY: ghcr.io
