@@ -43,6 +43,6 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | valkey_backup_restore_sidecar_s3_insecure_skip_verify         |           | Skip certificate check of S3 storage service                                                                           |
 | valkey_backup_restore_sidecar_s3_trusted_ca_cert              |           | The trusted certificate authority for the S3 storage service                                                           |
 | valkey_backup_restore_sidecar_object_max_keep                 |           | The number of objects to keep at the cloud provider bucket                                                             |
-| valkey_backup_restore_sidecar_object_days_max_keep            |           | The number of days to keep an object at the cloud provider bucket                                                      |
+| valkey_backup_restore_sidecar_s3_object_days_max_keep         |           | The number of days to keep an object at the cloud provider bucket                                                      |
 | valkey_backup_restore_sidecar_s3_request_checksum_calculation |           | Controls the environment variable RequestChecksumCalculation. Possible values are `when_required` and `when_supported` |
 | valkey_backup_restore_sidecar_encryption_key                  |           | An optional encryption key to AES-encrypt the backups before uploading them to the backup provider (length == 32)      |

@@ -254,8 +254,8 @@ data:
 {% if valkey_backup_restore_sidecar_object_max_keep %}
     object-max-keep: {{ valkey_backup_restore_sidecar_object_max_keep }}
 {% endif %}
-{% if valkey_backup_restore_sidecar_object_days_max_keep %}
-    object-days-max-keep: {{ valkey_backup_restore_sidecar_object_days_max_keep }}
+{% if valkey_backup_restore_sidecar_s3_object_days_max_keep %}
+    object-days-max-keep: {{ valkey_backup_restore_sidecar_s3_object_days_max_keep }}
 {% endif %}
 {% if valkey_backup_restore_sidecar_s3_request_checksum_calculation %}
     s3-request-checksum-calculation: {{ valkey_backup_restore_sidecar_s3_request_checksum_calculation }}
