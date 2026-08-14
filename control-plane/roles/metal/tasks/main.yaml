@@ -24,11 +24,37 @@
       - metal_ipam_image_tag is defined
       - metal_console_image_name is defined
       - metal_console_image_tag is defined
+      - metal_console_token_refresher_image_name is defined
+      - metal_console_token_refresher_image_tag is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart is defined
       - metal_helm_chart_local_path is not none or metal_helm_chart_tag is defined
       - not metal_api_s3_enabled or metal_api_s3_address is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_id is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_secret is not none
+
+- name: Create metal-apiserver token for metal-console
+  ansible.builtin.import_role:
+    name: metal-roles/common/roles/metal-deployment-token
+  when: metal_console_enabled
+
+- name: Create metal-console token
+  ansible.builtin.import_tasks: console-token.yaml
+  when: metal_console_enabled
+
+- name: Create metal-console-token secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "metal-console-token"
+        namespace: "{{ metal_control_plane_namespace }}"
+        labels:
+          app: metal-console
+      data:
+        token: "{{ _token.secret | b64encode }}"
+    apply: true
+  when: '"secret" in _token and metal_console_enabled'
 
 - name: Deploy metal control plane
   ansible.builtin.include_role:

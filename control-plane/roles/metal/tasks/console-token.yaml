@@ -1,0 +1,22 @@
+---
+- name: create api token for metal-console
+  delegate_to: localhost
+  environment:
+    METALCTLV2_API_URL: "{{ metal_apiserver_url }}"
+    METALCTLV2_API_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
+  block:
+    - name: Create metal-console tenant
+      metal_v2_admin_tenant:
+        identifier: metal-console
+        name: metal-console
+        description: tenant used by the metal-console
+      register: _tenant
+
+    - name: Create metal-console api token
+      metal_v2_admin_token:
+        identifier: metal-console
+        user: "{{ _tenant.id }}"
+        description: "metal-console token
+        expires: "{{ metal_console_token_expiration }}"
+        permissions: "{{ metal_console_token_permissions }}"
+      register: _token
