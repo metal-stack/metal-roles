@@ -16,7 +16,7 @@
       metal_v2_admin_token:
         identifier: metal-console
         user: "{{ _tenant.id }}"
-        description: "metal-console token
+        description: metal-console token
         expires: "{{ metal_console_token_expiration }}"
         permissions: "{{ metal_console_token_permissions }}"
       register: _token
