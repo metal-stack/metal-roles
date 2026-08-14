@@ -1,5 +1,5 @@
 ---
-- name: create api token for metal-console
+- name: Create api token for metal-console
   delegate_to: localhost
   environment:
     METAL_APIV2_URL: "{{ metal_apiserver_url }}"
