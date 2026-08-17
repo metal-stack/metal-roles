@@ -28,6 +28,7 @@
                 - /metalstack.infra.v2.SwitchService/Heartbeat
                 - /metalstack.infra.v2.SwitchService/Register
                 - /metalstack.infra.v2.ComponentService/Ping
+                - /metalstack.infra.v2.EventService/Send
       register: _token
 
 
