@@ -13,7 +13,7 @@
       register: _tenant
 
     - name: Create token
-      metal_v2_infra_token:
+      metal_v2_admin_token:
         identifier: metal-core-{{ inventory_hostname }}
         user: "{{ _tenant.id }}"
         description: "metal-core token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
