@@ -40,6 +40,6 @@
 
     - name: Write token to filesystem
       ansible.builtin.copy:
-        content: "{{ _token }}"
+        content: "{{ _token.secret | b64encode }}"
         dest: "{{ metal_core_metal_apiserver_token_file }}"
         mode: "0600"
