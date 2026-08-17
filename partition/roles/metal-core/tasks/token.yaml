@@ -19,7 +19,7 @@
         description: "metal-core token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
         expires: "{{ metal_core_token_expiration }}"
         permissions:
-          - api:
+          - self:
               methods:
                 - /metalstack.api.v2.TokenService/Refresh
           - infra:
