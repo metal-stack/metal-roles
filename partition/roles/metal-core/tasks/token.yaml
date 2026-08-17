@@ -32,6 +32,7 @@
 
 
 - name: Write token to file
+  when: '"secret" in _token'
   block:
     - name: Create metal-core directory
       ansible.builtin.file:
@@ -46,4 +47,3 @@
         content: "{{ _token.secret }}"
         dest: "{{ metal_core_metal_apiserver_token_file }}"
         mode: "0600"
-  when: '"secret" in _token'
