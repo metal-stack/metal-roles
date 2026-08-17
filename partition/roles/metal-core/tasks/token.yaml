@@ -3,7 +3,7 @@
   delegate_to: localhost
   environment:
     METAL_APIV2_URL: "{{ metal_core_metal_apiserver_url }}"
-    METAL_APIV2_TOKEN: "{{ metal_core_deployment_admin_token }}"
+    METAL_APIV2_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
   block:
     - name: Create metal-core tenant
       metal_v2_admin_tenant:
