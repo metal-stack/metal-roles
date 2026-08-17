@@ -17,14 +17,14 @@
         identifier: metal-core-{{ inventory_hostname }}
         user: "{{ _tenant.id }}"
         description: "metal-core token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
-        expires: 1h
+        expires: "{{ metal_core_token_expiration }}"
         permissions:
-          - subject: "*"
-            methods:
-              - /metalstack.infra.v2.SwitchService/Get
-              - /metalstack.infra.v2.SwitchService/Heartbeat
-              - /metalstack.infra.v2.SwitchService/Register
-              - /metalstack.infra.v2.ComponentService/Ping
+          - infra:
+              methods:
+                - /metalstack.infra.v2.SwitchService/Get
+                - /metalstack.infra.v2.SwitchService/Heartbeat
+                - /metalstack.infra.v2.SwitchService/Register
+                - /metalstack.infra.v2.ComponentService/Ping
       register: _token
 
     - name: Write token to filesystem
