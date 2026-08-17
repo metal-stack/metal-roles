@@ -27,6 +27,14 @@
                 - /metalstack.infra.v2.ComponentService/Ping
       register: _token
 
+    - name: Create metal-core directory
+      ansible.builtin.file:
+        path: "{{ metal_core_metal_apiserver_token_file | dirname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
     - name: Write token to filesystem
       ansible.builtin.copy:
         content: "{{ _token }}"
