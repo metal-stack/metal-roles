@@ -16,6 +16,7 @@
     - name: Create image-cache api token
       metal_v2_admin_token:
         identifier: image-cache-{{ metal_partition_id }}-{{ inventory_hostname }}
+        use_latest_identifier: true
         user: "{{ _tenant.id }}"
         description: "metal-image-cache-sync token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
         expires: "{{ image_cache_sync_token_expiration }}"
