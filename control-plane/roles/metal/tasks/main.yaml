@@ -20,6 +20,7 @@
       - metal_masterdata_api_tls_client_key is defined
       - metal_tenant_apiserver_image_name is defined
       - metal_tenant_apiserver_image_tag is defined
+      - metal_apiserver_session_secret is defined
       - metal_ipam_image_name is defined
       - metal_ipam_image_tag is defined
       - metal_console_image_name is defined
