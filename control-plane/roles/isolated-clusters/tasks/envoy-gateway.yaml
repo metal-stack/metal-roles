@@ -11,15 +11,23 @@
     apply: true
     kubeconfig: "{{ cluster.kubeconfig }}"
 
-- name: Apply Envoy Gateway CRDs via Server-Side Apply
-  ansible.builtin.shell: >
+- name: Template Envoy Gateway CRDs
+  ansible.builtin.command: >
     helm template eg-crds oci://docker.io/envoyproxy/gateway-crds-helm
     --version "{{ isolated_clusters_envoy_gateway_chart_version }}"
     --namespace "{{ isolated_clusters_envoy_gateway_namespace }}"
     --set crds.gatewayAPI.enabled=true
     --set crds.envoyGateway.enabled=true
-    | kubectl apply --kubeconfig "{{ cluster.kubeconfig }}" --server-side --force-conflicts -f -
+  register: eg_crds_template
   changed_when: false
+
+- name: Apply Envoy Gateway CRDs via Server-Side Apply
+  kubernetes.core.k8s:
+    definition: "{{ eg_crds_template.stdout | from_yaml_all }}"
+    server_side_apply:
+      field_manager: kubectl
+      force_conflicts: true
+    kubeconfig: "{{ cluster.kubeconfig }}"
 
 - name: Deploy envoy gateway
   kubernetes.core.helm:
