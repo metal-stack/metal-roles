@@ -15,8 +15,8 @@
 - name: Get all CRDs from cluster
   kubernetes.core.k8s_info:
     kind: CustomResourceDefinition
+    kubeconfig: "{{ cluster.kubeconfig }}"
   register: cluster_crds
-  kubeconfig: "{{ cluster.kubeconfig }}"
 
 - name: Annotate and label CRDs for Helm adoption
   kubernetes.core.k8s:
