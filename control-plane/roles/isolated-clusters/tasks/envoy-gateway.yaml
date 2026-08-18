@@ -11,44 +11,15 @@
     apply: true
     kubeconfig: "{{ cluster.kubeconfig }}"
 
-# TODO: Remove these two tasks once the CRDs are adopted by Helm
-- name: Get all CRDs from cluster
-  kubernetes.core.k8s_info:
-    kind: CustomResourceDefinition
-    kubeconfig: "{{ cluster.kubeconfig }}"
-  register: cluster_crds
-
-- name: Annotate and label CRDs for Helm adoption
-  kubernetes.core.k8s:
-    state: patched
-    kind: CustomResourceDefinition
-    name: "{{ item.metadata.name }}"
-    definition:
-      metadata:
-        annotations:
-          meta.helm.sh/release-name: "eg-crds"
-          meta.helm.sh/release-namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
-        labels:
-          app.kubernetes.io/managed-by: "Helm"
-    kubeconfig: "{{ cluster.kubeconfig }}"
-  loop: "{{ cluster_crds.resources }}"
-  when: item.metadata.name is search('gateway\.(networking\.(x-)?k8s\.io|envoyproxy\.io)')
-  loop_control:
-    label: "{{ item.metadata.name }}"
-
-- name: Deploy envoy gateway CRDs
-  kubernetes.core.helm:
-    name: eg-crds
-    chart_ref: oci://docker.io/envoyproxy/gateway-crds-helm
-    chart_version: "{{ isolated_clusters_envoy_gateway_chart_version }}"
-    namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
-    values:
-      crds:
-        gatewayAPI:
-          enabled: true
-        envoyGateway:
-          enabled: true
-    kubeconfig: "{{ cluster.kubeconfig }}"
+- name: Apply Envoy Gateway CRDs via Server-Side Apply
+  ansible.builtin.shell: >
+    helm template eg-crds oci://docker.io/envoyproxy/gateway-crds-helm
+    --version "{{ isolated_clusters_envoy_gateway_chart_version }}"
+    --namespace "{{ isolated_clusters_envoy_gateway_namespace }}"
+    --set crds.gatewayAPI.enabled=true
+    --set crds.envoyGateway.enabled=true
+    | kubectl apply --kubeconfig "{{ cluster.kubeconfig }}" --server-side --force-conflicts -f -
+  changed_when: false
 
 - name: Deploy envoy gateway
   kubernetes.core.helm:
@@ -56,6 +27,7 @@
     chart_ref: oci://docker.io/envoyproxy/gateway-helm
     chart_version: "{{ isolated_clusters_envoy_gateway_chart_version }}"
     namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
+    skip_crds: true
     values: "{{ lookup('template', 'envoy-gateway/values.yaml') | from_yaml }}"
     kubeconfig: "{{ cluster.kubeconfig }}"
 
