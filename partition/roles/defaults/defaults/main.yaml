@@ -15,5 +15,5 @@ metal_partition_metal_api_grpc_client_cert:
 metal_partition_metal_api_grpc_client_key:
 metal_partition_mgmt_gateway:
 
-defaults_partition_metal_apiserver_url: "{{ metal_apiserver_url | default(None) }}"
-defaults_partition_metal_apiserver_admin_token: "{{ metal_deployment_admin_token | default(None) }}"
+defaults_partition_metal_apiserver_url: "{{ metal_apiserver_url | default( lookup('env', 'METAL_APIV2_URL'), true) | default(None) }}"
+defaults_partition_metal_apiserver_admin_token: "{{ metal_deployment_admin_token | default( lookup('env', 'METAL_APIV2_TOKEN'), true) | default(None) }}"
