@@ -11,6 +11,7 @@
         name: metal-image-cache-sync
         description: tenant used by the metal-image-cache-sync service in the metal-stack partitions
       register: _tenant
+      run_once: true
 
     - name: Create image-cache api token
       metal_v2_admin_token:

@@ -4,9 +4,9 @@ This role is being used to deploy an image cache to a partition.
 
 The image-cache is highly-available and falls back to the "global image store" (the internet) on cache misses or cache backend issues.
 
-For pointing your images to the image cache, you are gonna use HTTP image URLs in the metal-api. CoreDNS will intercept HTTP image requests on port 80 and redirect them to the partition's image cache. The global image store will be accessed through HTTPS in case of a cache miss.
+For pointing your images to the image cache, you are gonna use HTTP image URLs in the metal-apiserver. CoreDNS will intercept HTTP image requests on port 80 and redirect them to the partition's image cache. The global image store will be accessed through HTTPS in case of a cache miss.
 
-The cache is also capable of providing kernels and boot images configured in the metal-api.
+The cache is also capable of providing kernels and boot images configured in the metal-apiserver.
 
 ## Requirements
 
@@ -54,7 +54,7 @@ Introducing a partition-local cache for machine images brings the following adva
 #### Configuration
 
 | Name                                                                   | Mandatory | Description                                                                                                               |
-|------------------------------------------------------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------- |
 | image_cache_intercept_domains                                          |           | The domains for which the DNS requests are intercepted and pointed to the image cache                                     |
 | image_cache_kernel_cache_enabled                                       |           | Enables caching partition boot kernels                                                                                    |
 | image_cache_boot_image_cache_enabled                                   |           | Enables caching partition boot images                                                                                     |
@@ -63,8 +63,8 @@ Introducing a partition-local cache for machine images brings the following adva
 | image_cache_sync_expiration_grace_period                               |           | The amount of days to still sync images even if they have already expired in the metal-apiserver                          |
 | image_cache_sync_max_images_per_name                                   |           | Maximum amount of images to cache for an image variant                                                                    |
 | image_cache_sync_min_images_per_name                                   |           | Minimum amount of images to keep of an image variant                                                                      |
-| image_cache_sync_metal_apiserver_url                                   | yes       | Endpoint of the metal-apiserver                                                                                           |
-| image_cache_sync_deployment_admin_token                                |           | The metal-apiserver token used to create the token for the image-cache, defaults to `metal_deployment_admin_token`        |
+| image_cache_sync_metal_apiserver_url                                   |           | Endpoint of the metal-apiserver                                                                                           |
+| image_cache_sync_deployment_admin_token                                |           | The metal-apiserver token used to create the token for the image-cache                                                    |
 | image_cache_sync_schedule                                              |           | Cron sync schedule                                                                                                        |
 | image_cache_sync_excludes                                              |           | URL paths to exclude from the sync                                                                                        |
 | image_cache_sync_host_path                                             |           | Root path of where to store the images                                                                                    |
