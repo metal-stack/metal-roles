@@ -11,6 +11,19 @@
     apply: true
     kubeconfig: "{{ cluster.kubeconfig }}"
 
+- name: Deploy envoy gateway CRDs
+  kubernetes.core.helm:
+    name: eg-crds
+    chart_ref: oci://docker.io/envoyproxy/gateway-crds-helm
+    chart_version: "{{ isolated_clusters_envoy_gateway_chart_version }}"
+    namespace: "{{ isolated_clusters_envoy_gateway_namespace }}"
+    set_values:
+      - name: crds.gatewayAPI.enabled
+        value: "true"
+      - name: crds.envoyGateway.enabled
+        value: "true"
+    kubeconfig: "{{ cluster.kubeconfig }}"
+
 - name: Deploy envoy gateway
   kubernetes.core.helm:
     name: envoy-gateway
