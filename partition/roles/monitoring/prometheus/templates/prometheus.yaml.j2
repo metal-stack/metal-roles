@@ -6,7 +6,9 @@ global:
   scrape_timeout: {{ prometheus_scrape_timeout }}
   external_labels:
     partition: '{{ metal_partition_id }}'
-    replica: '{{ inventory_hostname }}'
+{% for key, value in prometheus_additional_external_labels.items() %}
+    {{ key }}: '{{ value }}'
+{% endfor %}
 
 # Alertmanager configuration
 alerting:
@@ -101,6 +103,15 @@ scrape_configs:
   file_sd_configs:
   - files:
     - '/etc/prometheus/file_sd/sonic-exporter.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: gnmic
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/gnmic.yaml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+

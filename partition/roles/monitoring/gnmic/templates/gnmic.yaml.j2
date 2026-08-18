@@ -1,0 +1,141 @@
+username: {{ monitoring_gnmic_gnmi_username }}
+password: {{ monitoring_gnmic_gnmi_password }}
+insecure: {{ monitoring_gnmic_gnmi_insecure | bool | lower }}
+{% if not (monitoring_gnmic_gnmi_insecure | bool) %}
+skip-verify: {{ monitoring_gnmic_gnmi_skip_verify | bool | lower }}
+{% endif %}
+encoding: json_ietf
+log: true
+
+{% set monitoring_gnmic_temperature_paths = (monitoring_gnmic_temperature_sensors | map('regex_replace', '^', '/TEMPERATURE_INFO/') | list) if monitoring_gnmic_temperature_sensors | length > 0 else ['/TEMPERATURE_INFO'] %}
+{% set monitoring_gnmic_fan_paths = (monitoring_gnmic_fans | map('regex_replace', '^', '/FAN_INFO/') | list) if monitoring_gnmic_fans | length > 0 else ['/FAN_INFO'] %}
+{% set monitoring_gnmic_crm_acl_paths = (monitoring_gnmic_crm_acl_tables | map('regex_replace', '^', '/CRM/ACL_STATS/') | list) if monitoring_gnmic_crm_acl_tables | length > 0 else ['/CRM/ACL_STATS'] %}
+{% set monitoring_gnmic_table_subscriptions = [
+    ('others', 'OTHERS', ['/platform/cpu', '/proc/meminfo', '/proc/uptime'], monitoring_gnmic_sample_interval_state),
+    ('cfg-core', 'CONFIG_DB', ['/DEVICE_METADATA/localhost', '/NTP/global', '/PORT'], monitoring_gnmic_sample_interval_config),
+    ('appl', 'APPL_DB', ['/ROUTE_TABLE', '/PORT_TABLE', '/LLDP_ENTRY_TABLE'], monitoring_gnmic_sample_interval_state),
+    ('state-system', 'STATE_DB', ['/SYSTEM_READY', '/CHASSIS_INFO'], monitoring_gnmic_sample_interval_state),
+    ('state-temperature', 'STATE_DB', monitoring_gnmic_temperature_paths, monitoring_gnmic_sample_interval_state),
+    ('state-psu', 'STATE_DB', ['/PSU_INFO'], monitoring_gnmic_sample_interval_state),
+    ('state-fan', 'STATE_DB', monitoring_gnmic_fan_paths, monitoring_gnmic_sample_interval_state),
+    ('state-transceivers', 'STATE_DB', ['/TRANSCEIVER_INFO', '/TRANSCEIVER_DOM_SENSOR', '/TRANSCEIVER_DOM_THRESHOLD'], monitoring_gnmic_sample_interval_state),
+    ('state-vxlan', 'STATE_DB', ['/VXLAN_TUNNEL_TABLE'], monitoring_gnmic_sample_interval_state),
+    ('counters-crm', 'COUNTERS_DB', ['/CRM/STATS'], monitoring_gnmic_sample_interval_state),
+    ('counters-crm-acl', 'COUNTERS_DB', monitoring_gnmic_crm_acl_paths, monitoring_gnmic_sample_interval_state),
+] %}
+{% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_disabled_subscriptions) | list %}
+{% set monitoring_gnmic_distribution_profiles = {
+    'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change'}, 'expiration': '3m'},
+    'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample'}, 'expiration': '-1s'},
+} %}
+{% set monitoring_gnmic_stream_profile = monitoring_gnmic_distribution_profiles[monitoring_gnmic_sonic_distribution] %}
+{% set monitoring_gnmic_effective_stream_modes = monitoring_gnmic_stream_profile.overrides %}
+{% set monitoring_gnmic_stream_mode_default = monitoring_gnmic_stream_profile.default %}
+targets:
+{% for name, db, paths, interval in monitoring_gnmic_table_subscriptions %}
+  {{ name }}:
+    address: {{ monitoring_gnmic_gnmi_address }}:{{ monitoring_gnmic_gnmi_port }}
+    subscriptions: [{{ name }}]
+{% endfor %}
+  counters-ports:
+    address: {{ monitoring_gnmic_gnmi_address }}:{{ monitoring_gnmic_gnmi_port }}
+    subscriptions: [counters-ports]
+  counters-queues:
+    address: {{ monitoring_gnmic_gnmi_address }}:{{ monitoring_gnmic_gnmi_port }}
+    subscriptions: [counters-queues]
+
+subscriptions:
+{% for name, db, paths, interval in monitoring_gnmic_table_subscriptions %}
+  {{ name }}:
+    target: {{ db }}
+    paths:
+{% for path in paths %}
+      - {{ path }}
+{% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get(name, monitoring_gnmic_stream_mode_default) %}
+    mode: stream
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
+    sample-interval: {{ interval }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
+{% endif %}
+
+{% endfor %}
+  counters-ports:
+    target: COUNTERS_DB
+    paths:
+{% for port in monitoring_gnmic_ports %}
+      - /COUNTERS/{{ port }}
+{% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get('counters-ports', 'on-change') %}
+    mode: stream
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
+    sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
+{% endif %}
+
+  counters-queues:
+    target: COUNTERS_DB
+    paths:
+{% for port in monitoring_gnmic_ports %}
+      - /COUNTERS/{{ port }}/Queues
+{% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get('counters-queues', monitoring_gnmic_stream_mode_default) %}
+    mode: stream
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
+    sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
+{% endif %}
+
+processors:
+  sonic-metrics:
+    event-starlark:
+      script: /app/config/sonic-metrics.star
+
+  sonic-rename:
+    event-strings:
+      value-names:
+        - ".*"
+      transforms:
+        - replace:
+            apply-on: "name"
+            old: '.*proc/uptime/total$'
+            new: 'sonic_device_uptime_seconds_total'
+
+  sonic-lldp:
+    event-starlark:
+      script: /app/config/lldp-neighbors.star
+
+  sonic-convert:
+    event-convert:
+      value-names:
+        - '^sonic_'
+        - '^crm_'
+      type: float
+
+  sonic-filter:
+    event-jq:
+      expression: |
+        [ .[] | .values |= with_entries(select(.key | test("^(sonic_|crm_)"))) | select(.values | length > 0) ]
+
+outputs:
+  prometheus:
+    type: prometheus
+    listen: :{{ monitoring_gnmic_prometheus_port }}
+    path: /metrics
+    metric-prefix: ""
+    append-subscription-name: false
+    export-timestamps: false
+    strings-as-labels: false
+    expiration: {{ monitoring_gnmic_stream_profile.expiration }}
+    event-processors:
+      - sonic-metrics
+      - sonic-rename
+      - sonic-lldp
+      - sonic-convert
+      - sonic-filter

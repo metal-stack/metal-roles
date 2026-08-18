@@ -1,7 +1,7 @@
 {% for option in mgmt_server_metal_ssh_options %}
 {{ option}}
 {% endfor %}
-{% for host in mgmt_server_metal_ssh_groups %}
+{% for host in mgmt_server_metal_ssh_groups | sort %}
 {% if hostvars[host].ansible_host is defined %}
 {% if hostvars[host].ansible_user is defined %}
 Host {{ host }} {{ hostvars[host].host_alias|default('') }}
