@@ -4,6 +4,9 @@ METAL_CORE_ASN: "{{ asn }}"
 METAL_CORE_CIDR: "{{ metal_core_cidr }}"
 METAL_CORE_PARTITION_ID: "{{ metal_partition_id }}"
 METAL_CORE_RACK_ID: "{{ metal_core_rack_id }}"
+{% if metal_core_room_id is defined and metal_core_room_id %}
+METAL_CORE_ROOM_ID: "{{ metal_core_room_id }}"
+{% endif %}
 METAL_CORE_BIND_ADDRESS: 0.0.0.0
 METAL_CORE_METAL_API_IP: "{{ metal_partition_metal_api_addr }}"
 METAL_CORE_METAL_API_PORT: "{{ metal_partition_metal_api_port }}"
@@ -30,3 +33,4 @@ METAL_CORE_SPINE_UPLINKS: "{{ metal_core_spine_uplinks | join(',') }}"
 METAL_CORE_INTERFACES_TPL_FILE: "{{ metal_core_interfaces_tpl_file }}"
 METAL_CORE_FRR_TPL_FILE: "{{ metal_core_frr_tpl_file }}"
 METAL_CORE_PXE_VLAN_ID: "{{ metal_core_pxe_vlan_id }}"
+METAL_CORE_INTERFACE_NAMING_SCHEMA: "{{ metal_core_interface_naming_schema }}"
