@@ -18,12 +18,6 @@ The following variables can be set to configure the role:
 
 ### General
 
- |for headscale instead of relying solely on the ingress                         |
-| headscale_httproute_hostnames                  |           | List of hostnames for the HTTPRoute                                                                            |
-| headscale_httproute_parent_refs                |           | List of `parentRefs` (Gateways) the HTTPRoute attaches to                                                      |
-| headscale_httproute_https_redirect             |           | Optional config to deploy an extra HTTPRoute that redirects HTTP to HTTPS (expects a `redirectParentRefs` key) |
-
-
 | Name                                                    | Mandatory | Description                                                                                                                                                                                                                                                                                                                                                                                                |
 | ------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | rethinkdb_exporter_name                                 | yes       | rethinkdb exporter image name                                                                                                                                                                                                                                                                                                                                                                              |
