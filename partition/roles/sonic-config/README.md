@@ -393,6 +393,15 @@ sonic_config_interconnects:
     # It also declares the virtual network as layer-3.
     vrf: Vrf46
 
+# Additional numbered interfaces to add to the `INTERFACE` field of the ConfigDB.
+# This can be necessary if, for example, you need a dhcp_relay to listen on VLAN subinterfaces.
+sonic_config_interfaces:
+  # The name of the interface.
+  Ethernet0.10:
+    # The IP addresses to add for this interface.
+    ips:
+      - 10.0.0.1/32
+
 # LLDP interval.
 sonic_config_lldp_hello_timer: 10
 
