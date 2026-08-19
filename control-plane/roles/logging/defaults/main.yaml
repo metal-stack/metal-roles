@@ -53,6 +53,11 @@ logging_ingress_loki_basic_auth_password:
 logging_ingress_loki_basic_auth_password_salt: "{{ logging_ingress_loki_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
 logging_ingress_annotations: {}
 
+logging_gateway_enabled: true
+logging_gateway_dns: "loki.{{ metal_control_plane_gateway_dns }}"
+logging_httproute_enabled: false
+logging_httproute_parent_refs: []
+
 logging_loki_enabled: true
 # Set to true to enable ServiceMonitor, PrometheusRule (alerts + recording rules),
 # and Grafana dashboard ConfigMaps for Loki.
