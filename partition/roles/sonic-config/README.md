@@ -583,15 +583,8 @@ sonic_config_vlan_subinterfaces:
 
 # VLANs to configure on the switch.
 sonic_config_vlans:
-    # VRF which to reach the DHCP server by.
-  - dhcp_relay_server_vrf: VrfMgmt
-
-    # Whose interface's address should be used as `giaddr` by the relay.
-    # This is necessary if the relayed packets leave through a numbered interface but you need the `giaddr` to be the source VLAN's address.
-    dhcp_relay_src_intf: Vlan4000
-
-    # DHCP servers to relay to.
-    dhcp_servers:
+  # DHCP servers to relay to.
+  - dhcp_servers:
       - 10.1.1.1
 
     # VLAN ID.
