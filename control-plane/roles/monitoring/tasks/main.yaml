@@ -61,6 +61,25 @@
     label: "{{ item.name }}"
   no_log: true
 
+- name: Deploy basic auth security policy
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: gateway.envoyproxy.io/v1alpha1
+      kind: SecurityPolicy
+      metadata:
+        name: basic-auth
+      spec:
+        targetRefs:
+          - group: gateway.networking.k8s.io
+            kind: HTTPRoute
+            name: kube-prometheus-stack-alertmanager
+        basicAuth:
+          users:
+            name: alertmanager-basic-auth
+    namespace: "{{ monitoring_namespace }}"
+    apply: true
+  when: monitoring_alertmanager_deploy_envoy_gateway_basic_auth
+
 - name: Deploy kube-prometheus-stack
   ansible.builtin.include_role:
     name: ansible-common/roles/helm-chart
@@ -86,6 +105,7 @@
 
 - name: Deploy metrics exporters
   ansible.builtin.import_tasks: exporters.yaml
+
 - name: Deploy Grafana dashboards
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'grafana-dashboards/' + item) }}"

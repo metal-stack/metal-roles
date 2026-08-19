@@ -1,5 +1,6 @@
 ---
 monitoring_namespace: monitoring
+
 monitoring_grafana_enabled: true
 monitoring_grafana_admin_password: admin
 monitoring_grafana_dashboard_timezone: Europe/Berlin
@@ -22,23 +23,41 @@ monitoring_grafana_additional_datasources:
     version: 1
     isDefault: false
     uid: alertmanager-datasource
-monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
+
+# prometheus ingresss configuration
 monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
-monitoring_ingress_grafana_tls: true
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
+# prometheus httproute configuration
+monitoring_prometheus_gateway_dns: prometheus.{{ metal_control_plane_gateway_dns }}
+monitoring_prometheus_httproute_enabled: false
+monitoring_prometheus_httproute_parent_refs: []
+# grafana ingresss configuration
+monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
+monitoring_grafana_ingress_enabled: true
+monitoring_ingress_grafana_tls: true
 monitoring_grafana_ingress_annotations: {}
-monitoring_alertmanager_ingress_annotations: {}
+# grafana httproute configuration
+monitoring_grafana_gateway_dns: "grafana.{{ metal_control_plane_gateway_dns }}"
+monitoring_grafana_httproute_enabled: false
+monitoring_grafana_httproute_parent_refs: []
+
 monitoring_alertmanager_enabled: true
+monitoring_alertmanager_webhook_logger_repeat_interval: 60m
+monitoring_alertmanager_webhook_slack_repeat_interval: 24h
+# alertmanager ingresss configuration
 monitoring_alertmanager_ingress_enabled: true
 monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
 monitoring_alertmanager_ingress_tls: true
 monitoring_alertmanager_ingress_basic_auth_user: alertmanager
 monitoring_alertmanager_ingress_basic_auth_password:
 monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertmanager_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
-
-monitoring_alertmanager_webhook_logger_repeat_interval: 60m
-monitoring_alertmanager_webhook_slack_repeat_interval: 24h
+monitoring_alertmanager_ingress_annotations: {}
+# alertmanager httproute configuration
+monitoring_alertmanager_gateway_dns: "alert.{{ metal_control_plane_gateway_dns }}"
+monitoring_alertmanager_httproute_enabled: false
+monitoring_alertmanager_httproute_parent_refs: []
+monitoring_alertmanager_deploy_envoy_gateway_basic_auth: "{{ monitoring_alertmanager_ingress_basic_auth_password is not none and monitoring_alertmanager_httproute_enabled }}"
 
 # event exporter
 event_exporter_enabled: false
