@@ -29,6 +29,7 @@
       - not metal_api_s3_enabled or metal_api_s3_address is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_id is not none
       - not metal_apiserver_enabled or metal_apiserver_oidc_client_secret is not none
+      - not metal_apiserver_enabled or (metal_apiserver_session_secret is not none and metal_apiserver_session_secret | length >= 10)
 
 - name: Deploy metal control plane
   ansible.builtin.include_role:
