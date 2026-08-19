@@ -61,13 +61,13 @@
     label: "{{ item.name }}"
   no_log: true
 
-- name: Deploy basic auth security policy
+- name: Deploy alertmanager basic auth security policy
   kubernetes.core.k8s:
     definition:
       apiVersion: gateway.envoyproxy.io/v1alpha1
       kind: SecurityPolicy
       metadata:
-        name: basic-auth
+        name: alertmanager-basic-auth
       spec:
         targetRefs:
           - group: gateway.networking.k8s.io
