@@ -29,7 +29,7 @@ image_cache_haproxy_docker_log_driver: json-file
 # image-sync
 image_cache_sync_metal_apiserver_url: "{{ defaults_partition_metal_apiserver_url }}"
 image_cache_sync_deployment_admin_token: "{{ defaults_partition_metal_apiserver_admin_token }}"
-image_cache_sync_token_expiration: 8h
+image_cache_sync_token_expiration: 144h
 image_cache_sync_permissions:
   - self:
       methods:
