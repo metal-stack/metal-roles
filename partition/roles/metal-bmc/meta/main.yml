@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal-bmc
   author: metal-stack
   description: Deploys the metal-bmc.
   license: MIT
