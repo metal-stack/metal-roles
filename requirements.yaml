@@ -1,12 +1,40 @@
 ---
 roles:
+  # roles are pinned to commit hashes so that moved or re-created tags
+  # upstream cannot change what gets installed
   - src: https://github.com/metal-stack/ansible-common
+    version: 64a3d304857cea3a749142ca3562a4740d5b0311 # v0.9.0
   - src: https://github.com/metal-stack/metal-ansible-modules
+    version: c1bb6f2193e8ca2e2ac45ebda1c31907bf59af2f # v0.3.2
+  # self-reference to this repository, required so that CI lint can resolve
+  # role paths; must NOT be pinned to a version, otherwise CI would test
+  # against a stale release instead of the current checkout
   - src: https://github.com/metal-stack/metal-roles
 
 collections:
-  - ansible.posix
-  - community.docker
-  - community.general
-  - community.kubernetes
-  - kubernetes.core
+  # collections are installed from their source repositories pinned to commit
+  # hashes instead of from galaxy.ansible.com, so neither a compromised
+  # publisher account nor compromised galaxy infrastructure can change what
+  # gets installed
+  - name: https://github.com/ansible-collections/ansible.posix.git
+    type: git
+    version: e98d9a0756458be1ac710988498000973889075c # 2.2.2
+  - name: https://github.com/ansible-collections/community.docker.git
+    type: git
+    version: a9bb98bc6e64b68ceb056912fdda4fcf13a16a8f # 5.2.1
+  # dependency of community.docker, pinned here so that it is not pulled
+  # from galaxy during dependency resolution
+  - name: https://github.com/ansible-collections/community.library_inventory_filtering.git
+    type: git
+    version: 5f70dd8678885157cb186e8b64382a30cab3e12f # 1.1.5
+  - name: https://github.com/ansible-collections/community.general.git
+    type: git
+    version: 71a3395fa90e854a7465c2bc2c10c12405a803ff # 13.2.0
+  # deprecated, redirects to kubernetes.core; kept and pinned to avoid a
+  # behavior change until usages are migrated
+  - name: https://github.com/ansible-collections/community.kubernetes.git
+    type: git
+    version: 0cc02beb1ecf4c6ad165fe2ee5cf0f9626329766 # 2.0.1
+  - name: https://github.com/ansible-collections/kubernetes.core.git
+    type: git
+    version: 0f472b53e2ee73e11b5f9067ab0826d76183c157 # 6.5.0
