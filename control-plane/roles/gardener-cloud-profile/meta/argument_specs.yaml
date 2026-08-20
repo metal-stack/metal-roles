@@ -1,0 +1,48 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the metal cloud profile to the virtual garden
+    options:
+      gardener_cloud_profile_garden_name:
+        type: str
+        description: Name of the garden to deploy the cloud profile to.
+      gardener_cloud_profile_wait_until_available:
+        type: bool
+        description: Whether to wait until the CloudProfile resource is available in the virtual garden.
+      gardener_cloud_profile_stage_name:
+        type: str
+        description: The stage name rendered into the cloud profile.
+      gardener_cloud_profile_metal_api_url:
+        type: str
+        description: The metal-api URL rendered into the cloud profile.
+      gardener_cloud_profile_machine_images:
+        type: list
+        elements: dict
+        description: Machine images offered in the cloud profile. Defaults to metal_api_images.
+      gardener_cloud_profile_firewall_images:
+        type: list
+        description: Firewall images offered in the cloud profile.
+      gardener_cloud_profile_firewall_images_from_machine_images:
+        type: bool
+        description: Whether firewall images are derived from the machine images.
+      gardener_cloud_profile_firewall_controller_versions:
+        type: list
+        description: Firewall controller versions offered in the cloud profile.
+      gardener_cloud_profile_kubernetes:
+        type: dict
+        description: The kubernetes section (expirable versions) of the cloud profile. Mandatory, must not be none.
+      gardener_cloud_profile_machine_types:
+        type: list
+        description: Machine types offered in the cloud profile.
+      gardener_cloud_profile_regions:
+        type: list
+        description: The regions section of the cloud profile. Mandatory, must not be none.
+      gardener_cloud_profile_partitions:
+        type: dict
+        description: Per-partition configuration (e.g. default machine types) of the cloud profile.
+      gardener_cloud_profile_os_cri_mapping:
+        type: dict
+        description: Mapping of operating systems to supported container runtimes.
+      gardener_cloud_profile_os_compatibility_mapping:
+        type: dict
+        description: Mapping of operating systems to kubelet compatibility constraints.

@@ -1,0 +1,32 @@
+---
+argument_specs:
+  main:
+    short_description: Installs and configures a wireguard server
+    options:
+      wireguard_ip:
+        type: str
+        required: true
+        description: The wireguard server address (CIDR) configured on the wg0 interface.
+      wireguard_public_key:
+        type: str
+        description: Pre-generated wireguard public key. When unset, a key pair is generated on the host.
+      wireguard_private_key:
+        type: str
+        no_log: true
+        description: Pre-generated wireguard private key. When unset, a key pair is generated on the host.
+      wireguard_cert_directory:
+        type: str
+        description: Directory in which the wireguard keys are stored.
+      wireguard_cert_owner:
+        type: str
+        description: Owner of the wireguard key directory.
+      wireguard_cert_group:
+        type: str
+        description: Group of the wireguard key directory.
+      wireguard_listen_port:
+        type: int
+        description: The port the wireguard server listens on.
+      wireguard_clients:
+        type: list
+        elements: dict
+        description: Wireguard clients to configure. Each entry supports name, public_key and client_id.

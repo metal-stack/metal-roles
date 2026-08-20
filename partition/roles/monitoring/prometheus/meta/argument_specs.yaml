@@ -1,0 +1,124 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys prometheus for partition monitoring in a systemd-managed Docker container
+    options:
+      prometheus_image_name:
+        type: str
+        description: Image name of prometheus. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      prometheus_image_tag:
+        type: str
+        description: Image tag of prometheus. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      prometheus_port:
+        type: int
+        description: Port prometheus listens on.
+      prometheus_docker_log_driver:
+        type: str
+        description: Docker log driver for the prometheus container.
+      prometheus_scrape_interval:
+        type: str
+        description: The global scrape interval.
+      prometheus_evaluation_interval:
+        type: str
+        description: The global rule evaluation interval.
+      prometheus_scrape_timeout:
+        type: str
+        description: The global scrape timeout.
+      prometheus_ipmi_scrape_interval:
+        type: str
+        description: The scrape interval for the ipmi-exporter job.
+      prometheus_ipmi_scrape_timeout:
+        type: str
+        description: The scrape timeout for the ipmi-exporter job.
+      prometheus_config_host_dir:
+        type: str
+        description: Host directory for the prometheus configuration.
+      prometheus_data_host_dir:
+        type: str
+        description: Host directory for the prometheus data.
+      prometheus_alertmanager_target:
+        type: str
+        description: The alertmanager target (host:port) to send alerts to.
+      prometheus_alertmanager_basic_auth_username:
+        type: str
+        description: Basic auth username for the alertmanager.
+      prometheus_alertmanager_basic_auth_password:
+        type: str
+        no_log: true
+        description: Basic auth password for the alertmanager.
+      prometheus_remote_write:
+        type: list
+        elements: dict
+        description: Remote write configurations rendered into the prometheus configuration.
+      prometheus_remote_write_basic_auth_password:
+        type: str
+        no_log: true
+        description: Basic auth password that can be referenced from prometheus_remote_write entries.
+      prometheus_frr_exporter_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the frr-exporter job.
+      prometheus_metal_core_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the metal-core job.
+      prometheus_node_exporter_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the node-exporter job.
+      prometheus_promtail_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the promtail job.
+      prometheus_alloy_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the alloy job.
+      prometheus_ping_targets:
+        type: list
+        elements: str
+        description: Targets for the blackbox-exporter icmp probes.
+      prometheus_ipmi_exporter_targets:
+        type: list
+        elements: str
+        description: Static scrape targets for the ipmi job. When empty, targets are generated dynamically from the DHCP leases via a systemd timer.
+      prometheus_sonic_exporter_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the sonic-exporter job.
+      prometheus_gnmic_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the gnmic job.
+      prometheus_blackbox_exporter_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the blackbox-exporter job.
+      prometheus_lightbox_exporter_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the lightbox-exporter job.
+      prometheus_lightos_smart_targets:
+        type: list
+        elements: str
+        description: Scrape targets for the lightos smart job.
+      prometheus_hosts_content:
+        type: str
+        description: Content of an /etc/hosts file mounted into the prometheus container for static name resolution.
+      prometheus_blackbox_exporter_icmp_groups:
+        type: list
+        elements: dict
+        description: Groups of icmp probe targets for the blackbox-exporter.
+      prometheus_blackbox_exporter_metal_api_probe_url:
+        type: str
+        description: The metal-api URL probed through the blackbox-exporter.
+      prometheus_haproxy_enabled:
+        type: bool
+        description: Whether the haproxy metrics job is scraped.
+      prometheus_blackbox_exporter_dns:
+        type: str
+        description: The DNS server probed through the blackbox-exporter.
+      prometheus_ipmi_exporter_allowed_cidrs:
+        type: list
+        elements: str
+        description: CIDRs from which dynamically discovered ipmi targets are allowed.
