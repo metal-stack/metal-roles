@@ -6,6 +6,7 @@
     METAL_APIV2_TOKEN: "{{ metal_core_deployment_admin_token }}"
   block:
     - name: Create metal-core tenant
+      run_once: true
       metal_v2_admin_tenant:
         identifier: metal-core
         name: metal-core
@@ -15,20 +16,11 @@
     - name: Create token
       metal_v2_admin_token:
         identifier: metal-core-{{ inventory_hostname }}
+        use_latest_identifier: true
         user: "{{ _tenant.id }}"
         description: "metal-core token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
         expires: "{{ metal_core_token_expiration }}"
-        permissions:
-          - self:
-              methods:
-                - /metalstack.api.v2.TokenService/Refresh
-          - infra:
-              methods:
-                - /metalstack.infra.v2.SwitchService/Get
-                - /metalstack.infra.v2.SwitchService/Heartbeat
-                - /metalstack.infra.v2.SwitchService/Register
-                - /metalstack.infra.v2.ComponentService/Ping
-                - /metalstack.infra.v2.EventService/Send
+        permissions: "{{ metal_core_permissions }}"
       register: _token
 
 
@@ -37,7 +29,7 @@
   block:
     - name: Create metal-core directory
       ansible.builtin.file:
-        path: "{{ metal_core_metal_apiserver_token_file | dirname }}"
+        path: "{{ metal_core_etc_dir }}"
         state: directory
         owner: root
         group: root
@@ -46,5 +38,5 @@
     - name: Write token to filesystem
       ansible.builtin.copy:
         content: "{{ _token.secret }}"
-        dest: "{{ metal_core_metal_apiserver_token_file }}"
+        dest: "{{ metal_core_etc_dir }}/{{ metal_core_metal_apiserver_token_filename }}"
         mode: "0600"

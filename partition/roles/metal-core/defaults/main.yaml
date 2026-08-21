@@ -9,10 +9,22 @@ metal_core_timeout: 15s
 metal_core_set_src_loopback: true
 metal_core_interface_naming_schema: default
 
+metal_core_etc_dir: /etc/metal-core
 metal_core_metal_apiserver_url: "{{ metal_partition_metal_apiserver_url }}"
-metal_core_metal_apiserver_token_file: /var/run/metal-core/metal-apiserver-token
+metal_core_metal_apiserver_token_filename: metal-apiserver-token
 metal_core_deployment_admin_token: "{{ metal_deployment_admin_token }}"
 metal_core_token_expiration: 8h
+metal_core_permissions:
+  - self:
+      methods:
+        - /metalstack.api.v2.TokenService/Refresh
+  - infra:
+      methods:
+        - /metalstack.infra.v2.SwitchService/Get
+        - /metalstack.infra.v2.SwitchService/Heartbeat
+        - /metalstack.infra.v2.SwitchService/Register
+        - /metalstack.infra.v2.ComponentService/Ping
+        - /metalstack.infra.v2.EventService/Send
 
 metal_core_additional_bridge_vids: []
 metal_core_additional_bridge_ports: []

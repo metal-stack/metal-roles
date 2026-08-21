@@ -13,7 +13,7 @@
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
-      - metal_core_metal_apiserver_api_url is not none
+      - metal_core_metal_apiserver_url is not none
 
 - name: Install services
   ansible.builtin.copy:
