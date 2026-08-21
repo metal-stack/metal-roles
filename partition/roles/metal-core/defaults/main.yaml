@@ -10,10 +10,10 @@ metal_core_set_src_loopback: true
 metal_core_interface_naming_schema: default
 
 metal_core_etc_dir: /etc/metal-core
-metal_core_metal_apiserver_url: "{{ metal_partition_metal_apiserver_url }}"
+metal_core_metal_apiserver_url: "{{ defaults_partition_metal_apiserver_url }}"
 metal_core_metal_apiserver_token_filename: metal-apiserver-token
-metal_core_deployment_admin_token: "{{ metal_deployment_admin_token }}"
-metal_core_token_expiration: 8h
+metal_core_deployment_admin_token: "{{ defaults_partition_metal_apiserver_admin_token }}"
+metal_core_token_expiration: 144h
 metal_core_permissions:
   - self:
       methods:
