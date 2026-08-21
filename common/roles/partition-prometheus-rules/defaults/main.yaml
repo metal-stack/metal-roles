@@ -79,6 +79,8 @@ partition_prometheus_rules_sonic: |
       expr: node_timex_sync_status{job="node-exporter"}
     - record: sonic_ntp_offset
       expr: node_timex_offset_seconds{job="node-exporter"}
+    - record: sonic_ntp_jitter
+      expr: node_timex_estimated_error_seconds{job="node-exporter"}
   - name: sonic-alert.rules
     rules:
     - alert: BgpMetricsStale
