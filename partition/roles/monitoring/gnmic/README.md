@@ -56,7 +56,7 @@ results without erroring.
 
 - Metric names are kept compatible through the `sonic-metrics.star` processor. Existing dashboards and alerts on `sonic_*` metrics keep working once the job label is updated.
 - BGP metrics are not part of gnmic. They come from the separate `bgp-metrics` role.
-- NTP metrics (`sonic_ntp_sync_status`, `sonic_ntp_offset`) are recording rules over node-exporter data in the `partition-prometheus-rules` role, not gnmic metrics.
+- NTP metrics (`sonic_ntp_sync_status`, `sonic_ntp_offset`, `sonic_ntp_jitter`) are recording rules over node-exporter data in the `partition-prometheus-rules` role, not gnmic metrics.
 
 ### Behavioral differences
 

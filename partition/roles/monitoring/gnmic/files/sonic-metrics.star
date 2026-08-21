@@ -40,6 +40,7 @@ ROUTE_FIELDS = [
 ]
 
 DEVICE_INFO_FIELDS = ["hwsku", "platform", "mac", "type", "hostname"]
+NTP_SERVER_FIELDS = ["key_id", "minpoll", "maxpoll"]
 PORT_INFO_FIELDS = ["alias", "index", "speed", "mtu"]
 PSU_INFO_FIELDS = ["serial", "model", "name"]
 TRANSCEIVER_INFO_FIELDS = ["vendor", "manufacturer", "serial", "model"]
@@ -269,6 +270,23 @@ def handle_ntp(event, output):
         emit(output, event, tags, "sonic_ntp_global", 1)
 
 
+def handle_ntp_servers(event, output):
+    servers = {}
+    for path, value in event.values.items():
+        segments = path.split("/")
+        if len(segments) < 3 or segments[1] != "NTP_SERVER":
+            continue
+        fields = servers.setdefault(segments[2], {})
+        if len(segments) == 4:
+            fields[segments[3]] = str(value)
+    for server, fields in servers.items():
+        tags = {"ntp_server": server}
+        for field in NTP_SERVER_FIELDS:
+            if field in fields:
+                tags[field] = fields[field]
+        emit(output, event, tags, "sonic_ntp_server", 1)
+
+
 def has_key_starting(event, prefix):
     for path in event.values.keys():
         if path.startswith(prefix):
@@ -424,7 +442,7 @@ HANDLERS = {
     "counters-crm": [handle_crm, handle_crm_stats],
     "counters-crm-acl": [handle_crm_acl],
     "appl": [handle_port_status, handle_routes],
-    "cfg-core": [handle_port_config, handle_device_info, handle_ntp],
+    "cfg-core": [handle_port_config, handle_device_info, handle_ntp, handle_ntp_servers],
     "state-system": [handle_system_status, handle_chassis],
     "state-temperature": [handle_temperatures],
     "state-psu": [handle_psu],
