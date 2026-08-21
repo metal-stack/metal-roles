@@ -23,7 +23,6 @@
         permissions: "{{ metal_core_permissions }}"
       register: _token
 
-
 - name: Write token to file
   when: '"secret" in _token'
   block:
