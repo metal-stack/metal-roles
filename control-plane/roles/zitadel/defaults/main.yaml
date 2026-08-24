@@ -50,3 +50,10 @@ zitadel_init_config: {}
   #     is_auto_update: true
 
 zitadel_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+
+zitadel_actions_enabled: false
+zitadel_actions_allow_roles: []
+zitadel_actions_client_ids: []
+# by default zitadel blocks cluster ips, so we overwrite the default deny list
+zitadel_actions_deny_list:
+  - localhost
