@@ -1,6 +1,0 @@
----
-# TODO: remove again, just for testing
-zitadel_init_image_tag: pr-13-v2-action
-
-zitadel_actions_image_name: ghcr.io/metal-stack/zitadel-actions
-zitadel_actions_image_tag: pr-13-v2-action
