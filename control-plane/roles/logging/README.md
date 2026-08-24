@@ -28,12 +28,12 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | logging_chart_repo                            | yes       |                                              | Repository for loki (release vector)                                                                                                                                                                        |
 | logging_namespace                             |           | `monitoring`                                 | Target namespace                                                                                                                                                                                            |
 | logging_loki_enabled                          |           | `true`                                       | Enables Loki                                                                                                                                                                                                |
-| logging_loki_persistence_enabled              |           | `true`                                       | Use persistent storage (PVC). Set to `false` for dev/test environments — uses `emptyDir` on the node's disk (data lost on pod deletion/recreation, not on container restart).                               |
+| logging_loki_persistence_enabled              |           | `false`                                      | Use persistent storage (PVC). Set to `false` for dev/test environments — uses `emptyDir` on the node's disk (data lost on pod deletion/recreation, not on container restart).                               |
 | logging_loki_storage_size                     |           | `30Gi`                                       | PVC size for all Loki data (chunks, index, WAL, compactor scratch). Size as: `daily_compressed_volume × retention_days × 1.2`. Only used when `logging_loki_persistence_enabled: true`.                     |
 | logging_loki_storage_class                    |           | `null` (cluster default)                     | StorageClass for the Loki PVC — must support `ReadWriteOnce`. **Set explicitly** in production to a fast block-storage class (e.g. `premium-rwo`). Only used when `logging_loki_persistence_enabled: true`. |
 | logging_loki_log_level                        |           | `warn`                                       | Loki server log level: `debug`, `info`, `warn`, `error`.                                                                                                                                                    |
 | logging_loki_retention_enabled                |           | `true`                                       | Enable automatic log expiry via the compactor. When `false`, logs are kept forever and the deletion API is disabled.                                                                                        |
-| logging_loki_retention_period                 |           | `30d`                                        | Global retention TTL. Minimum `24h`, must be a multiple of `24h`. Use `Nd` or `Nh` format (e.g. `30d`, `48h`). Only active when `logging_loki_retention_enabled: true`.                                     |
+| logging_loki_retention_period                 |           | `30d`                                        | Global retention TTL. Minimum `24h`. Use `Nd` or `Nh` format (e.g. `30d`, `48h`). Only active when `logging_loki_retention_enabled: true`.                                                                  |
 | logging_loki_deletion_mode                    |           | `filter-and-delete`                          | `filter-and-delete`: physically removes data from storage (required for GDPR). `filter-only`: hides from queries only. `disabled`: deletion API off.                                                        |
 | logging_loki_retention_stream                 |           | `[]`                                         | Per-stream retention rules evaluated before the global period. See [Retention](#retention) below.                                                                                                           |
 | logging_loki_monitoring_enabled               |           | `false`                                      | Enable ServiceMonitor, PrometheusRule (alerts + recording rules) and Grafana dashboard ConfigMaps. Requires the [monitoring role](../monitoring/) to be deployed first.                                     |
@@ -72,9 +72,9 @@ logging_loki_retention_stream:
     priority: 1
     period: 720h # 30 days
   # A noisy sidecar across all namespaces — target by container name
-  - selector: '{container="fluentd-sidecar"}'
+  - selector: '{container="noisy-sidecar"}'
     priority: 1
-    period: 6h
+    period: 24h
   # More specific rule overrides the namespace rule above (higher priority wins)
   - selector: '{namespace="prod", app="ephemeral-job"}'
     priority: 2
@@ -85,7 +85,8 @@ logging_loki_retention_stream:
     period: 168h
 ```
 
-The highest `priority` number wins when multiple rules match a stream. Streams matching no rule fall back to `logging_loki_retention_period`.
+The highest `priority` number wins when multiple rules match a stream. The minimum value for `period` is **24h**.
+Streams matching no rule fall back to `logging_loki_retention_period`.
 
 See the [Loki retention docs](https://grafana.com/docs/loki/latest/operations/storage/retention/) for full details.
 
