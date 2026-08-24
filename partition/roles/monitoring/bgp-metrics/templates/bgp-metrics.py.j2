@@ -13,6 +13,8 @@ AF_NAMES = {
     "l2VpnEvpn": ("l2vpn", "evpn"),
 }
 
+PREFIX_COUNT_FAMILIES = [("ipv4", "unicast"), ("ipv6", "unicast")]
+
 TYPES = [
     "# TYPE sonic_bgp_status gauge",
     "# TYPE sonic_bgp_uptime_seconds_total counter",
@@ -20,7 +22,29 @@ TYPES = [
     "# TYPE sonic_bgp_messages_transmitted_total counter",
     "# TYPE sonic_bgp_prefixes_received gauge",
     "# TYPE sonic_bgp_prefixes_transmitted gauge",
+    "# TYPE sonic_bgp_routes_rib gauge",
 ]
+
+
+def routes_rib(vrf, afi, safi, peer):
+    try:
+        raw = subprocess.run(
+            [
+                "vtysh",
+                "-c",
+                f"show bgp vrf {vrf} {afi} {safi} neighbors {peer} prefix-counts json",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        ).stdout
+        data = json.loads(raw)
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError):
+        return None
+    counters = data.get("ribTableWalkCounters")
+    if isinstance(counters, dict) and "All RIB" in counters:
+        return counters["All RIB"]
+    return data.get("All RIB")
 
 
 def collect():
@@ -66,6 +90,11 @@ def collect():
                 lines.append(
                     f"sonic_bgp_prefixes_transmitted{{{labels}}} {p.get('pfxSnt', 0)}"
                 )
+                if (afi, safi) not in PREFIX_COUNT_FAMILIES:
+                    continue
+                rib = routes_rib(vrf, afi, safi, peer)
+                if rib is not None:
+                    lines.append(f"sonic_bgp_routes_rib{{{labels}}} {rib}")
     return lines
 
 
