@@ -20,7 +20,7 @@
       with a minimum of 24h. Examples: 24h, 14d, 720h.
     quiet: true
     that:
-      # Must match Nd or Nh (no mixed units — Loki requires multiples of 24h)
+      # Must match Nd or Nh
       - logging_loki_retention_period is match('^[1-9][0-9]*[dh]$')
       # When expressed in hours, value must be a multiple of 24
       - not logging_loki_retention_period is match('^[0-9]+h$') or
