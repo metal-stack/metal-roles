@@ -574,8 +574,15 @@ sonic_config_vlan_subinterfaces:
 
 # VLANs to configure on the switch.
 sonic_config_vlans:
-  # DHCP servers to relay to.
-  - dhcp_servers:
+    # VRF which the DHCP servers are reachable by.
+    # This setting was only tested on EdgeCore SONiC 202111.1
+  - dhcp_relay_server_vrf: Vrf45
+    # Source interface to use for DHCP relay.
+    # This interface's address is used as `giaddr`.
+    # This setting was only tested on EdgeCore SONiC 202111.11.
+    dhcp_relay_src_intf: Vlan4000
+    # DHCP servers to relay to.
+    dhcp_servers:
       - 10.1.1.1
 
     # VLAN ID.
