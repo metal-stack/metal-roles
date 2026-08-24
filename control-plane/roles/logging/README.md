@@ -125,11 +125,12 @@ For all other `logging_alloy_*` variables (`loki_write_endpoints`, `prometheus_w
 
 This role now uses the **grafana-community/loki** Helm chart (v17+, Loki 3.x) instead of the previous `grafana/loki` v5.x (Loki 2.8.x).
 
-**Reinstall required.** The old deployment stored logs in an `emptyDir` volume, so pod restarts already caused complete log loss. There is no data to migrate — the new chart provisions a persistent volume and starts fresh.
+**Reinstall required.** The old deployment stored logs in an `emptyDir` volume only, so pod restarts caused complete log loss. There is no data to migrate.
+The role can now be configured to use a persistent volume for storage, including retention.
 
 Key changes:
 
-- **Persistent log storage** — logs now survive pod restarts on a PVC (the old `emptyDir` already lost everything on restart)
+- **Persistent log storage** — logs now survive pod restarts on a PVC if configured (the old `emptyDir` lost everything on restart)
 - **Automatic log retention** — the compactor enforces a configurable TTL (default 30 days) and physically deletes expired logs, satisfying GDPR requirements
 - **Loki 3.x** — newer backend with improved performance, structured metadata support, and TSDB-based storage
 - **Community-maintained chart** — the Helm chart moved to `grafana-community/loki` for ongoing maintenance
