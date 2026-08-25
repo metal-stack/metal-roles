@@ -81,6 +81,11 @@ partition_prometheus_rules_sonic: |
       expr: node_timex_offset_seconds{job="node-exporter"}
     - record: sonic_ntp_jitter
       expr: node_timex_estimated_error_seconds{job="node-exporter"}
+    - record: sonic_interface_last_flapped_seconds_total
+      expr: |-
+        sonic_interface_last_flapped_uptime_seconds{job="gnmic"}
+        + on (instance) group_left ()
+        (timestamp(sonic_device_uptime_seconds_total{job="gnmic"}) - sonic_device_uptime_seconds_total{job="gnmic"})
   - name: sonic-alert.rules
     rules:
     - alert: BgpMetricsStale
