@@ -20,10 +20,10 @@ TRANSMIT_ERROR_TYPES = {
 PACKET_METHODS = ["UCAST", "BROADCAST", "MULTICAST"]
 
 PSU_MEASUREMENTS = {
-    "input_voltage": "sonic_hw_psu_input_voltage_volts",
-    "input_current": "sonic_hw_psu_input_current_amperes",
-    "output_voltage": "sonic_hw_psu_output_voltage_volts",
-    "output_current": "sonic_hw_psu_output_current_amperes",
+    "input_voltage": "sonic_device_psu_input_volts",
+    "input_current": "sonic_device_psu_input_amperes",
+    "output_voltage": "sonic_device_psu_output_volts",
+    "output_current": "sonic_device_psu_output_amperes",
     "temp": "sonic_device_psu_celsius",
 }
 
@@ -42,7 +42,7 @@ ROUTE_FIELDS = [
 DEVICE_INFO_FIELDS = ["hwsku", "platform", "mac", "type", "hostname"]
 NTP_SERVER_FIELDS = ["key_id", "minpoll", "maxpoll"]
 PORT_INFO_FIELDS = ["alias", "index", "speed", "mtu"]
-PSU_INFO_FIELDS = ["serial", "model", "name"]
+PSU_INFO_FIELDS = {"serial": "serial", "model": "model", "name": "model_name"}
 TRANSCEIVER_INFO_FIELDS = ["vendor", "manufacturer", "serial", "model"]
 
 
@@ -354,9 +354,9 @@ def handle_psu(event, output):
                 emit(output, event, slot, PSU_MEASUREMENTS[field], number)
     for psu, fields in grouped_fields(event, "PSU_INFO").items():
         tags = {"slot": first_digits(psu)}
-        for field in PSU_INFO_FIELDS:
+        for field, label in PSU_INFO_FIELDS.items():
             if field in fields:
-                tags[field] = fields[field]
+                tags[label] = fields[field]
         emit(output, event, tags, "sonic_device_psu_info", 1)
 
 
