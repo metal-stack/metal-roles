@@ -337,7 +337,6 @@ sonic_config_interconnects:
     # Connect to this BGP neighbors. Supports multiple neighbors and also BGP unnumbered.
     neighbors:
       - 10.1.2.3
-      - Ethernet1 interface
 
     # Put the neighbor in this peer group.
     peer_group: STATIC
