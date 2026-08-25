@@ -31,4 +31,4 @@ monitoring_gnmic_sample_interval_counters: 30s
 monitoring_gnmic_sample_interval_state: 60s
 monitoring_gnmic_sample_interval_config: 60s
 
-monitoring_gnmic_heartbeat_interval: 300s
+monitoring_gnmic_heartbeat_interval: 120s
