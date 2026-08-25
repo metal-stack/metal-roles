@@ -215,6 +215,10 @@ def handle_port_status(event, output):
             emit(output, event, {"interface": interface}, "sonic_interface_admin_status", up)
         elif field == "oper_status":
             emit(output, event, {"interface": interface}, "sonic_interface_operational_status", up)
+        elif field == "oper_status_change_uptime":
+            number = to_number(value)
+            if number != None:
+                emit(output, event, {"interface": interface}, "sonic_interface_last_flapped_uptime_seconds", number)
 
 
 def handle_routes(event, output):
