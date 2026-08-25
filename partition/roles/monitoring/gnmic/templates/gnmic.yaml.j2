@@ -25,7 +25,7 @@ log: true
 ] %}
 {% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_disabled_subscriptions) | list %}
 {% set monitoring_gnmic_distribution_profiles = {
-    'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change'}, 'expiration': '3m'},
+    'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change', 'state-psu': 'on-change'}, 'expiration': '3m'},
     'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample'}, 'expiration': '-1s'},
 } %}
 {% set monitoring_gnmic_stream_profile = monitoring_gnmic_distribution_profiles[monitoring_gnmic_sonic_distribution] %}
