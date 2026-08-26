@@ -116,7 +116,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### metal-apiserver
 
 | Name                                                                  | Mandatory | Description                                                                                                      |
-|-----------------------------------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
 | metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                                                    |
 | metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                                                           |
 | metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                                                          |
@@ -127,8 +127,9 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                                                                     |
 | metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                                                                |
 | metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                                                            |
+| metal_apiserver_unique_user_key                                       |           | The OIDC provider's app unique identifier                                                                        |
 | metal_apiserver_tls_skip_verify                                       |           | Skip TLS verification for talking to the OIDC provider                                                           |
-| metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                                                       |
+| metal_apiserver_session_secret                                        | yes       | The secret used to hash the sessions of a user during auth, must be at least 10 characters long                  |
 | metal_apiserver_secure_cookie                                         |           | If set to true, auth cookie will only be set on https                                                            |
 | metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                                                       |
 | metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                                                        |
