@@ -15,6 +15,8 @@ AF_NAMES = {
 
 PREFIX_COUNT_FAMILIES = [("ipv4", "unicast"), ("ipv6", "unicast")]
 
+ROUTE_FAMILIES = {"ipv4": "ip", "ipv6": "ipv6"}
+
 TYPES = [
     "# TYPE sonic_bgp_status gauge",
     "# TYPE sonic_bgp_uptime_seconds_total counter",
@@ -23,23 +25,27 @@ TYPES = [
     "# TYPE sonic_bgp_prefixes_received gauge",
     "# TYPE sonic_bgp_prefixes_transmitted gauge",
     "# TYPE sonic_bgp_routes_rib gauge",
+    "# TYPE sonic_routes_rib gauge",
+    "# TYPE sonic_routes_fib gauge",
 ]
 
 
-def routes_rib(vrf, afi, safi, peer):
+def vtysh(command):
     try:
         raw = subprocess.run(
-            [
-                "vtysh",
-                "-c",
-                f"show bgp vrf {vrf} {afi} {safi} neighbors {peer} prefix-counts json",
-            ],
+            ["vtysh", "-c", command],
             capture_output=True,
             text=True,
             timeout=30,
         ).stdout
-        data = json.loads(raw)
+        return json.loads(raw)
     except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError):
+        return None
+
+
+def bgp_routes_rib(vrf, afi, safi, peer):
+    data = vtysh(f"show bgp vrf {vrf} {afi} {safi} neighbors {peer} prefix-counts json")
+    if data is None:
         return None
     counters = data.get("ribTableWalkCounters")
     if isinstance(counters, dict) and "All RIB" in counters:
@@ -47,16 +53,9 @@ def routes_rib(vrf, afi, safi, peer):
     return data.get("All RIB")
 
 
-def collect():
-    try:
-        raw = subprocess.run(
-            ["vtysh", "-c", "show bgp vrf all summary json"],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        ).stdout
-        data = json.loads(raw)
-    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError):
+def collect_bgp():
+    data = vtysh("show bgp vrf all summary json")
+    if data is None:
         return None
 
     lines = []
@@ -92,16 +91,41 @@ def collect():
                 )
                 if (afi, safi) not in PREFIX_COUNT_FAMILIES:
                     continue
-                rib = routes_rib(vrf, afi, safi, peer)
+                rib = bgp_routes_rib(vrf, afi, safi, peer)
                 if rib is not None:
                     lines.append(f"sonic_bgp_routes_rib{{{labels}}} {rib}")
     return lines
 
 
+def collect_routes():
+    lines = []
+    collected = False
+    for family, keyword in sorted(ROUTE_FAMILIES.items()):
+        data = vtysh(f"show {keyword} route vrf all summary json")
+        if data is None:
+            continue
+        collected = True
+        for vrf, summary in sorted(data.items()):
+            if not isinstance(summary, dict):
+                continue
+            for entry in summary.get("routes") or []:
+                if not isinstance(entry, dict):
+                    continue
+                labels = (
+                    f'vrf="{vrf}",family="{family}",'
+                    f'route_source="{entry.get("type", "unknown")}"'
+                )
+                lines.append(f"sonic_routes_rib{{{labels}}} {entry.get('rib', 0)}")
+                lines.append(f"sonic_routes_fib{{{labels}}} {entry.get('fib', 0)}")
+    return lines if collected else None
+
+
 def main():
-    lines = collect()
-    if lines is None:
+    bgp = collect_bgp()
+    routes = collect_routes()
+    if bgp is None and routes is None:
         sys.exit(1)
+    lines = (bgp or []) + (routes or [])
     if lines:
         lines = TYPES + lines
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

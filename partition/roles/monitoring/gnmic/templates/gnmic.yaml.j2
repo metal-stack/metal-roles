@@ -13,7 +13,7 @@ log: true
 {% set monitoring_gnmic_table_subscriptions = [
     ('others', 'OTHERS', ['/platform/cpu', '/proc/meminfo', '/proc/uptime'], monitoring_gnmic_sample_interval_state),
     ('cfg-core', 'CONFIG_DB', ['/DEVICE_METADATA/localhost', '/NTP/global', '/NTP_SERVER', '/PORT'], monitoring_gnmic_sample_interval_config),
-    ('appl', 'APPL_DB', ['/ROUTE_TABLE', '/PORT_TABLE', '/LLDP_ENTRY_TABLE'], monitoring_gnmic_sample_interval_state),
+    ('appl', 'APPL_DB', ['/PORT_TABLE', '/LLDP_ENTRY_TABLE'], monitoring_gnmic_sample_interval_state),
     ('state-system', 'STATE_DB', ['/SYSTEM_READY', '/CHASSIS_INFO'], monitoring_gnmic_sample_interval_state),
     ('state-temperature', 'STATE_DB', monitoring_gnmic_temperature_paths, monitoring_gnmic_sample_interval_state),
     ('state-psu', 'STATE_DB', ['/PSU_INFO'], monitoring_gnmic_sample_interval_state),

@@ -34,11 +34,6 @@ SENSOR_THRESHOLDS = {
     "low_critical_threshold": "low_critical",
 }
 
-ROUTE_FIELDS = [
-    "ifname", "nexthop", "protocol", "weight", "distance", "metric",
-    "blackhole", "vni_label", "router_mac", "segment", "seg6local_action", "nexthop_group",
-]
-
 DEVICE_INFO_FIELDS = ["hwsku", "platform", "mac", "type", "hostname"]
 NTP_SERVER_FIELDS = ["key_id", "minpoll", "maxpoll"]
 PORT_INFO_FIELDS = ["alias", "index", "speed", "mtu"]
@@ -161,19 +156,6 @@ def handle_queue_counters(event, output):
             emit(output, event, {"interface": interface, "queue": queue}, metric, number)
 
 
-def handle_crm(event, output):
-    if "/CRM/STATS/crm_stats_ipv4_route_used" not in event.values:
-        return
-    total = 0
-    for family in ["crm_stats_ipv4_route_used", "crm_stats_ipv6_route_used"]:
-        for path, value in event.values.items():
-            if path.endswith(family):
-                number = to_number(value)
-                total += number if number != None else 0
-                break
-    emit(output, event, {}, "sonic_routes_fib", total)
-
-
 def emit_used_with_available(output, event, fields, metric_prefix):
     for field, value in fields.items():
         number = to_number(value)
@@ -219,21 +201,6 @@ def handle_port_status(event, output):
             number = to_number(value)
             if number != None:
                 emit(output, event, {"interface": interface}, "sonic_interface_last_flapped_uptime_seconds", number)
-
-
-def handle_routes(event, output):
-    routes = {}
-    for path in event.values.keys():
-        if not path.startswith("/ROUTE_TABLE/"):
-            continue
-        route = path
-        for field in ROUTE_FIELDS:
-            if path.endswith("/" + field):
-                route = path[:-(len(field) + 1)]
-                break
-        routes[route] = True
-    if len(routes) > 0:
-        emit(output, event, {}, "sonic_routes_rib", len(routes))
 
 
 def handle_port_config(event, output):
@@ -443,9 +410,9 @@ def handle_transceiver_thresholds(event, output):
 HANDLERS = {
     "counters-ports": [handle_port_counters],
     "counters-queues": [handle_queue_counters],
-    "counters-crm": [handle_crm, handle_crm_stats],
+    "counters-crm": [handle_crm_stats],
     "counters-crm-acl": [handle_crm_acl],
-    "appl": [handle_port_status, handle_routes],
+    "appl": [handle_port_status],
     "cfg-core": [handle_port_config, handle_device_info, handle_ntp, handle_ntp_servers],
     "state-system": [handle_system_status, handle_chassis],
     "state-temperature": [handle_temperatures],
