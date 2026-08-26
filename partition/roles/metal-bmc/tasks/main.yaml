@@ -107,3 +107,4 @@
       METAL_BMC_CONSOLE_CA_CERT_FILE: "{{ metal_bmc_console_cert_dir }}/ca.pem"
       METAL_BMC_CONSOLE_CERT_FILE: "{{ metal_bmc_console_cert_dir }}/cert.pem"
       METAL_BMC_CONSOLE_KEY_FILE: "{{ metal_bmc_console_cert_dir }}/key.pem"
+      METAL_BMC_REPORT_INTERVAL: "{{ metal_bmc_report_interval }}"
