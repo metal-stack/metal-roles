@@ -48,6 +48,17 @@
     monitoring_gnmic_fans: "{{ monitoring_gnmic_fan_keys.stdout_lines | map('regex_replace', '^FAN_INFO\\|', '') | list }}"
   when: monitoring_gnmic_fans | length == 0
 
+- name: Determine PSUs
+  ansible.builtin.command: sonic-db-cli STATE_DB KEYS "PSU_INFO|*"
+  register: monitoring_gnmic_psu_keys
+  changed_when: false
+  when: monitoring_gnmic_psus | length == 0
+
+- name: Set PSU list
+  ansible.builtin.set_fact:
+    monitoring_gnmic_psus: "{{ monitoring_gnmic_psu_keys.stdout_lines | map('regex_replace', '^PSU_INFO\\|', '') | list }}"
+  when: monitoring_gnmic_psus | length == 0
+
 - name: Determine CRM ACL tables
   ansible.builtin.command: sonic-db-cli COUNTERS_DB KEYS "CRM:ACL_STATS:*"
   register: monitoring_gnmic_crm_acl_keys

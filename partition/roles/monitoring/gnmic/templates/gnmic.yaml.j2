@@ -9,6 +9,7 @@ log: true
 
 {% set monitoring_gnmic_temperature_paths = (monitoring_gnmic_temperature_sensors | map('regex_replace', '^', '/TEMPERATURE_INFO/') | list) if monitoring_gnmic_temperature_sensors | length > 0 else ['/TEMPERATURE_INFO'] %}
 {% set monitoring_gnmic_fan_paths = (monitoring_gnmic_fans | map('regex_replace', '^', '/FAN_INFO/') | list) if monitoring_gnmic_fans | length > 0 else ['/FAN_INFO'] %}
+{% set monitoring_gnmic_psu_paths = monitoring_gnmic_psus | map('regex_replace', '^', '/PSU_INFO/') | list %}
 {% set monitoring_gnmic_crm_acl_paths = (monitoring_gnmic_crm_acl_tables | map('regex_replace', '^', '/CRM/ACL_STATS/') | list) if monitoring_gnmic_crm_acl_tables | length > 0 else ['/CRM/ACL_STATS'] %}
 {% set monitoring_gnmic_table_subscriptions = [
     ('others', 'OTHERS', ['/platform/cpu', '/proc/meminfo', '/proc/uptime'], monitoring_gnmic_sample_interval_state),
@@ -16,14 +17,15 @@ log: true
     ('appl', 'APPL_DB', ['/PORT_TABLE', '/LLDP_ENTRY_TABLE'], monitoring_gnmic_sample_interval_state),
     ('state-system', 'STATE_DB', ['/SYSTEM_READY', '/CHASSIS_INFO'], monitoring_gnmic_sample_interval_state),
     ('state-temperature', 'STATE_DB', monitoring_gnmic_temperature_paths, monitoring_gnmic_sample_interval_state),
-    ('state-psu', 'STATE_DB', ['/PSU_INFO'], monitoring_gnmic_sample_interval_state),
+    ('state-psu', 'STATE_DB', monitoring_gnmic_psu_paths, monitoring_gnmic_sample_interval_state),
     ('state-fan', 'STATE_DB', monitoring_gnmic_fan_paths, monitoring_gnmic_sample_interval_state),
     ('state-transceivers', 'STATE_DB', ['/TRANSCEIVER_INFO', '/TRANSCEIVER_DOM_SENSOR', '/TRANSCEIVER_DOM_THRESHOLD'], monitoring_gnmic_sample_interval_state),
     ('state-vxlan', 'STATE_DB', ['/VXLAN_TUNNEL_TABLE'], monitoring_gnmic_sample_interval_state),
     ('counters-crm', 'COUNTERS_DB', ['/CRM/STATS'], monitoring_gnmic_sample_interval_state),
     ('counters-crm-acl', 'COUNTERS_DB', monitoring_gnmic_crm_acl_paths, monitoring_gnmic_sample_interval_state),
 ] %}
-{% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_disabled_subscriptions) | list %}
+{% set monitoring_gnmic_skipped_subscriptions = monitoring_gnmic_disabled_subscriptions + (['state-psu'] if monitoring_gnmic_psus | length == 0 else []) %}
+{% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_skipped_subscriptions) | list %}
 {% set monitoring_gnmic_distribution_profiles = {
     'broadcom': {'default': 'sample',    'overrides': {'counters-ports': 'on-change', 'state-psu': 'on-change'}, 'expiration': '3m'},
     'edgecore': {'default': 'on-change', 'overrides': {'others': 'sample'}, 'expiration': '-1s'},
