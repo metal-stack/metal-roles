@@ -13,6 +13,8 @@
       - metal_core_image_name is defined
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
+      - metal_core_asn is not none
+      - metal_core_loopback_ip is not none
 
 - name: Create gRPC certs directory
   ansible.builtin.file:
