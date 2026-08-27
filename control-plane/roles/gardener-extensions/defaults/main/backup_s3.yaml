@@ -2,3 +2,5 @@
 gardener_extension_backup_s3_enabled: false
 
 gardener_extension_backup_s3_helm_chart_tag: "{{ gardener_extension_backup_s3_image_tag }}"
+
+gardener_extension_backup_s3_additional_network_policies: false
