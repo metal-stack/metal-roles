@@ -96,6 +96,10 @@ gateway:
 {% endfor %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "{{ logging_ingress_loki_tls | lower }}"
       nginx.ingress.kubernetes.io/ssl-redirect: "{{ logging_ingress_loki_tls | lower }}"
+{% if logging_ingress_loki_tls and logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
+{% endif %}
     hosts:
       - host: {{ logging_ingress_dns }}
         paths:

@@ -54,9 +54,10 @@ logging_ingress_loki_basic_auth_password_salt: "{{ logging_ingress_loki_basic_au
 logging_ingress_annotations: {}
 
 logging_gateway_enabled: true
-logging_gateway_dns: "loki.{{ metal_control_plane_gateway_dns }}"
+
 logging_httproute_enabled: false
 logging_httproute_parent_refs: []
+logging_gateway_dns: "loki.{{ metal_control_plane_gateway_dns }}"
 
 logging_loki_enabled: true
 # Set to true to enable ServiceMonitor, PrometheusRule (alerts + recording rules),
@@ -67,12 +68,12 @@ logging_loki_monitoring_enabled: false
 # Loki log level. Valid values: debug, info, warn, error.
 logging_loki_log_level: warn
 
-logging_loki_persistence_enabled: true  # false uses emptyDir (no persistence, data lost on pod restart)
+logging_loki_persistence_enabled: false  # false uses emptyDir (no persistence, data lost on pod restart)
 logging_loki_storage_size: 30Gi
 # if null, the cluster default provisioner is used
 logging_loki_storage_class: null
 logging_loki_retention_enabled: true
-logging_loki_retention_period: 30d  # minimum 24h, must be a multiple of 24h; use Nd (days) or Nh (hours, e.g. 48h); only used when logging_loki_retention_enabled is true
+logging_loki_retention_period: 30d  # minimum 24h; use Nd (days) or Nh (hours, e.g. 48h); only used when logging_loki_retention_enabled is true
 logging_loki_deletion_mode: filter-and-delete  # filter-only: filter at query time only, no storage deletion; disabled: disables the deletion API
 # Per-stream retention rules, evaluated before the global retention_period.
 # Example:
