@@ -50,7 +50,6 @@ logging_ingress_loki_tls: true
 # if updated, partition alloy/promtail need their loki endpoints updated to match.
 logging_ingress_loki_basic_auth_user: promtail
 logging_ingress_loki_basic_auth_password:
-logging_ingress_loki_basic_auth_password_salt: "{{ logging_ingress_loki_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
 logging_ingress_annotations: {}
 
 logging_gateway_enabled: true

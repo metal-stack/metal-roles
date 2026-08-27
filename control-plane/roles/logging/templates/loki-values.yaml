@@ -115,8 +115,8 @@ gateway:
 {% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
   basicAuth:
     enabled: true
-    username: {{ logging_ingress_loki_basic_auth_user }}
-    password: {{ logging_ingress_loki_basic_auth_password }}
+    username: "{{ logging_ingress_loki_basic_auth_user }}"
+    password: {{ logging_ingress_loki_basic_auth_password | to_json }}
 {% endif %}
 
   route:
