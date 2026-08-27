@@ -86,7 +86,7 @@ loki:
     delete_request_store: filesystem
 
 gateway:
-  enabled: {{ logging_ingress_enabled | lower }}
+  enabled: {{ logging_gateway_enabled | lower }}
   ingress:
     enabled: {{ logging_ingress_enabled | lower }}
     ingressClassName: "nginx"
@@ -111,17 +111,20 @@ gateway:
           - {{ logging_ingress_dns }}
         secretName: monitoring-loki-ingress-tls
 {% endif %}
-{% if logging_ingress_loki_tls and logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
-extraObjects:
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      name: loki-basic-auth
-      namespace: {{ logging_namespace }}
-    type: Opaque
-    stringData:
-      auth: "{{ logging_ingress_loki_basic_auth_user }}:{{ logging_ingress_loki_basic_auth_password | string | password_hash('bcrypt', salt=logging_ingress_loki_basic_auth_password_salt) }}"
+
+{% if logging_ingress_loki_basic_auth_user and logging_ingress_loki_basic_auth_password %}
+  basicAuth:
+    enabled: true
+    username: "{{ logging_ingress_loki_basic_auth_user }}"
+    password: {{ logging_ingress_loki_basic_auth_password | to_json }}
 {% endif %}
+
+  route:
+    main:
+      enabled: {{ logging_httproute_enabled | lower }}
+      hostnames:
+        - {{ logging_gateway_dns }}
+      parentRefs: {{ logging_httproute_parent_refs | to_json }}
 
 # Requires monitoring role (kube-prometheus-stack). Label selectors match its defaults.
 # https://grafana.com/docs/loki/latest/setup/install/helm/concepts/#monitoring-loki
