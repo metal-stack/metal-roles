@@ -43,7 +43,7 @@ logging_alloy_cluster_label: "{{ metal_control_plane_stage_name }}"
 # See the Migration from Promtail section in README.md.
 logging_promtail_enabled: false
 
-logging_ingress_enabled: false
+logging_ingress_enabled: true
 logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
 logging_ingress_loki_tls: true
 # is not renamed to alloy for backward compatibility with existing installs.
