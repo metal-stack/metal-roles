@@ -23,6 +23,9 @@ monitoring_gnmic_fans: []
 monitoring_gnmic_psus: []
 monitoring_gnmic_crm_acl_tables: []
 
+# Not every SONiC distribution populates STATE_DB SYSTEM_READY, discovered when left unset
+monitoring_gnmic_system_ready: null
+
 # Subscription names as defined in gnmic.yaml.j2, e.g.:
 # monitoring_gnmic_disabled_subscriptions: [state-vxlan, counters-crm-acl]
 monitoring_gnmic_disabled_subscriptions: []
