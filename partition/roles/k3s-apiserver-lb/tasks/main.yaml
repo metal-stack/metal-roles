@@ -1,0 +1,31 @@
+---
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - k3s_apiserver_lb_bind_addresses | length > 0
+      - k3s_apiserver_lb_backends | length > 0
+
+- name: Install haproxy
+  ansible.builtin.apt:
+    name: haproxy
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Deploy haproxy configuration
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: "0644"
+    validate: haproxy -c -f %s
+  notify: Reload haproxy
+
+- name: Enable and start haproxy
+  ansible.builtin.systemd_service:
+    name: haproxy
+    enabled: true
+    state: started

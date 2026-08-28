@@ -1,0 +1,17 @@
+---
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - k3s_server_asn is not none
+      - k3s_server_loopback_address is not none
+      - k3s_server_uplink_interfaces | length > 0
+
+- name: Render frr configuration
+  ansible.builtin.set_fact:
+    frr_conf: "{{ lookup('template', 'frr.conf.j2') }}"
+
+- name: Install and configure frr
+  ansible.builtin.include_role:
+    name: metal-roles/partition/roles/frr

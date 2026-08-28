@@ -1,0 +1,10 @@
+---
+k3s_apiserver_lb_bind_addresses: []
+k3s_apiserver_lb_port: 6443
+k3s_apiserver_lb_backends: []
+k3s_apiserver_lb_backend_port: 6443
+k3s_apiserver_lb_stats_socket: /run/haproxy/admin.sock
+k3s_apiserver_lb_timeout_tunnel: 4h
+k3s_apiserver_lb_check_interval: 2s
+k3s_apiserver_lb_check_fall: 3
+k3s_apiserver_lb_check_rise: 2

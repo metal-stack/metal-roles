@@ -1,0 +1,47 @@
+frr defaults datacenter
+hostname {{ inventory_hostname }}
+!
+service integrated-vtysh-config
+!
+log syslog {{ k3s_server_syslog_level }}
+!
+{% for iface in k3s_server_uplink_interfaces %}
+interface {{ iface }}
+ ipv6 nd ra-interval 6
+ no ipv6 nd suppress-ra
+!
+{% endfor %}
+router bgp {{ k3s_server_asn }}
+ bgp router-id {{ k3s_server_router_id }}
+ bgp bestpath as-path multipath-relax
+ neighbor {{ k3s_server_peer_group }} peer-group
+ neighbor {{ k3s_server_peer_group }} remote-as external
+ neighbor {{ k3s_server_peer_group }} timers {{ k3s_server_bgp_timers }}
+{% for iface in k3s_server_uplink_interfaces %}
+ neighbor {{ iface }} interface peer-group {{ k3s_server_peer_group }}
+{% endfor %}
+ !
+ address-family ipv4 unicast
+  redistribute connected route-map LOOPBACK
+  neighbor {{ k3s_server_peer_group }} route-map {{ k3s_server_peer_group }}_IN in
+  neighbor {{ k3s_server_peer_group }} route-map {{ k3s_server_peer_group }}_OUT out
+ exit-address-family
+!
+{% for prefix in k3s_server_accept_prefixes %}
+ip prefix-list {{ k3s_server_peer_group }}_IN_PREFIX seq {{ loop.index }}0 permit {{ prefix }}
+{% endfor %}
+{% for prefix in k3s_server_announce_prefixes %}
+ip prefix-list {{ k3s_server_peer_group }}_OUT_PREFIX seq {{ loop.index }}0 permit {{ prefix }}
+{% endfor %}
+!
+route-map LOOPBACK permit 10
+ match interface lo
+!
+route-map {{ k3s_server_peer_group }}_IN permit 10
+ match ip address prefix-list {{ k3s_server_peer_group }}_IN_PREFIX
+!
+route-map {{ k3s_server_peer_group }}_OUT permit 10
+ match ip address prefix-list {{ k3s_server_peer_group }}_OUT_PREFIX
+!
+line vty
+!

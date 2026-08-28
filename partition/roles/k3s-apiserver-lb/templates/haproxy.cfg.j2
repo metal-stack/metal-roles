@@ -1,0 +1,30 @@
+global
+    log /dev/log local0
+    stats socket {{ k3s_apiserver_lb_stats_socket }} mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log     global
+    mode    tcp
+    option  tcplog
+    option  dontlognull
+    timeout connect 5s
+    timeout client  {{ k3s_apiserver_lb_timeout_tunnel }}
+    timeout server  {{ k3s_apiserver_lb_timeout_tunnel }}
+
+frontend k3s_apiserver
+{% for address in k3s_apiserver_lb_bind_addresses %}
+    bind {{ address }}:{{ k3s_apiserver_lb_port }}
+{% endfor %}
+    default_backend k3s_apiserver
+
+backend k3s_apiserver
+    balance leastconn
+    option tcp-check
+    default-server inter {{ k3s_apiserver_lb_check_interval }} fall {{ k3s_apiserver_lb_check_fall }} rise {{ k3s_apiserver_lb_check_rise }}
+{% for backend in k3s_apiserver_lb_backends %}
+    server {{ backend.name }} {{ backend.address }}:{{ backend.port | default(k3s_apiserver_lb_backend_port) }} check
+{% endfor %}

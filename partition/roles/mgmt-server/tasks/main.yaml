@@ -95,6 +95,17 @@
     jump: ACCEPT
   notify: Persist iptables
 
+- name: Exempt the given destinations from masquerading
+  ansible.builtin.iptables:
+    action: insert
+    chain: POSTROUTING
+    destination: "{{ item.1 }}"
+    jump: RETURN
+    out_interface: "{{ item.0 }}"
+    table: nat
+  loop: "{{ mgmt_server_masquerade_interfaces | product(mgmt_server_masquerade_exclude_destinations) | list }}"
+  notify: Persist iptables
+
 - name: Masquerade traffic leaving the given interfaces
   ansible.builtin.iptables:
     chain: POSTROUTING

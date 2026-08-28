@@ -1,0 +1,14 @@
+---
+# k3s_server_asn:
+# k3s_server_loopback_address:
+# k3s_server_uplink_interfaces:
+
+k3s_server_router_id: "{{ k3s_server_loopback_address }}"
+k3s_server_peer_group: K3S
+k3s_server_bgp_timers: "1 3"
+k3s_server_syslog_level: informational
+
+k3s_server_accept_prefixes:
+  - 0.0.0.0/0
+k3s_server_announce_prefixes:
+  - "{{ k3s_server_loopback_address }}/32"
