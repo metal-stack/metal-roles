@@ -87,6 +87,7 @@
       - sys_admin
       - net_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
+    systemd_external_config_changed: "{{ _token is changed }}"
     systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
