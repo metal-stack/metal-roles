@@ -54,6 +54,8 @@
 
 - name: Load config if not reloaded
   ansible.builtin.command: config load --yes
+  async: 120
+  poll: 0
   when:
     - not sonic_config_reload_config
     - _config_db_json is changed
