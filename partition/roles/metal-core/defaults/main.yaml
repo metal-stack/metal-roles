@@ -1,7 +1,6 @@
 ---
 metal_core_log_driver: journald
 metal_core_log_level: warn
-metal_core_hmac_key: change-me
 metal_core_rack_id:
 metal_core_room_id:
 metal_core_reconfigure_switch: true
@@ -10,11 +9,22 @@ metal_core_timeout: 15s
 metal_core_set_src_loopback: true
 metal_core_interface_naming_schema: default
 
-metal_core_grpc_address: "{{ metal_partition_metal_api_grpc_address }}"
-metal_core_grpc_cert_dir: "{{ metal_partition_metal_api_grpc_cert_dir }}"
-metal_core_grpc_ca_cert: "{{ metal_partition_metal_api_grpc_ca_cert }}"
-metal_core_grpc_client_cert: "{{ metal_partition_metal_api_grpc_client_cert }}"
-metal_core_grpc_client_key: "{{ metal_partition_metal_api_grpc_client_key }}"
+metal_core_etc_dir: /etc/metal-core
+metal_core_metal_apiserver_url: "{{ defaults_partition_metal_apiserver_url }}"
+metal_core_metal_apiserver_token_filename: metal-apiserver-token
+metal_core_deployment_admin_token: "{{ defaults_partition_metal_apiserver_admin_token }}"
+metal_core_token_expiration: 144h
+metal_core_permissions:
+  - self:
+      methods:
+        - /metalstack.api.v2.TokenService/Refresh
+  - infra:
+      methods:
+        - /metalstack.infra.v2.SwitchService/Get
+        - /metalstack.infra.v2.SwitchService/Heartbeat
+        - /metalstack.infra.v2.SwitchService/Register
+        - /metalstack.infra.v2.ComponentService/Ping
+        - /metalstack.infra.v2.EventService/Send
 
 metal_core_additional_bridge_vids: []
 metal_core_additional_bridge_ports: []
