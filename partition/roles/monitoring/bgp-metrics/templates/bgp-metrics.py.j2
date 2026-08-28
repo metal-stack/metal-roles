@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,8 @@ PREFIX_COUNT_FAMILIES = [("ipv4", "unicast"), ("ipv6", "unicast")]
 
 ROUTE_FAMILIES = {"ipv4": "ip", "ipv6": "ipv6"}
 
+VRF_LINE = re.compile(r"^vrf (\S+) id \d+")
+
 TYPES = [
     "# TYPE sonic_bgp_status gauge",
     "# TYPE sonic_bgp_uptime_seconds_total counter",
@@ -32,19 +35,42 @@ TYPES = [
 
 def vtysh(command):
     try:
-        raw = subprocess.run(
+        return subprocess.run(
             ["vtysh", "-c", command],
             capture_output=True,
             text=True,
             timeout=30,
         ).stdout
-        return json.loads(raw)
-    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError):
+    except (OSError, subprocess.TimeoutExpired) as error:
+        print(f"vtysh {command!r}: {error}", file=sys.stderr)
         return None
 
 
+def vtysh_json(command):
+    raw = vtysh(command)
+    if raw is None:
+        return None
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as error:
+        print(f"vtysh {command!r}: invalid json: {error}", file=sys.stderr)
+        return None
+
+
+def active_vrfs():
+    raw = vtysh("show vrf")
+    if raw is None:
+        return None
+    vrfs = ["default"]
+    for line in raw.splitlines():
+        match = VRF_LINE.match(line)
+        if match:
+            vrfs.append(match.group(1))
+    return vrfs
+
+
 def bgp_routes_rib(vrf, afi, safi, peer):
-    data = vtysh(f"show bgp vrf {vrf} {afi} {safi} neighbors {peer} prefix-counts json")
+    data = vtysh_json(f"show bgp vrf {vrf} {afi} {safi} neighbors {peer} prefix-counts json")
     if data is None:
         return None
     counters = data.get("ribTableWalkCounters")
@@ -54,7 +80,7 @@ def bgp_routes_rib(vrf, afi, safi, peer):
 
 
 def collect_bgp():
-    data = vtysh("show bgp vrf all summary json")
+    data = vtysh_json("show bgp vrf all summary json")
     if data is None:
         return None
 
@@ -98,17 +124,18 @@ def collect_bgp():
 
 
 def collect_routes():
+    vrfs = active_vrfs()
+    if vrfs is None:
+        return None
     lines = []
     collected = False
-    for family, keyword in sorted(ROUTE_FAMILIES.items()):
-        data = vtysh(f"show {keyword} route vrf all summary json")
-        if data is None:
-            continue
-        collected = True
-        for vrf, summary in sorted(data.items()):
-            if not isinstance(summary, dict):
+    for vrf in sorted(vrfs):
+        for family, keyword in sorted(ROUTE_FAMILIES.items()):
+            data = vtysh_json(f"show {keyword} route vrf {vrf} summary json")
+            if not isinstance(data, dict):
                 continue
-            for entry in summary.get("routes") or []:
+            collected = True
+            for entry in data.get("routes") or []:
                 if not isinstance(entry, dict):
                     continue
                 labels = (
