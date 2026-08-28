@@ -56,6 +56,8 @@ monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28
 monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 else False }}"
 monitoring_gardener_seeds: []
 
+monitoring_virtual_garden_kubeconfig_refresher_token_file_path: /etc/virtual-garden-kubeconfig/token
+monitoring_virtual_garden_kubeconfig_refresher_kubeconfig_file_path: /etc/virtual-garden-kubeconfig/kubeconfig
 monitoring_virtual_garden_kubeconfig_refresher_cluster_provider:
 monitoring_virtual_garden_kubeconfig_refresher_gcp_project_id:
 monitoring_virtual_garden_kubeconfig_refresher_gcp_location:
