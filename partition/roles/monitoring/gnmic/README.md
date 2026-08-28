@@ -18,6 +18,8 @@ Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker conta
 | monitoring_gnmic_gnmi_skip_verify         |           | Skip TLS certificate verification                   |
 | monitoring_gnmic_prometheus_port          |           | Port of the Prometheus metrics endpoint             |
 | monitoring_gnmic_ports                    |           | Ports to collect counters for, discovered if empty  |
+| monitoring_gnmic_queues                   |           | Queue name to counter OID map, discovered if empty  |
+| monitoring_gnmic_port_counters            |           | SAI_PORT_STAT counters to collect per port          |
 | monitoring_gnmic_temperature_sensors      |           | Temperature sensors to collect, discovered if empty |
 | monitoring_gnmic_fans                     |           | Fans to collect, discovered if empty                |
 | monitoring_gnmic_crm_acl_tables           |           | CRM ACL tables to collect, discovered if empty      |
@@ -27,6 +29,10 @@ Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker conta
 | monitoring_gnmic_sample_interval_state    |           | Sample interval for state tables                    |
 | monitoring_gnmic_sample_interval_config   |           | Sample interval for config tables                   |
 | monitoring_gnmic_heartbeat_interval       |           | Heartbeat interval for on-change subscriptions      |
+
+## Redis load
+
+The SONiC gNMI server serves table and key paths through redis keyspace notifications, in `sample` mode as well as `on-change`. Every subscribed key adds a `PSUBSCRIBE` pattern that redis matches against every write in every database, so per-queue subscriptions (`/COUNTERS/<port>/Queues`) cost tens of percent of redis CPU on a busy switch. Field paths (`/COUNTERS/<port>/SAI_PORT_STAT_<counter>`, `/COUNTERS/<oid>/SAI_QUEUE_STAT_<counter>`) are polled at the sample interval with plain `HGET` instead, which is why port and queue counters are subscribed per field. Field paths must stay in `sample` mode, `on-change` polls them every 200 ms.
 
 ## Migrating from sonic-exporter
 
@@ -60,7 +66,8 @@ results without erroring.
 
 ### Behavioral differences
 
-- Ports, temperature sensors, fans and CRM ACL tables are discovered from the switch at deploy time. After changes to port breakout configuration, re-run the role to refresh the subscription lists. Changes to these configurations are uncommon in production.
+- Ports, queues, temperature sensors, fans and CRM ACL tables are discovered from the switch at deploy time. After changes to port breakout configuration, re-run the role to refresh the subscription lists. Changes to these configurations are uncommon in production.
+- Queue counters are subscribed by counter OID from `COUNTERS_QUEUE_NAME_MAP`. If syncd assigns new OIDs after a restart, re-run the role.
 - Individual subscriptions can be turned off via `monitoring_gnmic_disabled_subscriptions`. The names match the subscription keys in `gnmic.yaml.j2` (e.g. `state-vxlan`, `counters-crm-acl`).
 
 ### Cutover
