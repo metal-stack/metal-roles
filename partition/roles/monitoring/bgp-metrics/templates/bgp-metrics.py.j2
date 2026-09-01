@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -13,6 +14,12 @@ AF_NAMES = {
     "l2VpnEvpn": ("l2vpn", "evpn"),
 }
 
+PREFIX_COUNT_FAMILIES = [("ipv4", "unicast"), ("ipv6", "unicast")]
+
+ROUTE_FAMILIES = {"ipv4": "ip", "ipv6": "ipv6"}
+
+VRF_LINE = re.compile(r"^vrf (\S+) id \d+")
+
 TYPES = [
     "# TYPE sonic_bgp_status gauge",
     "# TYPE sonic_bgp_uptime_seconds_total counter",
@@ -20,19 +27,61 @@ TYPES = [
     "# TYPE sonic_bgp_messages_transmitted_total counter",
     "# TYPE sonic_bgp_prefixes_received gauge",
     "# TYPE sonic_bgp_prefixes_transmitted gauge",
+    "# TYPE sonic_bgp_routes_rib gauge",
+    "# TYPE sonic_routes_rib gauge",
+    "# TYPE sonic_routes_fib gauge",
 ]
 
 
-def collect():
+def vtysh(command):
     try:
-        raw = subprocess.run(
-            ["vtysh", "-c", "show bgp vrf all summary json"],
+        return subprocess.run(
+            ["vtysh", "-c", command],
             capture_output=True,
             text=True,
             timeout=30,
         ).stdout
-        data = json.loads(raw)
-    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError):
+    except (OSError, subprocess.TimeoutExpired) as error:
+        print(f"vtysh {command!r}: {error}", file=sys.stderr)
+        return None
+
+
+def vtysh_json(command):
+    raw = vtysh(command)
+    if raw is None:
+        return None
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as error:
+        print(f"vtysh {command!r}: invalid json: {error}", file=sys.stderr)
+        return None
+
+
+def active_vrfs():
+    raw = vtysh("show vrf")
+    if raw is None:
+        return None
+    vrfs = ["default"]
+    for line in raw.splitlines():
+        match = VRF_LINE.match(line)
+        if match:
+            vrfs.append(match.group(1))
+    return vrfs
+
+
+def bgp_routes_rib(vrf, afi, safi, peer):
+    data = vtysh_json(f"show bgp vrf {vrf} {afi} {safi} neighbors {peer} prefix-counts json")
+    if data is None:
+        return None
+    counters = data.get("ribTableWalkCounters")
+    if isinstance(counters, dict) and "All RIB" in counters:
+        return counters["All RIB"]
+    return data.get("All RIB")
+
+
+def collect_bgp():
+    data = vtysh_json("show bgp vrf all summary json")
+    if data is None:
         return None
 
     lines = []
@@ -66,13 +115,44 @@ def collect():
                 lines.append(
                     f"sonic_bgp_prefixes_transmitted{{{labels}}} {p.get('pfxSnt', 0)}"
                 )
+                if (afi, safi) not in PREFIX_COUNT_FAMILIES:
+                    continue
+                rib = bgp_routes_rib(vrf, afi, safi, peer)
+                if rib is not None:
+                    lines.append(f"sonic_bgp_routes_rib{{{labels}}} {rib}")
     return lines
 
 
+def collect_routes():
+    vrfs = active_vrfs()
+    if vrfs is None:
+        return None
+    lines = []
+    collected = False
+    for vrf in sorted(vrfs):
+        for family, keyword in sorted(ROUTE_FAMILIES.items()):
+            data = vtysh_json(f"show {keyword} route vrf {vrf} summary json")
+            if not isinstance(data, dict):
+                continue
+            collected = True
+            for entry in data.get("routes") or []:
+                if not isinstance(entry, dict):
+                    continue
+                labels = (
+                    f'vrf="{vrf}",family="{family}",'
+                    f'route_source="{entry.get("type", "unknown")}"'
+                )
+                lines.append(f"sonic_routes_rib{{{labels}}} {entry.get('rib', 0)}")
+                lines.append(f"sonic_routes_fib{{{labels}}} {entry.get('fib', 0)}")
+    return lines if collected else None
+
+
 def main():
-    lines = collect()
-    if lines is None:
+    bgp = collect_bgp()
+    routes = collect_routes()
+    if bgp is None and routes is None:
         sys.exit(1)
+    lines = (bgp or []) + (routes or [])
     if lines:
         lines = TYPES + lines
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
