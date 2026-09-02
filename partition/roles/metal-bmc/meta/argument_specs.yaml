@@ -1,0 +1,89 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys metal-bmc in a systemd-managed Docker container
+    options:
+      metal_bmc_image_name:
+        type: str
+        description: Image name of metal-bmc. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_bmc_image_tag:
+        type: str
+        description: Image tag of metal-bmc. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      metal_bmc_nsqd_addr:
+        type: str
+        required: true
+        description: Address (host:port) of the nsqd instance to connect to.
+      metal_bmc_bmc_superuser:
+        type: str
+        required: true
+        description: The IPMI superuser name used to access the machine BMCs.
+      metal_bmc_bmc_superuser_pwd:
+        type: str
+        required: true
+        no_log: true
+        description: The IPMI superuser password used to access the machine BMCs.
+      metal_bmc_ignore_macs:
+        type: list
+        elements: str
+        description: MAC addresses ignored by metal-bmc.
+      metal_bmc_allowed_cidrs:
+        type: list
+        elements: str
+        description: CIDRs from which BMCs are allowed to be reported.
+      metal_bmc_nsq_log_level:
+        type: str
+        description: Log level for nsq communication.
+      metal_bmc_nsq_tls_enabled:
+        type: bool
+        description: Whether TLS is used for the nsqd connection. When enabled, the nsqd certificate variables must be set.
+      metal_bmc_nsq_cert_dir:
+        type: str
+        description: Host directory where the nsq certificates are placed.
+      metal_bmc_nsqd_ca_cert:
+        type: str
+        description: The nsqd CA certificate content. Required when metal_bmc_nsq_tls_enabled is true.
+      metal_bmc_nsqd_client_cert:
+        type: str
+        description: The nsqd client certificate content. Required when metal_bmc_nsq_tls_enabled is true.
+      metal_bmc_nsqd_client_cert_key:
+        type: str
+        no_log: true
+        description: The nsqd client certificate key content. Required when metal_bmc_nsq_tls_enabled is true.
+      metal_bmc_console_port:
+        type: int
+        description: Port of the console proxy.
+      metal_bmc_console_cert_owner:
+        type: str
+        description: Owner of the console certificate files.
+      metal_bmc_console_cert_group:
+        type: str
+        description: Group of the console certificate files.
+      metal_bmc_console_cert_dir:
+        type: str
+        description: Host directory where the console certificates are placed.
+      metal_bmc_console_ca_cert:
+        type: str
+        required: true
+        description: The console CA certificate content.
+      metal_bmc_console_cert:
+        type: str
+        required: true
+        description: The console certificate content.
+      metal_bmc_console_key:
+        type: str
+        required: true
+        no_log: true
+        description: The console certificate key content.
+      metal_bmc_additional_volume_mounts:
+        type: list
+        elements: str
+        description: Additional volumes to mount into the metal-bmc container.
+      metal_bmc_docker_network:
+        type: str
+        description: The docker network to launch the metal-bmc container in.
+      metal_bmc_docker_log_driver:
+        type: str
+        description: Docker log driver for the metal-bmc container.
+      metal_bmc_lease_file:
+        type: str
+        description: Path to the DHCP lease file evaluated by metal-bmc.

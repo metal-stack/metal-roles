@@ -1,0 +1,24 @@
+---
+argument_specs:
+  main:
+    short_description: Upgrades the SONiC image on a switch
+    options:
+      sonic_upgrade_image:
+        type: str
+        required: true
+        description: The filename of the SONiC image to install.
+      sonic_upgrade_host:
+        type: str
+        description: The host serving the SONiC image over HTTP. Mutually exclusive with sonic_upgrade_image_path (exactly one must be set).
+      sonic_upgrade_image_path:
+        type: str
+        description: The directory on the switch containing the SONiC image. Mutually exclusive with sonic_upgrade_host (exactly one must be set).
+      sonic_upgrade_protocol:
+        type: str
+        description: The protocol used for downloading the image.
+      sonic_upgrade_port:
+        type: int
+        description: The port used for downloading the image.
+      sonic_upgrade_vrf:
+        type: str
+        description: The VRF in which the image download is executed.

@@ -1,0 +1,100 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys a TimescaleDB for auditing via the postgres-backup-restore role
+    options:
+      auditing_timescaledb_name:
+        type: str
+        description: Name of the the auditing timescaledb deployment.
+      auditing_timescaledb_namespace:
+        type: str
+        description: The namespace to deploy the auditing timescaledb to.
+      auditing_timescaledb_image_pull_policy:
+        type: str
+        description: Image pull policy for the the auditing timescaledb container.
+      auditing_timescaledb_storage_size:
+        type: str
+        description: Size of the persistent volume.
+      auditing_timescaledb_storage_class:
+        type: str
+        description: Storage class of the persistent volume.
+      auditing_timescaledb_db:
+        type: str
+        description: Name of the database to create.
+      auditing_timescaledb_user:
+        type: str
+        description: User of the the auditing timescaledb database.
+      auditing_timescaledb_password:
+        type: str
+        no_log: true
+        description: Password of the the auditing timescaledb database.
+      auditing_timescaledb_max_connections:
+        type: raw
+        description: Maximum amount of database connections.
+      auditing_timescaledb_shared_libraries_preload:
+        type: list
+        elements: str
+        description: Libraries to preload via shared_preload_libraries.
+      auditing_timescaledb_backup_restore_sidecar_image_pull_policy:
+        type: str
+        description: Image pull policy for the backup-restore-sidecar container.
+      auditing_timescaledb_backup_restore_sidecar_provider:
+        type: str
+        description: Backup provider used by the backup-restore-sidecar (local, gcp or s3).
+      auditing_timescaledb_backup_restore_sidecar_backup_cron_schedule:
+        type: str
+        description: Cron schedule for creating backups.
+      auditing_timescaledb_backup_restore_sidecar_log_level:
+        type: str
+        description: Log level of the backup-restore-sidecar.
+      auditing_timescaledb_backup_restore_sidecar_object_prefix:
+        type: str
+        description: Object prefix used for backups in the object store.
+      auditing_timescaledb_backup_restore_sidecar_object_max_keep:
+        type: raw
+        description: Maximum amount of backup objects to keep.
+      auditing_timescaledb_backup_restore_sidecar_object_days_max_keep:
+        type: raw
+        description: Maximum age in days of backup objects to keep.
+      auditing_timescaledb_backup_restore_sidecar_s3_request_checksum_calculation:
+        type: str
+        description: S3 request checksum calculation setting (e.g. when_required for non-AWS S3 endpoints).
+      auditing_timescaledb_backup_restore_sidecar_gcp_bucket_name:
+        type: str
+        description: GCP bucket name for storing backups.
+      auditing_timescaledb_backup_restore_sidecar_gcp_backup_location:
+        type: str
+        description: GCP bucket location for storing backups.
+      auditing_timescaledb_backup_restore_sidecar_gcp_project_id:
+        type: str
+        description: GCP project id of the backup bucket.
+      auditing_timescaledb_backup_restore_sidecar_gcp_serviceaccount_json:
+        type: str
+        no_log: true
+        description: GCP service account JSON used for accessing the backup bucket.
+      auditing_timescaledb_backup_restore_sidecar_encryption_key:
+        type: str
+        no_log: true
+        description: Encryption key (32 characters) for encrypting backups.
+      auditing_timescaledb_resources:
+        type: dict
+        description: Resource requests and limits for the the auditing timescaledb container.
+      auditing_timescaledb_registry_auth_enabled:
+        type: raw
+        description: Whether to deploy an image pull secret for the registry.
+      auditing_timescaledb_registry_auth:
+        type: dict
+        no_log: true
+        description: Docker auth configuration for the image pull secret.
+      auditing_timescaledb_image_name:
+        type: str
+        description: Image name of the auditing timescaledb. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      auditing_timescaledb_image_tag:
+        type: str
+        description: Image tag of the auditing timescaledb. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      auditing_timescaledb_backup_restore_sidecar_image_name:
+        type: str
+        description: Image name of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      auditing_timescaledb_backup_restore_sidecar_image_tag:
+        type: str
+        description: Image tag of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.

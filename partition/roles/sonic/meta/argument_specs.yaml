@@ -1,0 +1,141 @@
+---
+argument_specs:
+  main:
+    short_description: Configures SONiC switches (config_db and FRR)
+    options:
+      sonic_loopback_address:
+        type: str
+        required: true
+        description: The loopback (router) IP address of the switch.
+      sonic_asn:
+        type: raw
+        required: true
+        description: The ASN (integer) of the switch used for BGP. Only evaluated when sonic_frr_render is true.
+      sonic_mgmt_vrf:
+        type: bool
+        description: Whether the management interface is placed in the management VRF.
+      sonic_mgmtif_ip:
+        type: str
+        description: Static IP address (CIDR) of the management interface.
+      sonic_mgmtif_gateway:
+        type: str
+        description: Gateway of the management interface.
+      sonic_ntpservers:
+        type: list
+        elements: str
+        description: NTP servers to configure.
+      sonic_nameservers:
+        type: list
+        elements: str
+        description: Nameservers written to /etc/resolv.conf.
+      sonic_ip_masquerade:
+        type: bool
+        description: Whether to activate IP masquerading on eth0.
+      sonic_timezone:
+        type: str
+        description: The timezone to configure on the switch.
+      sonic_config_action:
+        type: str
+        choices:
+          - load
+          - reload
+        description: Whether the generated config_db is applied with config load or config reload.
+      sonic_render_config_db_template:
+        type: bool
+        description: Whether to render and save the config_db from the template.
+      sonic_ports:
+        type: list
+        elements: dict
+        description: Physical port configuration. Each entry supports name and optionally speed, mtu and fec.
+      sonic_ports_dict:
+        type: dict
+        description: Port configuration keyed by port name. Populated from sonic_ports if left empty.
+      sonic_ports_default_fec:
+        type: str
+        description: Default FEC for ports that do not specify one.
+      sonic_ports_default_speed:
+        type: int
+        description: Default speed for ports that do not specify one. Required when sonic_ports is non-empty.
+      sonic_ports_default_mtu:
+        type: int
+        description: Default MTU for ports that do not specify one. Required when sonic_ports is non-empty.
+      sonic_breakouts:
+        type: dict
+        description: Port breakout configuration keyed by port name.
+      sonic_portchannels:
+        type: list
+        elements: dict
+        description: Port channel configuration.
+      sonic_portchannels_default_mtu:
+        type: int
+        description: Default MTU for port channels. Required when sonic_portchannels is non-empty.
+      sonic_bgp_ports:
+        type: list
+        elements: str
+        description: The ports on which BGP unnumbered sessions are configured.
+      sonic_frr_render:
+        type: bool
+        description: Whether to render and deploy the FRR configuration.
+      sonic_frr_debug_options:
+        type: list
+        elements: str
+        description: FRR debug options rendered into frr.conf.
+      sonic_frr_syslog_level:
+        type: str
+        description: The FRR syslog level.
+      sonic_frr_l2vpn_evpn:
+        type: bool
+        description: Whether to activate the l2vpn evpn address family.
+      sonic_frr_route_map:
+        type: dict
+        description: Route map (name, match) used for redistributing connected routes.
+      sonic_frr_static_routes:
+        type: list
+        elements: str
+        description: Static routes rendered into frr.conf.
+      sonic_frr_static_routes_mgmt:
+        type: list
+        elements: str
+        description: Static routes rendered into frr.conf for the management VRF.
+      sonic_vlan_members:
+        type: bool
+        description: Whether VLAN members are rendered into the config_db.
+      sonic_vlans:
+        type: list
+        elements: dict
+        description: VLAN configuration. Each entry supports id, ip, untagged_ports and dhcp_servers.
+      sonic_vteps:
+        type: list
+        elements: dict
+        description: VTEP configuration for EVPN.
+      sonic_lldp_hello_timer:
+        type: int
+        description: The LLDP hello timer in seconds.
+      sonic_docker_routing_config_mode:
+        type: str
+        description: The docker_routing_config_mode of the BGP container.
+      sonic_frr_mgmt_framework_config:
+        type: bool
+        description: Whether the frr_mgmt_framework_config flag is set in the config_db.
+      sonic_mclag:
+        type: dict
+        description: MCLAG configuration.
+      sonic_sag:
+        type: dict
+        description: Static anycast gateway configuration (mac).
+      sonic_ssh_sourceranges:
+        type: list
+        elements: str
+        description: Source ranges from which SSH access is allowed.
+      sonic_extended_cacl:
+        type: dict
+        description: Extended control plane ACLs (ipv4, ipv6 rule lists) rendered into iptables.json.
+      sonic_interconnects:
+        type: dict
+        description: Interconnect BGP configuration.
+      sonic_interconnects_default_peer_group:
+        type: str
+        description: Default peer group for interconnects.
+      sonic_interconnects_default_bgp_timers:
+        type: str
+        description: Default BGP timers for interconnects.
