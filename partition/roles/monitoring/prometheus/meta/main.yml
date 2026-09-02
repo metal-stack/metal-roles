@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: prometheus
   author: metal-stack
   description: Deploys prometheus in a systemd-managed Docker container.
   license: MIT
