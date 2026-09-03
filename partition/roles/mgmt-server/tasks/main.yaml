@@ -99,9 +99,10 @@
   ansible.builtin.iptables:
     action: insert
     chain: POSTROUTING
-    destination: "{{ item.1 }}"
+    destination: "{{ item.1.destination | default(item.1) }}"
     jump: RETURN
     out_interface: "{{ item.0 }}"
+    source: "{{ item.1.source | default(omit) }}"
     table: nat
   loop: "{{ mgmt_server_masquerade_interfaces | product(mgmt_server_masquerade_exclude_destinations) | list }}"
   notify: Persist iptables
