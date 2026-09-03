@@ -212,6 +212,9 @@ metal_console_token_refresher_image_pull_policy: "{{ metal_control_plane_image_p
 metal_console_token_refresher_resources:
 metal_console_token_refresher_schedule: "@hourly"
 metal_console_token_permissions:
+  - self:
+      methods:
+        - /metalstack.api.v2.TokenService/Refresh
   - infra:
       methods:
         - /metalstack.infra.v2.ComponentService/Ping
