@@ -82,6 +82,8 @@
       value: "0"
     - key: net.ipv4.ip_forward
       value: "1"
+    - key: net.ipv4.tcp_l3mdev_accept
+      value: "1"
 
 - name: Configure forward chain to accept to route packages
   ansible.builtin.iptables:
@@ -91,6 +93,7 @@
 
 - name: Configure forward chain of docker-user to accept
   ansible.builtin.iptables:
+    action: insert
     chain: DOCKER-USER
     jump: ACCEPT
   notify: Persist iptables
