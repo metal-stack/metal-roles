@@ -1,0 +1,24 @@
+---
+- name: Create api tokens for pixiecore
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ pixiecore_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ pixiecore_deployment_admin_token }}"
+  block:
+    - name: Create pixiecore tenant
+      metal_v2_admin_tenant:
+        identifier: pixiecore
+        name: pixiecore
+        description: tenant used by the pixiecore service in the metal-stack partitions
+      register: _tenant
+      run_once: true
+
+    - name: Create pixiecore api token
+      metal_v2_admin_token:
+        identifier: pixiecore-{{ metal_partition_id }}-{{ inventory_hostname }}
+        use_latest_identifier: true
+        user: "{{ _tenant.id }}"
+        description: "pixiecore token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
+        expires: "{{ pixiecore_token_expiration }}"
+        permissions: "{{ pixiecore_permissions }}"
+      register: _token
