@@ -564,6 +564,16 @@ sonic_config_reload_config: false
 # into the running configuration instead of replacing it, so that values written at runtime
 # survive. `DEVICE_METADATA` carries `buffer_model`, `default_bgp_status`,
 # `default_pfcwd_status` and `synchronous_mode`, `PORT` carries `parent_port`.
+#
+# This list is an ownership statement, not a fact to be derived: a field the role deliberately
+# drops from a key must be removed, a field that belongs to somebody else must survive. Only a
+# human can tell those apart. `check_merge_tables.py` runs before every replace and fails the
+# play when a table outside this list turns out to be rendered only in part, so a new image or
+# a new sonic-configdb-utils version reports itself instead of silently losing a field. To see
+# the whole picture on a switch, run it by hand with an empty list:
+#
+#   python3 check_merge_tables.py --rendered /etc/sonic/config_db.json --merge-tables ""
+#
 # Only relevant when `sonic_config_reload_config` is `false`.
 sonic_config_merge_tables:
   - DEVICE_METADATA

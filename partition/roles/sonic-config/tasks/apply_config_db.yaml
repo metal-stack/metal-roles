@@ -1,9 +1,20 @@
 ---
-- name: Install the target config builder
+- name: Install the config helpers
   ansible.builtin.copy:
-    src: build_target_config.py
-    dest: /tmp/sonic/build_target_config.py
+    src: "{{ item }}"
+    dest: "/tmp/sonic/{{ item }}"
     mode: "0755"
+  loop:
+    - build_target_config.py
+    - check_merge_tables.py
+
+- name: Check that no table outside sonic_config_merge_tables is rendered only in part
+  ansible.builtin.command:
+    cmd: >-
+      python3 /tmp/sonic/check_merge_tables.py
+      --rendered /etc/sonic/config_db.json
+      --merge-tables {{ sonic_config_merge_tables | join(',') }}
+  changed_when: false
 
 - name: Build the complete target config
   ansible.builtin.command:
