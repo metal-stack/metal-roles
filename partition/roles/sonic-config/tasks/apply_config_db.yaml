@@ -1,0 +1,28 @@
+---
+- name: Install the target config builder
+  ansible.builtin.copy:
+    src: build_target_config.py
+    dest: /tmp/sonic/build_target_config.py
+    mode: "0755"
+
+- name: Build the complete target config
+  ansible.builtin.command:
+    cmd: >-
+      python3 /tmp/sonic/build_target_config.py
+      --rendered /etc/sonic/config_db.json
+      --out /tmp/sonic/target_config_db.json
+      --merge-tables {{ sonic_config_merge_tables | join(',') }}
+  changed_when: false
+
+- name: Check the target config against the running config
+  ansible.builtin.command: config replace --dry-run /tmp/sonic/target_config_db.json
+  changed_when: false
+
+- name: Take a rollback point
+  ansible.builtin.command: config checkpoint {{ sonic_config_checkpoint_name }}
+  changed_when: false
+
+- name: Replace the running config
+  ansible.builtin.command: config replace /tmp/sonic/target_config_db.json
+  register: _config_replace
+  changed_when: "'sorted into 0 changes' not in _config_replace.stdout"

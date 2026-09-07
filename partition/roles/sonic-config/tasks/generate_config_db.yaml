@@ -52,21 +52,19 @@
     - sonic_config_reload_config
     - _config_db_json is changed
 
-- name: Load config if not reloaded
-  ansible.builtin.command: config load --yes
-  async: 120
-  poll: 0
-  when:
-    - not sonic_config_reload_config
-    - _config_db_json is changed
-
 - name: Wait for new connection
   ansible.builtin.wait_for_connection:
     connect_timeout: 20
     sleep: 5
     delay: 30
     timeout: 300
-  when: _config_db_json is changed # noqa: no-handler
+  when:
+    - sonic_config_reload_config
+    - _config_db_json is changed # noqa: no-handler
+
+- name: Apply the config through the generic config updater
+  ansible.builtin.include_tasks: apply_config_db.yaml
+  when: not sonic_config_reload_config
 
 - name: Remove temporary directory
   ansible.builtin.file:

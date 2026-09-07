@@ -76,6 +76,9 @@ See [this mini-lab PR](https://github.com/metal-stack/mini-lab/pull/237).
 This variable is replaced by the boolean variable `sonic_config_reload_config` which defaults to `false`.
 See [below](#variables) for explanation.
 
+Since the generic config updater is used by default, `sonic_config_reload_config: true` is
+only needed for images that do not ship it.
+
 ### `sonic_ports`, `sonic_ports_default_speed`, `sonic_ports_default_mtu` and `sonic_ports_default_fec`
 
 All these variables are now gathered in the dictionary `sonic_config_ports`.
@@ -544,20 +547,33 @@ sonic_config_frr_fabric_routemap_in:
   entries:
     - match ip address prefix-list PL_FABRIC_IN
 
-# Whether a `config reload` should be triggered. If `false` a simple `config load` will be
-# performed. Keep in mind that a config reload is a disruptive process.
-# Active connections will be interrupted and it may take up to several minutes for the
-# switch to come back up.
+# Whether a `config reload` should be triggered. Keep in mind that a config reload is a
+# disruptive process: it flushes CONFIG_DB and restarts sonic.target, so every container
+# including bgp comes back new. Active connections are interrupted and it may take up to
+# several minutes for the switch to come back up.
 #
-# When is a config reload necessary?
-# Only when some parts of the running configuration needs to be removed or reset.
-# When something is added to the configuration or some part of the configuration is changed
-# no reload is necessary.
-#
-# For example, changing the MTU on a port from 9000 to 1500 does not require a reload.
-# On the other hand, removing an IP address that was previously configured on a port does
-# require a reload.
+# When `false`, the default, the role applies the configuration through the generic config
+# updater instead. It builds a complete target configuration on the switch from the running
+# CONFIG_DB overlaid with the rendered tables, and hands that to `config replace`. Additions,
+# changes and removals are all applied key by key, in the order the YANG models demand, and
+# no service is restarted. Set this to `true` only for images whose sonic-utilities predate
+# the generic config updater.
 sonic_config_reload_config: false
+
+# Tables that the rendered config_db.json fills only in part. They are merged field by field
+# into the running configuration instead of replacing it, so that values written at runtime
+# survive. `DEVICE_METADATA` carries `buffer_model`, `default_bgp_status`,
+# `default_pfcwd_status` and `synchronous_mode`, `PORT` carries `parent_port`.
+# Only relevant when `sonic_config_reload_config` is `false`.
+sonic_config_merge_tables:
+  - DEVICE_METADATA
+  - PORT
+
+# Name of the checkpoint taken before the configuration is replaced. Roll back with
+# `config rollback <name>`. A checkpoint of the same name overwrites the previous one, so
+# only the state before the last run is kept.
+# Only relevant when `sonic_config_reload_config` is `false`.
+sonic_config_checkpoint_name: ansible
 
 # Static Anycast Gateway (SAG) configuration.
 # SAG is only supported for EdgeCore SONiC 202211.x versions.
