@@ -33,6 +33,15 @@
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
+- name: Resolve the own hostname locally so sudo does not wait for a resolver
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s'
+    line: "127.0.1.1 {{ inventory_hostname }}"
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: Read the installed k3s version
   ansible.builtin.command: k3s --version
   changed_when: false

@@ -11,6 +11,9 @@ k3s_server_announce_prefixes:
 
 k3s_server_version: v1.36.4+k3s1
 k3s_server_install_script_url: https://get.k3s.io
+k3s_server_release_url: https://github.com/k3s-io/k3s/releases/download
+k3s_server_binary_url: "{{ k3s_server_release_url }}/{{ k3s_server_version | replace('+', '%2B') }}/k3s"
+k3s_server_checksum_url: "{{ k3s_server_release_url }}/{{ k3s_server_version | replace('+', '%2B') }}/sha256sum-amd64.txt"
 k3s_server_install_script_path: /usr/local/share/k3s-install.sh
 k3s_server_config_dir: /etc/rancher/k3s
 

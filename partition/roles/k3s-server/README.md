@@ -5,9 +5,12 @@ to the leaves it is attached to, and k3s itself as a member of an HA cluster wit
 etcd.
 
 The FRR configuration is rendered here and handed to the [frr](../frr) role, which installs
-the packages and deploys it. k3s is installed with the official install script, pinned to
-`k3s_server_version`, and configured through `/etc/rancher/k3s/config.yaml`. The role
-installs on Debian and depends on fact gathering.
+the packages and deploys it. The k3s binary is downloaded from the release named by
+`k3s_server_version` and verified against its published sha256 sum; the official install
+script is then run with `INSTALL_K3S_SKIP_DOWNLOAD=true`, so it only creates the systemd
+unit, the symlinks and the uninstall script. k3s is configured through
+`/etc/rancher/k3s/config.yaml`. The role installs no packages, and depends on fact
+gathering.
 
 ## Variables
 
@@ -26,6 +29,9 @@ installs on Debian and depends on fact gathering.
 | k3s_server_syslog_level         |           | The syslog level of frr.                                                        |
 | k3s_server_version              |           | The k3s version to install.                                                     |
 | k3s_server_install_script_url   |           | Where to fetch the k3s install script from.                                     |
+| k3s_server_release_url          |           | The base url the binary and its checksum file are fetched from.                 |
+| k3s_server_binary_url           |           | The k3s binary to install. Defaults to the amd64 asset of the pinned release.   |
+| k3s_server_checksum_url         |           | The sha256 sum file the binary is verified against.                             |
 | k3s_server_install_script_path  |           | Where the install script is stored on the server.                               |
 | k3s_server_config_dir           |           | The directory holding the k3s configuration.                                    |
 | k3s_server_api_port             |           | The port the kubernetes api listens on.                                         |
@@ -71,7 +77,14 @@ partition.
 - `k3s_server_version` defaults to `v1.36.4+k3s1`, the stable channel of
   `https://update.k3s.io/v1-release/channels` on 2026-09-08.
 - The install script is fetched at deploy time and is not pinned itself; only the binary
-  version is. Point `k3s_server_install_script_url` at a mirror to change that.
+  version is, and that one is checksum verified. Point `k3s_server_install_script_url`,
+  `k3s_server_binary_url` and `k3s_server_checksum_url` at a mirror to change that.
+- The default download urls cover amd64 only. On another architecture the role stops and
+  names the two variables to override.
+- Nothing here uses the package manager. That is deliberate: the k3s servers of a partition
+  carry third party apt sources whose state this role has no business depending on. The
+  install script is run with `INSTALL_K3S_SKIP_DOWNLOAD=true`, which is what makes it
+  independent of `curl` and `wget` as well.
 - A change to `config.yaml` restarts k3s. The restart is serialized across the servers with
   `throttle`, but it is not gated on the api coming back, so a rolling restart of an
   unhealthy cluster can still take quorum with it.
