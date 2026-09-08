@@ -7,6 +7,16 @@
       - k3s_server_asn is not none
       - k3s_server_loopback_address is not none
       - k3s_server_uplink_interfaces | length > 0
+      - k3s_server_cluster_init_host is not none
+      - k3s_server_token | default('', true) | length > 0
+      - k3s_server_version | default('', true) | length > 0
+
+- name: Check the cluster init host takes part in this play
+  ansible.builtin.assert:
+    fail_msg: "{{ k3s_server_cluster_init_host }} is not in this play, widen the limit or point k3s_server_cluster_init_host at a host that is"
+    quiet: true
+    that:
+      - k3s_server_cluster_init_host in ansible_play_hosts
 
 - name: Render frr configuration
   ansible.builtin.set_fact:
@@ -15,3 +25,67 @@
 - name: Install and configure frr
   ansible.builtin.include_role:
     name: metal-roles/partition/roles/frr
+
+- name: Flush handlers to let bgp converge before k3s starts
+  ansible.builtin.meta: flush_handlers
+
+- name: Set the hostname because k3s freezes the node name on its first start
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Read the installed k3s version
+  ansible.builtin.command: k3s --version
+  changed_when: false
+  failed_when: false
+  register: k3s_server_version_output
+
+- name: Check if the pinned k3s version is installed
+  ansible.builtin.set_fact:
+    k3s_installed: "{{ (k3s_server_version_output.stdout | default('', true)) is search(k3s_server_version | default('', true) | regex_escape) }}"
+
+- name: Import tasks for installing k3s
+  ansible.builtin.import_tasks: install.yaml
+  when: not k3s_installed
+
+- name: Create the k3s configuration directory
+  ansible.builtin.file:
+    path: "{{ k3s_server_config_dir }}"
+    state: directory
+    mode: "0700"
+
+- name: Deploy the flannel network configuration
+  ansible.builtin.template:
+    src: flannel-net-conf.json.j2
+    dest: "{{ k3s_server_config_dir }}/flannel-net-conf.json"
+    mode: "0644"
+  when: k3s_server_flannel_mtu is not none
+  notify: Restart k3s
+
+- name: Deploy the k3s configuration
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ k3s_server_config_dir }}/config.yaml"
+    mode: "0600"
+  no_log: true
+  notify: Restart k3s
+
+- name: Ensure k3s is started on the cluster init server
+  ansible.builtin.systemd:
+    name: k3s
+    enabled: true
+    state: started
+  when: inventory_hostname == k3s_server_cluster_init_host
+
+- name: Wait for the cluster init server to serve the kubernetes api
+  ansible.builtin.wait_for:
+    host: "{{ hostvars[k3s_server_cluster_init_host].k3s_server_loopback_address }}"
+    port: "{{ k3s_server_api_port }}"
+    timeout: "{{ k3s_server_api_timeout }}"
+  when: inventory_hostname != k3s_server_cluster_init_host
+
+- name: Ensure k3s is started on the joining servers
+  ansible.builtin.systemd:
+    name: k3s
+    enabled: true
+    state: started
+  when: inventory_hostname != k3s_server_cluster_init_host

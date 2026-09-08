@@ -1,0 +1,21 @@
+---
+- name: Install the packages the k3s install script requires
+  ansible.builtin.apt:
+    name:
+      - curl
+    update_cache: true
+    force_apt_get: true
+
+- name: Download the k3s install script
+  ansible.builtin.get_url:
+    url: "{{ k3s_server_install_script_url }}"
+    dest: "{{ k3s_server_install_script_path }}"
+    mode: "0755"
+
+- name: Install the k3s binary and its systemd unit
+  ansible.builtin.command: "{{ k3s_server_install_script_path }}"
+  environment:
+    INSTALL_K3S_VERSION: "{{ k3s_server_version }}"
+    INSTALL_K3S_SKIP_ENABLE: "true"
+  changed_when: true
+  notify: Restart k3s
