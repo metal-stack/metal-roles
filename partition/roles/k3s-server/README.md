@@ -1,4 +1,4 @@
-# (TODO - AI generated) k3s-server (TODO - AI generated)
+# k3s-server
 
 Configures a k3s server of the autonomous control plane: FRR with BGP unnumbered sessions
 to the leaves it is attached to, and k3s itself as a member of an HA cluster with embedded
@@ -43,50 +43,3 @@ gathering.
 | k3s_server_tls_sans             |           | Additional addresses to put into the api certificate.                           |
 | k3s_server_disable              |           | The packaged components not to deploy.                                          |
 | k3s_server_config_extra         |           | Additional keys for `config.yaml`.                                              |
-
-The loopback address must be inside the prefix the leaves accept, otherwise the
-announcement is discarded by their route-map even though the session is established.
-
-## Why the flannel variables exist
-
-On a server whose only address is a `/32` on `lo` and whose uplinks are unnumbered, k3s
-cannot be left to pick the flannel interface itself. Without `k3s_server_flannel_iface`,
-flannel takes the interface of the default route, finds no IPv4 address on it and fails to
-start; the node never becomes `Ready`.
-
-Pointing `k3s_server_flannel_iface` at `lo` gives flannel the right tunnel endpoint
-address, because `127.0.0.1` is filtered out for being neither global nor link-local
-unicast. It also gives flannel the wrong MTU: k3s writes `{"Type": "vxlan"}` without an
-MTU, so flannel falls back to the MTU of that interface, and `flannel.1` would end up at
-`65536 - 50`. Setting `k3s_server_flannel_mtu` makes the role render its own flannel
-configuration with an explicit MTU and hand it over with `flannel-conf`.
-
-The alternative is to move the node address off `lo` onto a `dummy` interface with the
-right MTU and leave `k3s_server_flannel_mtu` unset. That is the more conventional layout,
-but it also touches the FRR route-map that matches on `lo`.
-
-## Why traefik and servicelb are disabled
-
-`servicelb` claims service addresses on the node interfaces and expects the clients to be
-L2 adjacent. Between `/32` loopbacks reachable only over BGP there is no such adjacency.
-`traefik` is left out because ingress is a deployment decision, not a property of the
-partition.
-
-## Known limits
-
-- `k3s_server_version` defaults to `v1.36.4+k3s1`, the stable channel of
-  `https://update.k3s.io/v1-release/channels` on 2026-09-08.
-- The install script is fetched at deploy time and is not pinned itself; only the binary
-  version is, and that one is checksum verified. Point `k3s_server_install_script_url`,
-  `k3s_server_binary_url` and `k3s_server_checksum_url` at a mirror to change that.
-- The default download urls cover amd64 only. On another architecture the role stops and
-  names the two variables to override.
-- Nothing here uses the package manager. That is deliberate: the k3s servers of a partition
-  carry third party apt sources whose state this role has no business depending on. The
-  install script is run with `INSTALL_K3S_SKIP_DOWNLOAD=true`, which is what makes it
-  independent of `curl` and `wget` as well.
-- A change to `config.yaml` restarts k3s. The restart is serialized across the servers with
-  `throttle`, but it is not gated on the api coming back, so a rolling restart of an
-  unhealthy cluster can still take quorum with it.
-- Whether the kernel accepts a vxlan device whose lower device is `lo` has not been
-  measured. `ip -d link show flannel.1` on the node is the test.
