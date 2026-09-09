@@ -12,7 +12,7 @@ haproxy_services:
   - name: k3s_apiserver
     mode: tcp
     port: 6443
-    healthcheck: livez
+    healthcheck: apiserver
     bind_addresses:
       - "{{ wireguard_ip.split('/')[0] }}"
     backends:
@@ -59,4 +59,4 @@ Per service:
 | mode           |           | `tcp` or `http`, default `tcp`.                                                   |
 | backend_port   |           | The port the backends of this service default to.                                 |
 | ssl_cert       |           | The pem bundle for ssl termination, `http` mode only. Must already be on the host.|
-| healthcheck    |           | `livez`, see below. Without it the backends get a plain tcp connect check.        |
+| healthcheck    |           | `apiserver`, see below. Without it the backends get a plain tcp connect check.    |

@@ -16,7 +16,7 @@ defaults
 {% for service in haproxy_services %}
 {% set mode = service.mode | default('tcp') %}
 {% set terminates_ssl = mode == 'http' and service.ssl_cert | default('') %}
-{% set checks_livez = service.healthcheck | default('') == 'livez' %}
+{% set checks_apiserver = service.healthcheck | default('') == 'apiserver' %}
 
 frontend fe_{{ service.name }}
 {% for address in service.bind_addresses %}
@@ -30,10 +30,11 @@ backend be_{{ service.name }}
     mode {{ mode }}
     balance leastconn
     default-server inter {{ haproxy_check_interval }} fall {{ haproxy_check_fall }} rise {{ haproxy_check_rise }}
-{% if checks_livez %}
+{% if checks_apiserver %}
     option httpchk GET /livez HTTP/1.0
+    http-check expect status 200,401
 {% endif %}
 {% for backend in service.backends %}
-    server {{ backend.name }} {{ backend.address }}:{{ backend.port | default(service.backend_port | default(haproxy_backend_port)) }} check{{ ' check-ssl verify none' if checks_livez else '' }}
+    server {{ backend.name }} {{ backend.address }}:{{ backend.port | default(service.backend_port | default(haproxy_backend_port)) }} check{{ ' check-ssl verify none' if checks_apiserver else '' }}
 {% endfor %}
 {% endfor %}
