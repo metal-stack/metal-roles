@@ -1,0 +1,24 @@
+---
+argument_specs:
+  main:
+    short_description: Configures networking with systemd-networkd
+    options:
+      systemd_networkd_mtu:
+        type: int
+        description: The default MTU configured on the interfaces.
+      systemd_networkd_nics:
+        type: list
+        elements: dict
+        description: The physical NICs to configure.
+      systemd_networkd_vrfs:
+        type: list
+        elements: dict
+        description: The VRFs to configure.
+      systemd_networkd_vlans:
+        type: list
+        elements: dict
+        description: The VLANs to configure.
+      systemd_networkd_vxlans:
+        type: list
+        elements: dict
+        description: The VXLANs to configure.

@@ -1,0 +1,44 @@
+---
+argument_specs:
+  main:
+    short_description: Configures a Teltonika device as management firewall via uci
+    options:
+      mgmt_firewall_location_name:
+        type: str
+        required: true
+        description: The location name used for the system hostname and SNMP sysName.
+      mgmt_firewall_device_name:
+        type: str
+        required: true
+        description: The device name of the firewall.
+      mgmt_firewall_public_key:
+        type: str
+        required: true
+        description: The SSH public key written to the dropbear authorized_keys file.
+      mgmt_firewall_default_wan_enabled:
+        type: bool
+        description: Whether to configure the default WAN interface with a static address.
+      mgmt_firewall_static_routes_enabled:
+        type: bool
+        description: Whether to configure the static routes from mgmt_firewall_static_routes.
+      mgmt_firewall_wireless_disabled:
+        type: bool
+        description: Whether to disable the wireless radios.
+      mgmt_firewall_config:
+        type: dict
+        description: General firewall configuration including the bgp settings (enabled, general_ip, general_as, mgmtsrv_ipaddr, mgmtsrv_as).
+      mgmt_firewall_interfaces:
+        type: dict
+        description: LAN and WAN interface configuration (mgmt_firewall_lan list and mgmt_firewall_wan dict).
+      mgmt_firewall_port_forwards:
+        type: list
+        elements: dict
+        description: Port forward rules to apply.
+      mgmt_firewall_vlans:
+        type: list
+        elements: dict
+        description: Dynamic VLANs to configure (vlan, vid, ports).
+      mgmt_firewall_static_routes:
+        type: list
+        elements: dict
+        description: Static routes to configure (network, gateway).

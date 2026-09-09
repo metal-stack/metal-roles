@@ -1,0 +1,59 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys Alloy (or deprecated Promtail) for Gardener seed and garden cluster logging
+    options:
+      gardener_logging_namespace:
+        type: str
+        description: The namespace to deploy the logging components to.
+      gardener_logging_garden_name:
+        type: str
+        description: Name of the garden.
+      gardener_logging_deploy_to_garden_cluster:
+        type: bool
+        description: Whether to deploy Alloy to the garden cluster.
+      gardener_logging_shooted_seeds:
+        type: list
+        description: The shooted seeds to deploy the logging components to.
+      gardener_logging_alloy_enabled:
+        type: bool
+        description: Whether to deploy Alloy.
+      gardener_logging_alloy_chart_version:
+        type: str
+        description: Version of the alloy helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      gardener_logging_alloy_chart_repo:
+        type: str
+        description: Repository URL of the alloy helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      gardener_logging_ingress_dns:
+        type: str
+        description: Ingress DNS name of loki.
+      gardener_logging_ingress_loki_basic_auth_user:
+        type: str
+        description: Basic auth user of the loki ingress.
+      gardener_logging_ingress_loki_basic_auth_password:
+        type: str
+        no_log: true
+        description: Basic auth password of the loki ingress.
+      gardener_logging_alloy_loki_write_endpoints:
+        type: list
+        elements: dict
+        description: Loki push endpoints for Alloy. Each entry supports url, remote_timeout and basic_auth (username, password).
+      gardener_logging_alloy_prometheus_write_endpoints:
+        type: list
+        elements: dict
+        description: Prometheus remote_write endpoints for Alloy self-metrics.
+      gardener_logging_alloy_prometheus_wal_truncate_frequency:
+        type: str
+        description: How often the Alloy remote_write WAL is compacted.
+      gardener_logging_alloy_prometheus_wal_max_keepalive_time:
+        type: str
+        description: Maximum age of undelivered WAL samples before they are dropped.
+      gardener_logging_promtail_enabled:
+        type: bool
+        description: Whether to deploy Promtail (deprecated). Requires gardener_logging_promtail_chart_version and gardener_logging_promtail_chart_repo when enabled.
+      gardener_logging_promtail_chart_version:
+        type: str
+        description: Version of the promtail helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      gardener_logging_promtail_chart_repo:
+        type: str
+        description: Repository URL of the promtail helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.

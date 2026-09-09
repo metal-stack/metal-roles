@@ -1,0 +1,114 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys services (NTP, DNS, registry, ingress) for isolated partition clusters
+    options:
+      isolated_clusters_virtual_garden_kubeconfig:
+        type: str
+        no_log: true
+        description: Kubeconfig content for accessing the virtual garden. Read from the garden-access secret by default.
+      isolated_clusters_group_label:
+        type: str
+        description: Label value used for grouping the isolated cluster services.
+      isolated_clusters_partition_services_cluster:
+        type: list
+        description: The clusters to install the partition services into.
+      isolated_clusters_ntp_image_name:
+        type: str
+        description: Image name of the chrony NTP service.
+      isolated_clusters_ntp_image_tag:
+        type: str
+        required: true
+        description: Image tag of the chrony NTP service.
+      isolated_clusters_ntp_namespace:
+        type: str
+        description: The namespace to deploy the NTP service to.
+      isolated_clusters_dns_image_name:
+        type: str
+        description: Image name of the CoreDNS DNS service.
+      isolated_clusters_dns_image_tag:
+        type: str
+        required: true
+        description: Image tag of the CoreDNS DNS service.
+      isolated_clusters_dns_namespace:
+        type: str
+        description: The namespace to deploy the DNS service to.
+      isolated_clusters_ingress_controller_enabled:
+        type: bool
+        description: Whether to deploy the ingress controller.
+      isolated_clusters_ingress_controller_namespace:
+        type: str
+        description: The namespace to deploy the ingress controller to.
+      isolated_clusters_ingress_controller_chart_version:
+        type: str
+        description: Version of the ingress-nginx helm chart. Required when the ingress controller is enabled.
+      isolated_clusters_ingress_controller_chroot:
+        type: bool
+        description: Whether the ingress controller runs in a chroot.
+      isolated_clusters_ingress_controller_replicas:
+        type: int
+        description: Amount of ingress controller replicas.
+      isolated_clusters_ingress_controller_load_balancer_ip:
+        type: str
+        description: Load balancer IP of the ingress controller service. Required when the ingress controller is enabled.
+      isolated_clusters_ingress_controller_load_balancer_source_ranges:
+        type: list
+        description: Load balancer source ranges of the ingress controller service. Required when the ingress controller is enabled.
+      isolated_clusters_envoy_gateway_enabled:
+        type: bool
+        description: Whether to deploy the envoy gateway.
+      isolated_clusters_envoy_gateway_namespace:
+        type: str
+        description: The namespace to deploy the envoy gateway to.
+      isolated_clusters_envoy_gateway_chart_version:
+        type: str
+        description: Version of the envoy gateway helm chart. Required when the envoy gateway is enabled.
+      isolated_clusters_envoy_gateway_replicas:
+        type: int
+        description: Amount of envoy gateway replicas.
+      isolated_clusters_envoy_gateway_load_balancer_ip:
+        type: str
+        description: Load balancer IP of the envoy gateway service.
+      isolated_clusters_envoy_gateway_load_balancer_source_ranges:
+        type: list
+        description: Load balancer source ranges of the envoy gateway service.
+      isolated_clusters_envoy_gateway_registry_tls_secret_name:
+        type: str
+        description: Name of the TLS secret used for the registry route of the envoy gateway.
+      isolated_clusters_envoy_gateway_udp_session_idle_timeout:
+        type: str
+        description: UDP session idle timeout of the envoy gateway.
+      isolated_clusters_registry_image_name:
+        type: str
+        description: Image name of the registry.
+      isolated_clusters_registry_image_tag:
+        type: str
+        required: true
+        description: Image tag of the registry.
+      isolated_clusters_registry_namespace:
+        type: str
+        description: The namespace to deploy the registry to.
+      isolated_clusters_registry_oci_mirror_image_name:
+        type: str
+        description: Image name of the oci-mirror. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      isolated_clusters_registry_oci_mirror_image_tag:
+        type: str
+        description: Image tag of the oci-mirror. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      isolated_clusters_registry_oci_mirror_config:
+        type: dict
+        description: Configuration of the oci-mirror (registries and images to mirror).
+      isolated_clusters_registry_storage_size:
+        type: str
+        description: Size of the registry persistent volume.
+      isolated_clusters_registry_storage_class_name:
+        type: str
+        description: Storage class of the registry persistent volume.
+      isolated_clusters_registry_fqdn:
+        type: str
+        description: FQDN under which the registry is reachable through the envoy gateway. Required when the envoy gateway is enabled.
+      isolated_clusters_registry_ingress_fqdn:
+        type: str
+        description: FQDN under which the registry is reachable through the ingress controller. Required when the ingress controller is enabled.
+      isolated_clusters_registry_ingress_annotations:
+        type: dict
+        description: Additional annotations for the registry ingress.

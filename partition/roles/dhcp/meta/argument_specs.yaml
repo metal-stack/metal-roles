@@ -1,0 +1,37 @@
+---
+argument_specs:
+  main:
+    short_description: Installs and configures the isc-dhcp-server
+    options:
+      dhcp_subnets:
+        type: list
+        elements: dict
+        description: DHCP subnets to serve. Each entry supports comment, network, netmask, range (begin, end) and options.
+      dhcp_listening_interfaces:
+        type: list
+        elements: str
+        description: Interfaces the DHCP server listens on.
+      dhcp_default_lease_time:
+        type: int
+        description: Default lease time in seconds.
+      dhcp_max_lease_time:
+        type: int
+        description: Maximum lease time in seconds.
+      dhcp_global_options:
+        type: list
+        elements: str
+        description: Global options rendered into dhcpd.conf.
+      dhcp_global_deny_list:
+        type: list
+        elements: str
+        description: Global deny statements rendered into dhcpd.conf (e.g. unknown-clients).
+      dhcp_service_name:
+        type: str
+        description: Name of the DHCP server service.
+      dhcp_static_hosts:
+        type: list
+        elements: dict
+        description: Static host declarations. Each entry supports name, mac and ip.
+      dhcp_use_host_decl_names:
+        type: bool
+        description: Whether to enable use-host-decl-names in dhcpd.conf.

@@ -1,0 +1,28 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys shoot clusters into the garden
+    options:
+      gardener_shoots_garden_name:
+        type: str
+        description: Name of the garden to deploy the shoots to.
+      gardener_shoot_rollout_wait_enabled:
+        type: bool
+        description: Whether to wait for shoot reconciliation to succeed.
+      gardener_shoot_rollout_wait_retries:
+        type: int
+        description: Amount of retries when waiting for shoot reconciliation.
+      gardener_shoot_rollout_wait_delay:
+        type: int
+        description: Delay in seconds between retries when waiting for shoot reconciliation.
+      gardener_shoot_default_metal_api_hmac:
+        type: str
+        no_log: true
+        description: The default metal-api HMAC used for the shoot infrastructure secrets.
+      gardener_shoots:
+        type: list
+        elements: dict
+        description: The shoot clusters to deploy.
+      gardener_shoot_defaults:
+        type: dict
+        description: Default configuration merged into every shoot entry.

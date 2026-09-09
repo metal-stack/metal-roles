@@ -1,0 +1,250 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the control plane monitoring stack (kube-prometheus-stack, thanos, exporters, dashboards)
+    options:
+      monitoring_namespace:
+        type: str
+        description: The namespace to deploy the monitoring stack to.
+      monitoring_grafana_enabled:
+        type: bool
+        description: Whether Grafana and its dashboards are deployed.
+      monitoring_grafana_admin_password:
+        type: str
+        no_log: true
+        description: Admin password for Grafana.
+      monitoring_grafana_dashboard_timezone:
+        type: str
+        description: Timezone used in the Grafana dashboards.
+      monitoring_grafana_additional_datasources:
+        type: list
+        elements: dict
+        description: Additional Grafana datasources.
+      monitoring_grafana_github_oauth:
+        type: dict
+        description: GitHub OAuth configuration for Grafana (auth.github section).
+      monitoring_grafana_extra_secret_mounts:
+        type: list
+        elements: dict
+        description: Extra secret mounts for the Grafana pod.
+      monitoring_grafana_ingress_dns:
+        type: str
+        description: Ingress DNS name of Grafana.
+      monitoring_prometheus_ingress_dns:
+        type: str
+        description: Ingress DNS name of Prometheus.
+      monitoring_ingress_grafana_tls:
+        type: bool
+        description: Whether TLS is enabled on the Grafana ingress.
+      monitoring_prometheus_ingress_enabled:
+        type: bool
+        description: Whether to create an ingress for Prometheus.
+      monitoring_additional_ingress_annotations:
+        type: dict
+        description: Additional annotations for the monitoring ingresses.
+      monitoring_grafana_ingress_annotations:
+        type: dict
+        description: Additional annotations for the Grafana ingress.
+      monitoring_alertmanager_ingress_annotations:
+        type: dict
+        description: Additional annotations for the Alertmanager ingress.
+      monitoring_alertmanager_enabled:
+        type: bool
+        description: Whether the Alertmanager is deployed.
+      monitoring_alertmanager_ingress_enabled:
+        type: bool
+        description: Whether to create an ingress for the Alertmanager.
+      monitoring_alertmanager_ingress_dns:
+        type: str
+        description: Ingress DNS name of the Alertmanager.
+      monitoring_alertmanager_ingress_tls:
+        type: bool
+        description: Whether TLS is enabled on the Alertmanager ingress.
+      monitoring_alertmanager_ingress_basic_auth_user:
+        type: str
+        description: Basic auth user of the Alertmanager ingress.
+      monitoring_alertmanager_ingress_basic_auth_password:
+        type: str
+        no_log: true
+        description: Basic auth password of the Alertmanager ingress.
+      monitoring_alertmanager_ingress_basic_auth_password_salt:
+        type: str
+        no_log: true
+        description: Salt used for generating the htpasswd entry of the Alertmanager ingress.
+      monitoring_alertmanager_webhook_logger_repeat_interval:
+        type: str
+        description: Repeat interval for the webhook logger receiver.
+      monitoring_alertmanager_webhook_slack_repeat_interval:
+        type: str
+        description: Repeat interval for the slack receiver.
+      monitoring_alertmanager_additional_routes:
+        type: list
+        elements: dict
+        description: Additional Alertmanager routes.
+      monitoring_alertmanager_additional_receivers:
+        type: list
+        elements: dict
+        description: Additional Alertmanager receivers.
+      monitoring_slack_api_url:
+        type: str
+        no_log: true
+        description: Slack webhook URL for alert notifications.
+      monitoring_slack_notification_channel:
+        type: str
+        description: Slack channel for alert notifications.
+      event_exporter_enabled:
+        type: bool
+        description: Whether the kubernetes event-exporter is deployed.
+      monitoring_metal_api_url:
+        type: str
+        description: The metal-api URL scraped by the metal-metrics-exporter.
+      monitoring_metal_api_hmac:
+        type: str
+        no_log: true
+        description: The metal-api HMAC used by the metal-metrics-exporter.
+      monitoring_metal_api_authtype:
+        type: str
+        description: The metal-api HMAC auth type used by the metal-metrics-exporter.
+      monitoring_rethinkdb_exporter_metal_db_password:
+        type: str
+        no_log: true
+        description: Password of the metal-db used by the rethinkdb-exporter.
+      monitoring_rethinkdb_exporter_metal_db_endpoint:
+        type: str
+        description: Endpoint of the metal-db used by the rethinkdb-exporter.
+      monitoring_gardener_enabled:
+        type: raw
+        description: Whether the Gardener monitoring components are deployed. Enabled automatically when monitoring_gardener_seeds is non-empty.
+      monitoring_gardener_seeds:
+        type: list
+        elements: str
+        description: The Gardener seeds to monitor.
+      monitoring_virtual_garden_kubeconfig_refresher_cluster_provider:
+        type: str
+        description: "Cluster provider used by the virtual-garden-kubeconfig-refresher (one of: gcp, metalstackcloud, static). Required when Gardener monitoring is enabled."
+      monitoring_virtual_garden_kubeconfig_refresher_gcp_project_id:
+        type: str
+        description: GCP project id for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_gcp_location:
+        type: str
+        description: GCP location for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_gcp_cluster_name:
+        type: str
+        description: GCP cluster name for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_project_id:
+        type: str
+        description: metalstack.cloud project id for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_api_token:
+        type: str
+        no_log: true
+        description: metalstack.cloud API token for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_metal_stack_cloud_cluster_id:
+        type: str
+        description: metalstack.cloud cluster id for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_static_kubeconfig:
+        type: str
+        no_log: true
+        description: Static kubeconfig content for the garden cluster (cluster provider static).
+      monitoring_virtual_garden_kubeconfig_refresher_garden_cluster_local_rbac:
+        type: bool
+        description: Whether to create local RBAC resources for accessing the garden cluster.
+      monitoring_prometheus_operator_enabled:
+        type: bool
+        description: Whether the prometheus operator is deployed.
+      monitoring_prometheus_image_tag:
+        type: str
+        description: Overrides the prometheus image tag of the kube-prometheus-stack chart.
+      monitoring_prometheus_storage_spec:
+        type: str
+        description: Storage spec (YAML string) for the prometheus statefulset.
+      monitoring_prometheus_core_dns_enabled:
+        type: bool
+        description: Whether CoreDNS monitoring is enabled.
+      monitoring_prometheus_kube_dns_enabled:
+        type: bool
+        description: Whether kube-dns monitoring is enabled.
+      monitoring_prometheus_kube_proxy_enabled:
+        type: bool
+        description: Whether kube-proxy monitoring is enabled.
+      monitoring_prometheus_kube_scheduler_enabled:
+        type: bool
+        description: Whether kube-scheduler monitoring is enabled.
+      monitoring_prometheus_kube_etcd_enabled:
+        type: bool
+        description: Whether etcd monitoring is enabled.
+      monitoring_prometheus_kube_controller_manager_enabled:
+        type: bool
+        description: Whether kube-controller-manager monitoring is enabled.
+      monitoring_prometheus_kubelet_enabled:
+        type: bool
+        description: Whether kubelet monitoring is enabled.
+      monitoring_prometheus_default_rules_enabled:
+        type: bool
+        description: Whether the default prometheus rules of the kube-prometheus-stack are enabled.
+      monitoring_prometheus_remote_write:
+        type: list
+        elements: dict
+        description: Prometheus remote_write targets (name, url, username, password).
+      monitoring_prometheus_kube_proxy_service_selector:
+        type: dict
+        description: Service selector for the kube-proxy monitoring service.
+      monitoring_thanos_enabled:
+        type: bool
+        description: Whether thanos is deployed.
+      monitoring_thanos_receive_enabled:
+        type: bool
+        description: Whether thanos receive is deployed.
+      monitoring_thanos_receive_ingress_enabled:
+        type: bool
+        description: Whether to create an ingress for thanos receive.
+      monitoring_thanos_receive_ingress_dns:
+        type: str
+        description: Ingress DNS name of thanos receive.
+      monitoring_thanos_receive_ingress_annotations:
+        type: list
+        description: Additional annotations for the thanos receive ingress.
+      monitoring_thanos_receive_ingress_tls:
+        type: bool
+        description: Whether TLS is enabled on the thanos receive ingress.
+      monitoring_thanos_receive_ingress_tls_gardener_managed:
+        type: bool
+        description: Whether the thanos receive ingress certificate is managed by Gardener.
+      monitoring_thanos_receive_ingress_basic_auth_user:
+        type: str
+        description: Basic auth user of the thanos receive ingress.
+      monitoring_thanos_receive_ingress_basic_auth_password:
+        type: str
+        no_log: true
+        description: Basic auth password of the thanos receive ingress.
+      monitoring_thanos_receive_ingress_basic_auth_password_salt:
+        type: str
+        no_log: true
+        description: Salt used for generating the htpasswd entry of the thanos receive ingress.
+      monitoring_thanos_receive_size:
+        type: str
+        description: Size of the thanos receive persistent volume.
+      monitoring_thanos_receive_resource_preset:
+        type: str
+        description: Resource preset of thanos receive.
+      monitoring_thanos_receive_probe_failure_threshold:
+        type: int
+        description: Probe failure threshold of thanos receive.
+      monitoring_thanos_compactor_size:
+        type: str
+        description: Size of the thanos compactor persistent volume.
+      monitoring_thanos_compactor_resource_preset:
+        type: str
+        description: Resource preset of the thanos compactor.
+      monitoring_thanos_compactor_storage_class:
+        type: str
+        description: Storage class of the thanos compactor persistent volume.
+      monitoring_thanos_object_store_resource_preset:
+        type: str
+        description: Resource preset of the thanos object store components.
+      monitoring_thanos_object_store_probe_failure_threshold:
+        type: int
+        description: Probe failure threshold of the thanos object store components.
+      monitoring_thanos_object_store_config:
+        type: str
+        no_log: true
+        description: Thanos object store configuration (YAML string, contains credentials).

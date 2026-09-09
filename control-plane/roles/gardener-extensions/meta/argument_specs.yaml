@@ -1,0 +1,244 @@
+---
+argument_specs:
+  main:
+    short_description: Registers the gardener extensions and their admission controllers in the garden
+    options:
+      gardener_extension_acl_enabled:
+        type: bool
+        description: Whether the acl extension is registered.
+      gardener_extension_acl_helm_chart_tag:
+        type: str
+        description: Tag of the acl extension helm chart.
+      gardener_extension_admission_acl_helm_chart_application_tag:
+        type: str
+        description: Tag of the acl admission application helm chart.
+      gardener_extension_admission_acl_helm_chart_runtime_tag:
+        type: str
+        description: Tag of the acl admission runtime helm chart.
+      gardener_extension_acl_additional_allowed_cidrs:
+        type: list
+        elements: str
+        description: Additional CIDRs that are always allowed by the acl extension.
+      gardener_extension_audit_enabled:
+        type: bool
+        description: Whether the audit extension is registered.
+      gardener_extension_audit_helm_chart_tag:
+        type: str
+        description: Tag of the audit extension helm chart.
+      gardener_extension_audit_default_webhook_mode:
+        type: str
+        description: Default webhook mode of the audit extension.
+      gardener_extension_backup_s3_enabled:
+        type: bool
+        description: Whether the backup-s3 extension is registered.
+      gardener_extension_backup_s3_helm_chart_tag:
+        type: str
+        description: Tag of the backup-s3 extension helm chart.
+      gardener_extension_csi_driver_lvm_enabled:
+        type: bool
+        description: Whether the csi-driver-lvm extension is registered.
+      gardener_extension_csi_driver_lvm_helm_chart_tag:
+        type: str
+        description: Tag of the csi-driver-lvm extension helm chart.
+      gardener_extension_csi_driver_lvm_image_vector_overwrite:
+        type: list
+        description: Image vector overwrite for the csi-driver-lvm extension.
+      gardener_extension_dns_powerdns_enabled:
+        type: bool
+        description: Whether the dns-powerdns extension is registered.
+      gardener_extension_dns_powerdns_helm_chart_tag:
+        type: str
+        description: Tag of the dns-powerdns extension helm chart.
+      gardener_extension_dns_powerdns_additional_network_policies:
+        type: bool
+        description: Whether additional network policies are deployed for the dns-powerdns extension.
+      gardener_extension_duros_enabled:
+        type: bool
+        description: Whether the duros extension is registered.
+      gardener_extension_duros_helm_chart:
+        type: str
+        description: OCI reference of the duros extension helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      gardener_extension_duros_helm_chart_tag:
+        type: str
+        description: Tag of the duros extension helm chart.
+      gardener_extension_duros_image_name:
+        type: str
+        description: Image name of the duros extension.
+      gardener_extension_duros_image_tag:
+        type: str
+        description: Image tag of the duros extension.
+      gardener_extension_duros_regions_config:
+        type: dict
+        description: Per-region duros storage configuration.
+      gardener_extension_networking_calico_enabled:
+        type: bool
+        description: Whether the networking-calico extension is registered.
+      gardener_extension_networking_calico_helm_chart_tag:
+        type: str
+        description: Tag of the networking-calico extension helm chart.
+      gardener_extension_admission_calico_helm_chart_runtime_tag:
+        type: str
+        description: Tag of the calico admission runtime helm chart.
+      gardener_extension_admission_calico_helm_chart_application_tag:
+        type: str
+        description: Tag of the calico admission application helm chart.
+      gardener_extension_networking_calico_image_vector_overwrite:
+        type: list
+        description: Image vector overwrite for the networking-calico extension.
+      gardener_extension_networking_cilium_enabled:
+        type: bool
+        description: Whether the networking-cilium extension is registered.
+      gardener_extension_networking_cilium_helm_chart_tag:
+        type: str
+        description: Tag of the networking-cilium extension helm chart.
+      gardener_extension_admission_cilium_helm_chart_runtime_tag:
+        type: str
+        description: Tag of the cilium admission runtime helm chart.
+      gardener_extension_admission_cilium_helm_chart_application_tag:
+        type: str
+        description: Tag of the cilium admission application helm chart.
+      gardener_extension_networking_cilium_image_vector_overwrite:
+        type: list
+        description: Image vector overwrite for the networking-cilium extension.
+      gardener_extension_ontap_enabled:
+        type: bool
+        description: Whether the ontap extension is registered.
+      gardener_extension_ontap_helm_chart_tag:
+        type: str
+        description: Tag of the ontap extension helm chart.
+      gardener_extension_ontap_clusters:
+        type: list
+        description: The ONTAP clusters configured for the ontap extension.
+      gardener_extension_os_metal_enabled:
+        type: bool
+        description: Whether the os-metal extension is registered.
+      gardener_extension_os_metal_helm_chart_tag:
+        type: str
+        description: Tag of the os-metal extension helm chart.
+      gardener_extension_os_metal_types:
+        type: list
+        elements: str
+        description: The operating system types handled by the os-metal extension.
+      gardener_extension_provider_gcp_enabled:
+        type: bool
+        description: Whether the provider-gcp extension is registered.
+      gardener_extension_provider_gcp_helm_chart_tag:
+        type: str
+        description: Tag of the provider-gcp extension helm chart.
+      gardener_extension_admission_gcp_helm_chart_runtime_tag:
+        type: str
+        description: Tag of the gcp admission runtime helm chart.
+      gardener_extension_admission_gcp_helm_chart_application_tag:
+        type: str
+        description: Tag of the gcp admission application helm chart.
+      gardener_extension_provider_metal_enabled:
+        type: bool
+        description: Whether the provider-metal extension is registered.
+      gardener_extension_provider_metal_helm_chart_tag:
+        type: str
+        description: Tag of the provider-metal extension helm chart.
+      gardener_extension_admission_metal_helm_chart_runtime_tag:
+        type: str
+        description: Tag of the metal admission runtime helm chart.
+      gardener_extension_admission_metal_helm_chart_application_tag:
+        type: str
+        description: Tag of the metal admission application helm chart.
+      gardener_extension_provider_metal_admission_replicas:
+        type: int
+        description: Amount of replicas of the provider-metal admission controller.
+      gardener_extension_provider_metal_admission_vpa:
+        type: bool
+        description: Whether a vertical pod autoscaler is enabled for the provider-metal admission controller.
+      gardener_extension_provider_metal_admission_default_pods_cidr:
+        type: str
+        description: Default pods CIDR defaulted by the provider-metal admission controller.
+      gardener_extension_provider_metal_admission_default_services_cidr:
+        type: str
+        description: Default services CIDR defaulted by the provider-metal admission controller.
+      gardener_extension_provider_metal_etcd_storage_class_name:
+        type: str
+        description: Storage class of the shoot control plane etcd.
+      gardener_extension_provider_metal_etcd_backup_schedule:
+        type: str
+        description: Backup schedule of the shoot control plane etcd.
+      gardener_extension_provider_metal_etcd_delta_snapshot_period:
+        type: str
+        description: Delta snapshot period of the shoot control plane etcd.
+      gardener_extension_provider_metal_etcd_volume_eviction:
+        type: bool
+        description: Whether etcd pods are evicted on volume issues.
+      gardener_extension_provider_metal_egress_destinations:
+        type: list
+        description: Allowed egress destinations for shoot control planes.
+      gardener_extension_provider_metal_machine_images:
+        type: list
+        description: Machine image to firewall image mapping of the provider-metal extension. Defaults to metal_api_images.
+      gardener_extension_provider_metal_duros_storage_enabled:
+        type: bool
+        description: Whether duros storage integration is enabled in the provider-metal extension.
+      gardener_extension_provider_metal_duros_storage_config:
+        type: dict
+        description: Duros storage configuration of the provider-metal extension.
+      gardener_extension_provider_metal_image_pull_policy:
+        type: str
+        description: Image pull policy for the provider-metal extension containers.
+      gardener_extension_provider_metal_image_pull_secret:
+        type: str
+        description: Image pull secret encoded docker config for the provider-metal extension.
+      gardener_extension_provider_metal_firewall_internal_prefixes:
+        type: list
+        elements: str
+        description: Internal network prefixes for firewall rules of the provider-metal extension.
+      gardener_extension_provider_metal_additional_network_policies:
+        type: list
+        description: Additional network policies deployed by the provider-metal extension.
+      gardener_extension_shoot_cert_service_enabled:
+        type: bool
+        description: Whether the shoot-cert-service extension is registered.
+      gardener_extension_shoot_cert_service_helm_chart_tag:
+        type: str
+        description: Tag of the shoot-cert-service extension helm chart.
+      gardener_extension_shoot_cert_service_issuer_private_key:
+        type: str
+        no_log: true
+        description: Private key of the ACME issuer account.
+      gardener_extension_shoot_cert_service_issuer_server:
+        type: str
+        description: ACME server URL of the certificate issuer.
+      gardener_extension_shoot_cert_service_issuer_email:
+        type: str
+        description: Email address of the ACME issuer account. Required when the shoot-cert-service extension is enabled.
+      gardener_extension_shoot_cert_service_precheck_nameservers:
+        type: list
+        elements: str
+        description: Nameservers used for DNS prechecks of the shoot-cert-service extension.
+      gardener_extension_shoot_cert_service_shoot_issuers_enabled:
+        type: bool
+        description: Whether custom issuers can be configured in shoots.
+      gardener_extension_shoot_dns_service_enabled:
+        type: bool
+        description: Whether the shoot-dns-service extension is registered.
+      gardener_extension_shoot_dns_service_helm_chart_tag:
+        type: str
+        description: Tag of the shoot-dns-service extension helm chart.
+      gardener_extension_admission_shoot_dns_service_helm_chart_application_tag:
+        type: str
+        description: Tag of the shoot-dns-service admission application helm chart.
+      gardener_extension_admission_shoot_dns_service_helm_chart_runtime_tag:
+        type: str
+        description: Tag of the shoot-dns-service admission runtime helm chart.
+      gardener_shoot_dns_service_image_vector_overwrite:
+        type: list
+        description: Image vector overwrite for the shoot-dns-service extension.
+      gardener_shoot_dns_service_dns_controller_manager_image_name:
+        type: str
+        description: Image name override of the dns-controller-manager.
+      gardener_shoot_dns_service_dns_controller_manager_image_tag:
+        type: str
+        description: Image tag override of the dns-controller-manager.
+      gardener_shoot_dns_service_dns_provider_replication:
+        type: bool
+        description: Whether DNS provider replication is enabled in the shoot-dns-service extension.
+      gardener_extension_dns_external_controller_registration_url:
+        type: str
+        description: URL of an external dns controller registration to include.

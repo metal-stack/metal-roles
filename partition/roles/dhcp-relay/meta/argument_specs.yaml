@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Configures DHCP relaying on Cumulus switches
+    options:
+      dhcp_relay_interface:
+        type: str
+        description: The interface to relay DHCP requests from.
+      dhcp_relay_server:
+        type: raw
+        required: true
+        description: The DHCP server (string) or servers (list of strings) to relay requests to.

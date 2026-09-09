@@ -1,0 +1,31 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the prometheus ipmi-exporter in a systemd-managed Docker container
+    options:
+      monitoring_ipmi_exporter_etc_host_dir:
+        type: str
+        description: Host directory for the ipmi-exporter configuration.
+      monitoring_ipmi_exporter_image_name:
+        type: str
+        description: Image name of the ipmi-exporter.
+      monitoring_ipmi_exporter_image_tag:
+        type: str
+        description: Image tag of the ipmi-exporter.
+      monitoring_ipmi_exporter_port:
+        type: int
+        description: Port the ipmi-exporter listens on.
+      monitoring_ipmi_exporter_docker_log_driver:
+        type: str
+        description: Docker log driver for the ipmi-exporter container.
+      monitoring_ipmi_bmc_superuser:
+        type: str
+        description: The IPMI superuser name used for scraping the machine BMCs.
+      monitoring_ipmi_bmc_superuser_pwd:
+        type: str
+        no_log: true
+        description: The IPMI superuser password used for scraping the machine BMCs.
+      monitoring_ipmi_exporter_collectors:
+        type: list
+        elements: str
+        description: The ipmi-exporter collectors to enable.

@@ -1,0 +1,15 @@
+---
+argument_specs:
+  main:
+    short_description: Creates access resources for the virtual garden and deploys cluster role bindings
+    options:
+      gardener_virtual_garden_access_garden_name:
+        type: str
+        description: Name of the garden to create the access resources for.
+      gardener_virtual_garden_access_expiration:
+        type: str
+        description: Token expiration duration for the virtual garden access service account.
+      gardener_virtual_garden_access_cluster_role_bindings:
+        type: list
+        elements: dict
+        description: Cluster role bindings deployed to the virtual garden.

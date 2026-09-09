@@ -1,0 +1,40 @@
+---
+argument_specs:
+  deploy-alloy:
+    short_description: Shared tasks for deploying Grafana Alloy via helm chart
+    options:
+      logging_common_alloy_namespace:
+        type: str
+        description: The namespace to deploy Alloy to.
+      logging_common_alloy_chart_version:
+        type: str
+        description: Version of the alloy helm chart. Usually passed by the consuming role.
+      logging_common_alloy_chart_repo:
+        type: str
+        description: Repository URL of the alloy helm chart. Usually passed by the consuming role.
+      logging_common_alloy_service_monitor_enabled:
+        type: bool
+        description: Whether to create a ServiceMonitor for Alloy self-metrics scraping. Never enable in Gardener seed clusters.
+      logging_common_alloy_loki_write_endpoints:
+        type: list
+        elements: dict
+        description: Loki push endpoints. Each entry supports url, remote_timeout and basic_auth (username, password).
+      logging_common_alloy_cluster_label:
+        type: str
+        description: Value for the cluster label attached to all log and metric streams. Must not be empty.
+      logging_common_alloy_prometheus_write_endpoints:
+        type: list
+        elements: dict
+        description: Prometheus remote_write endpoints for Alloy self-metrics.
+      logging_common_alloy_prometheus_wal_truncate_frequency:
+        type: str
+        description: How often the Alloy remote_write WAL is compacted.
+      logging_common_alloy_prometheus_wal_max_keepalive_time:
+        type: str
+        description: Maximum age of undelivered WAL samples before they are dropped.
+      logging_common_alloy_config_raw:
+        type: str
+        description: Full Alloy River config override. When set, bypasses the structured vars and the template.
+      logging_common_alloy_kubeconfig:
+        type: str
+        description: Path to a kubeconfig used for deploying the alloy helm chart to a different cluster.

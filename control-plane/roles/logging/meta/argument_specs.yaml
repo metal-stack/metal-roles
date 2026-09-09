@@ -1,0 +1,81 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys Loki and Alloy (or deprecated Promtail) for control plane logging
+    options:
+      logging_namespace:
+        type: str
+        description: The namespace to deploy the logging stack to.
+      logging_chart_version:
+        type: str
+        description: Version of the loki helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      logging_chart_repo:
+        type: str
+        description: Repository URL of the loki helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      logging_alloy_enabled:
+        type: bool
+        description: Whether to deploy Alloy.
+      logging_alloy_chart_version:
+        type: str
+        description: Version of the alloy helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      logging_alloy_chart_repo:
+        type: str
+        description: Repository URL of the alloy helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      logging_alloy_loki_write_endpoints:
+        type: list
+        elements: dict
+        description: Loki push endpoints for Alloy. Each entry supports url, remote_timeout and basic_auth (username, password).
+      logging_alloy_cluster_label:
+        type: str
+        description: Value for the cluster label attached to all log and metric streams.
+      logging_alloy_service_monitor_enabled:
+        type: bool
+        description: Whether to create a ServiceMonitor for Alloy self-metrics scraping. Requires the monitoring role to be deployed.
+      logging_alloy_prometheus_write_endpoints:
+        type: list
+        elements: dict
+        description: Prometheus remote_write endpoints for Alloy self-metrics.
+      logging_alloy_prometheus_wal_truncate_frequency:
+        type: str
+        description: How often the Alloy remote_write WAL is compacted.
+      logging_alloy_prometheus_wal_max_keepalive_time:
+        type: str
+        description: Maximum age of undelivered WAL samples before they are dropped.
+      logging_alloy_config_raw:
+        type: str
+        description: Full Alloy River config override. When set, bypasses all structured vars and the template.
+      logging_promtail_enabled:
+        type: bool
+        description: Whether to deploy Promtail (deprecated). When false, any existing Promtail release is uninstalled.
+      logging_promtail_chart_version:
+        type: str
+        description: Version of the promtail helm chart. Required when logging_promtail_enabled is true. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      logging_promtail_chart_repo:
+        type: str
+        description: Repository URL of the promtail helm chart. Required when logging_promtail_enabled is true. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      logging_ingress_dns:
+        type: str
+        description: Ingress DNS name of loki.
+      logging_ingress_loki_tls:
+        type: bool
+        description: Whether TLS is enabled on the loki ingress.
+      logging_ingress_loki_basic_auth_user:
+        type: str
+        description: Basic auth user of the loki ingress.
+      logging_ingress_loki_basic_auth_password:
+        type: str
+        no_log: true
+        description: Basic auth password of the loki ingress.
+      logging_ingress_loki_basic_auth_password_salt:
+        type: str
+        no_log: true
+        description: Salt used for generating the htpasswd entry of the loki ingress.
+      logging_ingress_annotations:
+        type: dict
+        description: Additional annotations for the loki ingress.
+      logging_loki_enabled:
+        type: bool
+        description: Whether to deploy loki.
+      logging_loki_size:
+        type: str
+        description: Size of the loki persistent volume.

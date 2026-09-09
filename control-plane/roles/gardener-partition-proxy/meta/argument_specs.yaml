@@ -1,0 +1,34 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys a proxy in shooted seeds for reaching the metal-api from partitions
+    options:
+      gardener_partition_proxy_garden_name:
+        type: str
+        description: Name of the garden.
+      gardener_partition_proxy_metal_api_url:
+        type: str
+        description: The metal-api URL that the proxy forwards to.
+      gardener_partition_proxy_metal_api_edit_hmac:
+        type: str
+        no_log: true
+        description: The metal-api edit HMAC used for looking up partitions.
+      gardener_partition_proxy_dns_credentials:
+        type: str
+        no_log: true
+        description: Credentials for the DNS provider of the proxy DNS entry.
+      gardener_partition_proxy_dns_provider:
+        type: str
+        description: The DNS provider type of the proxy DNS entry.
+      gardener_partition_proxy_ip_address:
+        type: str
+        description: The load balancer IP address of the proxy service.
+      gardener_partition_proxy_image_name:
+        type: str
+        description: Image name of the proxy.
+      gardener_partition_proxy_image_tag:
+        type: str
+        description: Image tag of the proxy.
+      gardener_partition_proxy_shooted_seeds:
+        type: list
+        description: The shooted seeds to deploy the proxy to.

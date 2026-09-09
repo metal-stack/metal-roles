@@ -1,0 +1,118 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the zitadel database via the postgres-backup-restore role
+    options:
+      zitadel_db_name:
+        type: str
+        description: Name of the the zitadel db deployment.
+      zitadel_db_namespace:
+        type: str
+        description: The namespace to deploy the zitadel db to.
+      zitadel_db_image_pull_policy:
+        type: str
+        description: Image pull policy for the the zitadel db container.
+      zitadel_db_storage_size:
+        type: str
+        description: Size of the persistent volume.
+      zitadel_db_storage_class:
+        type: str
+        description: Storage class of the persistent volume.
+      zitadel_db_db:
+        type: str
+        description: Name of the database to create.
+      zitadel_db_user:
+        type: str
+        description: User of the the zitadel db database.
+      zitadel_db_password:
+        type: str
+        no_log: true
+        description: Password of the the zitadel db database.
+      zitadel_db_max_connections:
+        type: raw
+        description: Maximum amount of database connections.
+      zitadel_db_backup_restore_sidecar_image_pull_policy:
+        type: str
+        description: Image pull policy for the backup-restore-sidecar container.
+      zitadel_db_backup_restore_sidecar_provider:
+        type: str
+        description: Backup provider used by the backup-restore-sidecar (local, gcp or s3).
+      zitadel_db_backup_restore_sidecar_backup_cron_schedule:
+        type: str
+        description: Cron schedule for creating backups.
+      zitadel_db_backup_restore_sidecar_log_level:
+        type: str
+        description: Log level of the backup-restore-sidecar.
+      zitadel_db_backup_restore_sidecar_object_prefix:
+        type: str
+        description: Object prefix used for backups in the object store.
+      zitadel_db_backup_restore_sidecar_object_max_keep:
+        type: raw
+        description: Maximum amount of backup objects to keep.
+      zitadel_db_backup_restore_sidecar_object_days_max_keep:
+        type: raw
+        description: Maximum age in days of backup objects to keep.
+      zitadel_db_backup_restore_sidecar_s3_request_checksum_calculation:
+        type: str
+        description: S3 request checksum calculation setting (e.g. when_required for non-AWS S3 endpoints).
+      zitadel_db_backup_restore_sidecar_encryption_key:
+        type: str
+        no_log: true
+        description: Encryption key (32 characters) for encrypting backups.
+      zitadel_db_backup_restore_sidecar_gcp_bucket_name:
+        type: str
+        description: GCP bucket name for storing backups.
+      zitadel_db_backup_restore_sidecar_gcp_backup_location:
+        type: str
+        description: GCP bucket location for storing backups.
+      zitadel_db_backup_restore_sidecar_gcp_project_id:
+        type: str
+        description: GCP project id of the backup bucket.
+      zitadel_db_backup_restore_sidecar_gcp_serviceaccount_json:
+        type: str
+        no_log: true
+        description: GCP service account JSON used for accessing the backup bucket.
+      zitadel_db_backup_restore_sidecar_s3_bucket_name:
+        type: str
+        description: S3 bucket name for storing backups.
+      zitadel_db_backup_restore_sidecar_s3_region:
+        type: str
+        description: S3 region of the backup bucket.
+      zitadel_db_backup_restore_sidecar_s3_endpoint:
+        type: str
+        description: S3 endpoint of the backup bucket.
+      zitadel_db_backup_restore_sidecar_s3_access_key:
+        type: str
+        description: S3 access key for the backup bucket.
+      zitadel_db_backup_restore_sidecar_s3_secret_key:
+        type: str
+        no_log: true
+        description: S3 secret key for the backup bucket.
+      zitadel_db_backup_restore_sidecar_s3_insecure_skip_verify:
+        type: raw
+        description: Whether to skip TLS certificate verification for the S3 endpoint.
+      zitadel_db_backup_restore_sidecar_s3_trusted_ca_cert:
+        type: str
+        description: Trusted CA certificate for the S3 endpoint.
+      zitadel_db_resources:
+        type: dict
+        description: Resource requests and limits for the the zitadel db container.
+      zitadel_db_registry_auth_enabled:
+        type: raw
+        description: Whether to deploy an image pull secret for the registry.
+      zitadel_db_registry_auth:
+        type: dict
+        no_log: true
+        description: Docker auth configuration for the image pull secret.
+      zitadel_db_image_name:
+        type: str
+        description: Image name of the zitadel db. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      zitadel_db_image_tag:
+        type: str
+        description: Image tag of the zitadel db. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      zitadel_db_backup_restore_sidecar_image_name:
+        type: str
+        description: Image name of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      zitadel_db_backup_restore_sidecar_image_tag:
+        type: str
+        description: Image tag of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.

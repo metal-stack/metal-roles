@@ -1,0 +1,149 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys a PostgreSQL database with the backup-restore-sidecar
+    options:
+      postgres_name:
+        type: str
+        description: Name of the postgres deployment.
+      postgres_namespace:
+        type: str
+        description: The namespace to deploy postgres to.
+      postgres_image_pull_policy:
+        type: str
+        description: Image pull policy for the postgres container.
+      postgres_storage_size:
+        type: str
+        description: Size of the persistent volume.
+      postgres_storage_class:
+        type: str
+        description: Storage class of the persistent volume.
+      postgres_db:
+        type: str
+        description: Name of the database to create.
+      postgres_user:
+        type: str
+        description: User of the postgres database.
+      postgres_password:
+        type: str
+        no_log: true
+        description: Password of the postgres database.
+      postgres_max_connections:
+        type: raw
+        description: Maximum amount of database connections.
+      postgres_shared_libraries_preload:
+        type: list
+        elements: str
+        description: Libraries to preload via shared_preload_libraries.
+      postgres_shared_buffers:
+        type: str
+        description: PostgreSQL shared_buffers setting.
+      postgres_maintenance_work_mem:
+        type: str
+        description: PostgreSQL maintenance_work_mem setting.
+      postgres_work_mem:
+        type: str
+        description: PostgreSQL work_mem setting.
+      postgres_effective_cache_size:
+        type: str
+        description: PostgreSQL effective_cache_size setting.
+      postgres_backup_restore_sidecar_image_pull_policy:
+        type: str
+        description: Image pull policy for the backup-restore-sidecar container.
+      postgres_backup_restore_sidecar_provider:
+        type: str
+        description: Backup provider used by the backup-restore-sidecar (local, gcp or s3).
+      postgres_backup_restore_sidecar_backup_cron_schedule:
+        type: str
+        description: Cron schedule for creating backups.
+      postgres_backup_restore_sidecar_log_level:
+        type: str
+        description: Log level of the backup-restore-sidecar.
+      postgres_backup_restore_sidecar_object_prefix:
+        type: str
+        description: Object prefix used for backups in the object store.
+      postgres_backup_restore_sidecar_object_max_keep:
+        type: raw
+        description: Maximum amount of backup objects to keep.
+      postgres_backup_restore_sidecar_object_days_max_keep:
+        type: raw
+        description: Maximum age in days of backup objects to keep.
+      postgres_backup_restore_sidecar_s3_request_checksum_calculation:
+        type: str
+        description: S3 request checksum calculation setting (e.g. when_required for non-AWS S3 endpoints).
+      postgres_backup_restore_sidecar_encryption_key:
+        type: str
+        no_log: true
+        description: Encryption key (32 characters) for encrypting backups.
+      postgres_backup_restore_sidecar_gcp_bucket_name:
+        type: str
+        description: GCP bucket name for storing backups.
+      postgres_backup_restore_sidecar_gcp_backup_location:
+        type: str
+        description: GCP bucket location for storing backups.
+      postgres_backup_restore_sidecar_gcp_project_id:
+        type: str
+        description: GCP project id of the backup bucket.
+      postgres_backup_restore_sidecar_gcp_serviceaccount_json:
+        type: str
+        no_log: true
+        description: GCP service account JSON used for accessing the backup bucket.
+      postgres_backup_restore_sidecar_s3_bucket_name:
+        type: str
+        description: S3 bucket name for storing backups.
+      postgres_backup_restore_sidecar_s3_region:
+        type: str
+        description: S3 region of the backup bucket.
+      postgres_backup_restore_sidecar_s3_endpoint:
+        type: str
+        description: S3 endpoint of the backup bucket.
+      postgres_backup_restore_sidecar_s3_access_key:
+        type: str
+        description: S3 access key for the backup bucket.
+      postgres_backup_restore_sidecar_s3_secret_key:
+        type: str
+        no_log: true
+        description: S3 secret key for the backup bucket.
+      postgres_backup_restore_sidecar_s3_insecure_skip_verify:
+        type: raw
+        description: Whether to skip TLS certificate verification for the S3 endpoint.
+      postgres_backup_restore_sidecar_s3_trusted_ca_cert:
+        type: str
+        description: Trusted CA certificate for the S3 endpoint.
+      postgres_resources:
+        type: dict
+        description: Resource requests and limits for the postgres container.
+      postgres_backup_restore_sidecar_resources:
+        type: dict
+        description: Resource requests and limits for the backup-restore-sidecar container.
+      postgres_init_resources:
+        type: dict
+        description: Resource requests and limits for the init container.
+      postgres_registry_auth_enabled:
+        type: raw
+        description: Whether to deploy an image pull secret for the registry.
+      postgres_registry_auth:
+        type: dict
+        no_log: true
+        description: Docker auth configuration for the image pull secret.
+      postgres_enable_security_context:
+        type: bool
+        description: Whether to render the pod and container security contexts.
+      postgres_sts_security_context:
+        type: dict
+        description: Pod security context for the statefulset.
+      postgres_container_security_context:
+        type: dict
+        description: Security context for the containers.
+      postgres_image_name:
+        type: str
+        description: Image name of postgres. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      postgres_image_tag:
+        type: str
+        description: Image tag of postgres. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      postgres_backup_restore_sidecar_image_name:
+        type: str
+        description: Image name of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      postgres_backup_restore_sidecar_image_tag:
+        type: str
+        description: Image tag of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
