@@ -32,3 +32,8 @@ sonic_config_vlans:
     vrf: vrfACPmgmt
     tagged_ports:
       - Ethernet120
+
+sonic_config_frr_fabric_routemap_in:
+  name: RM_FABRIC_IN
+  entries:
+    - match ip address prefix-list PL_FABRIC_IN
