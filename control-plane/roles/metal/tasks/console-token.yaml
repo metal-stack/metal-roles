@@ -6,6 +6,7 @@
     METAL_APIV2_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
   block:
     - name: Create metal-console tenant
+      run_once: true
       metal_v2_admin_tenant:
         identifier: metal-console
         name: metal-console
@@ -15,6 +16,7 @@
     - name: Create metal-console api token
       metal_v2_admin_token:
         identifier: metal-console
+        use_latest_identifier: true
         user: "{{ _tenant.id }}"
         description: metal-console token
         expires: "{{ metal_console_token_expiration }}"
