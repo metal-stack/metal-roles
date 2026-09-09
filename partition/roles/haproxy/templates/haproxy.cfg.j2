@@ -1,0 +1,39 @@
+global
+    log /dev/log local0
+    stats socket {{ haproxy_stats_socket }} mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log     global
+    mode    tcp
+    option  dontlognull
+    timeout connect 5s
+    timeout client  {{ haproxy_timeout_tunnel }}
+    timeout server  {{ haproxy_timeout_tunnel }}
+{% for service in haproxy_services %}
+{% set mode = service.mode | default('tcp') %}
+{% set terminates_ssl = mode == 'http' and service.ssl_cert | default('') %}
+{% set checks_livez = service.healthcheck | default('') == 'livez' %}
+
+frontend fe_{{ service.name }}
+{% for address in service.bind_addresses %}
+    bind {{ address }}:{{ service.port }}{{ ' ssl crt ' ~ service.ssl_cert if terminates_ssl else '' }}
+{% endfor %}
+    mode {{ mode }}
+    option {{ 'httplog' if mode == 'http' else 'tcplog' }}
+    default_backend be_{{ service.name }}
+
+backend be_{{ service.name }}
+    mode {{ mode }}
+    balance leastconn
+    default-server inter {{ haproxy_check_interval }} fall {{ haproxy_check_fall }} rise {{ haproxy_check_rise }}
+{% if checks_livez %}
+    option httpchk GET /livez HTTP/1.0
+{% endif %}
+{% for backend in service.backends %}
+    server {{ backend.name }} {{ backend.address }}:{{ backend.port | default(service.backend_port | default(haproxy_backend_port)) }} check{{ ' check-ssl verify none' if checks_livez else '' }}
+{% endfor %}
+{% endfor %}

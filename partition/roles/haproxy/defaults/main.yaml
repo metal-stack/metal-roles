@@ -1,0 +1,12 @@
+---
+haproxy_stats_socket: /run/haproxy/admin.sock
+haproxy_timeout_tunnel: 4h
+haproxy_check_interval: 2s
+haproxy_check_fall: 3
+haproxy_check_rise: 2
+haproxy_backend_port: 6443
+haproxy_nonlocal_bind: true
+haproxy_healthchecks:
+  - livez
+
+haproxy_services: []
