@@ -1,0 +1,129 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys a Valkey instance with the backup-restore-sidecar
+    options:
+      valkey_name:
+        type: str
+        description: Name of the valkey deployment.
+      valkey_namespace:
+        type: str
+        description: The namespace to deploy valkey to.
+      valkey_image_pull_policy:
+        type: str
+        description: Image pull policy for the valkey container.
+      valkey_storage_size:
+        type: str
+        description: Size of the persistent volume.
+      valkey_storage_class:
+        type: str
+        description: Storage class of the persistent volume.
+      valkey_backup_restore_sidecar_image_pull_policy:
+        type: str
+        description: Image pull policy for the backup-restore-sidecar container.
+      valkey_backup_restore_sidecar_provider:
+        type: str
+        choices:
+          - local
+          - gcp
+          - s3
+        description: Backup provider used by the backup-restore-sidecar.
+      valkey_backup_restore_sidecar_backup_cron_schedule:
+        type: str
+        description: Cron schedule for creating backups.
+      valkey_backup_restore_sidecar_log_level:
+        type: str
+        description: Log level of the backup-restore-sidecar.
+      valkey_backup_restore_sidecar_gcp_bucket_name:
+        type: str
+        description: GCP bucket name for storing backups.
+      valkey_backup_restore_sidecar_gcp_backup_location:
+        type: str
+        description: GCP bucket location for storing backups.
+      valkey_backup_restore_sidecar_gcp_project_id:
+        type: str
+        description: GCP project id of the backup bucket.
+      valkey_backup_restore_sidecar_gcp_serviceaccount_json:
+        type: str
+        no_log: true
+        description: GCP service account JSON used for accessing the backup bucket.
+      valkey_backup_restore_sidecar_s3_bucket_name:
+        type: str
+        description: S3 bucket name for storing backups.
+      valkey_backup_restore_sidecar_s3_region:
+        type: str
+        description: S3 region of the backup bucket.
+      valkey_backup_restore_sidecar_s3_endpoint:
+        type: str
+        description: S3 endpoint of the backup bucket.
+      valkey_backup_restore_sidecar_s3_access_key:
+        type: str
+        description: S3 access key for the backup bucket.
+      valkey_backup_restore_sidecar_s3_secret_key:
+        type: str
+        no_log: true
+        description: S3 secret key for the backup bucket.
+      valkey_backup_restore_sidecar_s3_insecure_skip_verify:
+        type: bool
+        description: Whether to skip TLS certificate verification for the S3 endpoint.
+      valkey_backup_restore_sidecar_s3_trusted_ca_cert:
+        type: str
+        description: Trusted CA certificate for the S3 endpoint.
+      valkey_backup_restore_sidecar_object_max_keep:
+        type: int
+        description: Maximum amount of backup objects to keep.
+      valkey_backup_restore_sidecar_s3_object_days_max_keep:
+        type: int
+        description: Maximum amount of days to keep a backup object in the bucket.
+      valkey_backup_restore_sidecar_s3_request_checksum_calculation:
+        type: str
+        description:
+          - Controls the RequestChecksumCalculation setting of the S3 client.
+          - Either C(when_required) or C(when_supported).
+          - Not expressed as C(choices) because the default is unset and
+            choices would reject that.
+      valkey_backup_restore_sidecar_encryption_key:
+        type: str
+        no_log: true
+        description: Encryption key (32 characters) for encrypting backups.
+      valkey_resources:
+        type: dict
+        description: Resource requests and limits for the valkey container.
+      valkey_backup_restore_sidecar_resources:
+        type: dict
+        description: Resource requests and limits for the backup-restore-sidecar container.
+      valkey_init_resources:
+        type: dict
+        description: Resource requests and limits for the init container.
+      valkey_registry_auth_enabled:
+        type: bool
+        description: Whether to deploy an image pull secret for the registry.
+      valkey_registry_auth:
+        type: dict
+        no_log: true
+        description: Docker auth configuration for the image pull secret.
+      valkey_enable_security_context:
+        type: bool
+        description: Whether to render the pod and container security contexts.
+      valkey_sts_security_context:
+        type: dict
+        description: Pod security context for the statefulset.
+      valkey_container_security_context:
+        type: dict
+        description: Security context for the containers.
+      # The image variables below are resolved from the metal-stack release
+      # vector by the setup_yaml task at the start of this role. Role argument
+      # validation runs BEFORE that task, so they cannot be marked required
+      # here - the assert in tasks/main.yaml keeps checking them.
+      valkey_image_name:
+        type: str
+        description: Image name of valkey.
+      valkey_image_tag:
+        type: str
+        description: Image tag of valkey.
+      valkey_backup_restore_sidecar_image_name:
+        type: str
+        description: Image name of the backup-restore-sidecar.
+      valkey_backup_restore_sidecar_image_tag:
+        type: str
+        description: Image tag of the backup-restore-sidecar.
