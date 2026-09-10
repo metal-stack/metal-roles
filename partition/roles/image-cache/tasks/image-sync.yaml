@@ -21,6 +21,7 @@
     systemd_service_name: metal-image-cache-sync
     systemd_docker_image_name: "{{ image_cache_sync_image_name }}"
     systemd_docker_image_tag: "{{ image_cache_sync_image_tag }}"
+    systemd_external_config_changed: "{{ _token is changed }}"
     systemd_service_environment:
       METAL_IMAGE_CACHE_SYNC_HOSTNAME: "{{ inventory_hostname }}"
       METAL_IMAGE_CACHE_SYNC_ENABLE_KERNEL_CACHE: "{{ image_cache_kernel_cache_enabled }}"
