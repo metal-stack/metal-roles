@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: gardener-projects
   author: metal-stack
   description: Deploys Gardener projects.
   license: MIT

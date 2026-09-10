@@ -84,6 +84,7 @@
           echo {{ _wg_private_key }} | wg pubkey | tee {{ _public_key_file_path }}
         executable: /bin/bash
       register: _wg_public_key_result
+      changed_when: true
 
     - name: Set public key fact
       ansible.builtin.set_fact:

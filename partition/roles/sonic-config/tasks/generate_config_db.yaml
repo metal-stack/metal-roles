@@ -14,10 +14,12 @@
 - name: Check ntp status
   ansible.builtin.command: show ntp
   register: ntp_status
+  changed_when: false
   failed_when: false
 
 - name: Set time if ntp is not synchronized
   ansible.builtin.command: "date -s '{{ now() }}'"
+  changed_when: true
   when: "'unsynchronised' in ntp_status.stdout"
 
 - name: Run sonic-configdb-utils
@@ -46,6 +48,7 @@
 
 - name: Reload config if reload is required
   ansible.builtin.command: config reload --yes
+  changed_when: true
   async: 120
   poll: 0
   when:
@@ -54,6 +57,7 @@
 
 - name: Load config if not reloaded
   ansible.builtin.command: config load --yes
+  changed_when: true
   when:
     - not sonic_config_reload_config
     - _config_db_json is changed

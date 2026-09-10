@@ -176,6 +176,7 @@
   ansible.builtin.meta: flush_handlers
 - name: Flush dhcp routes if we have a bgp session to the firewall
   ansible.builtin.command: ip route flush proto dhcp
+  changed_when: true
   when:
     - mgmt_server_firewall_ip is defined
     - mgmt_server_preserve_dhcp_route is undefined or not mgmt_server_preserve_dhcp_route

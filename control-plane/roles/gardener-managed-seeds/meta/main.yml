@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: gardener-managed-seeds
   author: metal-stack
   description: Deploys Gardener managed seeds.
   license: MIT
