@@ -20,10 +20,10 @@ TRANSMIT_ERROR_TYPES = {
 PACKET_METHODS = ["UCAST", "BROADCAST", "MULTICAST"]
 
 PSU_MEASUREMENTS = {
-    "input_voltage": "sonic_hw_psu_input_voltage_volts",
-    "input_current": "sonic_hw_psu_input_current_amperes",
-    "output_voltage": "sonic_hw_psu_output_voltage_volts",
-    "output_current": "sonic_hw_psu_output_current_amperes",
+    "input_voltage": "sonic_device_psu_input_volts",
+    "input_current": "sonic_device_psu_input_amperes",
+    "output_voltage": "sonic_device_psu_output_volts",
+    "output_current": "sonic_device_psu_output_amperes",
     "temp": "sonic_device_psu_celsius",
 }
 
@@ -34,14 +34,10 @@ SENSOR_THRESHOLDS = {
     "low_critical_threshold": "low_critical",
 }
 
-ROUTE_FIELDS = [
-    "ifname", "nexthop", "protocol", "weight", "distance", "metric",
-    "blackhole", "vni_label", "router_mac", "segment", "seg6local_action", "nexthop_group",
-]
-
 DEVICE_INFO_FIELDS = ["hwsku", "platform", "mac", "type", "hostname"]
+NTP_SERVER_FIELDS = ["key_id", "minpoll", "maxpoll"]
 PORT_INFO_FIELDS = ["alias", "index", "speed", "mtu"]
-PSU_INFO_FIELDS = ["serial", "model", "name"]
+PSU_INFO_FIELDS = {"serial": "serial", "model": "model", "name": "model_name"}
 TRANSCEIVER_INFO_FIELDS = ["vendor", "manufacturer", "serial", "model"]
 
 
@@ -160,19 +156,6 @@ def handle_queue_counters(event, output):
             emit(output, event, {"interface": interface, "queue": queue}, metric, number)
 
 
-def handle_crm(event, output):
-    if "/CRM/STATS/crm_stats_ipv4_route_used" not in event.values:
-        return
-    total = 0
-    for family in ["crm_stats_ipv4_route_used", "crm_stats_ipv6_route_used"]:
-        for path, value in event.values.items():
-            if path.endswith(family):
-                number = to_number(value)
-                total += number if number != None else 0
-                break
-    emit(output, event, {}, "sonic_routes_fib", total)
-
-
 def emit_used_with_available(output, event, fields, metric_prefix):
     for field, value in fields.items():
         number = to_number(value)
@@ -214,21 +197,10 @@ def handle_port_status(event, output):
             emit(output, event, {"interface": interface}, "sonic_interface_admin_status", up)
         elif field == "oper_status":
             emit(output, event, {"interface": interface}, "sonic_interface_operational_status", up)
-
-
-def handle_routes(event, output):
-    routes = {}
-    for path in event.values.keys():
-        if not path.startswith("/ROUTE_TABLE/"):
-            continue
-        route = path
-        for field in ROUTE_FIELDS:
-            if path.endswith("/" + field):
-                route = path[:-(len(field) + 1)]
-                break
-        routes[route] = True
-    if len(routes) > 0:
-        emit(output, event, {}, "sonic_routes_rib", len(routes))
+        elif field == "oper_status_change_uptime":
+            number = to_number(value)
+            if number != None:
+                emit(output, event, {"interface": interface}, "sonic_interface_last_flapped_uptime_seconds", number)
 
 
 def handle_port_config(event, output):
@@ -267,6 +239,23 @@ def handle_ntp(event, output):
             tags[path.split("/")[-1]] = str(value)
     if len(tags) > 0:
         emit(output, event, tags, "sonic_ntp_global", 1)
+
+
+def handle_ntp_servers(event, output):
+    servers = {}
+    for path, value in event.values.items():
+        segments = path.split("/")
+        if len(segments) < 3 or segments[1] != "NTP_SERVER":
+            continue
+        fields = servers.setdefault(segments[2], {})
+        if len(segments) == 4:
+            fields[segments[3]] = str(value)
+    for server, fields in servers.items():
+        tags = {"ntp_server": server}
+        for field in NTP_SERVER_FIELDS:
+            if field in fields:
+                tags[field] = fields[field]
+        emit(output, event, tags, "sonic_ntp_server", 1)
 
 
 def has_key_starting(event, prefix):
@@ -332,9 +321,9 @@ def handle_psu(event, output):
                 emit(output, event, slot, PSU_MEASUREMENTS[field], number)
     for psu, fields in grouped_fields(event, "PSU_INFO").items():
         tags = {"slot": first_digits(psu)}
-        for field in PSU_INFO_FIELDS:
+        for field, label in PSU_INFO_FIELDS.items():
             if field in fields:
-                tags[field] = fields[field]
+                tags[label] = fields[field]
         emit(output, event, tags, "sonic_device_psu_info", 1)
 
 
@@ -421,10 +410,10 @@ def handle_transceiver_thresholds(event, output):
 HANDLERS = {
     "counters-ports": [handle_port_counters],
     "counters-queues": [handle_queue_counters],
-    "counters-crm": [handle_crm, handle_crm_stats],
+    "counters-crm": [handle_crm_stats],
     "counters-crm-acl": [handle_crm_acl],
-    "appl": [handle_port_status, handle_routes],
-    "cfg-core": [handle_port_config, handle_device_info, handle_ntp],
+    "appl": [handle_port_status],
+    "cfg-core": [handle_port_config, handle_device_info, handle_ntp, handle_ntp_servers],
     "state-system": [handle_system_status, handle_chassis],
     "state-temperature": [handle_temperatures],
     "state-psu": [handle_psu],
