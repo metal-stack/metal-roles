@@ -163,27 +163,3 @@ systemd_networkd_dummies:
 | k3s_server_tls_sans                |           | Additional addresses to put into the api certificate.                                   |
 | k3s_server_disable                 |           | The packaged components not to deploy.                                                  |
 | k3s_server_config_extra            |           | Additional keys for `config.yaml`.                                                      |
-
-## Known limits
-
-- `externalTrafficPolicy: Local` is untested here. With `Cluster`, which is the default,
-  every server announces every service address and kube-proxy forwards to the endpoints.
-- The service `/32`s land in this node's own kernel table with the dummy as nexthop.
-  Traffic arriving from the fabric is DNATed in `PREROUTING` before that route is
-  consulted; whether traffic *originating on the node itself* reaches a service address
-  depends on kube-proxy also covering the `OUTPUT` path. Verified for neither case in a
-  lab, so check it on the cluster with a `curl` from a server.
-- metallb `native` mode carries no BFD and no bgp over IPv6. Both need the FRR-K8s
-  backend, which cannot run next to the host FRR. `native` is not deprecated -- that is
-  FRR mode, which upstream will remove -- but it is frozen: "all new features will be
-  added only to this backend", meaning FRR-K8s. If `native` ever does go, the way out is
-  not FRR-K8s but announcing the pool as one aggregate from every server and leaving
-  metallb as the allocator, which costs the per-service withdrawal.
-- The metallb manifest is pinned by version, not by checksum: it is fetched from a tag,
-  and a tag is not immutable.
-- Without `k3s_server_api_vip_address` there is no address belonging to the cluster rather
-  than to a node, so `k3s_server_registration_address` falls back to the init host's
-  loopback and a rebuilt server still depends on that one host being up.
-- A cluster bootstrapped before the role probed for one sees its `config.yaml` change
-  once, from the init host's loopback to the api vip. That notifies the k3s handler, which
-  restarts the servers one at a time.
