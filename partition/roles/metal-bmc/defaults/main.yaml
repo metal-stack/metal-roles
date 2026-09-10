@@ -2,6 +2,7 @@
 metal_bmc_ignore_macs: []
 metal_bmc_allowed_cidrs:
   - 0.0.0.0/0
+metal_bmc_static_hosts: []
 
 metal_bmc_bmc_superuser:
 metal_bmc_bmc_superuser_pwd:
@@ -23,3 +24,4 @@ metal_bmc_docker_network:
 metal_bmc_docker_log_driver: json-file
 
 metal_bmc_lease_file: /var/lib/dhcp/dhcpd.leases
+metal_bmc_report_interval: 5m
