@@ -11,12 +11,52 @@
       - k3s_server_token | default('', true) | length > 0
       - k3s_server_version | default('', true) | length > 0
 
-- name: Check the cluster init host takes part in this play
+- name: Update the interface facts because the dummy interfaces are created by the systemd-networkd role
+  ansible.builtin.setup:
+    gather_subset:
+      - "!all"
+      - network
+  when: k3s_server_api_vip_address is not none or k3s_server_metallb_asn is not none
+
+- name: Check the interface for the api vip exists
   ansible.builtin.assert:
-    fail_msg: "{{ k3s_server_cluster_init_host }} is not in this play, widen the limit or point k3s_server_cluster_init_host at a host that is"
+    fail_msg: "{{ k3s_server_api_vip_interface }} does not exist, add it to systemd_networkd_dummies and run the systemd-networkd role first"
     quiet: true
     that:
-      - k3s_server_cluster_init_host in ansible_play_hosts
+      - k3s_server_api_vip_interface in ansible_facts.interfaces
+  when: k3s_server_api_vip_address is not none
+
+- name: Check the interface for the metallb bgp session exists
+  ansible.builtin.assert:
+    fail_msg: "{{ k3s_server_metallb_interface }} does not exist, add it with {{ k3s_server_metallb_local_address }} and {{ k3s_server_metallb_speaker_address }} to systemd_networkd_dummies and run the systemd-networkd role first"
+    quiet: true
+    that:
+      - k3s_server_metallb_interface in ansible_facts.interfaces
+  when: k3s_server_metallb_asn is not none
+
+- name: Check metallb has addresses to hand out
+  ansible.builtin.assert:
+    fail_msg: "set k3s_server_metallb_addresses, otherwise metallb assigns nothing"
+    quiet: true
+    that:
+      - k3s_server_metallb_addresses | length > 0
+  when: k3s_server_metallb_asn is not none
+
+- name: Check frr accepts what metallb hands out
+  ansible.builtin.assert:
+    fail_msg: "set k3s_server_metallb_accept_prefixes, usually every entry of k3s_server_metallb_addresses followed by ' ge 32', otherwise frr drops what metallb announces"
+    quiet: true
+    that:
+      - k3s_server_metallb_accept_prefixes | length > 0
+  when: k3s_server_metallb_asn is not none
+
+- name: Check the packaged load balancer stays disabled
+  ansible.builtin.assert:
+    fail_msg: "servicelb and metallb both allocate LoadBalancer addresses, keep servicelb in k3s_server_disable"
+    quiet: true
+    that:
+      - "'servicelb' in k3s_server_disable"
+  when: k3s_server_metallb_asn is not none
 
 - name: Render frr configuration
   ansible.builtin.set_fact:
@@ -28,6 +68,30 @@
 
 - name: Flush handlers to let bgp converge before k3s starts
   ansible.builtin.meta: flush_handlers
+
+- name: Ask the api vip whether the cluster is already running
+  ansible.builtin.uri:
+    url: "https://{{ k3s_server_api_vip_address }}:{{ k3s_server_api_port }}/readyz"
+    status_code: [200, 401, 403]
+    validate_certs: false
+    timeout: "{{ k3s_server_cluster_probe_timeout }}"
+  register: k3s_server_api_probe
+  failed_when: false
+  changed_when: false
+  when: k3s_server_api_vip_address is not none
+
+- name: Remember that the cluster is already running
+  ansible.builtin.set_fact:
+    k3s_server_cluster_running: true
+  when: k3s_server_api_probe.status | default(-1) != -1
+
+- name: Check something can initialise the cluster while nothing answers
+  ansible.builtin.assert:
+    fail_msg: "nothing answers the kubernetes api and {{ k3s_server_cluster_init_host }} is not in this play, so nothing would initialise the cluster - widen the limit or point k3s_server_cluster_init_host at a host that is"
+    quiet: true
+    that:
+      - k3s_server_cluster_init_host in ansible_play_hosts
+  when: not k3s_server_cluster_running
 
 - name: Set the hostname because k3s freezes the node name on its first start
   ansible.builtin.hostname:
@@ -85,9 +149,9 @@
     state: started
   when: inventory_hostname == k3s_server_cluster_init_host
 
-- name: Wait for the cluster init server to serve the kubernetes api
+- name: Wait for the cluster to serve the kubernetes api before a server joins it
   ansible.builtin.wait_for:
-    host: "{{ hostvars[k3s_server_cluster_init_host].k3s_server_loopback_address }}"
+    host: "{{ k3s_server_registration_address }}"
     port: "{{ k3s_server_api_port }}"
     timeout: "{{ k3s_server_api_timeout }}"
   when: inventory_hostname != k3s_server_cluster_init_host
@@ -98,3 +162,13 @@
     enabled: true
     state: started
   when: inventory_hostname != k3s_server_cluster_init_host
+
+- name: Import tasks for the api vip health gate
+  ansible.builtin.import_tasks: api-vip.yaml
+  when: k3s_server_api_vip_address is not none
+
+- name: Import tasks for metallb
+  ansible.builtin.import_tasks: metallb.yaml
+  when:
+    - k3s_server_metallb_asn is not none
+    - inventory_hostname == (ansible_play_hosts | first)

@@ -1,4 +1,6 @@
-{% if inventory_hostname == k3s_server_cluster_init_host %}
+{% if k3s_server_cluster_running %}
+server: https://{{ k3s_server_api_vip_address }}:{{ k3s_server_api_port }}
+{% elif inventory_hostname == k3s_server_cluster_init_host %}
 cluster-init: true
 {% else %}
 server: https://{{ hostvars[k3s_server_cluster_init_host].k3s_server_loopback_address }}:{{ k3s_server_api_port }}
@@ -16,7 +18,11 @@ flannel-iface: {{ k3s_server_flannel_iface }}
 flannel-conf: {{ k3s_server_config_dir }}/flannel-net-conf.json
 {% endif %}
 tls-san:
-{% for san in [k3s_server_loopback_address] + k3s_server_tls_sans %}
+  - {{ k3s_server_loopback_address }}
+{% if k3s_server_api_vip_address is not none %}
+  - {{ k3s_server_api_vip_address }}
+{% endif %}
+{% for san in k3s_server_tls_sans %}
   - {{ san }}
 {% endfor %}
 {% if k3s_server_disable | length > 0 %}
