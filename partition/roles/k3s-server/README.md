@@ -64,7 +64,9 @@ Which address on that host works is a question about FRR:
 - **The dummy interface, not `127.0.0.1`.** Over the loopback address FRR cannot derive a
   nexthop interface and answers the OPEN with `NOTIFICATION 5/0` (`nexthop_set failed ...
   intf (Unknown)`, verified on FRR 10.5.1). Two addresses out of `169.254.254.0/30` on a
-  dummy give the session a real interface.
+  dummy give the session a real interface. The addresses are martian only in the sense
+  that they are link-local and not routable beyond this node; the dummy still supplies
+  the kernel interface and nexthop FRR needs for the BGP session.
 - **`passive` on the metallb neighbor.** metallb always dials; a dialing FRR would reach
   its own listener on that address and tear the session down with `NOTIFICATION 6/7`,
   connection collision.
