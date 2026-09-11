@@ -24,8 +24,9 @@ router bgp {{ k3s_server_asn }}
  neighbor {{ iface }} interface peer-group {{ k3s_server_peer_group }}
 {% endfor %}
 {% if k3s_server_metallb_asn is not none %}
- neighbor {{ k3s_server_metallb_speaker_address }} remote-as {{ k3s_server_metallb_asn }}
- neighbor {{ k3s_server_metallb_speaker_address }} passive
+ neighbor METALLB peer-group
+ neighbor METALLB remote-as {{ k3s_server_metallb_asn }}
+ bgp listen range {{ k3s_server_metallb_speaker_address }}/32 peer-group METALLB
 {% endif %}
  !
  address-family ipv4 unicast
@@ -33,8 +34,8 @@ router bgp {{ k3s_server_asn }}
   neighbor {{ k3s_server_peer_group }} route-map {{ k3s_server_peer_group }}_IN in
   neighbor {{ k3s_server_peer_group }} route-map {{ k3s_server_peer_group }}_OUT out
 {% if k3s_server_metallb_asn is not none %}
-  neighbor {{ k3s_server_metallb_speaker_address }} route-map METALLB_IN in
-  neighbor {{ k3s_server_metallb_speaker_address }} route-map METALLB_OUT out
+  neighbor METALLB route-map METALLB_IN in
+  neighbor METALLB route-map METALLB_OUT out
 {% endif %}
  exit-address-family
 !

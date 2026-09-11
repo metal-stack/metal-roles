@@ -67,9 +67,18 @@ Which address on that host works is a question about FRR:
   dummy give the session a real interface. The addresses are martian only in the sense
   that they are link-local and not routable beyond this node; the dummy still supplies
   the kernel interface and nexthop FRR needs for the BGP session.
-- **`passive` on the metallb neighbor.** metallb always dials; a dialing FRR would reach
-  its own listener on that address and tear the session down with `NOTIFICATION 6/7`,
-  connection collision.
+- **`bgp listen range`, not `neighbor <address> remote-as`.** Both ends of this session are
+  addresses of this node, and FRR refuses a statically configured neighbor whose address is
+  local: `% Can not configure the local system as neighbor`, followed by `Specify remote-as
+  or peer-group commands first` for every line that depends on it. The failure is quiet in
+  the worst way -- `frr.conf` on disk is correct while the running config simply lacks the
+  peer, so only `show bgp summary` shows it. A dynamic neighbor carries no such check: FRR
+  accepts the inbound session from the local speaker address. Verified end to end on FRR
+  10.7.1, and the static form is rejected on 10.5.1 just the same, so this is not a version
+  regression to wait out. The peer-group has to be declared **before** the `bgp listen
+  range` line or FRR answers `% Configure the peer-group first`. `passive` is gone with the
+  static neighbor: over a listen range FRR only ever accepts. `bgp listen limit` caps
+  dynamic peers at 100 by default, which one speaker per node will not reach.
 - **`bgp allow-martian-nexthop`.** metallb sets the nexthop to the local address of its own
   tcp connection, an address of this very node, which FRR otherwise drops with `DENIED due
   to: martian or self next-hop`. The option sits under `router bgp` and relaxes the check
