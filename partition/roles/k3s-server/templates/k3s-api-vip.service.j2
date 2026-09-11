@@ -1,0 +1,17 @@
+[Unit]
+Description=Carry the k3s api vip while the local apiserver runs
+After=k3s.service
+BindsTo=k3s.service
+PartOf=k3s.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+TimeoutStartSec={{ k3s_server_api_vip_ready_timeout + 30 }}
+Restart=on-failure
+RestartSec={{ k3s_server_api_vip_ready_interval }}
+ExecStart={{ k3s_server_api_vip_script_path }} add
+ExecStop={{ k3s_server_api_vip_script_path }} del
+
+[Install]
+WantedBy=k3s.service

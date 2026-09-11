@@ -1,0 +1,29 @@
+---
+- name: Check the architecture is covered by the default download urls
+  ansible.builtin.assert:
+    fail_msg: "no k3s download url for {{ ansible_architecture }}, set k3s_server_binary_url and k3s_server_checksum_url"
+    quiet: true
+    that:
+      - ansible_architecture == 'x86_64'
+
+- name: Download the k3s binary
+  ansible.builtin.get_url:
+    url: "{{ k3s_server_binary_url }}"
+    checksum: "sha256:{{ k3s_server_checksum_url }}"
+    dest: /usr/local/bin/k3s
+    mode: "0755"
+  notify: Restart k3s
+
+- name: Download the k3s install script
+  ansible.builtin.get_url:
+    url: "{{ k3s_server_install_script_url }}"
+    dest: "{{ k3s_server_install_script_path }}"
+    mode: "0755"
+
+- name: Install the systemd unit around the k3s binary
+  ansible.builtin.command: "{{ k3s_server_install_script_path }}"
+  environment:
+    INSTALL_K3S_SKIP_DOWNLOAD: "true"
+    INSTALL_K3S_SKIP_ENABLE: "true"
+  changed_when: true
+  notify: Restart k3s

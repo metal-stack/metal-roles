@@ -1,0 +1,174 @@
+---
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - k3s_server_asn is not none
+      - k3s_server_loopback_address is not none
+      - k3s_server_uplink_interfaces | length > 0
+      - k3s_server_cluster_init_host is not none
+      - k3s_server_token | default('', true) | length > 0
+      - k3s_server_version | default('', true) | length > 0
+
+- name: Update the interface facts because the dummy interfaces are created by the systemd-networkd role
+  ansible.builtin.setup:
+    gather_subset:
+      - "!all"
+      - network
+  when: k3s_server_api_vip_address is not none or k3s_server_metallb_asn is not none
+
+- name: Check the interface for the api vip exists
+  ansible.builtin.assert:
+    fail_msg: "{{ k3s_server_api_vip_interface }} does not exist, add it to systemd_networkd_dummies and run the systemd-networkd role first"
+    quiet: true
+    that:
+      - k3s_server_api_vip_interface in ansible_facts.interfaces
+  when: k3s_server_api_vip_address is not none
+
+- name: Check the interface for the metallb bgp session exists
+  ansible.builtin.assert:
+    fail_msg: "{{ k3s_server_metallb_interface }} does not exist, add it with {{ k3s_server_metallb_local_address }} and {{ k3s_server_metallb_speaker_address }} to systemd_networkd_dummies and run the systemd-networkd role first"
+    quiet: true
+    that:
+      - k3s_server_metallb_interface in ansible_facts.interfaces
+  when: k3s_server_metallb_asn is not none
+
+- name: Check metallb has addresses to hand out
+  ansible.builtin.assert:
+    fail_msg: "set k3s_server_metallb_addresses, otherwise metallb assigns nothing"
+    quiet: true
+    that:
+      - k3s_server_metallb_addresses | length > 0
+  when: k3s_server_metallb_asn is not none
+
+- name: Check frr accepts what metallb hands out
+  ansible.builtin.assert:
+    fail_msg: "set k3s_server_metallb_accept_prefixes, usually every entry of k3s_server_metallb_addresses followed by ' ge 32', otherwise frr drops what metallb announces"
+    quiet: true
+    that:
+      - k3s_server_metallb_accept_prefixes | length > 0
+  when: k3s_server_metallb_asn is not none
+
+- name: Check the packaged load balancer stays disabled
+  ansible.builtin.assert:
+    fail_msg: "servicelb and metallb both allocate LoadBalancer addresses, keep servicelb in k3s_server_disable"
+    quiet: true
+    that:
+      - "'servicelb' in k3s_server_disable"
+  when: k3s_server_metallb_asn is not none
+
+- name: Render frr configuration
+  ansible.builtin.set_fact:
+    frr_conf: "{{ lookup('template', 'frr.conf.j2') }}"
+
+- name: Install and configure frr
+  ansible.builtin.include_role:
+    name: metal-roles/partition/roles/frr
+
+- name: Flush handlers to let bgp converge before k3s starts
+  ansible.builtin.meta: flush_handlers
+
+- name: Ask the api vip whether the cluster is already running
+  ansible.builtin.uri:
+    url: "https://{{ k3s_server_api_vip_address }}:{{ k3s_server_api_port }}/readyz"
+    status_code: [200, 401, 403]
+    validate_certs: false
+    timeout: "{{ k3s_server_cluster_probe_timeout }}"
+  register: k3s_server_api_probe
+  failed_when: false
+  changed_when: false
+  when: k3s_server_api_vip_address is not none
+
+- name: Remember that the cluster is already running
+  ansible.builtin.set_fact:
+    k3s_server_cluster_running: true
+  when: k3s_server_api_probe.status | default(-1) != -1
+
+- name: Check something can initialise the cluster while nothing answers
+  ansible.builtin.assert:
+    fail_msg: "nothing answers the kubernetes api and {{ k3s_server_cluster_init_host }} is not in this play, so nothing would initialise the cluster - widen the limit or point k3s_server_cluster_init_host at a host that is"
+    quiet: true
+    that:
+      - k3s_server_cluster_init_host in ansible_play_hosts
+  when: not k3s_server_cluster_running
+
+- name: Set the hostname because k3s freezes the node name on its first start
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Resolve the own hostname locally so sudo does not wait for a resolver
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s'
+    line: "127.0.1.1 {{ inventory_hostname }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Read the installed k3s version
+  ansible.builtin.command: k3s --version
+  changed_when: false
+  failed_when: false
+  register: k3s_server_version_output
+
+- name: Check if the pinned k3s version is installed
+  ansible.builtin.set_fact:
+    k3s_installed: "{{ (k3s_server_version_output.stdout | default('', true)) is search(k3s_server_version | default('', true) | regex_escape) }}"
+
+- name: Import tasks for installing k3s
+  ansible.builtin.import_tasks: install.yaml
+  when: not k3s_installed
+
+- name: Create the k3s configuration directory
+  ansible.builtin.file:
+    path: "{{ k3s_server_config_dir }}"
+    state: directory
+    mode: "0700"
+
+- name: Deploy the flannel network configuration
+  ansible.builtin.template:
+    src: flannel-net-conf.json.j2
+    dest: "{{ k3s_server_config_dir }}/flannel-net-conf.json"
+    mode: "0644"
+  when: k3s_server_flannel_mtu is not none
+  notify: Restart k3s
+
+- name: Deploy the k3s configuration
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ k3s_server_config_dir }}/config.yaml"
+    mode: "0600"
+  no_log: true
+  notify: Restart k3s
+
+- name: Ensure k3s is started on the cluster init server
+  ansible.builtin.systemd:
+    name: k3s
+    enabled: true
+    state: started
+  when: inventory_hostname == k3s_server_cluster_init_host
+
+- name: Wait for the cluster to serve the kubernetes api before a server joins it
+  ansible.builtin.wait_for:
+    host: "{{ k3s_server_registration_address }}"
+    port: "{{ k3s_server_api_port }}"
+    timeout: "{{ k3s_server_api_timeout }}"
+  when: inventory_hostname != k3s_server_cluster_init_host
+
+- name: Ensure k3s is started on the joining servers
+  ansible.builtin.systemd:
+    name: k3s
+    enabled: true
+    state: started
+  when: inventory_hostname != k3s_server_cluster_init_host
+
+- name: Import tasks for the api vip health gate
+  ansible.builtin.import_tasks: api-vip.yaml
+  when: k3s_server_api_vip_address is not none
+
+- name: Import tasks for metallb
+  ansible.builtin.import_tasks: metallb.yaml
+  when:
+    - k3s_server_metallb_asn is not none
+    - inventory_hostname == (ansible_play_hosts | first)

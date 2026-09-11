@@ -1,0 +1,36 @@
+{% if k3s_server_cluster_running %}
+server: https://{{ k3s_server_api_vip_address }}:{{ k3s_server_api_port }}
+{% elif inventory_hostname == k3s_server_cluster_init_host %}
+cluster-init: true
+{% else %}
+server: https://{{ hostvars[k3s_server_cluster_init_host].k3s_server_loopback_address }}:{{ k3s_server_api_port }}
+{% endif %}
+token: "{{ k3s_server_token }}"
+node-ip: {{ k3s_server_loopback_address }}
+advertise-address: {{ k3s_server_loopback_address }}
+cluster-cidr: {{ k3s_server_cluster_cidr }}
+service-cidr: {{ k3s_server_service_cidr }}
+write-kubeconfig-mode: "0600"
+{% if k3s_server_flannel_iface is not none %}
+flannel-iface: {{ k3s_server_flannel_iface }}
+{% endif %}
+{% if k3s_server_flannel_mtu is not none %}
+flannel-conf: {{ k3s_server_config_dir }}/flannel-net-conf.json
+{% endif %}
+tls-san:
+  - {{ k3s_server_loopback_address }}
+{% if k3s_server_api_vip_address is not none %}
+  - {{ k3s_server_api_vip_address }}
+{% endif %}
+{% for san in k3s_server_tls_sans %}
+  - {{ san }}
+{% endfor %}
+{% if k3s_server_disable | length > 0 %}
+disable:
+{% for component in k3s_server_disable %}
+  - {{ component }}
+{% endfor %}
+{% endif %}
+{% for key, value in k3s_server_config_extra.items() %}
+{{ key }}: {{ value | to_json }}
+{% endfor %}

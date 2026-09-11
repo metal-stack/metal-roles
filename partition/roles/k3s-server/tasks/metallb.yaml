@@ -1,0 +1,37 @@
+---
+- name: Download the metallb manifest
+  ansible.builtin.get_url:
+    url: "{{ k3s_server_metallb_manifest_url }}"
+    dest: "{{ k3s_server_metallb_manifest_path }}"
+    mode: "0644"
+
+- name: Deploy metallb
+  ansible.builtin.command: "k3s kubectl apply -f {{ k3s_server_metallb_manifest_path }}"
+  register: k3s_server_metallb_deployed
+  changed_when: "'created' in k3s_server_metallb_deployed.stdout or 'configured' in k3s_server_metallb_deployed.stdout"
+
+- name: Wait for the metallb custom resource definitions
+  ansible.builtin.command: "k3s kubectl wait --for=condition=established --timeout={{ k3s_server_metallb_timeout }} crd/{{ item }}"
+  changed_when: false
+  loop:
+    - ipaddresspools.metallb.io
+    - bgpadvertisements.metallb.io
+    - bgppeers.metallb.io
+
+- name: Wait for the metallb controller to serve its validating webhook
+  ansible.builtin.command: "k3s kubectl --namespace {{ k3s_server_metallb_namespace }} rollout status deployment/controller --timeout={{ k3s_server_metallb_timeout }}"
+  changed_when: false
+
+- name: Render the metallb configuration
+  ansible.builtin.template:
+    src: metallb-config.yaml.j2
+    dest: "{{ k3s_server_config_dir }}/metallb.yaml"
+    mode: "0644"
+
+- name: Deploy the metallb configuration
+  ansible.builtin.command: "k3s kubectl apply -f {{ k3s_server_config_dir }}/metallb.yaml"
+  register: k3s_server_metallb_configured
+  changed_when: "'created' in k3s_server_metallb_configured.stdout or 'configured' in k3s_server_metallb_configured.stdout"
+  until: k3s_server_metallb_configured is succeeded
+  retries: 5
+  delay: 10
