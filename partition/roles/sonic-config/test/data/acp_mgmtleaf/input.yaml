@@ -1,0 +1,34 @@
+---
+inventory_hostname: r03acpmgmtleaf
+
+sonic_config_asn: 420000003
+sonic_config_bgp_ports:
+  - Ethernet120
+
+sonic_config_interconnects:
+  acpmgmt:
+    vrf: vrfACPmgmt
+    peer_group: ACP
+    keep_private_as: true
+    unnumbered_interfaces:
+      - Vlan11
+    announcements:
+      - redistribute connected
+
+sonic_config_loopback_address: 10.0.0.3
+
+sonic_config_vlans:
+  - id: 1
+    dhcp_servers: ["10.255.255.254"]
+    ip: "10.255.255.1/24"
+    untagged_ports:
+      - Ethernet0
+  - id: 10
+    ip: "10.252.253.125/30"
+    vrf: vrfACPmgmt
+    untagged_ports:
+      - Ethernet47
+  - id: 11
+    vrf: vrfACPmgmt
+    tagged_ports:
+      - Ethernet120

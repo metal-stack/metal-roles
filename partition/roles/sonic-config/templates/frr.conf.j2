@@ -10,7 +10,9 @@ log syslog {{ sonic_config_frr_syslog_level }}
 {% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is defined %}
 vrf {{ i.vrf }}
+{% if i.vni is defined %}
  vni {{ i.vni }}
+{% endif %}
 {% for r in i.static_routes|default([]) %}
  ip route {{ r }}
 {% endfor %}
@@ -174,10 +176,12 @@ router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
   {% endif %}
  exit-address-family
  !
+{% if sonic_config_frr_l2vpn_evpn %}
  address-family l2vpn evpn
   advertise ipv4 unicast
  exit-address-family
 !
+{% endif %}
 {% endif %}
 {% endfor %}
 {% for i in sonic_config_interconnects.values() %}

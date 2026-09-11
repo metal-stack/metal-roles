@@ -95,6 +95,15 @@
     jump: ACCEPT
   notify: Persist iptables
 
+- name: Masquerade traffic leaving the given interfaces
+  ansible.builtin.iptables:
+    chain: POSTROUTING
+    jump: MASQUERADE
+    out_interface: "{{ item }}"
+    table: nat
+  loop: "{{ mgmt_server_masquerade_interfaces }}"
+  notify: Persist iptables
+
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 - name: Check if FRR is installed

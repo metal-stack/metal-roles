@@ -337,7 +337,6 @@ sonic_config_interconnects:
     # Connect to this BGP neighbors. Supports multiple neighbors and also BGP unnumbered.
     neighbors:
       - 10.1.2.3
-      - Ethernet1 interface
 
     # Put the neighbor in this peer group.
     peer_group: STATIC
@@ -392,6 +391,15 @@ sonic_config_interconnects:
     # Use a dedicated BGP session fenced with a VRF for this connection.
     # It also declares the virtual network as layer-3.
     vrf: Vrf46
+
+# Additional numbered interfaces to add to the `INTERFACE` field of the ConfigDB.
+# This can be necessary if, for example, you need a dhcp_relay to listen on VLAN subinterfaces.
+sonic_config_interfaces:
+  # The name of the interface.
+  Ethernet0.10:
+    # The IP addresses to add for this interface.
+    ips:
+      - 10.0.0.1/32
 
 # LLDP interval.
 sonic_config_lldp_hello_timer: 10
@@ -574,8 +582,15 @@ sonic_config_vlan_subinterfaces:
 
 # VLANs to configure on the switch.
 sonic_config_vlans:
-  # DHCP servers to relay to.
-  - dhcp_servers:
+    # VRF which the DHCP servers are reachable by.
+    # This setting was only tested on EdgeCore SONiC 202111.1
+  - dhcp_relay_server_vrf: Vrf45
+    # Source interface to use for DHCP relay.
+    # This interface's address is used as `giaddr`.
+    # This setting was only tested on EdgeCore SONiC 202111.11.
+    dhcp_relay_src_intf: Vlan4000
+    # DHCP servers to relay to.
+    dhcp_servers:
       - 10.1.1.1
 
     # VLAN ID.
