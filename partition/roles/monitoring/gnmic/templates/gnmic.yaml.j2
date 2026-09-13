@@ -25,7 +25,7 @@ log: true
     ('counters-crm', 'COUNTERS_DB', ['/CRM/STATS'], monitoring_gnmic_sample_interval_state),
     ('counters-crm-acl', 'COUNTERS_DB', monitoring_gnmic_crm_acl_paths, monitoring_gnmic_sample_interval_state),
 ] %}
-{% set monitoring_gnmic_skipped_subscriptions = monitoring_gnmic_disabled_subscriptions + (['state-psu'] if monitoring_gnmic_psus | length == 0 else []) + (['counters-queues'] if monitoring_gnmic_queues | length == 0 else []) %}
+{% set monitoring_gnmic_skipped_subscriptions = monitoring_gnmic_disabled_subscriptions + (['state-psu'] if monitoring_gnmic_psus | length == 0 else []) + (['counters-queues'] if monitoring_gnmic_queues | length == 0 else []) + (['counters-crm-acl'] if monitoring_gnmic_crm_acl_tables | length == 0 else []) %}
 {% set monitoring_gnmic_table_subscriptions = monitoring_gnmic_table_subscriptions | rejectattr('0', 'in', monitoring_gnmic_skipped_subscriptions) | list %}
 {% set monitoring_gnmic_distribution_profiles = {
     'broadcom': {'default': 'sample', 'overrides': {'state-psu': 'on-change'}, 'expiration': '3m'},
@@ -119,9 +119,8 @@ processors:
       type: float
 
   sonic-filter:
-    event-jq:
-      expression: |
-        [ .[] | .values |= with_entries(select(.key | test("^(sonic_|crm_)"))) | select(.values | length > 0) ]
+    event-starlark:
+      script: /app/config/sonic-filter.star
 
 outputs:
   prometheus:

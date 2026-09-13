@@ -120,6 +120,14 @@
   notify:
     - Restart gnmic
 
+- name: Copy filter processor script
+  ansible.builtin.copy:
+    src: sonic-filter.star
+    dest: "{{ monitoring_gnmic_etc_host_dir }}/sonic-filter.star"
+    mode: "0644"
+  notify:
+    - Restart gnmic
+
 - name: Copy metrics processor script
   ansible.builtin.template:
     src: sonic-metrics.star.j2
