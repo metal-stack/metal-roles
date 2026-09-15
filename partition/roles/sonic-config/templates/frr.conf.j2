@@ -121,7 +121,7 @@ router bgp {{ sonic_config_asn }}
 {% for i in sonic_config_interconnects.values() %}
 {% if i.vrf is defined %}
 router bgp {{ sonic_config_asn }} vrf {{ i.vrf }}
- bgp router-id {{ sonic_config_loopback_address }}
+ bgp router-id {{ i.router_id | default(sonic_config_loopback_address) }}
  bgp bestpath as-path multipath-relax
  neighbor {{ i.peer_group | default("EXTERNAL") }} peer-group
  neighbor {{ i.peer_group | default("EXTERNAL") }} remote-as {{ i.remote_as | default("external") }}

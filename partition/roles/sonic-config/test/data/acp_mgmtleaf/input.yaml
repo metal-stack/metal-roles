@@ -14,6 +14,15 @@ sonic_config_interconnects:
       - Vlan11
     announcements:
       - redistribute connected
+  acpexit:
+    vrf: vrfACPexit
+    peer_group: ACPEXIT
+    router_id: 10.0.0.30
+    keep_private_as: true
+    unnumbered_interfaces:
+      - Ethernet121
+    announcements:
+      - redistribute connected
 
 sonic_config_loopback_address: 10.0.0.3
 

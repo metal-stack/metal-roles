@@ -375,6 +375,10 @@ sonic_config_interconnects:
         entries:
           - "match ip address prefix-list Vrf117-IN"
 
+    # BGP router-id for this interconnect's VRF. Defaults to `sonic_config_loopback_address`.
+    # Only applies to interconnects with a `vrf`.
+    router_id: 10.1.254.1
+
     # Add optional static routes to this interconnect's VRF.
     static_routes:
       - 10.0.0.0/16 10.1.2.3 nexthop-vrf default
