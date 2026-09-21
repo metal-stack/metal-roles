@@ -32,6 +32,8 @@ metal_stack_release:
     metal_metrics_exporter_image_name: "docker-images.metal-stack.control-plane.metal-metrics-exporter.name"
     rethinkdb_exporter_name: "docker-images.metal-stack.control-plane.rethinkdb-exporter.name"
     rethinkdb_exporter_tag: "docker-images.metal-stack.control-plane.rethinkdb-exporter.tag"
+    metal_token_refresher_image_tag: "docker-images.metal-stack.kubernetes.metal-token-refresher.tag"
+    metal_token_refresher_image_name: "docker-images.metal-stack.kubernetes.metal-token-refresher.name"
     # partition
     metal_core_image_tag: "docker-images.metal-stack.partition.metal-core.tag"
     metal_core_image_name: "docker-images.metal-stack.partition.metal-core.name"

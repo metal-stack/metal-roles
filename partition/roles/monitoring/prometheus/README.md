@@ -41,4 +41,5 @@ you define them adequately as well.
 | prometheus_scrape_interval                       |           | The frequency to scrape targets                                                                                                             |
 | prometheus_evaluation_interval                   |           | The frequency to evaluate rules                                                                                                             |
 | prometheus_scrape_timeout                        |           | Timeout per-scrape                                                                                                                          |
+| prometheus_additional_external_labels            |           | Additional external labels for Prometheus                                                                                                   |
 | prometheus_haproxy_enabled                       |           | Enable HAProxy metrics scraping                                                                                                             |

@@ -173,3 +173,32 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/library/busybox
       match:
         semver: ">= 1.36"
+    - source: quay.io/cilium/cilium
+      destination: http://registry:5000/cilium/cilium
+      match:
+        semver: ">= 1.17.12"
+    - source: quay.io/cilium/cilium-operator
+      destination: http://registry:5000/cilium/cilium-operator
+      match:
+        semver: ">= 1.17.12"
+    - source: quay.io/cilium/cilium-envoy
+      destination: http://registry:5000/cilium/cilium-envoy
+      match:
+        tags:
+          - 'v1.34.12-1765374555-6a93b0bbba8d6dc75b651cbafeedb062b2997716'
+    - source: quay.io/cilium/hubble-relay
+      destination: http://registry:5000/cilium/hubble-relay
+      match:
+        semver: ">= 1.17.12"
+    - source: quay.io/cilium/hubble-ui
+      destination: http://registry:5000/cilium/hubble-ui
+      match:
+        semver: ">= 0.13.3"
+    - source: quay.io/cilium/hubble-ui-backend
+      destination: http://registry:5000/cilium/hubble-ui-backend
+      match:
+        semver: ">= 0.13.3"
+    - source: quay.io/cilium/certgen
+      destination: http://registry:5000/cilium/certgen
+      match:
+        semver: ">= 0.3.2"
