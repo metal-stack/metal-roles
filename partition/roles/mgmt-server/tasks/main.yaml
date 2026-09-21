@@ -76,6 +76,7 @@
   ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/90-mgmt-server.conf
     sysctl_set: true
   loop:
     - key: "net.ipv6.conf.{{ mgmt_server_spine_facing_interface }}.disable_ipv6"
