@@ -23,6 +23,7 @@ Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker conta
 | monitoring_gnmic_temperature_sensors      |           | Temperature sensors to collect, discovered if empty |
 | monitoring_gnmic_fans                     |           | Fans to collect, discovered if empty                |
 | monitoring_gnmic_crm_acl_tables           |           | CRM ACL tables to collect, discovered if empty      |
+| monitoring_gnmic_transceiver_tables       |           | Transceiver tables to collect, discovered if empty  |
 | monitoring_gnmic_disabled_subscriptions   |           | Subscriptions to disable                            |
 | monitoring_gnmic_sonic_distribution       |           | SONiC distribution (broadcom/edgecore)              |
 | monitoring_gnmic_sample_interval_counters |           | Sample interval for port and queue counters         |
@@ -66,7 +67,7 @@ results without erroring.
 
 ### Behavioral differences
 
-- Ports, queues, temperature sensors, fans and CRM ACL tables are discovered from the switch at deploy time. After changes to port breakout configuration, re-run the role to refresh the subscription lists. Changes to these configurations are uncommon in production.
+- Ports, queues, temperature sensors, fans, CRM ACL tables and transceiver tables are discovered from the switch at deploy time. Subscriptions whose tables are absent, e.g. transceivers on a management switch without optics, are left out because the gNMI server rejects the whole subscription when one table is missing. After changes to port breakout configuration, re-run the role to refresh the subscription lists. Changes to these configurations are uncommon in production.
 - Queue counters are subscribed by counter OID from `COUNTERS_QUEUE_NAME_MAP`. If syncd assigns new OIDs after a restart, re-run the role.
 - Individual subscriptions can be turned off via `monitoring_gnmic_disabled_subscriptions`. The names match the subscription keys in `gnmic.yaml.j2` (e.g. `state-vxlan`, `counters-crm-acl`).
 
