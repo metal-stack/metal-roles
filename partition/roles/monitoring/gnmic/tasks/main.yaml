@@ -100,11 +100,14 @@
 
 - name: Set queue map
   vars:
-    monitoring_gnmic_queue_lines: "{{ monitoring_gnmic_queue_map.stdout_lines }}"
-    monitoring_gnmic_queue_dict: "{{ (monitoring_gnmic_queue_map.stdout | from_yaml) if monitoring_gnmic_queue_map.stdout.startswith('{') else dict(monitoring_gnmic_queue_lines[0::2] | zip(monitoring_gnmic_queue_lines[1::2])) }}"
     monitoring_gnmic_queue_pattern: "^({{ monitoring_gnmic_ports | join('|') }}):[0-9]+$"
   ansible.builtin.set_fact:
-    monitoring_gnmic_queues: "{{ monitoring_gnmic_queue_dict | dict2items | selectattr('key', 'match', monitoring_gnmic_queue_pattern) | items2dict }}"
+    monitoring_gnmic_queues: >-
+      {{ monitoring_gnmic_queue_map.stdout
+         | from_yaml
+         | dict2items
+         | selectattr('key', 'match', monitoring_gnmic_queue_pattern)
+         | items2dict }}
   when: monitoring_gnmic_queues | length == 0
 
 - name: Create gnmic directories
