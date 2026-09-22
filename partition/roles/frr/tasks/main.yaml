@@ -56,5 +56,6 @@
   ansible.builtin.copy:
     content: "{{ frr_conf }}"
     dest: /etc/frr/frr.conf
+    validate: "/usr/bin/vtysh --dryrun --inputfile %s"
     mode: "0640"
   notify: Reload frr
