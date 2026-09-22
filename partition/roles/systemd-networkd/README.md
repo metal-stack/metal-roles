@@ -45,6 +45,9 @@ This role can deploy on bare metal machines with Debian or Almalinux. It depends
 | systemd_networkd_vlans.mtu                  |           | The MTU for this VLAN.                                                                              |
 | systemd_networkd_vlans.address              |           | The network address for this VLAN.                                                                  |
 | systemd_networkd_vlans.vrf                  |           | The VRF to bind this VLAN to.                                                                       |
+| systemd_networkd_dummies                    |           | An array of dummy interfaces to be configured.                                                      |
+| systemd_networkd_dummies.name               |           | The name of this dummy interface.                                                                   |
+| systemd_networkd_dummies.addresses          |           | array of IP addresses for this dummy interface in CIDR notation.                                    |
 
 ## Examples
 
@@ -70,4 +73,11 @@ systemd_network_nics:
 systemd_network_vrfs:
 - name: vrfManagement
   table: 1000
+
+systemd_networkd_dummies:
+- name: metallb
+  addresses:
+  - 169.254.254.1/30
+  - 169.254.254.2/30
+- name: k3s-vip
 ```

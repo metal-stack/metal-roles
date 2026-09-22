@@ -62,6 +62,9 @@ router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
   {% for a in vrf.announcements | default(['redistribute connected']) %}
   {{ a }}
   {% endfor %}
+  {% if vrf.routemap_out is defined %}
+  neighbor FABRIC route-map {{ vrf.routemap_out.name }} out
+  {% endif %}
  exit-address-family
 !
 {% endfor %}
@@ -69,6 +72,15 @@ router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
 route-map LOCAL_INTERFACES permit {{ loop.index }}0
   match interface {{ iface }}
 !
+{% endfor %}
+{% for vrf in mgmt_server_vrfs %}
+{% if vrf.routemap_out is defined %}
+route-map {{ vrf.routemap_out.name }} permit 10
+{% for e in vrf.routemap_out.entries | default([]) %}
+ {{ e }}
+{% endfor %}
+!
+{% endif %}
 {% endfor %}
 line vty
 !

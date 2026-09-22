@@ -84,3 +84,27 @@ MTUBytes=9000
 [Network]
 Address=1.1.1.0/29
 """.strip(), res.strip())
+
+    def test_template_dummy(self):
+        self.maxDiff = None
+
+        vars = defaults.copy()
+
+        vars.update(item=dict(
+            name="metallb",
+            addresses=["169.254.254.1/30", "169.254.254.2/30"],
+        ),)
+
+        templar = Templar(loader=None, variables=vars)
+        res = templar.template(read_template_file('dummy.netdev.j2'))
+
+        self.assertEqual("""
+[NetDev]
+Name=metallb
+Kind=dummy
+""".strip(), res.strip())
+
+        res = templar.template(read_template_file('network.j2'))
+
+        self.assertEqual("[Match]\nName=metallb\n\n[Network]\nLinkLocalAddressing=ipv6\n\n\n\n\n\n"
+                         "[Address]\nAddress=169.254.254.1/30\n\n[Address]\nAddress=169.254.254.2/30", res.strip())

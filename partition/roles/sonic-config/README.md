@@ -375,6 +375,10 @@ sonic_config_interconnects:
         entries:
           - "match ip address prefix-list Vrf117-IN"
 
+    # BGP router-id for this interconnect's VRF. Defaults to `sonic_config_loopback_address`.
+    # Only applies to interconnects with a `vrf`.
+    router_id: 10.1.254.1
+
     # Add optional static routes to this interconnect's VRF.
     static_routes:
       - 10.0.0.0/16 10.1.2.3 nexthop-vrf default
@@ -533,6 +537,16 @@ sonic_config_frr_route_map:
   name: RM_FABRIC_OUT
   # Matcher for the route map.
   match: ip address prefix-list PL_FABRIC_OUT
+
+# Route map to apply inbound on the FABRIC peer group of the default VRF.
+# Use it to keep unwanted prefixes out of the switch, for example a default route
+# from the fabric on a switch that reaches the outside through its management interface.
+sonic_config_frr_fabric_routemap_in:
+  # Name of the route map.
+  name: RM_FABRIC_IN
+  # Lines placed inside the route map.
+  entries:
+    - match ip address prefix-list PL_FABRIC_IN
 
 # Whether a `config reload` should be triggered. If `false` a simple `config load` will be
 # performed. Keep in mind that a config reload is a disruptive process.
