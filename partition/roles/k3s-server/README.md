@@ -85,7 +85,7 @@ Which address on that host works is a question about FRR:
   for the leaf sessions too; `K3S_IN_PREFIX` keeps those honest.
 
 `k3s_server_metallb_accept_prefixes` is what FRR accepts from metallb: every entry of
-`k3s_server_metallb_addresses` with ` ge 32` appended, written out rather than derived so
+`k3s_server_metallb_addresses` with `ge 32` appended, written out rather than derived so
 the inventory shows what FRR does. The same entries, `ge 32` included, go into
 `k3s_server_announce_prefixes`, otherwise a handed-out `/32` matches no OUT entry and stops
 at this node. The pool itself is never announced as an aggregate. The session `/30` stays
