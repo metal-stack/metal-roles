@@ -81,6 +81,12 @@
     monitoring_gnmic_system_ready: "{{ monitoring_gnmic_system_ready_keys.stdout_lines | length > 0 }}"
   when: monitoring_gnmic_system_ready is none
 
+# CONFIG_DB NTP_SERVER only exists when NTP servers are configured
+- name: Determine NTP_SERVER availability
+  ansible.builtin.command: sonic-db-cli CONFIG_DB KEYS "NTP_SERVER|*"
+  register: monitoring_gnmic_ntp_server_keys
+  changed_when: false
+
 - name: Determine CRM ACL tables
   ansible.builtin.command: sonic-db-cli COUNTERS_DB KEYS "CRM:ACL_STATS:*"
   register: monitoring_gnmic_crm_acl_keys
@@ -98,13 +104,16 @@
   changed_when: false
   when: monitoring_gnmic_queues | length == 0
 
+# the C++ sonic-db-cli of newer SONiC prints HGETALL as a python dict literal, the
+# python sonic-db-cli of Enterprise SONiC prints key and value on alternating lines
 - name: Set queue map
   vars:
+    monitoring_gnmic_queue_lines: "{{ monitoring_gnmic_queue_map.stdout_lines }}"
+    monitoring_gnmic_queue_dict: "{{ (monitoring_gnmic_queue_map.stdout | from_yaml) if monitoring_gnmic_queue_map.stdout.startswith('{') else dict(monitoring_gnmic_queue_lines[0::2] | zip(monitoring_gnmic_queue_lines[1::2])) }}"
     monitoring_gnmic_queue_pattern: "^({{ monitoring_gnmic_ports | join('|') }}):[0-9]+$"
   ansible.builtin.set_fact:
     monitoring_gnmic_queues: >-
-      {{ monitoring_gnmic_queue_map.stdout
-         | from_yaml
+      {{ monitoring_gnmic_queue_dict
          | dict2items
          | selectattr('key', 'match', monitoring_gnmic_queue_pattern)
          | items2dict }}
