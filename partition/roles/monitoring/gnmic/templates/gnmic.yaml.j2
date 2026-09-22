@@ -76,9 +76,14 @@ subscriptions:
       - /COUNTERS/{{ port }}/SAI_PORT_STAT_{{ counter }}
 {% endfor %}
 {% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get('counters-ports', monitoring_gnmic_stream_mode_default) %}
     mode: stream
-    stream-mode: sample
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
     sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
+{% endif %}
 
 {% if 'counters-queues' not in monitoring_gnmic_skipped_subscriptions %}
   counters-queues:
@@ -88,9 +93,14 @@ subscriptions:
       - /COUNTERS/{{ oid }}/SAI_QUEUE_STAT_PACKETS
       - /COUNTERS/{{ oid }}/SAI_QUEUE_STAT_BYTES
 {% endfor %}
+{% set mode = monitoring_gnmic_effective_stream_modes.get('counters-queues', monitoring_gnmic_stream_mode_default) %}
     mode: stream
-    stream-mode: sample
+    stream-mode: {{ mode }}
+{% if mode == 'sample' %}
     sample-interval: {{ monitoring_gnmic_sample_interval_counters }}
+{% else %}
+    heartbeat-interval: {{ monitoring_gnmic_heartbeat_interval }}
+{% endif %}
 
 {% endif %}
 processors:
