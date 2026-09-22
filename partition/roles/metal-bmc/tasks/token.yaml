@@ -1,0 +1,33 @@
+---
+- name: Create api token for metal-bmc
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ metal_bmc_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ metal_bmc_deployment_admin_token }}"
+  block:
+    - name: Create metal-bmc tenant
+      run_once: true
+      metal_v2_admin_tenant:
+        identifier: metal-bmc
+        name: metal-bmc
+        description: tenant used by the metal-bmc service in the metal-stack partitions
+      register: _tenant
+
+    - name: Create token
+      metal_v2_admin_token:
+        identifier: metal-bmc-{{ inventory_hostname }}
+        use_latest_identifier: true
+        user: "{{ _tenant.id }}"
+        description: "metal-bmc token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
+        expires: "{{ metal_bmc_token_expiration }}"
+        permissions: "{{ metal_bmc_permissions }}"
+      register: _token
+
+- name: Write token to file
+  when: '"secret" in _token'
+  block:
+    - name: Write token to filesystem
+      ansible.builtin.copy:
+        content: "{{ _token.secret }}"
+        dest: "{{ metal_bmc_etc_dir }}/{{ metal_bmc_metal_apiserver_token_filename }}"
+        mode: "0600"

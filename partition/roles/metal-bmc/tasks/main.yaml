@@ -19,6 +19,12 @@
       - metal_bmc_console_cert is not none
       - metal_bmc_console_key is not none
 
+- name: Create metal-bmc etc directory
+  ansible.builtin.file:
+    dest: "{{ metal_bmc_etc_dir }}"
+    state: directory
+    mode: "0755"
+
 - name: Create nsq certs directory
   ansible.builtin.file:
     path: "{{ metal_bmc_nsq_cert_dir }}"
@@ -70,6 +76,9 @@
   loop_control:
     label: "{{ item.filename }}"
 
+- name: Create metal-apiserver token for metal-bmc
+  ansible.builtin.import_tasks: token.yaml
+
 - name: Deploy metal-bmc service
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -89,8 +98,9 @@
       TZ: "{{ metal_partition_timezone }}"
       METAL_BMC_LEASE_FILE: "{{ metal_bmc_lease_file }}"
       METAL_BMC_PARTITION_ID: "{{ metal_partition_id }}"
-      METAL_BMC_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath
-        }}"
+      METAL_BMC_METAL_APISERVER_URL: "{{ metal_bmc_metal_apiserver_url }}"
+      METAL_BMC_METAL_APISERVER_TOKEN_FILE: "{{ metal_bmc_etc_dir }}/{{ metal_bmc_metal_apiserver_token_filename }}"
+      METAL_BMC_METAL_API_URL: "{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}"
       METAL_BMC_METAL_API_HMAC_KEY: "{{ metal_partition_metal_api_hmac_edit_key }}"
       METAL_BMC_IGNORE_MACS: "{{ metal_bmc_ignore_macs | join(',') }}"
       METAL_BMC_ALLOWED_CIDRS: "{{ metal_bmc_allowed_cidrs | join(',') }}"
