@@ -55,7 +55,7 @@
     - pixiecore_metal_hammer_logging_cert
     - pixiecore_metal_hammer_logging_key
 
-- name: Create metal-apiserver token for pixecore
+- name: Create metal-apiserver token for pixiecore
   ansible.builtin.import_tasks: token.yaml
 
 - name: Deploy pixiecore
@@ -71,6 +71,7 @@
     systemd_docker_memory: 256m
     systemd_docker_dns: "{{ pixiecore_dns_servers }}"
     systemd_docker_volumes: "{{ lookup('template', 'pixie-volumes.j2') | from_yaml }}"
+    systemd_docker_hostname: "pixiecore-{{ inventory_hostname }}"
     # Because Pixiecore needs to listen for DHCP traffic,
     # it has to run with access to the host's networking stack.
     # Both Rkt and Docker do this with the --net=host commandline flag.
