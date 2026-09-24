@@ -1,7 +1,10 @@
 ---
+crds:
+  enabled: true
+
 prometheus:
   ingress:
-    enabled: {{ monitoring_prometheus_ingress_enabled }}
+    enabled: {{ monitoring_prometheus_ingress_enabled | lower }}
     ingressClassName: nginx
     hosts:
       - {{ monitoring_prometheus_ingress_dns }}
@@ -12,7 +15,36 @@ prometheus:
 {% endfor %}
 {% endif %}
 
+  route:
+    main:
+      enabled: {{ monitoring_prometheus_httproute_enabled | lower }}
+      hostnames:
+        - {{ monitoring_prometheus_gateway_dns }}
+      parentRefs: {{ monitoring_prometheus_httproute_parent_refs | to_json }}
+
   prometheusSpec:
+
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    scrapeConfigSelectorNilUsesHelmValues: false
+
+{% if monitoring_prometheus_remote_write %}
+    remoteWrite:
+{% for target in monitoring_prometheus_remote_write %}
+      - url: "{{ target.url }}"
+        name: "{{ target.name }}"
+        basicAuth:
+          username:
+            name: "remote-write-creds-{{ target.name }}"
+            key: username
+          password:
+            name: "remote-write-creds-{{ target.name }}"
+            key: password
+{% endfor %}
+{% endif %}
+
     additionalArgs:
       - name: "web.enable-remote-write-receiver"
         value: ""
@@ -24,6 +56,7 @@ prometheus:
     storageSpec:
       {{ monitoring_prometheus_storage_spec | indent(6) }}
 {% endif %}
+{% if monitoring_thanos_enabled %}
     thanos:
       image: "{{ thanos_image_name }}:{{ thanos_image_tag }}"
       version: "{{ thanos_image_tag }}"
@@ -33,10 +66,13 @@ prometheus:
           key: objstore.yml
           name: thanos-objstore-secret
 {% endif %}
+{% endif %}
   thanosService:
-    enabled: true
+    enabled: {{ monitoring_thanos_enabled }}
 
 grafana:
+  enabled: {{ monitoring_grafana_enabled }}
+{% if monitoring_grafana_enabled %}
   adminPassword: {{ monitoring_grafana_admin_password }}
   defaultDashboardsTimezone: {{ monitoring_grafana_dashboard_timezone }}
 
@@ -54,12 +90,14 @@ grafana:
 {% if monitoring_grafana_extra_secret_mounts %}
   extraSecretMounts: {{ monitoring_grafana_extra_secret_mounts | to_json }}
 {% endif %}
+{% if monitoring_thanos_enabled %}
   sidecar:
     datasources:
       uid: prometheus
       url: http://thanos-query-frontend:9090
+{% endif %}
   ingress:
-    enabled: true
+    enabled: {{ monitoring_grafana_ingress_enabled | lower }}
     ingressClassName: nginx
     hosts:
       - {{ monitoring_grafana_ingress_dns }}
@@ -69,7 +107,7 @@ grafana:
         hosts:
         - {{ monitoring_grafana_ingress_dns }}
 {% endif %}
-{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations %}
+{% if monitoring_ingress_grafana_tls or monitoring_additional_ingress_annotations or monitoring_grafana_ingress_annotations %}
     annotations:
 {% endif %}
 {% if monitoring_ingress_grafana_tls %}
@@ -81,12 +119,30 @@ grafana:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
+{% if monitoring_grafana_ingress_annotations %}
+{% for key, value in monitoring_grafana_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
   plugins:
     - camptocamp-prometheus-alertmanager-datasource
+{% endif %}
+
+  route:
+    main:
+      enabled: {{ monitoring_grafana_httproute_enabled | lower }}
+      hostnames:
+        - {{ monitoring_grafana_gateway_dns }}
+      parentRefs: {{ monitoring_grafana_httproute_parent_refs | to_json }}
+
+prometheusOperator:
+  enabled: {{ monitoring_prometheus_operator_enabled }}
 
 alertmanager:
+  enabled: {{ monitoring_alertmanager_enabled }}
+{% if monitoring_alertmanager_enabled %}
   ingress:
-    enabled: {{ monitoring_alertmanager_ingress_enabled }}
+    enabled: {{ monitoring_alertmanager_ingress_enabled | lower }}
     ingressClassName: nginx
     hosts:
       - {{ monitoring_alertmanager_ingress_dns }}
@@ -98,7 +154,9 @@ alertmanager:
         - {{ monitoring_alertmanager_ingress_dns }}
 {% endif %}
 
+{% if monitoring_alertmanager_ingress_tls or monitoring_additional_ingress_annotations or monitoring_alertmanager_ingress_annotations %}
     annotations:
+{% endif %}
 {% if monitoring_alertmanager_ingress_tls %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -110,16 +168,35 @@ alertmanager:
 {% endfor %}
 {% endif %}
 
+{% if monitoring_alertmanager_ingress_annotations %}
+{% for key, value in monitoring_alertmanager_ingress_annotations.items() %}
+      {{ key }}: "{{ value }}"
+{% endfor %}
+{% endif %}
+
 {% if monitoring_alertmanager_ingress_basic_auth_password %}
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: alertmanager-basic-auth
+{% endif %}
 
+{% if monitoring_alertmanager_ingress_basic_auth_password %}
   extraSecret:
     name: alertmanager-basic-auth
     data:
+      # for envoy gateway, only supports sha1
+      .htpasswd: |
+        {{ monitoring_alertmanager_ingress_basic_auth_user }}:{SHA}{{ lookup('pipe', 'printf %s ' ~ (monitoring_alertmanager_ingress_basic_auth_password | quote) ~ ' | openssl dgst -sha1 -binary | base64') }}
+      # for ingress-nginx
       auth: |
         {{ monitoring_alertmanager_ingress_basic_auth_user }}:{{ monitoring_alertmanager_ingress_basic_auth_password | string | password_hash('bcrypt', salt=monitoring_alertmanager_ingress_basic_auth_password_salt) }}
 {% endif %}
+
+  route:
+    main:
+      enabled: {{ monitoring_alertmanager_httproute_enabled | lower }}
+      hostnames:
+        - {{ monitoring_alertmanager_gateway_dns }}
+      parentRefs: {{ monitoring_alertmanager_httproute_parent_refs | to_json }}
 
   alertmanagerSpec:
     logLevel: debug
@@ -134,6 +211,13 @@ alertmanager:
         httpGet:
           path: /ready
           port: webhook-logger
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 2Gi
+
   config:
     global:
       resolve_timeout: 5m
@@ -146,14 +230,14 @@ alertmanager:
       group_by: ['severity', 'alertname', 'namespace', 'pod', 'job']
       group_wait: 30s
       group_interval: 30s
-      repeat_interval: 30s
+      repeat_interval: {{ monitoring_alertmanager_webhook_logger_repeat_interval }}
       routes:
       - receiver: 'null'
         matchers:
           - alertname=~"Watchdog|InfoInhibitor"
 {% if monitoring_slack_api_url is defined and monitoring_slack_notification_channel is defined %}
       - receiver: slack
-        repeat_interval: 1h
+        repeat_interval: {{ monitoring_alertmanager_webhook_slack_repeat_interval }}
         continue: true
 {% endif %}
 {% for route in monitoring_alertmanager_additional_routes %}
@@ -270,25 +354,43 @@ alertmanager:
 
       {{- end }}
 {% endraw %}
+{% endif %}
 
 coreDns:
-  enabled: {{ monitoring_prometheus_core_dns_enabled }}
+  enabled: {{ monitoring_prometheus_core_dns_enabled | lower }}
 
 kubeDns:
-  enabled: {{ monitoring_prometheus_kube_dns_enabled }}
+  enabled: {{ monitoring_prometheus_kube_dns_enabled | lower }}
 
 kubeProxy:
-  enabled: {{ monitoring_prometheus_kube_proxy_enabled }}
+  enabled: {{ monitoring_prometheus_kube_proxy_enabled | lower }}
+{% if monitoring_prometheus_kube_proxy_service_selector %}
+  service:
+    selector: {{ monitoring_prometheus_kube_proxy_service_selector | to_json }}
+{% endif %}
 
 kubeScheduler:
-  enabled: {{ monitoring_prometheus_kube_scheduler_enabled }}  
+  enabled: {{ monitoring_prometheus_kube_scheduler_enabled | lower }}
 
 kubeEtcd:
-  enabled: {{ monitoring_prometheus_kube_etcd_enabled }}
+  enabled: {{ monitoring_prometheus_kube_etcd_enabled | lower }}
 
 kubeControllerManager:
-  enabled: {{ monitoring_prometheus_kube_controller_manager_enabled }}
+  enabled: {{ monitoring_prometheus_kube_controller_manager_enabled | lower }}
 
+kubelet:
+  enabled: {{ monitoring_prometheus_kubelet_enabled | lower }}
+
+defaultRules:
+  create: {{ monitoring_prometheus_default_rules_enabled }}
+{% if monitoring_prometheus_default_rules_enabled %}
+{% if not monitoring_prometheus_kubelet_enabled %}
+  disabled:
+    KubeletDown: true
+{% endif %}
+{% endif %}
+
+{% if monitoring_alertmanager_enabled %}
 {% raw %}
 additionalPrometheusRulesMap:
   "metal-alertmanager.rules":
@@ -346,7 +448,7 @@ additionalPrometheusRulesMap:
           description: "The metal_api response status code is not in the expected range."
       - alert: MetalFailedMachineReclaim
         expr: (metal_machine_issues{issueid="failed-machine-reclaim"} == 1) * on (machineid) group_left(partition,state) metal_machine_allocation_info{state!="LOCKED"} * on (issueid) group_left(description,severity,refurl) metal_machine_issues_info
-        for: 10m
+        for: 90m
         labels:
           severity: warning
         annotations:
@@ -360,7 +462,7 @@ additionalPrometheusRulesMap:
           description: "Machine `{{ $labels.machineid }}` in partition `{{ $labels.partition }}` has no event container. Use `metalctl machine issues` for further inspection ({{ $labels.refurl }}). The issue is not reported if an operator locks this machine."
       - alert: MetalBmcInfoOutdated
         expr: (metal_machine_issues{issueid="bmc-info-outdated"} == 1) * on (machineid) group_left(partition,state) metal_machine_allocation_info{state!="LOCKED"} * on (issueid) group_left(description,severity,refurl) metal_machine_issues_info
-        for: 10m
+        for: 60m
         labels:
           severity: warning
         annotations:
@@ -451,17 +553,47 @@ additionalPrometheusRulesMap:
         annotations:
           summary: "Switch sync is slow on {{ $labels.switchname }}"
           description: "Average sync duration of {{ $labels.switchname }} in partition {{ $labels.partition }} is exceeding two seconds for more than 5 minutes."
-  "sonic.rules":
+  "alloy.rules":
     groups:
-    - name: sonic.rules
+    - name: alloy.rules
       rules:
-      - alert: SonicSwitchNotScrapable
-        expr: sum(up{job="sonic-exporter"}) by (instance) == 0
-        for: 10m
+      - alert: AlloyComponentUnhealthy
+        expr: alloy_component_controller_running_components{health_type=~"exited|unhealthy"} > 0
+        for: 5m
         labels:
           severity: critical
         annotations:
-          description: "Sonic switch {{ $labels.instance }} could not be scraped for more than 10 minutes."
+          summary: "Alloy component is {{ $labels.health_type }} on {{ $labels.instance }}"
+          description: "{{ $value }} Alloy component(s) in {{ $labels.health_type }} state on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }}. Log collection may be interrupted."
+      # All drop reasons except rate_limited/stream_limited (which have dedicated alerts) are permanent data loss.
+      # ingester_error = Loki rejected the data (out-of-order, bad labels, etc.) — distinct from push failures.
+      - alert: AlloyLogsDropped
+        expr: rate(loki_write_dropped_entries_total{reason!~"rate_limited|stream_limited"}[15m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alloy is permanently dropping log entries on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} is dropping entries with reason={{ $labels.reason }}. These entries are lost and cannot be recovered."
+      # rate_limited/stream_limited drops are also permanent data loss; same window as AlloyLogsDropped.
+      # for: 5m avoids paging on brief traffic bursts; sustained rate limiting still fires promptly.
+      - alert: AlloyLogsRateLimitedCritical
+        expr: rate(loki_write_dropped_entries_total{reason=~"rate_limited|stream_limited"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alloy is dropping log entries due to rate limiting on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} is dropping entries due to {{ $labels.reason }}. Raise Loki ingestion limits or scale the Loki write tier."
+      # Push failing is diagnostic context for why drops are occurring; single alert suffices.
+      - alert: AlloyLokiPushFailing
+        expr: rate(loki_write_request_duration_seconds_count{status_code!~"2.."}[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alloy failing to push logs to Loki on {{ $labels.instance }}"
+          description: "Alloy on {{ $labels.instance }}{{ if $labels.partition }} (partition: {{ $labels.partition }}){{ else }} (cluster: {{ $labels.cluster }}){{ end }} has been receiving HTTP {{ $labels.status_code }} from Loki for more than 5 minutes. Check Loki availability and network connectivity."
 {% endraw %}
 {% if monitoring_gardener_enabled %}
 {% raw %}
@@ -514,4 +646,5 @@ additionalPrometheusRulesMap:
       - record: garden_shoot_condition:namespaced
         expr: label_join(label_replace(garden_shoot_condition,"namespace1","shoot--$1--","project","(.*)"),"namespace","","namespace1","name")
 {% endraw %}
+{% endif %}
 {% endif %}

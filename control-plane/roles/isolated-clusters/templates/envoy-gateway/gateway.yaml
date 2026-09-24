@@ -107,3 +107,32 @@ spec:
     - group: ""
       kind: Secret
       name: {{ isolated_clusters_envoy_gateway_registry_tls_secret_name }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyPatchPolicy
+metadata:
+  name: udp-session-idle-timeout
+  namespace: {{ isolated_clusters_envoy_gateway_namespace }}
+  labels:
+    app.kubernetes.io/part-of: "{{ isolated_clusters_group_label }}"
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: main-gateway
+  type: JSONPatch
+  jsonPatches:
+    - type: type.googleapis.com/envoy.config.listener.v3.Listener
+      name: {{ isolated_clusters_envoy_gateway_namespace }}/main-gateway/dns-udp
+      operation:
+        op: add
+        jsonPath: .listener_filters[?(@.name=="envoy.filters.udp_listener.udp_proxy")]
+        path: typed_config/idle_timeout
+        value: {{ isolated_clusters_envoy_gateway_udp_session_idle_timeout | to_json }}
+    - type: type.googleapis.com/envoy.config.listener.v3.Listener
+      name: {{ isolated_clusters_envoy_gateway_namespace }}/main-gateway/ntp-udp
+      operation:
+        op: add
+        jsonPath: .listener_filters[?(@.name=="envoy.filters.udp_listener.udp_proxy")]
+        path: typed_config/idle_timeout
+        value: {{ isolated_clusters_envoy_gateway_udp_session_idle_timeout | to_json }}

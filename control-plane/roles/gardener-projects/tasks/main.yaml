@@ -4,7 +4,7 @@
     garden_name: "{{ gardener_projects_garden_name }}"
 
 - name: Loop over projects
-  include_tasks: project.yaml
+  ansible.builtin.include_tasks: project.yaml
   loop: "{{ gardener_projects }}"
   loop_control:
     loop_var: _gardener_project

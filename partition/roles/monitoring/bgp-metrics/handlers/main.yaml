@@ -1,0 +1,6 @@
+---
+- name: Restart bgp-metrics timer
+  ansible.builtin.systemd:
+    name: "bgp-metrics.timer"
+    state: restarted
+    daemon_reload: true

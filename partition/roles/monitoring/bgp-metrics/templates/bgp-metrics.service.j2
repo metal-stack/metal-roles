@@ -1,0 +1,6 @@
+[Unit]
+Description=Write BGP metrics to the node-exporter textfile collector
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/bgp-metrics.py

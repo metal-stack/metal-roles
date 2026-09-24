@@ -1,5 +1,5 @@
 ---
 metal_python_version:
-metal_python_version_from_release_vector: yes
-metal_python_install_latest_on_version_error: yes
-metal_python_install_from_git_repository: no
+metal_python_version_from_release_vector: true
+metal_python_install_latest_on_version_error: true
+metal_python_install_from_git_repository: false

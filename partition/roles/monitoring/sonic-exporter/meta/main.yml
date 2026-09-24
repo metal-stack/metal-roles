@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: sonic_exporter
+  author: metal-stack
+  description: "DEPRECATED: Deploys sonic-exporter. Use metal-roles/partition/roles/monitoring/gnmic instead."
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: ansible-common

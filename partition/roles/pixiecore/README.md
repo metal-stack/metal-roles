@@ -29,3 +29,9 @@ Deploys pixiecore in a systemd-managed Docker container.
 | pixiecore_metal_hammer_logging_tls_insecure |           | set metal-hammer to send logs to a remote endpoint without verifying the tls certificate for mtls auth        |
 | pixiecore_metal_hammer_ntp_servers          |           | A list of custom NTP servers                                                                                  |
 | pixiecore_additional_volume_mounts          |           | Volumes to mount into the pixiecore, besides the default ones                                                 |
+| pixiecore_etc_dir                           |           | /etc Directory for pixiecore                                                                                  |
+| pixiecore_metal_apiserver_url               |           | The address of the metal-apiserver                                                                            |
+| pixiecore_metal_apiserver_token_filename    |           | Filename of the token file to authorize against the metal-apiserver                                           |
+| pixiecore_deployment_admin_token            |           | Initial admin token to create infra token for pixiecore                                                       |
+| pixiecore_token_expiration                  |           | The duration of the api token's validity                                                                      |
+| pixiecore_permissions                       |           | API permissions that the pixiecore needs                                                                      |

@@ -1,28 +1,30 @@
 ---
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - monitoring_ipmi_bmc_superuser is defined
       - monitoring_ipmi_bmc_superuser_pwd is defined
 
-- name: create ipmi_exporter directories
-  file:
+- name: Create ipmi_exporter directories
+  ansible.builtin.file:
     path: "{{ monitoring_ipmi_exporter_etc_host_dir }}"
     state: directory
     owner: "root"
     group: "root"
     mode: "0755"
 
-- name: copy ipmi_exporter config
-  template:
+- name: Copy ipmi_exporter config
+  ansible.builtin.template:
     src: config.yml.j2
     dest: "{{ monitoring_ipmi_exporter_etc_host_dir }}/config.yml"
-  register: ipmi_config
+    mode: "0644"
+  notify:
+    - Restart ipmi_exporter
 
-- name: deploy ipmi_exporter service
-  include_role:
+- name: Deploy ipmi_exporter service
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: ipmi_exporter
@@ -39,16 +41,8 @@
       - --config.file=/etc/ipmi_exporter/config.yml
     systemd_docker_log_driver: "{{ monitoring_ipmi_exporter_docker_log_driver }}"
 
-- name: wait for ipmi_exporter to listen on port
-  wait_for:
+- name: Wait for ipmi_exporter to listen on port
+  ansible.builtin.wait_for:
     port: "{{ monitoring_ipmi_exporter_port }}"
     timeout: 300
     msg: "ipmi_exporter did not come up"
-
-- name: restart ipmi_exporter
-  systemd:
-    name: "ipmi_exporter"
-    state: restarted
-    enabled: yes
-    daemon_reload: yes
-  when: ipmi_config is changed

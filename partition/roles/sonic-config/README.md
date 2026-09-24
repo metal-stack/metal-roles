@@ -160,6 +160,10 @@ sonic_config_portchannels:
       number: 01
 ```
 
+### `sonic_vlan_members`
+
+This variable was removed.
+
 ### `sonic_vteps`
 
 Change
@@ -243,10 +247,10 @@ sonic_config_features:
     # If enabled the container_checker will monitor the container.
     enabled: true
 
-# Whether to enable l2vpn evpn address family
+# Whether to enable l2vpn evpn address family.
 sonic_config_frr_l2vpn_evpn: true
 
-# Whether to enable frr_mgmt_framework_config
+# Whether to enable frr_mgmt_framework_config.
 sonic_config_frr_mgmt_framework_config: true
 
 # Whether to render the frr.conf.j2 template file.
@@ -261,6 +265,10 @@ sonic_config_frr_route_map:
 
   # Name of the routemap.
   name: LOOPBACKS
+
+# Whether to set the default source address to the loopback address via frr.conf.
+# This will only be applied if `sonic_config_frr_render` is `true`.
+sonic_config_frr_set_source_address_loopback: true
 
 # Static routes to be injected through FRR.
 sonic_config_frr_static_routes:
@@ -506,6 +514,18 @@ sonic_config_ports:
       # The VRF the port is bound to.
       vrf: Vrf46
 
+# Additional prefix lists.
+sonic_config_frr_prefix_lists:
+  - ip prefix-list PL_FABRIC_OUT seq 5 permit 0.0.0.0/0
+  - ip prefix-list PL_FABRIC_OUT seq 10 permit 10.0.0.0/24 le 32
+
+# Route map to apply when redistributing connected routes in the default VRF.
+sonic_config_frr_route_map:
+  # Name of the route map.
+  name: RM_FABRIC_OUT
+  # Matcher for the route map.
+  match: ip address prefix-list PL_FABRIC_OUT
+
 # Whether a `config reload` should be triggered. If `false` a simple `config load` will be
 # performed. Keep in mind that a config reload is a disruptive process.
 # Active connections will be interrupted and it may take up to several minutes for the
@@ -538,8 +558,10 @@ sonic_config_timezone: Europe/Berlin
 # Subinterfaces on a port with .1q VLAN tag. For subinterfaces where there is no
 # local VLAN on the switch.
 sonic_config_vlan_subinterfaces:
-  # The IP/prefixlength CIDR of the subinterface.
-  - cidr: 1.2.3.0/24
+  # The IP/prefixlength CIDRs of the subinterface. May be mixed address families.
+  - cidrs:
+      - 1.2.3.0/24
+      - 1:2:3::1/64
 
     # The parent port.
     port: Ethernet0

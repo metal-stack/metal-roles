@@ -1,2 +1,12 @@
-- src: https://github.com/metal-stack/metal-roles
-- src: https://github.com/metal-stack/metal-ansible-modules
+---
+roles:
+  - src: https://github.com/metal-stack/ansible-common
+  - src: https://github.com/metal-stack/metal-ansible-modules
+  - src: https://github.com/metal-stack/metal-roles
+
+collections:
+  - ansible.posix
+  - community.docker
+  - community.general
+  - community.kubernetes
+  - kubernetes.core

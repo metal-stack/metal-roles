@@ -4,7 +4,8 @@ Creates a managed resource that rotates the token for a valid kubeconfig to acce
 
 ## Variables
 
-| Name                                       | Mandatory | Description                                                                                 |
-| ------------------------------------------ | --------- | ------------------------------------------------------------------------------------------- |
-| gardener_virtual_garden_access_garden_name |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden |
-| gardener_virtual_garden_access_expiration  |           | The duration how long the token is valid for the access kubeconfig until it expires         |
+| Name                                                 | Mandatory | Description                                                                                    |
+| ---------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| gardener_virtual_garden_access_garden_name           |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden    |
+| gardener_virtual_garden_access_expiration            |           | The duration how long the token is valid for the access kubeconfig until it expires            |
+| gardener_virtual_garden_access_cluster_role_bindings |           | Deploys `ClusterRoleBinding`s into the virtual garden, usually for the OIDC auth configuration |

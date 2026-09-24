@@ -1,14 +1,17 @@
 ---
-- name: create node_exporter directories
-  file:
-    path: "{{ monitoring_node_exporter_dir }}/host"
+- name: Create node_exporter directories
+  ansible.builtin.file:
+    path: "{{ item }}"
     state: directory
     owner: "root"
     group: "root"
     mode: "0755"
+  loop:
+    - "{{ monitoring_node_exporter_dir }}/host"
+    - "{{ monitoring_node_exporter_textfile_directory }}"
 
-- name: deploy node_exporter service
-  include_role:
+- name: Deploy node_exporter service
+  ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
     systemd_service_name: node_exporter
@@ -26,5 +29,5 @@
       - --path.rootfs=/host
       - --path.procfs=/host/proc
       - --path.sysfs=/host/sys
+      - "--collector.textfile.directory=/host{{ monitoring_node_exporter_textfile_directory }}"
     systemd_docker_log_driver: "{{ monitoring_node_exporter_docker_log_driver }}"
-      

@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: sonic-upgrade
+  author: metal-stack
+  description: Performs an upgrade of the SONiC OS on a device and reboots it to complete the installation.
+  license: MIT
+  min_ansible_version: "2.10"
+  galaxy_tags: []
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: ansible-common

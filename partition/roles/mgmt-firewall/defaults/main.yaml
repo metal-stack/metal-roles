@@ -1,63 +1,62 @@
+---
 mgmt_firewall_location_name:
 mgmt_firewall_device_name:
-
 mgmt_firewall_default_wan_enabled: true
 mgmt_firewall_static_routes_enabled: true
 
 mgmt_firewall_config:
-  location_name: ''
-  device_name: ''
+  location_name: ""
+  device_name: ""
   bgp:
     enabled: true
-    general_ip: ''
+    general_ip: ""
     general_as:
-    mgmtsrv_ipaddr: ''
+    mgmtsrv_ipaddr: ""
     mgmtsrv_as:
-
 mgmt_firewall_interfaces:
   mgmt_firewall_lan:
-    - name: ''
-      ipaddr: ''
-      netmask: ''
-      device: ''
+    - name: ""
+      ipaddr: ""
+      netmask: ""
+      device: ""
       dhcp_options:
-        - { option: '3', value: '' }
-        - { option: '6', value: '' }
-        - { option: '12', value: '' }
+        - { option: "3", value: "" }
+        - { option: "6", value: "" }
+        - { option: "12", value: "" }
   mgmt_firewall_wan:
     default:
-      ip_address: ''
-      gateway: ''
-      net_mask: ''
+      ip_address: ""
+      gateway: ""
+      net_mask: ""
     interfaces:
       - name: wan_mgmtsrv
         device: eth1
-        metric: '5'
-        ipaddr: ''
-        netmask: ''
+        metric: "5"
+        ipaddr: ""
+        netmask: ""
         dns:
-          - '1.1.1.1'
-          - '1.0.0.1'
-        gateway: ''
+          - "1.1.1.1"
+          - "1.0.0.1"
+        gateway: ""
 
 mgmt_firewall_port_forwards:
-  - name: 'ssh_mgmtsrv'
-    src_dport: '22'
-    dest_ip: ''
-    dest_port: '22'
-    src: 'wan'
-    priority: '1'
-    dest: 'lan'
-    reflection: '0'
-    src_ip: ['']
-    proto: ['tcp']
-    src_dip: ''
+  - name: "ssh_mgmtsrv"
+    src_dport: "22"
+    dest_ip: ""
+    dest_port: "22"
+    src: "wan"
+    priority: "1"
+    dest: "lan"
+    reflection: "0"
+    src_ip: [""]
+    proto: ["tcp"]
+    src_dip: ""
 
 mgmt_firewall_vlans:
-  - vlan: '3'
-    vid: '3'
-    ports: '0t 1'
+  - vlan: "3"
+    vid: "3"
+    ports: "0t 1"
 
 mgmt_firewall_static_routes:
-  - gateway: ''
+  - gateway: ""
     network: 1

@@ -7,4 +7,3 @@ gardener_extension_ontap_clusters: []
 #    ipaddress: 192.168.0.1
 #    username: foo
 #    password: bar
-

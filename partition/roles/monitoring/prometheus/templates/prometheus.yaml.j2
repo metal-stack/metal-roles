@@ -6,7 +6,9 @@ global:
   scrape_timeout: {{ prometheus_scrape_timeout }}
   external_labels:
     partition: '{{ metal_partition_id }}'
-    replica: '{{ inventory_hostname }}'
+{% for key, value in prometheus_additional_external_labels.items() %}
+    {{ key }}: '{{ value }}'
+{% endfor %}
 
 # Alertmanager configuration
 alerting:
@@ -88,10 +90,28 @@ scrape_configs:
       regex: (.*):\d+
       target_label: instance
 
+- job_name: alloy
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/alloy.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
 - job_name: sonic-exporter
   file_sd_configs:
   - files:
     - '/etc/prometheus/file_sd/sonic-exporter.yaml'
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*):\d+
+      target_label: instance
+
+- job_name: gnmic
+  file_sd_configs:
+  - files:
+    - '/etc/prometheus/file_sd/gnmic.yaml'
   relabel_configs:
     - source_labels: [__address__]
       regex: (.*):\d+
@@ -160,12 +180,13 @@ scrape_configs:
 
 - job_name: 'ipmi'
   metrics_path: /ipmi
+  scrape_timeout: {{ prometheus_ipmi_scrape_timeout }}
+  scrape_interval: {{ prometheus_ipmi_scrape_interval }}
   params:
     module: [default]
   file_sd_configs:
   - files:
     - '/etc/prometheus/file_sd/ipmi.yaml'
-    refresh_interval: 5m
   relabel_configs:
   - source_labels: [__address__]
     separator: ;
@@ -195,7 +216,7 @@ scrape_configs:
 - job_name: 'lightbox-exporter'
   metrics_path: /metrics
   scrape_timeout: 25s
-  scrape_interval: 30s
+  scrape_interval: 60s
   params:
     collect[]:
     - clustering

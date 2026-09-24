@@ -1,7 +1,11 @@
 image:
-  registry:
-  repository: "{{ thanos_image_name }}"
+  registry: "{{ (thanos_image_name | split('/'))[0] if '/' in thanos_image_name else thanos_image_name }}"
+  repository: {{ (thanos_image_name | split('/'))[1:] | join('/') if '/' in thanos_image_name else thanos_image_name }}
   tag: "{{ thanos_image_tag }}"
+
+global:
+  security:
+    allowInsecureImages: true
 
 {% if monitoring_thanos_object_store_config is defined %}
 objstoreConfig: |-
@@ -9,9 +13,69 @@ objstoreConfig: |-
 
 compactor:
   enabled: true
+  persistence:
+    size: {{ monitoring_thanos_compactor_size }}
+{% if monitoring_thanos_compactor_storage_class %}
+    storageClass: {{ monitoring_thanos_compactor_storage_class }}
+{% endif %}
+
+
+  resourcesPreset: {{ monitoring_thanos_compactor_resource_preset }}
+
 storegateway:
   enabled: true
+
+  livenessProbe:
+    failureThreshold: {{ monitoring_thanos_object_store_probe_failure_threshold }}
+  readinessProbe:
+    failureThreshold: {{ monitoring_thanos_object_store_probe_failure_threshold }}
+
+  resourcesPreset: {{ monitoring_thanos_object_store_resource_preset }}
+
+ruler:
+  enabled: true
+
+  alertmanagersConfig:
+    alertmanagers:
+      - http_config:
+          basic_auth:
+            username: {{ monitoring_alertmanager_ingress_basic_auth_user }}
+            password: "{{ monitoring_alertmanager_ingress_basic_auth_password }}"
+        static_configs:
+          - {{ monitoring_alertmanager_ingress_dns }}
+        scheme: https
+        timeout: 10s
+        api_version: v2
+
+  config: |-
+    {{ '{{' }}`
+      groups:
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_blackbox_exporter') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_haproxy') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_ipmi') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_leaf') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_node_exporter') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_pixiecore') | indent(width=8, first=false) }}
+        {{ lookup('ansible.builtin.vars', 'partition_prometheus_rules_sonic_exporter') | indent(width=8, first=false) }}
+    `{{ '}}' }}
 {% endif %}
+
+metrics:
+  enabled: true
+  prometheusRule:
+    enabled: true
+    default:
+      create: true
+      disabled:
+        # no sidecar used
+        ThanosSidecarIsDown: Disable
+        # rule is broken: Prometheus complains:
+        # multiple matches for labels: many-to-one matching must be explicit (group_left/group_right)
+        ThanosReceiveNoUpload: Disable
+        # select two results for the same pod and therefore needs to be disabled
+        ThanosCompactMultipleRunning: Disable
+  serviceMonitor:
+    enabled: true
 
 query:
   dnsDiscovery:
@@ -20,18 +84,19 @@ query:
 
 receive:
   enabled: {{ monitoring_thanos_receive_enabled }}
+
   ingress:
     enabled: {{ monitoring_thanos_receive_ingress_enabled }}
     hostname: {{ monitoring_thanos_receive_ingress_dns }}
     ingressClassName: nginx
-{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth or monitoring_thanos_receive_ingress_tls %}
+{% if monitoring_thanos_receive_ingress_annotations or monitoring_thanos_receive_ingress_basic_auth_password or monitoring_thanos_receive_ingress_tls %}
     annotations:
 {% endif %}
 {% if monitoring_thanos_receive_ingress_tls %}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {% endif %}
-{% if monitoring_thanos_receive_ingress_basic_auth %}
+{% if monitoring_thanos_receive_ingress_basic_auth_password %}
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: thanos-receive-basic-auth
 {% endif %}
@@ -40,15 +105,97 @@ receive:
       {{ key }}: "{{ value }}"
 {% endfor %}
 {% endif %}
-    tls: {{ monitoring_thanos_receive_ingress_tls }}
+    tls: {{ monitoring_thanos_receive_ingress_tls | lower }}
+{% if monitoring_thanos_receive_ingress_tls and monitoring_thanos_receive_ingress_tls_gardener_managed %}
+    extraTls:
+      - hosts:
+          - {{ monitoring_thanos_receive_ingress_dns }}
+        secretName: monitoring-thanos-receive-ingress-tls
+{% endif %}
+
   persistence:
     size: {{ monitoring_thanos_receive_size }}
 
+  resourcesPreset: {{ monitoring_thanos_receive_resource_preset }}
+  livenessProbe:
+    failureThreshold: {{ monitoring_thanos_receive_probe_failure_threshold }}
+  readinessProbe:
+    failureThreshold: {{ monitoring_thanos_receive_probe_failure_threshold }}
+
+  mode: dual-mode
+  replicaCount: 3
+  service:
+    additionalHeadless: true
+
+receiveDistributor:
+  enabled: true
+  replicationFactor: 3
+
+
+{% if monitoring_thanos_receive_ingress_basic_auth_password or monitoring_thanos_object_store_config is not defined %}
 extraDeploy:
+{% endif %}
+{% if monitoring_thanos_object_store_config is not defined %}
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: thanos-objstore-secret
+  type: Opaque
+  stringData:
+    objstore.yml: ""
+{% endif %}
+{% if monitoring_thanos_receive_ingress_basic_auth_password %}
 - apiVersion: v1
   kind: Secret
   metadata:
     name: thanos-receive-basic-auth
   type: Opaque
-  data:
-    auth: "{{ monitoring_thanos_receive_ingress_basic_auth | b64encode }}"
+  stringData:
+    # for envoy gateway, only supports sha1
+    .htpasswd: |
+      {{ monitoring_thanos_receive_ingress_basic_auth_user }}:{SHA}{{ lookup('pipe', 'printf %s ' ~ (monitoring_thanos_receive_ingress_basic_auth_password | quote) ~ ' | openssl dgst -sha1 -binary | base64') }}
+    # for ingress-nginx
+    auth: "{{ monitoring_thanos_receive_ingress_basic_auth_user ~ ':' ~ monitoring_thanos_receive_ingress_basic_auth_password | string | password_hash('bcrypt', salt=monitoring_thanos_receive_ingress_basic_auth_password_salt) }}"
+{% endif %}
+{% if monitoring_thanos_receive_httproute_enabled %}
+# our version of the thanos chart does not support this... we need to migrate away from bitnami
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    name: thanos-receive
+  spec:
+    hostnames:
+    - {{ monitoring_thanos_receive_gateway_dns }}
+    parentRefs: {{ monitoring_thanos_receive_parent_refs | to_json }}
+    rules:
+    - backendRefs:
+      - kind: Service
+        name: thanos-receive
+        port: 19291
+      matches:
+      - path:
+          type: PathPrefix
+          value: /api/v1/receive
+    - backendRefs:
+      - kind: Service
+        name: thanos-receive
+        port: 10902
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+{% if monitoring_thanos_deploy_envoy_gateway_basic_auth %}
+- apiVersion: gateway.envoyproxy.io/v1alpha1
+  kind: SecurityPolicy
+  metadata:
+    name: thanos-basic-auth
+  spec:
+    targetRefs:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+        name: thanos-receive
+    basicAuth:
+      users:
+        name: thanos-receive-basic-auth
+{% endif %}
+{% endif %}

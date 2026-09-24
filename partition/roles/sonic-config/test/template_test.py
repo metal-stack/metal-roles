@@ -19,7 +19,7 @@ def read_file(f):
     with open(os.path.join(os.path.dirname(__file__), f), "r") as f:
         return f.read()
 
-class SonicConfigRoleTemplates(unittest.TestCase):
+class TestSonicConfigRoleTemplates(unittest.TestCase):
     def test_sonic_config_role_templates(self):
         self.maxDiff = None
         defaults = read_yaml('../defaults/main.yaml')

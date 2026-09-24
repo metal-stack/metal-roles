@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodically write BGP metrics to the node-exporter textfile collector
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec={{ monitoring_bgp_metrics_interval }}
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

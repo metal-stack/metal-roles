@@ -3,9 +3,9 @@
   setup_yaml:
 
 - name: Check mandatory variables for this role are set
-  assert:
+  ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: yes
+    quiet: true
     that:
       - gardener_gardenlet_default_dns_domain is not none
       - gardener_gardenlet_default_dns_provider is not none
@@ -16,7 +16,7 @@
     garden_name: "{{ gardener_gardenlet_garden_name }}"
 
 - name: Deploy domain secrets (in virtual apiserver)
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: Secret
@@ -39,7 +39,7 @@
     - default-domain
 
 - name: Deploy Gardenlet
-  include_tasks: gardenlet.yaml
+  ansible.builtin.include_tasks: gardenlet.yaml
   loop: "{{ gardener_gardenlets }}"
   loop_control:
     loop_var: _gardenlet

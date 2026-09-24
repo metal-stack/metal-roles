@@ -24,9 +24,7 @@ spec:
         - name: proxy
           image: "{{ gardener_partition_proxy_image_name }}:{{ gardener_partition_proxy_image_tag }}"
           ports:
-{% for conf in gardener_shooted_seed.proxy_servers %}
-            - containerPort: {{ conf.port }}
-{% endfor %}
+            - containerPort: 443
           volumeMounts:
             - name: nginx-conf
               mountPath: /etc/nginx
@@ -57,11 +55,9 @@ spec:
   type: LoadBalancer
   loadBalancerIP: "{{ _proxy_ip }}"
   ports:
-{% for conf in gardener_shooted_seed.proxy_servers %}
     - port: 443
-      targetPort: {{ conf.port }}
+      targetPort: 443
       protocol: TCP
-      name: {{ conf.type }}-{{ conf.name }}
-{% endfor %}
+      name: https
   selector:
     app.kubernetes.io/name: "partition-proxy"

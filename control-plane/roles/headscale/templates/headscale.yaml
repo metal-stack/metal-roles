@@ -128,6 +128,7 @@ spec:
       - name: private-key
         secret:
           secretName: headscale
+{% if headscale_ingress_enabled %}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -162,3 +163,42 @@ spec:
                 name: headscale
                 port:
                   number: 8080
+{% endif %}
+{% if headscale_httproute_enabled %}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: headscale
+  labels:
+    app: headscale
+spec:
+  parentRefs: {{ headscale_httproute_parent_refs | to_json }}
+  hostnames: {{ headscale_httproute_hostnames | to_json }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: headscale
+          port: 8080
+{% if headscale_httproute_https_redirect %}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: headscale-https-redirect
+  labels:
+    app: headscale
+spec:
+  parentRefs: {{ headscale_httproute_https_redirect.redirectParentRefs | to_json }}
+  hostnames: {{ headscale_httproute_hostnames | to_json }}
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+{% endif %}
+{% endif %}

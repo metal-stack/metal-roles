@@ -49,7 +49,16 @@ spec:
           repository: "{{ gardener_extension_provider_metal_image_name }}"
           tag: "{{ gardener_extension_provider_metal_image_tag }}"
           pullPolicy: {{ metal_control_plane_image_pull_policy }}
+
         config:
+
+{% if gardener_extension_provider_metal_additional_network_policies %}
+{% if 'ingress_controller' in gardener_extension_provider_metal_additional_network_policies %}
+          networkPolicies:
+            enabled: {{ gardener_extension_provider_metal_additional_network_policies.ingress_controller.enabled | lower }}
+{% endif %}
+{% endif %}
+
           machineImages:
             {% for image in (gardener_extension_provider_metal_machine_images | machine_images_for_cloud_profile) -%}
             {%- for image_version in image.versions -%}
@@ -58,9 +67,6 @@ spec:
               image: "{{ image.name }}-{{ image_version.version }}"
             {% endfor -%}
             {%- endfor %}
-
-          clusterAudit:
-            enabled: true
 
           firewallInternalPrefixes: {{ gardener_extension_provider_metal_firewall_internal_prefixes | to_json }}
 
