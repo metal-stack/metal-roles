@@ -90,17 +90,3 @@ Booleans are written as `1`/`0`, numbers as strings. Values must not contain a s
 ## Tests
 
 `make test` runs `test/uci_test.py` against the filter plugin.
-
-## Known limits
-
-- Tested against an OpenWrt 21.02 container with dropbear and the uci packages exported from two RUTXR1 devices, not
-  against a RutOS device. `reload_config`, service restarts and the timing on real hardware are untested.
-- A reload that cuts connectivity for longer than `mgmt_firewall_rutos_confirm_timeout` rolls back even if the change was
-  correct.
-- `reload_config` failing is not detected on its own; only the read-back of the committed state and the reconnect are.
-- Section order is only set when a section is created. A new section is appended to the end of its package even if it is
-  declared in the middle, which matters for overlapping firewall rules.
-- A section addressed by index cannot be combined with `purge`, `purge_anonymous` or named sections of the same type,
-  because deleting or creating sections would shift the index.
-- Secrets such as wireless keys or password hashes are deliberately not part of the example state; nothing prevents
-  putting them into the inventory in clear text.
