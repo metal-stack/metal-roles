@@ -5,6 +5,16 @@
     METAL_APIV2_URL: "{{ pixiecore_metal_apiserver_url }}"
     METAL_APIV2_TOKEN: "{{ pixiecore_deployment_admin_token }}"
   block:
+    - name: Create metal-hammer tenant
+      run_once: true
+      metal_v2_admin_tenant:
+        identifier: "{{ pixiecore_metal_hammer_tenant }}"
+        name: metal-hammer
+        description: tenant used by the metal-hammer service during machine provisioning
+        labels:
+          tenant.metal-stack.io/machine-bootstrapper: ""
+      register: _tenant
+
     - name: Create pixiecore tenant
       run_once: true
       metal_v2_admin_tenant:
