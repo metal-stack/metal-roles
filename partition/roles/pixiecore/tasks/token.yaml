@@ -31,7 +31,7 @@
         description: "pixiecore token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
         expires: "{{ pixiecore_token_expiration }}"
         permissions: "{{ pixiecore_permissions }}"
-        infra_role:  "{{ pixiecore_infra_role }}"
+        infra_role: "{{ pixiecore_infra_role }}"
         machine_roles: "{{ pixiecore_machine_roles }}"
       register: _token
 
