@@ -6,6 +6,11 @@
 {% if hostvars[host].ansible_user is defined %}
 Host {{ host }} {{ hostvars[host].host_alias|default('') }}
         User {{ hostvars[host].ansible_user }}
+{% if hostvars[host].mgmt_server_ssh_config_options is defined %}
+{% for option in hostvars[host].mgmt_server_ssh_config_options %}
+        {{ option }}
+{% endfor %}
+{% endif %}
 {% endif %}
 {% endif %}
 {% endfor %}

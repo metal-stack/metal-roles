@@ -125,6 +125,19 @@
   loop_control:
     label: "{{ item.dest }}"
 
+- name: Copy additional ssh keys
+  copy:
+    content: "{{ item.value }}"
+    dest: "/home/metal/.ssh/{{ item.key }}"
+    mode: "0600"
+    owner: metal
+    group: metal
+  no_log: true
+  loop: "{{ mgmt_server_additional_ssh_keys | default({}, true) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+
 # This is so that self connect and cross connect to the other mgmtserver is possible
 - name: Add own ssh key to authorized_keys
   lineinfile:
