@@ -403,6 +403,11 @@ data:
             "overrides": []
           },
           "options": {
+            "basemap": {
+              "type": "osm-standard",
+              "name": "OpenStreetMap",
+              "config": {}
+            },
             "view": { "id": "coords", "lat": 48.1374, "lon": 11.5755, "zoom": 3 },
             "controls": { "showZoom": true, "showAttribution": true },
             "layers": [
