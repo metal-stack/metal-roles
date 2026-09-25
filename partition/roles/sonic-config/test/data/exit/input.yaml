@@ -50,14 +50,19 @@ sonic_config_interconnects:
     vrf: VrfInternet
     vlan: 4009
     vni: 104009
+    no_default_ipv4family: true
     announcements: []
     prefixlists:
       - "ip prefix-list INTERNET_PREFIX_IN seq 10 permit 0.0.0.0/0"
       - "ip prefix-list INTERNET_PREFIX_OUT seq 10 permit 185.153.67.0/24 ge 32"
       - "ip prefix-list INTERNET_PREFIX_OUT seq 11 permit 212.34.85.0/24 ge 32"
       - "ip prefix-list INTERNET_PREFIX_OUT seq 12 permit 212.34.89.0/24 ge 32"
+      - "ipv6 prefix-list V6INTERNET_PREFIX_IN seq 10 permit ::0/0"
+      - "ipv6 prefix-list V6INTERNET_PREFIX_OUT seq 10 permit 2a02:c00:2f:ff00::/56 ge 128"
     extended_neighbors:
       - ip: "172.17.146.177"
+        families:
+          - v4
         routemap_in:
           name: "ALLOW-INTERNET-2-IN"
           entries:
@@ -69,6 +74,8 @@ sonic_config_interconnects:
             - "match ip address prefix-list INTERNET_PREFIX_OUT"
             - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}"
       - ip: "172.17.146.161"
+        families:
+          - v4
         routemap_in:
           name: "ALLOW-INTERNET-4-IN"
           entries:
@@ -79,6 +86,20 @@ sonic_config_interconnects:
           entries:
             - "match ip address prefix-list INTERNET_PREFIX_OUT"
             - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }} {{ sonic_config_asn }}"
+      - ip: "2a02:c00:ff0:102::1"
+        families:
+          - v6
+        routemap_in:
+          name: "ALLOW-V6INTERNET-2-IN"
+          entries:
+            - "match ipv6 address prefix-list V6INTERNET_PREFIX_IN"
+            - "set as-path prepend last-as 2"
+        routemap_out:
+          name: "ALLOW-V6INTERNET-2-OUT"
+          entries:
+            - "match ipv6 address prefix-list V6INTERNET_PREFIX_OUT"
+            - "set as-path prepend {{ sonic_config_asn }} {{ sonic_config_asn }}"
+
   croit:
     vrf: Vrf1560
     vni: 1560
