@@ -48,6 +48,45 @@
     monitoring_gnmic_fans: "{{ monitoring_gnmic_fan_keys.stdout_lines | map('regex_replace', '^FAN_INFO\\|', '') | list }}"
   when: monitoring_gnmic_fans | length == 0
 
+- name: Determine PSUs
+  ansible.builtin.command: sonic-db-cli STATE_DB KEYS "PSU_INFO|*"
+  register: monitoring_gnmic_psu_keys
+  changed_when: false
+  when: monitoring_gnmic_psus | length == 0
+
+- name: Set PSU list
+  ansible.builtin.set_fact:
+    monitoring_gnmic_psus: "{{ monitoring_gnmic_psu_keys.stdout_lines | map('regex_replace', '^PSU_INFO\\|', '') | list }}"
+  when: monitoring_gnmic_psus | length == 0
+
+- name: Determine transceiver tables
+  ansible.builtin.command: sonic-db-cli STATE_DB KEYS "TRANSCEIVER_*|*"
+  register: monitoring_gnmic_transceiver_keys
+  changed_when: false
+  when: monitoring_gnmic_transceiver_tables | length == 0
+
+- name: Set transceiver table list
+  ansible.builtin.set_fact:
+    monitoring_gnmic_transceiver_tables: "{{ monitoring_gnmic_transceiver_keys.stdout_lines | map('regex_replace', '\\|.*$', '') | unique | select('in', ['TRANSCEIVER_INFO', 'TRANSCEIVER_DOM_SENSOR', 'TRANSCEIVER_DOM_THRESHOLD']) | list }}"
+  when: monitoring_gnmic_transceiver_tables | length == 0
+
+- name: Determine SYSTEM_READY availability
+  ansible.builtin.command: sonic-db-cli STATE_DB KEYS "SYSTEM_READY|*"
+  register: monitoring_gnmic_system_ready_keys
+  changed_when: false
+  when: monitoring_gnmic_system_ready is none
+
+- name: Set SYSTEM_READY availability
+  ansible.builtin.set_fact:
+    monitoring_gnmic_system_ready: "{{ monitoring_gnmic_system_ready_keys.stdout_lines | length > 0 }}"
+  when: monitoring_gnmic_system_ready is none
+
+# CONFIG_DB NTP_SERVER only exists when NTP servers are configured
+- name: Determine NTP_SERVER availability
+  ansible.builtin.command: sonic-db-cli CONFIG_DB KEYS "NTP_SERVER|*"
+  register: monitoring_gnmic_ntp_server_keys
+  changed_when: false
+
 - name: Determine CRM ACL tables
   ansible.builtin.command: sonic-db-cli COUNTERS_DB KEYS "CRM:ACL_STATS:*"
   register: monitoring_gnmic_crm_acl_keys
@@ -58,6 +97,27 @@
   ansible.builtin.set_fact:
     monitoring_gnmic_crm_acl_tables: "{{ monitoring_gnmic_crm_acl_keys.stdout_lines | map('regex_replace', '^CRM:ACL_STATS:', '') | list }}"
   when: monitoring_gnmic_crm_acl_tables | length == 0
+
+- name: Determine queues
+  ansible.builtin.command: sonic-db-cli COUNTERS_DB HGETALL COUNTERS_QUEUE_NAME_MAP
+  register: monitoring_gnmic_queue_map
+  changed_when: false
+  when: monitoring_gnmic_queues | length == 0
+
+# the C++ sonic-db-cli of newer SONiC prints HGETALL as a python dict literal, the
+# python sonic-db-cli of Enterprise SONiC prints key and value on alternating lines
+- name: Set queue map
+  vars:
+    monitoring_gnmic_queue_lines: "{{ monitoring_gnmic_queue_map.stdout_lines }}"
+    monitoring_gnmic_queue_dict: "{{ (monitoring_gnmic_queue_map.stdout | from_yaml) if monitoring_gnmic_queue_map.stdout.startswith('{') else dict(monitoring_gnmic_queue_lines[0::2] | zip(monitoring_gnmic_queue_lines[1::2])) }}"
+    monitoring_gnmic_queue_pattern: "^({{ monitoring_gnmic_ports | join('|') }}):[0-9]+$"
+  ansible.builtin.set_fact:
+    monitoring_gnmic_queues: >-
+      {{ monitoring_gnmic_queue_dict
+         | dict2items
+         | selectattr('key', 'match', monitoring_gnmic_queue_pattern)
+         | items2dict }}
+  when: monitoring_gnmic_queues | length == 0
 
 - name: Create gnmic directories
   ansible.builtin.file:
@@ -75,14 +135,27 @@
   notify:
     - Restart gnmic
 
-- name: Copy processor scripts
+- name: Copy LLDP processor script
   ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "{{ monitoring_gnmic_etc_host_dir }}/{{ item }}"
+    src: lldp-neighbors.star
+    dest: "{{ monitoring_gnmic_etc_host_dir }}/lldp-neighbors.star"
     mode: "0644"
-  loop:
-    - lldp-neighbors.star
-    - sonic-metrics.star
+  notify:
+    - Restart gnmic
+
+- name: Copy filter processor script
+  ansible.builtin.copy:
+    src: sonic-filter.star
+    dest: "{{ monitoring_gnmic_etc_host_dir }}/sonic-filter.star"
+    mode: "0644"
+  notify:
+    - Restart gnmic
+
+- name: Copy metrics processor script
+  ansible.builtin.template:
+    src: sonic-metrics.star.j2
+    dest: "{{ monitoring_gnmic_etc_host_dir }}/sonic-metrics.star"
+    mode: "0644"
   notify:
     - Restart gnmic
 
