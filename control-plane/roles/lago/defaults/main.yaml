@@ -1,0 +1,9 @@
+---
+lago_api_url: ""
+lago_frontUrl: ""
+lago_helm_chart_version: ""
+lago_helm_chart_local_path: ""
+lago_namespace: "lago"
+lago_helm_chart_timeout: ""
+ago_check_api_health_endpoint: ""
+lago_check_api_available: false
