@@ -40,6 +40,8 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | [metal-core](roles/metal-core)               | Deploys metal-core                          |
 | [pixiecore](roles/pixiecore)                 | Deploys pixiecore                           |
 | [alloy](roles/alloy)                         | Deploys alloy                               |
+| [k3s-server](roles/k3s-server)               | Deploys a k3s server                        |
+| [ntp](roles/ntp)                             | Keeps the clock in sync                     |
 
 ## Examples
 

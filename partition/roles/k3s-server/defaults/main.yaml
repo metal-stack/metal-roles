@@ -1,0 +1,60 @@
+---
+k3s_server_router_id: "{{ k3s_server_loopback_address }}"
+k3s_server_peer_group: K3S
+k3s_server_bgp_timers: "1 3"
+k3s_server_syslog_level: informational
+
+k3s_server_accept_prefixes:
+  - 0.0.0.0/0
+k3s_server_announce_prefixes:
+  - "{{ k3s_server_loopback_address }}/32"
+
+k3s_server_version: v1.36.4+k3s1
+k3s_server_install_script_url: https://get.k3s.io
+k3s_server_release_url: https://github.com/k3s-io/k3s/releases/download
+k3s_server_binary_url: "{{ k3s_server_release_url }}/{{ k3s_server_version | replace('+', '%2B') }}/k3s"
+k3s_server_checksum_url: "{{ k3s_server_release_url }}/{{ k3s_server_version | replace('+', '%2B') }}/sha256sum-amd64.txt"
+k3s_server_install_script_path: /usr/local/share/k3s-install.sh
+k3s_server_config_dir: /etc/rancher/k3s
+
+k3s_server_cluster_init_host:
+k3s_server_cluster_hosts: "{{ ansible_play_hosts }}"
+k3s_server_token:
+
+k3s_server_api_port: 6443
+k3s_server_api_timeout: 300
+k3s_server_cluster_probe_timeout: 5
+k3s_server_cluster_running: false
+k3s_server_registration_address: "{{ k3s_server_api_vip_address if k3s_server_cluster_running else hostvars[k3s_server_cluster_init_host].k3s_server_loopback_address }}"
+k3s_server_cluster_cidr: 10.42.0.0/16
+k3s_server_service_cidr: 10.43.0.0/16
+
+k3s_server_api_vip_address:
+k3s_server_api_vip_interface: k3s-vip
+k3s_server_api_vip_probe_url: /readyz
+k3s_server_api_vip_probe_timeout: 2s
+k3s_server_api_vip_ready_timeout: 300
+k3s_server_api_vip_ready_interval: 2
+k3s_server_api_vip_script_path: /usr/local/bin/k3s-api-vip
+
+k3s_server_metallb_asn:
+k3s_server_metallb_addresses: []
+k3s_server_metallb_accept_prefixes: []
+k3s_server_metallb_version: v0.16.1
+k3s_server_metallb_manifest_url: "https://raw.githubusercontent.com/metallb/metallb/{{ k3s_server_metallb_version }}/config/manifests/metallb-native.yaml"
+k3s_server_metallb_manifest_path: /usr/local/share/metallb-native.yaml
+k3s_server_metallb_namespace: metallb-system
+k3s_server_metallb_pool_name: default
+k3s_server_metallb_interface: metallb
+k3s_server_metallb_local_address: 169.254.254.1
+k3s_server_metallb_speaker_address: 169.254.254.2
+k3s_server_metallb_timeout: 300s
+
+k3s_server_flannel_iface:
+k3s_server_flannel_mtu:
+
+k3s_server_tls_sans: []
+k3s_server_disable:
+  - traefik
+  - servicelb
+k3s_server_config_extra: {}
