@@ -9,33 +9,26 @@
     that:
       - pixiecore_image_name is defined
       - pixiecore_image_tag is defined
-      - pixiecore_grpc_ca_cert is not none
-      - pixiecore_grpc_client_cert is not none
-      - pixiecore_grpc_client_key is not none
-      - pixiecore_api_host is defined
+      - pixiecore_metal_apiserver_url is not none
+      - pixiecore_metal_apiserver_token_path is not none
+
+- name: Create metal-apiserver tokens
+  ansible.builtin.import_tasks: token.yaml
+
+- name: Store token in credentials file
+  ansible.builtin.copy:
+    content: "{{ _token.secret }}"
+    dest: "{{ pixiecore_metal_apiserver_token_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: '"secret" in _token'
 
 - name: Create gRPC certs directory
   ansible.builtin.file:
     path: "{{ pixiecore_grpc_cert_dir }}"
     state: directory
     mode: "0640"
-
-- name: Copy gRPC certificates
-  ansible.builtin.copy:
-    dest: "{{ pixiecore_grpc_cert_dir }}/{{ item.filename }}"
-    mode: "0640"
-    content: "{{ item.content }}"
-  no_log: true
-  loop:
-    - filename: ca.pem
-      content: "{{ pixiecore_grpc_ca_cert }}"
-    - filename: client.pem
-      content: "{{ pixiecore_grpc_client_cert }}"
-    - filename: client-key.pem
-      content: "{{ pixiecore_grpc_client_key }}"
-  loop_control:
-    label: "{{ item.filename }}"
-  register: grpc_certs
 
 - name: Copy logging certificates
   ansible.builtin.copy:
