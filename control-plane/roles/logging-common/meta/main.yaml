@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: logging-common
   author: metal-stack
   description: Deploys logging components common to all environments
   license: MIT

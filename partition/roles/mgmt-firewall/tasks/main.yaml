@@ -20,6 +20,7 @@
     uci set bgp.general.as='{{ mgmt_firewall_config.bgp.general_as }}'
     uci set bgp.general.ebgp_requires_policy='1'
     uci set bgp.general.deterministic_med='0'
+  changed_when: true
   when: mgmt_firewall_config.bgp.enabled
 
 - name: Setup BGP Peer
@@ -32,6 +33,7 @@
     uci set bgp.mgmtsrv.enabled='1'
     uci commit bgp
     /etc/init.d/frr restart
+  changed_when: true
   when: mgmt_firewall_config.bgp.enabled
 
 - name: Setup SSH
@@ -44,6 +46,7 @@
     uci set firewall.15.enabled='1' # Enable SSH Wan
     uci commit firewall
     /etc/init.d/firewall
+  changed_when: true
 
 - name: Setup firewall default settings
   ansible.builtin.raw: |
@@ -66,28 +69,33 @@
     {% endif %}
     uci commit firewall
     /etc/init.d/firewall restart
+  changed_when: true
 
 - name: Get the total number of sms_utils rules
   ansible.builtin.raw: |
     uci show sms_utils | grep -o '@rule\[[0-9]\+\]' | sort -u | wc -l
   register: rule_count
+  changed_when: false
 
 - name: Disable all sms_utils rules
   ansible.builtin.raw: |
     uci set sms_utils.@rule[{{ item }}].enabled='0'
   loop: "{{ range(0, rule_count.stdout | int) }}"
   register: disable_output
+  changed_when: true
 
 - name: Commit and restart sms_utils after disabling rules
   ansible.builtin.raw: |
     uci commit sms_utils
     /etc/init.d/sms_utils restart
+  changed_when: true
 
 - name: Disable rms_connect
   ansible.builtin.raw: |
     uci set rms_mqtt.rms_connect_mqtt.enable='0'
     uci commit rms_mqtt
     /etc/init.d/rms_mqtt restart
+  changed_when: true
 
 - name: Change location Name
   ansible.builtin.raw: |
@@ -99,6 +107,7 @@
     uci commit snmpd
     uci commit system
     /etc/init.d/system restart
+  changed_when: true
 
 - name: Enable Remote Https Access
   ansible.builtin.raw: |
@@ -106,6 +115,7 @@
     uci set uhttpd.main.redirect_https='0'
     uci commit uhttpd
     /etc/init.d/uhttpd restart
+  changed_when: true
 
 - name: Disable wireless
   ansible.builtin.raw: |
@@ -113,11 +123,13 @@
     uci set wireless.default_radio0.disabled='1'
     uci commit wireless
     /etc/init.d/network restart
+  changed_when: true
   when: mgmt_firewall_wireless_disabled | default(true)
 
 - name: Create authorized keys file in /etc/dropbear
   ansible.builtin.raw: |
     echo '{{ mgmt_firewall_public_key }}' > ../etc/dropbear/authorized_keys
+  changed_when: true
 
 - name: Adjust Lan Default to not Bridge
   ansible.builtin.raw: |
@@ -129,6 +141,7 @@
     uci set network.lan.device='eth0'
     uci commit network
     /etc/init.d/network restart
+  changed_when: true
 
 - name: Configure Default wan
   ansible.builtin.raw: |
@@ -145,6 +158,7 @@
     uci add_list firewall.3.network=wan
     uci commit firewall
     /etc/init.d/firewall
+  changed_when: true
   when: mgmt_firewall_default_wan_enabled | default(false)
 
 - name: Configure new LAN interfaces
@@ -164,6 +178,7 @@
     uci commit firewall
     /etc/init.d/firewall restart
 
+  changed_when: true
   loop: "{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}"
 
 - name: Configure DHCP
@@ -183,6 +198,7 @@
     uci commit dhcp
     /etc/init.d/dnsmasq restart
 
+  changed_when: true
   loop: "{{ mgmt_firewall_interfaces.mgmt_firewall_lan }}"
 
 - name: Configure WAN interfaces
@@ -207,6 +223,7 @@
 
     uci commit network
     /etc/init.d/network restart
+  changed_when: true
   loop: "{{ mgmt_firewall_interfaces.mgmt_firewall_wan.interfaces }}"
 
 - name: Apply Port-Forwards
@@ -239,6 +256,7 @@
     {% endif %}
     uci commit firewall
     /etc/init.d/firewall restart
+  changed_when: true
   loop: "{{ mgmt_firewall_port_forwards }}"
 
 - name: Setup Static Routes
@@ -249,6 +267,7 @@
     uci set network.{{ item.network }}.target='0.0.0.0'
     uci set network.{{ item.network }}.gateway='{{ item.gateway }}'
     uci set network.{{ item.network }}.interface='wan'
+  changed_when: true
   loop: "{{ mgmt_firewall_static_routes }}"
   when: mgmt_firewall_static_routes_enabled | default(false)
 
@@ -257,6 +276,7 @@
     uci set network.@switch_vlan[0].ports='0t 4'
     uci set network.@switch_vlan[1].ports='0t 5'
     uci commit network
+  changed_when: true
 
 - name: Setup dynamic VLANs
   ansible.builtin.raw: |
@@ -266,8 +286,10 @@
     uci set network.@switch_vlan[-1].vid='{{ item.vid }}'
     uci set network.@switch_vlan[-1].ports='{{ item.ports }}'
     uci commit network
+  changed_when: true
   loop: "{{ mgmt_firewall_vlans }}"
 
 - name: Restart Network
   ansible.builtin.raw: |
     /etc/init.d/network restart
+  changed_when: true

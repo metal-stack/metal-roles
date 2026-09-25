@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: isolated-clusters
   author: metal-stack
   description: Deploys additional services for the isolated cluster feature.
   license: MIT

@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: prepare
   author: metal-stack
   description: Preparation tasks for the deployment of the metal-control-plane.
   license: MIT

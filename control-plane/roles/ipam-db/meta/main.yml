@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: ipam-db
   author: metal-stack
   description: Deploys an ipam database for the go-ipam.
   license: MIT

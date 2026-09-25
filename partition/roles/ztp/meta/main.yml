@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: ztp
   author: metal-stack
   description: Configures a server for providing zero-touch-provisioning scripts for switches.
   license: MIT
