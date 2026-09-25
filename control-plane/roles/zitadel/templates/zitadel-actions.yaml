@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zitadel-actions
+  namespace: {{ zitadel_namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: zitadel-actions
+  ports:
+    - name: actions
+      port: 8443
+      targetPort: 8443
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zitadel-actions
+  namespace: {{ zitadel_namespace }}
+  labels:
+    app: zitadel-actions
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zitadel-actions
+  template:
+    metadata:
+      labels:
+        app: zitadel-actions
+    spec:
+      containers:
+        - name: zitadel-actions
+          image: "{{ zitadel_actions_image_name }}:{{ zitadel_actions_image_tag }}"
+          imagePullPolicy: "{{ zitadel_image_pull_policy }}"
+          args:
+            - "--bind-addr=0.0.0.0:8443"
+            - "--signing-key=$(SIGNING_KEY)"
+{% for role in zitadel_actions_allow_roles %}
+            - "--allow-roles={{ role }}"
+{% endfor %}
+{% if zitadel_actions_client_ids %}
+{% for client_id in zitadel_actions_client_ids %}
+            - "--client-ids={{ client_id }}"
+{% endfor %}
+{% else %}
+            - "--client-ids=$(CLIENT_ID)"
+{% endif %}
+          env:
+            - name: SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-actions-credentials
+                  key: signing_key
+{% if not zitadel_actions_client_ids %}
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-client-credentials
+                  key: client_id
+{% endif %}
+          ports:
+            - name: actions
+              containerPort: 8443
+              protocol: TCP
