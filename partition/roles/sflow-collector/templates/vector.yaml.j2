@@ -1,0 +1,331 @@
+{% set sflow_edge = sflow_collector_profile in ['edge', 'combined'] %}
+{% set sflow_fabric = sflow_collector_profile in ['fabric', 'combined'] %}
+data_dir: /var/lib/vector
+
+enrichment_tables:
+{% if sflow_edge %}
+  geoip:
+    type: mmdb
+    path: /etc/vector/enrichment/geoip/geoip.mmdb
+
+  asn:
+    type: mmdb
+    path: /etc/vector/enrichment/asn/asn.mmdb
+
+{% endif %}
+  well_known_ports:
+    type: file
+    file:
+      path: /etc/vector/enrichment/well_known_ports.csv
+      encoding:
+        type: csv
+    schema:
+      port: integer
+      protocol: string
+
+{% if sflow_fabric %}
+  ifindex_vrf:
+    type: file
+    file:
+      path: /etc/vector/enrichment/ifindex.csv
+      encoding:
+        type: csv
+    schema:
+      sampler_address: string
+      ifindex: integer
+      interface: string
+      vrf: string
+      vni: string
+{% endif %}
+
+sources:
+  goflow2_raw:
+    type: file
+    include:
+      - /spool/flows*.jsonl
+    read_from: beginning
+
+transforms:
+  parse_goflow2:
+    type: remap
+    inputs:
+      - goflow2_raw
+    source: |
+      parsed, err = parse_json(.message)
+      if err != null {
+        log("failed to parse goflow2 line: " + err, level: "warn")
+        abort
+      }
+      . = parsed
+
+      .dst_port = to_int(.dst_port) ?? 0
+      .src_port = to_int(.src_port) ?? 0
+      .in_if    = to_int(.in_if)    ?? 0
+
+      # goflow2 already emits proto as a string ("TCP", "UDP", "ICMPv6", etc.)
+      .proto_name = string!(.proto)
+
+      .app_proto        = "UNCLASSIFIED"
+      .vrf              = "default"
+      .vni              = ""
+      .interface        = ""
+      .src_asn          = 0
+      .src_asn_org      = ""
+      .sampler_address  = string(.sampler_address) ?? "UNKNOWN"
+      .scope            = ""
+
+      if (string(.src_addr) ?? "") == "" {
+        .scope = "l2"
+        dmac = downcase(string(.dst_mac) ?? "")
+        if dmac == "01:80:c2:00:00:0e" || dmac == "01:80:c2:00:00:03" {
+          .app_proto = "LLDP"
+        } else if dmac == "01:80:c2:00:00:00" {
+          .app_proto = "STP"
+        } else if dmac == "01:80:c2:00:00:01" {
+          .app_proto = "PAUSE"
+        } else if dmac == "01:80:c2:00:00:02" {
+          .app_proto = "LACP"
+        } else if dmac == "01:80:c2:00:00:14" || dmac == "01:80:c2:00:00:15" {
+          .app_proto = "ISIS"
+        } else if dmac == "01:00:0c:cc:cc:cc" {
+          .app_proto = "CDP"
+        } else if dmac == "01:00:0c:cc:cc:cd" {
+          .app_proto = "PVST"
+        } else if dmac == "01:1b:19:00:00:00" {
+          .app_proto = "PTP"
+        } else if dmac == "ff:ff:ff:ff:ff:ff" {
+          .app_proto = "BROADCAST"
+        } else if starts_with(dmac, "01:00:5e") || starts_with(dmac, "33:33") {
+          .app_proto = "MULTICAST"
+        } else {
+          .app_proto = "L2-OTHER"
+        }
+      }
+
+  enrich_proto:
+    type: remap
+    inputs:
+      - parse_goflow2
+    source: |
+      # Flow monitoring typically samples uplink ingress, meaning that the dst port is most likely of interest
+      # If neither port matches, the lower one is chosen
+      if .scope != "l2" {
+        row, err = get_enrichment_table_record("well_known_ports", { "port": .dst_port })
+        if err == null {
+          .app_proto = row.protocol
+        } else {
+          row, err = get_enrichment_table_record("well_known_ports", { "port": .src_port })
+          if err == null {
+            .app_proto = row.protocol
+          } else {
+            dst = to_int(.dst_port) ?? 0
+            src = to_int(.src_port) ?? 0
+            if dst > 0 && (src == 0 || dst <= src) {
+              .app_proto = to_string(dst)
+            } else if src > 0 {
+              .app_proto = to_string(src)
+            }
+          }
+        }
+      }
+
+{% if sflow_fabric %}
+  enrich_vrf:
+    type: remap
+    inputs:
+      - enrich_proto
+    source: |
+      row, err = get_enrichment_table_record("ifindex_vrf", { "sampler_address": .sampler_address, "ifindex": .in_if })
+      if err == null {
+        .vrf       = row.vrf
+        .vni       = row.vni
+        .interface = row.interface
+      }
+
+{% endif %}
+  enrich_asn:
+    type: remap
+    inputs:
+      - {{ 'enrich_vrf' if sflow_fabric else 'enrich_proto' }}
+    source: |
+      if .scope != "l2" {
+        src_private = (ip_cidr_contains("10.0.0.0/8",     .src_addr) ?? false) ||
+                      (ip_cidr_contains("172.16.0.0/12",  .src_addr) ?? false) ||
+                      (ip_cidr_contains("192.168.0.0/16", .src_addr) ?? false) ||
+                      (ip_cidr_contains("127.0.0.0/8",    .src_addr) ?? false) ||
+                      (ip_cidr_contains("169.254.0.0/16", .src_addr) ?? false) ||
+                      (ip_cidr_contains("::1/128",        .src_addr) ?? false) ||
+                      (ip_cidr_contains("fc00::/7",       .src_addr) ?? false) ||
+                      (ip_cidr_contains("fe80::/10",      .src_addr) ?? false)
+{% if sflow_edge %}
+        if src_private {
+          .src_asn = 0
+          .src_asn_org = "PRIVATE"
+        } else {
+          row, err = get_enrichment_table_record("asn", {"ip": .src_addr})
+          if err == null {
+            .src_asn = to_int(row.autonomous_system_number) ?? 0
+            .src_asn_org = string(row.autonomous_system_organization) ?? "UNKNOWN"
+          } else {
+            .src_asn = 0
+            .src_asn_org = "UNKNOWN"
+          }
+        }
+
+{% endif %}
+        dst_private = (ip_cidr_contains("10.0.0.0/8",     .dst_addr) ?? false) ||
+                      (ip_cidr_contains("172.16.0.0/12",  .dst_addr) ?? false) ||
+                      (ip_cidr_contains("192.168.0.0/16", .dst_addr) ?? false) ||
+                      (ip_cidr_contains("127.0.0.0/8",    .dst_addr) ?? false) ||
+                      (ip_cidr_contains("169.254.0.0/16", .dst_addr) ?? false) ||
+                      (ip_cidr_contains("::1/128",        .dst_addr) ?? false) ||
+                      (ip_cidr_contains("fc00::/7",       .dst_addr) ?? false) ||
+                      (ip_cidr_contains("fe80::/10",      .dst_addr) ?? false)
+
+        if !src_private {
+          .scope = "inbound"
+        } else if dst_private {
+          .scope = "internal"
+        } else {
+          .scope = "outbound"
+        }
+      }
+
+{% if sflow_edge %}
+  geo_sample:
+    type: sample
+    inputs:
+      - {{ 'enrich_vrf' if sflow_fabric else 'enrich_proto' }}
+    rate: {{ sflow_collector_vector_geo_sample_rate }}
+
+  enrich_geo:
+    type: remap
+    inputs:
+      - geo_sample
+    source: |
+      # Drop private, loopback, and link-local addresses. Useful in the lab, in production this can be avoided
+      # by using a dedicated WAN facing sample stream.
+      if .scope == "l2" {
+        abort
+      }
+      if (ip_cidr_contains("10.0.0.0/8",     .src_addr) ?? false) ||
+         (ip_cidr_contains("172.16.0.0/12",  .src_addr) ?? false) ||
+         (ip_cidr_contains("192.168.0.0/16", .src_addr) ?? false) ||
+         (ip_cidr_contains("127.0.0.0/8",    .src_addr) ?? false) ||
+         (ip_cidr_contains("169.254.0.0/16", .src_addr) ?? false) ||
+         (ip_cidr_contains("::1/128",        .src_addr) ?? false) ||
+         (ip_cidr_contains("fc00::/7",       .src_addr) ?? false) ||
+         (ip_cidr_contains("fe80::/10",      .src_addr) ?? false) {
+        abort
+      }
+
+      geo, err = get_enrichment_table_record("geoip", {"ip": .src_addr})
+      if err == null {
+        .country_code = string(geo.country.iso_code) ?? "UNKNOWN"
+        lat = to_float(geo.location.latitude) ?? null
+        lon = to_float(geo.location.longitude) ?? null
+        if lat != null && lon != null {
+          .latitude  = lat
+          .longitude = lon
+        }
+      } else {
+        .country_code = "UNKNOWN"
+      }
+{% endif %}
+
+sinks:
+  loki_goflow2:
+    type: loki
+    inputs:
+      - enrich_asn
+    endpoint: {{ sflow_collector_loki_endpoint }}
+{% if sflow_collector_loki_basic_auth_user %}
+    auth:
+      strategy: basic
+      user: {{ sflow_collector_loki_basic_auth_user }}
+      password: {{ sflow_collector_loki_basic_auth_password }}
+{% endif %}
+{% if sflow_collector_loki_endpoint.startswith('https://') %}
+    tls:
+      verify_certificate: {{ sflow_collector_loki_tls_verify | to_json }}
+{% endif %}
+    encoding:
+      codec: json
+      only_fields:
+        - src_addr
+        - dst_addr
+        - src_port
+        - dst_port
+        - proto
+        - bytes
+        - packets
+    labels:
+      app: goflow2
+      partition: "{{ metal_partition_id }}"
+{% raw %}
+      proto_name:      "{{ .proto_name }}"
+      vrf:             "{{ .vrf }}"
+      sampler_address: "{{ .sampler_address }}"
+      scope:           "{{ .scope }}"
+    structured_metadata:
+      app_proto:   "{{ .app_proto }}"
+      src_addr:    "{{ .src_addr }}"
+      dst_addr:    "{{ .dst_addr }}"
+      src_port:    "{{ .src_port }}"
+      dst_port:    "{{ .dst_port }}"
+      src_asn:     "{{ .src_asn }}"
+      src_asn_org: "{{ .src_asn_org }}"
+      interface:   "{{ .interface }}"
+      vni:         "{{ .vni }}"
+      bytes:       "{{ .bytes }}"
+      packets:     "{{ .packets }}"
+      src_mac:     "{{ .src_mac }}"
+      dst_mac:     "{{ .dst_mac }}"
+{% endraw %}
+    remove_label_fields: true
+    healthcheck:
+      enabled: false
+    batch:
+      max_bytes: 1048576
+      timeout_secs: 5
+    request:
+      retry_attempts: 5
+    buffer:
+      type: memory
+      max_events: {{ sflow_collector_vector_buffer_max_events }}
+      when_full: drop_newest
+
+{% if sflow_edge %}
+  loki_geo:
+    type: loki
+    inputs:
+      - enrich_geo
+    endpoint: {{ sflow_collector_loki_endpoint }}
+{% if sflow_collector_loki_basic_auth_user %}
+    auth:
+      strategy: basic
+      user: {{ sflow_collector_loki_basic_auth_user }}
+      password: {{ sflow_collector_loki_basic_auth_password }}
+{% endif %}
+{% if sflow_collector_loki_endpoint.startswith('https://') %}
+    tls:
+      verify_certificate: {{ sflow_collector_loki_tls_verify | to_json }}
+{% endif %}
+    encoding:
+      codec: json
+    labels:
+      app: goflow2-geo
+      partition: "{{ metal_partition_id }}"
+    remove_label_fields: false
+    healthcheck:
+      enabled: false
+    batch:
+      max_bytes: 524288
+      timeout_secs: 10
+    request:
+      retry_attempts: 5
+    buffer:
+      type: memory
+      max_events: {{ sflow_collector_vector_buffer_max_events }}
+      when_full: drop_newest
+{% endif %}

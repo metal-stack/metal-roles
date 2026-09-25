@@ -1,0 +1,25 @@
+[Unit]
+Description=Refresh GeoIP and ASN mmdb files for the sFlow Vector pipeline
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/sflow-mmdb-refresh.sh geoip
+ExecStart=/usr/local/bin/sflow-mmdb-refresh.sh asn
+
+# Hardening as root is required to interact with the vector service,
+# These heavily limit what root can do
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/sflow-collector /tmp
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
