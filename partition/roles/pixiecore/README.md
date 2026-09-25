@@ -14,6 +14,7 @@ Deploys pixiecore in a systemd-managed Docker container.
 | pixiecore_docker_log_driver                 |           | Indicates where to write the docker logs to                                                                   |
 | pixiecore_dns_servers                       |           | Alternative DNS servers to be used by the pixiecore (can be used for configuring kernel and boot image cache) |
 | pixiecore_partition_id                      |           | The partition where pixiecore is installed                                                                    |
+| pixiecore_ipxe_type                         |           | UEFI PXE build type to serve: ipxe or snponly                                                                 |
 | pixiecore_grpc_cert_dir                     |           | The directory where the grpc certificates reside                                                              |
 | pixiecore_grpc_ca_cert                      | yes       | The filename of the ca certificate                                                                            |
 | pixiecore_grpc_client_cert                  | yes       | The filename of the client certificate                                                                        |
