@@ -18,6 +18,17 @@ missing, and does nothing when that list is empty. With the defaults it only sho
 7. Without a confirmation within `mgmt_firewall_rutos_confirm_timeout` seconds the device restores the backup with
    `uci import` and reloads again on its own.
 
+### Why apply.sh runs in the background
+
+`apply.sh` is a dead-man switch on the device, so it must outlive the SSH session that starts it. A reload of `network`
+or `firewall` can cut that session, and a bad change can lock Ansible out entirely, for example with a wrong management
+address or a rule that blocks SSH. Run in the foreground, the script would die with the session (SIGHUP), and the rollback
+with it, in exactly the case it exists for. It is therefore started with `&` and `trap '' HUP`.
+
+It waits 2 seconds before it commits. The task that starts it only returns once dropbear has sent the exit status back to
+Ansible; a commit and reload in that window could drop the connection first, the task would fail as unreachable, nothing
+would confirm, and a good change would be rolled back. The 2 seconds are an estimate, not measured.
+
 ## Running it
 
 A change is deployed in two runs of the same playbook, one firewall at a time.
