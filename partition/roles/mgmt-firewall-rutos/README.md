@@ -239,18 +239,18 @@ What a run does with this, package by package:
 
 ## Variables
 
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `mgmt_firewall_rutos_firmware` | none, mandatory | Content of `/etc/version` the desired state was written for |
-| `mgmt_firewall_rutos_uci` | `{}`, mandatory | Desired state, see above |
-| `mgmt_firewall_rutos_apply` | `false` | `false` shows the commands only |
-| `mgmt_firewall_rutos_state_dir` | `/tmp/mgmt-firewall-rutos` | Backup, batch, `apply.sh` and `apply.log` on the device |
-| `mgmt_firewall_rutos_confirm_timeout` | `180` | Seconds the device waits for confirmation before rolling back (estimate, not measured on hardware) |
-| `mgmt_firewall_rutos_settle_seconds` | `10` | Seconds between reload and the `applied` marker (estimate) |
-| `mgmt_firewall_rutos_reload_command` | `reload_config` | Command run after commit and after a rollback |
-| `mgmt_firewall_rutos_reconnect_retries` | `60` | Attempts to read the device back after the reload |
-| `mgmt_firewall_rutos_reconnect_delay` | `5` | Seconds between those attempts |
-| `mgmt_firewall_rutos_chunk_bytes` | `4000` | Upper bound per uploaded chunk of the batch |
+| Variable                                  | Default                    | Meaning                                                                                             |
+| ----------------------------------------- | ---------------------------| --------------------------------------------------------------------------------------------------- |
+| `mgmt_firewall_rutos_firmware`            | none, mandatory            | Content of `/etc/version` the desired state was written for                                         |
+| `mgmt_firewall_rutos_uci`                 | `{}`, mandatory            | Desired state, see above                                                                            |
+| `mgmt_firewall_rutos_apply`               | `false`                    | `false` shows the commands only                                                                     |
+| `mgmt_firewall_rutos_state_dir`           | `/tmp/mgmt-firewall-rutos` | Backup, batch, `apply.sh` and `apply.log` on the device                                             |
+| `mgmt_firewall_rutos_confirm_timeout`     | `180`                      | Seconds the device waits for confirmation before rolling back (estimate, not measured on hardware)  |
+| `mgmt_firewall_rutos_settle_seconds`      | `10`                       | Seconds between reload and the `applied` marker (estimate)                                          |
+| `mgmt_firewall_rutos_reload_command`      | `reload_config`            | Command run after commit and after a rollback                                                       |
+| `mgmt_firewall_rutos_reconnect_retries`   | `60`                       | Attempts to read the device back after the reload                                                   |
+| `mgmt_firewall_rutos_reconnect_delay`     | `5`                        | Seconds between those attempts                                                                      |
+| `mgmt_firewall_rutos_chunk_bytes`         | `4000`                     | Upper bound per uploaded chunk of the batch                                                         |
 
 ## Tests
 
