@@ -120,6 +120,22 @@ systemd_networkd_dummies:
 
 `k3s-vip` deliberately carries no address; the health gate adds and removes it.
 
+## Bringing up the uplink before k3s
+
+`tasks/network.yaml` holds everything up to BGP converging: the variable checks, the FRR
+configuration and the frr role. The full role imports it first. Including only that file
+brings a server onto the fabric without touching k3s, for example to move its management
+from a bootstrap address to the loopback before the cluster forms over it:
+
+```yaml
+- ansible.builtin.include_role:
+    name: metal-roles/partition/roles/k3s-server
+    tasks_from: network.yaml
+```
+
+The variable checks are the same as for the full role, so `k3s_server_token` has to be set
+here too.
+
 ## Variables
 
 | Name                               | Mandatory | Description                                                                             |
