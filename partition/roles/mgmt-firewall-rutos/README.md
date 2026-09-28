@@ -72,16 +72,16 @@ mgmt_firewall_rutos_uci:
         options: {hostname: mgmtfw01}
 ```
 
-| Key | Meaning |
-| --- | --- |
-| `sections.<name>` | Named section. Its options are owned: options on the device that are not listed are deleted. |
-| `sections.<name>.merge: true` | Only the listed options are enforced, others are left alone. |
-| `sections."@type[n]"` | Existing section by index, always merged. Fails if the index does not exist. |
-| `sections."@type[*]"` | Every section of that type, always merged. |
-| `purge: [types]` | Sections of these types that are not declared are deleted. |
-| `purge_anonymous: [types]` | Anonymous sections of these types are deleted, named ones are kept. |
-| option value list | Written as a uci list and replaced as a whole. A space-separated string stays an option. |
-| option value `null` | The option must be absent. |
+| Key                           | Meaning                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------|
+| `sections.<name>`             | Named section. Its options are owned: options on the device that are not listed are deleted. |
+| `sections.<name>.merge: true` | Only the listed options are enforced, others are left alone.                                 |
+| `sections."@type[n]"`         | Existing section by index, always merged. Fails if the index does not exist.                 |
+| `sections."@type[*]"`         | Every section of that type, always merged.                                                   |
+| `purge: [types]`              | Sections of these types that are not declared are deleted.                                   |
+| `purge_anonymous: [types]`    | Anonymous sections of these types are deleted, named ones are kept.                          |
+| option value list             | Written as a uci list and replaced as a whole. A space-separated string stays an option.     |
+| option value `null`           | The option must be absent.                                                                   |
 
 Booleans are written as `1`/`0`, numbers as strings. Values must not contain a single quote or a newline.
 
