@@ -24,6 +24,8 @@ zitadel:
     ExternalDomain: {{ zitadel_external_domain }}
     TLS:
       Enabled: false
+    HTTPClient:
+      DenyList: {{ zitadel_actions_deny_list | to_json }}
     Database:
       Postgres:
         Host: {{ zitadel_db_address }}
