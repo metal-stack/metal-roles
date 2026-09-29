@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal-python
   author: metal-stack
   description: Installs the metal-python client library.
   license: MIT

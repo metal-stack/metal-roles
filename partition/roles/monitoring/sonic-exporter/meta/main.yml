@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: sonic_exporter
   author: metal-stack
   description: "DEPRECATED: Deploys sonic-exporter. Use metal-roles/partition/roles/monitoring/gnmic instead."
   license: MIT
