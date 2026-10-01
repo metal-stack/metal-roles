@@ -1,0 +1,92 @@
+---
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - dhcp_listening_interfaces | type_debug == "list"
+      - dhcp_listening_interfaces | length > 0
+      - item.network is defined
+      - item.netmask is not none
+      - item.range is not none
+      - item.range.begin is not none
+      - item.range.end is not none
+  loop: "{{ dhcp_subnets }}"
+  loop_control:
+    label: "{{ item.network }}"
+
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+# the container binds the dhcp port on the host network, a dhcpd from the isc-dhcp-server package would collide
+- name: Stop and disable dhcp server installed from package
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  loop: "{{ dhcp_legacy_service_names | difference([dhcp_service_name]) }}"
+  when: (item + '.service') in ansible_facts.services
+
+- name: Ensure config and leases directories are present
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ dhcp_config_dir }}"
+    - "{{ dhcp_leases_dir }}"
+
+- name: Render dhcpd conf
+  ansible.builtin.template:
+    src: dhcpd.conf.j2
+    dest: "{{ dhcp_config_dir }}/dhcpd.conf"
+    mode: "0644"
+  register: _dhcpd_conf
+
+- name: Render static hosts config
+  ansible.builtin.template:
+    src: dhcpd.hosts.j2
+    dest: "{{ dhcp_config_dir }}/dhcpd.hosts"
+    mode: "0644"
+  when: dhcp_static_hosts is defined
+  register: _hosts_conf
+
+# dhcpd refuses to start without an existing leases file
+- name: Ensure leases file is present
+  ansible.builtin.file:
+    path: "{{ dhcp_leases_dir }}/dhcpd.leases"
+    state: touch
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve
+
+- name: Deploy dhcpd
+  ansible.builtin.include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: "{{ dhcp_service_name }}"
+    systemd_docker_image_name: "{{ dhcp_image_name }}"
+    systemd_docker_image_tag: "{{ dhcp_image_tag }}"
+    systemd_service_timeout_start_sec: 60
+    systemd_docker_memory: 256m
+    # dhcp requires access to the host's networking stack to receive broadcasts on the listening interfaces
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      # dhcpd.conf includes dhcpd.hosts with the absolute path /etc/dhcp/dhcpd.hosts
+      - "{{ dhcp_config_dir }}:/etc/dhcp:ro"
+      - "{{ dhcp_leases_dir }}:/var/lib/dhcp"
+    # the entrypoint of the image only supports a single interface, so dhcpd is started directly
+    # if a listening interface is not yet present (e.g. vlan not up during boot), dhcpd exits and systemd restarts it
+    systemd_docker_command:
+      - /usr/sbin/dhcpd
+      - "-4"
+      - "-f"
+      - "-d"
+      - --no-pid
+      - "-cf"
+      - /etc/dhcp/dhcpd.conf
+      - "-lf"
+      - /var/lib/dhcp/dhcpd.leases
+      - "{{ dhcp_listening_interfaces | join(' ') }}"
+    systemd_external_config_changed: "{{ _dhcpd_conf is changed or _hosts_conf is changed }}"
+    systemd_docker_log_driver: "{{ dhcp_docker_log_driver }}"
