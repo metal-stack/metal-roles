@@ -1,0 +1,47 @@
+---
+dhcp_subnets: []
+# examples:
+# - comment: ""
+#   network:
+#   netmask:
+#   range:
+#     begin:
+#     end:
+#   options: []
+
+dhcp_listening_interfaces:
+  - vlan4000
+
+dhcp_default_lease_time: 172800
+dhcp_max_lease_time: 345600
+
+dhcp_global_options: []
+# examples:
+# - default-url = "http://{{ ansible_host }}/onie-installer"
+# - ztp_provisioning_script_url code 239 = text
+# - ztp_provisioning_script_url "http://{{ ansible_host }}/user.sh"
+
+dhcp_global_deny_list: []
+# examples:
+# - unknown-clients
+
+# dhcp_static_hosts:
+# - name: r01mgmtleaf01
+#   mac: ""
+#   ip: 10.1.2.3
+
+dhcp_use_host_decl_names: false
+
+dhcp_service_name: dhcpd-docker
+# services of a previously installed isc-dhcp-server package, they get stopped and disabled
+# because they would compete with the container for the dhcp port
+dhcp_legacy_service_names:
+  - isc-dhcp-server
+  - dhcpd
+
+dhcp_image_name: networkboot/dhcpd
+dhcp_image_tag: "1.3.0"
+dhcp_docker_log_driver: json-file
+
+dhcp_config_dir: /etc/dhcp
+dhcp_leases_dir: /var/lib/dhcp
