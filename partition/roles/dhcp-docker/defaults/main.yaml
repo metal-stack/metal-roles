@@ -1,0 +1,49 @@
+---
+# the variables shared with the dhcp role default to the values of the dhcp role, so both roles can be used interchangeably
+
+dhcp_docker_subnets: "{{ dhcp_subnets | default([]) }}"
+# examples:
+# - comment: ""
+#   network:
+#   netmask:
+#   range:
+#     begin:
+#     end:
+#   options: []
+
+dhcp_docker_listening_interfaces: "{{ dhcp_listening_interfaces | default(['vlan4000']) }}"
+
+dhcp_docker_default_lease_time: "{{ dhcp_default_lease_time | default(172800) }}"
+dhcp_docker_max_lease_time: "{{ dhcp_max_lease_time | default(345600) }}"
+
+dhcp_docker_global_options: "{{ dhcp_global_options | default([]) }}"
+# examples:
+# - default-url = "http://{{ ansible_host }}/onie-installer"
+# - ztp_provisioning_script_url code 239 = text
+# - ztp_provisioning_script_url "http://{{ ansible_host }}/user.sh"
+
+dhcp_docker_global_deny_list: "{{ dhcp_global_deny_list | default([]) }}"
+# examples:
+# - unknown-clients
+
+dhcp_docker_static_hosts: "{{ dhcp_static_hosts | default([]) }}"
+# examples:
+# - name: r01mgmtleaf01
+#   mac: ""
+#   ip: 10.1.2.3
+
+dhcp_docker_use_host_decl_names: "{{ dhcp_use_host_decl_names | default(false) }}"
+
+dhcp_docker_service_name: dhcpd-docker
+# services of a previously installed isc-dhcp-server package, they get stopped and disabled
+# because they would compete with the container for the dhcp port
+dhcp_docker_legacy_service_names:
+  - isc-dhcp-server
+  - dhcpd
+
+dhcp_docker_image_name: networkboot/dhcpd
+dhcp_docker_image_tag: "1.3.0"
+dhcp_docker_log_driver: json-file
+
+dhcp_docker_config_dir: /etc/dhcp
+dhcp_docker_leases_dir: /var/lib/dhcp
