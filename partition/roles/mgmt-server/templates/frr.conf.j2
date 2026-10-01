@@ -42,6 +42,9 @@ router bgp {{ mgmt_server_asn }}
  !
  address-family ipv4 unicast
   redistribute connected route-map LOCAL_INTERFACES
+{% if mgmt_server_announce_static_prefixes | length > 0 %}
+  redistribute static route-map ANNOUNCE_STATIC
+{% endif %}
   {% if mgmt_server_provide_default_route %}
   network 0.0.0.0/0
   {% endif %}
@@ -73,6 +76,14 @@ route-map LOCAL_INTERFACES permit {{ loop.index }}0
   match interface {{ iface }}
 !
 {% endfor %}
+{% if mgmt_server_announce_static_prefixes | length > 0 %}
+{% for prefix in mgmt_server_announce_static_prefixes %}
+ip prefix-list ANNOUNCE_STATIC seq {{ loop.index }}0 permit {{ prefix }}
+{% endfor %}
+route-map ANNOUNCE_STATIC permit 10
+  match ip address prefix-list ANNOUNCE_STATIC
+!
+{% endif %}
 {% for vrf in mgmt_server_vrfs %}
 {% if vrf.routemap_out is defined %}
 route-map {{ vrf.routemap_out.name }} permit 10

@@ -24,6 +24,7 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_metal_ssh_pubkey                | yes       | the public SSH key of the `metal` admin user for connecting to the other components  |
 | mgmt_server_preserve_dhcp_route             | no        | preserve the dhcp (default) route the mgmt server got from the mgmt firewall         |
 | mgmt_server_provide_default_route           | no        | provide the default route with bgp (`network 0.0.0.0/0`)                             |
+| mgmt_server_announce_static_prefixes        | no        | announce exactly these static routes over BGP, e.g. `["10.4.0.0/24"]`.               |
 | mgmt_server_vrfs                            | no        | additional BGP instances in VRFs, see [VRFs](#vrfs).                                 |
 | mgmt_server_masquerade_interfaces           | no        | the interfaces on which egressing traffic is masqueraded.                            |
 | mgmt_server_masquerade_exclude_destinations | no        | what is exempted from masquerading, see [Masquerading](#masquerading).               |
