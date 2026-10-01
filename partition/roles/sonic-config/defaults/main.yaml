@@ -13,6 +13,7 @@ sonic_config_frr_static_routes_mgmt: []
 sonic_config_frr_syslog_level: informational
 
 sonic_config_interconnects: {}
+sonic_config_interfaces: {}
 sonic_config_lldp_hello_timer: 10
 sonic_config_mclag: {}
 sonic_config_mgmt_interface: {}

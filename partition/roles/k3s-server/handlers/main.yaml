@@ -1,0 +1,12 @@
+---
+- name: Restart k3s
+  ansible.builtin.systemd:
+    name: k3s
+    state: restarted
+  throttle: 1
+
+- name: Restart the api vip
+  ansible.builtin.systemd:
+    name: k3s-api-vip.service
+    daemon_reload: true
+    state: restarted
