@@ -11,6 +11,7 @@ on:
     branches:
       - master
       - feat/dhcp-docker-role
+      - feat/asternos-bringup
 
 env:
   REGISTRY: ghcr.io
