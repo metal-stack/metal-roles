@@ -53,6 +53,26 @@
     dest: /etc/systemd/system/frr-reload.service
     mode: "0644"
 
+- name: Create frr-reload.service drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/frr-reload.service.d
+    state: directory
+    mode: "0755"
+  when: sonic_config_frr_reload_enforce_integrated_vtysh_config
+
+- name: Install frr-reload.service drop-in enforcing the integrated vtysh config
+  ansible.builtin.copy:
+    src: frr-reload-integrated-vtysh-config.conf
+    dest: /etc/systemd/system/frr-reload.service.d/integrated-vtysh-config.conf
+    mode: "0644"
+  when: sonic_config_frr_reload_enforce_integrated_vtysh_config
+
+- name: Remove frr-reload.service drop-in enforcing the integrated vtysh config
+  ansible.builtin.file:
+    path: /etc/systemd/system/frr-reload.service.d/integrated-vtysh-config.conf
+    state: absent
+  when: not sonic_config_frr_reload_enforce_integrated_vtysh_config
+
 - name: Reload systemd daemon
   ansible.builtin.systemd:
     daemon_reload: true

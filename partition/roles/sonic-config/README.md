@@ -253,6 +253,14 @@ sonic_config_frr_l2vpn_evpn: true
 # Whether to enable frr_mgmt_framework_config.
 sonic_config_frr_mgmt_framework_config: true
 
+# Whether frr-reload.service should switch vtysh to `service integrated-vtysh-config` before every reload.
+# Only needed on SONiC distributions without `split-unified` support (e.g. AsterNOS), whose bgp container
+# writes `no service integrated-vtysh-config` in `split` mode, which makes frr-reload refuse to apply frr.conf.
+# These distributions also delete frr.conf when the bgp container starts, so FRR runs with the `traditional`
+# defaults profile instead of the `datacenter` profile set in frr.conf. Set the relevant defaults explicitly
+# in the FRR template (most importantly `no bgp ebgp-requires-policy`).
+sonic_config_frr_reload_enforce_integrated_vtysh_config: false
+
 # Whether to render the frr.conf.j2 template file.
 # If [metal-core](https://github.com/metal-stack/metal-core) is deployed this should be set to false
 # because metal-core takes care of the FRR config.
