@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: gardener-logging
   author: metal-stack
   description: Deploys Alloy into a Gardener seed.
   license: MIT

@@ -10,9 +10,8 @@ exclude_paths:
   # these are template results, so they do not need formatting:
   - partition/roles/sonic/test/data/**/metal.yaml
 
-# TODO: we need to gradually fix these!
+# role-name and var-naming are intentionally kept as warnings because renaming
+# roles or variables would break downstream consumers of these roles.
 warn_list:
   - role-name
-  - schema
   - var-naming
-  - no-changed-when
