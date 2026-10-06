@@ -1,13 +1,69 @@
 ---
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metal-token-renewal
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metal-token-renewal
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "update", "patch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["metal-metrics-exporter-config"]
+  verbs: ["get", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metal-token-renewal
+subjects:
+- kind: ServiceAccount
+  name: metal-token-renewal
+roleRef:
+  kind: Role
+  name: metal-token-renewal
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: metal-metrics-exporter-token-refresher
+spec:
+  schedule: "@hourly"
+  jobTemplate:
+    metadata:
+      name: metal-metrics-exporter-token-refresher
+    spec:
+      template:
+        spec:
+          serviceAccountName: metal-token-refresher
+          restartPolicy: OnFailure
+          containers:
+          - name: token-refresher
+            image: ghcr.io/metal-stack/metal-token-refresher
+            env:
+            - name: METAL_APISERVER_URL
+              value: {{ monitoring_metal_apiserver_url }}
+            - name: TOKEN_SECRET_NAMESPACE
+              value: "monitoring"
+            - name: TOKEN_SECRET_NAME
+              value: "metal-metrics-exporter-config"
+            - name: TOKEN_SECRET_KEY
+              value: "token"
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: metal-metrics-exporter-config
 type: Opaque
 stringData:
-  url: {{ monitoring_metal_api_url }}
-  hmac: {{ monitoring_metal_api_hmac }}
-  authtype: {{ monitoring_metal_api_authtype }}
+  url: {{ monitoring_metal_apiserver_url }}
+  token: {{ _metal_metrics_exporter_token.secret }}
 ---
 apiVersion: v1
 kind: Service
@@ -44,8 +100,12 @@ spec:
         - name: metal-metrics-exporter
           command:
             - /metal-metrics-exporter
-          image: {{ metal_metrics_exporter_image_name }}:{{ metal_metrics_exporter_image_tag }}
+          image: {{ monitoring_metal_metrics_exporter_image_name }}:{{ monitoring_metal_metrics_exporter_image_tag }}
           imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 999
           ports:
             - containerPort: 9080
               name: metrics
@@ -55,13 +115,13 @@ spec:
                 secretKeyRef:
                   name: metal-metrics-exporter-config
                   key: url
-            - name: METAL_API_HMAC
-              valueFrom:
-                secretKeyRef:
-                  name: metal-metrics-exporter-config
-                  key: hmac
-            - name: METAL_API_AUTH_TYPE
-              valueFrom:
-                secretKeyRef:
-                  name: metal-metrics-exporter-config
-                  key: authtype
+            - name: METAL_API_TOKEN_FILE
+              value: /var/run/secrets/metal-metrics-exporter-config/token
+          volumeMounts:
+          - mountPath: /var/run/secrets/metal-metrics-exporter-config
+            name: metal-metrics-exporter-config
+      volumes:
+      - name: metal-metrics-exporter-config
+        secret:
+          defaultMode: 420
+          secretName: metal-metrics-exporter-config
