@@ -626,4 +626,39 @@ sonic_config_vtep:
 
       # The local VLAN interface.
       vlan: Vlan1001
+
+# sFlow configuration. An empty dict disables sFlow.
+sonic_config_sflow:
+  # Whether sFlow is enabled globally on the switch.
+  enabled: true
+
+  # Polling interval in seconds (0 disables polling).
+  polling_interval: 20
+
+  # List of sFlow collectors that receive the samples.
+  collectors:
+    # Name of the collector entry.
+    - name: collector0
+
+      # IP address of the collector.
+      ip: 10.1.2.3
+
+      # UDP port of the collector. SONiC default is 6343.
+      port: 6343
+
+      # VRF used to reach the collector (e.g. `default` or `mgmt`).
+      vrf: default
+
+  # Per-interface sFlow sessions. Only interfaces that should differ from the
+  # global defaults need to be listed here.
+  sessions:
+    # Interface to sample on.
+    - interface: Ethernet0
+
+      # Enable or disable sampling on this interface.
+      # Omit to inherit the global state.
+      enabled: true
+
+      # Packet sampling rate (1 sample per N packets).
+      sample_rate: 4096
 ```

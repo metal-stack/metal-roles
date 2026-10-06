@@ -1,0 +1,238 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "not all mandatory variables given, check role documentation"
+    quiet: true
+    that:
+      - sflow_collector_loki_endpoint is defined and sflow_collector_loki_endpoint | length > 0
+      - sflow_collector_image_tag is defined
+      - sflow_collector_vector_image_tag is defined
+      - sflow_collector_profile in ['fabric', 'edge', 'combined']
+
+- name: Create sflow-collector directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ sflow_collector_config_host_dir }}"
+    - "{{ sflow_collector_data_host_dir }}"
+    - "{{ sflow_collector_data_host_dir }}/geoip"
+    - "{{ sflow_collector_data_host_dir }}/asn"
+    - "{{ sflow_collector_data_host_dir }}/vector"
+
+- name: Create goflow2 spool directory owned by the in-container flow user
+  ansible.builtin.file:
+    path: "{{ sflow_collector_data_host_dir }}/spool"
+    state: directory
+    owner: "100"
+    group: "65533"
+    mode: "0755"
+
+- name: Mount tmpfs on goflow2 spool
+  ansible.posix.mount:
+    path: "{{ sflow_collector_data_host_dir }}/spool"
+    src: tmpfs
+    fstype: tmpfs
+    opts: "size={{ sflow_collector_spool_tmpfs_size }},uid=100,gid=65533,mode=0755"
+    state: mounted
+
+- name: Deploy well-known-ports enrichment CSV
+  ansible.builtin.copy:
+    src: well_known_ports.csv
+    dest: "{{ sflow_collector_data_host_dir }}/well_known_ports.csv"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart vector
+
+- name: Writing initial empty ifindex.csv
+  ansible.builtin.copy:
+    content: "sampler_address,ifindex,interface,vrf,vni\n"
+    dest: "{{ sflow_collector_data_host_dir }}/ifindex.csv"
+    force: false
+    owner: root
+    group: root
+    mode: "0644"
+  when: sflow_collector_profile in ['fabric', 'combined']
+
+- name: Deploy vrf-port-export script
+  ansible.builtin.copy:
+    src: vrf-port-export.py
+    dest: /usr/local/bin/vrf-port-export.py
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart vrf-port-export
+  when: sflow_collector_profile in ['fabric', 'combined']
+
+- name: Deploy vrf-port-export systemd service
+  ansible.builtin.copy:
+    src: vrf-port-export.service
+    dest: /etc/systemd/system/vrf-port-export.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart vrf-port-export
+  when: sflow_collector_profile in ['fabric', 'combined']
+
+- name: Ensure vrf-port-export service is started
+  ansible.builtin.systemd:
+    name: vrf-port-export
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: sflow_collector_profile in ['fabric', 'combined']
+
+- name: Template Vector configuration
+  ansible.builtin.template:
+    src: vector.yaml.j2
+    dest: "{{ sflow_collector_config_host_dir }}/vector.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart vector
+
+- name: Deploy mmdb refresh script
+  ansible.builtin.copy:
+    src: sflow-mmdb-refresh.sh
+    dest: /usr/local/bin/sflow-mmdb-refresh.sh
+    owner: root
+    group: root
+    mode: "0755"
+  when: sflow_collector_profile in ['edge', 'combined']
+
+- name: Deploy mmdb refresh systemd service + timer
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - sflow-mmdb-refresh.service
+    - sflow-mmdb-refresh.timer
+  when: sflow_collector_profile in ['edge', 'combined']
+
+- name: Enable mmdb refresh timer
+  ansible.builtin.systemd:
+    name: sflow-mmdb-refresh.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: sflow_collector_profile in ['edge', 'combined']
+
+- name: Fetch GeoIP and ASN databases on first deploy
+  ansible.builtin.command: /usr/local/bin/sflow-mmdb-refresh.sh "{{ item }}"
+  args:
+    creates: "{{ sflow_collector_data_host_dir }}/{{ item }}/{{ item }}.mmdb"
+  loop:
+    - geoip
+    - asn
+  when: sflow_collector_profile in ['edge', 'combined']
+
+- name: Remove legacy logrotate.d config
+  ansible.builtin.file:
+    path: /etc/logrotate.d/sflow-collector
+    state: absent
+
+- name: Deploy logrotate config for goflow2 spool
+  ansible.builtin.copy:
+    content: |
+      {{ sflow_collector_data_host_dir }}/spool/flows.jsonl {
+          size {{ sflow_collector_logrotate_size }}
+          rotate {{ sflow_collector_logrotate_keep }}
+          missingok
+          notifempty
+          nocompress
+          create 0644
+          postrotate
+              /usr/bin/systemctl reload goflow2.service
+          endscript
+      }
+    dest: "{{ sflow_collector_config_host_dir }}/flows.logrotate"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy sflow spool logrotate systemd service + timer
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - sflow-logrotate.service
+    - sflow-logrotate.timer
+
+- name: Enable sflow spool logrotate timer
+  ansible.builtin.systemd:
+    name: sflow-logrotate.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Deploy goflow2 service
+  ansible.builtin.include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: goflow2
+    systemd_docker_image_name: "{{ sflow_collector_image_name }}"
+    systemd_docker_image_tag: "{{ sflow_collector_image_tag }}"
+    systemd_service_after: docker.service
+    systemd_service_requires: docker.service
+    systemd_docker_network: host
+    systemd_docker_volumes:
+      - "{{ sflow_collector_data_host_dir }}/spool:/spool"
+    systemd_docker_command:
+      - "-listen=sflow://:{{ sflow_collector_port }}"
+      - "-addr=:{{ sflow_collector_metrics_port }}"
+      - "-format=json"
+      - "-transport.file=/spool/flows.jsonl"
+    systemd_docker_log_driver: "{{ sflow_collector_docker_log_driver }}"
+
+- name: Deploy vector service
+  ansible.builtin.include_role:
+    name: ansible-common/roles/systemd-docker-service
+  vars:
+    systemd_service_name: vector
+    systemd_docker_image_name: "{{ sflow_collector_vector_image_name }}"
+    systemd_docker_image_tag: "{{ sflow_collector_vector_image_tag }}"
+    systemd_service_after: docker.service goflow2.service
+    systemd_service_requires: docker.service
+    systemd_docker_network: host
+    systemd_service_environment:
+      VECTOR_LOG: info
+    systemd_docker_volumes: >-
+      {{
+        [
+          sflow_collector_config_host_dir + '/vector.yaml:/etc/vector/vector.yaml:ro',
+          sflow_collector_data_host_dir + '/well_known_ports.csv:/etc/vector/enrichment/well_known_ports.csv:ro',
+          sflow_collector_data_host_dir + '/spool:/spool:ro',
+          sflow_collector_data_host_dir + '/vector:/var/lib/vector'
+        ]
+        + ([
+          sflow_collector_data_host_dir + '/geoip:/etc/vector/enrichment/geoip:ro',
+          sflow_collector_data_host_dir + '/asn:/etc/vector/enrichment/asn:ro'
+        ] if sflow_collector_profile in ['edge', 'combined'] else [])
+        + ([
+          sflow_collector_data_host_dir + '/ifindex.csv:/etc/vector/enrichment/ifindex.csv:ro'
+        ] if sflow_collector_profile in ['fabric', 'combined'] else [])
+      }}
+    systemd_docker_command:
+      - --config-dir
+      - /etc/vector/
+    systemd_docker_log_driver: "{{ sflow_collector_docker_log_driver }}"
+
+- name: Wait for goflow2 metrics endpoint
+  ansible.builtin.wait_for:
+    port: "{{ sflow_collector_metrics_port }}"
+    timeout: 60
