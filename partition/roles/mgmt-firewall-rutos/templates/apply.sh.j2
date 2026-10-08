@@ -1,0 +1,67 @@
+#!/bin/sh
+set -u
+
+STATE_DIR="${STATE_DIR:-{{ mgmt_firewall_rutos_state_dir }}}"
+PACKAGES="${PACKAGES:-{{ _mgmt_firewall_rutos_changed_packages | join(' ') }}}"
+CONFIRM_TIMEOUT="${CONFIRM_TIMEOUT:-{{ mgmt_firewall_rutos_confirm_timeout }}}"
+SETTLE_SECONDS="${SETTLE_SECONDS:-{{ mgmt_firewall_rutos_settle_seconds }}}"
+RELOAD_COMMAND="${RELOAD_COMMAND:-{{ mgmt_firewall_rutos_reload_command }}}"
+
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') $*"
+}
+
+commit_packages() {
+    for package in $PACKAGES; do
+        uci commit "$package" || return 1
+    done
+}
+
+restore_packages() {
+    for package in $PACKAGES; do
+        uci revert "$package"
+        uci import "$package" < "$STATE_DIR/backup.$package"
+        uci commit "$package"
+    done
+}
+
+wait_for_confirmation() {
+    waited=0
+    while [ "$waited" -lt "$CONFIRM_TIMEOUT" ]; do
+        [ -f "$STATE_DIR/confirmed" ] && return 0
+        sleep 1
+        waited=$((waited + 1))
+    done
+    return 1
+}
+
+roll_back() {
+    log "restoring $PACKAGES from $STATE_DIR"
+    restore_packages
+    $RELOAD_COMMAND
+    touch "$STATE_DIR/rolled_back"
+    log "rolled back"
+}
+
+main() {
+    sleep 2
+    log "committing $PACKAGES"
+    if ! commit_packages; then
+        log "commit failed"
+        roll_back
+        return 1
+    fi
+    $RELOAD_COMMAND
+    sleep "$SETTLE_SECONDS"
+    touch "$STATE_DIR/applied"
+    log "applied, waiting up to ${CONFIRM_TIMEOUT}s for confirmation"
+    if wait_for_confirmation; then
+        touch "$STATE_DIR/done"
+        log "confirmed"
+    else
+        log "no confirmation within ${CONFIRM_TIMEOUT}s"
+        roll_back
+    fi
+}
+
+main "$@"
