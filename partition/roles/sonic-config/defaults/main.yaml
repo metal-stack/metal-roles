@@ -1,4 +1,5 @@
 ---
+sonic_config_acl: {}
 sonic_config_bgp_ports: []
 sonic_config_breakouts: {}
 sonic_config_docker_routing_config_mode: split

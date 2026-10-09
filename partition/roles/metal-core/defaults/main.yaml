@@ -35,5 +35,8 @@ metal_core_consider_hosts_file_resolution: false
 metal_core_interfaces_tpl_file: ""
 metal_core_frr_tpl_file: ""
 metal_core_static_vrfs_file: ""
+metal_core_frr_tpl_src: ""
+metal_core_static_vrfs: {}
+metal_core_metal_apiserver_ca_cert: ""
 
 metal_core_pxe_vlan_id: 4000

@@ -76,6 +76,16 @@
   loop_control:
     label: "{{ item.filename }}"
 
+- name: Install the CA that metal-bmc trusts for the metal-apiserver
+  ansible.builtin.copy:
+    content: "{{ metal_bmc_metal_apiserver_ca_cert }}\n"
+    dest: "{{ metal_bmc_etc_dir }}/ca.pem"
+    owner: root
+    group: root
+    mode: "0644"
+  when: metal_bmc_metal_apiserver_ca_cert | length > 0
+  register: _metal_bmc_ca
+
 - name: Create metal-apiserver token for metal-bmc
   ansible.builtin.import_tasks: token.yaml
 
@@ -85,7 +95,7 @@
   vars:
     systemd_start: "{{ ensure_started.metal_bmc | default(true) }}"
     systemd_service_name: metal-bmc
-    systemd_external_config_changed: "{{ nsq_certs is changed }}"
+    systemd_external_config_changed: "{{ nsq_certs is changed or _metal_bmc_ca is changed }}"
     systemd_docker_image_name: "{{ metal_bmc_image_name }}"
     systemd_docker_image_tag: "{{ metal_bmc_image_tag }}"
     systemd_docker_ports:

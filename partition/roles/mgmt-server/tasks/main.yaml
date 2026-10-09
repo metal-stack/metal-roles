@@ -142,6 +142,13 @@
   notify:
     - Reload frr
 
+- name: Restart frr together with systemd-networkd
+  ansible.builtin.include_role:
+    name: metal-roles/partition/roles/frr
+    tasks_from: restart-with-networkd.yaml
+  vars:
+    frr_restart_with_networkd: "{{ mgmt_server_frr_restart_with_networkd }}"
+
 - name: Copy ssh key pair for metal user
   ansible.builtin.copy:
     content: "{{ item.content }}"

@@ -138,55 +138,57 @@ here too.
 
 ## Variables
 
-| Name                               | Mandatory | Description                                                                             |
-|------------------------------------|-----------|-----------------------------------------------------------------------------------------|
-| k3s_server_asn                     | x         | The ASN of this server. Must differ from the ASNs of the leaves.                        |
-| k3s_server_loopback_address        | x         | The loopback address announced to the leaves. Also the k3s node address.                |
-| k3s_server_uplink_interfaces       | x         | The interfaces facing the leaves, one BGP session per interface.                        |
-| k3s_server_cluster_init_host       | x         | The inventory host that runs `cluster-init`. All others join it.                        |
-| k3s_server_token                   | x         | The cluster token. Must be identical on all servers.                                    |
-| k3s_server_cluster_hosts           |           | The servers that form the cluster, one BGPPeer each. Defaults to the play.              |
-| k3s_server_router_id               |           | The BGP router id, defaults to the loopback address.                                    |
-| k3s_server_peer_group              |           | The name of the BGP peer group, must match the peer group of the leaves.                |
-| k3s_server_bgp_timers              |           | The BGP timers of the peer group.                                                       |
-| k3s_server_accept_prefixes         |           | The prefixes accepted from the leaves.                                                  |
-| k3s_server_announce_prefixes       |           | Announced to the leaves: loopback, api vip, and the pool entries with ' ge 32'.         |
-| k3s_server_syslog_level            |           | The syslog level of frr.                                                                |
-| k3s_server_version                 |           | The k3s version to install.                                                             |
-| k3s_server_install_script_url      |           | Where to fetch the k3s install script from.                                             |
-| k3s_server_release_url             |           | The base url the binary and its checksum file are fetched from.                         |
-| k3s_server_binary_url              |           | The k3s binary to install. Defaults to the amd64 asset of the pinned release.           |
-| k3s_server_checksum_url            |           | The sha256 sum file the binary is verified against.                                     |
-| k3s_server_install_script_path     |           | Where the install script is stored on the server.                                       |
-| k3s_server_config_dir              |           | The directory holding the k3s configuration.                                            |
-| k3s_server_api_port                |           | The port the kubernetes api listens on.                                                 |
-| k3s_server_api_timeout             |           | How long a joining server waits for the api of the cluster init server.                 |
-| k3s_server_cluster_probe_timeout   |           | How long the probe of the api vip may take.                                             |
-| k3s_server_cluster_running         |           | Set to true when the api vip answers. Override it to decide by hand.                    |
-| k3s_server_registration_address    |           | What a joining server waits for: the api vip once the cluster runs, else the init host. |
-| k3s_server_api_vip_address         |           | The api address all servers carry and announce. Unset disables the api vip.             |
-| k3s_server_api_vip_interface       |           | The dummy interface the api vip is added to.                                            |
-| k3s_server_api_vip_probe_url       |           | The apiserver path the health gate probes.                                              |
-| k3s_server_api_vip_probe_timeout   |           | How long a single readiness probe may take.                                             |
-| k3s_server_api_vip_ready_timeout   |           | How long the unit waits for the apiserver before it gives up and stays withdrawn.       |
-| k3s_server_api_vip_ready_interval  |           | How often it asks while waiting, and how long systemd waits before retrying.            |
-| k3s_server_api_vip_script_path     |           | Where the health gate script is stored on the server.                                   |
-| k3s_server_metallb_asn             |           | The ASN metallb uses towards the local FRR. Unset disables metallb.                     |
-| k3s_server_metallb_addresses       |           | The addresses metallb hands out, as `IPAddressPool.spec.addresses`.                     |
-| k3s_server_metallb_accept_prefixes |           | What frr accepts from metallb. Usually the pool entries with ' ge 32'.                  |
-| k3s_server_metallb_version         |           | The metallb version to deploy.                                                          |
-| k3s_server_metallb_manifest_url    |           | Where the metallb manifest is fetched from.                                             |
-| k3s_server_metallb_manifest_path   |           | Where the metallb manifest is stored on the server.                                     |
-| k3s_server_metallb_namespace       |           | The namespace metallb is deployed into.                                                 |
-| k3s_server_metallb_pool_name       |           | The name of the address pool and its advertisement.                                     |
-| k3s_server_metallb_interface       |           | The dummy interface carrying the session between metallb and FRR.                       |
-| k3s_server_metallb_local_address   |           | The FRR side of that session, dialed by metallb.                                        |
-| k3s_server_metallb_speaker_address |           | The metallb side of that session, its `sourceAddress` and nexthop.                      |
-| k3s_server_metallb_timeout         |           | How long to wait for the metallb crds and controller.                                   |
-| k3s_server_cluster_cidr            |           | The pod network. Must be identical on all servers.                                      |
-| k3s_server_service_cidr            |           | The service network. Must be identical on all servers.                                  |
-| k3s_server_flannel_iface           |           | The interface flannel uses as vxlan tunnel endpoint.                                    |
-| k3s_server_flannel_mtu             |           | The underlay MTU flannel derives the tunnel MTU from.                                   |
-| k3s_server_tls_sans                |           | Additional addresses to put into the api certificate.                                   |
-| k3s_server_disable                 |           | The packaged components not to deploy.                                                  |
-| k3s_server_config_extra            |           | Additional keys for `config.yaml`.                                                      |
+| Name                                  | Mandatory | Description                                                                             |
+|---------------------------------------|-----------|-----------------------------------------------------------------------------------------|
+| k3s_server_asn                        | x         | The ASN of this server. Must differ from the ASNs of the leaves.                        |
+| k3s_server_loopback_address           | x         | The loopback address announced to the leaves. Also the k3s node address.                |
+| k3s_server_uplink_interfaces          | x         | The interfaces facing the leaves, one BGP session per interface.                        |
+| k3s_server_cluster_init_host          | x         | The inventory host that runs `cluster-init`. All others join it.                        |
+| k3s_server_token                      | x         | The cluster token. Must be identical on all servers.                                    |
+| k3s_server_cluster_hosts              |           | The servers that form the cluster, one BGPPeer each. Defaults to the play.              |
+| k3s_server_router_id                  |           | The BGP router id, defaults to the loopback address.                                    |
+| k3s_server_peer_group                 |           | The name of the BGP peer group, must match the peer group of the leaves.                |
+| k3s_server_bgp_timers                 |           | The BGP timers of the peer group.                                                       |
+| k3s_server_accept_prefixes            |           | The prefixes accepted from the leaves.                                                  |
+| k3s_server_announce_prefixes          |           | Announced to the leaves: loopback, api vip, and the pool entries with ' ge 32'.         |
+| k3s_server_syslog_level               |           | The syslog level of frr.                                                                |
+| k3s_server_version                    |           | The k3s version to install.                                                             |
+| k3s_server_install_script_url         |           | Where to fetch the k3s install script from.                                             |
+| k3s_server_release_url                |           | The base url the binary and its checksum file are fetched from.                         |
+| k3s_server_binary_url                 |           | The k3s binary to install. Defaults to the amd64 asset of the pinned release.           |
+| k3s_server_checksum_url               |           | The sha256 sum file the binary is verified against.                                     |
+| k3s_server_install_script_path        |           | Where the install script is stored on the server.                                       |
+| k3s_server_config_dir                 |           | The directory holding the k3s configuration.                                            |
+| k3s_server_inotify_max_user_instances |           | `fs.inotify.max_user_instances`, raised so every controller can start its watcher.      |
+| k3s_server_inotify_max_user_watches   |           | `fs.inotify.max_user_watches`, raised together with the instances.                      |
+| k3s_server_api_port                   |           | The port the kubernetes api listens on.                                                 |
+| k3s_server_api_timeout                |           | How long a joining server waits for the api of the cluster init server.                 |
+| k3s_server_cluster_probe_timeout      |           | How long the probe of the api vip may take.                                             |
+| k3s_server_cluster_running            |           | Set to true when the api vip answers. Override it to decide by hand.                    |
+| k3s_server_registration_address       |           | What a joining server waits for: the api vip once the cluster runs, else the init host. |
+| k3s_server_api_vip_address            |           | The api address all servers carry and announce. Unset disables the api vip.             |
+| k3s_server_api_vip_interface          |           | The dummy interface the api vip is added to.                                            |
+| k3s_server_api_vip_probe_url          |           | The apiserver path the health gate probes.                                              |
+| k3s_server_api_vip_probe_timeout      |           | How long a single readiness probe may take.                                             |
+| k3s_server_api_vip_ready_timeout      |           | How long the unit waits for the apiserver before it gives up and stays withdrawn.       |
+| k3s_server_api_vip_ready_interval     |           | How often it asks while waiting, and how long systemd waits before retrying.            |
+| k3s_server_api_vip_script_path        |           | Where the health gate script is stored on the server.                                   |
+| k3s_server_metallb_asn                |           | The ASN metallb uses towards the local FRR. Unset disables metallb.                     |
+| k3s_server_metallb_addresses          |           | The addresses metallb hands out, as `IPAddressPool.spec.addresses`.                     |
+| k3s_server_metallb_accept_prefixes    |           | What frr accepts from metallb. Usually the pool entries with ' ge 32'.                  |
+| k3s_server_metallb_version            |           | The metallb version to deploy.                                                          |
+| k3s_server_metallb_manifest_url       |           | Where the metallb manifest is fetched from.                                             |
+| k3s_server_metallb_manifest_path      |           | Where the metallb manifest is stored on the server.                                     |
+| k3s_server_metallb_namespace          |           | The namespace metallb is deployed into.                                                 |
+| k3s_server_metallb_pool_name          |           | The name of the address pool and its advertisement.                                     |
+| k3s_server_metallb_interface          |           | The dummy interface carrying the session between metallb and FRR.                       |
+| k3s_server_metallb_local_address      |           | The FRR side of that session, dialed by metallb.                                        |
+| k3s_server_metallb_speaker_address    |           | The metallb side of that session, its `sourceAddress` and nexthop.                      |
+| k3s_server_metallb_timeout            |           | How long to wait for the metallb crds and controller.                                   |
+| k3s_server_cluster_cidr               |           | The pod network. Must be identical on all servers.                                      |
+| k3s_server_service_cidr               |           | The service network. Must be identical on all servers.                                  |
+| k3s_server_flannel_iface              |           | The interface flannel uses as vxlan tunnel endpoint.                                    |
+| k3s_server_flannel_mtu                |           | The underlay MTU flannel derives the tunnel MTU from.                                   |
+| k3s_server_tls_sans                   |           | Additional addresses to put into the api certificate.                                   |
+| k3s_server_disable                    |           | The packaged components not to deploy.                                                  |
+| k3s_server_config_extra               |           | Additional keys for `config.yaml`.                                                      |

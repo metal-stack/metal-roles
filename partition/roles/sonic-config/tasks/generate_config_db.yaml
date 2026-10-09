@@ -34,6 +34,20 @@
       - /etc/sonic:/etc/sonic:ro
       - /tmp/sonic:/sonic
 
+- name: Read the generated config_db.json to add the acls
+  ansible.builtin.slurp:
+    src: /tmp/sonic/config_db.json
+  register: _generated_config_db
+  when: sonic_config_acl | length > 0
+
+- name: Add the acls to the generated config_db.json
+  ansible.builtin.copy:
+    content: "{{ _generated_config_db.content | b64decode | from_json | combine(sonic_config_acl, recursive=True) | to_nice_json }}"
+    dest: /tmp/sonic/config_db.json
+    mode: "0644"
+    remote_src: true
+  when: sonic_config_acl | length > 0
+
 - name: Override the existing config_db.json with the newly generated one
   ansible.builtin.copy:
     src: /tmp/sonic/config_db.json

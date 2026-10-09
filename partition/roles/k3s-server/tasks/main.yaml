@@ -39,6 +39,20 @@
     group: root
     mode: "0644"
 
+- name: Raise inotify limits so every controller on the node can start its watcher
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/90-k3s-server.conf
+    sysctl_set: true
+  loop:
+    - name: fs.inotify.max_user_instances
+      value: "{{ k3s_server_inotify_max_user_instances }}"
+    - name: fs.inotify.max_user_watches
+      value: "{{ k3s_server_inotify_max_user_watches }}"
+  loop_control:
+    label: "{{ item.name }}={{ item.value }}"
+
 - name: Read the installed k3s version
   ansible.builtin.command: k3s --version
   changed_when: false

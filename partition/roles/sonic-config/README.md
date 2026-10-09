@@ -191,6 +191,23 @@ sonic_config_vtep:
 This section shows an overview of all available variables with example values.
 
 ```yaml
+# ACL tables and rules merged into the generated config_db.json, in SONiC's config_db format.
+# Merged recursively, so the CTRLPLANE ACLs that sonic-configdb-utils generates stay in place.
+# Rules removed from this variable stay in the running config until the next `config reload`.
+sonic_config_acl:
+  ACL_TABLE:
+    PXE_IN:
+      policy_desc: PXE vlan must not reach the cluster
+      type: L3
+      stage: ingress
+      ports:
+        - Vlan4000
+  ACL_RULE:
+    PXE_IN|DENY_1:
+      PRIORITY: "8000"
+      PACKET_ACTION: DROP
+      DST_IP: 10.0.0.0/16
+
 # The autonomous system number of the router.
 sonic_config_asn: 42
 

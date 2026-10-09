@@ -16,6 +16,8 @@ k3s_server_binary_url: "{{ k3s_server_release_url }}/{{ k3s_server_version | rep
 k3s_server_checksum_url: "{{ k3s_server_release_url }}/{{ k3s_server_version | replace('+', '%2B') }}/sha256sum-amd64.txt"
 k3s_server_install_script_path: /usr/local/share/k3s-install.sh
 k3s_server_config_dir: /etc/rancher/k3s
+k3s_server_inotify_max_user_instances: 8192
+k3s_server_inotify_max_user_watches: 524288
 
 k3s_server_cluster_init_host:
 k3s_server_cluster_hosts: "{{ ansible_play_hosts }}"
