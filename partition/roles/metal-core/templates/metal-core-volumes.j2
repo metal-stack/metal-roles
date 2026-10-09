@@ -11,6 +11,9 @@
 {% if metal_core_consider_hosts_file_resolution %}
 - /etc/nsswitch.conf:/etc/nsswitch.conf
 {% endif %}
+{% if metal_core_metal_apiserver_ca_cert %}
+- {{ metal_core_etc_dir }}/ca.pem:/etc/ssl/certs/ca-certificates.crt:ro
+{% endif %}
 {% for volume_mount in metal_core_additional_volume_mounts %}
 - {{ volume_mount }}
 {% endfor %}

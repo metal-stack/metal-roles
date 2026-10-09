@@ -14,6 +14,8 @@
       - metal_core_image_tag is defined
       - metal_core_rack_id is not none
       - metal_core_metal_apiserver_url is not none
+      - metal_core_frr_tpl_src | length == 0 or metal_core_frr_tpl_file | length > 0
+      - metal_core_static_vrfs | length == 0 or metal_core_static_vrfs_file | length > 0
 
 - name: Install services
   ansible.builtin.copy:
@@ -68,6 +70,45 @@
 - name: Create metal-apiserver token for metal-core
   ansible.builtin.import_tasks: token.yaml
 
+- name: Create metal-core etc directory for the provided inputs
+  ansible.builtin.file:
+    path: "{{ metal_core_etc_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: metal_core_frr_tpl_src | length > 0 or metal_core_static_vrfs | length > 0 or metal_core_metal_apiserver_ca_cert | length > 0
+
+- name: Install the frr template for metal-core
+  ansible.builtin.copy:
+    src: "{{ metal_core_frr_tpl_src }}"
+    dest: "{{ metal_core_frr_tpl_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: metal_core_frr_tpl_src | length > 0
+  register: _metal_core_frr_tpl
+
+- name: Install the static vrfs for metal-core
+  ansible.builtin.copy:
+    content: "{{ metal_core_static_vrfs | to_nice_yaml }}"
+    dest: "{{ metal_core_static_vrfs_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: metal_core_static_vrfs | length > 0
+  register: _metal_core_static_vrfs
+
+- name: Install the CA that metal-core trusts for the metal-apiserver
+  ansible.builtin.copy:
+    content: "{{ metal_core_metal_apiserver_ca_cert }}\n"
+    dest: "{{ metal_core_etc_dir }}/ca.pem"
+    owner: root
+    group: root
+    mode: "0644"
+  when: metal_core_metal_apiserver_ca_cert | length > 0
+  register: _metal_core_ca
+
 - name: Deploy metal-core
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -87,7 +128,7 @@
       - sys_admin
       - net_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
-    systemd_external_config_changed: "{{ _token is changed }}"
+    systemd_external_config_changed: "{{ _token is changed or _metal_core_frr_tpl is changed or _metal_core_static_vrfs is changed or _metal_core_ca is changed }}"
     systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"

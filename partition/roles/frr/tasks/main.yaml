@@ -46,6 +46,9 @@
     mode: "0640"
   notify: Restart frr
 
+- name: Import tasks for restarting frr together with systemd-networkd
+  ansible.builtin.import_tasks: restart-with-networkd.yaml
+
 - name: Ensure frr is started
   ansible.builtin.systemd:
     name: frr

@@ -1,0 +1,30 @@
+---
+- name: Ensure the frr systemd drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/frr.service.d
+    state: directory
+    mode: "0755"
+  when: frr_restart_with_networkd | bool
+
+- name: Restart frr together with systemd-networkd until FRRouting/frr#22383 is merged
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/frr.service.d/restart-with-networkd.conf
+    content: |
+      [Unit]
+      Description=Keep FRR in sync with systemd-networkd
+      After=systemd-networkd.service
+      PartOf=systemd-networkd.service
+
+      [Service]
+      Restart=always
+      RestartSec=1
+    mode: "0644"
+  when: frr_restart_with_networkd | bool
+  notify: Restart frr with reloaded systemd units
+
+- name: Remove the frr restart drop-in when it is not wanted
+  ansible.builtin.file:
+    path: /etc/systemd/system/frr.service.d/restart-with-networkd.conf
+    state: absent
+  when: not frr_restart_with_networkd | bool
+  notify: Restart frr with reloaded systemd units

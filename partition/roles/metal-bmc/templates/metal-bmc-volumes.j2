@@ -1,4 +1,7 @@
 - /var/lib/dhcp:/var/lib/dhcp:ro
+{% if metal_bmc_metal_apiserver_ca_cert %}
+- {{ metal_bmc_etc_dir }}/ca.pem:/etc/ssl/certs/ca-certificates.crt:ro
+{% endif %}
 {% for volume_mount in metal_bmc_additional_volume_mounts %}
 - {{ volume_mount }}
 {% endfor %}
