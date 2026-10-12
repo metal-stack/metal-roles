@@ -327,6 +327,18 @@ metal_apiserver:
 {% if metal_apiserver_token_create_schedule %}
   tokenCreateSchedule: {{ metal_apiserver_token_create_schedule }}
 {% endif %}
+  static_data:
+    enabled: true
+    data:
+      partitions: {{ metal_apiserver_static_data_partitions | to_json }}
+      sizes: {{ metal_apiserver_static_data_sizes | to_json }}
+      images: {{ metal_apiserver_static_data_images | to_json }}
+      tenants: {{ metal_apiserver_static_data_tenants | to_json }}
+      tenant_members: {{ metal_apiserver_static_data_tenant_members | to_json }}
+      projects: {{ metal_apiserver_static_data_projects | to_json }}
+      project_members: {{ metal_apiserver_static_data_project_members | to_json }}
+      networks: {{ metal_apiserver_static_data_networks | to_json }}
+      ips: {{ metal_apiserver_static_data_ips | to_json }}
 
 auditing:
   enabled: {{ 'true' if metal_auditing_timescaledb_enabled else 'false' }}
