@@ -35,6 +35,7 @@ You can look up all the default values [here](partition-defaults/main.yaml).
 | -------------------------------------------- | ------------------------------------------- |
 | [bmc-proxy](roles/bmc-proxy)                 | Deploys a bmc-proxy                         |
 | [dhcp](roles/dhcp)                           | Deploys a dhcp server                       |
+| [dhcp-docker](roles/dhcp-docker)             | Deploys a dhcp server in a docker container |
 | [dhcp-relay](roles/dhcp-relay)               | Deploys a dhcp-relay                        |
 | [metal-bmc](roles/metal-bmc)                 | Deploys metal-bmc                           |
 | [metal-core](roles/metal-core)               | Deploys metal-core                          |
