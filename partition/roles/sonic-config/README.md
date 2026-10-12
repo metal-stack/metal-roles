@@ -285,9 +285,13 @@ sonic_config_frr_syslog_level: informational
 sonic_config_interconnects:
   # The name is only a reference within the deployment. It will not be reflected on the switch.
   interconnect-name:
-    # BGP announcements to the connecting parties.
+    # BGP announcements to the connecting parties. Ipv4 addressfamily only.
     announcements:
       - network 10.1.2.0/24
+
+    # BGP announcements to the connecting parties for the Ipv6 addressfamily.
+    announcements_ipv6family:
+      - redistribute connected
 
     # BFD configuration to apply to this connection.
     # An empty string is a valid parameter and will tell FRR to listen for BFD events
@@ -300,10 +304,21 @@ sonic_config_interconnects:
     # Use specific BGP timer values for the BGP session with the remote party.
     bgp_timers: 1 3
 
+    # Whether to disable default membership of peers in the ipv4 unicast addressfamily.
+    # To control addressfamily memberships in dual-stack scenarios.
+    # Only valid for external interconnects (that is, with vrf).
+    # You need to explicitly set the addressfamily of each peer if you use this!
+    no_default_ipv4family: true
+
     # Connect to these BGP neighbors - supports multiple neighbors with individual routemaps.
+    # Only valid for external interconnects (that is, with vrf).
     extended_neighbors:
       # The IP of this extended neighbor.
       - ip: 10.1.1.1
+
+        # Choose the addressfamily membership of this neighbor. v4 or v6.
+        families:
+        - v4
 
         # Apply an incoming routemap to this neighbor.
         routemap_in:
@@ -354,6 +369,10 @@ sonic_config_interconnects:
       # Name of the routemap.
       name: ALLOW-STATIC-IN
 
+      # Addressfamily / families to apply this routemap to. Default: ipv4 unicast
+      families:
+      - ipv4
+
       # List of routemap entries.
       entries:
         - match ip address prefix-list STATIC_PREFIX_IN
@@ -362,6 +381,10 @@ sonic_config_interconnects:
     routemap_out:
       # Name of the routemap.
       name: ALLOW-MPLS-OUT
+
+      # Addressfamily / families to apply this routemap to. Default: ipv4 unicast
+      families:
+      - ipv4
 
       # List of routemap entries.
       entries:
