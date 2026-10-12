@@ -37,9 +37,9 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_core_interfaces_tpl_file            |           | The golang template file to use for rendering `/etc/network/interfaces`. If this is left blank the default template shipped with metal-core will be used.                                |
 | metal_core_frr_tpl_file                   |           | The golang template file to use for rendering `/etc/frr/frr.conf`. If this is left blank the default template shipped with metal-core will be used.                                      |
 | metal_core_static_vrfs_file               |           | The yaml file with static VRFs and the ports bound to them, see the [metal-core README](https://github.com/metal-stack/metal-core). If this is left blank no static VRFs are configured. |
-| metal_core_frr_tpl_src                    |           | Controller-side path of the frr template, copied verbatim to `metal_core_frr_tpl_file`, which must then be set. Restarts metal-core on change.                                           |
 | metal_core_static_vrfs                    |           | The static VRFs, written as yaml to `metal_core_static_vrfs_file`, which must then be set. Restarts metal-core on change.                                                                |
-| metal_core_metal_apiserver_ca_cert        |           | A CA certificate as a string. Replaces the CA bundle inside the container, so metal-core trusts only this CA. Restarts metal-core on change.                                             |
 | metal_core_pxe_vlan_id                    |           | The VLAN ID for the PXE machines. Defaults to `4000`.                                                                                                                                    |
 | metal_core_additional_volume_mounts       |           | Volumes to mount into the metal-core, besides the default ones                                                                                                                           |
 | metal_core_interface_naming_schema        |           | Naming schema defines how metal-core should report its NIC names and aliases. One of `default\                                                                                           |
+
+## TODO add description what static_vrf should might like
