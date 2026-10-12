@@ -1,0 +1,9 @@
+---
+mgmt_firewall_rutos_upgrade_firmware:
+mgmt_firewall_rutos_upgrade_sha256:
+mgmt_firewall_rutos_upgrade_url: "https://firmware.teltonika-networks.com/{{ mgmt_firewall_rutos_upgrade_firmware | regex_replace('^RUTX_R_00\\.0?(\\d+)\\.(.+)$', '\\1.\\2') }}/RUTX/{{ mgmt_firewall_rutos_upgrade_firmware }}_WEBUI.bin"
+mgmt_firewall_rutos_upgrade_apply: false
+mgmt_firewall_rutos_upgrade_image: /tmp/mgmt-firewall-rutos-upgrade.bin
+mgmt_firewall_rutos_upgrade_state_dir: /tmp/mgmt-firewall-rutos
+mgmt_firewall_rutos_upgrade_down_timeout: 300
+mgmt_firewall_rutos_upgrade_up_timeout: 900
