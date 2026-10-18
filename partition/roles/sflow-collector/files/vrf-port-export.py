@@ -5,24 +5,30 @@ import subprocess
 import time
 import urllib.error
 import urllib.request
-import redis
+
+try:
+    from swsscommon.swsscommon import SonicV2Connector
+except ImportError:
+    from swsssdk import SonicV2Connector
 
 INTERVAL = 60
-CONFIG_DB = 4
 
 
-def get_ifindex(interface):
+def get_ifindex(db, interface):
+    # hsflowd exports the SONiC index, not the Linux index stored in "ifindex".
+    value = db.get(db.STATE_DB, f"PORT_INDEX_TABLE|{interface}", "index", blocking=False)
     try:
-        return int(open(f"/sys/class/net/{interface}/ifindex").read().strip())
-    except (OSError, ValueError):
+        index = int(value)
+    except (TypeError, ValueError):
         return None
+    return index if index > 0 else None
 
 
 # The sflow packets contain the sampler address used to send the flow sample to the collector.
 # This IP can be used to match the Interface to VRF mapping to a flow sample.
 def get_sampler_address(db):
-    for key in db.keys("SFLOW_COLLECTOR|*"):
-        collector_ip = db.hget(key, "collector_ip")
+    for key in db.keys(db.CONFIG_DB, "SFLOW_COLLECTOR|*") or []:
+        collector_ip = db.get(db.CONFIG_DB, key, "collector_ip", blocking=False)
         if not collector_ip:
             continue
         try:
@@ -38,30 +44,30 @@ def get_sampler_address(db):
 
 
 def get_vni(db, vrf):
-    return db.hget(f"VRF|{vrf}", "vni")
+    return db.get(db.CONFIG_DB, f"VRF|{vrf}", "vni", blocking=False)
 
 
 def get_vrf_mappings(db, sampler_address):
     mappings = []
 
-    for key in db.keys("INTERFACE|*"):
+    for key in db.keys(db.CONFIG_DB, "INTERFACE|*") or []:
         try:
             _, interface = key.split("|")
         except ValueError:
             continue
-        vrf = db.hget(key, "vrf_name")
-        ifindex = get_ifindex(interface)
+        vrf = db.get(db.CONFIG_DB, key, "vrf_name", blocking=False)
+        ifindex = get_ifindex(db, interface)
         if vrf and ifindex is not None:
             vni = get_vni(db, vrf)
             mappings.append({"interface": interface, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
 
-    for key in db.keys("VLAN_MEMBER|*"):
+    for key in db.keys(db.CONFIG_DB, "VLAN_MEMBER|*") or []:
         try:
             _, vlan, interface = key.split("|")
         except ValueError:
             continue
-        vrf = db.hget(f"VLAN_INTERFACE|{vlan}", "vrf_name")
-        ifindex = get_ifindex(interface)
+        vrf = db.get(db.CONFIG_DB, f"VLAN_INTERFACE|{vlan}", "vrf_name", blocking=False)
+        ifindex = get_ifindex(db, interface)
         if vrf and ifindex is not None:
             vni = get_vni(db, vrf)
             mappings.append({"interface": interface, "vlan": vlan, "vrf": vrf, "vni": vni, "ifindex": ifindex, "sampler_address": sampler_address})
@@ -101,7 +107,9 @@ def main():
     parser = argparse.ArgumentParser(description="Publish interface mappings to Vector")
     parser.add_argument("--port", type=int, default=9001)
     args = parser.parse_args()
-    db = redis.Redis(host="127.0.0.1", port=6379, db=CONFIG_DB, decode_responses=True)
+    db = SonicV2Connector(host="127.0.0.1", decode_responses=True)
+    db.connect(db.CONFIG_DB)
+    db.connect(db.STATE_DB)
 
     while True:
         sampler_address = get_sampler_address(db)

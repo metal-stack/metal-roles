@@ -12,7 +12,10 @@ Set `metal_partition_id` through the [partition defaults](../defaults/defaults/m
 Configure the switch to export sFlow to the collector using [`sonic_config_sflow`](../sonic-config/README.md).
 
 The `fabric` and `combined` profiles run the interface mapping exporter on the SONiC switch itself.
-It requires Python 3 with the `redis` module, access to the local SONiC Redis CONFIG_DB on `127.0.0.1:6379` (database `4`), Linux interface indices under `/sys/class/net`, and the `ip` command.
+It requires Python 3 with SONiC's `SonicV2Connector` (provided by `swsscommon` or legacy `swsssdk`), access to the local CONFIG_DB and STATE_DB, and the `ip` command.
+The native connector uses SONiC's database configuration and authentication.
+Interface indices come from STATE_DB's `PORT_INDEX_TABLE|<interface>` field `index`, matching the SONiC indices exported by sFlow rather than Linux interface indices.
+Ports with missing or invalid indices are skipped until a valid mapping becomes available.
 Every 60 seconds it publishes mappings to Vector over local HTTP; mappings expire after 180 seconds without a refresh.
 The mappings use the sampler address and input interface index to identify a flow's interface, VRF, and VNI.
 Collecting samples from other switches does not provide their local interface mappings.
