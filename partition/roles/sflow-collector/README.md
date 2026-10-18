@@ -12,12 +12,14 @@ Set `metal_partition_id` through the [partition defaults](../defaults/defaults/m
 Configure the switch to export sFlow to the collector using [`sonic_config_sflow`](../sonic-config/README.md).
 
 The `fabric` and `combined` profiles run the interface mapping exporter on the SONiC switch itself.
-It requires Python 3 with SONiC's `SonicV2Connector` (provided by `swsscommon` or legacy `swsssdk`), access to the local CONFIG_DB and STATE_DB, and the `ip` command.
+It requires Python 3 with SONiC's `SonicV2Connector` (provided by `swsscommon` or legacy `swsssdk`), access to the local CONFIG_DB and STATE_DB, and permission to run `docker exec sflow`.
 The native connector uses SONiC's database configuration and authentication.
 Interface indices come from STATE_DB's `PORT_INDEX_TABLE|<interface>` field `index`, matching the SONiC indices exported by sFlow rather than Linux interface indices.
 Ports with missing or invalid indices are skipped until a valid mapping becomes available.
 Every 60 seconds it publishes mappings to Vector over local HTTP; mappings expire after 180 seconds without a refresh.
 The mappings use the sampler address and input interface index to identify a flow's interface, VRF, and VNI.
+The sampler address is read from `agentIP` in hsflowd's generated `/etc/hsflowd.auto` inside the `sflow` container, covering both configured and automatically selected agent addresses.
+If the file is unavailable, incomplete, or has no valid agent address, mappings are not refreshed and the exporter retries at the next interval.
 Collecting samples from other switches does not provide their local interface mappings.
 
 Both Broadcom and Edgecore SONiC deployments must provide working sFlow export and, for fabric enrichment, these local interfaces.

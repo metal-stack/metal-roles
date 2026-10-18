@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import ipaddress
 import json
 import subprocess
 import time
@@ -24,23 +25,29 @@ def get_ifindex(db, interface):
     return index if index > 0 else None
 
 
-# The sflow packets contain the sampler address used to send the flow sample to the collector.
-# This IP can be used to match the Interface to VRF mapping to a flow sample.
-def get_sampler_address(db):
-    for key in db.keys(db.CONFIG_DB, "SFLOW_COLLECTOR|*") or []:
-        collector_ip = db.get(db.CONFIG_DB, key, "collector_ip", blocking=False)
-        if not collector_ip:
-            continue
-        try:
-            tokens = subprocess.run(
-                ["ip", "route", "get", collector_ip],
-                capture_output=True, text=True, timeout=5,
-            ).stdout.split()
-            if "src" in tokens:
-                return tokens[tokens.index("src") + 1]
-        except Exception:
-            pass
-    return None
+def get_sampler_address():
+    # Read hsflowd's selected agent address, which identifies the sampler in
+    # sFlow datagrams even when the collector route uses a different source IP.
+    try:
+        result = subprocess.run(
+            ["docker", "exec", "sflow", "cat", "/etc/hsflowd.auto"],
+            capture_output=True, text=True, timeout=5, check=True,
+        )
+        settings = {}
+        for line in result.stdout.splitlines():
+            key, separator, value = line.partition("=")
+            if separator:
+                settings[key.strip()] = value.strip()
+        # hsflowd rewrites this file in place; reject an incomplete snapshot.
+        if not settings.get("rev_start") or settings["rev_start"] != settings.get("rev_end"):
+            raise ValueError("incomplete hsflowd configuration")
+        address = ipaddress.ip_address(settings.get("agentIP"))
+        if address.is_unspecified:
+            raise ValueError("hsflowd has not selected an agent address")
+        return str(address)
+    except (OSError, subprocess.SubprocessError, ValueError) as exc:
+        print(f"vrf-port-export: sampler address unavailable: {exc}", flush=True)
+        return None
 
 
 def get_vni(db, vrf):
@@ -112,7 +119,7 @@ def main():
     db.connect(db.STATE_DB)
 
     while True:
-        sampler_address = get_sampler_address(db)
+        sampler_address = get_sampler_address()
         # Refresh unchanged entries too: this renews their TTL and repopulates
         # Vector's memory table after a restart. Removed entries expire.
         publish_mappings(get_vrf_mappings(db, sampler_address), args.port)
