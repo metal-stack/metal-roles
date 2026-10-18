@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Downloads a DP-IP Database and replaces the existing one.
+# Downloads a DB-IP database and replaces the existing one.
 # DB-IP updates monthly, so the current month is attempted first
-# If the DB for the current month is not available yet, the scripts
+# If the DB for the current month is not available yet, the script
 # falls back to last month.
 
 set -euo pipefail
