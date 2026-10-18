@@ -3,6 +3,7 @@ sflow_collector_profile: combined
 
 sflow_collector_port: 6343
 sflow_collector_metrics_port: 9099
+# Local HTTP listener for interface mapping updates (fabric/combined profiles).
 sflow_collector_internal_port: 9001
 
 sflow_collector_image_name: netsampler/goflow2

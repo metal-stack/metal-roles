@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-import csv
-import os
+import argparse
+import json
 import subprocess
 import time
+import urllib.error
+import urllib.request
 import redis
 
-CSV_FILE = "/var/lib/sflow-collector/ifindex.csv"
-CSV_FILE_TMP = CSV_FILE + ".tmp"
-CSV_FIELDS = ["sampler_address", "ifindex", "interface", "vrf", "vni"]
 INTERVAL = 60
 CONFIG_DB = 4
 
@@ -70,30 +69,45 @@ def get_vrf_mappings(db, sampler_address):
     return mappings
 
 
-def write_csv(mappings):
-    # Vector's ifindex_vrf enrichment table is keyed on (sampler_address, ifindex);
-    # Duplicates may appear on hybrid ports. Not expected in production.
-    deduped = {}
+def publish_mappings(mappings, port):
+    # Match the composite key used by Vector's enrich_vrf transform.
+    # Duplicates may appear on hybrid ports; keep the last mapping as before.
+    records = {}
     for entry in mappings:
-        key = (entry.get("sampler_address") or "", entry.get("ifindex"))
-        deduped[key] = entry
+        if not entry.get("sampler_address") or entry.get("ifindex") is None:
+            continue
+        key = f"{entry['sampler_address']}|{entry['ifindex']}"
+        records[key] = {
+            field: str(entry.get(field) or "")
+            for field in ("interface", "vrf", "vni")
+        }
+    request = urllib.request.Request(
+        f"http://127.0.0.1:{port}/ifindex",
+        data=json.dumps({"mappings": records}).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
     try:
-        with open(CSV_FILE_TMP, "w", newline="") as csv_fp:
-            writer = csv.DictWriter(csv_fp, fieldnames=CSV_FIELDS, extrasaction="ignore")
-            writer.writeheader()
-            for entry in deduped.values():
-                writer.writerow({k: ("" if entry.get(k) is None else entry.get(k)) for k in CSV_FIELDS})
-        os.replace(CSV_FILE_TMP, CSV_FILE)
-    except OSError as exc:
-        print(f"vrf-port-export: skipping CSV write: {exc}", flush=True)
+        # Never send local mappings through a proxy inherited from the host.
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        with opener.open(request, timeout=5):
+            pass
+    except (OSError, urllib.error.URLError) as exc:
+        # Vector may still be starting or restarting. Retry at the next refresh.
+        print(f"vrf-port-export: failed to publish mappings: {exc}", flush=True)
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Publish interface mappings to Vector")
+    parser.add_argument("--port", type=int, default=9001)
+    args = parser.parse_args()
     db = redis.Redis(host="127.0.0.1", port=6379, db=CONFIG_DB, decode_responses=True)
 
     while True:
         sampler_address = get_sampler_address(db)
-        write_csv(get_vrf_mappings(db, sampler_address))
+        # Refresh unchanged entries too: this renews their TTL and repopulates
+        # Vector's memory table after a restart. Removed entries expire.
+        publish_mappings(get_vrf_mappings(db, sampler_address), args.port)
         time.sleep(INTERVAL)
 
 

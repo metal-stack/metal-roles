@@ -51,16 +51,6 @@
     mode: "0644"
   notify: Restart vector
 
-- name: Writing initial empty ifindex.csv
-  ansible.builtin.copy:
-    content: "sampler_address,ifindex,interface,vrf,vni\n"
-    dest: "{{ sflow_collector_data_host_dir }}/ifindex.csv"
-    force: false
-    owner: root
-    group: root
-    mode: "0644"
-  when: sflow_collector_profile in ['fabric', 'combined']
-
 - name: Deploy vrf-port-export script
   ansible.builtin.copy:
     src: vrf-port-export.py
@@ -72,8 +62,8 @@
   when: sflow_collector_profile in ['fabric', 'combined']
 
 - name: Deploy vrf-port-export systemd service
-  ansible.builtin.copy:
-    src: vrf-port-export.service
+  ansible.builtin.template:
+    src: vrf-port-export.service.j2
     dest: /etc/systemd/system/vrf-port-export.service
     owner: root
     group: root
@@ -81,14 +71,6 @@
   notify:
     - Reload systemd
     - Restart vrf-port-export
-  when: sflow_collector_profile in ['fabric', 'combined']
-
-- name: Ensure vrf-port-export service is started
-  ansible.builtin.systemd:
-    name: vrf-port-export
-    enabled: true
-    state: started
-    daemon_reload: true
   when: sflow_collector_profile in ['fabric', 'combined']
 
 - name: Template Vector configuration
@@ -223,14 +205,19 @@
           sflow_collector_data_host_dir + '/geoip:/etc/vector/enrichment/geoip:ro',
           sflow_collector_data_host_dir + '/asn:/etc/vector/enrichment/asn:ro'
         ] if sflow_collector_profile in ['edge', 'combined'] else [])
-        + ([
-          sflow_collector_data_host_dir + '/ifindex.csv:/etc/vector/enrichment/ifindex.csv:ro'
-        ] if sflow_collector_profile in ['fabric', 'combined'] else [])
       }}
     systemd_docker_command:
       - --config-dir
       - /etc/vector/
     systemd_docker_log_driver: "{{ sflow_collector_docker_log_driver }}"
+
+- name: Ensure vrf-port-export service is started
+  ansible.builtin.systemd:
+    name: vrf-port-export
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: sflow_collector_profile in ['fabric', 'combined']
 
 - name: Wait for goflow2 metrics endpoint
   ansible.builtin.wait_for:

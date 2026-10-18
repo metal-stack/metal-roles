@@ -25,20 +25,24 @@ enrichment_tables:
 
 {% if sflow_fabric %}
   ifindex_vrf:
-    type: file
-    file:
-      path: /etc/vector/enrichment/ifindex.csv
-      encoding:
-        type: csv
-    schema:
-      sampler_address: string
-      ifindex: integer
-      interface: string
-      vrf: string
-      vni: string
+    type: memory
+    inputs:
+      - parse_ifindex_updates
+    # The exporter refreshes every 60 seconds, including unchanged mappings.
+    ttl: 180
+    scan_interval: 1
 {% endif %}
 
 sources:
+{% if sflow_fabric %}
+  ifindex_updates:
+    type: http_server
+    address: "127.0.0.1:{{ sflow_collector_internal_port }}"
+    path: /ifindex
+    decoding:
+      codec: json
+
+{% endif %}
   goflow2_raw:
     type: file
     include:
@@ -46,6 +50,17 @@ sources:
     read_from: beginning
 
 transforms:
+{% if sflow_fabric %}
+  parse_ifindex_updates:
+    type: remap
+    inputs:
+      - ifindex_updates
+    drop_on_error: true
+    source: |
+      # Strip HTTP source metadata before inserting key/value pairs.
+      . = object!(.mappings)
+
+{% endif %}
   parse_goflow2:
     type: remap
     inputs:
@@ -135,11 +150,12 @@ transforms:
     inputs:
       - enrich_proto
     source: |
-      row, err = get_enrichment_table_record("ifindex_vrf", { "sampler_address": .sampler_address, "ifindex": .in_if })
+      key = string!(.sampler_address) + "|" + to_string!(.in_if)
+      row, err = get_enrichment_table_record("ifindex_vrf", { "key": key })
       if err == null {
-        .vrf       = row.vrf
-        .vni       = row.vni
-        .interface = row.interface
+        .vrf       = row.value.vrf
+        .vni       = row.value.vni
+        .interface = row.value.interface
       }
 
 {% endif %}

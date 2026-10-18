@@ -1,10 +1,10 @@
 [Unit]
 Description=VRF/VNI to interface mapping exporter for the sFlow collector (ifindex enrichment)
-After=network.target
+After=network.target vector.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /usr/local/bin/vrf-port-export.py
+ExecStart=/usr/bin/python3 /usr/local/bin/vrf-port-export.py --port {{ sflow_collector_internal_port }}
 Restart=on-failure
 RestartSec=10
 
