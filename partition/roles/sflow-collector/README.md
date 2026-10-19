@@ -27,11 +27,11 @@ The UDP collector has no gNMI dependency, but that alone does not establish comp
 
 ## Profiles
 
-| Profile | Enrichment |
-| --- | --- |
-| `fabric` | Application protocol and local interface, VRF, and VNI mappings; no GeoIP or ASN database downloads |
-| `edge` | Application protocol, source ASN, and sampled source geolocation; no local SONiC interface mapping exporter |
-| `combined` | Both fabric and edge enrichment (default) |
+| Profile    | Enrichment                                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| `fabric`   | Application protocol and local interface, VRF, and VNI mappings; no GeoIP or ASN database downloads         |
+| `edge`     | Application protocol, source ASN, and sampled source geolocation; no local SONiC interface mapping exporter |
+| `combined` | Both fabric and edge enrichment (default)                                                                   |
 
 All profiles send flow records to Loki with the `app=goflow2` label.
 The edge profiles also send geographic records with `app=goflow2-geo`, using the additional sampling rate below.
@@ -42,30 +42,30 @@ The refresh script tries the current month and then the previous month, and rest
 
 Defaults are defined in [defaults/main.yaml](defaults/main.yaml).
 
-| Name | Mandatory | Description |
-| --- | --- | --- |
-| sflow_collector_profile | | `fabric`, `edge`, or `combined`; default `combined` |
-| sflow_collector_port | | UDP port receiving sFlow datagrams; default `6343` |
-| sflow_collector_metrics_port | | goflow2 HTTP metrics port; default `9099` |
-| sflow_collector_internal_port | | Vector's HTTP port on `127.0.0.1` for interface mapping updates in fabric profiles; default `9001` |
-| sflow_collector_image_name | | goflow2 container image; default `netsampler/goflow2` |
-| sflow_collector_image_tag | | goflow2 image tag; default `latest` |
-| sflow_collector_vector_image_name | | Vector container image; default `timberio/vector` |
-| sflow_collector_vector_image_tag | | Vector image tag; default `0.55.0-distroless-libc` |
-| sflow_collector_vector_geo_sample_rate | | Additional sampling for geographic records, one in N flow events; default `10` |
-| sflow_collector_config_host_dir | | Host directory for Vector and logrotate configuration; default `/etc/sflow-collector` |
-| sflow_collector_data_host_dir | | Host directory for spool, enrichment databases, and Vector state; default `/var/lib/sflow-collector`; see the refresh script limitation below |
-| sflow_collector_loki_endpoint | yes | Loki base URL, for example `https://loki.example.com` |
-| sflow_collector_loki_basic_auth_user | | Optional Loki basic authentication username; unset by default |
-| sflow_collector_loki_basic_auth_password | | Loki basic authentication password when a username is set; unset by default |
-| sflow_collector_loki_tls_verify | | Verify the Loki HTTPS certificate; default `true` |
-| sflow_collector_geoip_download_image | | Declared default `alpine:3`; currently unused by the refresh script, which hardcodes that image |
-| sflow_collector_docker_log_driver | | Docker log driver for goflow2 and Vector; default `json-file` |
-| sflow_collector_spool_tmpfs_size | | Size of the in-memory goflow2 spool; default `256m` |
-| sflow_collector_logrotate_size | | Spool file size that triggers rotation when checked; default `32M` |
-| sflow_collector_logrotate_keep | | Number of rotated spool files to retain; default `1` |
-| sflow_collector_logrotate_interval | | systemd timer interval for checking spool rotation; default `2min` |
-| sflow_collector_vector_buffer_max_events | | Maximum events buffered in memory per Loki sink; default `100000`; new events are dropped when full |
+| Name                                     | Mandatory | Description                                                                                                                                   |
+| ---------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| sflow_collector_profile                  |           | `fabric`, `edge`, or `combined`; default `combined`                                                                                           |
+| sflow_collector_port                     |           | UDP port receiving sFlow datagrams; default `6343`                                                                                            |
+| sflow_collector_metrics_port             |           | goflow2 HTTP metrics port; default `9099`                                                                                                     |
+| sflow_collector_internal_port            |           | Vector's HTTP port on `127.0.0.1` for interface mapping updates in fabric profiles; default `9001`                                            |
+| sflow_collector_image_name               |           | goflow2 container image; default `netsampler/goflow2`                                                                                         |
+| sflow_collector_image_tag                |           | goflow2 image tag; default `latest`                                                                                                           |
+| sflow_collector_vector_image_name        |           | Vector container image; default `timberio/vector`                                                                                             |
+| sflow_collector_vector_image_tag         |           | Vector image tag; default `0.55.0-distroless-libc`                                                                                            |
+| sflow_collector_vector_geo_sample_rate   |           | Additional sampling for geographic records, one in N flow events; default `10`                                                                |
+| sflow_collector_config_host_dir          |           | Host directory for Vector and logrotate configuration; default `/etc/sflow-collector`                                                         |
+| sflow_collector_data_host_dir            |           | Host directory for spool, enrichment databases, and Vector state; default `/var/lib/sflow-collector`; see the refresh script limitation below |
+| sflow_collector_loki_endpoint            | yes       | Loki base URL, for example `https://loki.example.com`                                                                                         |
+| sflow_collector_loki_basic_auth_user     |           | Optional Loki basic authentication username; unset by default                                                                                 |
+| sflow_collector_loki_basic_auth_password |           | Loki basic authentication password when a username is set; unset by default                                                                   |
+| sflow_collector_loki_tls_verify          |           | Verify the Loki HTTPS certificate; default `true`                                                                                             |
+| sflow_collector_geoip_download_image     |           | Declared default `alpine:3`; currently unused by the refresh script, which hardcodes that image                                               |
+| sflow_collector_docker_log_driver        |           | Docker log driver for goflow2 and Vector; default `json-file`                                                                                 |
+| sflow_collector_spool_tmpfs_size         |           | Size of the in-memory goflow2 spool; default `256m`                                                                                           |
+| sflow_collector_logrotate_size           |           | Spool file size that triggers rotation when checked; default `32M`                                                                            |
+| sflow_collector_logrotate_keep           |           | Number of rotated spool files to retain; default `1`                                                                                          |
+| sflow_collector_logrotate_interval       |           | systemd timer interval for checking spool rotation; default `2min`                                                                            |
+| sflow_collector_vector_buffer_max_events |           | Maximum events buffered in memory per Loki sink; default `100000`; new events are dropped when full                                           |
 
 The DB-IP refresh script currently fixes its data directory to `/var/lib/sflow-collector` and its download image to `alpine:3`.
 Keep the default data directory for `edge` and `combined` deployments.
