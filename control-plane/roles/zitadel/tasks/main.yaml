@@ -60,3 +60,10 @@
   until: secret_info.resources | length > 0
   retries: 10
   delay: 5
+
+- name: Create zitadel-actions
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'zitadel-actions.yaml') }}"
+    namespace: "{{ zitadel_namespace }}"
+  when: zitadel_actions_enabled
