@@ -103,6 +103,14 @@
     helm_value_file_template: "thanos-values.yaml"
   when: monitoring_thanos_enabled
 
+- name: Set metal-apiserver deployment token
+  ansible.builtin.import_role:
+    name: metal-roles/common/roles/metal-deployment-token
+  when: metal_deployment_admin_token is not defined
+
+- name: Create metal-metrics-exporter token
+  ansible.builtin.import_tasks: exporter-token.yaml
+
 - name: Deploy metrics exporters
   ansible.builtin.import_tasks: exporters.yaml
 
