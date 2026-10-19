@@ -17,11 +17,7 @@ jobs:
           make test
 
   spelling:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Check spelling
-        uses: crate-ci/typos@master
+    uses: metal-stack/actions-common/.github/workflows/spell-check.yaml@v1
 
   markdown-lint:
     runs-on: ubuntu-latest
