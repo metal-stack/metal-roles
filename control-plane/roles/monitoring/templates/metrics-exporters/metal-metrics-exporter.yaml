@@ -14,7 +14,7 @@ rules:
   verbs: ["get", "update", "patch"]
 - apiGroups: [""]
   resources: ["secrets"]
-  resourceNames: ["metal-metrics-exporter-config"]
+  resourceNames: ["metal-metrics-exporter-token"]
   verbs: ["get", "update", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -45,25 +45,17 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: token-refresher
-            image: ghcr.io/metal-stack/metal-token-refresher
+            image: {{ monitoring_metal_metrics_exporter_token_refresher_image_name }}:{{ monitoring_metal_metrics_exporter_token_refresher_image_tag }}
+            imagePullPolicy: {{ monitoring_metal_metrics_exporter_image_pull_policy }}
             env:
             - name: METAL_APISERVER_URL
               value: {{ monitoring_metal_apiserver_url }}
             - name: TOKEN_SECRET_NAMESPACE
               value: "monitoring"
             - name: TOKEN_SECRET_NAME
-              value: "metal-metrics-exporter-config"
+              value: "metal-metrics-exporter-token"
             - name: TOKEN_SECRET_KEY
               value: "token"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: metal-metrics-exporter-config
-type: Opaque
-stringData:
-  url: {{ monitoring_metal_apiserver_url }}
-  token: {{ _metal_metrics_exporter_token.secret }}
 ---
 apiVersion: v1
 kind: Service
@@ -100,8 +92,8 @@ spec:
         - name: metal-metrics-exporter
           command:
             - /metal-metrics-exporter
-          image: {{ monitoring_metal_metrics_exporter_image_name }}:{{ monitoring_metal_metrics_exporter_image_tag }}
-          imagePullPolicy: {{ metal_control_plane_image_pull_policy }}
+          image: {{ metal_metrics_exporter_image_name }}:{{ metal_metrics_exporter_image_tag }}
+          imagePullPolicy: {{ monitoring_metal_metrics_exporter_image_pull_policy }}
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
@@ -111,17 +103,14 @@ spec:
               name: metrics
           env:
             - name: METAL_API_URL
-              valueFrom:
-                secretKeyRef:
-                  name: metal-metrics-exporter-config
-                  key: url
+              value: {{ monitoring_metal_apiserver_url }}
             - name: METAL_API_TOKEN_FILE
-              value: /var/run/secrets/metal-metrics-exporter-config/token
+              value: /var/run/secrets/metal-metrics-exporter-token/token
           volumeMounts:
-          - mountPath: /var/run/secrets/metal-metrics-exporter-config
-            name: metal-metrics-exporter-config
+          - mountPath: /var/run/secrets/metal-metrics-exporter-token
+            name: token
       volumes:
-      - name: metal-metrics-exporter-config
+      - name: token
         secret:
           defaultMode: 420
-          secretName: metal-metrics-exporter-config
+          secretName: metal-metrics-exporter-token
