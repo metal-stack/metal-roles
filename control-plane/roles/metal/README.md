@@ -116,7 +116,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### metal-apiserver
 
 | Name                                                                  | Mandatory | Description                                                                                                      |
-|-----------------------------------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
 | metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                                                    |
 | metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                                                           |
 | metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                                                          |
@@ -127,8 +127,9 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                                                                     |
 | metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                                                                |
 | metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                                                            |
+| metal_apiserver_unique_user_key                                       |           | The OIDC provider's app unique identifier                                                                        |
 | metal_apiserver_tls_skip_verify                                       |           | Skip TLS verification for talking to the OIDC provider                                                           |
-| metal_apiserver_session_secret                                        |           | The secret used to hash the sessions of a user during auth                                                       |
+| metal_apiserver_session_secret                                        | yes       | The secret used to hash the sessions of a user during auth, must be at least 10 characters long                  |
 | metal_apiserver_secure_cookie                                         |           | If set to true, auth cookie will only be set on https                                                            |
 | metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                                                       |
 | metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                                                        |
@@ -144,6 +145,11 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_httproute_parent_refs                                 |           | List of `parentRefs` (Gateways) the metal-apiserver HTTPRoute attaches to                                        |
 | metal_apiserver_tokens                                                |           | Optional yaml containing a map of tokenCreateRequests in order to create admin-tokens and store them in a secret |
 | metal_apiserver_token_create_schedule                                 |           | Optional cronjob schedule at which admin-tokens should be created                                                |
+| metal_apiserver_headscale_enabled                                     |           | Optional enable headscale support                                                                                |
+| metal_apiserver_headscale_tls                                         |           | Defaults to true, disable if headscale is exposed with http only                                                 |
+| metal_apiserver_headscale_api_key                                     |           | Headscale API key                                                                                                |
+| metal_apiserver_headscale_control_plane_address                       |           | Headscale control plane address                                                                                  |
+| metal_apiserver_headscale_internal_api_address                        |           | Headscale internal apiserver address                                                                             |
 
 ### masterdata-api
 

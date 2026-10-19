@@ -5,6 +5,8 @@ prometheus_docker_log_driver: json-file
 prometheus_scrape_interval: 60s
 prometheus_evaluation_interval: 30s
 prometheus_scrape_timeout: 15s
+prometheus_additional_external_labels:
+  replica: "{{ inventory_hostname }}"
 
 prometheus_ipmi_scrape_interval: 10m
 prometheus_ipmi_scrape_timeout: 120s
@@ -30,6 +32,7 @@ prometheus_alloy_targets: []
 prometheus_ping_targets: []
 prometheus_ipmi_exporter_targets: []
 prometheus_sonic_exporter_targets: []
+prometheus_gnmic_targets: []
 prometheus_blackbox_exporter_targets: []
 prometheus_lightbox_exporter_targets: []
 prometheus_lightos_smart_targets: []

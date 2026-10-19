@@ -27,6 +27,7 @@ you define them adequately as well.
 | prometheus_promtail_targets                      |           | Promtail targets to scrape from                                                                                                             |
 | prometheus_ping_targets                          |           | Ping targets to scrape from                                                                                                                 |
 | prometheus_sonic_exporter_targets                |           | Sonic exporter targets to scrape from                                                                                                       |
+| prometheus_gnmic_targets                         |           | gnmic targets to scrape from                                                                                                                |
 | prometheus_blackbox_exporter_targets             |           | Blackbox exporter targets to scrape from                                                                                                    |
 | prometheus_blackbox_exporter_dns                 |           | Blackbox exporter DNS resolve nameserver                                                                                                    |
 | prometheus_lightbox_exporter_targets             |           | Lightbox exporter targets to scrape from                                                                                                    |
@@ -40,4 +41,5 @@ you define them adequately as well.
 | prometheus_scrape_interval                       |           | The frequency to scrape targets                                                                                                             |
 | prometheus_evaluation_interval                   |           | The frequency to evaluate rules                                                                                                             |
 | prometheus_scrape_timeout                        |           | Timeout per-scrape                                                                                                                          |
+| prometheus_additional_external_labels            |           | Additional external labels for Prometheus                                                                                                   |
 | prometheus_haproxy_enabled                       |           | Enable HAProxy metrics scraping                                                                                                             |

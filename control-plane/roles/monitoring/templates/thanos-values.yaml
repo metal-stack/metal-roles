@@ -151,5 +151,51 @@ extraDeploy:
     name: thanos-receive-basic-auth
   type: Opaque
   stringData:
+    # for envoy gateway, only supports sha1
+    .htpasswd: |
+      {{ monitoring_thanos_receive_ingress_basic_auth_user }}:{SHA}{{ lookup('pipe', 'printf %s ' ~ (monitoring_thanos_receive_ingress_basic_auth_password | quote) ~ ' | openssl dgst -sha1 -binary | base64') }}
+    # for ingress-nginx
     auth: "{{ monitoring_thanos_receive_ingress_basic_auth_user ~ ':' ~ monitoring_thanos_receive_ingress_basic_auth_password | string | password_hash('bcrypt', salt=monitoring_thanos_receive_ingress_basic_auth_password_salt) }}"
+{% endif %}
+{% if monitoring_thanos_receive_httproute_enabled %}
+# our version of the thanos chart does not support this... we need to migrate away from bitnami
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    name: thanos-receive
+  spec:
+    hostnames:
+    - {{ monitoring_thanos_receive_gateway_dns }}
+    parentRefs: {{ monitoring_thanos_receive_parent_refs | to_json }}
+    rules:
+    - backendRefs:
+      - kind: Service
+        name: thanos-receive
+        port: 19291
+      matches:
+      - path:
+          type: PathPrefix
+          value: /api/v1/receive
+    - backendRefs:
+      - kind: Service
+        name: thanos-receive
+        port: 10902
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+{% if monitoring_thanos_deploy_envoy_gateway_basic_auth %}
+- apiVersion: gateway.envoyproxy.io/v1alpha1
+  kind: SecurityPolicy
+  metadata:
+    name: thanos-basic-auth
+  spec:
+    targetRefs:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+        name: thanos-receive
+    basicAuth:
+      users:
+        name: thanos-receive-basic-auth
+{% endif %}
 {% endif %}

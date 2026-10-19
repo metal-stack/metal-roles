@@ -1,4 +1,14 @@
 ---
+- name: Deprecation warning
+  run_once: true
+  print_message:
+    type: deprecate
+    msg: >-
+      The sonic-exporter role is deprecated and will be removed in a future release.
+    action: |
+      Use metal-roles/partition/roles/monitoring/gnmic instead - see README for instructions:
+      https://github.com/metal-stack/metal-roles/tree/master/partition/roles/monitoring/gnmic#migrating-from-sonic-exporter.
+
 - name: Determine platform
   ansible.builtin.command: sonic-cfggen -H -v DEVICE_METADATA.localhost.platform
   register: monitoring_sonic_exporter_platform

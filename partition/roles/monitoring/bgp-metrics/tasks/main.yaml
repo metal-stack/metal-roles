@@ -1,0 +1,24 @@
+---
+- name: Copy bgp-metrics script
+  ansible.builtin.template:
+    src: bgp-metrics.py.j2
+    dest: /usr/local/bin/bgp-metrics.py
+    mode: "0755"
+
+- name: Copy bgp-metrics units
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    mode: "0644"
+  loop:
+    - bgp-metrics.service
+    - bgp-metrics.timer
+  notify:
+    - Restart bgp-metrics timer
+
+- name: Enable bgp-metrics timer
+  ansible.builtin.systemd:
+    name: bgp-metrics.timer
+    enabled: true
+    state: started
+    daemon_reload: true

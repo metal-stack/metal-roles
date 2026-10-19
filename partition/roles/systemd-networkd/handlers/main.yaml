@@ -29,10 +29,10 @@
     owner: root
     group: root
     mode: "0755"
-  listen: rename interfaces
+  listen: Rename interfaces
 
 - name: Execute interface rename script
   ansible.builtin.command: /root/rename-interfaces.sh
   async: 300
   poll: 10
-  listen: rename interfaces
+  listen: Rename interfaces

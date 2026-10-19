@@ -12,6 +12,7 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_firewall_ip               |           | the remote ip of the firewall for setting up a numbered BGP session.                 |
 | mgmt_server_frr_match_interfaces      |           | announce the networks attached to the given interfaces over BGP.                     |
 | mgmt_server_frr_repo                  |           | the FRR repo to use.                                                                 |
+| mgmt_server_frr_static_routes         |           | additional static routes rendered into frr.conf, e.g. `["10.4.0.0/24 10.130.0.1"]`.  |
 | mgmt_server_frr_version               |           | the FRR version to use.                                                              |
 | mgmt_server_nameservers               |           | the nameservers to use (default is dns0.eu).                                         |
 | mgmt_server_router_id                 | yes       | the router-id to use for routing.                                                    |

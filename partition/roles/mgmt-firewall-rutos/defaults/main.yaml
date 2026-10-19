@@ -1,0 +1,11 @@
+---
+mgmt_firewall_rutos_firmware:
+mgmt_firewall_rutos_uci: {}
+mgmt_firewall_rutos_apply: false
+mgmt_firewall_rutos_state_dir: /tmp/mgmt-firewall-rutos
+mgmt_firewall_rutos_confirm_timeout: 180
+mgmt_firewall_rutos_settle_seconds: 10
+mgmt_firewall_rutos_reload_command: reload_config
+mgmt_firewall_rutos_reconnect_retries: 60
+mgmt_firewall_rutos_reconnect_delay: 5
+mgmt_firewall_rutos_chunk_bytes: 4000
