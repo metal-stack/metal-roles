@@ -165,7 +165,7 @@ Use the inventory flags below to control the deployment based on your situation:
 
    ```yaml
    alloy_loki_write_endpoints:
-     - url: "http://loki.{{ metal_control_plane_ingress_dns }}:8080/loki/api/v1/push"
+     - url: "http://loki.{{ metal_control_plane_gateway_dns }}:8080/loki/api/v1/push"
        remote_timeout: 10s
        basic_auth:
          username: "promtail"
