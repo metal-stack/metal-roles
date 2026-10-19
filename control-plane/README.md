@@ -18,15 +18,15 @@ Contains roles for deploying the metal-control-plane.
 
 The `defaults` folder contains defaults that are used by multiple roles in the control-plane directory. You can look up all [the default values](roles/defaults/defaults/main.yaml).
 
-| Name                                  | Mandatory | Description                                                                                         |
-| ------------------------------------- | --------- | --------------------------------------------------------------------------------------------------- |
-| metal_control_plane_provider_tenant   |           | The name of the provider tenant, has extended privileges                                            |
-| metal_control_plane_ingress_dns       | yes       | The dns name used for exposing services via ingress                                                 |
-| metal_control_plane_gateway_dns       |           | The dns name used for exposing services via Gateway API routes (when *_httproute_enabled is set)    |
-| metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                            |
-| metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                |
-| metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                       |
-| metal_control_plane_host_provider     |           | The control-planes hosting provider, one of `metal` or `gcp`. Required for gardener deployment.     |
+| Name                                  | Mandatory | Description                                                                                                                      |
+| ------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| metal_control_plane_provider_tenant   |           | The name of the provider tenant, has extended privileges                                                                         |
+| metal_control_plane_ingress_dns       | (yes)     | The dns name used for exposing services via ingress, either this or        `metal_control_plane_gateway_dns` needs to be defined |
+| metal_control_plane_gateway_dns       | (yes)     | The dns name used for exposing services via Gateway API routes (when *_httproute_enabled is set)                                 |
+| metal_control_plane_stage_name        |           | The name of the current stage, can be used for prefixing                                                                         |
+| metal_control_plane_namespace         |           | The target namespace of all deployed kubernetes resources of the metal-control-plane                                             |
+| metal_control_plane_image_pull_policy |           | Global value for an ImagePullPolicy that will be used for Kubernetes entities                                                    |
+| metal_control_plane_host_provider     |           | The control-planes hosting provider, one of `metal` or `gcp`. Required for gardener deployment.                                  |
 
 ## Roles
 
