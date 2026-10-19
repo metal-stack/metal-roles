@@ -389,7 +389,7 @@ data:
           "id": 14,
           "fieldConfig": {
             "defaults": {
-              "color": { "mode": "continuous-RdYlGr" },
+              "color": { "mode": "thresholds" },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
@@ -410,28 +410,33 @@ data:
             },
             "view": { "id": "coords", "lat": 48.1374, "lon": 11.5755, "zoom": 3 },
             "controls": { "showZoom": true, "showAttribution": true },
+            "tooltip": { "mode": "details" },
             "layers": [
               {
-                "type": "heatmap",
-                "name": "Source density",
+                "type": "markers",
+                "name": "Sampled flows by source location",
                 "config": {
-                  "weight": { "field": "Value #A", "fixed": 1, "min": 0, "max": 1 },
-                  "radius": 25,
-                  "blur": 15,
-                  "opacity": 0.9
+                  "showLegend": true,
+                  "style": {
+                    "size": { "field": "Sampled flows", "fixed": 6, "min": 6, "max": 30 },
+                    "color": { "field": "Sampled flows", "fixed": "green" },
+                    "opacity": 0.65,
+                    "symbol": { "mode": "fixed", "fixed": "img/icons/marker/circle.svg" }
+                  }
                 },
                 "location": {
                   "mode": "coords",
                   "latitude": "latitude",
                   "longitude": "longitude"
                 },
-                "tooltip": false
+                "tooltip": true
               }
             ]
           },
           "transformations": [
             { "id": "labelsToFields", "options": { "mode": "columns" } },
             { "id": "merge", "options": {} },
+            { "id": "renameByRegex", "options": { "regex": "^Value(?: #A)?$", "renamePattern": "Sampled flows" } },
             { "id": "convertFieldType", "options": { "conversions": [
               { "targetField": "latitude",  "destinationType": "number" },
               { "targetField": "longitude", "destinationType": "number" }
@@ -441,13 +446,12 @@ data:
             {
               "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
               "expr": "sum by (latitude, longitude) (count_over_time({app=\"goflow2-geo\", partition=~\"$partition\"} | json latitude, longitude [$__range]))",
-              "legendFormat": "{{country_code}}",
               "queryType": "instant",
               "refId": "A"
             }
           ],
           "title": "Source IP Geolocation",
-          "description": "GeoIP by DB-IP, CC BY 4.0.",
+          "description": "Bubble size and color show sampled flow counts per source location over the selected time range. Hover over a bubble for details. Locations disappear once no samples remain in the range. GeoIP by DB-IP, CC BY 4.0.",
           "type": "geomap"
         },
         {
