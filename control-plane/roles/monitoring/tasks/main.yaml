@@ -106,6 +106,7 @@
 - name: Set metal-apiserver deployment token
   ansible.builtin.import_role:
     name: metal-roles/common/roles/metal-deployment-token
+  when: metal_deployment_admin_token is not defined
 
 - name: Create metal-metrics-exporter token
   ansible.builtin.import_tasks: exporter-token.yaml

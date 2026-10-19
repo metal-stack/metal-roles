@@ -2,16 +2,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: metal-token-renewal
+  name: metal-token-refresher
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: metal-token-renewal
+  name: metal-token-refresher
 rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "update", "patch"]
 - apiGroups: [""]
   resources: ["secrets"]
   resourceNames: ["metal-metrics-exporter-token"]
@@ -20,13 +17,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: metal-token-renewal
+  name: metal-token-refresher
 subjects:
 - kind: ServiceAccount
-  name: metal-token-renewal
+  name: metal-token-refresher
 roleRef:
   kind: Role
-  name: metal-token-renewal
+  name: metal-token-refresher
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: batch/v1
