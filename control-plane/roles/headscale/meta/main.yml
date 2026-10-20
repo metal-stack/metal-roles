@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: headscale
   author: metal-stack
   description: Deploys headscalee for the metal-stack firewall VPN.
   license: MIT

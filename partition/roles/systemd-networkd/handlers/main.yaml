@@ -33,6 +33,7 @@
 
 - name: Execute interface rename script
   ansible.builtin.command: /root/rename-interfaces.sh
+  changed_when: true
   async: 300
   poll: 10
   listen: Rename interfaces
