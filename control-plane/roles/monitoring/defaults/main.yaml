@@ -69,9 +69,6 @@ monitoring_metal_metrics_exporter_token_refresher_image_tag: "{{ metal_token_ref
 monitoring_metal_metrics_exporter_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 monitoring_metrics_exporter_token_expiration: 8h
 monitoring_metrics_exporter_permissions:
-  - api:
-      methods:
-        - /metalstack.api.v2.PartitionService/List
   - admin:
       methods:
         - /metalstack.admin.v2.ComponentService/List
@@ -88,6 +85,7 @@ monitoring_metrics_exporter_permissions:
         - /metalstack.infra.v2.ComponentService/Ping
   - self:
       methods:
+        - /metalstack.api.v2.PartitionService/List
         - /metalstack.api.v2.TokenService/Refresh
 
 # rethinkdb exporter
