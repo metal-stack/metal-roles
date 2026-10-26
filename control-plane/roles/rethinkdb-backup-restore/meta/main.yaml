@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: rethinkdb-backup-restore
   author: metal-stack
   description: Deploys a rethinkdb database including the backup-restore-sidecar container.
   license: MIT

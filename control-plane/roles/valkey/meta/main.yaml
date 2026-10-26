@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: valkey
   author: metal-stack
   description: Deploys valkey into the control plane.
   license: MIT
