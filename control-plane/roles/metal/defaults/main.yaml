@@ -100,6 +100,7 @@ metal_apiserver_static_data_projects: []
 metal_apiserver_static_data_project_members: []
 metal_apiserver_static_data_networks: []
 metal_apiserver_static_data_ips: []
+metal_apiserver_static_data_filesystemlayouts: []
 
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"

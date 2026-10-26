@@ -339,6 +339,7 @@ metal_apiserver:
       project_members: {{ metal_apiserver_static_data_project_members | to_json }}
       networks: {{ metal_apiserver_static_data_networks | to_json }}
       ips: {{ metal_apiserver_static_data_ips | to_json }}
+      filesystemlayouts: {{ metal_apiserver_static_data_filesystemlayouts | to_json }}
 
 auditing:
   enabled: {{ 'true' if metal_auditing_timescaledb_enabled else 'false' }}
