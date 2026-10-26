@@ -90,6 +90,18 @@ metal_apiserver_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace
 metal_apiserver_headscale_control_plane_address: http{{ 's' if metal_apiserver_headscale_tls }}://headscale.{{ metal_control_plane_gateway_dns }}
 metal_apiserver_headscale_internal_api_address: "headscale:50443"
 
+# metal-apiserver static data
+metal_apiserver_static_data_partitions: []
+metal_apiserver_static_data_sizes: []
+metal_apiserver_static_data_images: []
+metal_apiserver_static_data_tenants: []
+metal_apiserver_static_data_tenant_members: []
+metal_apiserver_static_data_projects: []
+metal_apiserver_static_data_project_members: []
+metal_apiserver_static_data_networks: []
+metal_apiserver_static_data_ips: []
+metal_apiserver_static_data_filesystemlayouts: []
+
 # metal-api
 metal_api_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 metal_api_replicas: 3
