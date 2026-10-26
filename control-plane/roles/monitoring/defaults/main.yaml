@@ -85,6 +85,7 @@ monitoring_metrics_exporter_permissions:
         - /metalstack.infra.v2.ComponentService/Ping
   - self:
       methods:
+        - /metalstack.api.v2.PartitionService/List
         - /metalstack.api.v2.TokenService/Refresh
 
 # rethinkdb exporter
