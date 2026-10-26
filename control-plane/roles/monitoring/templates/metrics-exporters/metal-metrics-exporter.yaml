@@ -83,6 +83,8 @@ spec:
     metadata:
       labels:
         app: metal-metrics-exporter
+      annotations:
+        token_id: {{ _token.id }}
     spec:
       automountServiceAccountToken: false
       containers:
