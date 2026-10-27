@@ -1,7 +1,3 @@
 ---
-ntp_servers:
-  - ptbtime1.ptb.de
-  - ptbtime2.ptb.de
-  - ptbtime3.ptb.de
-ntp_fallback_servers:
-  - ptbtime4.ptb.de
+ntp_servers: []
+ntp_fallback_servers: []

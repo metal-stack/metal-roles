@@ -1,4 +1,11 @@
 ---
+- name: Check ntp servers are given
+  ansible.builtin.assert:
+    fail_msg: "ntp_servers is empty, set the ntp servers this host should sync from"
+    quiet: true
+    that:
+      - ntp_servers | length > 0
+
 - name: Install systemd-timesyncd
   ansible.builtin.apt:
     name: systemd-timesyncd
@@ -18,7 +25,9 @@
     content: |
       [Time]
       NTP={{ ntp_servers | join(' ') }}
+      {% if ntp_fallback_servers | length > 0 %}
       FallbackNTP={{ ntp_fallback_servers | join(' ') }}
+      {% endif %}
   notify: Restart systemd-timesyncd
 
 - name: Enable and start systemd-timesyncd

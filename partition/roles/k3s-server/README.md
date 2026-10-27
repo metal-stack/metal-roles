@@ -106,6 +106,12 @@ configuration with it.
 
 ## Prerequisites
 
+The play has to run with `serial: 1`. A changed frr configuration restarts frr, and a changed
+k3s configuration restarts k3s; on several servers at once that drops every BGP session and
+the etcd quorum together. The role refuses a larger batch. On a fresh cluster this means
+`k3s_server_cluster_init_host` has to come first in the play, because the other servers wait
+for it.
+
 The two dummy interfaces belong to the [systemd-networkd](../systemd-networkd) role, which
 has to run first:
 
@@ -153,7 +159,7 @@ here too.
 | k3s_server_announce_prefixes          |           | Announced to the leaves: loopback, api vip, and the pool entries with ' ge 32'.         |
 | k3s_server_syslog_level               |           | The syslog level of frr.                                                                |
 | k3s_server_version                    |           | The k3s version to install.                                                             |
-| k3s_server_install_script_url         |           | Where to fetch the k3s install script from.                                             |
+| k3s_server_install_script_url         |           | Where to fetch the k3s install script from. Defaults to the script of `k3s_server_version`. |
 | k3s_server_release_url                |           | The base url the binary and its checksum file are fetched from.                         |
 | k3s_server_binary_url                 |           | The k3s binary to install. Defaults to the amd64 asset of the pinned release.           |
 | k3s_server_checksum_url               |           | The sha256 sum file the binary is verified against.                                     |

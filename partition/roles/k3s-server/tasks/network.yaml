@@ -1,4 +1,11 @@
 ---
+- name: Check the servers are handled one at a time
+  ansible.builtin.assert:
+    fail_msg: "{{ ansible_play_batch | length }} servers in this batch would restart frr and k3s together and drop the cluster, set serial: 1 on the play"
+    quiet: true
+    that:
+      - ansible_play_batch | length == 1
+
 - name: Check mandatory variables for this role are set
   ansible.builtin.assert:
     fail_msg: "not all mandatory variables given, check role documentation"
