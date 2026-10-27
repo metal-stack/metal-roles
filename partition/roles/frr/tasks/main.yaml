@@ -6,6 +6,7 @@
     that:
       - frr_version is not none
       - frr_repo is not none
+      - frr_conf is not none
       - ansible_os_family in ['Debian', 'RedHat']
 
 - name: Gather package facts
