@@ -4,7 +4,9 @@ docker_routing_config_mode: {{ sonic_config_docker_routing_config_mode | to_json
 features: {{ sonic_config_features | to_json }}
 frr_mgmt_framework_config: {{ sonic_config_frr_mgmt_framework_config | to_json }}
 interconnects: {{ sonic_config_interconnects | to_json }}
+{% if sonic_config_interfaces %}
 interfaces: {{ sonic_config_interfaces | to_json }}
+{% endif %}
 hostname: {{ inventory_hostname | to_json }}
 lldp_hello_time: {{ sonic_config_lldp_hello_timer | to_json }}
 loopback_address: {{ sonic_config_loopback_address | to_json }}

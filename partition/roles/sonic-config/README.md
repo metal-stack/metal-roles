@@ -264,7 +264,8 @@ sonic_config_features:
     # If enabled the container_checker will monitor the container.
     enabled: true
 
-# Whether to enable l2vpn evpn address family.
+# Whether to enable l2vpn evpn address family. Defaults to false.
+# Also controls the `advertise ipv4 unicast` block in the l2vpn evpn address family of every VRF interconnect.
 sonic_config_frr_l2vpn_evpn: true
 
 # Whether to enable frr_mgmt_framework_config.
