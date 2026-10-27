@@ -191,8 +191,9 @@ sonic_config_vtep:
 This section shows an overview of all available variables with example values.
 
 ```yaml
-# ACL tables and rules merged into the generated config_db.json, in SONiC's config_db format.
-# Merged recursively, so the CTRLPLANE ACLs that sonic-configdb-utils generates stay in place.
+# Additional ACL tables and rules for the switch, in SONiC's config_db format.
+# A table binds to the listed ports or VLANs and filters their traffic in the given stage;
+# the example drops everything arriving on the PXE VLAN that is headed for 10.0.0.0/16.
 # Rules removed from this variable stay in the running config until the next `config reload`.
 sonic_config_acl:
   ACL_TABLE:
