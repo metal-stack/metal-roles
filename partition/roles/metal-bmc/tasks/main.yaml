@@ -85,7 +85,7 @@
   vars:
     systemd_start: "{{ ensure_started.metal_bmc | default(true) }}"
     systemd_service_name: metal-bmc
-    systemd_external_config_changed: "{{ nsq_certs is changed }}"
+    systemd_external_config_changed: "{{ nsq_certs is changed or _token is changed }}"
     systemd_docker_image_name: "{{ metal_bmc_image_name }}"
     systemd_docker_image_tag: "{{ metal_bmc_image_tag }}"
     systemd_docker_ports:
