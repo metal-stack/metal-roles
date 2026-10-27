@@ -84,10 +84,17 @@
       value: "0"
     - key: net.ipv4.ip_forward
       value: "1"
-    - key: net.ipv4.tcp_l3mdev_accept
-      value: "1"
-    - key: net.ipv4.udp_l3mdev_accept
-      value: "1"
+
+- name: Accept TCP and UDP through VRFs for services bound in the default VRF
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: /etc/sysctl.d/90-mgmt-server.conf
+    sysctl_set: true
+  loop:
+    - net.ipv4.tcp_l3mdev_accept
+    - net.ipv4.udp_l3mdev_accept
+  when: mgmt_server_vrfs | length > 0
 
 - name: Configure forward chain to accept to route packages
   ansible.builtin.iptables:

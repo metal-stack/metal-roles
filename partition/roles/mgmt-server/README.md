@@ -61,7 +61,7 @@ mgmt_server_vrfs:
 | routemap_out          |           | a route map applied outbound, given as `name` and a list of `entries`. |
 
 Receiving DHCP and TCP through a VRF needs `net.ipv4.udp_l3mdev_accept` and
-`net.ipv4.tcp_l3mdev_accept`, which this role sets.
+`net.ipv4.tcp_l3mdev_accept`, which this role sets as soon as `mgmt_server_vrfs` is not empty.
 
 ## Masquerading
 
