@@ -39,7 +39,6 @@ that must stay separate from the default VRF.
 ```yaml
 mgmt_server_vrfs:
   - name: vrfACPmgmt
-    router_id: 10.0.0.1
     bgp_timers: 1 3
     unnumbered_interfaces:
       - vlan11
@@ -55,7 +54,6 @@ mgmt_server_vrfs:
 | --------------------- | --------- | ---------------------------------------------------------------------- |
 | name                  | yes       | the name of the VRF, which must already exist on the host.             |
 | unnumbered_interfaces | yes       | the interfaces carrying one BGP session each.                          |
-| router_id             |           | the BGP router id, defaults to `mgmt_server_router_id`.                |
 | bgp_timers            |           | the timers of the peer group, default `1 3`.                           |
 | announcements         |           | the lines in the address family, default `redistribute connected`.     |
 | routemap_out          |           | a route map applied outbound, given as `name` and a list of `entries`. |

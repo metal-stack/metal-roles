@@ -17,7 +17,6 @@ sonic_config_interconnects:
   acpexit:
     vrf: vrfACPexit
     peer_group: ACPEXIT
-    router_id: 10.0.0.30
     keep_private_as: true
     unnumbered_interfaces:
       - Ethernet121
