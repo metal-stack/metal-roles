@@ -8,6 +8,13 @@
     that:
       - sonic_config_loopback_address
 
+- name: Check the acls only hold acl tables and rules
+  ansible.builtin.assert:
+    fail_msg: "sonic_config_acl may only contain ACL_TABLE and ACL_RULE, move {{ sonic_config_acl.keys() | difference(['ACL_TABLE', 'ACL_RULE']) | join(', ') }} out of it"
+    quiet: true
+    that:
+      - sonic_config_acl.keys() | difference(['ACL_TABLE', 'ACL_RULE']) | length == 0
+
 - name: Check mandatory variables for frr.conf are set
   ansible.builtin.assert:
     quiet: true

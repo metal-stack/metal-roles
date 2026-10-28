@@ -11,3 +11,9 @@
 
 - name: Reload sysctls
   ansible.builtin.command: sysctl --system
+
+- name: Restart frr with reloaded systemd units
+  ansible.builtin.systemd:
+    name: frr
+    daemon_reload: true
+    state: restarted

@@ -6,6 +6,7 @@
     that:
       - frr_version is not none
       - frr_repo is not none
+      - frr_conf is not none
       - ansible_os_family in ['Debian', 'RedHat']
 
 - name: Gather package facts
@@ -45,6 +46,9 @@
     dest: /etc/frr/daemons
     mode: "0640"
   notify: Restart frr
+
+- name: Import tasks for restarting frr together with systemd-networkd
+  ansible.builtin.import_tasks: restart-with-networkd.yaml
 
 - name: Ensure frr is started
   ansible.builtin.systemd:

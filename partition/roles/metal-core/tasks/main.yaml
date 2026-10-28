@@ -68,6 +68,16 @@
 - name: Create metal-apiserver token for metal-core
   ansible.builtin.import_tasks: token.yaml
 
+- name: Install the static vrfs for metal-core
+  ansible.builtin.copy:
+    content: "{{ metal_core_static_vrfs | to_nice_yaml }}"
+    dest: "{{ metal_core_static_vrfs_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: metal_core_static_vrfs | length > 0
+  register: _metal_core_static_vrfs
+
 - name: Deploy metal-core
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -87,7 +97,7 @@
       - sys_admin
       - net_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
-    systemd_external_config_changed: "{{ _token is changed }}"
+    systemd_external_config_changed: "{{ _token is changed or _metal_core_static_vrfs is changed }}"
     systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
