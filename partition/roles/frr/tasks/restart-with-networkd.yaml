@@ -6,7 +6,7 @@
     mode: "0755"
   when: frr_restart_with_networkd | bool
 
-- name: Restart frr together with systemd-networkd until FRRouting/frr#22383 is merged
+- name: Restart frr together with systemd-networkd until FRRouting/frr#23295 is fixed
   ansible.builtin.copy:
     dest: /etc/systemd/system/frr.service.d/restart-with-networkd.conf
     content: |
