@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### Images
 
 | Name                                     | Mandatory | Description                               |
-|------------------------------------------|-----------|-------------------------------------------|
+| ---------------------------------------- | --------- | ----------------------------------------- |
 | metal_api_image_name                     | yes       | Image version of the metal-api            |
 | metal_api_image_tag                      | yes       | Image tag of the metal-api                |
 | metal_api_image_pull_policy              |           | Image pull policy of the metal-api        |
@@ -34,6 +34,8 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_image_pull_policy        |           | Image pull policy of the metal-apiserver  |
 | metal_metalctl_image_name                | yes       | Image version of metalctl                 |
 | metal_metalctl_image_tag                 | yes       | Image tag of metalctl                     |
+| metal_metalctlv2_image_name              | yes       | Image version of metalctlv2               |
+| metal_metalctlv2_image_tag               | yes       | Image tag of metalctlv2                   |
 | metal_metalctl_image_pull_policy         |           | Image pull policy of metalctl             |
 | metal_console_image_name                 | yes       | Image version of the metal-console        |
 | metal_console_image_tag                  | yes       | Image tag of the metal-console            |

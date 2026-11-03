@@ -14,6 +14,10 @@ images:
     image: "{{ metal_metalctl_image_name }}"
     imagePullPolicy: "{{ metal_metalctl_image_pull_policy }}"
     tag: "{{ metal_metalctl_image_tag }}"
+  metalctlv2:
+    image: "{{ metal_metalctlv2_image_name }}"
+    imagePullPolicy: "{{ metal_metalctlv2_image_pull_policy }}"
+    tag: "{{ metal_metalctlv2_image_tag }}"
   metal_console:
     image: "{{ metal_console_image_name }}"
     imagePullPolicy: "{{ metal_console_image_pull_policy }}"
