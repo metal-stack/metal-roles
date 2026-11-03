@@ -12,6 +12,7 @@ metal_log_level: info
 
 # metalctl
 metal_metalctl_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+metal_metalctlv2_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
 
 # service ports
 metal_api_port: 8080
