@@ -28,3 +28,10 @@ METAL_CORE_INTERFACES_TPL_FILE: "{{ metal_core_interfaces_tpl_file }}"
 METAL_CORE_FRR_TPL_FILE: "{{ metal_core_frr_tpl_file }}"
 METAL_CORE_PXE_VLAN_ID: "{{ metal_core_pxe_vlan_id }}"
 METAL_CORE_INTERFACE_NAMING_SCHEMA: "{{ metal_core_interface_naming_schema }}"
+{% if metal_core_management_interface %}
+METAL_CORE_MANAGEMENT_INTERFACE: "{{ metal_core_management_interface }}"
+{% endif %}
+{% if metal_stack_switch_os_is_bisdn | default(false) %}
+# BISDN Linux has no LLDP agent that sends what metal-hammer expects
+METAL_CORE_LLDP_SEND: "true"
+{% endif %}

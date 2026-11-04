@@ -12,6 +12,8 @@ metal_core_reconfigure_switch_interval: 10s
 metal_core_timeout: 15s
 metal_core_set_src_loopback: true
 metal_core_interface_naming_schema: default
+# empty: the NOS default (eth0, on BISDN Linux enp0)
+metal_core_management_interface: ""
 
 metal_core_etc_dir: /etc/metal-core
 metal_core_metal_apiserver_url: "{{ defaults_partition_metal_apiserver_url }}"
