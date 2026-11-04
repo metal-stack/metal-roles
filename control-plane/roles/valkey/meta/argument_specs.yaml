@@ -89,6 +89,16 @@ argument_specs:
       valkey_resources:
         type: dict
         description: Resource requests and limits for the valkey container.
+        options:
+          requests:
+            type: dict
+            description: Requests describes the minimum amount of compute resources required.
+          limits:
+            type: dict
+            description: Limits describes the maximum amount of compute resources allowed.
+          claims:
+            type: list
+            elements: dict
       valkey_backup_restore_sidecar_resources:
         type: dict
         description: Resource requests and limits for the backup-restore-sidecar container.
