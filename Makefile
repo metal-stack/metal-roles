@@ -12,3 +12,11 @@ test-local:
 lint:
 	docker run --rm -v $(PWD):/workdir davidanson/markdownlint-cli2:v0.21.0 "**/*.md"
 	docker run --rm -v $(PWD):/work --entrypoint bash -w /work --entrypoint sh pipelinecomponents/ansible-lint:edge -c 'ansible-galaxy install -r requirements.yaml && /entrypoint.sh'
+
+.PHONY: docs
+docs:
+	docker pull metalstack/metal-deployment-base:latest
+	docker run --rm -it \
+		-v $(PWD):/metal-roles \
+		-w /metal-roles \
+		metalstack/metal-deployment-base:latest /bin/bash -ce "python3 gen_docs.py"

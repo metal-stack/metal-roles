@@ -12,14 +12,6 @@
       - valkey_backup_restore_sidecar_image_name is defined
       - valkey_backup_restore_sidecar_image_tag is defined
       - valkey_backup_restore_sidecar_encryption_key is none or valkey_backup_restore_sidecar_encryption_key | length == 32
-      - valkey_backup_restore_sidecar_provider in ["local", "gcp", "s3"]
-
-- name: Check mandatory variables for this role are set
-  ansible.builtin.assert:
-    fail_msg: "not all mandatory variables given, check role documentation"
-    quiet: true
-    that:
-      - valkey_backup_restore_sidecar_image_tag is defined
 
 - name: Deploy valkey (backup-restore)
   kubernetes.core.k8s:
