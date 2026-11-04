@@ -1,0 +1,161 @@
+---
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "set mgmt_firewall_rutos_firmware and mgmt_firewall_rutos_uci for {{ inventory_hostname }}, see the role README"
+    quiet: true
+    that:
+      - mgmt_firewall_rutos_firmware is not none
+      - mgmt_firewall_rutos_uci | length > 0
+
+- name: Read the installed firmware version
+  ansible.builtin.raw: cat /etc/version
+  register: _mgmt_firewall_rutos_version
+  changed_when: false
+  check_mode: false
+
+- name: Require the firmware the desired state was written for
+  ansible.builtin.assert:
+    fail_msg: >-
+      {{ inventory_hostname }} runs {{ _mgmt_firewall_rutos_version.stdout | trim }} but the desired state was written for
+      {{ mgmt_firewall_rutos_firmware }}; re-read the device config after the firmware change, adapt the inventory and set
+      mgmt_firewall_rutos_firmware
+    quiet: true
+    that:
+      - _mgmt_firewall_rutos_version.stdout | trim == mgmt_firewall_rutos_firmware
+
+- name: Read uncommitted uci changes and a running deployment
+  ansible.builtin.raw: >-
+    uci changes;
+    if [ -f {{ mgmt_firewall_rutos_state_dir }}/apply.sh ] && [ ! -f {{ mgmt_firewall_rutos_state_dir }}/done ]
+    && [ ! -f {{ mgmt_firewall_rutos_state_dir }}/rolled_back ]; then echo "deployment in progress"; fi
+  register: _mgmt_firewall_rutos_pending
+  changed_when: false
+  check_mode: false
+
+- name: Require a clean uci staging area and no running deployment
+  ansible.builtin.assert:
+    fail_msg: >-
+      {{ inventory_hostname }} has uncommitted uci changes or an unfinished deployment in {{ mgmt_firewall_rutos_state_dir }}:
+      {{ _mgmt_firewall_rutos_pending.stdout | trim }}. Commit or revert them in the WebUI or with 'uci revert <package>',
+      and remove {{ mgmt_firewall_rutos_state_dir }} once apply.log shows the previous run has finished
+    quiet: true
+    that:
+      - _mgmt_firewall_rutos_pending.stdout | trim | length == 0
+
+- name: Export the managed packages
+  ansible.builtin.raw: "{% for package in mgmt_firewall_rutos_uci %}uci export {{ package }} && {% endfor %}true"
+  register: _mgmt_firewall_rutos_export
+  changed_when: false
+  check_mode: false
+
+- name: Compute the uci commands that converge the device
+  ansible.builtin.set_fact:
+    _mgmt_firewall_rutos_batch: "{{ _mgmt_firewall_rutos_export.stdout | uci_batch(mgmt_firewall_rutos_uci) }}"
+
+- name: Show the uci commands that converge the device
+  ansible.builtin.debug:
+    var: _mgmt_firewall_rutos_batch
+  changed_when: _mgmt_firewall_rutos_batch | length > 0
+
+- name: Apply the uci commands with a rollback timer
+  when:
+    - mgmt_firewall_rutos_apply | bool
+    - not ansible_check_mode
+    - _mgmt_firewall_rutos_batch | length > 0
+  block:
+    - name: List the packages the uci commands touch
+      ansible.builtin.set_fact:
+        _mgmt_firewall_rutos_changed_packages: "{{ _mgmt_firewall_rutos_batch | uci_batch_packages }}"
+
+    - name: Back up the committed packages
+      ansible.builtin.raw: |
+        set -e
+        rm -rf {{ mgmt_firewall_rutos_state_dir }}
+        mkdir -p {{ mgmt_firewall_rutos_state_dir }}
+        {% for package in _mgmt_firewall_rutos_changed_packages %}
+        uci export {{ package }} > {{ mgmt_firewall_rutos_state_dir }}/backup.{{ package }}
+        {% endfor %}
+
+    - name: Upload the uci commands in chunks below the dropbear command length limit
+      ansible.builtin.raw: |
+        cat >> {{ mgmt_firewall_rutos_state_dir }}/batch <<'MGMT_FIREWALL_RUTOS_BATCH'
+        {% for command in item %}
+        {{ command }}
+        {% endfor %}
+        MGMT_FIREWALL_RUTOS_BATCH
+      loop: "{{ _mgmt_firewall_rutos_batch | uci_batch_chunks(mgmt_firewall_rutos_chunk_bytes | int) }}"
+      loop_control:
+        label: "{{ item | length }} commands"
+
+    - name: Stage the uci commands
+      ansible.builtin.raw: uci batch < {{ mgmt_firewall_rutos_state_dir }}/batch
+
+    - name: Export the staged packages
+      ansible.builtin.raw: "{% for package in mgmt_firewall_rutos_uci %}uci export {{ package }} && {% endfor %}true"
+      register: _mgmt_firewall_rutos_staged
+      changed_when: false
+
+    - name: Revert the staged commands when they do not converge
+      ansible.builtin.raw: "{% for package in _mgmt_firewall_rutos_changed_packages %}uci revert {{ package }}; {% endfor %}true"
+      when: _mgmt_firewall_rutos_staged.stdout | uci_batch(mgmt_firewall_rutos_uci) | length > 0
+
+    - name: Require the staged state to converge before anything is committed
+      ansible.builtin.assert:
+        fail_msg: >-
+          the staged uci commands do not reach the desired state, nothing was committed and the staging was reverted;
+          still missing: {{ _mgmt_firewall_rutos_staged.stdout | uci_batch(mgmt_firewall_rutos_uci) }}
+        quiet: true
+        that:
+          - _mgmt_firewall_rutos_staged.stdout | uci_batch(mgmt_firewall_rutos_uci) | length == 0
+
+    - name: Commit and reload in the background, rolling back unless confirmed
+      ansible.builtin.raw: |
+        cat > {{ mgmt_firewall_rutos_state_dir }}/apply.sh <<'MGMT_FIREWALL_RUTOS_APPLY'
+        {{ lookup('ansible.builtin.template', 'apply.sh.j2') }}
+        MGMT_FIREWALL_RUTOS_APPLY
+        trap '' HUP
+        sh {{ mgmt_firewall_rutos_state_dir }}/apply.sh < /dev/null > {{ mgmt_firewall_rutos_state_dir }}/apply.log 2>&1 &
+      vars:
+        ansible_ssh_use_tty: false
+
+    - name: Wait until the device is reachable again and reports the change applied
+      ansible.builtin.raw: >-
+        test -f {{ mgmt_firewall_rutos_state_dir }}/applied &&
+        {% for package in mgmt_firewall_rutos_uci %}uci export {{ package }} && {% endfor %}true
+      register: _mgmt_firewall_rutos_applied
+      until: _mgmt_firewall_rutos_applied.rc == 0
+      retries: "{{ mgmt_firewall_rutos_reconnect_retries }}"
+      delay: "{{ mgmt_firewall_rutos_reconnect_delay }}"
+      changed_when: false
+      failed_when: false
+
+    - name: Require the committed state to be the desired state
+      ansible.builtin.assert:
+        fail_msg: >-
+          {{ inventory_hostname }} did not come back with the desired state, it restores the previous config on its own
+          {{ mgmt_firewall_rutos_confirm_timeout }}s after the reload; see {{ mgmt_firewall_rutos_state_dir }}/apply.log
+        quiet: true
+        that:
+          - _mgmt_firewall_rutos_applied.rc == 0
+          - _mgmt_firewall_rutos_applied.stdout | uci_batch(mgmt_firewall_rutos_uci) | length == 0
+
+    - name: Confirm the change so the device keeps it
+      ansible.builtin.raw: touch {{ mgmt_firewall_rutos_state_dir }}/confirmed
+
+    - name: Wait for the device to finish the deployment
+      ansible.builtin.raw: >-
+        if [ -f {{ mgmt_firewall_rutos_state_dir }}/done ]; then exit 0;
+        elif [ -f {{ mgmt_firewall_rutos_state_dir }}/rolled_back ]; then exit 3; else exit 1; fi
+      register: _mgmt_firewall_rutos_done
+      until: _mgmt_firewall_rutos_done.rc != 1
+      retries: "{{ mgmt_firewall_rutos_reconnect_retries }}"
+      delay: 2
+      changed_when: false
+      failed_when: false
+
+    - name: Require the deployment to have finished without a rollback
+      ansible.builtin.assert:
+        fail_msg: "{{ inventory_hostname }} rolled back or did not finish, see {{ mgmt_firewall_rutos_state_dir }}/apply.log"
+        quiet: true
+        that:
+          - _mgmt_firewall_rutos_done.rc == 0

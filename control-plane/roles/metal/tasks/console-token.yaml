@@ -1,0 +1,39 @@
+---
+- name: Create api token for metal-console
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
+  block:
+    - name: Create metal-console tenant
+      run_once: true
+      metal_v2_admin_tenant:
+        identifier: metal-console
+        name: metal-console
+        description: tenant used by the metal-console
+      register: _tenant
+
+    - name: Create metal-console api token
+      metal_v2_admin_token:
+        identifier: metal-console
+        use_latest_identifier: true
+        user: "{{ _tenant.id }}"
+        description: metal-console token
+        expires: "{{ metal_console_token_expiration }}"
+        permissions: "{{ metal_console_token_permissions }}"
+      register: _token
+
+- name: Create metal-console-token secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "metal-console-token"
+        namespace: "{{ metal_control_plane_namespace }}"
+        labels:
+          app: metal-console
+      data:
+        token: "{{ _token.secret | b64encode }}"
+    apply: true
+  when: '"secret" in _token'

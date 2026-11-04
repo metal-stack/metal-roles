@@ -1,5 +1,6 @@
 ---
 monitoring_namespace: monitoring
+
 monitoring_grafana_enabled: true
 monitoring_grafana_admin_password: admin
 monitoring_grafana_dashboard_timezone: Europe/Berlin
@@ -22,31 +23,70 @@ monitoring_grafana_additional_datasources:
     version: 1
     isDefault: false
     uid: alertmanager-datasource
-monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_ingress_dns }}"
-monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_ingress_dns }}
-monitoring_ingress_grafana_tls: true
+
+# prometheus ingresss configuration
+monitoring_prometheus_ingress_dns: prometheus.{{ metal_control_plane_gateway_dns }}
 monitoring_prometheus_ingress_enabled: false
 monitoring_additional_ingress_annotations: {}
+# prometheus httproute configuration
+monitoring_prometheus_gateway_dns: prometheus.{{ metal_control_plane_gateway_dns }}
+monitoring_prometheus_httproute_enabled: false
+monitoring_prometheus_httproute_parent_refs: []
+# grafana ingresss configuration
+monitoring_grafana_ingress_dns: "grafana.{{ metal_control_plane_gateway_dns }}"
+monitoring_grafana_ingress_enabled: true
+monitoring_ingress_grafana_tls: true
 monitoring_grafana_ingress_annotations: {}
-monitoring_alertmanager_ingress_annotations: {}
+# grafana httproute configuration
+monitoring_grafana_gateway_dns: "grafana.{{ metal_control_plane_gateway_dns }}"
+monitoring_grafana_httproute_enabled: false
+monitoring_grafana_httproute_parent_refs: []
+
 monitoring_alertmanager_enabled: true
+monitoring_alertmanager_webhook_logger_repeat_interval: 60m
+monitoring_alertmanager_webhook_slack_repeat_interval: 24h
+# alertmanager ingresss configuration
 monitoring_alertmanager_ingress_enabled: true
-monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_ingress_dns }}"
+monitoring_alertmanager_ingress_dns: "alert.{{ metal_control_plane_gateway_dns }}"
 monitoring_alertmanager_ingress_tls: true
 monitoring_alertmanager_ingress_basic_auth_user: alertmanager
 monitoring_alertmanager_ingress_basic_auth_password:
 monitoring_alertmanager_ingress_basic_auth_password_salt: "{{ monitoring_alertmanager_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
-
-monitoring_alertmanager_webhook_logger_repeat_interval: 60m
-monitoring_alertmanager_webhook_slack_repeat_interval: 24h
+monitoring_alertmanager_ingress_annotations: {}
+# alertmanager httproute configuration
+monitoring_alertmanager_gateway_dns: "alert.{{ metal_control_plane_gateway_dns }}"
+monitoring_alertmanager_httproute_enabled: false
+monitoring_alertmanager_httproute_parent_refs: []
+monitoring_alertmanager_deploy_envoy_gateway_basic_auth: "{{ monitoring_alertmanager_ingress_basic_auth_password is not none and monitoring_alertmanager_httproute_enabled }}"
 
 # event exporter
 event_exporter_enabled: false
 
 # metal metrics exporter
-monitoring_metal_api_url: "http://metal-api.metal-control-plane.svc:8080/metal"
-monitoring_metal_api_hmac: "metal-view"
-monitoring_metal_api_authtype: "Metal-View"
+monitoring_metal_apiserver_url: "https://v2.{{ metal_control_plane_gateway_dns }}"
+monitoring_metal_metrics_exporter_token_refresher_image_name: "{{ metal_token_refresher_image_name }}"
+monitoring_metal_metrics_exporter_token_refresher_image_tag: "{{ metal_token_refresher_image_tag }}"
+monitoring_metal_metrics_exporter_image_pull_policy: "{{ metal_control_plane_image_pull_policy }}"
+monitoring_metrics_exporter_token_expiration: 8h
+monitoring_metrics_exporter_permissions:
+  - admin:
+      methods:
+        - /metalstack.admin.v2.ComponentService/List
+        - /metalstack.admin.v2.ImageService/Usage
+        - /metalstack.admin.v2.MachineService/Issues
+        - /metalstack.admin.v2.MachineService/List
+        - /metalstack.admin.v2.MachineService/ListBMC
+        - /metalstack.admin.v2.NetworkService/List
+        - /metalstack.admin.v2.PartitionService/Capacity
+        - /metalstack.admin.v2.ProjectService/List
+        - /metalstack.admin.v2.SwitchService/List
+  - infra:
+      methods:
+        - /metalstack.infra.v2.ComponentService/Ping
+  - self:
+      methods:
+        - /metalstack.api.v2.PartitionService/List
+        - /metalstack.api.v2.TokenService/Refresh
 
 # rethinkdb exporter
 monitoring_rethinkdb_exporter_metal_db_password: "change-me"
@@ -56,6 +96,8 @@ monitoring_rethinkdb_exporter_metal_db_endpoint: metal-db.metal-control-plane:28
 monitoring_gardener_enabled: "{{ True if monitoring_gardener_seeds | length > 0 else False }}"
 monitoring_gardener_seeds: []
 
+monitoring_virtual_garden_kubeconfig_refresher_token_file_path: /etc/virtual-garden-kubeconfig/token
+monitoring_virtual_garden_kubeconfig_refresher_kubeconfig_file_path: /etc/virtual-garden-kubeconfig/kubeconfig
 monitoring_virtual_garden_kubeconfig_refresher_cluster_provider:
 monitoring_virtual_garden_kubeconfig_refresher_gcp_project_id:
 monitoring_virtual_garden_kubeconfig_refresher_gcp_location:
@@ -85,7 +127,7 @@ monitoring_prometheus_kubelet_enabled: false
 monitoring_prometheus_default_rules_enabled: true
 monitoring_prometheus_remote_write: []
   # - name: rwtarget
-  #   url: "https://monitoring.{{ metal_control_plane_ingress_dns }}/api/v1/receive"
+  #   url: "https://monitoring.{{ metal_control_plane_gateway_dns }}/api/v1/receive"
   #   username: "user"
   #   password: "change-me"
 
@@ -96,13 +138,17 @@ monitoring_prometheus_kube_proxy_service_selector:
 monitoring_thanos_enabled: true
 monitoring_thanos_receive_enabled: false
 monitoring_thanos_receive_ingress_enabled: false
-monitoring_thanos_receive_ingress_dns: "thanos-receive.{{ metal_control_plane_ingress_dns }}"
+monitoring_thanos_receive_ingress_dns: "thanos-receive.{{ metal_control_plane_gateway_dns }}"
+monitoring_thanos_receive_gateway_dns: "thanos-receive.{{ metal_control_plane_gateway_dns }}"
 monitoring_thanos_receive_ingress_annotations: []
 monitoring_thanos_receive_ingress_tls: false
 monitoring_thanos_receive_ingress_tls_gardener_managed: false
 monitoring_thanos_receive_ingress_basic_auth_user: thanos-receive
 monitoring_thanos_receive_ingress_basic_auth_password:
 monitoring_thanos_receive_ingress_basic_auth_password_salt: "{{ monitoring_thanos_receive_ingress_basic_auth_password | hash('sha1') | truncate(22, True, '') }}"
+monitoring_thanos_receive_httproute_enabled: false
+monitoring_thanos_receive_parent_refs: []
+monitoring_thanos_deploy_envoy_gateway_basic_auth: "{{ monitoring_thanos_receive_ingress_basic_auth_password is not none and monitoring_thanos_receive_httproute_enabled }}"
 monitoring_thanos_receive_size: 50Gi
 monitoring_thanos_receive_resource_preset: "large"
 monitoring_thanos_receive_probe_failure_threshold: 30

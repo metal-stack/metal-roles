@@ -38,6 +38,7 @@
   ansible.builtin.copy:
     src: /tmp/sonic/config_db.json
     dest: /etc/sonic/config_db.json
+    validate: /usr/bin/python3 -m json.tool %s
     mode: "0644"
     owner: root
     group: root
