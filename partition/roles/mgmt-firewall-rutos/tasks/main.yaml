@@ -75,6 +75,7 @@
         {% for package in _mgmt_firewall_rutos_changed_packages %}
         uci export {{ package }} > {{ mgmt_firewall_rutos_state_dir }}/backup.{{ package }}
         {% endfor %}
+      changed_when: true
 
     - name: Upload the uci commands in chunks below the dropbear command length limit
       ansible.builtin.raw: |
@@ -83,12 +84,14 @@
         {{ command }}
         {% endfor %}
         MGMT_FIREWALL_RUTOS_BATCH
+      changed_when: true
       loop: "{{ _mgmt_firewall_rutos_batch | uci_batch_chunks(mgmt_firewall_rutos_chunk_bytes | int) }}"
       loop_control:
         label: "{{ item | length }} commands"
 
     - name: Stage the uci commands
       ansible.builtin.raw: uci batch < {{ mgmt_firewall_rutos_state_dir }}/batch
+      changed_when: true
 
     - name: Export the staged packages
       ansible.builtin.raw: "{% for package in mgmt_firewall_rutos_uci %}uci export {{ package }} && {% endfor %}true"
@@ -97,6 +100,7 @@
 
     - name: Revert the staged commands when they do not converge
       ansible.builtin.raw: "{% for package in _mgmt_firewall_rutos_changed_packages %}uci revert {{ package }}; {% endfor %}true"
+      changed_when: true
       when: _mgmt_firewall_rutos_staged.stdout | uci_batch(mgmt_firewall_rutos_uci) | length > 0
 
     - name: Require the staged state to converge before anything is committed
@@ -115,6 +119,7 @@
         MGMT_FIREWALL_RUTOS_APPLY
         trap '' HUP
         sh {{ mgmt_firewall_rutos_state_dir }}/apply.sh < /dev/null > {{ mgmt_firewall_rutos_state_dir }}/apply.log 2>&1 &
+      changed_when: true
       vars:
         ansible_ssh_use_tty: false
 
@@ -141,6 +146,7 @@
 
     - name: Confirm the change so the device keeps it
       ansible.builtin.raw: touch {{ mgmt_firewall_rutos_state_dir }}/confirmed
+      changed_when: true
 
     - name: Wait for the device to finish the deployment
       ansible.builtin.raw: >-
