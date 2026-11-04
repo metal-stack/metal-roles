@@ -14,6 +14,7 @@ Deploys pixiecore in a systemd-managed Docker container.
 | pixiecore_docker_log_driver                 |           | Indicates where to write the docker logs to                                                                   |
 | pixiecore_dns_servers                       |           | Alternative DNS servers to be used by the pixiecore (can be used for configuring kernel and boot image cache) |
 | pixiecore_partition_id                      |           | The partition where pixiecore is installed                                                                    |
+| pixiecore_ipxe_type                         |           | UEFI PXE build type to serve: ipxe or snponly                                                                 |
 | pixiecore_grpc_cert_dir                     |           | The directory where the grpc certificates reside                                                              |
 | pixiecore_grpc_ca_cert                      | yes       | The filename of the ca certificate                                                                            |
 | pixiecore_grpc_client_cert                  | yes       | The filename of the client certificate                                                                        |
@@ -29,3 +30,9 @@ Deploys pixiecore in a systemd-managed Docker container.
 | pixiecore_metal_hammer_logging_tls_insecure |           | set metal-hammer to send logs to a remote endpoint without verifying the tls certificate for mtls auth        |
 | pixiecore_metal_hammer_ntp_servers          |           | A list of custom NTP servers                                                                                  |
 | pixiecore_additional_volume_mounts          |           | Volumes to mount into the pixiecore, besides the default ones                                                 |
+| pixiecore_etc_dir                           |           | /etc Directory for pixiecore                                                                                  |
+| pixiecore_metal_apiserver_url               |           | The address of the metal-apiserver                                                                            |
+| pixiecore_metal_apiserver_token_filename    |           | Filename of the token file to authorize against the metal-apiserver                                           |
+| pixiecore_deployment_admin_token            |           | Initial admin token to create infra token for pixiecore                                                       |
+| pixiecore_token_expiration                  |           | The duration of the api token's validity                                                                      |
+| pixiecore_permissions                       |           | API permissions that the pixiecore needs                                                                      |

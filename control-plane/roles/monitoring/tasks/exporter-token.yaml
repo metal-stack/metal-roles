@@ -1,0 +1,39 @@
+---
+- name: Create api token for metal-metrics-exporter
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ hostvars['localhost'].metal_deployment_admin_token }}"
+  block:
+    - name: Create metal-metrics-exporter tenant
+      run_once: true
+      metal_v2_admin_tenant:
+        identifier: metal-metrics-exporter
+        name: metal-metrics-exporter
+        description: tenant used by the metal-metrics-exporter
+      register: _tenant
+
+    - name: Create metal-metrics-exporter api token
+      metal_v2_admin_token:
+        identifier: metal-metrics-exporter
+        use_latest_identifier: true
+        user: "{{ _tenant.id }}"
+        description: metal-metrics-exporter token
+        expires: "{{ monitoring_metrics_exporter_token_expiration }}"
+        permissions: "{{ monitoring_metrics_exporter_permissions }}"
+      register: _token
+
+- name: Create metal-metrics-exporter-token secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "metal-metrics-exporter-token"
+        namespace: "{{ monitoring_namespace }}"
+        labels:
+          app: metal-metrics-exporter
+      data:
+        token: "{{ _token.secret | b64encode }}"
+    apply: true
+  when: '"secret" in _token'

@@ -9,7 +9,7 @@ gardener_logging_shooted_seeds: []
 # Requires gardener_logging_alloy_chart_version and gardener_logging_alloy_chart_repo when enabled.
 gardener_logging_alloy_enabled: true
 
-gardener_logging_ingress_dns: "loki.{{ metal_control_plane_ingress_dns }}"
+gardener_logging_ingress_dns: "loki.{{ metal_control_plane_gateway_dns }}"
 # is not renamed to alloy for backward compatibility with existing installs.
 # if updated, the shooted seed`s alloy/promtail need their loki endpoints updated to match.
 gardener_logging_ingress_loki_basic_auth_user: promtail
