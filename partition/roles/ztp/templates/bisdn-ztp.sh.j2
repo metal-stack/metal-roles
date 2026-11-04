@@ -1,0 +1,38 @@
+#!/bin/sh
+# {{ ansible_managed }}
+#
+# First-boot port configuration for BISDN Linux switches (breakouts, FEC):
+#   curl -fsS http://{{ ztp_listen_address }}:{{ ztp_port }}/bisdn-ztp.sh | sh -s <switch name>
+# BISDN Linux has no ZTP client; run it from the console or a first-boot hook.
+# The bisdn-config role performs the same steps on its first run.
+set -eu
+
+name="${1:-$(hostname)}"
+base="http://{{ ztp_listen_address }}:{{ ztp_port }}"
+
+mkdir -p /etc/bisdn-portconf /etc/systemd/system/ofdpa.service.d
+curl -fsS -o /etc/bisdn-portconf/ports.yaml "${base}/bisdn/${name}/ports.yaml"
+curl -fsS -o /usr/sbin/bisdn-portconf.tmp "{{ ztp_bisdn_portconf_url }}"
+echo "{{ ztp_bisdn_portconf_checksum | regex_replace('^sha256:', '') }}  /usr/sbin/bisdn-portconf.tmp" | sha256sum -c -
+chmod 0755 /usr/sbin/bisdn-portconf.tmp
+mv /usr/sbin/bisdn-portconf.tmp /usr/sbin/bisdn-portconf
+
+cat > /etc/systemd/system/ofdpa.service.d/10-bisdn-portconf.conf <<'UNIT'
+[Service]
+ExecStartPre=-/usr/sbin/bisdn-portconf
+UNIT
+
+for path in /etc/bisdn-portconf/ /etc/systemd/system/ofdpa.service.d/ /usr/sbin/bisdn-portconf; do
+  grep -qxF "$path" /etc/default/user-backup.txt || echo "$path" >> /etc/default/user-backup.txt
+done
+
+rc=0
+/usr/sbin/bisdn-portconf -check || rc=$?
+case "$rc" in
+  0) echo "port configuration unchanged" ;;
+  2) systemctl daemon-reload
+     systemctl restart ofdpa.service
+     systemctl restart baseboxd.service
+     echo "port configuration applied" ;;
+  *) exit "$rc" ;;
+esac

@@ -12,3 +12,14 @@ ztp_additional_files: []
 #   data: echo
 
 ztp_nginx_docker_log_driver: json-file
+
+# BISDN Linux switches: breakouts and FEC served for first boot, in the
+# structure of sonic_config_breakouts / sonic_config_ports, e.g.
+#   ztp_bisdn_switches:
+#     leaf01:
+#       breakouts: {port1: 4x25G}
+#       ports: {default_fec: rs}
+ztp_bisdn_switches: {}
+# where switches download bisdn-portconf from (bsidn-test cmd/bisdn-portconf)
+ztp_bisdn_portconf_url:
+ztp_bisdn_portconf_checksum:

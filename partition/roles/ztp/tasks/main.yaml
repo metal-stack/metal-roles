@@ -45,6 +45,29 @@
   loop_control:
     label: "{{ item.name }}"
 
+- name: Create BISDN switch directories
+  ansible.builtin.file:
+    path: "{{ ztp_host_dir_path }}/config/bisdn/{{ item }}"
+    mode: "0755"
+    state: directory
+  loop: "{{ ztp_bisdn_switches | list }}"
+
+- name: Render BISDN port configurations
+  ansible.builtin.copy:
+    dest: "{{ ztp_host_dir_path }}/config/bisdn/{{ item.key }}/ports.yaml"
+    content: "{{ {'breakouts': item.value.breakouts | default({}), 'ports': item.value.ports | default({})} | to_nice_yaml }}"
+    mode: "0644"
+  loop: "{{ ztp_bisdn_switches | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Render BISDN first-boot script
+  ansible.builtin.template:
+    src: bisdn-ztp.sh.j2
+    dest: "{{ ztp_host_dir_path }}/config/bisdn-ztp.sh"
+    mode: "0644"
+  when: ztp_bisdn_switches | length > 0
+
 - name: Deploy server for serving ztp files
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service

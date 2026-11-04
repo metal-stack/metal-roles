@@ -22,6 +22,16 @@ host leaf01 {
 
 For more information on the `ztp.json` format refer to the [documentation](https://github.com/sonic-net/SONiC/blob/master/doc/ztp/ztp.md).
 
+## Port Configuration for BISDN Linux Switches
+
+BISDN Linux has no ZTP client. For switches in `ztp_bisdn_switches`, this role serves `bisdn/<switch>/ports.yaml` (breakouts and FEC, in the structure of `sonic_config_breakouts` / `sonic_config_ports`) and `bisdn-ztp.sh`. Running the script on first boot installs `bisdn-portconf`, applies the port configuration to the Broadcom SDK config (`config.bcm`) and restarts the dataplane once:
+
+```sh
+curl -fsS http://10.1.253.13:8080/bisdn-ztp.sh | sh -s leaf01
+```
+
+The [bisdn-config](../bisdn-config) role performs the same steps on its first run, so the script is only needed when ports must be broken out before the switch is provisioned.
+
 ## Variables
 
 | Name                        | Mandatory | Description                                                 |
@@ -35,3 +45,6 @@ For more information on the `ztp.json` format refer to the [documentation](https
 | ztp_authorized_keys         | yes       | the authorized keys that should be installed by ztp.        |
 | ztp_admin_user              |           | the user for which the authorized keys will be provisioned. |
 | ztp_additional_files        |           | puts additional files into serve directory.                 |
+| ztp_bisdn_switches          |           | BISDN Linux switches with `breakouts` and `ports` to serve. |
+| ztp_bisdn_portconf_url      |           | download URL of `bisdn-portconf` for BISDN switches.        |
+| ztp_bisdn_portconf_checksum |           | checksum of `bisdn-portconf` (`sha256:<hex>`).              |
