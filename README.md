@@ -44,13 +44,10 @@ setup_yaml:
     # use release versions if you want to have stable deployment!
 ```
 
-## Variables
+## Default Variables
 
-There are [global defaults](./common/roles/defaults/defaults/main.yaml) for all roles of this project defined.
+Roles might use global default variables that they can import in their `meta/main.yaml` through role dependencies.
 
-| Name                         | Mandatory | Description                                    |
-| ---------------------------- | --------- | ---------------------------------------------- |
-| metal_registry_auth_enabled  |           | Enables deployment of image pull secrets       |
-| metal_registry_auth_user     |           | The default auth user for the registry         |
-| metal_registry_auth_password |           | The password for the user of the registry      |
-| metal_registry_url           |           | The Container-registry url, default is docker. |
+Roles that provide default variables should not run any tasks as otherwise we consider the practice of running role dependencies problematic.
+
+If you want to derive the variables documentation in a role from a role's `meta/argument_specs.yaml`, you can do so by running `make docs`.
