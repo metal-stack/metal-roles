@@ -1,0 +1,88 @@
+---
+- name: Check mandatory variables for port configuration are set
+  ansible.builtin.assert:
+    quiet: true
+    that:
+      - bisdn_config_portconf_url
+      - bisdn_config_portconf_checksum
+
+- name: Install bisdn-portconf
+  ansible.builtin.get_url:
+    url: "{{ bisdn_config_portconf_url }}"
+    dest: /usr/sbin/bisdn-portconf
+    checksum: "{{ bisdn_config_portconf_checksum }}"
+    mode: "0755"
+
+- name: Create bisdn-portconf directory
+  ansible.builtin.file:
+    path: /etc/bisdn-portconf
+    state: directory
+    mode: "0755"
+
+- name: Render port configuration
+  ansible.builtin.template:
+    src: ports.yaml.j2
+    dest: /etc/bisdn-portconf/ports.yaml
+    mode: "0644"
+
+- name: Create ofdpa.service drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/ofdpa.service.d
+    state: directory
+    mode: "0755"
+
+- name: Apply the port configuration before every ofdpa start
+  ansible.builtin.template:
+    src: ofdpa-portconf.conf.j2
+    dest: /etc/systemd/system/ofdpa.service.d/10-bisdn-portconf.conf
+    mode: "0644"
+  notify: Reload systemd daemon
+
+- name: Keep the port configuration across BISDN upgrades
+  ansible.builtin.lineinfile:
+    path: /etc/default/user-backup.txt
+    line: "{{ item }}"
+  loop:
+    - /etc/bisdn-portconf/
+    - /etc/systemd/system/ofdpa.service.d/
+    - /usr/sbin/bisdn-portconf
+
+- name: Check whether the port configuration changes
+  ansible.builtin.command: /usr/sbin/bisdn-portconf -check
+  register: _portconf_check
+  changed_when: _portconf_check.rc == 2
+  failed_when: _portconf_check.rc not in [0, 2]
+
+- name: Check whether a port configuration was applied before
+  ansible.builtin.stat:
+    path: /etc/bisdn-portconf/portmap.json
+  register: _portconf_applied
+
+- name: Report a pending port configuration
+  ansible.builtin.debug:
+    msg: >-
+      The port configuration changed. It is applied with the next ofdpa start
+      (reboot), or now with bisdn_config_allow_dataplane_restart=true, which
+      interrupts the dataplane.
+  when:
+    - _portconf_check.rc == 2
+    - _portconf_applied.stat.exists
+    - not bisdn_config_allow_dataplane_restart
+
+- name: Apply the port configuration and restart the dataplane
+  ansible.builtin.systemd:
+    name: ofdpa.service
+    state: restarted
+    daemon_reload: true
+  when:
+    - _portconf_check.rc == 2
+    - (not _portconf_applied.stat.exists) or bisdn_config_allow_dataplane_restart
+
+# baseboxd recreates the port netdevs from OF-DPA
+- name: Restart baseboxd after ofdpa
+  ansible.builtin.systemd:
+    name: baseboxd.service
+    state: restarted
+  when:
+    - _portconf_check.rc == 2
+    - (not _portconf_applied.stat.exists) or bisdn_config_allow_dataplane_restart

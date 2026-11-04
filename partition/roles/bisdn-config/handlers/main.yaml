@@ -1,0 +1,32 @@
+---
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart iptables
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - iptables.service
+    - ip6tables.service
+
+- name: Restart sshd.socket
+  ansible.builtin.systemd:
+    name: sshd.socket
+    state: restarted
+
+- name: Restart frr
+  ansible.builtin.systemd:
+    name: frr.service
+    state: restarted
+
+- name: Restart timesyncd
+  ansible.builtin.systemd:
+    name: systemd-timesyncd.service
+    state: restarted
+
+# last: moving the management port into VRF mgmt interrupts the connection
+- name: Reload networkd
+  ansible.builtin.command: networkctl reload
+  changed_when: true

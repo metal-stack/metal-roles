@@ -1,0 +1,31 @@
+---
+# management port; the BISDN installer names it enp0
+bisdn_config_mgmt_interface: enp0
+# put the management port into VRF mgmt (as on SONiC with mgmt VRF)
+bisdn_config_mgmt_vrf: true
+bisdn_config_mgmt_vrf_table: 5000
+# address of the management port in CIDR notation, defaults to its current address
+bisdn_config_mgmt_address: "{{ ansible_facts[bisdn_config_mgmt_interface]['ipv4']['address'] }}/{{ (ansible_facts[bisdn_config_mgmt_interface]['ipv4']['address'] ~ '/' ~ ansible_facts[bisdn_config_mgmt_interface]['ipv4']['netmask']) | ansible.utils.ipaddr('prefix') }}"
+bisdn_config_mgmt_gateway: "{{ metal_partition_mgmt_gateway }}"
+
+bisdn_config_nameservers: []
+bisdn_config_ntp_servers: []
+bisdn_config_timezone: Europe/Berlin
+
+# SSH public keys for root (Ansible and metal-core's management access)
+bisdn_config_authorized_keys: []
+
+# Port breakouts and FEC, in the structure of sonic_config_breakouts and
+# sonic_config_ports, e.g.
+#   bisdn_config_breakouts: {port1: 4x25G}
+#   bisdn_config_ports: {default_fec: rs, list: [{name: port2, fec: none}]}
+bisdn_config_breakouts: {}
+bisdn_config_ports: {}
+# bisdn-portconf binary (bsidn-test cmd/bisdn-portconf), needed when
+# breakouts or ports are set
+bisdn_config_portconf_url:
+bisdn_config_portconf_checksum:
+# Applying a changed breakout/FEC config restarts ofdpa and baseboxd, which
+# interrupts the dataplane. Without this, the role only reports the pending
+# change, unless no port configuration was applied before (first provisioning).
+bisdn_config_allow_dataplane_restart: false
