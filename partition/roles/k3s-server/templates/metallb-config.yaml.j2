@@ -1,0 +1,36 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ k3s_server_metallb_pool_name }}
+  namespace: {{ k3s_server_metallb_namespace }}
+spec:
+  addresses:
+{% for address in k3s_server_metallb_addresses %}
+    - {{ address }}
+{% endfor %}
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: {{ k3s_server_metallb_pool_name }}
+  namespace: {{ k3s_server_metallb_namespace }}
+spec:
+  ipAddressPools:
+    - {{ k3s_server_metallb_pool_name }}
+{% for host in k3s_server_cluster_hosts | sort %}
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: {{ host }}
+  namespace: {{ k3s_server_metallb_namespace }}
+spec:
+  myASN: {{ k3s_server_metallb_asn }}
+  peerASN: {{ hostvars[host].k3s_server_asn }}
+  peerAddress: {{ k3s_server_metallb_local_address }}
+  sourceAddress: {{ k3s_server_metallb_speaker_address }}
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: {{ host }}
+{% endfor %}

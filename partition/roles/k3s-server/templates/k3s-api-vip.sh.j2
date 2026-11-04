@@ -1,0 +1,52 @@
+#!/bin/bash
+set -uo pipefail
+
+VIP=${K3S_API_VIP:-{{ k3s_server_api_vip_address }}}
+IFACE=${K3S_API_VIP_INTERFACE:-{{ k3s_server_api_vip_interface }}}
+PROBE_URL=${K3S_API_VIP_PROBE_URL:-{{ k3s_server_api_vip_probe_url }}}
+PROBE_TIMEOUT=${K3S_API_VIP_PROBE_TIMEOUT:-{{ k3s_server_api_vip_probe_timeout }}}
+READY_TIMEOUT=${K3S_API_VIP_READY_TIMEOUT:-{{ k3s_server_api_vip_ready_timeout }}}
+READY_INTERVAL=${K3S_API_VIP_READY_INTERVAL:-{{ k3s_server_api_vip_ready_interval }}}
+
+die() {
+    echo "$*" >&2
+    exit 1
+}
+
+apiserver_ready() {
+    k3s kubectl --request-timeout="${PROBE_TIMEOUT}" get --raw "${PROBE_URL}" >/dev/null 2>&1
+}
+
+vip_present() {
+    ip -4 -brief address show dev "${IFACE}" | grep -q "${VIP}/32"
+}
+
+wait_for_apiserver() {
+    local deadline=$((SECONDS + READY_TIMEOUT))
+    while [ "${SECONDS}" -lt "${deadline}" ]; do
+        apiserver_ready && return 0
+        sleep "${READY_INTERVAL}"
+    done
+    return 1
+}
+
+add_vip() {
+    wait_for_apiserver || die "the local apiserver did not answer ${PROBE_URL} within ${READY_TIMEOUT}s, so ${VIP} stays withdrawn"
+    vip_present && return 0
+    ip address add "${VIP}/32" dev "${IFACE}" || die "cannot add ${VIP}/32 to ${IFACE}, add the interface to systemd_networkd_dummies"
+}
+
+del_vip() {
+    vip_present || return 0
+    ip address del "${VIP}/32" dev "${IFACE}" || die "cannot remove ${VIP}/32 from ${IFACE}"
+}
+
+main() {
+    case "${1:-}" in
+        add) add_vip ;;
+        del) del_vip ;;
+        *) die "usage: $(basename "${0}") add|del" ;;
+    esac
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then main "$@"; fi

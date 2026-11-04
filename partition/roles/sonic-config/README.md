@@ -191,6 +191,24 @@ sonic_config_vtep:
 This section shows an overview of all available variables with example values.
 
 ```yaml
+# Additional ACL tables and rules for the switch, in SONiC's config_db format.
+# A table binds to the listed ports or VLANs and filters their traffic in the given stage;
+# the example drops everything arriving on the PXE VLAN that is headed for 10.0.0.0/16.
+# Rules removed from this variable stay in the running config until the next `config reload`.
+sonic_config_acl:
+  ACL_TABLE:
+    PXE_IN:
+      policy_desc: PXE vlan must not reach the cluster
+      type: L3
+      stage: ingress
+      ports:
+        - Vlan4000
+  ACL_RULE:
+    PXE_IN|DENY_1:
+      PRIORITY: "8000"
+      PACKET_ACTION: DROP
+      DST_IP: 10.0.0.0/16
+
 # The autonomous system number of the router.
 sonic_config_asn: 42
 
@@ -247,7 +265,8 @@ sonic_config_features:
     # If enabled the container_checker will monitor the container.
     enabled: true
 
-# Whether to enable l2vpn evpn address family.
+# Whether to enable l2vpn evpn address family. Defaults to false.
+# Also controls the `advertise ipv4 unicast` block in the l2vpn evpn address family of every VRF interconnect.
 sonic_config_frr_l2vpn_evpn: true
 
 # Whether to enable frr_mgmt_framework_config.
@@ -337,7 +356,6 @@ sonic_config_interconnects:
     # Connect to this BGP neighbors. Supports multiple neighbors and also BGP unnumbered.
     neighbors:
       - 10.1.2.3
-      - Ethernet1 interface
 
     # Put the neighbor in this peer group.
     peer_group: STATIC
@@ -392,6 +410,15 @@ sonic_config_interconnects:
     # Use a dedicated BGP session fenced with a VRF for this connection.
     # It also declares the virtual network as layer-3.
     vrf: Vrf46
+
+# Additional numbered interfaces to add to the `INTERFACE` field of the ConfigDB.
+# This can be necessary if, for example, you need a dhcp_relay to listen on VLAN subinterfaces.
+sonic_config_interfaces:
+  # The name of the interface.
+  Ethernet0.10:
+    # The IP addresses to add for this interface.
+    ips:
+      - 10.0.0.1/32
 
 # LLDP interval.
 sonic_config_lldp_hello_timer: 10
@@ -526,6 +553,16 @@ sonic_config_frr_route_map:
   # Matcher for the route map.
   match: ip address prefix-list PL_FABRIC_OUT
 
+# Route map to apply inbound on the FABRIC peer group of the default VRF.
+# Use it to keep unwanted prefixes out of the switch, for example a default route
+# from the fabric on a switch that reaches the outside through its management interface.
+sonic_config_frr_fabric_routemap_in:
+  # Name of the route map.
+  name: RM_FABRIC_IN
+  # Lines placed inside the route map.
+  entries:
+    - match ip address prefix-list PL_FABRIC_IN
+
 # Whether a `config reload` should be triggered. If `false` a simple `config load` will be
 # performed. Keep in mind that a config reload is a disruptive process.
 # Active connections will be interrupted and it may take up to several minutes for the
@@ -574,8 +611,15 @@ sonic_config_vlan_subinterfaces:
 
 # VLANs to configure on the switch.
 sonic_config_vlans:
-  # DHCP servers to relay to.
-  - dhcp_servers:
+    # VRF which the DHCP servers are reachable by.
+    # This setting was only tested on EdgeCore SONiC 202111.1
+  - dhcp_relay_server_vrf: Vrf45
+    # Source interface to use for DHCP relay.
+    # This interface's address is used as `giaddr`.
+    # This setting was only tested on EdgeCore SONiC 202111.11.
+    dhcp_relay_src_intf: Vlan4000
+    # DHCP servers to relay to.
+    dhcp_servers:
       - 10.1.1.1
 
     # VLAN ID.
