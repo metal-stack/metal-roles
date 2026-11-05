@@ -145,6 +145,13 @@ def main():
             with open(f, 'r', encoding='utf-8') as f:
                 defaults = defaults | yaml.safe_load(f) or {}
 
+        for key in options:
+            cmd = ["rg", "-l", f"\\b{key}\\b", str(role_dir), "--glob", "!meta/*", "--glob", "!defaults/*"]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.returncode != 0:
+                print(
+                    f"Warning: Variable {key} is defined in argument_specs but not used in role {role_name}")
+
         for key in defaults:
             if key not in options:
                 raise Exception(
