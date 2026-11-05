@@ -59,6 +59,9 @@ def update_readme(role_path, yaml_block, dependencies):
     else:
         var_section = var_section_match.group(1)
 
+    var_section = re.sub(
+        r"^This role depends on default values of.*(?:\n|$)", "", var_section, flags=re.MULTILINE)
+
     dep_sentences = []
     for dep in dependencies:
         if dep.endswith("roles/defaults"):
@@ -67,8 +70,7 @@ def update_readme(role_path, yaml_block, dependencies):
             relative = os.path.relpath(dep_readme, start=role_path)
 
             sentence = f"This role depends on default values of [{dep}]({relative})."
-            if sentence not in var_section:
-                dep_sentences.append(sentence)
+            dep_sentences.append(sentence)
 
     dep_text = "\n\n".join(dep_sentences)
 
