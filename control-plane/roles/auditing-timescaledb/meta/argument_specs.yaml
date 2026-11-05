@@ -74,6 +74,7 @@ argument_specs:
         description: GCP service account JSON used for accessing the backup bucket.
       auditing_timescaledb_backup_restore_sidecar_encryption_key:
         type: str
+        no_log: true
         description: Encryption key (32 characters) for encrypting backups.
       auditing_timescaledb_backup_restore_sidecar_s3_bucket_name:
         type: str
