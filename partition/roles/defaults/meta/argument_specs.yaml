@@ -1,0 +1,57 @@
+---
+argument_specs:
+  main:
+    short_description: Default variables for partition
+    options:
+      metal_partition_timezone:
+        type: str
+        description: Timezone for the partition.
+      metal_partition_id:
+        type: str
+        description: ID of the partition.
+      metal_partition_metal_api_protocol:
+        type: str
+        description: Protocol used by the metal API.
+      metal_partition_metal_api_addr:
+        type: str
+        description: Address of the metal API.
+      metal_partition_metal_api_port:
+        type: int
+        description: Port of the metal API.
+      metal_partition_metal_api_basepath:
+        type: str
+        description: Base path of the metal API.
+      metal_partition_metal_api_hmac_edit_key:
+        type: str
+        no_log: true
+        description: HMAC edit key for the metal API.
+      metal_partition_metal_api_hmac_view_key:
+        type: str
+        no_log: true
+        description: HMAC view key for the metal API.
+      metal_partition_metal_api_grpc_address:
+        type: str
+        description: gRPC address of the metal API.
+      metal_partition_metal_api_grpc_cert_dir:
+        type: str
+        description: Directory for gRPC certificates.
+      metal_partition_metal_api_grpc_ca_cert:
+        type: str
+        description: CA certificate for gRPC.
+      metal_partition_metal_api_grpc_client_cert:
+        type: str
+        description: Client certificate for gRPC.
+      metal_partition_metal_api_grpc_client_key:
+        type: str
+        no_log: true
+        description: Client key for gRPC.
+      metal_partition_mgmt_gateway:
+        type: str
+        description: Management gateway for the partition.
+      defaults_partition_metal_apiserver_url:
+        type: str
+        description: Default URL for the metal API server.
+      defaults_partition_metal_apiserver_admin_token:
+        type: str
+        no_log: true
+        description: Default admin token for the metal API server.

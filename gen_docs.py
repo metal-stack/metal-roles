@@ -59,8 +59,8 @@ def update_readme(role_path, yaml_block, dependencies):
     else:
         var_section = var_section_match.group(1)
 
-    # Remove existing dependency lines to avoid duplication when paths change
-    var_section = re.sub(r"^This role depends on default values of.*(?:\n|$)", "", var_section, flags=re.MULTILINE)
+    var_section = re.sub(
+        r"^This role depends on default values of.*(?:\n|$)", "", var_section, flags=re.MULTILINE)
 
     dep_sentences = []
     for dep in dependencies:
@@ -91,7 +91,7 @@ def update_readme(role_path, yaml_block, dependencies):
         else:
             new_var_section = f"{var_section}\n\n{yaml_block}".strip()
 
-    new_content = content.replace(var_section, new_var_section)
+    new_content = content.replace(var_section, new_var_section).rstrip()
 
     with open(readme_path, 'w', encoding='utf-8') as f:
         f.write(new_content + "\n")
@@ -144,6 +144,10 @@ def main():
         for f in Path(role_dir / "defaults").rglob("*.y*ml"):
             with open(f, 'r', encoding='utf-8') as f:
                 defaults = defaults | yaml.safe_load(f) or {}
+
+        for key in defaults:
+            if key not in options:
+                raise Exception(f"Variable {key} is defined in defaults but not in argument_specs for role {role_name}")
 
         doc_vars = {}
         for key in options:
