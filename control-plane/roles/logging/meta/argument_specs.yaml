@@ -73,9 +73,51 @@ argument_specs:
       logging_ingress_annotations:
         type: dict
         description: Additional annotations for the loki ingress.
+      logging_ingress_enabled:
+        type: bool
+        description: Whether to create an ingress for Loki.
+      logging_gateway_enabled:
+        type: bool
+        description: Whether to create a gateway for Loki.
+      logging_httproute_enabled:
+        type: bool
+        description: Whether to create an httproute for Loki.
+      logging_httproute_parent_refs:
+        type: list
+        elements: str
+        description: Parent references for the Loki httproute.
+      logging_gateway_dns:
+        type: str
+        description: Gateway DNS name of Loki.
       logging_loki_enabled:
         type: bool
         description: Whether to deploy loki.
-      logging_loki_size:
+      logging_loki_monitoring_enabled:
+        type: bool
+        description: Whether to create a ServiceMonitor for Loki. Requires the monitoring role to be deployed.
+      logging_loki_log_level:
+        type: str
+        description: Loki log level.
+      logging_loki_persistence_enabled:
+        type: bool
+        description: Whether to use persistent storage for Loki.
+      logging_loki_storage_size:
         type: str
         description: Size of the loki persistent volume.
+      logging_loki_storage_class:
+        type: str
+        description: Storage class of the loki persistent volume.
+      logging_loki_retention_enabled:
+        type: bool
+        description: Whether to enable retention for Loki.
+      logging_loki_retention_period:
+        type: str
+        description: Retention period for Loki.
+      logging_loki_deletion_mode:
+        type: str
+        description: Loki deletion mode.
+      logging_loki_retention_stream:
+        type: list
+        elements: dict
+        description: Per-stream retention rules for Loki.
+

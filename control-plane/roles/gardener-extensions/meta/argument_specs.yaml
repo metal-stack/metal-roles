@@ -34,6 +34,10 @@ argument_specs:
       gardener_extension_backup_s3_helm_chart_tag:
         type: str
         description: Tag of the backup-s3 extension helm chart.
+      gardener_extension_backup_s3_additional_network_policies:
+        type: bool
+        description: Whether additional network policies are deployed for the backup-s3 extension.
+
       gardener_extension_csi_driver_lvm_enabled:
         type: bool
         description: Whether the csi-driver-lvm extension is registered.

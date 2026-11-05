@@ -49,6 +49,25 @@ argument_specs:
         type: list
         elements: str
         description: Fans to subscribe to. Discovered from the switch at deploy time when left empty.
+      monitoring_gnmic_psus:
+        type: list
+        elements: str
+        description: PSUs to subscribe to. Discovered from the switch at deploy time when left empty.
+      monitoring_gnmic_transceiver_tables:
+        type: list
+        elements: str
+        description: Transceiver tables to subscribe to. Discovered from the switch at deploy time when left empty.
+      monitoring_gnmic_queues:
+        type: dict
+        description: Queue name to counter OID map.
+      monitoring_gnmic_port_counters:
+        type: list
+        elements: str
+        description: Port counters to subscribe to.
+      monitoring_gnmic_system_ready:
+        type: str
+        description: Name of the STATE_DB SYSTEM_READY object. Discovered when left unset.
+
       monitoring_gnmic_crm_acl_tables:
         type: list
         elements: str

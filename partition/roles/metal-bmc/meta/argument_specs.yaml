@@ -87,3 +87,23 @@ argument_specs:
       metal_bmc_lease_file:
         type: str
         description: Path to the DHCP lease file evaluated by metal-bmc.
+      metal_bmc_etc_dir:
+        type: str
+        description: Host directory for metal-bmc configuration.
+      metal_bmc_metal_apiserver_url:
+        type: str
+        description: URL of the metal-api server.
+      metal_bmc_metal_apiserver_token_filename:
+        type: str
+        description: Filename containing the metal-api token.
+      metal_bmc_deployment_admin_token:
+        type: str
+        no_log: true
+        description: Admin token for the metal-api server.
+      metal_bmc_token_expiration:
+        type: str
+        description: Token expiration period for the admin token.
+      metal_bmc_permissions:
+        type: dict
+        description: Permissions assigned to the admin token.
+

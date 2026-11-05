@@ -33,6 +33,10 @@ argument_specs:
       metal_metalctl_image_pull_policy:
         type: str
         description: Image pull policy for the metalctl container.
+      metal_metalctlv2_image_pull_policy:
+        type: str
+        description: Image pull policy for the metalctl v2 container.
+
       metal_metalctl_image_name:
         type: str
         description: Image name of metalctl. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
@@ -173,6 +177,14 @@ argument_specs:
         type: str
         no_log: true
         description: OIDC client secret for the metal-apiserver. Required when metal_apiserver_enabled is true. Read from the zitadel-client-credentials secret by default.
+      metal_apiserver_oidc_additional_scopes:
+        type: list
+        elements: str
+        description: Additional OIDC scopes for the metal-apiserver.
+      metal_apiserver_unique_user_key:
+        type: str
+        description: The key used to uniquely identify a user in the OIDC token.
+
       metal_apiserver_tls_skip_verify:
         type: bool
         description: Whether the metal-apiserver skips TLS certificate verification.
@@ -180,6 +192,50 @@ argument_specs:
         type: str
         no_log: true
         description: Session secret of the metal-apiserver.
+      metal_apiserver_static_data_enabled:
+        type: bool
+        description: Whether to enable static data for the metal-apiserver.
+      metal_apiserver_static_data_partitions:
+        type: list
+        elements: dict
+        description: Static partitions for the metal-apiserver.
+      metal_apiserver_static_data_sizes:
+        type: list
+        elements: dict
+        description: Static sizes for the metal-apiserver.
+      metal_apiserver_static_data_images:
+        type: list
+        elements: dict
+        description: Static images for the metal-apiserver.
+      metal_apiserver_static_data_tenants:
+        type: list
+        elements: dict
+        description: Static tenants for the metal-apiserver.
+      metal_apiserver_static_data_tenant_members:
+        type: list
+        elements: dict
+        description: Static tenant members for the metal-apiserver.
+      metal_apiserver_static_data_projects:
+        type: list
+        elements: dict
+        description: Static projects for the metal-apiserver.
+      metal_apiserver_static_data_project_members:
+        type: list
+        elements: dict
+        description: Static project members for the metal-apiserver.
+      metal_apiserver_static_data_networks:
+        type: list
+        elements: dict
+        description: Static networks for the metal-apiserver.
+      metal_apiserver_static_data_ips:
+        type: list
+        elements: dict
+        description: Static IPs for the metal-apiserver.
+      metal_apiserver_static_data_filesystemlayouts:
+        type: list
+        elements: dict
+        description: Static filesystem layouts for the metal-apiserver.
+
       metal_apiserver_secure_cookie:
         type: bool
         description: Whether the metal-apiserver uses secure cookies.
@@ -617,6 +673,28 @@ argument_specs:
         type: list
         elements: dict
         description: Parent references for the metal-console TCPRoute.
+      metal_console_token_expiration:
+        type: str
+        description: Token expiration period for the metal-console.
+      metal_console_token_refresher_image_name:
+        type: str
+        description: Image name of the metal-console token refresher.
+      metal_console_token_refresher_image_tag:
+        type: str
+        description: Image tag of the metal-console token refresher.
+      metal_console_token_refresher_image_pull_policy:
+        type: str
+        description: Image pull policy for the metal-console token refresher.
+      metal_console_token_refresher_resources:
+        type: dict
+        description: Resource requests and limits for the metal-console token refresher.
+      metal_console_token_refresher_schedule:
+        type: str
+        description: Cron schedule for the metal-console token refresher.
+      metal_console_token_permissions:
+        type: dict
+        description: Permissions assigned to the metal-console token.
+
       metal_deploy_ingress:
         type: bool
         description: Whether to deploy the ingress resources.

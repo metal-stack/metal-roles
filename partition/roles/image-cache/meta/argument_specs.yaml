@@ -21,6 +21,20 @@ argument_specs:
       image_cache_sync_image_tag:
         type: str
         description: Image tag of metal-image-cache-sync. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      image_cache_sync_metal_apiserver_url:
+        type: str
+        description: URL of the metal-api server used for synchronization.
+      image_cache_sync_deployment_admin_token:
+        type: str
+        no_log: true
+        description: Admin token for the metal-api server used for synchronization.
+      image_cache_sync_token_expiration:
+        type: str
+        description: Token expiration period for the synchronization token.
+      image_cache_sync_permissions:
+        type: dict
+        description: Permissions assigned to the synchronization token.
+
       image_cache_intercept_domains:
         type: list
         elements: str

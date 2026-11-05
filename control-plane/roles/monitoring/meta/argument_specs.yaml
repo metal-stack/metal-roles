@@ -85,6 +85,84 @@ argument_specs:
         type: list
         elements: dict
         description: Additional Alertmanager receivers.
+      monitoring_prometheus_gateway_dns:
+        type: str
+        description: Gateway DNS name of Prometheus.
+      monitoring_prometheus_httproute_enabled:
+        type: bool
+        description: Whether to create an httproute for Prometheus.
+      monitoring_prometheus_httproute_parent_refs:
+        type: list
+        elements: str
+        description: Parent references for the Prometheus httproute.
+      monitoring_grafana_ingress_enabled:
+        type: bool
+        description: Whether to create an ingress for Grafana.
+      monitoring_grafana_gateway_dns:
+        type: str
+        description: Gateway DNS name of Grafana.
+      monitoring_grafana_httproute_enabled:
+        type: bool
+        description: Whether to create an httproute for Grafana.
+      monitoring_grafana_httproute_parent_refs:
+        type: list
+        elements: str
+        description: Parent references for the Grafana httproute.
+      monitoring_alertmanager_gateway_dns:
+        type: str
+        description: Gateway DNS name of Alertmanager.
+      monitoring_alertmanager_httproute_enabled:
+        type: bool
+        description: Whether to create an httproute for Alertmanager.
+      monitoring_alertmanager_httproute_parent_refs:
+        type: list
+        elements: str
+        description: Parent references for the Alertmanager httproute.
+      monitoring_alertmanager_deploy_envoy_gateway_basic_auth:
+        type: bool
+        description: Whether to deploy Envoy Gateway basic auth for the Alertmanager.
+      monitoring_metal_apiserver_url:
+        type: str
+        description: URL of the metal-api server used by the metal-metrics-exporter.
+      monitoring_metal_metrics_exporter_token_refresher_image_name:
+        type: str
+        description: Image name of the metal-metrics-exporter token refresher.
+      monitoring_metal_metrics_exporter_token_refresher_image_tag:
+        type: str
+        description: Image tag of the metal-metrics-exporter token refresher.
+      monitoring_metal_metrics_exporter_image_pull_policy:
+        type: str
+        description: Image pull policy for the metal-metrics-exporter.
+      monitoring_metrics_exporter_token_expiration:
+        type: str
+        description: Token expiration period for the metal-metrics-exporter.
+      monitoring_metrics_exporter_permissions:
+        type: dict
+        description: Permissions assigned to the metal-metrics-exporter token.
+      monitoring_virtual_garden_kubeconfig_refresher_token_file_path:
+        type: str
+        description: Path to the token file for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_kubeconfig_file_path:
+        type: str
+        description: Path to the kubeconfig file for the virtual-garden-kubeconfig-refresher.
+      monitoring_virtual_garden_kubeconfig_refresher_gcp_service_account_json:
+        type: str
+        no_log: true
+        description: GCP service account JSON for the virtual-garden-kubeconfig-refresher.
+      monitoring_thanos_receive_gateway_dns:
+        type: str
+        description: Gateway DNS name of Thanos Receive.
+      monitoring_thanos_receive_httproute_enabled:
+        type: bool
+        description: Whether to create an httproute for Thanos Receive.
+      monitoring_thanos_receive_parent_refs:
+        type: list
+        elements: str
+        description: Parent references for the Thanos Receive httproute.
+      monitoring_thanos_deploy_envoy_gateway_basic_auth:
+        type: bool
+        description: Whether to deploy Envoy Gateway basic auth for Thanos Receive.
+
       monitoring_slack_api_url:
         type: str
         no_log: true

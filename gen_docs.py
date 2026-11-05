@@ -147,7 +147,8 @@ def main():
 
         for key in defaults:
             if key not in options:
-                raise Exception(f"Variable {key} is defined in defaults but not in argument_specs for role {role_name}")
+                raise Exception(
+                    f"Variable {key} is defined in defaults but not in argument_specs for role {role_name}")
 
         doc_vars = {}
         for key in options:

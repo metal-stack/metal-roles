@@ -24,6 +24,10 @@ argument_specs:
       prometheus_scrape_timeout:
         type: str
         description: The global scrape timeout.
+      prometheus_additional_external_labels:
+        type: dict
+        description: Additional external labels to add to all scraped metrics.
+
       prometheus_ipmi_scrape_interval:
         type: str
         description: The scrape interval for the ipmi-exporter job.

@@ -80,3 +80,36 @@ argument_specs:
         type: list
         elements: str
         description: Additional volumes to mount into the pixiecore container.
+      pixiecore_ipxe_type:
+        type: str
+        description: The type of iPXE boot used.
+      pixiecore_etc_dir:
+        type: str
+        description: Host directory for pixiecore configuration.
+      pixiecore_metal_hammer_tenant:
+        type: str
+        description: The tenant name for metal-hammer.
+      pixiecore_metal_apiserver_url:
+        type: str
+        description: URL of the metal-api server.
+      pixiecore_metal_apiserver_token_filename:
+        type: str
+        description: Filename containing the metal-api token.
+      pixiecore_deployment_admin_token:
+        type: str
+        no_log: true
+        description: Admin token for the metal-api server.
+      pixiecore_token_expiration:
+        type: str
+        description: Token expiration period for the admin token.
+      pixiecore_permissions:
+        type: dict
+        description: Permissions assigned to the admin token.
+      pixiecore_infra_role:
+        type: str
+        description: The role assigned to the infrastructure component.
+      pixiecore_machine_roles:
+        type: list
+        elements: dict
+        description: Roles assigned to the machines.
+
