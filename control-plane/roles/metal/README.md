@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### Images
 
 | Name                                     | Mandatory | Description                               |
-|------------------------------------------|-----------|-------------------------------------------|
+| ---------------------------------------- | --------- | ----------------------------------------- |
 | metal_api_image_name                     | yes       | Image version of the metal-api            |
 | metal_api_image_tag                      | yes       | Image tag of the metal-api                |
 | metal_api_image_pull_policy              |           | Image pull policy of the metal-api        |
@@ -35,6 +35,9 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_metalctl_image_name                | yes       | Image version of metalctl                 |
 | metal_metalctl_image_tag                 | yes       | Image tag of metalctl                     |
 | metal_metalctl_image_pull_policy         |           | Image pull policy of metalctl             |
+| metal_metalctlv2_image_name              | yes       | Image version of metalctlv2               |
+| metal_metalctlv2_image_tag               | yes       | Image tag of metalctlv2                   |
+| metal_metalctlv2_image_pull_policy       |           | Image pull policy of metalctlv2           |
 | metal_console_image_name                 | yes       | Image version of the metal-console        |
 | metal_console_image_tag                  | yes       | Image tag of the metal-console            |
 | metal_console_image_pull_policy          |           | Image pull policy of the metal-console    |
@@ -151,6 +154,16 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_apiserver_headscale_api_key                                     |           | Headscale API key                                                                                                                             |
 | metal_apiserver_headscale_control_plane_address                       |           | Headscale control plane address                                                                                                               |
 | metal_apiserver_headscale_internal_api_address                        |           | Headscale internal apiserver address                                                                                                          |
+| metal_apiserver_static_data_partitions                                |           | Static partitions applied during deployment                                                                                                   |
+| metal_apiserver_static_data_sizes                                     |           | Static sizes applied during deployment                                                                                                        |
+| metal_apiserver_static_data_images                                    |           | Static images applied during deployment                                                                                                       |
+| metal_apiserver_static_data_tenants                                   |           | Static tenants applied during deployment                                                                                                      |
+| metal_apiserver_static_data_tenant_members                            |           | Static tenant members applied during deployment                                                                                               |
+| metal_apiserver_static_data_projects                                  |           | Static projects applied during deployment                                                                                                     |
+| metal_apiserver_static_data_project_members                           |           | Static project members applied during deployment                                                                                              |
+| metal_apiserver_static_data_networks                                  |           | Static networks applied during deployment                                                                                                     |
+| metal_apiserver_static_data_ips                                       |           | Static ips applied during deployment                                                                                                          |
+| metal_apiserver_static_data_filesystemlayouts                         |           | Static filesystem layouts applied during deployment                                                                                           |
 
 ### masterdata-api
 
