@@ -14,6 +14,9 @@ def flatten_spec(spec, prefix=""):
         if isinstance(desc, list):
             desc = ' '.join(desc)
         if desc:
+            required = info.get('required', False)
+            if required:
+                desc = "REQUIRED: " + desc
             flat[path] = desc
         if 'options' in info:
             flat.update(flatten_spec(info['options'], path))
@@ -104,21 +107,31 @@ def main():
             )
             data = json.loads(result.stdout)
             role_data = data.get(role_name, {})
-            options = role_data.get("entry_points", {}).get(
-                "main", {}).get("options", {})
+            entrypoints = role_data.get("entry_points", {})
+
+            count = 0
+            for entrypoint, options in entrypoints.items():
+                options = entrypoints.get(entrypoint, {}).get("options", {})
+                count += 1
+
+            if count > 1:
+                raise Exception("only single entrypoint allowed for now")
+
         except Exception as e:
             print(
                 f"Warning: No argument spec for {role_name} via ansible-doc: {e}")
             continue
 
         dependencies = []
-        with open(role_dir / "meta" / "main.yaml", 'r', encoding='utf-8') as f:
-            meta_data = yaml.safe_load(f) or {}
-            dependencies = meta_data.get('dependencies', [])
-            # handle case where dependencies might be a list of dicts or strings
-            if dependencies:
-                dependencies = [d['role'] if isinstance(
-                    d, dict) and 'role' in d else d for d in dependencies]
+        for f in Path(role_dir).glob("meta/main.y*ml"):
+            with open(f, 'r', encoding='utf-8') as f:
+                meta_data = yaml.safe_load(f) or {}
+                dependencies = meta_data.get('dependencies', [])
+                # handle case where dependencies might be a list of dicts or strings
+                if dependencies:
+                    dependencies = [d['role'] if isinstance(
+                        d, dict) and 'role' in d else d for d in dependencies]
+                    break
 
         defaults = {}
         for f in Path(role_dir / "defaults").rglob("*.y*ml"):
