@@ -12,6 +12,7 @@ metal_stack_release:
     metal_kernel_tag: "binaries.metal-stack.kernel.version"
     metal_kernel_url: "binaries.metal-stack.kernel.url"
     metalctl_version: "binaries.metal-stack.metalctl.version"
+    metalctlv2_version: "binaries.metal-stack.metalctlv2.version"
     # control plane
     metal_api_image_tag: "docker-images.metal-stack.control-plane.metal-api.tag"
     metal_api_image_name: "docker-images.metal-stack.control-plane.metal-api.name"
@@ -20,6 +21,8 @@ metal_stack_release:
     metal_apiserver_image_name: "docker-images.metal-stack.control-plane.metal-apiserver.name"
     metal_metalctl_image_tag: "docker-images.metal-stack.control-plane.metalctl.tag"
     metal_metalctl_image_name: "docker-images.metal-stack.control-plane.metalctl.name"
+    metal_metalctlv2_image_tag: "docker-images.metal-stack.control-plane.metalctlv2.tag"
+    metal_metalctlv2_image_name: "docker-images.metal-stack.control-plane.metalctlv2.name"
     metal_masterdata_api_image_tag: "docker-images.metal-stack.control-plane.masterdata-api.tag"
     metal_masterdata_api_image_name: "docker-images.metal-stack.control-plane.masterdata-api.name"
     metal_tenant_apiserver_image_tag: "docker-images.metal-stack.control-plane.tenant-apiserver.tag"

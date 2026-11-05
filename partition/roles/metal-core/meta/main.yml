@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal-core
   author: metal-stack
   description: Deploys the metal-core.
   license: MIT
@@ -9,8 +8,8 @@ galaxy_info:
   platforms:
     - name: Cumulus
       versions:
-        - 3
-    - name: SONiC
+        - "3.0"
+    - name: Debian
       versions:
         - all
 

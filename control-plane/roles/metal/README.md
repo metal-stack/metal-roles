@@ -25,7 +25,7 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 ### Images
 
 | Name                                     | Mandatory | Description                               |
-|------------------------------------------|-----------|-------------------------------------------|
+| ---------------------------------------- | --------- | ----------------------------------------- |
 | metal_api_image_name                     | yes       | Image version of the metal-api            |
 | metal_api_image_tag                      | yes       | Image tag of the metal-api                |
 | metal_api_image_pull_policy              |           | Image pull policy of the metal-api        |
@@ -35,6 +35,9 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_metalctl_image_name                | yes       | Image version of metalctl                 |
 | metal_metalctl_image_tag                 | yes       | Image tag of metalctl                     |
 | metal_metalctl_image_pull_policy         |           | Image pull policy of metalctl             |
+| metal_metalctlv2_image_name              | yes       | Image version of metalctlv2               |
+| metal_metalctlv2_image_tag               | yes       | Image tag of metalctlv2                   |
+| metal_metalctlv2_image_pull_policy       |           | Image pull policy of metalctlv2           |
 | metal_console_image_name                 | yes       | Image version of the metal-console        |
 | metal_console_image_tag                  | yes       | Image tag of the metal-console            |
 | metal_console_image_pull_policy          |           | Image pull policy of the metal-console    |
@@ -115,41 +118,52 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 
 ### metal-apiserver
 
-| Name                                                                  | Mandatory | Description                                                                                                      |
-| --------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
-| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                                                    |
-| metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                                                           |
-| metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                                                          |
-| metal_apiserver_db_password                                           |           | The password of the metal-db                                                                                     |
-| metal_apiserver_provider_tenant                                       |           | The provider tenant created at startup                                                                           |
-| metal_apiserver_redis_addr                                            |           | The address to a redis API                                                                                       |
-| metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                                                       |
-| metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                                                                     |
-| metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                                                                |
-| metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                                                            |
-| metal_apiserver_unique_user_key                                       |           | The OIDC provider's app unique identifier                                                                        |
-| metal_apiserver_tls_skip_verify                                       |           | Skip TLS verification for talking to the OIDC provider                                                           |
-| metal_apiserver_session_secret                                        | yes       | The secret used to hash the sessions of a user during auth, must be at least 10 characters long                  |
-| metal_apiserver_secure_cookie                                         |           | If set to true, auth cookie will only be set on https                                                            |
-| metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                                                       |
-| metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                                                        |
-| metal_apiserver_hpa_min                                               |           | Min amount of replicas for the HPA of the metal-apiserver                                                        |
-| metal_apiserver_hpa_cpu_percentage:                                   |           | Target CPU utilization percentage for the HPA of the metal-apiserver                                             |
-| metal_apiserver_resources                                             |           | Sets the given container resources                                                                               |
-| metal_apiserver_rate_limiting_max_requests_per_minute                 |           | The amount of requests allowed per minute for users with valid API tokens                                        |
-| metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users                                              |
-| metal_apiserver_pdb_enabled                                           |           | Enables the Pod Disruption Budget for the metal-apiserver                                                        |
-| metal_apiserver_pdb_min_available                                     |           | The minimum number of available pods for the metal-apiserver Pod Disruption Budget                               |
-| metal_apiserver_httproute_enabled                                     |           | Deploys a Gateway API HTTPRoute exposing the metal-apiserver                                                     |
-| metal_apiserver_httproute_hostnames                                   |           | List of hostnames for the metal-apiserver HTTPRoute                                                              |
-| metal_apiserver_httproute_parent_refs                                 |           | List of `parentRefs` (Gateways) the metal-apiserver HTTPRoute attaches to                                        |
-| metal_apiserver_tokens                                                |           | Optional yaml containing a map of tokenCreateRequests in order to create admin-tokens and store them in a secret |
-| metal_apiserver_token_create_schedule                                 |           | Optional cronjob schedule at which admin-tokens should be created                                                |
-| metal_apiserver_headscale_enabled                                     |           | Optional enable headscale support                                                                                |
-| metal_apiserver_headscale_tls                                         |           | Defaults to true, disable if headscale is exposed with http only                                                 |
-| metal_apiserver_headscale_api_key                                     |           | Headscale API key                                                                                                |
-| metal_apiserver_headscale_control_plane_address                       |           | Headscale control plane address                                                                                  |
-| metal_apiserver_headscale_internal_api_address                        |           | Headscale internal apiserver address                                                                             |
+| Name                                                                  | Mandatory | Description                                                                                                                                   |
+| --------------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| metal_apiserver_enabled                                               |           | Enables the deployment of the metal-apiserver                                                                                                 |
+| metal_apiserver_replicas                                              |           | The number of deployed replicas of the metal-apiserver                                                                                        |
+| metal_apiserver_db_addresses                                          |           | The addresses of the metal-db instances                                                                                                       |
+| metal_apiserver_db_password                                           |           | The password of the metal-db                                                                                                                  |
+| metal_apiserver_provider_tenant                                       |           | The provider tenant created at startup                                                                                                        |
+| metal_apiserver_redis_addr                                            |           | The address to a redis API                                                                                                                    |
+| metal_apiserver_oidc_discovery_url                                    |           | The URL for OIDC discovery                                                                                                                    |
+| metal_apiserver_oidc_end_session_url                                  |           | The URL for OIDC end session                                                                                                                  |
+| metal_apiserver_oidc_client_id                                        |           | The OIDC provider's app client id                                                                                                             |
+| metal_apiserver_oidc_client_secret                                    |           | The OIDC provider's app client secret                                                                                                         |
+| metal_apiserver_oidc_additional_scopes                                |           | Allows to extend the list of scopes of the JWT token that are to be recognized against the IdP. Defaults are: `openid`, `email` and `profile` |
+| metal_apiserver_unique_user_key                                       |           | The OIDC provider's app unique identifier                                                                                                     |
+| metal_apiserver_tls_skip_verify                                       |           | Skip TLS verification for talking to the OIDC provider                                                                                        |
+| metal_apiserver_session_secret                                        | yes       | The secret used to hash the sessions of a user during auth, must be at least 10 characters long                                               |
+| metal_apiserver_secure_cookie                                         |           | If set to true, auth cookie will only be set on https                                                                                         |
+| metal_apiserver_hpa_enabled:                                          |           | Enables horizontal pod autoscaling for the metal-apiserver                                                                                    |
+| metal_apiserver_hpa_max                                               |           | Max amount of replicas for the HPA of the metal-apiserver                                                                                     |
+| metal_apiserver_hpa_min                                               |           | Min amount of replicas for the HPA of the metal-apiserver                                                                                     |
+| metal_apiserver_hpa_cpu_percentage:                                   |           | Target CPU utilization percentage for the HPA of the metal-apiserver                                                                          |
+| metal_apiserver_resources                                             |           | Sets the given container resources                                                                                                            |
+| metal_apiserver_rate_limiting_max_requests_per_minute                 |           | The amount of requests allowed per minute for users with valid API tokens                                                                     |
+| metal_apiserver_rate_limiting_max_unauthenticated_requests_per_minute |           | The amount of requests allowed per minute for unauthenticated users                                                                           |
+| metal_apiserver_pdb_enabled                                           |           | Enables the Pod Disruption Budget for the metal-apiserver                                                                                     |
+| metal_apiserver_pdb_min_available                                     |           | The minimum number of available pods for the metal-apiserver Pod Disruption Budget                                                            |
+| metal_apiserver_httproute_enabled                                     |           | Deploys a Gateway API HTTPRoute exposing the metal-apiserver                                                                                  |
+| metal_apiserver_httproute_hostnames                                   |           | List of hostnames for the metal-apiserver HTTPRoute                                                                                           |
+| metal_apiserver_httproute_parent_refs                                 |           | List of `parentRefs` (Gateways) the metal-apiserver HTTPRoute attaches to                                                                     |
+| metal_apiserver_tokens                                                |           | Optional yaml containing a map of tokenCreateRequests in order to create admin-tokens and store them in a secret                              |
+| metal_apiserver_token_create_schedule                                 |           | Optional cronjob schedule at which admin-tokens should be created                                                                             |
+| metal_apiserver_headscale_enabled                                     |           | Optional enable headscale support                                                                                                             |
+| metal_apiserver_headscale_tls                                         |           | Defaults to true, disable if headscale is exposed with http only                                                                              |
+| metal_apiserver_headscale_api_key                                     |           | Headscale API key                                                                                                                             |
+| metal_apiserver_headscale_control_plane_address                       |           | Headscale control plane address                                                                                                               |
+| metal_apiserver_headscale_internal_api_address                        |           | Headscale internal apiserver address                                                                                                          |
+| metal_apiserver_static_data_partitions                                |           | Static partitions applied during deployment                                                                                                   |
+| metal_apiserver_static_data_sizes                                     |           | Static sizes applied during deployment                                                                                                        |
+| metal_apiserver_static_data_images                                    |           | Static images applied during deployment                                                                                                       |
+| metal_apiserver_static_data_tenants                                   |           | Static tenants applied during deployment                                                                                                      |
+| metal_apiserver_static_data_tenant_members                            |           | Static tenant members applied during deployment                                                                                               |
+| metal_apiserver_static_data_projects                                  |           | Static projects applied during deployment                                                                                                     |
+| metal_apiserver_static_data_project_members                           |           | Static project members applied during deployment                                                                                              |
+| metal_apiserver_static_data_networks                                  |           | Static networks applied during deployment                                                                                                     |
+| metal_apiserver_static_data_ips                                       |           | Static ips applied during deployment                                                                                                          |
+| metal_apiserver_static_data_filesystemlayouts                         |           | Static filesystem layouts applied during deployment                                                                                           |
 
 ### masterdata-api
 

@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: zitadel
   author: metal-stack
   description: Deploys zitadel into the control plane.
   license: MIT
