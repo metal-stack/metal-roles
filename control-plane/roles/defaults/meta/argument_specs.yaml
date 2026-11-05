@@ -1,0 +1,17 @@
+---
+argument_specs:
+  main:
+    short_description: Default variables for control plane
+    options:
+      metal_control_plane_provider_tenant:
+        type: str
+        description: Provider tenant for the control plane.
+      metal_control_plane_stage_name:
+        type: str
+        description: Stage name for the control plane.
+      metal_control_plane_namespace:
+        type: str
+        description: Namespace for the control plane.
+      metal_control_plane_image_pull_policy:
+        type: str
+        description: Image pull policy for control plane images.

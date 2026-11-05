@@ -145,6 +145,10 @@ def main():
             with open(f, 'r', encoding='utf-8') as f:
                 defaults = defaults | yaml.safe_load(f) or {}
 
+        for key in defaults:
+            if key not in options:
+                raise Exception(f"Variable {key} is defined in defaults but not in argument_specs for role {role_name}")
+
         doc_vars = {}
         for key in options:
             doc_vars[key] = None
