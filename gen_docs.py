@@ -98,6 +98,7 @@ def update_readme(role_path, yaml_block, dependencies):
 
 
 def main():
+    ansible_doc_bin = os.environ.get("ANSIBLE_DOC_PATH", "ansible-doc")
     for specs_file in Path(".").rglob("meta/argument_specs.yaml"):
         role_dir = specs_file.parent.parent
         role_name = role_dir.name
@@ -106,7 +107,7 @@ def main():
 
         try:
             result = subprocess.run(
-                ["ansible-doc", "-t", "role", "-r",
+                [ansible_doc_bin, "-t", "role", "-r",
                     str(role_dir.parent), role_name, "--json"],
                 capture_output=True,
                 text=True,
