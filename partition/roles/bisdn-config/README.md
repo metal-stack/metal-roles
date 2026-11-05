@@ -7,6 +7,7 @@ It configures what BISDN Linux doesn't set up for a metal-stack leaf by default:
 - the hostname, timezone, `resolv.conf` and NTP servers (`systemd-timesyncd`). NTP and DNS are reached through the default route that metal-core leaks from VRF mgmt into the default VRF.
 - SSH keys for root.
 - `bgpd=yes` in `/etc/frr/daemons`. BISDN's default is `bgpd=no`.
+- `docker.service` enabled and started. BISDN ships Docker but leaves it disabled, and the metal-core role runs metal-core as a Docker container.
 - the management port `enp0` in VRF `mgmt` (networkd files `10-mgmt.netdev`, `10-mgmt.network` and `10-enp0.network`, which metal-core leaves alone).
 - sshd bound to VRF `mgmt`, plus `-A INPUT -i mgmt -p tcp --dport 22 -j ACCEPT` ahead of the vendor rule `! -i enp+ --dport 22 -j DROP`. The vendor rule alone drops SSH through the VRF, because netfilter sees the VRF device as the input interface.
 - optional port breakouts and FEC (see below).

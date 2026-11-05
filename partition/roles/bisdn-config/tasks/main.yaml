@@ -64,6 +64,14 @@
     state: absent
   when: not bisdn_config_basebox_nopasswd_sudo
 
+# BISDN ships Docker with docker.service disabled; the metal-core role runs
+# metal-core as a Docker container
+- name: Enable and start Docker
+  ansible.builtin.systemd:
+    name: docker.service
+    enabled: true
+    state: started
+
 # BISDN's FRR ships with bgpd=no
 - name: Enable bgpd
   ansible.builtin.lineinfile:
