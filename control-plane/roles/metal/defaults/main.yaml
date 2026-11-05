@@ -93,6 +93,7 @@ metal_apiserver_headscale_control_plane_address: http{{ 's' if metal_apiserver_h
 metal_apiserver_headscale_internal_api_address: "headscale:50443"
 
 # metal-apiserver static data
+metal_apiserver_static_data_enabled: false
 metal_apiserver_static_data_partitions: []
 metal_apiserver_static_data_sizes: []
 metal_apiserver_static_data_images: []

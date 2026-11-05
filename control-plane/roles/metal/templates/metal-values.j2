@@ -333,7 +333,7 @@ metal_apiserver:
   tokenCreateSchedule: {{ metal_apiserver_token_create_schedule }}
 {% endif %}
   static_data:
-    enabled: true
+    enabled: {{ metal_apiserver_static_data_enabled | lower }}
     data:
       partitions: {{ metal_apiserver_static_data_partitions | to_json }}
       sizes: {{ metal_apiserver_static_data_sizes | to_json }}
