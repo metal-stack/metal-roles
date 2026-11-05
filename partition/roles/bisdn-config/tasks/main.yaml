@@ -48,6 +48,20 @@
     key: "{{ item }}"
   loop: "{{ bisdn_config_authorized_keys }}"
 
+- name: Let basebox use sudo without a password
+  ansible.builtin.copy:
+    content: "basebox ALL=(ALL) NOPASSWD: ALL\n"
+    dest: /etc/sudoers.d/90-metal-stack
+    mode: "0440"
+    validate: visudo -cf %s
+  when: bisdn_config_basebox_nopasswd_sudo
+
+- name: Remove passwordless sudo for basebox
+  ansible.builtin.file:
+    path: /etc/sudoers.d/90-metal-stack
+    state: absent
+  when: not bisdn_config_basebox_nopasswd_sudo
+
 # BISDN's FRR ships with bgpd=no
 - name: Enable bgpd
   ansible.builtin.lineinfile:
@@ -116,6 +130,7 @@
     - /etc/systemd/system/sshd.socket.d/
     - /etc/systemd/system/frr-validation@.service
     - /etc/systemd/timesyncd.conf.d/
+    - /etc/sudoers.d/90-metal-stack
     - /root/.ssh/
 
 - name: Configure port breakouts and FEC
