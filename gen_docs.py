@@ -91,7 +91,7 @@ def update_readme(role_path, yaml_block, dependencies):
         else:
             new_var_section = f"{var_section}\n\n{yaml_block}".strip()
 
-    new_content = content.replace(var_section, new_var_section)
+    new_content = content.replace(var_section, new_var_section).rstrip()
 
     with open(readme_path, 'w', encoding='utf-8') as f:
         f.write(new_content + "\n")

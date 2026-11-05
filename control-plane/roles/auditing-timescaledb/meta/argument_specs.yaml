@@ -29,7 +29,7 @@ argument_specs:
         no_log: true
         description: Password of the the auditing timescaledb database.
       auditing_timescaledb_max_connections:
-        type: raw
+        type: int
         description: Maximum amount of database connections.
       auditing_timescaledb_shared_libraries_preload:
         type: list
@@ -51,10 +51,10 @@ argument_specs:
         type: str
         description: Object prefix used for backups in the object store.
       auditing_timescaledb_backup_restore_sidecar_object_max_keep:
-        type: raw
+        type: int
         description: Maximum amount of backup objects to keep.
       auditing_timescaledb_backup_restore_sidecar_object_days_max_keep:
-        type: raw
+        type: int
         description: Maximum age in days of backup objects to keep.
       auditing_timescaledb_backup_restore_sidecar_s3_request_checksum_calculation:
         type: str
@@ -76,11 +76,33 @@ argument_specs:
         type: str
         no_log: true
         description: Encryption key (32 characters) for encrypting backups.
+      auditing_timescaledb_backup_restore_sidecar_s3_bucket_name:
+        type: str
+        description: S3 bucket name for storing backups.
+      auditing_timescaledb_backup_restore_sidecar_s3_region:
+        type: str
+        description: S3 region of the backup bucket.
+      auditing_timescaledb_backup_restore_sidecar_s3_endpoint:
+        type: str
+        description: S3 endpoint of the backup bucket.
+      auditing_timescaledb_backup_restore_sidecar_s3_access_key:
+        type: str
+        description: S3 access key for the backup bucket.
+      auditing_timescaledb_backup_restore_sidecar_s3_secret_key:
+        type: str
+        no_log: true
+        description: S3 secret key for the backup bucket.
+      auditing_timescaledb_backup_restore_sidecar_s3_insecure_skip_verify:
+        type: bool
+        description: Whether to skip TLS certificate verification for the S3 endpoint.
+      auditing_timescaledb_backup_restore_sidecar_s3_trusted_ca_cert:
+        type: str
+        description: Trusted CA certificate for the S3 endpoint.
       auditing_timescaledb_resources:
         type: dict
         description: Resource requests and limits for the the auditing timescaledb container.
       auditing_timescaledb_registry_auth_enabled:
-        type: raw
+        type: bool
         description: Whether to deploy an image pull secret for the registry.
       auditing_timescaledb_registry_auth:
         type: dict
