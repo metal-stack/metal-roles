@@ -1,0 +1,21 @@
+---
+argument_specs:
+  main:
+    short_description: Default variables for common
+    options:
+      metal_registry_auth_enabled:
+        type: bool
+        description: Whether to enable registry authentication.
+      metal_registry_auth_user:
+        type: str
+        description: Registry authentication user.
+      metal_registry_auth_password:
+        type: str
+        no_log: true
+        description: Registry authentication password.
+      metal_registry_url:
+        type: str
+        description: URL of the container registry.
+      metal_stack_release:
+        type: dict
+        description: Mapping of release tags and names for metal-stack images and charts.
