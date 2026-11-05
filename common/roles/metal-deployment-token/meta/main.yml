@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal-deployment-token
   author: metal-stack
   description: This role reads out an admin deployment token from the metal-apiserver and exports it in order to deploy infra services with it.
   license: MIT
