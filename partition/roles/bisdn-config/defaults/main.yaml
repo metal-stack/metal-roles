@@ -14,9 +14,10 @@ bisdn_config_timezone: Europe/Berlin
 
 # SSH public keys for root (Ansible and metal-core's management access)
 bisdn_config_authorized_keys: []
-# let basebox use sudo without a password (BISDN's sudoers asks for one);
-# Ansible connects as basebox after an ONIE install, see README
-bisdn_config_basebox_nopasswd_sudo: false
+# let basebox use sudo without a password (BISDN's sudoers asks for one), so
+# Ansible, which connects as basebox after an ONIE install, needs a become
+# password on the first run only, see README
+bisdn_config_basebox_nopasswd_sudo: true
 
 # Port breakouts and FEC, in the structure of sonic_config_breakouts and
 # sonic_config_ports, e.g.

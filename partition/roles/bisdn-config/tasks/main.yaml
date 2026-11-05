@@ -48,17 +48,19 @@
     key: "{{ item }}"
   loop: "{{ bisdn_config_authorized_keys }}"
 
+# sudo reads /etc/sudoers.d in lexical order and the last matching rule wins:
+# the name must sort after BISDN's "basebox" (basebox ALL=(ALL) ALL).
 - name: Let basebox use sudo without a password
   ansible.builtin.copy:
     content: "basebox ALL=(ALL) NOPASSWD: ALL\n"
-    dest: /etc/sudoers.d/90-metal-stack
+    dest: /etc/sudoers.d/zz-metal-stack
     mode: "0440"
     validate: visudo -cf %s
   when: bisdn_config_basebox_nopasswd_sudo
 
 - name: Remove passwordless sudo for basebox
   ansible.builtin.file:
-    path: /etc/sudoers.d/90-metal-stack
+    path: /etc/sudoers.d/zz-metal-stack
     state: absent
   when: not bisdn_config_basebox_nopasswd_sudo
 
@@ -130,7 +132,7 @@
     - /etc/systemd/system/sshd.socket.d/
     - /etc/systemd/system/frr-validation@.service
     - /etc/systemd/timesyncd.conf.d/
-    - /etc/sudoers.d/90-metal-stack
+    - /etc/sudoers.d/zz-metal-stack
     - /root/.ssh/
 
 - name: Configure port breakouts and FEC

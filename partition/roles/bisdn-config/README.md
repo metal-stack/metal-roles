@@ -18,12 +18,12 @@ Moving the management port into VRF mgmt interrupts Ansible's SSH connection onc
 
 Ansible needs SSH access before this role can run. On a fresh install, BISDN's ONIE installer applies its integrated install config, which the [ztp](../ztp) role builds into the installer it serves (`ztp_bisdn_installer_url`). The install config puts `ztp_authorized_keys` into `/home/basebox/.ssh/authorized_keys` and, with `ztp_bisdn_password_hash`, sets basebox's password.
 
-So the first run connects as `basebox` with that key (`ansible_user: basebox`). BISDN's sudoers asks basebox for a password; use one of these as become password:
+Ansible therefore connects as `basebox` with that key (`ansible_user: basebox`, `become: true`):
 
-- the password behind `ztp_bisdn_password_hash`, or
-- BISDN's default password on the first run only.
+- **First run:** BISDN's sudoers asks basebox for a password, so give the become password once (`--ask-become-pass` or `ansible_become_password`). Use the password behind `ztp_bisdn_password_hash`, or BISDN's default password if none was set. The default is publicly known, so set `ztp_bisdn_password_hash`.
+- **Later runs:** this role installs `/etc/sudoers.d/zz-metal-stack` with `basebox ALL=(ALL) NOPASSWD: ALL` (`bisdn_config_basebox_nopasswd_sudo`, `true` by default, validated with `visudo`), so no become password is needed anymore. The name sorts after BISDN's own `basebox` drop-in (`basebox ALL=(ALL) ALL`), because sudo applies the last matching rule.
 
-After the first run, root's keys (`bisdn_config_authorized_keys`) are in place. With `bisdn_config_basebox_nopasswd_sudo: true`, basebox no longer needs a become password either.
+The role also installs root's keys (`bisdn_config_authorized_keys`) for metal-core's management access.
 
 ## Port Breakouts and FEC
 
@@ -55,7 +55,7 @@ The [ztp](../ztp) role can serve the same configuration for first boot (`ztp_bis
 | bisdn_config_ntp_servers             |                                | NTP servers for `systemd-timesyncd`.                                                        |
 | bisdn_config_timezone                |                                | Timezone, `Europe/Berlin` by default.                                                       |
 | bisdn_config_authorized_keys         |                                | SSH public keys for root.                                                                   |
-| bisdn_config_basebox_nopasswd_sudo   |                                | Let basebox use sudo without a password, `false` by default.                                |
+| bisdn_config_basebox_nopasswd_sudo   |                                | Let basebox use sudo without a password, `true` by default.                                 |
 | bisdn_config_breakouts               |                                | Port breakouts, e.g. `{port1: 4x25G}`.                                                      |
 | bisdn_config_ports                   |                                | FEC per port: `default_fec` and `list` of `name`/`fec` (`none`, `rs`, `fc`).                |
 | bisdn_config_portconf_url            | with breakouts or ports        | Download URL of `bisdn-portconf`.                                                           |
