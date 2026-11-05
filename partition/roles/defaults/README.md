@@ -4,7 +4,6 @@ Specifies common defaults for the metal-stack partition deployment.
 
 ## Variables
 
-
 ```yaml
 # Default admin token for the metal API server.
 defaults_partition_metal_apiserver_admin_token: '{{ metal_deployment_admin_token | default(lookup(''env'', ''METAL_APIV2_TOKEN''), true) | default(None) }}'

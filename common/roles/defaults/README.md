@@ -6,7 +6,6 @@ It also contains the mapping of our [release vector](https://github.com/metal-st
 
 ## Variables
 
-
 ```yaml
 # Whether to enable registry authentication.
 metal_registry_auth_enabled: false

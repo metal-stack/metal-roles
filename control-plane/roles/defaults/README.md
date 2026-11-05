@@ -4,7 +4,6 @@ Specifies common defaults for the metal-stack control plane deployment.
 
 ## Variables
 
-
 ```yaml
 # Image pull policy for control plane images.
 metal_control_plane_image_pull_policy: IfNotPresent
