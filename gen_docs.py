@@ -3,6 +3,7 @@ import yaml
 import json
 import subprocess
 import re
+import os
 from pathlib import Path
 
 
@@ -60,8 +61,12 @@ def update_readme(role_path, yaml_block, dependencies):
 
     dep_sentences = []
     for dep in dependencies:
-        if "roles/defaults" in dep:
-            sentence = f"This role depends on default values of [{dep}](https://github.com/metal-stack/tree/master/{dep})."
+        if dep.endswith("roles/defaults"):
+            dep_readme = os.path.join(
+                dep.removeprefix("metal-roles/"), "README.md")
+            relative = os.path.relpath(dep_readme, start=role_path)
+
+            sentence = f"This role depends on default values of [{dep}]({relative})."
             if sentence not in var_section:
                 dep_sentences.append(sentence)
 

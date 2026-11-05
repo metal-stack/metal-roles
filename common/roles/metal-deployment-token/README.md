@@ -14,9 +14,9 @@ Please note that the created token has admin privileges by nature and expires af
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../defaults/README.md).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../../../control-plane/roles/defaults/README.md).
 
 ```yaml
 # The admin token to use for deployment. When unset, it is read from the referenced secret.
