@@ -38,54 +38,92 @@ Introducing a partition-local cache for machine images brings the following adva
 
 ## Variables
 
-### Role Vars
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
 
-#### Images
+This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
 
-| Name                           | Mandatory | Description                              |
-|--------------------------------|-----------|------------------------------------------|
-| image_cache_sync_image_name    | yes       | The image name of metal-cache-image-sync |
-| image_cache_sync_image_tag     | yes       | The image tag of metal-cache-image-sync  |
-| image_cache_coredns_image_name | yes       | The image name of CoreDNS                |
-| image_cache_coredns_image_tag  | yes       | The image tag of CoreDNS                 |
-| image_cache_haproxy_image_name | yes       | The image name of haproxy                |
-| image_cache_haproxy_image_tag  | yes       | The image tag of haproxy                 |
-
-#### Configuration
-
-| Name                                                                   | Mandatory | Description                                                                                                               |
-| ---------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------- |
-| image_cache_intercept_domains                                          |           | The domains for which the DNS requests are intercepted and pointed to the image cache                                     |
-| image_cache_kernel_cache_enabled                                       |           | Enables caching partition boot kernels                                                                                    |
-| image_cache_boot_image_cache_enabled                                   |           | Enables caching partition boot images                                                                                     |
-| image_cache_external_dns_servers                                       |           | DNS servers that are used for resolving all other DNS requests                                                            |
-| image_cache_sync_max_cache_size                                        |           | Maximum size that the cache should have in the end (can exceed if min amount of images for all image variants is reached) |
-| image_cache_sync_expiration_grace_period                               |           | The amount of days to still sync images even if they have already expired in the metal-apiserver                          |
-| image_cache_sync_max_images_per_name                                   |           | Maximum amount of images to cache for an image variant                                                                    |
-| image_cache_sync_min_images_per_name                                   |           | Minimum amount of images to keep of an image variant                                                                      |
-| image_cache_sync_metal_apiserver_url                                   |           | Endpoint of the metal-apiserver                                                                                           |
-| image_cache_sync_deployment_admin_token                                |           | The metal-apiserver token used to create the token for the image-cache                                                    |
-| image_cache_sync_schedule                                              |           | Cron sync schedule                                                                                                        |
-| image_cache_sync_excludes                                              |           | URL paths to exclude from the sync                                                                                        |
-| image_cache_sync_host_path                                             |           | Root path of where to store the images                                                                                    |
-| image_cache_sync_port                                                  |           | The image tag of metal-cache-image-sync                                                                                   |
-| image_cache_sync_docker_log_driver                                     |           | Indicates where to write the docker logs to                                                                               |
-| image_cache_coredns_host_dir_path                                      |           | The host path for CoreDNS configuration                                                                                   |
-| image_cache_coredns_docker_log_driver                                  |           | Indicates where to write the docker logs to                                                                               |
-| image_cache_kernel_route_prefix                                        |           | The route prefix to distinguish whether the kernel cache backend is used or not                                           |
-| image_cache_boot_image_route_prefix                                    |           | The route prefix to distinguish whether the boot image cache backend is used or not                                       |
-| image_cache_backend_hosts                                              |           | The hosts that are considered for load balancing, defaults to matched play hosts                                          |
-| image_cache_haproxy_host_dir_path                                      |           | The host path for haproxy configuration                                                                                   |
-| image_cache_haproxy_fallback_backend_server                            |           | The domain name of the "global image store" (internet, must have valid HTTPS)                                             |
-| image_cache_haproxy_fallback_backend_server_health_endpoint            |           | The health endpoint which is expected to return 200 of the "global image store"                                           |
-| image_cache_haproxy_kernel_fallback_backend_server                     |           | The domain name of the "global kernel store" (internet, must have valid HTTPS)                                            |
-| image_cache_haproxy_kernel_fallback_backend_server_health_endpoint     |           | The health endpoint which is expected to return 200 of the "global kernel store"                                          |
-| image_cache_haproxy_boot_image_fallback_backend_server                 |           | The domain name of the "global boot image store" (internet, must have valid HTTPS)                                        |
-| image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint |           | The health endpoint which is expected to return 200 of the "global boot image store"                                      |
-| image_cache_haproxy_docker_log_driver                                  |           | Indicates where to write the docker logs to                                                                               |
-
-### Host Vars
-
-| Name                    | Mandatory | Description                                                                                                                            |
-|-------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------|
-| image_cache_internal_ip |           | Alternative IP (default is ansible_host) used for resolving DNS requests to image cache hosts and for internal component communication |
+```yaml
+# The hosts serving as image cache backends.
+image_cache_backend_hosts: '{{ play_hosts }}'
+# Whether to cache metal-hammer boot images.
+image_cache_boot_image_cache_enabled: true
+# HTTP route prefix under which cached boot images are served.
+image_cache_boot_image_route_prefix: /metal-stack/metal-hammer
+# Docker log driver for the CoreDNS container.
+image_cache_coredns_docker_log_driver: json-file
+# Host directory for the CoreDNS configuration.
+image_cache_coredns_host_dir_path: /coredns
+# Image name of CoreDNS. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+image_cache_coredns_image_name: null
+# Image tag of CoreDNS. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+image_cache_coredns_image_tag: null
+# External DNS servers (name, ip) used for forwarding non-intercepted DNS requests.
+image_cache_external_dns_servers:
+- ip: 8.8.8.8
+  name: google
+- ip: 1.1.1.1
+  name: cloudflare01
+- ip: 1.0.0.1
+  name: cloudflare02
+# Fallback backend server for boot images.
+image_cache_haproxy_boot_image_fallback_backend_server: github.com
+# Health check endpoint of the boot image fallback backend server.
+image_cache_haproxy_boot_image_fallback_backend_server_health_endpoint: /
+# Docker log driver for the haproxy container.
+image_cache_haproxy_docker_log_driver: json-file
+# Fallback backend server (must be reachable over https with a valid certificate) used when the local image cache is unavailable.
+image_cache_haproxy_fallback_backend_server: images.metal-stack.io
+# Health check endpoint of the fallback backend server.
+image_cache_haproxy_fallback_backend_server_health_endpoint: /
+# Host directory for the haproxy configuration.
+image_cache_haproxy_host_dir_path: /haproxy
+# Image name of haproxy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+image_cache_haproxy_image_name: null
+# Image tag of haproxy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+image_cache_haproxy_image_tag: null
+# Fallback backend server for kernels.
+image_cache_haproxy_kernel_fallback_backend_server: github.com
+# Health check endpoint of the kernel fallback backend server.
+image_cache_haproxy_kernel_fallback_backend_server_health_endpoint: /
+# Domains for which DNS requests are intercepted and resolved to the image cache.
+image_cache_intercept_domains:
+- images.metal-stack.io
+- github.com
+# Alternative IP (default is ansible_host) used for resolving DNS requests to image cache hosts and for internal component communication.
+image_cache_internal_ip: null
+# Whether to cache metal-hammer kernels.
+image_cache_kernel_cache_enabled: true
+# HTTP route prefix under which cached kernels are served.
+image_cache_kernel_route_prefix: /metal-stack/kernel
+# Port on which cached boot images are served.
+image_cache_sync_boot_image_port: 9003
+# Docker log driver for the image sync container.
+image_cache_sync_docker_log_driver: json-file
+# Image path substrings excluded from syncing.
+image_cache_sync_excludes:
+- /pull_requests/
+# Grace period for expired images before removal from the cache.
+image_cache_sync_expiration_grace_period: 0
+# Host path where synced images are stored.
+image_cache_sync_host_path: /metal-image-cache-sync
+# Image name of metal-image-cache-sync. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+image_cache_sync_image_name: null
+# Image tag of metal-image-cache-sync. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+image_cache_sync_image_tag: null
+# Port on which cached kernels are served.
+image_cache_sync_kernel_port: 9002
+# Maximum size of the image cache (e.g. 100G).
+image_cache_sync_max_cache_size: 100G
+# Maximum amount of images to keep per image name (-1 for unlimited).
+image_cache_sync_max_images_per_name: -1
+# The metal-api endpoint used for looking up images to sync.
+image_cache_sync_metal_api_endpoint: null
+# REQUIRED: The metal-api view HMAC used for authenticating against the metal-api.
+image_cache_sync_metal_api_view_hmac: null
+# Minimum amount of images to keep per image name.
+image_cache_sync_min_images_per_name: 4
+# Port on which cached OS images are served.
+image_cache_sync_port: 9001
+# Cron schedule for the image sync.
+image_cache_sync_schedule: '*/10 * * * *'
+```

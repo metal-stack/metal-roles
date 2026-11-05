@@ -6,14 +6,27 @@ Please note that this role creates `DNSRecord`s in the garden cluster's `garden`
 
 ## Variables
 
-| Name                                         | Mandatory | Description                                                                                  |
-| -------------------------------------------- | --------- | -------------------------------------------------------------------------------------------- |
-| gardener_partition_proxy_garden_name         |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden  |
-| gardener_partition_proxy_image_name          |           | The image name of the partition-proxy                                                        |
-| gardener_partition_proxy_image_tag           |           | The image tag of the partition-proxy                                                         |
-| gardener_partition_proxy_ip_address          |           | The IP for the proxy. If not specified it will be automatically allocated in the metal-api   |
-| gardener_partition_proxy_metal_api_url       |           | The URL used to allocate an IP address for the proxy in case a specific IP was not specified |
-| gardener_partition_proxy_metal_api_edit_hmac |           | The edit HMAC used to communicate with the metal-api                                         |
-| gardener_partition_proxy_dns_credentials     |           | DNS credentials used for creating a DNS record for the proxy                                 |
-| gardener_partition_proxy_dns_provider        |           | The name of the DNS provider used for record creation                                        |
-| gardener_partition_proxy_shooted_seeds       |           | A list of shooted seeds in which to deploy a proxy                                           |
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+
+```yaml
+# Credentials for the DNS provider of the proxy DNS entry.
+gardener_partition_proxy_dns_credentials: null
+# The DNS provider type of the proxy DNS entry.
+gardener_partition_proxy_dns_provider: null
+# Name of the garden.
+gardener_partition_proxy_garden_name: '{{ gardener_defaults_garden_name }}'
+# Image name of the proxy.
+gardener_partition_proxy_image_name: nginx
+# Image tag of the proxy.
+gardener_partition_proxy_image_tag: 1.31-alpine
+# The load balancer IP address of the proxy service.
+gardener_partition_proxy_ip_address: null
+# The metal-api edit HMAC used for looking up partitions.
+gardener_partition_proxy_metal_api_edit_hmac: null
+# The metal-api URL that the proxy forwards to.
+gardener_partition_proxy_metal_api_url: null
+# The shooted seeds to deploy the proxy to.
+gardener_partition_proxy_shooted_seeds: []
+```

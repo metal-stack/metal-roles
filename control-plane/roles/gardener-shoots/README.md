@@ -9,12 +9,35 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ## Variables
 
-| Name                                  | Mandatory | Description                                                                                 |
-| ------------------------------------- | --------- | ------------------------------------------------------------------------------------------- |
-| gardener_shoots_garden_name           |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden |
-| gardener_shoot_default_metal_api_hmac |           | For the cloud provider credentials                                                          |
-| gardener_shoots                       |           | The configuration for the shoots deployed into the Garden cluster                           |
-| gardener_shoot_defaults               |           | Defaults configuration for the shoots (specific configuration overwrites these defaults)    |
-| gardener_shoot_rollout_wait_enabled   |           | If enabled waits until the shoot was successfully reconciled                                |
-| gardener_shoot_rollout_wait_retries   |           | The maximum amount of retries until giving up                                               |
-| gardener_shoot_rollout_wait_delay     |           | The delay between the retries                                                               |
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+
+```yaml
+# The default metal-api HMAC used for the shoot infrastructure secrets.
+gardener_shoot_default_metal_api_hmac: null
+# Default configuration merged into every shoot entry.
+gardener_shoot_defaults:
+  additional_annotations: {}
+  additional_labels: {}
+  auto_update:
+    kubernetes: true
+    machine_image: false
+  maintenance_timewindow_begin: 220000+0100
+  maintenance_timewindow_end: 230000+0100
+  max_pods: 250
+  namespace: garden
+  node_cidr_mask_size: 23
+  tenant: '{{ metal_control_plane_provider_tenant }}'
+  vertical_pod_autoscaler: true
+# Delay in seconds between retries when waiting for shoot reconciliation.
+gardener_shoot_rollout_wait_delay: 10
+# Whether to wait for shoot reconciliation to succeed.
+gardener_shoot_rollout_wait_enabled: true
+# Amount of retries when waiting for shoot reconciliation.
+gardener_shoot_rollout_wait_retries: 36
+# The shoot clusters to deploy.
+gardener_shoots: []
+# Name of the garden to deploy the shoots to.
+gardener_shoots_garden_name: '{{ gardener_defaults_garden_name }}'
+```

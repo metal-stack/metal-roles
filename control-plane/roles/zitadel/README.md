@@ -16,30 +16,61 @@ Because `ExternalSecure: true` is set by default, Zitadel is only available over
 
 ## Variables
 
-You can look up all the default values of this role [here](defaults/main.yaml).
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
 
-| Name                          | Mandatory | Description                                                                            |
-| ----------------------------- | --------- | -------------------------------------------------------------------------------------- |
-| zitadel_chart_version         |           | The chart version for deploying zitadel                                                |
-| zitadel_namespace             |           | The namespace into which zitadel is deployed                                           |
-| zitadel_init_image_name       | yes       | The zitadel-init image tag                                                             |
-| zitadel_init_image_tag        | yes       | The zitadel-init image name                                                            |
-| zitadel_image_tag             |           | An optional image overwrite for zitadel when not using the default from the helm chart |
-| zitadel_tools_kubectl_tag     |           | The zitadel tools kubectl image tag (of alpine/k8s)                                    |
-| zitadel_external_domain       | yes       | The external domain used by zitadel                                                    |
-| zitadel_image_pull_policy     |           | The image pull policy to use for zitadel-init                                          |
-| zitadel_ingress_dns           |           | The DNS ingress domain used for the ingress-controller                                 |
-| zitadel_ingress_annotations   |           | Annotations for the zitadel ingress resource(s)                                        |
-| zitadel_initial_instance      |           | The name of the initial instance                                                       |
-| zitadel_initial_org           |           | The name of the initial organization                                                   |
-| zitadel_admin_password        |           | The admin password for the login of the administrator in the UI                        |
-| zitadel_master_key            |           | The master key (must be 32 bytes!)                                                     |
-| zitadel_db_address            |           | The address for the zitadel-db                                                         |
-| zitadel_db_password           |           | The password for accessing the zitadel-db                                              |
-| zitadel_enabled_ingress       |           | Whether to enable ingress exposal or not                                               |
-| zitadel_init_config           |           | Configuration for zitadel-init                                                         |
-| zitadel_port                  |           | The port used by zitadel                                                               |
-| zitadel_skip_verify_tls       |           | Whether to skip TLS verification for zitadel                                           |
-| zitadel_insecure              |           | Whether to allow insecure connections to zitadel                                       |
-| zitadel_httproute_enabled     |           | Deploys a Gateway API HTTPRoute exposing zitadel via the configured Gateway            |
-| zitadel_httproute_parent_refs |           | List of `parentRefs` (Gateways) the HTTPRoute attaches to                              |
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+
+```yaml
+# Password of the initial zitadel admin user.
+zitadel_admin_password: Password1!
+# Repository URL of the zitadel helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+zitadel_chart_repo: null
+# Version of the zitadel helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+zitadel_chart_version: null
+# Address of the zitadel database.
+zitadel_db_address: zitadel-db
+# Password of the zitadel database.
+zitadel_db_password: change-me
+# Whether to create an ingress for zitadel.
+zitadel_enabled_ingress: true
+# The zitadel endpoint host name.
+zitadel_endpoint: auth.{{ metal_control_plane_gateway_dns }}
+# REQUIRED: The external domain configured for the zitadel instance.
+zitadel_external_domain: null
+# Whether to expose zitadel through a GatewayAPI HTTPRoute instead of an ingress.
+zitadel_httproute_enabled: false
+# Parent references for the zitadel HTTPRoute.
+zitadel_httproute_parent_refs: []
+# Image pull policy for the zitadel containers.
+zitadel_image_pull_policy: '{{ metal_control_plane_image_pull_policy }}'
+# Image tag of zitadel. Uses the chart default when unset.
+zitadel_image_tag: null
+# Additional annotations for the zitadel ingress.
+zitadel_ingress_annotations: {}
+# The external URL of the zitadel ingress.
+zitadel_ingress_dns: https://auth.{{ metal_control_plane_gateway_dns }}:443
+# Configuration for the zitadel-metal-init job (static users, project, application, generic OIDC providers).
+zitadel_init_config: {}
+# Image name of the zitadel-metal-init job. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+zitadel_init_image_name: null
+# Image tag of the zitadel-metal-init job. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+zitadel_init_image_tag: null
+# Name of the initial zitadel instance.
+zitadel_initial_instance: metal-stack
+# Name of the initial zitadel organization.
+zitadel_initial_org: metal-stack
+# Whether zitadel runs in insecure (http) mode.
+zitadel_insecure: false
+# The zitadel master key (32 characters).
+zitadel_master_key: x123456789012345678901234567891y
+# The namespace to deploy zitadel to.
+zitadel_namespace: '{{ metal_control_plane_namespace }}'
+# The port of the zitadel service.
+zitadel_port: 443
+# Whether the init job skips TLS certificate verification.
+zitadel_skip_verify_tls: false
+# Whether TLS is enabled on the zitadel ingress.
+zitadel_tls_enabled: true
+# Image tag of the kubectl image used by the init job.
+zitadel_tools_kubectl_tag: 1.35.1
+```

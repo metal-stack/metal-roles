@@ -6,38 +6,59 @@ This role can deploy on switches running Cumulus Linux or SONiC. It depends on t
 
 ## Variables
 
-This role uses variables from [partition-defaults](/partition). So, make sure you define them adequately as well.
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
 
-You can look up all the default values of this role [here](defaults/main.yaml).
+This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
 
-| Name                                      | Mandatory | Description                                                                                                                                                                                                  |
-| ----------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| metal_core_image_name                     | yes       | Image name of metal-core                                                                                                                                                                                     |
-| metal_core_image_tag                      | yes       | Image tag of metal-core                                                                                                                                                                                      |
-| metal_core_cidr                           |           |                                                                                                                                                                                                              |
-| metal_core_log_driver                     |           | The log driver used for the metal-core container log                                                                                                                                                         |
-| metal_core_log_level                      |           | The metal-core log level                                                                                                                                                                                     |
-| metal_core_etc_dir                        |           | /etc Directory for metal-core.                                                                                                                                                                               |
-| metal_core_loopback_ip                    | yes       | The loopback ip address that is used with BGP unnumbered                                                                                                                                                     |
-| metal_core_asn                            | yes       | The ASN that is used with BGP                                                                                                                                                                                |
-| metal_core_rack_id                        | yes       | The rack id describing the rack in which the leaf switches are contained. Can be a logical rack name and is used by the metal-api to identify the switch pair                                                |
-| metal_core_room_id                        |           | The room id describing the room in which the rack is located. Can be a logical room name and is used by the metal-api to add corresponding tags to switches and machines                                     |
-| metal_core_reconfigure_switch             |           | If set to true, metal-core will automatically reconfigure files on the switch                                                                                                                                |
-| metal_core_reconfigure_switch_interval    |           | The interval in which the switch config gets applied from information received from the metal-api                                                                                                            |
-| metal_core_timeout                        |           | The reconfigure timeout. If one run of the reconfigure function exceeds this timeout metal-core will return an error for this reconfiguration.                                                               |
-| metal_core_set_src_loopback               |           | If `true` metal-core will set the default source address to loopback in `frr.conf`. This parameter is only evaluated on SONiC switches.                                                                      |
-| metal_core_additional_bridge_vids         |           |                                                                                                                                                                                                              |
-| metal_core_additional_bridge_ports        |           |                                                                                                                                                                                                              |
-| metal_core_additional_mgmt_routes         |           | Additional destination CIDRs that are routed to the management network gateway next to the default route.                                                                                                    |
-| metal_core_metal_apiserver_url            |           | The address of the metal-apiserver.                                                                                                                                                                          |
-| metal_core_metal_apiserver_token_filename |           | Filename of the token file to authorize against the metal-apiserver.                                                                                                                                         |
-| metal_core_token_expiration               |           | The duration of the api token's validity.                                                                                                                                                                    |
-| metal_core_permissions                    |           | api permissions that the metal-core needs.                                                                                                                                                                   |
-| metal_core_deployment_admin_token         |           | Initial admin token to create infra token for metal-core.                                                                                                                                                    |
-| metal_core_spine_uplinks                  |           | The switch ports that connect a leaf to a spine switch or other ports that need to be part of the EVPN underlay fabric. Defaults to `swp31` and `swp32` at the metal-core.                                   |
-| metal_core_consider_hosts_file_resolution |           | If set to true mounts `/etc/nsswitch.conf` into the container to enable dns resolution with the hosts file (see [go#22846](https://github.com/golang/go/issues/22846))                                       |
-| metal_core_interfaces_tpl_file            |           | The golang template file to use for rendering `/etc/network/interfaces`. If this is left blank the default template shipped with metal-core will be used.                                                    |
-| metal_core_frr_tpl_file                   |           | The golang template file to use for rendering `/etc/frr/frr.conf`. If this is left blank the default template shipped with metal-core will be used.                                                          |
-| metal_core_pxe_vlan_id                    |           | The VLAN ID for the PXE machines. Defaults to `4000`.                                                                                                                                                        |
-| metal_core_additional_volume_mounts       |           | Volumes to mount into the metal-core, besides the default ones                                                                                                                                               |
-| metal_core_interface_naming_schema        |           | Naming schema defines how metal-core should report its NIC names and aliases. One of `default\|swap\|name\|alias`. Read more about it in the [metal-core README](https://github.com/metal-stack/metal-core). |
+```yaml
+# Additional ports to add to the bridge.
+metal_core_additional_bridge_ports: []
+# Additional VLAN ids to add to the bridge.
+metal_core_additional_bridge_vids: []
+# Volumes to mount into metal-core, besides the default ones.
+metal_core_additional_volume_mounts: []
+# REQUIRED: The CIDR of the switch used by metal-core (rendered into METAL_CORE_CIDR).
+metal_core_cidr: null
+# If set to true, mounts /etc/nsswitch.conf into the container to enable DNS resolution with the hosts file.
+metal_core_consider_hosts_file_resolution: false
+# The golang template file used for rendering /etc/frr/frr.conf. Empty uses the default template shipped with metal-core.
+metal_core_frr_tpl_file: ''
+# The address (host:port) of the metal-api gRPC server.
+metal_core_grpc_address: null
+# The gRPC CA certificate content.
+metal_core_grpc_ca_cert: null
+# Path to the gRPC certificate files on the host machine.
+metal_core_grpc_cert_dir: null
+# The gRPC client certificate content.
+metal_core_grpc_client_cert: null
+# The gRPC client certificate key content.
+metal_core_grpc_client_key: null
+# Legacy HMAC key variable, no longer rendered into the metal-core environment.
+metal_core_hmac_key: null
+# Image name of metal-core. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+metal_core_image_name: null
+# Image tag of metal-core. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+metal_core_image_tag: null
+# The golang template file used for rendering /etc/network/interfaces. Empty uses the default template shipped with metal-core.
+metal_core_interfaces_tpl_file: ''
+# The log driver used for the metal-core container log.
+metal_core_log_driver: journald
+# The metal-core log level.
+metal_core_log_level: warn
+# The VLAN ID for the PXE machines.
+metal_core_pxe_vlan_id: 4000
+# REQUIRED: The rack id describing the rack in which the leaf switches are contained.
+metal_core_rack_id: null
+# If set to true, metal-core will automatically reconfigure files on the switch.
+metal_core_reconfigure_switch: true
+# The interval in which the switch config gets applied from information received from the metal-api.
+metal_core_reconfigure_switch_interval: 10s
+# The room id describing the room in which the rack is located.
+metal_core_room_id: null
+# If true, metal-core sets the default source address to loopback in frr.conf (SONiC only).
+metal_core_set_src_loopback: true
+# The switch ports that connect a leaf to a spine switch or other ports that need to be part of the EVPN underlay fabric.
+metal_core_spine_uplinks: null
+# The reconfigure timeout after which a reconfiguration run returns an error.
+metal_core_timeout: 15s
+```

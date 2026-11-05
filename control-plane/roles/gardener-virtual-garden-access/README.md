@@ -4,8 +4,15 @@ Creates a managed resource that rotates the token for a valid kubeconfig to acce
 
 ## Variables
 
-| Name                                                 | Mandatory | Description                                                                                    |
-| ---------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
-| gardener_virtual_garden_access_garden_name           |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden    |
-| gardener_virtual_garden_access_expiration            |           | The duration how long the token is valid for the access kubeconfig until it expires            |
-| gardener_virtual_garden_access_cluster_role_bindings |           | Deploys `ClusterRoleBinding`s into the virtual garden, usually for the OIDC auth configuration |
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+
+```yaml
+# Cluster role bindings deployed to the virtual garden.
+gardener_virtual_garden_access_cluster_role_bindings: []
+# Token expiration duration for the virtual garden access service account.
+gardener_virtual_garden_access_expiration: 8h
+# Name of the garden to create the access resources for.
+gardener_virtual_garden_access_garden_name: '{{ gardener_defaults_garden_name }}'
+```

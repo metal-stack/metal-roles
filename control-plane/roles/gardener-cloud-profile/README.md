@@ -9,19 +9,47 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ## Variables
 
-| Name                                                       | Mandatory | Description                                                                                                                     |
-| ---------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| gardener_cloud_profile_garden_name                         |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden                                     |
-| gardener_cloud_profile_wait_until_available                |           | If set to true, waits for the cloud profile resource to be registered in the virtual garden (helpful for initial bootstrapping) |
-| gardener_cloud_profile_stage_name                          |           | The name of the metal control plane in the cloud profile                                                                        |
-| gardener_cloud_profile_metal_api_url                       |           | The URL used by the Gardener to communicate with the metal-api                                                                  |
-| gardener_cloud_profile_machine_images                      |           | The machine images available for shoots in the metal-api                                                                        |
-| gardener_cloud_profile_firewall_images                     |           | The firewall images available for shoots in the metal-api                                                                       |
-| gardener_cloud_profile_firewall_images_from_machine_images |           | If set to true, uses the passed machine images and adds those with firewall feature                                             |
-| gardener_cloud_profile_firewall_controller_versions        |           | The available firewall controller versions for metal-stack shoots                                                               |
-| gardener_cloud_profile_kubernetes                          | yes       | The available Kubernetes versions for metal-stack shoots                                                                        |
-| gardener_cloud_profile_machine_types                       |           | The machine types available for shoots in the metal-api                                                                         |
-| gardener_cloud_profile_regions                             | yes       | The regions available for shoots                                                                                                |
-| gardener_cloud_profile_partitions                          |           | The partitions available for shoots                                                                                             |
-| gardener_cloud_profile_os_cri_mapping                      |           | A mapping to add available CRIs to the machine images                                                                           |
-| gardener_cloud_profile_os_compatibility_mapping            |           | A mapping to add kubelet version constraints to the machine images                                                              |
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+
+```yaml
+# Firewall controller versions offered in the cloud profile.
+gardener_cloud_profile_firewall_controller_versions: []
+# Firewall images offered in the cloud profile.
+gardener_cloud_profile_firewall_images: []
+# Whether firewall images are derived from the machine images.
+gardener_cloud_profile_firewall_images_from_machine_images: true
+# Name of the garden to deploy the cloud profile to.
+gardener_cloud_profile_garden_name: '{{ gardener_defaults_garden_name }}'
+# REQUIRED: The kubernetes section (expirable versions) of the cloud profile. Mandatory, must not be none.
+gardener_cloud_profile_kubernetes: null
+# Machine images offered in the cloud profile. Defaults to metal_api_images.
+gardener_cloud_profile_machine_images: '{{ metal_api_images | default([]) }}'
+# Machine types offered in the cloud profile.
+gardener_cloud_profile_machine_types: []
+# The metal-api URL rendered into the cloud profile.
+gardener_cloud_profile_metal_api_url: https://api.{{ metal_control_plane_gateway_dns }}
+# Mapping of operating systems to kubelet compatibility constraints.
+gardener_cloud_profile_os_compatibility_mapping: {}
+# Mapping of operating systems to supported container runtimes.
+gardener_cloud_profile_os_cri_mapping:
+  debian:
+    cris:
+    - containerRuntimes: []
+      name: containerd
+    when: null
+  ubuntu:
+    cris:
+    - containerRuntimes: []
+      name: containerd
+    when: null
+# Per-partition configuration (e.g. default machine types) of the cloud profile.
+gardener_cloud_profile_partitions: {}
+# REQUIRED: The regions section of the cloud profile. Mandatory, must not be none.
+gardener_cloud_profile_regions: null
+# The stage name rendered into the cloud profile.
+gardener_cloud_profile_stage_name: '{{ metal_control_plane_stage_name }}'
+# Whether to wait until the CloudProfile resource is available in the virtual garden.
+gardener_cloud_profile_wait_until_available: true
+```

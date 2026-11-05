@@ -7,11 +7,21 @@ Deploys promtail in a systemd-managed Docker container.
 
 ## Variables
 
-| Name                       | Mandatory | Description                                                                                                          |
-| -------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
-| promtail_config_host_dir   |           | The location of the promtail config                                                                                  |
-| promtail_image_name        | yes       | Image version of the promtail                                                                                        |
-| promtail_image_tag         | yes       | Image tag of the promtail                                                                                            |
-| promtail_clients           | yes       | A list of clients for promtail, see <https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#clients> |
-| promtail_scrape_configs    | yes       | A list containing the scrape configs                                                                                 |
-| promtail_docker_log_driver |           | Indicates where to write the docker logs to                                                                          |
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+
+```yaml
+# Loki client configurations rendered into the promtail configuration. Must not be empty.
+promtail_clients: []
+# The location of the promtail config on the host.
+promtail_config_host_dir: /etc/promtail
+# Docker log driver for the promtail container.
+promtail_docker_log_driver: json-file
+# Image name of promtail. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+promtail_image_name: null
+# Image tag of promtail. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+promtail_image_tag: null
+# Scrape configs rendered into the promtail configuration. Must not be empty.
+promtail_scrape_configs: []
+```

@@ -12,30 +12,89 @@ Adding nsqadmin as a sidecar into the nsqd pod was the only reasonable way to ma
 
 ## Variables
 
-This role uses variables from [control-plane-defaults](/control-plane/roles/defaults/defaults/main.yaml). So, make sure you define them adequately as well.
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
 
-You can look up all the default values of this role in the [defaults folder](defaults/main.yaml).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
 
-| Name                           | Mandatory | Description                                                                                 |
-| ------------------------------ | --------- | ------------------------------------------------------------------------------------------- |
-| nsq_image_name                 | yes       | Image name of nsq                                                                           |
-| nsq_image_tag                  | yes       | Image version of nsq                                                                        |
-| nsq_namespace                  |           | The deployment's target namespace                                                           |
-| nsq_set_resource_limits        |           | Deploys nsq with or without resource limits (possibly disable for development environments) |
-| nsq_nsqd_resources             |           | The kubernetes resources for the actual nsqd container                                      |
-| nsq_nsq_admin_resources        |           | The kubernetes resources for the actual nsq admin container                                 |
-| nsq_nsq_lookupd_resources      |           | The kubernetes resources for the actual nsq lookupd container                               |
-| nsq_log_level                  |           | The nsq log level                                                                           |
-| nsq_broadcast_address          |           | The nsq broadcast address                                                                   |
-| nsq_nsqd_data_size             |           | The size of the nsqd data volume (used when memory cache is full)                           |
-| nsq_tls_enabled                |           | Enables TLS for nsq                                                                         |
-| nsq_tls_require                |           | Specifies whether TLS is required for client connections (`true`, `false`, or `tcp-https`). |
-| nsq_certs_client_key           |           | The nsq certificate client key as a string                                                  |
-| nsq_certs_client_cert          |           | The nsq client certificate as a string                                                      |
-| nsq_certs_ca_cert              |           | The nsq ca certificate as a string                                                          |
-| nsq_image_pull_policy          |           | Image pull policy (defaults to IfNotPresent)                                                |
-| nsq_tcproute_enabled           |           | Deploys a Gateway API TCPRoute exposing nsqd via the configured Gateway                     |
-| nsq_tcproute_parent_refs       |           | List of `parentRefs` (Gateways) the TCPRoute attaches to                                    |
-| nsq_enable_security_context    |           | Enables SecurityContext for the nsq StatefulSet and containers                              |
-| nsq_sts_security_context       |           | The SecurityContext for the StatefulSet                                                     |
-| nsq_container_security_context |           | The SecurityContext for the Containers                                                      |
+```yaml
+# The address nsqd broadcasts to consumers.
+nsq_broadcast_address: '{{ metal_control_plane_gateway_dns }}'
+# The nsq CA certificate content.
+nsq_certs_ca_cert: null
+# The nsq client certificate content.
+nsq_certs_client_cert: null
+# The nsq client certificate key content.
+nsq_certs_client_key: null
+# Security context for the containers.
+nsq_container_security_context:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+# Whether to render the pod and container security contexts.
+nsq_enable_security_context: false
+# Image name of nsq. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+nsq_image_name: null
+# Image pull policy for the nsq containers.
+nsq_image_pull_policy: '{{ metal_control_plane_image_pull_policy }}'
+# Image tag of nsq. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+nsq_image_tag: null
+# Log level of the nsq components.
+nsq_log_level: info
+# The namespace to deploy nsq to.
+nsq_namespace: '{{ metal_control_plane_namespace }}'
+# Resource requests and limits for the nsq-admin container.
+nsq_nsq_admin_resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 30m
+    memory: 32Mi
+# Resource requests and limits for the nsq-lookupd container.
+nsq_nsq_lookupd_resources:
+  limits:
+    cpu: '1'
+    memory: 100Mi
+  requests:
+    cpu: 20m
+    memory: 8Mi
+# Size of the nsqd data volume.
+nsq_nsqd_data_size: 100Mi
+# Resource requests and limits for the nsqd container.
+nsq_nsqd_resources:
+  limits:
+    cpu: '1'
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 32Mi
+# Docker auth configuration for the image pull secret.
+nsq_registry_auth:
+  auths:
+    '{{ metal_registry_url }}':
+      auth: '{{ (metal_registry_auth_user + '':'' + metal_registry_auth_password) | b64encode }}'
+      password: '{{ metal_registry_auth_password }}'
+      username: '{{ metal_registry_auth_user }}'
+# Whether to deploy an image pull secret for the registry.
+nsq_registry_auth_enabled: '{{ metal_registry_auth_enabled }}'
+# Whether to set resource requests and limits on the nsq containers.
+nsq_set_resource_limits: true
+# Pod security context for the statefulset.
+nsq_sts_security_context:
+  fsGroup: 2000
+  fsGroupChangePolicy: OnRootMismatch
+  runAsGroup: 2000
+  runAsNonRoot: true
+  runAsUser: 1001
+  seccompProfile:
+    type: RuntimeDefault
+# Whether to expose nsqd through a GatewayAPI TCPRoute instead of an ingress.
+nsq_tcproute_enabled: false
+# Parent references for the nsqd TCPRoute.
+nsq_tcproute_parent_refs: []
+# Whether TLS is enabled for nsqd.
+nsq_tls_enabled: false
+# The nsqd tls-required setting.
+nsq_tls_require: tcp-https
+```

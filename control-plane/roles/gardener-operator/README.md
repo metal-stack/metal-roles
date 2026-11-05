@@ -59,33 +59,69 @@ Here are the steps for the migration:
 
 ## Variables
 
-| Name                                                                  | Mandatory | Description                                                                                                                                                                                                           |
-| --------------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| gardener_operator_image_name                                          |           | The gardener-operator container image name                                                                                                                                                                            |
-| gardener_operator_image_tag                                           |           | The gardener-operator container image tag                                                                                                                                                                             |
-| gardener_operator_helm_chart_tag                                      |           | The gardener-operator helm chart image tag                                                                                                                                                                            |
-| gardener_operator_backup_infrastructure                               |           | The backup infrastructure configuration for the virtual garden                                                                                                                                                        |
-| gardener_operator_backup_infrastructure_secret                        |           | The backup infrastructure secret for the virtual garden                                                                                                                                                               |
-| gardener_operator_runtime_cluster_provider                            |           | The provider of the runtime cluster in the garden resource                                                                                                                                                            |
-| gardener_operator_dns_providers                                       |           | The dns providers that are used when spinning up the virtual garden                                                                                                                                                   |
-| gardener_operator_garden_name                                         |           | The name of the garden resource                                                                                                                                                                                       |
-| gardener_operator_repo_url                                            |           | The repo url of the Gardener project where the operator chart is located                                                                                                                                              |
-| gardener_operator_repo_ref                                            |           | The repo ref of the Gardener project where the operator chart is located                                                                                                                                              |
-| gardener_operator_high_availability_control_plane                     |           | Whether or not to deploy the Gardener control plane in HA configuration                                                                                                                                               |
-| gardener_operator_ingress_dns_domain                                  | true      | The domain on which the ingress-nginx (i.e. monitoring) is exposed                                                                                                                                                    |
-| gardener_operator_virtual_garden_public_dns                           |           | The domain on which the virtual garden istio ingress is exposed                                                                                                                                                       |
-| gardener_operator_virtual_garden_etcd_storage_class                   |           | The storage class used by the virtual garden etcd                                                                                                                                                                     |
-| gardener_virtual_garden_api_server_version                            |           | The kubernetes version of the virtual garden                                                                                                                                                                          |
-| gardener_operator_shoot_admin_kubeconfig_max_expiration               |           | The max expiration for admin kubeconfigs                                                                                                                                                                              |
-| gardener_operator_dashboard_enabled                                   |           | If enabled, gardener-operator deploys the Gardener Dashboard.                                                                                                                                                         |
-| gardener_operator_dashboard_oidc_client_id_public                     |           | The public id of the OIDC client. Please refer to the [Gardener documentation](https://github.com/gardener/gardener/blob/master/docs/concepts/operator.md#gardener-dashboard) for more details.                       |
-| gardener_operator_dashboard_oidc_issuer_url                           |           | The issuer URL of the JWT issuer. Please refer to the [Gardener documentation](https://github.com/gardener/gardener/blob/master/docs/concepts/operator.md#gardener-dashboard) for more details.                       |
-| gardener_operator_dashboard_oidc_session_lifetime                     |           | The duration after a session is terminated. Please refer to the [Gardener documentation](https://github.com/gardener/gardener/blob/master/docs/concepts/operator.md#gardener-dashboard) for more details.             |
-| gardener_operator_dashboard_oidc_additional_scopes                    |           | The scopes of the JWT token, that should be recognized. Please refer to the [Gardener documentation](https://github.com/gardener/gardener/blob/master/docs/concepts/operator.md#gardener-dashboard) for more details. |
-| gardener_operator_dashboard_oidc_client_id                            |           | The client id of the OIDC client. Please refer to the [Gardener documentation](https://github.com/gardener/gardener/blob/master/docs/concepts/operator.md#gardener-dashboard) for more details.                       |
-| gardener_operator_dashboard_oidc_client_secret                        |           | The client secret of the OIDC client. Please refer to the [Gardener documentation](https://github.com/gardener/gardener/blob/master/docs/concepts/operator.md#gardener-dashboard) for more details.                   |
-| gardener_operator_dashboard_ingress_enabled                           |           | If enabled, deploys an Ingress resource for the Gardener Dashboard.                                                                                                                                                   |
-| gardener_operator_wildcard_ingress_certificate_cluster_issuer         |           | The issuer used for deploying a wildcard certificate used by the Gardener Dashboard ingresses.                                                                                                                        |
-| gardener_operator_dashboard_config_frontend                           |           | Refers to the `frontendConfigMapRef` for customizing the Gardener Dashboard's texts and fonts.                                                                                                                        |
-| gardener_operator_dashboard_config_assets                             |           | Refers to the `assetsConfigMapRef` for customizing the Gardener Dashboard's images.                                                                                                                                   |
-| gardener_operator_virtual_garden_api_server_structured_authentication |           | Allows providing a `AuthenticationConfiguration` for the virtual garden api-server                                                                                                                                    |
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+
+```yaml
+# Backup infrastructure configuration for the virtual garden etcd (provider gcp or S3). Mandatory, must not be none.
+gardener_operator_backup_infrastructure: null
+# Secret data for the backup infrastructure.
+gardener_operator_backup_infrastructure_secret: null
+# Component image vector overwrite for the gardener components.
+gardener_operator_component_image_vector_overwrite: null
+# Asset configuration (e.g. logos) of the gardener dashboard.
+gardener_operator_dashboard_config_assets: null
+# Frontend configuration of the gardener dashboard.
+gardener_operator_dashboard_config_frontend: null
+# Whether the gardener dashboard is deployed.
+gardener_operator_dashboard_enabled: false
+# Whether to create an ingress for the gardener dashboard.
+gardener_operator_dashboard_ingress_enabled: true
+# Log level of the gardener dashboard.
+gardener_operator_dashboard_log_level: debug
+# Additional OIDC scopes of the gardener dashboard.
+gardener_operator_dashboard_oidc_additional_scopes:
+- profile
+- offline_access
+# OIDC client id of the gardener dashboard.
+gardener_operator_dashboard_oidc_client_id: null
+# Public OIDC client id of the gardener dashboard.
+gardener_operator_dashboard_oidc_client_id_public: null
+# OIDC client secret of the gardener dashboard.
+gardener_operator_dashboard_oidc_client_secret: null
+# OIDC session lifetime of the gardener dashboard.
+gardener_operator_dashboard_oidc_session_lifetime: 12h
+# DNS providers configured in the garden resource.
+gardener_operator_dns_providers: []
+# Whether the virtual garden kube-apiserver is exposed through ingress-nginx.
+gardener_operator_expose_virtual_garden_through_ingress_nginx: null
+# Name of the garden resource.
+gardener_operator_garden_name: '{{ gardener_defaults_garden_name }}'
+# Tag of the gardener-operator helm chart. Derived from the operator image tag of the release vector by default.
+gardener_operator_helm_chart_tag: '{{ gardener_operator_image_tag }}'
+# Whether the virtual garden control plane is deployed highly available.
+gardener_operator_high_availability_control_plane: true
+# Image name of the gardener-operator. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+gardener_operator_image_name: null
+# Image tag of the gardener-operator. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+gardener_operator_image_tag: null
+# Image vector overwrite for the gardener components.
+gardener_operator_image_vector_overwrite: null
+# Git reference of the gardener repository.
+gardener_operator_repo_ref: '{{ gardener_repo_ref }}'
+# URL of the gardener git repository used for applying the operator CRDs.
+gardener_operator_repo_url: '{{ gardener_repo_url }}'
+# The provider of the runtime cluster.
+gardener_operator_runtime_cluster_provider: local
+# Maximum expiration of shoot admin kubeconfigs.
+gardener_operator_shoot_admin_kubeconfig_max_expiration: 24h
+# Structured authentication configuration for the virtual garden kube-apiserver.
+gardener_operator_virtual_garden_api_server_structured_authentication: null
+# Storage class of the virtual garden etcd.
+gardener_operator_virtual_garden_etcd_storage_class: null
+# Public DNS name of the virtual garden kube-apiserver.
+gardener_operator_virtual_garden_public_dns: gardener-kube-apiserver.{{ metal_control_plane_gateway_dns }}
+# Name of the cert-manager ClusterIssuer used for the wildcard ingress certificate.
+gardener_operator_wildcard_ingress_certificate_cluster_issuer: null
+```

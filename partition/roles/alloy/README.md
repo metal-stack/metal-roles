@@ -24,29 +24,6 @@ If your needs are more custom (e.g. you have a non-standard log source, or want 
 | `journal-file` | Like `journal`, but reads from an explicit directory path (`alloy_journal_path`, default `/var/log/journal`) instead of the journal API. Produces the same labels (`job=systemd-journal`, `unit`, `level`). Prefer `journal` for new deployments — use `journal-file` only when migrating from promtail and needing the `legacy_position` block to resume cursor state. Do not enable both `journal` and `journal-file` simultaneously — this will produce duplicate log entries.                                                                                   |
 | `syslog`       | Tails `/var/log/syslog` and forwards to Loki with `job=syslog`. Suited for hosts without journald (e.g. minimal switch OS images). On standard systemd hosts, prefer `journal` — enabling both may produce duplicate log entries in Loki.                                                                                                                                                                                                                                                                                                                           |
 
-### Variables
-
-| Name                                | Mandatory                              | Default                            | Description                                                                                                                                                                                                                                                                               |
-| ----------------------------------- | -------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| alloy_config_host_dir               |                                        | `/etc/alloy`                       | The location of the alloy config on the host                                                                                                                                                                                                                                              |
-| alloy_image_name                    | yes                                    |                                    | Image name of alloy                                                                                                                                                                                                                                                                       |
-| alloy_image_tag                     | yes                                    |                                    | Image tag of alloy                                                                                                                                                                                                                                                                        |
-| alloy_loki_write_endpoints          | yes (unless `alloy_config_raw` is set) |                                    | List of Loki push endpoints. Each entry: `{url, remote_timeout?: <duration>, basic_auth?: {username, password}}`                                                                                                                                                                          |
-| alloy_docker_log_driver             |                                        | `json-file`                        | Docker log driver for the alloy container                                                                                                                                                                                                                                                 |
-| alloy_config_snippets               |                                        | `[]`                               | List of built-in snippet names to enable. Available: `syslog`, `journal`, `journal-file`, `docker`, `alloy-meta`                                                                                                                                                                          |
-| alloy_config_custom_snippets        |                                        | `[]`                               | List of paths to custom Alloy River snippet templates. Resolved via Ansible's template search path (relative to the playbook's `templates/` directory, or absolute). Appended after built-in snippets. See [Customizing the config](#customizing-the-config).                             |
-| alloy_port                          |                                        | `12345`                            | Port for Alloy metrics and HTTP API                                                                                                                                                                                                                                                       |
-| alloy_migrate_from_promtail         |                                        | `false`                            | Enable migration mode: imports cursor state from the legacy promtail positions file on first start. Set to `true` when migrating from promtail; leave `false` for fresh deployments. Without this, Alloy starts from the current tail and previously shipped log data will be re-shipped. |
-| alloy_syslog_legacy_positions_file  |                                        | `/var/log/promtail-positions.yaml` | Path to the legacy promtail positions file. Used by `syslog` when `alloy_migrate_from_promtail` is `true`.                                                                                                                                                                                |
-| alloy_journal_path                  |                                        | `/var/log/journal`                 | Path to the persistent journal directory used by the `journal-file` snippet                                                                                                                                                                                                               |
-| alloy_journal_legacy_positions_file |                                        | `/var/log/promtail-positions.yaml` | Path to the legacy promtail positions file. Used by `journal-file` when `alloy_migrate_from_promtail` is `true`.                                                                                                                                                                          |
-| alloy_journal_legacy_position_name  | yes (migration)                        |                                    | Job name from the old promtail journal scrape_config. Must match `job_name` in your old promtail config. Required when `alloy_migrate_from_promtail` is `true` and `journal-file` is used.                                                                                                |
-| alloy_config_raw                    |                                        |                                    | Full Alloy River config as a string. When set, bypasses snippet assembly entirely — `alloy_loki_write_endpoints` and `alloy_config_snippets` are ignored.                                                                                                                                 |
-| alloy_docker_network                |                                        | `host`                             | The docker network to launch the alloy container in. Host is used per default, as bridges with masquerading on switches are usually not possible.                                                                                                                                         |
-| alloy_docker_security_opts          |                                        |                                    | Allows passing additional security opts to the docker container.                                                                                                                                                                                                                          |
-| promtail_migrate_stop               |                                        | `false`                            | Stop and disable the promtail systemd service. Use during alloy cutover to stop promtail without removing its files. Implied by `promtail_migrate_cleanup`.                                                                                                                               |
-| promtail_migrate_cleanup            |                                        | `false`                            | Remove all promtail remnants: stops and disables the service, removes the systemd unit file, deletes `promtail_config_host_dir` and the legacy positions files. Only set this once migration to alloy is fully complete.                                                                  |
-
 ### Meta-monitoring (for Alloy itself)
 
 #### Metrics
@@ -64,7 +41,7 @@ Scraped metrics will carry the following labels (set by the prometheus role, not
 
 #### Labels
 
-All log entries carry `host` (set to `inventory_hostname`) and `partition` (set to `metal_partition_id`) as `external_labels` on `loki.write "default"`, so they are appended to every log entry regardless of snippet. Per-snippet labels are:
+All log entries carry `host` (set to `inventory_hostname`) and `partition` (set to `metal_partition_id`) as `external_labels` on `loki.write "default"`, so they are appended to every log entry regardless of snippet.
 
 | Snippet        | Labels                                 |
 | -------------- | -------------------------------------- |
@@ -87,13 +64,7 @@ Alloy's log level (`info`) and format (`logfmt`) are always configured via the b
 
 `loki.source.file` and `loki.source.journal` track their read positions in small YAML positions files written under `--storage.path`, which is set to `/var/lib/alloy` (bind-mounted from the host). These files stay in the low-KB range regardless of log volume and survive container restarts, preventing duplicate log shipments.
 
-When migrating from promtail, set `alloy_migrate_from_promtail: true` to import cursor state from promtail's positions file on first start and continue from where promtail left off. The exact mechanism depends on the snippet:
-
-| Snippet        | Cursor mechanism                                         | Promtail migration path                                                      |
-| -------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `syslog`       | Positions file via `loki.source.file`                    | `alloy_syslog_legacy_positions_file`                                         |
-| `journal`      | Positions file via `loki.source.journal` (journal API)   | None — first start re-reads a small journal window once                      |
-| `journal-file` | Positions file via `loki.source.journal` (explicit path) | `alloy_journal_legacy_positions_file` + `alloy_journal_legacy_position_name` |
+When migrating from promtail, set `alloy_migrate_from_promtail: true` to import cursor state from promtail's positions file on first start and continue from where promtail left off.
 
 **`syslog`:** On first start after migration, Alloy reads `alloy_syslog_legacy_positions_file` (default: `/var/log/promtail-positions.yaml`) to continue tailing `/var/log/syslog` from where promtail left off. No log lines are re-shipped. After this Alloy tracks positions in its own format. If the file does not exist on the host, this has no effect.
 
@@ -111,12 +82,7 @@ Your options, from least to most invasive:
 
 **Option A — Custom snippets via inventory** (no role change required)
 
-Add a Jinja2 template file to your playbook's `templates/` directory and reference it via `alloy_config_custom_snippets`:
-
-```yaml
-alloy_config_custom_snippets:
-  - my_custom_source.alloy.j2
-```
+Add a Jinja2 template file to your playbook's `templates/` directory and reference it via `alloy_config_custom_snippets`.
 
 The path is resolved through Ansible's normal template search path (relative to the playbook's `templates/` directory, or an absolute path). The snippet is rendered after all built-in snippets and has access to all Ansible variables on the host. It does not need to define `loki.write "default"` — that is already in the base template.
 
@@ -213,3 +179,50 @@ Use the inventory flags below to control the deployment based on your situation:
    We do not recommend doing the cleanup at the same time as the alloy deployment and migration steps, as the promtail positions file may be needed for the migration and the cleanup removes it. If you anyway choose to set the cleanup flag at the same time as the migration, make sure that the alloy role runs first to avoid migration failures due to the missing positions files.
 
    The `promtail` role is deprecated and will be removed in a future release. Once all environments are migrated, remove the `promtail` role from the playbook.
+
+## Variables
+
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+
+```yaml
+# List of paths to custom Alloy River snippet templates, resolved via Ansible's template search path. Appended after built-in snippets.
+alloy_config_custom_snippets: []
+# The location of the alloy config on the host.
+alloy_config_host_dir: /etc/alloy
+# Full Alloy River config as a string. When set, bypasses snippet assembly entirely.
+alloy_config_raw: null
+# List of built-in snippet names to enable. Available: syslog, journal, journal-file, docker, alloy-meta.
+alloy_config_snippets: []
+# Docker log driver for the alloy container.
+alloy_docker_log_driver: json-file
+# The docker network to launch the alloy container in.
+alloy_docker_network: host
+# Additional security opts passed to the docker container.
+alloy_docker_security_opts: []
+# Image name of alloy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+alloy_image_name: null
+# Image tag of alloy. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+alloy_image_tag: null
+# Job name from the old promtail journal scrape_config. Required when alloy_migrate_from_promtail is true and the journal-file snippet is used.
+alloy_journal_legacy_position_name: null
+# Path to the legacy promtail positions file used by the journal-file snippet during migration.
+alloy_journal_legacy_positions_file: /var/log/promtail-positions.yaml
+# Path to the persistent journal directory used by the journal-file snippet.
+alloy_journal_path: /var/log/journal
+# List of Loki push endpoints. Each entry supports url, remote_timeout and basic_auth (username, password). Required unless alloy_config_raw is set.
+alloy_loki_write_endpoints: null
+# Enable migration mode that imports cursor state from the legacy promtail positions file on first start.
+alloy_migrate_from_promtail: false
+# Port for Alloy metrics and HTTP API.
+alloy_port: 12345
+# Path to the legacy promtail positions file used by the syslog snippet during migration.
+alloy_syslog_legacy_positions_file: /var/log/promtail-positions.yaml
+# The promtail config directory removed when promtail_migrate_cleanup is enabled (defined by the deprecated promtail role).
+promtail_config_host_dir: null
+# Remove all promtail remnants (service, unit file, config directory, positions files). Only set once migration to alloy is fully complete.
+promtail_migrate_cleanup: false
+# Stop and disable the promtail systemd service during alloy cutover. Implied by promtail_migrate_cleanup.
+promtail_migrate_stop: false
+```

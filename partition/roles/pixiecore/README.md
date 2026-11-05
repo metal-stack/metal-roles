@@ -4,35 +4,55 @@ Deploys pixiecore in a systemd-managed Docker container.
 
 ## Variables
 
-| Name                                        | Mandatory | Description                                                                                                   |
-| ------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------- |
-| pixiecore_image_name                        | yes       | Image version of the pixiecore                                                                                |
-| pixiecore_image_tag                         | yes       | Image tag of the pixiecore                                                                                    |
-| pixiecore_debug                             |           | Enable debugging                                                                                              |
-| pixiecore_api_host                          | yes       | The host on which the metal-hammer can reach the pixiecore to ask for metal-api communication credentials.    |
-| pixiecore_api_port                          |           | The port on which the pixiecore api is listening                                                              |
-| pixiecore_docker_log_driver                 |           | Indicates where to write the docker logs to                                                                   |
-| pixiecore_dns_servers                       |           | Alternative DNS servers to be used by the pixiecore (can be used for configuring kernel and boot image cache) |
-| pixiecore_partition_id                      |           | The partition where pixiecore is installed                                                                    |
-| pixiecore_ipxe_type                         |           | UEFI PXE build type to serve: ipxe or snponly                                                                 |
-| pixiecore_grpc_cert_dir                     |           | The directory where the grpc certificates reside                                                              |
-| pixiecore_grpc_ca_cert                      | yes       | The filename of the ca certificate                                                                            |
-| pixiecore_grpc_client_cert                  | yes       | The filename of the client certificate                                                                        |
-| pixiecore_grpc_client_key                   | yes       | The filename of the client key                                                                                |
-| pixiecore_grpc_address                      |           | The address of metal-api grpc endpoint in the form (ip or hostname:port)                                      |
-| pixiecore_metal_api_url                     |           | The URL where to reach metal-api                                                                              |
-| pixiecore_metal_api_hmac_view_key           |           | A view hmac to authenticate against metal-api (given to the metal-hammer)                                     |
-| pixiecore_metal_hammer_logging_endpoint     |           | set metal-hammer to send logs to this endpoint                                                                |
-| pixiecore_metal_hammer_logging_user         |           | set metal-hammer to send logs to a remote endpoint and authenticate with this user for basic auth             |
-| pixiecore_metal_hammer_logging_password     |           | set metal-hammer to send logs to a remote endpoint and authenticate with this password for basic auth         |
-| pixiecore_metal_hammer_logging_cert         |           | set metal-hammer to send logs to a remote endpoint and authenticate with this cert for mtls auth              |
-| pixiecore_metal_hammer_logging_key          |           | set metal-hammer to send logs to a remote endpoint and authenticate with this key for mtls auth               |
-| pixiecore_metal_hammer_logging_tls_insecure |           | set metal-hammer to send logs to a remote endpoint without verifying the tls certificate for mtls auth        |
-| pixiecore_metal_hammer_ntp_servers          |           | A list of custom NTP servers                                                                                  |
-| pixiecore_additional_volume_mounts          |           | Volumes to mount into the pixiecore, besides the default ones                                                 |
-| pixiecore_etc_dir                           |           | /etc Directory for pixiecore                                                                                  |
-| pixiecore_metal_apiserver_url               |           | The address of the metal-apiserver                                                                            |
-| pixiecore_metal_apiserver_token_filename    |           | Filename of the token file to authorize against the metal-apiserver                                           |
-| pixiecore_deployment_admin_token            |           | Initial admin token to create infra token for pixiecore                                                       |
-| pixiecore_token_expiration                  |           | The duration of the api token's validity                                                                      |
-| pixiecore_permissions                       |           | API permissions that the pixiecore needs                                                                      |
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+
+```yaml
+# Additional volumes to mount into the pixiecore container.
+pixiecore_additional_volume_mounts: []
+# REQUIRED: The host address on which the pixiecore API is reachable.
+pixiecore_api_host: null
+# The port on which the pixiecore API is served.
+pixiecore_api_port: 4242
+# Whether to enable debug logging.
+pixiecore_debug: false
+# DNS servers passed to the pixiecore container.
+pixiecore_dns_servers: []
+# Docker log driver for the pixiecore container.
+pixiecore_docker_log_driver: json-file
+# The address (host:port) of the metal-api gRPC server.
+pixiecore_grpc_address: '{{ metal_partition_metal_api_grpc_address }}'
+# The gRPC CA certificate content.
+pixiecore_grpc_ca_cert: '{{ metal_partition_metal_api_grpc_ca_cert }}'
+# Path to the gRPC certificate files on the host machine.
+pixiecore_grpc_cert_dir: '{{ metal_partition_metal_api_grpc_cert_dir }}'
+# The gRPC client certificate content.
+pixiecore_grpc_client_cert: '{{ metal_partition_metal_api_grpc_client_cert }}'
+# The gRPC client certificate key content.
+pixiecore_grpc_client_key: '{{ metal_partition_metal_api_grpc_client_key }}'
+# Image name of pixiecore. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+pixiecore_image_name: null
+# Image tag of pixiecore. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+pixiecore_image_tag: null
+# The metal-api view HMAC passed to metal-hammer.
+pixiecore_metal_api_hmac_view_key: '{{ metal_partition_metal_api_hmac_view_key }}'
+# The metal-api URL passed to metal-hammer.
+pixiecore_metal_api_url: '{{ metal_partition_metal_api_protocol }}://{{ metal_partition_metal_api_addr }}:{{ metal_partition_metal_api_port }}{{ metal_partition_metal_api_basepath }}'
+# Client certificate content for the metal-hammer logging endpoint.
+pixiecore_metal_hammer_logging_cert: null
+# Log forwarding endpoint for metal-hammer.
+pixiecore_metal_hammer_logging_endpoint: null
+# Client certificate key content for the metal-hammer logging endpoint.
+pixiecore_metal_hammer_logging_key: null
+# Basic auth password for the metal-hammer logging endpoint.
+pixiecore_metal_hammer_logging_password: null
+# Whether to skip TLS verification for the metal-hammer logging endpoint.
+pixiecore_metal_hammer_logging_tls_insecure: false
+# Basic auth user for the metal-hammer logging endpoint.
+pixiecore_metal_hammer_logging_user: null
+# NTP servers passed to metal-hammer.
+pixiecore_metal_hammer_ntp_servers: []
+# The partition id passed to pixiecore.
+pixiecore_partition_id: '{{ metal_partition_id }}'
+```
