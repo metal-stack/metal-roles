@@ -190,9 +190,9 @@ sonic_config_vtep:
 
 This section shows an overview of all available variables with example values.
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+This role depends on default values of [metal-roles/partition/roles/defaults](../defaults/README.md).
 
 ```yaml
 # The ASN of the switch used for BGP. Required when sonic_config_frr_render is true.

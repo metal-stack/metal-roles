@@ -8,9 +8,9 @@ This role just wraps the [rethinkdb-backup-restore](/control-plane/roles/rethink
 
 The role should take the same variables as the wrapped role, but prefixed with `metal_db_` instead of `rethinkdb_`.
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/metal-roles/control-plane/roles/defaults).
 
 ```yaml
 # Cron schedule for creating backups.

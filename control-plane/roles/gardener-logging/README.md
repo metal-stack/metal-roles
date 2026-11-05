@@ -49,9 +49,9 @@ Alloy is deployed by default. Existing Promtail installations are automatically 
 
 All `gardener_logging_alloy_*` variables are explicitly mapped to their `logging_common_alloy_*` counterparts when calling [logging-common](../logging-common/). This is necessary because the two roles use different variable prefixes — the [logging role](../logging/) similarly maps its `logging_alloy_*` variables to `logging_common_alloy_*`.
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/metal-roles/control-plane/roles/defaults).
 
 ```yaml
 # Repository URL of the alloy helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.

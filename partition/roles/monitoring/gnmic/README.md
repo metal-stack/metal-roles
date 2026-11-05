@@ -55,9 +55,9 @@ Below is an example playbook that can be used to roll out gnmic and the bgp-metr
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+This role depends on default values of [metal-roles/partition/roles/defaults](../../defaults/README.md).
 
 ```yaml
 # CRM ACL tables to subscribe to. Discovered from the switch at deploy time when left empty.

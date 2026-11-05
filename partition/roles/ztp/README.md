@@ -24,9 +24,9 @@ For more information on the `ztp.json` format refer to the [documentation](https
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+This role depends on default values of [metal-roles/partition/roles/defaults](../defaults/README.md).
 
 ```yaml
 # Additional files (name, data) to serve. Must not contain a file named user.sh.

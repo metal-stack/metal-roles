@@ -6,7 +6,7 @@ By default, this role uses the release vector to derive the fitting version of m
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
 
 ```yaml
 # Install the client from the git repository instead of PyPI.

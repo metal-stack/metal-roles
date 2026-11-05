@@ -6,9 +6,9 @@ This role can deploy on switches running Cumulus Linux or SONiC. It depends on t
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+This role depends on default values of [metal-roles/partition/roles/defaults](../defaults/README.md).
 
 ```yaml
 # Additional ports to add to the bridge.

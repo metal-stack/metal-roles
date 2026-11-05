@@ -4,9 +4,9 @@ This role basically deploys the `metal-control-plane` [helm chart](https://githu
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../defaults/README.md).
 
 ```yaml
 # HMAC key for the metal-api admin access role.

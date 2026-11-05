@@ -6,9 +6,9 @@ Please note that this role creates `DNSRecord`s in the garden cluster's `garden`
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../defaults/README.md).
 
 ```yaml
 # Credentials for the DNS provider of the proxy DNS entry.

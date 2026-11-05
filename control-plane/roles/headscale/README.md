@@ -10,9 +10,9 @@ If you want to rotate the API key, you need to delete the `headscale-api-key` se
 
 The role should take the same variables as the wrapped role, but prefixed with `headscale_db_` instead of `postgres_`.
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../defaults/README.md).
 
 ```yaml
 # Expiration duration of the created headscale API key.

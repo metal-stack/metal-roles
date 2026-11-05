@@ -16,9 +16,9 @@ Because `ExternalSecure: true` is set by default, Zitadel is only available over
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/metal-roles/control-plane/roles/defaults).
 
 ```yaml
 # Password of the initial zitadel admin user.
@@ -35,7 +35,7 @@ zitadel_db_password: change-me
 zitadel_enabled_ingress: true
 # The zitadel endpoint host name.
 zitadel_endpoint: auth.{{ metal_control_plane_gateway_dns }}
-# REQUIRED: The external domain configured for the zitadel instance.
+# The external domain configured for the zitadel instance.
 zitadel_external_domain: null
 # Whether to expose zitadel through a GatewayAPI HTTPRoute instead of an ingress.
 zitadel_httproute_enabled: false

@@ -51,9 +51,7 @@ Self-metrics are **disabled by default**. Choose one option when needed:
 
 **Option B — Push (remote_write).** Set `logging_alloy_prometheus_write_endpoints` (logging role) or `gardener_logging_alloy_prometheus_write_endpoints` (gardener-logging role). Works in both roles.
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
 
 ```yaml
 {}
@@ -99,31 +97,10 @@ For a controlled parallel window before cutting over, set `*_promtail_enabled: t
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/metal-roles/control-plane/roles/defaults).
 
 ```yaml
-# Repository URL of the alloy helm chart. Usually passed by the consuming role.
-logging_common_alloy_chart_repo: null
-# Version of the alloy helm chart. Usually passed by the consuming role.
-logging_common_alloy_chart_version: null
-# Value for the cluster label attached to all log and metric streams. Must not be empty.
-logging_common_alloy_cluster_label: ''
-# Full Alloy River config override. When set, bypasses the structured vars and the template.
-logging_common_alloy_config_raw: null
-# Path to a kubeconfig used for deploying the alloy helm chart to a different cluster.
-logging_common_alloy_kubeconfig: null
-# Loki push endpoints. Each entry supports url, remote_timeout and basic_auth (username, password).
-logging_common_alloy_loki_write_endpoints: []
-# The namespace to deploy Alloy to.
-logging_common_alloy_namespace: monitoring
-# Maximum age of undelivered WAL samples before they are dropped.
-logging_common_alloy_prometheus_wal_max_keepalive_time: 8h
-# How often the Alloy remote_write WAL is compacted.
-logging_common_alloy_prometheus_wal_truncate_frequency: 2h
-# Prometheus remote_write endpoints for Alloy self-metrics.
-logging_common_alloy_prometheus_write_endpoints: []
-# Whether to create a ServiceMonitor for Alloy self-metrics scraping. Never enable in Gardener seed clusters.
-logging_common_alloy_service_monitor_enabled: false
+{}
 ```

@@ -8,9 +8,9 @@ This role just wraps the [postgres-backup-restore](/control-plane/roles/postgres
 
 The role should take the same variables as the wrapped role, but prefixed with `auditing_timescaledb_` instead of `postgres_`.
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/control-plane/roles/defaults).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../defaults/README.md).
 
 ```yaml
 # Cron schedule for creating backups.

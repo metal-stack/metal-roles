@@ -182,9 +182,9 @@ Use the inventory flags below to control the deployment based on your situation:
 
 ## Variables
 
-This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/common/roles/defaults).
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-This role depends on default values of [metal-roles/partition/roles/defaults](https://github.com/metal-stack/tree/master/metal-roles/partition/roles/defaults).
+This role depends on default values of [metal-roles/partition/roles/defaults](../defaults/README.md).
 
 ```yaml
 # List of paths to custom Alloy River snippet templates, resolved via Ansible's template search path. Appended after built-in snippets.
