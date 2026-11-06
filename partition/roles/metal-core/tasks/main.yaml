@@ -100,3 +100,19 @@
     port: 2112
     timeout: 300
     msg: "metal-core did not come up"
+
+- name: Warn at login that this switch must not be configured manually
+  ansible.builtin.blockinfile:
+    path: /etc/motd
+    marker: "{mark}"
+    marker_begin: "******************************* WARNING ********************************"
+    marker_end: "************************************************************************"
+    block: |
+      *
+      *  This switch is managed by metal-core.
+      *  DO NOT configure it manually, your changes may be overwritten.
+      *
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
