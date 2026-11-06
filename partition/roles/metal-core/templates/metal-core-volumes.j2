@@ -1,6 +1,10 @@
 {% if metal_stack_switch_os_is_sonic %}
 - /etc/sonic/:/etc/sonic
 - /var/run/redis/:/var/run/redis
+{% elif metal_stack_switch_os_is_bisdn | default(false) %}
+- /etc/systemd/network/:/etc/systemd/network
+- /etc/frr/:/etc/frr
+- /etc/os-release:/etc/os-release:ro
 {% else %}
 - /etc/network/:/etc/network
 - /etc/frr/:/etc/frr

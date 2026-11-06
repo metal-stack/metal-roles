@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# Applies the breakout/FEC config to the vendor config.bcm before every ofdpa
+# start, also after a BISDN upgrade replaced it. "-": an error (logged in the
+# journal) never keeps ofdpa from starting; it then uses the last config.bcm.
+[Service]
+ExecStartPre=-/usr/sbin/bisdn-portconf

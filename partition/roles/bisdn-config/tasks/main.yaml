@@ -1,0 +1,148 @@
+---
+- name: Gather release versions
+  setup_yaml:
+
+- name: Gather switch facts
+  switch_facts:
+
+- name: Check that the switch runs BISDN Linux
+  ansible.builtin.assert:
+    quiet: true
+    fail_msg: "this role only supports BISDN Linux"
+    that:
+      - metal_stack_switch_os_is_bisdn
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ bisdn_config_timezone }}"
+
+- name: Render resolv.conf
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: "0644"
+  when: bisdn_config_nameservers | length > 0
+
+- name: Create timesyncd drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/timesyncd.conf.d
+    state: directory
+    mode: "0755"
+  when: bisdn_config_ntp_servers | length > 0
+
+- name: Configure NTP servers
+  ansible.builtin.template:
+    src: timesyncd.conf.j2
+    dest: /etc/systemd/timesyncd.conf.d/metal.conf
+    mode: "0644"
+  notify: Restart timesyncd
+  when: bisdn_config_ntp_servers | length > 0
+
+- name: Install SSH keys for root
+  ansible.posix.authorized_key:
+    user: root
+    key: "{{ item }}"
+  loop: "{{ bisdn_config_authorized_keys }}"
+
+# sudo reads /etc/sudoers.d in lexical order and the last matching rule wins:
+# the name must sort after BISDN's "basebox" (basebox ALL=(ALL) ALL).
+- name: Let basebox use sudo without a password
+  ansible.builtin.copy:
+    content: "basebox ALL=(ALL) NOPASSWD: ALL\n"
+    dest: /etc/sudoers.d/zz-metal-stack
+    mode: "0440"
+    validate: visudo -cf %s
+  when: bisdn_config_basebox_nopasswd_sudo
+
+- name: Remove passwordless sudo for basebox
+  ansible.builtin.file:
+    path: /etc/sudoers.d/zz-metal-stack
+    state: absent
+  when: not bisdn_config_basebox_nopasswd_sudo
+
+# BISDN ships Docker with docker.service disabled; the metal-core role runs
+# metal-core as a Docker container
+- name: Enable and start Docker
+  ansible.builtin.systemd:
+    name: docker.service
+    enabled: true
+    state: started
+
+# BISDN's FRR ships with bgpd=no
+- name: Enable bgpd
+  ansible.builtin.lineinfile:
+    path: /etc/frr/daemons
+    regexp: "^bgpd="
+    line: "bgpd=yes"
+  notify: Restart frr
+
+# Netfilter sees the VRF device, not the management port, as input interface
+# of traffic in VRF mgmt, so the vendor rule "! -i enp+ --dport 22 -j DROP"
+# drops SSH unless it is allowed on mgmt first.
+- name: Allow SSH on the mgmt VRF device
+  ansible.builtin.lineinfile:
+    path: "/etc/iptables/{{ item }}"
+    line: "-A INPUT -i mgmt -p tcp -m tcp --dport 22 -j ACCEPT"
+    insertbefore: '^-A INPUT ! -i enp\+ -p tcp -m tcp --dport 22 -j DROP'
+  loop:
+    - iptables.rules
+    - ip6tables.rules
+  notify: Restart iptables
+  when: bisdn_config_mgmt_vrf
+
+- name: Create sshd.socket drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/sshd.socket.d
+    state: directory
+    mode: "0755"
+  when: bisdn_config_mgmt_vrf
+
+- name: Bind sshd to VRF mgmt
+  ansible.builtin.copy:
+    src: sshd-mgmt.conf
+    dest: /etc/systemd/system/sshd.socket.d/50-mgmt-vrf.conf
+    mode: "0644"
+  notify:
+    - Reload systemd daemon
+    - Restart sshd.socket
+  when: bisdn_config_mgmt_vrf
+
+- name: Render mgmt VRF networkd files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "/etc/systemd/network/{{ item.dest }}"
+    mode: "0644"
+  loop:
+    - { src: mgmt.netdev.j2, dest: 10-mgmt.netdev }
+    - { src: mgmt.network.j2, dest: 10-mgmt.network }
+  notify: Reload networkd
+  when: bisdn_config_mgmt_vrf
+
+- name: Render management port networkd file
+  ansible.builtin.template:
+    src: mgmt-interface.network.j2
+    dest: "/etc/systemd/network/10-{{ bisdn_config_mgmt_interface }}.network"
+    mode: "0644"
+  notify: Reload networkd
+
+- name: Keep this role's files across BISDN upgrades
+  ansible.builtin.lineinfile:
+    path: /etc/default/user-backup.txt
+    line: "{{ item }}"
+  loop:
+    - /etc/frr/
+    - /etc/iptables/
+    - /etc/resolv.conf
+    - /etc/systemd/system/sshd.socket.d/
+    - /etc/systemd/system/frr-validation@.service
+    - /etc/systemd/timesyncd.conf.d/
+    - /etc/sudoers.d/zz-metal-stack
+    - /root/.ssh/
+
+- name: Configure port breakouts and FEC
+  ansible.builtin.import_tasks: ports.yaml
+  when: (bisdn_config_breakouts | length > 0) or (bisdn_config_ports | length > 0)

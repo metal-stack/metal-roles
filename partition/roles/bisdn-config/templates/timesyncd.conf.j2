@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+# NTP is reached through the default route that metal-core leaks from VRF mgmt
+# into the default VRF (ip route 0.0.0.0/0 <gw> nexthop-vrf mgmt).
+[Time]
+NTP={{ bisdn_config_ntp_servers | join(' ') }}
