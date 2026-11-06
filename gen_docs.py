@@ -98,6 +98,7 @@ def update_readme(role_path, yaml_block, dependencies):
 
 
 def main():
+    ansible_doc_bin = os.environ.get("ANSIBLE_DOC_PATH", "ansible-doc")
     for specs_file in Path(".").rglob("meta/argument_specs.yaml"):
         role_dir = specs_file.parent.parent
         role_name = role_dir.name
@@ -106,7 +107,7 @@ def main():
 
         try:
             result = subprocess.run(
-                ["ansible-doc", "-t", "role", "-r",
+                [ansible_doc_bin, "-t", "role", "-r",
                     str(role_dir.parent), role_name, "--json"],
                 capture_output=True,
                 text=True,
@@ -145,9 +146,17 @@ def main():
             with open(f, 'r', encoding='utf-8') as f:
                 defaults = defaults | yaml.safe_load(f) or {}
 
+        for key in options:
+            cmd = ["rg", "-l", f"\\b{key}\\b", str(role_dir), "--glob", "!meta/*", "--glob", "!defaults/*"]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.returncode != 0:
+                print(
+                    f"Warning: Variable {key} is defined in argument_specs but not used in role {role_name}")
+
         for key in defaults:
             if key not in options:
-                raise Exception(f"Variable {key} is defined in defaults but not in argument_specs for role {role_name}")
+                raise Exception(
+                    f"Variable {key} is defined in defaults but not in argument_specs for role {role_name}")
 
         doc_vars = {}
         for key in options:

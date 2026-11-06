@@ -4,38 +4,58 @@ Deploys the metal-bmc that gathers information about DHCP leases for ipmi access
 
 ## Variables
 
-This role uses variables from [partition-defaults](/partition). So, make sure you define them adequately as well.
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
 
-You can look up all the default values of this role [here](defaults/main.yaml).
+This role depends on default values of [metal-roles/partition/roles/defaults](../defaults/README.md).
 
-| Name                                     | Mandatory | Description                                                                                    |
-| ---------------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
-| metal_bmc_image_name                     | yes       | Image version of the metal-bmc                                                                 |
-| metal_bmc_image_tag                      | yes       | Image tag of the metal-bmc                                                                     |
-| metal_bmc_bmc_superuser                  | yes       | Name of the BMC superuser                                                                      |
-| metal_bmc_bmc_superuser_pwd              | yes       | Password of the BMC superuser                                                                  |
-| metal_bmc_nsqd_addr                      | yes       | The address to the nsqd that metal-bmc uses for discovering the NSQ of the metal control plane |
-| metal_bmc_nsq_log_level                  |           | The metal-core log level used on NSQ communication                                             |
-| metal_bmc_nsq_tls_enabled                |           | Enables tls encryption on NSQ traffic                                                          |
-| metal_bmc_nsq_cert_dir                   |           | Defines the path of the NSQ certificates                                                       |
-| metal_bmc_nsqd_ca_cert                   |           | The CA certificate that signed the NSQ client cert                                             |
-| metal_bmc_nsqd_client_cert               |           | The NSQ client certificate                                                                     |
-| metal_bmc_nsqd_client_cert_key           |           | The NSQ client certificate key                                                                 |
-| metal_bmc_console_port                   |           | The port where to listen for incoming metal-console connections                                |
-| metal_bmc_console_ca_cert                | yes       | The CA certificate for the metal-console port as a string                                      |
-| metal_bmc_console_cert                   | yes       | The certificate for metal-console port as a string                                             |
-| metal_bmc_console_key                    | yes       | The key for the metal-console port as a string                                                 |
-| metal_bmc_console_cert_owner             |           | user of the created certificate files                                                          |
-| metal_bmc_console_cert_group             |           | group of the created certificate files                                                         |
-| metal_bmc_ignore_macs                    |           | when fetching bmc reports from the dhcp lease file, the given macs are ignored                 |
-| metal_bmc_allowed_cidrs                  |           | when fetching bmc reports from the dhcp lease file, ips in the given cidrs are ignored         |
-| metal_bmc_additional_volume_mounts       |           | Volumes to mount into the metal-bmc, besides the default ones                                  |
-| metal_bmc_docker_network                 |           | Docker network to use for metal-bmc                                                            |
-| metal_bmc_docker_log_driver              |           | Indicates where to write the docker logs to                                                    |
-| metal_bmc_lease_file                     |           | Path to the metal bmc lease file                                                               |
-| metal_bmc_etc_dir                        |           | /etc Directory for metal-bmc                                                                   |
-| metal_bmc_metal_apiserver_url            |           | The address of the metal-apiserver                                                             |
-| metal_bmc_metal_apiserver_token_filename |           | Filename of the token file to authorize against the metal-apiserver                            |
-| metal_bmc_deployment_admin_token         |           | Initial admin token to create infra token for metal-bmc                                        |
-| metal_bmc_token_expiration               |           | The duration of the api token's validity                                                       |
-| metal_bmc_permissions                    |           | API permissions that the metal-bmc needs                                                       |
+```yaml
+# Additional volumes to mount into the metal-bmc container.
+metal_bmc_additional_volume_mounts: []
+# CIDRs from which BMCs are allowed to be reported.
+metal_bmc_allowed_cidrs:
+- 0.0.0.0/0
+# REQUIRED: The IPMI superuser name used to access the machine BMCs.
+metal_bmc_bmc_superuser: null
+# REQUIRED: The IPMI superuser password used to access the machine BMCs.
+metal_bmc_bmc_superuser_pwd: null
+# REQUIRED: The console CA certificate content.
+metal_bmc_console_ca_cert: null
+# REQUIRED: The console certificate content.
+metal_bmc_console_cert: null
+# Host directory where the console certificates are placed.
+metal_bmc_console_cert_dir: '{{ metal_bmc_etc_dir }}/certs/console'
+# Group of the console certificate files.
+metal_bmc_console_cert_group: root
+# Owner of the console certificate files.
+metal_bmc_console_cert_owner: root
+# REQUIRED: The console certificate key content.
+metal_bmc_console_key: null
+# Port of the console proxy.
+metal_bmc_console_port: 3333
+# Docker log driver for the metal-bmc container.
+metal_bmc_docker_log_driver: json-file
+# The docker network to launch the metal-bmc container in.
+metal_bmc_docker_network: null
+# MAC addresses ignored by metal-bmc.
+metal_bmc_ignore_macs: []
+# Image name of metal-bmc. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+metal_bmc_image_name: null
+# Image tag of metal-bmc. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+metal_bmc_image_tag: null
+# Path to the DHCP lease file evaluated by metal-bmc.
+metal_bmc_lease_file: /var/lib/dhcp/dhcpd.leases
+# Host directory where the nsq certificates are placed.
+metal_bmc_nsq_cert_dir: '{{ metal_bmc_etc_dir }}/certs/nsq'
+# Log level for nsq communication.
+metal_bmc_nsq_log_level: info
+# Whether TLS is used for the nsqd connection. When enabled, the nsqd certificate variables must be set.
+metal_bmc_nsq_tls_enabled: true
+# REQUIRED: Address (host:port) of the nsqd instance to connect to.
+metal_bmc_nsqd_addr: null
+# The nsqd CA certificate content. Required when metal_bmc_nsq_tls_enabled is true.
+metal_bmc_nsqd_ca_cert: null
+# The nsqd client certificate content. Required when metal_bmc_nsq_tls_enabled is true.
+metal_bmc_nsqd_client_cert: null
+# The nsqd client certificate key content. Required when metal_bmc_nsq_tls_enabled is true.
+metal_bmc_nsqd_client_cert_key: null
+```

@@ -1,0 +1,15 @@
+---
+argument_specs:
+  main:
+    short_description: Installs and configures FRR
+    options:
+      frr_version:
+        type: str
+        description: The FRR version to install.
+      frr_repo:
+        type: str
+        description: The FRR repository to install from.
+      frr_conf:
+        type: str
+        required: true
+        description: The complete frr.conf content to deploy.

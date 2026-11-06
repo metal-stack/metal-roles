@@ -4,11 +4,17 @@ Deploys the node-exporter in a systemd-managed Docker container.
 
 ## Variables
 
-| Name                                        | Mandatory | Description                                 |
-| ------------------------------------------- | --------- | ------------------------------------------- |
-| monitoring_node_exporter_dir                |           | The host directory for the node exporter    |
-| monitoring_node_exporter_image_name         |           | Image name of the IPMI exporter             |
-| monitoring_node_exporter_image_tag          |           | Image tag of the IPMI exporter              |
-| monitoring_node_exporter_port               |           | Port for the IPMI exporter                  |
-| monitoring_node_exporter_docker_log_driver  |           | Indicates where to write the docker logs to |
-| monitoring_node_exporter_textfile_directory |           | Host directory for the textfile collector   |
+```yaml
+# Host directory used by the node-exporter.
+monitoring_node_exporter_dir: /node_exporter
+# Docker log driver for the node-exporter container.
+monitoring_node_exporter_docker_log_driver: json-file
+# Image name of the node-exporter.
+monitoring_node_exporter_image_name: prom/node-exporter
+# Image tag of the node-exporter.
+monitoring_node_exporter_image_tag: latest
+# Port the node-exporter listens on.
+monitoring_node_exporter_port: 9100
+# The textfile collector directory on the host.
+monitoring_node_exporter_textfile_directory: /var/lib/node_exporter/textfile
+```

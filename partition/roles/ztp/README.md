@@ -24,14 +24,27 @@ For more information on the `ztp.json` format refer to the [documentation](https
 
 ## Variables
 
-| Name                        | Mandatory | Description                                                 |
-| --------------------------- | --------- | ----------------------------------------------------------- |
-| ztp_nginx_image_name        | yes       | the docker image to use to serve ztp scripts.               |
-| ztp_nginx_image_tag         | yes       | the tag of the docker image to use to serve ztp scripts.    |
-| ztp_nginx_docker_log_driver |           | Indicates where to write the docker logs to                 |
-| ztp_host_dir_path           |           | the path to serve ztp scripts from.                         |
-| ztp_listen_address          |           | the address used to serve ztp requests                      |
-| ztp_port                    |           | the port to serve ztp scripts on.                           |
-| ztp_authorized_keys         | yes       | the authorized keys that should be installed by ztp.        |
-| ztp_admin_user              |           | the user for which the authorized keys will be provisioned. |
-| ztp_additional_files        |           | puts additional files into serve directory.                 |
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
+
+This role depends on default values of [metal-roles/partition/roles/defaults](../defaults/README.md).
+
+```yaml
+# Additional files (name, data) to serve. Must not contain a file named user.sh.
+ztp_additional_files: []
+# The admin user created during provisioning.
+ztp_admin_user: admin
+# REQUIRED: The authorized_keys content installed for the admin user during provisioning.
+ztp_authorized_keys: null
+# Host directory from which the ZTP files are served.
+ztp_host_dir_path: /ztp
+# The address on which the ZTP files are served.
+ztp_listen_address: '{{ ansible_host }}'
+# Docker log driver for the nginx container.
+ztp_nginx_docker_log_driver: json-file
+# Image name of nginx. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+ztp_nginx_image_name: null
+# Image tag of nginx. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+ztp_nginx_image_tag: null
+# The port on which the ZTP files are served.
+ztp_port: 8080
+```

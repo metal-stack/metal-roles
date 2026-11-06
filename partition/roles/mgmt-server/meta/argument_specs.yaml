@@ -1,0 +1,73 @@
+---
+argument_specs:
+  main:
+    short_description: Configures a server to act as management server for a metal-stack partition
+    options:
+      mgmt_server_asn:
+        type: int
+        required: true
+        description: The ASN of the management server used for BGP.
+      mgmt_server_router_id:
+        type: str
+        required: true
+        description: The router-id to use for routing.
+      mgmt_server_spine_facing_interface:
+        type: str
+        required: true
+        description: The interface where the spine is connected at the management server.
+      mgmt_server_firewall_facing_interface:
+        type: str
+        description: The interface where the firewall is connected at the management server.
+      mgmt_server_firewall_ip:
+        type: str
+        description: The remote IP of the firewall for setting up a numbered BGP session.
+      mgmt_server_metal_ssh_privkey:
+        type: str
+        required: true
+        no_log: true
+        description: The SSH private key installed for the metal user.
+      mgmt_server_metal_ssh_pubkey:
+        type: str
+        required: true
+        description: The SSH public key installed for the metal user.
+      mgmt_server_metal_ssh_key_filename:
+        type: str
+        description: The filename under which the SSH key pair is stored in /home/metal/.ssh.
+      mgmt_server_metal_ssh_groups:
+        type: list
+        elements: str
+        description: The inventory hosts written to /etc/hosts and the metal user's ssh config.
+      mgmt_server_metal_ssh_options:
+        type: list
+        elements: str
+        description: Additional options rendered into the metal user's ssh config.
+      mgmt_server_registry_mirror:
+        type: str
+        description: The docker registry mirror to configure in the docker daemon.
+      mgmt_server_nameservers:
+        type: list
+        elements: str
+        description: The nameservers to use.
+      mgmt_server_dns_over_tls:
+        type: bool
+        description: Whether to enable DNS-over-TLS in systemd-resolved.
+      mgmt_server_frr_match_interfaces:
+        type: list
+        elements: str
+        description: Announce the networks attached to the given interfaces over BGP.
+      mgmt_server_frr_version:
+        type: str
+        description: The FRR version to use.
+      mgmt_server_frr_repo:
+        type: str
+        description: The FRR repository to use.
+      mgmt_server_frr_static_routes:
+        type: list
+        elements: str
+        description: Additional static routes rendered into frr.conf, e.g. "10.4.0.0/24 10.130.0.1".
+      mgmt_server_provide_default_route:
+        type: bool
+        description: Whether the management server announces a default route over BGP.
+      mgmt_server_preserve_dhcp_route:
+        type: bool
+        description: If set to true, DHCP routes are not flushed even when a BGP session to the firewall is configured.
