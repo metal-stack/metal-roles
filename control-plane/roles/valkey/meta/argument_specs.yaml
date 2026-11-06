@@ -45,7 +45,6 @@ argument_specs:
         description: GCP project id of the backup bucket.
       valkey_backup_restore_sidecar_gcp_serviceaccount_json:
         type: str
-        no_log: true
         description: GCP service account JSON used for accessing the backup bucket.
       valkey_backup_restore_sidecar_s3_bucket_name:
         type: str
@@ -61,7 +60,6 @@ argument_specs:
         description: S3 access key for the backup bucket.
       valkey_backup_restore_sidecar_s3_secret_key:
         type: str
-        no_log: true
         description: S3 secret key for the backup bucket.
       valkey_backup_restore_sidecar_s3_insecure_skip_verify:
         type: bool
@@ -84,7 +82,6 @@ argument_specs:
             choices would reject that.
       valkey_backup_restore_sidecar_encryption_key:
         type: str
-        no_log: true
         description: Encryption key (32 characters) for encrypting backups.
       valkey_resources:
         type: dict
@@ -110,7 +107,6 @@ argument_specs:
         description: Whether to deploy an image pull secret for the registry.
       valkey_registry_auth:
         type: dict
-        no_log: true
         description: Docker auth configuration for the image pull secret.
       valkey_enable_security_context:
         type: bool
