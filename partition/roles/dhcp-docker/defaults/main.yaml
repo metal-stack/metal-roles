@@ -45,3 +45,5 @@ dhcp_docker_log_driver: json-file
 
 dhcp_config_dir: /etc/dhcp
 dhcp_leases_dir: /var/lib/dhcp
+
+dhcp_check_interval: 30s

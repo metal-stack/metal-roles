@@ -6,6 +6,13 @@ This role is an alternative to the [dhcp](../dhcp) role and takes the same confi
 
 If the `isc-dhcp-server` package was installed before (e.g. by the [dhcp](../dhcp) role), its services are stopped and disabled. The configuration in `/etc/dhcp` and the leases in `/var/lib/dhcp` are reused.
 
+## Listening interfaces
+
+dhcpd does not notice when a listening interface gets deleted or recreated, for example when SONiC restarts `swss`. It keeps running without receiving any requests. For this reason:
+
+- The service is bound to the systemd device units of the listening interfaces. It starts when all of them exist and stops when one of them disappears. These names are not escaped, so interface names must not contain a `-`.
+- A timer restarts the service if dhcpd has no packet socket bound to the current ifindex of a listening interface. This also covers an interface being recreated too quickly for systemd to stop the service in between. Restarts are logged to the `dhcpd-socket-check` journal.
+
 ## Variables
 
 | Name                      | Mandatory | Description                                                                         |
@@ -36,3 +43,4 @@ If the `isc-dhcp-server` package was installed before (e.g. by the [dhcp](../dhc
 | dhcp_docker_log_driver    |           | The log driver of the container                                                     |
 | dhcp_config_dir           |           | The host directory for the dhcpd configuration, mounted to `/etc/dhcp`              |
 | dhcp_leases_dir           |           | The host directory for the dhcpd leases, mounted to `/var/lib/dhcp`                 |
+| dhcp_check_interval       |           | How often the sockets of dhcpd are checked against the listening interfaces         |
