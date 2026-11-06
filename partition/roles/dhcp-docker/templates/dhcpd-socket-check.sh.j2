@@ -1,0 +1,28 @@
+#!/bin/sh
+# dhcpd keeps running on a stale socket when a listening interface gets recreated, it does not exit and logs a single error.
+# So it is restarted unless it has a packet socket bound to the current ifindex of every listening interface.
+service="{{ dhcp_docker_service_name }}.service"
+
+bound_to() {
+    for pid in $pids; do
+        for inode in $(find "/proc/$pid/fd" -lname 'socket:*' -printf '%l\n' 2>/dev/null | tr -dc '0-9\n'); do
+            awk -v inode="$inode" -v ifindex="$1" 'NR > 1 && $9 == inode && $5 == ifindex { found = 1 } END { exit !found }' /proc/net/packet && return 0
+        done
+    done
+    return 1
+}
+
+systemctl --quiet is-active "$service" || exit 0
+
+# the main process of the container is dumb-init and not dhcpd, so all of its processes have to be looked at
+top=$(docker top "$service" -eo pid) || exit 0
+pids=$(echo "$top" | tail -n +2)
+
+for iface in {{ dhcp_docker_listening_interfaces | join(' ') }}; do
+    ifindex=$(cat "/sys/class/net/$iface/ifindex" 2>/dev/null) || continue
+    bound_to "$ifindex" && continue
+
+    echo "dhcpd has no socket on $iface (ifindex $ifindex), restarting $service"
+    systemctl restart "$service"
+    exit 0
+done
