@@ -85,6 +85,17 @@ metal_apiserver_tokens:
     tokenCreateRequest:
       expires: 57600s
       adminRole: ADMIN_ROLE_VIEWER
+  housekeeping_cronjobs:
+    user: "{{ metal_control_plane_provider_tenant }}"
+    tokenCreateRequest:
+      permissions:
+        - admin:
+            methods:
+              - /metalstack.admin.v2.HousekeepingService/MachineLiveliness
+              - /metalstack.admin.v2.HousekeepingService/MachineResurrect
+              - /metalstack.admin.v2.HousekeepingService/MachineVPNConnected
+      expires: 57600s
+
 metal_apiserver_headscale_enabled: false
 metal_apiserver_headscale_tls: true
 metal_apiserver_headscale_api_key: "{{ lookup('k8s', api_version='v1', namespace=metal_control_plane_namespace, kind='Secret', resource_name='headscale-api-key').get('data',
