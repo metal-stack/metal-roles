@@ -86,3 +86,17 @@ class DHCPD(unittest.TestCase):
         }
 
         """), result)
+
+    def test_dhcpd_socket_check_template(self):
+        t = read_template_file("dhcpd-socket-check.sh.j2")
+
+        templar = Templar(loader=None, variables=dict(
+            dhcp_service_name="dhcpd-docker",
+            dhcp_listening_interfaces=["Vlan4000", "Vlan4001"],
+        ))
+
+        result = templar.template(t)
+
+        self.assertIn('service="dhcpd-docker.service"\n', result)
+        self.assertIn('docker top "$service" -eo pid', result)
+        self.assertIn("for iface in Vlan4000 Vlan4001; do\n", result)
