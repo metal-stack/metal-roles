@@ -6,6 +6,8 @@ By default, this role uses the release vector to derive the fitting version of t
 
 ## Variables
 
+This role depends on default values of [metal-roles/common/roles/defaults](../defaults/README.md).
+
 ```yaml
 # Install the client from the git repository instead of PyPI.
 metal_v2_client_install_from_git_repository: false
