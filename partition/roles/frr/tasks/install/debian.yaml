@@ -1,22 +1,16 @@
 ---
-- name: Ensure gpg is installed to handle FRR repo key
-  ansible.builtin.apt:
-    name:
-      - gpg
-    update_cache: true
-    force_apt_get: true
-
-- name: Download GPG key
+- name: Download FRR repository signing key
   ansible.builtin.get_url:
     url: https://deb.frrouting.org/frr/keys.gpg
     dest: /usr/share/keyrings/frrouting.gpg
     mode: "0644"
 
-- name: Add mainline FRR repository to install FRR
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_distribution_release }} {{ frr_repo }}
-    state: present
-    filename: frr.list
+- name: Configure FRR repository
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/frr.list
+    content: |
+      deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_distribution_release }} {{ frr_repo }}
+    mode: "0644"
 
 - name: Install required packages to have the network stack in place
   ansible.builtin.apt:
