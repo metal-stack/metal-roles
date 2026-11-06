@@ -11,7 +11,7 @@ class DHCPD(unittest.TestCase):
         t = read_template_file("dhcpd.conf.j2")
 
         templar = Templar(loader=None, variables=dict(
-            dhcp_subnets=[
+            dhcp_docker_subnets=[
                 dict(
                     comment="testing",
                     network="1.2.3.4",
@@ -21,13 +21,14 @@ class DHCPD(unittest.TestCase):
                     deny_list=["unknown-clients"],
                 ),
             ],
-            dhcp_default_lease_time=600,
-            dhcp_max_lease_time=600,
-            dhcp_global_options=[],
-            dhcp_global_deny_list=[],
+            dhcp_docker_default_lease_time=600,
+            dhcp_docker_max_lease_time=600,
+            dhcp_docker_global_options=[],
+            dhcp_docker_global_deny_list=[],
             groups=dict(mgmt_servers=["mgmt01", "mgmt02"]),
             hostvars=dict(mgmt01=dict(switch_mgmt_ip="3.3.3.3"), mgmt02=dict(switch_mgmt_ip="4.4.4.4")),
-            dhcp_use_host_decl_names=False,
+            dhcp_docker_use_host_decl_names=False,
+            dhcp_docker_static_hosts=[],
         ))
 
         result = templar.template(t)
@@ -54,7 +55,7 @@ class DHCPD(unittest.TestCase):
         t = read_template_file("dhcpd.hosts.j2")
 
         templar = Templar(loader=None, variables=dict(
-            dhcp_static_hosts=[
+            dhcp_docker_static_hosts=[
                 dict(
                     name="test1",
                     mac="aa:bb:cc:dd:ee:ef",
@@ -91,8 +92,8 @@ class DHCPD(unittest.TestCase):
         t = read_template_file("dhcpd-socket-check.sh.j2")
 
         templar = Templar(loader=None, variables=dict(
-            dhcp_service_name="dhcpd-docker",
-            dhcp_listening_interfaces=["Vlan4000", "Vlan4001"],
+            dhcp_docker_service_name="dhcpd-docker",
+            dhcp_docker_listening_interfaces=["Vlan4000", "Vlan4001"],
         ))
 
         result = templar.template(t)
