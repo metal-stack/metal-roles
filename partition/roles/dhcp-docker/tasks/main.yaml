@@ -60,10 +60,22 @@
     modification_time: preserve
     access_time: preserve
 
+# the service used to be installed into multi-user.target, enabling it does not remove this link
+- name: Remove multi-user.target link of the service
+  ansible.builtin.file:
+    path: "/etc/systemd/system/multi-user.target.wants/{{ dhcp_service_name }}.service"
+    state: absent
+
 - name: Deploy dhcpd
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
   vars:
+    _dhcp_device_units: "{{ dhcp_listening_interfaces | map('regex_replace', '^(.+)$', 'sys-subsystem-net-devices-\\1.device') | join(' ') }}"
+    # dhcpd does not notice when a listening interface gets deleted or recreated (e.g. swss restart or config reload)
+    # so the service is stopped together with the interface and started again when the interface reappears
+    systemd_service_after: "docker.service {{ _dhcp_device_units }}"
+    systemd_service_bindsto: "{{ _dhcp_device_units }}"
+    systemd_service_wantedby: "{{ _dhcp_device_units }}"
     systemd_service_name: "{{ dhcp_service_name }}"
     systemd_docker_image_name: "{{ dhcp_image_name }}"
     systemd_docker_image_tag: "{{ dhcp_image_tag }}"
@@ -76,7 +88,7 @@
       - "{{ dhcp_config_dir }}:/etc/dhcp:ro"
       - "{{ dhcp_leases_dir }}:/var/lib/dhcp"
     # the entrypoint of the image only supports a single interface, so dhcpd is started directly
-    # if a listening interface is not yet present (e.g. vlan not up during boot), dhcpd exits and systemd restarts it
+    # if a listening interface has no ip address yet (e.g. vlan not fully configured during boot), dhcpd exits and systemd restarts it
     systemd_docker_command:
       - /usr/sbin/dhcpd
       - "-4"
@@ -90,3 +102,35 @@
       - "{{ dhcp_listening_interfaces | join(' ') }}"
     systemd_external_config_changed: "{{ _dhcpd_conf is changed or _hosts_conf is changed }}"
     systemd_docker_log_driver: "{{ dhcp_docker_log_driver }}"
+
+- name: Render socket check
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - src: dhcpd-socket-check.sh.j2
+      dest: /usr/bin/dhcpd-socket-check.sh
+      mode: "0755"
+    - src: dhcpd-socket-check.service.j2
+      dest: /etc/systemd/system/dhcpd-socket-check.service
+      mode: "0644"
+    - src: dhcpd-socket-check.timer.j2
+      dest: /etc/systemd/system/dhcpd-socket-check.timer
+      mode: "0644"
+  loop_control:
+    label: "{{ item.dest }}"
+  register: _socket_check
+
+- name: Restart socket check timer on change
+  ansible.builtin.systemd:
+    name: dhcpd-socket-check.timer
+    state: restarted
+    daemon_reload: true
+  when: _socket_check is changed # noqa: no-handler
+
+- name: Socket check timer must be enabled and running
+  ansible.builtin.systemd:
+    name: dhcpd-socket-check.timer
+    enabled: true
+    state: started

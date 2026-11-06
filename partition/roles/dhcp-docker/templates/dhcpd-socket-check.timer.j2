@@ -1,0 +1,10 @@
+[Unit]
+Description=Restart dhcpd if it lost the socket of a listening interface
+
+[Timer]
+OnActiveSec={{ dhcp_check_interval }}
+OnUnitActiveSec={{ dhcp_check_interval }}
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
