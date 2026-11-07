@@ -109,6 +109,11 @@
     marker_end: "************************************************************************"
     block: |
       *
+      *        ___
+      *       [o_o]   Hands off, I've got this.
+      *       /|_|\        -- metal-core
+      *        / \
+      *
       *  This switch is managed by metal-core.
       *  DO NOT configure it manually, your changes may be overwritten.
       *
