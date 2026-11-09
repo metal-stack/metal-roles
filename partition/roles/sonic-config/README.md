@@ -192,22 +192,30 @@ This section shows an overview of all available variables with example values.
 
 ```yaml
 # Additional ACL tables and rules for the switch, in SONiC's config_db format.
-# A table binds to the listed ports or VLANs and filters their traffic in the given stage;
-# the example drops everything arriving on the PXE VLAN that is headed for 10.0.0.0/16.
-# Rules removed from this variable stay in the running config until the next `config reload`.
+# A table binds to the listed ports or VLANs and filters their traffic in the given stage.
+# The example drops everything arriving on the PXE VLAN that is headed for 10.0.0.0/16.
 sonic_config_acl:
-  ACL_TABLE:
-    PXE_IN:
-      policy_desc: PXE vlan must not reach the cluster
-      type: L3
-      stage: ingress
-      ports:
-        - Vlan4000
-  ACL_RULE:
-    PXE_IN|DENY_1:
-      PRIORITY: "8000"
-      PACKET_ACTION: DROP
-      DST_IP: 10.0.0.0/16
+  # The table name; must contain only letters, digits, `_` and `-`.
+  # `ALLOW_SSH` and `ALLOW_NTP` are reserved.
+  PXE_IN:
+    # The policy description of the table.
+    description: PXE vlan must not reach the cluster
+    # `ingress` or `egress`.
+    stage: ingress
+    # The ports, port channels or VLANs the table is bound to.
+    # They must be defined in `ports`, `portchannels`, `vlans`, `interfaces` or `vlan_subinterfaces`.
+    # A port channel member is rejected, bind the port channel instead.
+    ports:
+      - Vlan4000
+    # Rules to apply for the table.
+    rules:
+        # `FORWARD` or `DROP`.
+      - action: DROP
+        # The destination as IPv4 CIDR without host bits, e.g. `10.0.0.0/16`.
+        dst: 10.0.0.0/16
+        # The source as IPv4 CIDR without host bits.
+        # A rule without `dst` and `src` matches any IPv4.
+        src: 10.1.1.0/24
 
 # The autonomous system number of the router.
 sonic_config_asn: 42
