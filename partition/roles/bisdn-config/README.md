@@ -54,19 +54,19 @@ bisdn_config_ports:
 
 `bisdn_config_breakouts` maps a front panel port to a breakout mode:
 
-| Key        | Value                                                                    |
-| ---------- | ------------------------------------------------------------------------ |
-| `port<N>`  | Name of the port before the breakout, `N` ≥ 1.                           |
-| mode       | One of the breakout modes below.                                         |
+| Key       | Value                                          |
+| --------- | ---------------------------------------------- |
+| `port<N>` | Name of the port before the breakout, `N` ≥ 1. |
+| mode      | One of the breakout modes below.               |
 
 `bisdn_config_ports` sets FEC:
 
-| Field          | Mandatory | Value                                                                                     |
-| -------------- | --------- | ----------------------------------------------------------------------------------------- |
-| `default_fec`  |           | FEC mode for every port whose lane speed supports it, `none` by default.                  |
-| `list`         |           | Ports that differ from the default.                                                       |
-| `list[].name`  | yes       | A front panel port after the breakouts, including the new lanes (`port35`, ...).          |
-| `list[].fec`   |           | FEC mode of that port; `default_fec` if left out. It must fit the port's lane speed.      |
+| Field         | Mandatory | Value                                                                                |
+| ------------- | --------- | ------------------------------------------------------------------------------------ |
+| `default_fec` |           | FEC mode for every port whose lane speed supports it, `none` by default.             |
+| `list`        |           | Ports that differ from the default.                                                  |
+| `list[].name` | yes       | A front panel port after the breakouts, including the new lanes (`port35`, ...).     |
+| `list[].fec`  |           | FEC mode of that port; `default_fec` if left out. It must fit the port's lane speed. |
 
 Other keys are rejected, so a typo fails instead of being ignored.
 
@@ -76,22 +76,22 @@ Other keys are rejected, so a typo fails instead of being ignored.
 
 Breakout modes (`BREAKOUT_MODES`, `UNCHANGED`):
 
-| Mode                          | Result                                                                |
-| ----------------------------- | --------------------------------------------------------------------- |
-| `4x25G`                       | Four 25G lanes.                                                       |
-| `4x10G`                       | Four 10G lanes.                                                       |
-| `1x<speed>G`, `1x100G[40G]`   | No breakout, the port stays as it is (as in SONiC's breakout tables). |
-| anything else                 | Rejected.                                                             |
+| Mode                        | Result                                                                |
+| --------------------------- | --------------------------------------------------------------------- |
+| `4x25G`                     | Four 25G lanes.                                                       |
+| `4x10G`                     | Four 10G lanes.                                                       |
+| `1x<speed>G`, `1x100G[40G]` | No breakout, the port stays as it is (as in SONiC's breakout tables). |
+| anything else               | Rejected.                                                             |
 
 `ofdpa-breakout` also rejects ports that aren't 4-lane ports on the platform, for example the SFP+ ports.
 
 FEC modes and the clause per lane speed (`FEC_CLAUSES`), taken from the port speeds in the generated `config.bcm`:
 
-| Mode    | 100G   | 25G     | 10G    |
-| ------- | ------ | ------- | ------ |
-| `none`  | –      | –       | –      |
-| `rs`    | `cl91` | `cl108` | –      |
-| `fc`    | –      | `cl74`  | `cl74` |
+| Mode   | 100G   | 25G     | 10G    |
+| ------ | ------ | ------- | ------ |
+| `none` | –      | –       | –      |
+| `rs`   | `cl91` | `cl108` | –      |
+| `fc`   | –      | `cl74`  | `cl74` |
 
 `none` needs no line in `rc.soc`, because Broadcom switches start without FEC. `default_fec` skips ports where its mode has no clause (`rs` on the 10G SFP+ ports, for example). A mode set in `list` at such a speed is rejected.
 
@@ -112,19 +112,19 @@ The [ztp](../ztp) role can serve the same breakouts for first boot (`ztp_bisdn_s
 
 ## Variables
 
-| Name                                 | Mandatory                      | Description                                                                                 |
-| ------------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------------- |
-| bisdn_config_mgmt_interface          |                                | The management port; defaults to the `enp*` port with an IPv4 address, else `enp0`.         |
-| bisdn_config_mgmt_vrf                |                                | Put the management port into VRF mgmt, `true` by default.                                   |
-| bisdn_config_mgmt_vrf_table          |                                | Routing table of VRF mgmt, `5000` by default as on SONiC.                                   |
-| bisdn_config_mgmt_address            |                                | Address of the management port (CIDR); defaults to its current address.                     |
-| bisdn_config_mgmt_gateway            |                                | Default gateway in VRF mgmt; defaults to `metal_partition_mgmt_gateway`.                    |
-| bisdn_config_nameservers             |                                | Nameservers for `resolv.conf`.                                                              |
-| bisdn_config_ntp_servers             |                                | NTP servers for `systemd-timesyncd`.                                                        |
-| bisdn_config_timezone                |                                | Timezone, `Europe/Berlin` by default; skipped if BISDN has no zoneinfo for it.              |
-| bisdn_config_authorized_keys         |                                | SSH public keys for root.                                                                   |
-| bisdn_config_basebox_nopasswd_sudo   |                                | Let basebox use sudo without a password, `true` by default.                                 |
-| bisdn_config_breakouts               |                                | Port breakouts, e.g. `{port4: 4x25G}`, see [Port Breakouts and FEC](#port-breakouts-and-fec). |
-| bisdn_config_ports                   |                                | FEC per port (`default_fec`, `list`), see [Port Breakouts and FEC](#port-breakouts-and-fec). |
-| bisdn_config_allow_reboot            |                                | Reboot the switch to apply a changed port configuration, `false` by default.                |
-| bisdn_config_reboot_timeout          |                                | Seconds to wait for the switch to come back after that reboot, `900` by default.            |
+| Name                               | Mandatory | Description                                                                                   |
+| ---------------------------------- | --------- | --------------------------------------------------------------------------------------------- |
+| bisdn_config_mgmt_interface        |           | The management port; defaults to the `enp*` port with an IPv4 address, else `enp0`.           |
+| bisdn_config_mgmt_vrf              |           | Put the management port into VRF mgmt, `true` by default.                                     |
+| bisdn_config_mgmt_vrf_table        |           | Routing table of VRF mgmt, `5000` by default as on SONiC.                                     |
+| bisdn_config_mgmt_address          |           | Address of the management port (CIDR); defaults to its current address.                       |
+| bisdn_config_mgmt_gateway          |           | Default gateway in VRF mgmt; defaults to `metal_partition_mgmt_gateway`.                      |
+| bisdn_config_nameservers           |           | Nameservers for `resolv.conf`.                                                                |
+| bisdn_config_ntp_servers           |           | NTP servers for `systemd-timesyncd`.                                                          |
+| bisdn_config_timezone              |           | Timezone, `Europe/Berlin` by default; skipped if BISDN has no zoneinfo for it.                |
+| bisdn_config_authorized_keys       |           | SSH public keys for root.                                                                     |
+| bisdn_config_basebox_nopasswd_sudo |           | Let basebox use sudo without a password, `true` by default.                                   |
+| bisdn_config_breakouts             |           | Port breakouts, e.g. `{port4: 4x25G}`, see [Port Breakouts and FEC](#port-breakouts-and-fec). |
+| bisdn_config_ports                 |           | FEC per port (`default_fec`, `list`), see [Port Breakouts and FEC](#port-breakouts-and-fec).  |
+| bisdn_config_allow_reboot          |           | Reboot the switch to apply a changed port configuration, `false` by default.                  |
+| bisdn_config_reboot_timeout        |           | Seconds to wait for the switch to come back after that reboot, `900` by default.              |

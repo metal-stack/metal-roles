@@ -153,6 +153,8 @@
     systemctl restart sshd.socket;
     {% endif %}
     true'
+  # only runs when a management file changed, and then always changes the network
+  changed_when: true
   when: >-
     (_bisdn_config_sshd_vrf is changed) or (_bisdn_config_mgmt_vrf_files is changed)
     or (_bisdn_config_mgmt_interface_file is changed)
@@ -165,7 +167,7 @@
   ansible.builtin.wait_for_connection:
     delay: 10
     timeout: 300
-  when: _bisdn_config_mgmt_applied is changed
+  when: _bisdn_config_mgmt_applied is not skipped
 
 - name: Keep this role's files across BISDN upgrades
   ansible.builtin.lineinfile:
