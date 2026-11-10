@@ -16,9 +16,21 @@
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
+# BISDN Linux 6 ships no tzdata (/usr/share/zoneinfo), so it runs in UTC
+- name: Check that the timezone is available
+  ansible.builtin.stat:
+    path: "/usr/share/zoneinfo/{{ bisdn_config_timezone }}"
+  register: _bisdn_config_zoneinfo
+
 - name: Set timezone
   community.general.timezone:
     name: "{{ bisdn_config_timezone }}"
+  when: _bisdn_config_zoneinfo.stat.exists
+
+- name: Report the missing timezone
+  ansible.builtin.debug:
+    msg: "BISDN Linux has no zoneinfo for {{ bisdn_config_timezone }}, the switch stays in UTC"
+  when: not _bisdn_config_zoneinfo.stat.exists
 
 - name: Render resolv.conf
   ansible.builtin.template:
@@ -106,9 +118,7 @@
     src: sshd-mgmt.conf
     dest: /etc/systemd/system/sshd.socket.d/50-mgmt-vrf.conf
     mode: "0644"
-  notify:
-    - Reload systemd daemon
-    - Restart sshd.socket
+  register: _bisdn_config_sshd_vrf
   when: bisdn_config_mgmt_vrf
 
 - name: Render mgmt VRF networkd files
@@ -119,7 +129,7 @@
   loop:
     - { src: mgmt.netdev.j2, dest: 10-mgmt.netdev }
     - { src: mgmt.network.j2, dest: 10-mgmt.network }
-  notify: Reload networkd
+  register: _bisdn_config_mgmt_vrf_files
   when: bisdn_config_mgmt_vrf
 
 - name: Render management port networkd file
@@ -127,7 +137,35 @@
     src: mgmt-interface.network.j2
     dest: "/etc/systemd/network/10-{{ bisdn_config_mgmt_interface }}.network"
     mode: "0644"
-  notify: Reload networkd
+  register: _bisdn_config_mgmt_interface_file
+
+# Moving the management port into VRF mgmt cuts Ansible's SSH connection, and
+# sshd.socket bound to mgmt only starts once the VRF device exists. So the
+# switch does it in one detached step: reload networkd, wait for the VRF
+# device, then restart sshd.socket; Ansible reconnects afterwards.
+- name: Apply the management network
+  ansible.builtin.command: >-
+    systemd-run --unit=bisdn-config-mgmt --on-active=2 /bin/sh -c '
+    systemctl daemon-reload;
+    networkctl reload;
+    {% if bisdn_config_mgmt_vrf %}
+    for i in $(seq 60); do ip link show mgmt >/dev/null 2>&1 && break; sleep 1; done;
+    systemctl restart sshd.socket;
+    {% endif %}
+    true'
+  when: >-
+    (_bisdn_config_sshd_vrf is changed) or (_bisdn_config_mgmt_vrf_files is changed)
+    or (_bisdn_config_mgmt_interface_file is changed)
+  register: _bisdn_config_mgmt_applied
+
+- name: Close the connection cut by the management network change
+  ansible.builtin.meta: reset_connection
+
+- name: Wait for SSH through the new management network
+  ansible.builtin.wait_for_connection:
+    delay: 10
+    timeout: 300
+  when: _bisdn_config_mgmt_applied is changed
 
 - name: Keep this role's files across BISDN upgrades
   ansible.builtin.lineinfile:

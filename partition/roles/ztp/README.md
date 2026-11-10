@@ -47,13 +47,13 @@ dhcp_static_hosts:
 
 ## Port Configuration for BISDN Linux Switches
 
-BISDN Linux has no ZTP client. For switches in `ztp_bisdn_switches`, this role serves `bisdn/<switch>/ports.yaml` (breakouts and FEC, in the structure of `sonic_config_breakouts` / `sonic_config_ports`) and `bisdn-ztp.sh`. Running the script on first boot installs `bisdn-portconf`, applies the port configuration to the Broadcom SDK config (`config.bcm`) and restarts the dataplane once:
+BISDN Linux has no ZTP client. For switches in `ztp_bisdn_switches`, this role serves `bisdn/<switch>/breakout.conf` (from `breakouts`, same structure and allowed values as `bisdn_config_breakouts`, see [bisdn-config](../bisdn-config/README.md#input)), BISDN's `ofdpa-breakout` and `bisdn-ztp.sh`. Running the script on first boot installs them, like the [bisdn-config](../bisdn-config) role does, and reboots the switch once if the breakouts change the Broadcom SDK config (`config.bcm`):
 
 ```sh
 curl -fsS http://10.1.253.13:8080/bisdn-ztp.sh | sh -s leaf01
 ```
 
-The [bisdn-config](../bisdn-config) role performs the same steps on its first run, so the script is only needed when ports must be broken out before the switch is provisioned.
+The [bisdn-config](../bisdn-config) role performs the same steps on its first run and also configures FEC, so the script is only needed when ports must be broken out before the switch is provisioned.
 
 ## Variables
 
@@ -68,11 +68,9 @@ The [bisdn-config](../bisdn-config) role performs the same steps on its first ru
 | ztp_authorized_keys          | yes       | the authorized keys that should be installed by ztp.        |
 | ztp_admin_user               |           | the user for which the authorized keys will be provisioned. |
 | ztp_additional_files         |           | puts additional files into serve directory.                 |
-| ztp_bisdn_switches           |           | BISDN Linux switches with `breakouts` and `ports` to serve. |
+| ztp_bisdn_switches           |           | BISDN Linux switches with `breakouts` to serve.             |
 | ztp_bisdn_installer_url      |           | download URL of the BISDN Linux ONIE installer.             |
 | ztp_bisdn_installer_checksum |           | checksum of the installer (`sha256:<hex>`).                 |
 | ztp_bisdn_installer_name     |           | name the installer is served as.                            |
 | ztp_bisdn_password_hash      |           | crypt hash of basebox's password for the install config.    |
 | ztp_bisdn_keep_config        |           | `KEEP_CONFIG` of the install config, `true` by default.     |
-| ztp_bisdn_portconf_url       |           | download URL of `bisdn-portconf` for BISDN switches.        |
-| ztp_bisdn_portconf_checksum  |           | checksum of `bisdn-portconf` (`sha256:<hex>`).              |

@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# Port breakouts for ofdpa-breakout, applied to config.bcm before every ofdpa
+# start. A change takes effect with the next reboot.
+{% for b in _bisdn_config_breakouts %}
+{{ b.port }}={{ b.lanes }}x{{ b.speed }}
+{% endfor %}

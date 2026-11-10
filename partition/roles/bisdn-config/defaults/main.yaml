@@ -1,6 +1,7 @@
 ---
-# management port; the BISDN installer names it enp0
-bisdn_config_mgmt_interface: enp0
+# management port: the enp* port with an IPv4 address (enp0 on most platforms,
+# enp11s0 on the AS7726-32X), enp0 if none has one
+bisdn_config_mgmt_interface: "{{ ansible_facts.interfaces | select('match', '^enp') | map('extract', ansible_facts) | selectattr('ipv4', 'defined') | map(attribute='device') | first | default('enp0') }}"
 # put the management port into VRF mgmt (as on SONiC with mgmt VRF)
 bisdn_config_mgmt_vrf: true
 bisdn_config_mgmt_vrf_table: 5000
@@ -20,16 +21,13 @@ bisdn_config_authorized_keys: []
 bisdn_config_basebox_nopasswd_sudo: true
 
 # Port breakouts and FEC, in the structure of sonic_config_breakouts and
-# sonic_config_ports, e.g.
-#   bisdn_config_breakouts: {port1: 4x25G}
-#   bisdn_config_ports: {default_fec: rs, list: [{name: port2, fec: none}]}
+# sonic_config_ports, with BISDN port names, e.g.
+#   bisdn_config_breakouts: {port4: 4x25G}
+#   bisdn_config_ports: {default_fec: none, list: [{name: port1, fec: rs}]}
 bisdn_config_breakouts: {}
 bisdn_config_ports: {}
-# bisdn-portconf binary (bsidn-test cmd/bisdn-portconf), needed when
-# breakouts or ports are set
-bisdn_config_portconf_url:
-bisdn_config_portconf_checksum:
-# Applying a changed breakout/FEC config restarts ofdpa and baseboxd, which
-# interrupts the dataplane. Without this, the role only reports the pending
-# change, unless no port configuration was applied before (first provisioning).
-bisdn_config_allow_dataplane_restart: false
+# Breakouts and FEC take effect when the switch reboots, which interrupts the
+# dataplane. Without this, the role only reports a pending change, unless no
+# port configuration was applied before (first provisioning).
+bisdn_config_allow_reboot: false
+bisdn_config_reboot_timeout: 900

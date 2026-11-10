@@ -1,29 +1,31 @@
 ---
-- name: Check mandatory variables for port configuration are set
-  ansible.builtin.assert:
-    quiet: true
-    that:
-      - bisdn_config_portconf_url
-      - bisdn_config_portconf_checksum
+# filter_plugins/bisdn_ports.py validates the input and holds the allowed
+# values (see README, Port Breakouts and FEC)
+- name: Check the breakouts
+  ansible.builtin.set_fact:
+    _bisdn_config_breakouts: "{{ bisdn_config_breakouts | bisdn_breakouts }}"
 
-- name: Install bisdn-portconf
-  ansible.builtin.get_url:
-    url: "{{ bisdn_config_portconf_url }}"
-    dest: /usr/sbin/bisdn-portconf
-    checksum: "{{ bisdn_config_portconf_checksum }}"
+# written after the port configuration took effect, holds the breakouts and
+# FEC settings applied then
+- name: Read the applied port configuration
+  ansible.builtin.slurp:
+    src: /etc/ofdpa/metal-stack-applied
+  register: _bisdn_config_applied
+  failed_when: false
+
+- name: Install ofdpa-breakout
+  ansible.builtin.copy:
+    src: ofdpa-breakout
+    dest: /usr/sbin/ofdpa-breakout
     mode: "0755"
+  register: _bisdn_config_breakout_tool
 
-- name: Create bisdn-portconf directory
-  ansible.builtin.file:
-    path: /etc/bisdn-portconf
-    state: directory
-    mode: "0755"
-
-- name: Render port configuration
+- name: Render breakout.conf
   ansible.builtin.template:
-    src: ports.yaml.j2
-    dest: /etc/bisdn-portconf/ports.yaml
+    src: breakout.conf.j2
+    dest: /etc/ofdpa/breakout.conf
     mode: "0644"
+  register: _bisdn_config_breakout_file
 
 - name: Create ofdpa.service drop-in directory
   ansible.builtin.file:
@@ -31,11 +33,53 @@
     state: directory
     mode: "0755"
 
-- name: Apply the port configuration before every ofdpa start
+- name: Apply the breakouts before every ofdpa start
   ansible.builtin.template:
-    src: ofdpa-portconf.conf.j2
-    dest: /etc/systemd/system/ofdpa.service.d/10-bisdn-portconf.conf
+    src: ofdpa-breakout.conf.j2
+    dest: /etc/systemd/system/ofdpa.service.d/10-ofdpa-breakout.conf
     mode: "0644"
+  register: _bisdn_config_breakout_dropin
+  notify: Reload systemd daemon
+
+# prints the config.bcm the next ofdpa start generates; it also refreshes
+# config.bcm.dist when config.bcm is a new vendor file
+- name: Render the resulting config.bcm
+  ansible.builtin.command: /usr/sbin/ofdpa-breakout show
+  register: _bisdn_config_breakout_show
+  changed_when: false
+  check_mode: false
+
+- name: Read the ONL platform
+  ansible.builtin.slurp:
+    src: /etc/onl/platform
+  register: _bisdn_config_platform
+
+- name: Read the current config.bcm
+  ansible.builtin.slurp:
+    src: "/usr/share/ofdpa/platform/{{ _bisdn_config_platform.content | b64decode | trim }}/config.bcm"
+  register: _bisdn_config_bcm
+
+# the front panel ports after the breakouts, with their lane speeds, decide
+# which FEC clause a port gets
+- name: Compute the FEC settings
+  ansible.builtin.set_fact:
+    _bisdn_config_fec: "{{ bisdn_config_ports | bisdn_fec(_bisdn_config_breakout_show.stdout | bisdn_port_map) }}"
+
+- name: Render rc.soc
+  ansible.builtin.template:
+    src: rc.soc.j2
+    dest: /etc/ofdpa/rc.soc
+    mode: "0644"
+  register: _bisdn_config_rc_soc
+
+- name: Remove bisdn-portconf
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/sbin/bisdn-portconf
+    - /etc/bisdn-portconf
+    - /etc/systemd/system/ofdpa.service.d/10-bisdn-portconf.conf
   notify: Reload systemd daemon
 
 - name: Keep the port configuration across BISDN upgrades
@@ -43,46 +87,56 @@
     path: /etc/default/user-backup.txt
     line: "{{ item }}"
   loop:
-    - /etc/bisdn-portconf/
+    - /etc/ofdpa/
     - /etc/systemd/system/ofdpa.service.d/
+    - /usr/sbin/ofdpa-breakout
+
+- name: Remove bisdn-portconf from the upgrade backup
+  ansible.builtin.lineinfile:
+    path: /etc/default/user-backup.txt
+    line: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/bisdn-portconf/
     - /usr/sbin/bisdn-portconf
 
-- name: Check whether the port configuration changes
-  ansible.builtin.command: /usr/sbin/bisdn-portconf -check
-  register: _portconf_check
-  changed_when: _portconf_check.rc == 2
-  failed_when: _portconf_check.rc not in [0, 2]
-
-- name: Check whether a port configuration was applied before
-  ansible.builtin.stat:
-    path: /etc/bisdn-portconf/portmap.json
-  register: _portconf_applied
+- name: Decide whether the port configuration is pending
+  ansible.builtin.set_fact:
+    _bisdn_config_ports_pending: >-
+      {{ (_bisdn_config_breakout_show.stdout | trim) != (_bisdn_config_bcm.content | b64decode | trim)
+         or (_bisdn_config_applied.content | default('') | b64decode | trim) != (_bisdn_config_applied_want | trim) }}
+    _bisdn_config_first_provisioning: "{{ _bisdn_config_applied.content is not defined }}"
+  vars:
+    _bisdn_config_applied_want: "{{ {'breakouts': _bisdn_config_breakouts, 'fec': _bisdn_config_fec} | to_nice_json }}"
 
 - name: Report a pending port configuration
   ansible.builtin.debug:
     msg: >-
-      The port configuration changed. It is applied with the next ofdpa start
-      (reboot), or now with bisdn_config_allow_dataplane_restart=true, which
-      interrupts the dataplane.
+      The port configuration changed. Breakouts and FEC take effect with the
+      next reboot of the switch, or now with bisdn_config_allow_reboot=true,
+      which interrupts the dataplane.
   when:
-    - _portconf_check.rc == 2
-    - _portconf_applied.stat.exists
-    - not bisdn_config_allow_dataplane_restart
+    - _bisdn_config_ports_pending | bool
+    - not _bisdn_config_first_provisioning | bool
+    - not (bisdn_config_allow_reboot | bool)
 
-- name: Apply the port configuration and restart the dataplane
-  ansible.builtin.systemd:
-    name: ofdpa.service
-    state: restarted
-    daemon_reload: true
-  when:
-    - _portconf_check.rc == 2
-    - (not _portconf_applied.stat.exists) or bisdn_config_allow_dataplane_restart
+- name: Apply pending handlers before the reboot
+  ansible.builtin.meta: flush_handlers
 
-# baseboxd recreates the port netdevs from OF-DPA
-- name: Restart baseboxd after ofdpa
-  ansible.builtin.systemd:
-    name: baseboxd.service
-    state: restarted
+# ofdpa reads config.bcm and rc.soc only when it starts, and a changed
+# breakout needs a reboot of the switch: restarting ofdpa and baseboxd is not
+# enough
+- name: Reboot to apply the port configuration
+  ansible.builtin.reboot:
+    reboot_timeout: "{{ bisdn_config_reboot_timeout }}"
+  register: _bisdn_config_reboot
   when:
-    - _portconf_check.rc == 2
-    - (not _portconf_applied.stat.exists) or bisdn_config_allow_dataplane_restart
+    - _bisdn_config_ports_pending | bool
+    - (_bisdn_config_first_provisioning | bool) or (bisdn_config_allow_reboot | bool)
+
+- name: Record the applied port configuration
+  ansible.builtin.copy:
+    content: "{{ {'breakouts': _bisdn_config_breakouts, 'fec': _bisdn_config_fec} | to_nice_json }}\n"
+    dest: /etc/ofdpa/metal-stack-applied
+    mode: "0644"
+  when: (not _bisdn_config_ports_pending | bool) or _bisdn_config_reboot is not skipped

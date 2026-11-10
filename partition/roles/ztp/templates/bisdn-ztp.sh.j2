@@ -1,38 +1,36 @@
 #!/bin/sh
 # {{ ansible_managed }}
 #
-# First-boot port configuration for BISDN Linux switches (breakouts, FEC):
+# First-boot port breakouts for BISDN Linux switches:
 #   curl -fsS http://{{ ztp_listen_address }}:{{ ztp_port }}/bisdn-ztp.sh | sh -s <switch name>
 # BISDN Linux has no ZTP client; run it from the console or a first-boot hook.
-# The bisdn-config role performs the same steps on its first run.
+# The bisdn-config role performs the same steps on its first run, plus FEC.
+# A changed breakout takes effect with a reboot, which this script triggers.
 set -eu
 
 name="${1:-$(hostname)}"
 base="http://{{ ztp_listen_address }}:{{ ztp_port }}"
 
-mkdir -p /etc/bisdn-portconf /etc/systemd/system/ofdpa.service.d
-curl -fsS -o /etc/bisdn-portconf/ports.yaml "${base}/bisdn/${name}/ports.yaml"
-curl -fsS -o /usr/sbin/bisdn-portconf.tmp "{{ ztp_bisdn_portconf_url }}"
-echo "{{ ztp_bisdn_portconf_checksum | regex_replace('^sha256:', '') }}  /usr/sbin/bisdn-portconf.tmp" | sha256sum -c -
-chmod 0755 /usr/sbin/bisdn-portconf.tmp
-mv /usr/sbin/bisdn-portconf.tmp /usr/sbin/bisdn-portconf
+mkdir -p /etc/ofdpa /etc/systemd/system/ofdpa.service.d
+curl -fsS -o /etc/ofdpa/breakout.conf "${base}/bisdn/${name}/breakout.conf"
+curl -fsS -o /usr/sbin/ofdpa-breakout.tmp "${base}/bisdn/ofdpa-breakout"
+chmod 0755 /usr/sbin/ofdpa-breakout.tmp
+mv /usr/sbin/ofdpa-breakout.tmp /usr/sbin/ofdpa-breakout
 
-cat > /etc/systemd/system/ofdpa.service.d/10-bisdn-portconf.conf <<'UNIT'
+cat > /etc/systemd/system/ofdpa.service.d/10-ofdpa-breakout.conf <<'UNIT'
 [Service]
-ExecStartPre=-/usr/sbin/bisdn-portconf
+ExecStartPre=-/usr/sbin/ofdpa-breakout apply
 UNIT
 
-for path in /etc/bisdn-portconf/ /etc/systemd/system/ofdpa.service.d/ /usr/sbin/bisdn-portconf; do
+for path in /etc/ofdpa/ /etc/systemd/system/ofdpa.service.d/ /usr/sbin/ofdpa-breakout; do
   grep -qxF "$path" /etc/default/user-backup.txt || echo "$path" >> /etc/default/user-backup.txt
 done
 
-rc=0
-/usr/sbin/bisdn-portconf -check || rc=$?
-case "$rc" in
-  0) echo "port configuration unchanged" ;;
-  2) systemctl daemon-reload
-     systemctl restart ofdpa.service
-     systemctl restart baseboxd.service
-     echo "port configuration applied" ;;
-  *) exit "$rc" ;;
-esac
+config="/usr/share/ofdpa/platform/$(cat /etc/onl/platform)/config.bcm"
+if /usr/sbin/ofdpa-breakout show | cmp -s - "$config"; then
+  echo "port breakouts unchanged"
+else
+  echo "port breakouts changed, rebooting to apply them"
+  systemctl daemon-reload
+  systemctl reboot
+fi
