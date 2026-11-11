@@ -194,7 +194,7 @@ This section shows an overview of all available variables with example values.
 # Additional ACL tables and rules for the switch, in SONiC's config_db format.
 # A table binds to the listed ports or VLANs and filters their traffic in the given stage.
 # The example drops everything arriving on the PXE VLAN that is headed for 10.0.0.0/16.
-sonic_config_acl:
+sonic_config_acls:
   # The table name; must contain only letters, digits, `_` and `-`.
   # `ALLOW_SSH` and `ALLOW_NTP` are reserved.
   PXE_IN:
