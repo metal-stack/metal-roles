@@ -31,7 +31,7 @@ metadata:
 spec:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
-  schedule: "0 20 1 * *"
+  schedule: "20 2 1 * *"
   successfulJobsHistoryLimit: 3
   suspend: false
   jobTemplate:
