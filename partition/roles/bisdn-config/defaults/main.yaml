@@ -1,0 +1,33 @@
+---
+# management port: the enp* port with an IPv4 address (enp0 on most platforms,
+# enp11s0 on the AS7726-32X), enp0 if none has one
+bisdn_config_mgmt_interface: "{{ ansible_facts.interfaces | select('match', '^enp') | map('extract', ansible_facts) | selectattr('ipv4', 'defined') | map(attribute='device') | first | default('enp0') }}"
+# put the management port into VRF mgmt (as on SONiC with mgmt VRF)
+bisdn_config_mgmt_vrf: true
+bisdn_config_mgmt_vrf_table: 5000
+# address of the management port in CIDR notation, defaults to its current address
+bisdn_config_mgmt_address: "{{ ansible_facts[bisdn_config_mgmt_interface]['ipv4']['address'] }}/{{ (ansible_facts[bisdn_config_mgmt_interface]['ipv4']['address'] ~ '/' ~ ansible_facts[bisdn_config_mgmt_interface]['ipv4']['netmask']) | ansible.utils.ipaddr('prefix') }}"
+bisdn_config_mgmt_gateway: "{{ metal_partition_mgmt_gateway }}"
+
+bisdn_config_nameservers: []
+bisdn_config_ntp_servers: []
+bisdn_config_timezone: Europe/Berlin
+
+# SSH public keys for root (Ansible and metal-core's management access)
+bisdn_config_authorized_keys: []
+# let basebox use sudo without a password (BISDN's sudoers asks for one), so
+# Ansible, which connects as basebox after an ONIE install, needs a become
+# password on the first run only, see README
+bisdn_config_basebox_nopasswd_sudo: true
+
+# Port breakouts and FEC, in the structure of sonic_config_breakouts and
+# sonic_config_ports, with BISDN port names, e.g.
+#   bisdn_config_breakouts: {port4: 4x25G}
+#   bisdn_config_ports: {default_fec: none, list: [{name: port1, fec: rs}]}
+bisdn_config_breakouts: {}
+bisdn_config_ports: {}
+# Breakouts and FEC take effect when the switch reboots, which interrupts the
+# dataplane. Without this, the role only reports a pending change, unless no
+# port configuration was applied before (first provisioning).
+bisdn_config_allow_reboot: false
+bisdn_config_reboot_timeout: 900

@@ -1,0 +1,22 @@
+---
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart iptables
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - iptables.service
+    - ip6tables.service
+
+- name: Restart frr
+  ansible.builtin.systemd:
+    name: frr.service
+    state: restarted
+
+- name: Restart timesyncd
+  ansible.builtin.systemd:
+    name: systemd-timesyncd.service
+    state: restarted

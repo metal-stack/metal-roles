@@ -12,3 +12,25 @@ ztp_additional_files: []
 #   data: echo
 
 ztp_nginx_docker_log_driver: json-file
+
+# BISDN Linux switches: breakouts served for first boot, in the structure of
+# sonic_config_breakouts with BISDN port names, e.g.
+#   ztp_bisdn_switches:
+#     leaf01:
+#       breakouts: {port4: 4x25G}
+# FEC is configured by the bisdn-config role.
+ztp_bisdn_switches: {}
+
+# BISDN Linux ONIE installer with integrated install config (SSH keys of
+# ztp_authorized_keys for the basebox user, optional password hash), served
+# as {{ ztp_bisdn_installer_name }}; empty URL disables it.
+ztp_bisdn_installer_url:
+# e.g. sha256:f8eba9f440095eb33bd08f12b6ba4c83953dd8da7757cdea0949c897fae9e2f2 for 6.0.0
+ztp_bisdn_installer_checksum:
+ztp_bisdn_installer_name: onie-installer-bisdn
+# crypt hash for the basebox user (e.g. from mkpasswd -m sha-512), empty keeps
+# BISDN's default password
+ztp_bisdn_password_hash:
+# on a reinstall, restore the previous installation's configuration instead of
+# applying keys and password
+ztp_bisdn_keep_config: true
