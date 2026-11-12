@@ -1,3 +1,10 @@
+ifeq ($(CI),true)
+  DOCKER_RUN_ARG=-i
+else
+  DOCKER_RUN_ARG=-it
+endif
+
+
 .PHONY: test
 test:
 	python3 -m pip install mock
@@ -16,7 +23,7 @@ lint:
 .PHONY: docs
 docs:
 	docker pull metalstack/metal-deployment-base:latest
-	docker run --rm -it \
+	docker run --rm $(DOCKER_RUN_ARG) \
 		-v $(PWD):/metal-roles \
 		-w /metal-roles \
 		metalstack/metal-deployment-base:latest /bin/bash -ce "python3 gen_docs.py"

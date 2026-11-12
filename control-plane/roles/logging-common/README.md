@@ -12,24 +12,6 @@ Alloy runs as a Kubernetes DaemonSet. It:
 
 Alloy's positions file (tracking the read offset for each log file) is persisted via a `hostPath` volume at `/var/lib/alloy/data`, so already-shipped lines are not re-read after a pod restart. The directory is created automatically on first run (`DirectoryOrCreate`).
 
-## Variables
-
-You can look up all the default values of this role [here](defaults/main.yaml).
-
-| Name                                                   | Mandatory | Default      | Description                                                                                                                                                                                        |
-| ------------------------------------------------------ | --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| logging_common_alloy_namespace                         |           | `monitoring` | Target namespace                                                                                                                                                                                   |
-| logging_common_alloy_chart_version                     | yes       |              | Helm chart version for alloy (release vector)                                                                                                                                                      |
-| logging_common_alloy_chart_repo                        | yes       |              | Repository for alloy (release vector)                                                                                                                                                              |
-| logging_common_alloy_cluster_label                     | yes       |              | Value for the `cluster=` label set on all log and metric streams                                                                                                                                   |
-| logging_common_alloy_loki_write_endpoints              | yes\*     | `[]`         | List of Loki push endpoints. Required unless `logging_common_alloy_config_raw` is set. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                           |
-| logging_common_alloy_service_monitor_enabled           |           | `false`      | Enable a Prometheus ServiceMonitor for Alloy self-metrics. **_(logging role only)_** — not supported in seed clusters. Requires the [monitoring role](../monitoring/) to have been deployed first. |
-| logging_common_alloy_prometheus_write_endpoints        |           | `[]`         | Prometheus remote_write endpoints for Alloy self-metrics. When empty, self-metrics are disabled. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`                 |
-| logging_common_alloy_prometheus_wal_truncate_frequency |           | `2h`         | How often the WAL is compacted                                                                                                                                                                     |
-| logging_common_alloy_prometheus_wal_max_keepalive_time |           | `8h`         | Maximum time undelivered samples are kept in the WAL before being dropped                                                                                                                          |
-| logging_common_alloy_config_raw                        |           |              | Full Alloy River config override. When set, bypasses all structured vars and the template.                                                                                                         |
-| logging_common_alloy_kubeconfig                        |           |              | Kubeconfig dict for the target cluster. Omit for the local cluster; required for remote clusters (e.g. shooted seeds).                                                                             |
-
 ## Labels
 
 ### Pod logs (`loki.source.file`)
@@ -69,14 +51,10 @@ Self-metrics are **disabled by default**. Choose one option when needed:
 
 **Option B — Push (remote_write).** Set `logging_alloy_prometheus_write_endpoints` (logging role) or `gardener_logging_alloy_prometheus_write_endpoints` (gardener-logging role). Works in both roles.
 
+
+
 ```yaml
-# logging role (same for gardener_logging_alloy_prometheus_write_endpoints in gardener-logging role)
-logging_alloy_prometheus_write_endpoints:
-  - url: "https://{{ monitoring_thanos_receive_ingress_dns }}/api/v1/receive"
-    remote_timeout: 60s
-    basic_auth:
-      username: "{{ monitoring_thanos_receive_ingress_basic_auth_user }}"
-      password: "{{ monitoring_thanos_receive_ingress_basic_auth_password }}"
+{}
 ```
 
 See the [monitoring role migration guide](../monitoring/README.md#thanos-receive-ingress-credentials) for credential setup.
@@ -116,3 +94,13 @@ From the current release, Alloy is the default. Re-running the role deploys Allo
 5. **Optional:** Rotate the external Loki ingress credentials. The `loki-basic-auth` Kubernetes Secret is fully managed by Helm and holds a single entry derived from `logging_ingress_loki_basic_auth_user` and `logging_ingress_loki_basic_auth_password`. The default username remains `promtail` for backward compatibility — there is no need to change it. If you do want to rename the user (e.g. to `alloy`), re-running the role with updated variables replaces the secret automatically. If those credentials are also used by partition Promtail or Alloy to authenticate the `remote_write` to Loki, update both in the same deployment to avoid auth failures.
 
 For a controlled parallel window before cutting over, set `*_promtail_enabled: true` _(and `event_exporter_enabled: true` for the logging role)_. Both collectors will ship logs — Loki receives duplicate entries during this window. Once satisfied, remove the overrides from your inventory and re-run to have Promtail and the event-exporter removed automatically.
+
+## Variables
+
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/metal-roles/control-plane/roles/defaults).
+
+```yaml
+{}
+```

@@ -9,8 +9,20 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ## Variables
 
-| Name                          | Mandatory | Description                                                                                 |
-| ----------------------------- | --------- | ------------------------------------------------------------------------------------------- |
-| gardener_projects_garden_name |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden |
-| gardener_projects             |           | The configuration for the projects deployed into the Garden cluster                         |
-| gardener_project_defaults     |           | Defaults configuration for the projects (specific configuration overwrites these defaults)  |
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../defaults/README.md).
+
+```yaml
+# Default configuration merged into every project entry.
+gardener_project_defaults:
+  additional_labels: {}
+  members: []
+  namespace: garden
+  owner: admin
+  protected_toleration: true
+# The Gardener projects to deploy (name, description, members, protected_toleration).
+gardener_projects: []
+# Name of the garden to deploy the projects to.
+gardener_projects_garden_name: '{{ gardener_defaults_garden_name }}'
+```

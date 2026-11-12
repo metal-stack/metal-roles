@@ -1,0 +1,20 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the sonic-exporter in a systemd-managed Docker container (deprecated, use gnmic instead)
+    options:
+      monitoring_sonic_exporter_image_name:
+        type: str
+        description: Image name of the sonic-exporter.
+      monitoring_sonic_exporter_image_tag:
+        type: str
+        description: Image tag of the sonic-exporter.
+      monitoring_sonic_exporter_address:
+        type: str
+        description: Address the sonic-exporter listens on.
+      monitoring_sonic_exporter_port:
+        type: int
+        description: Port the sonic-exporter listens on.
+      monitoring_sonic_exporter_docker_log_driver:
+        type: str
+        description: Docker log driver for the sonic-exporter container.

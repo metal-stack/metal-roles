@@ -1,0 +1,15 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys Gardener projects into the virtual garden
+    options:
+      gardener_projects_garden_name:
+        type: str
+        description: Name of the garden to deploy the projects to.
+      gardener_projects:
+        type: list
+        elements: dict
+        description: The Gardener projects to deploy (name, description, members, protected_toleration).
+      gardener_project_defaults:
+        type: dict
+        description: Default configuration merged into every project entry.

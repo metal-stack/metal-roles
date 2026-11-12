@@ -1,0 +1,115 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys pixiecore in a systemd-managed Docker container
+    options:
+      pixiecore_image_name:
+        type: str
+        description: Image name of pixiecore. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      pixiecore_image_tag:
+        type: str
+        description: Image tag of pixiecore. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      pixiecore_api_host:
+        type: str
+        required: true
+        description: The host address on which the pixiecore API is reachable.
+      pixiecore_api_port:
+        type: int
+        description: The port on which the pixiecore API is served.
+      pixiecore_dns_servers:
+        type: list
+        elements: str
+        description: DNS servers passed to the pixiecore container.
+      pixiecore_partition_id:
+        type: str
+        description: The partition id passed to pixiecore.
+      pixiecore_debug:
+        type: bool
+        description: Whether to enable debug logging.
+      pixiecore_docker_log_driver:
+        type: str
+        description: Docker log driver for the pixiecore container.
+      pixiecore_grpc_address:
+        type: str
+        description: The address (host:port) of the metal-api gRPC server.
+      pixiecore_grpc_cert_dir:
+        type: str
+        description: Path to the gRPC certificate files on the host machine.
+      pixiecore_grpc_ca_cert:
+        type: str
+        description: The gRPC CA certificate content.
+      pixiecore_grpc_client_cert:
+        type: str
+        description: The gRPC client certificate content.
+      pixiecore_grpc_client_key:
+        type: str
+        no_log: true
+        description: The gRPC client certificate key content.
+      pixiecore_metal_api_url:
+        type: str
+        description: The metal-api URL passed to metal-hammer.
+      pixiecore_metal_api_hmac_view_key:
+        type: str
+        no_log: true
+        description: The metal-api view HMAC passed to metal-hammer.
+      pixiecore_metal_hammer_logging_endpoint:
+        type: str
+        description: Log forwarding endpoint for metal-hammer.
+      pixiecore_metal_hammer_logging_user:
+        type: str
+        description: Basic auth user for the metal-hammer logging endpoint.
+      pixiecore_metal_hammer_logging_password:
+        type: str
+        no_log: true
+        description: Basic auth password for the metal-hammer logging endpoint.
+      pixiecore_metal_hammer_logging_cert:
+        type: str
+        description: Client certificate content for the metal-hammer logging endpoint.
+      pixiecore_metal_hammer_logging_key:
+        type: str
+        no_log: true
+        description: Client certificate key content for the metal-hammer logging endpoint.
+      pixiecore_metal_hammer_logging_tls_insecure:
+        type: bool
+        description: Whether to skip TLS verification for the metal-hammer logging endpoint.
+      pixiecore_metal_hammer_ntp_servers:
+        type: list
+        elements: str
+        description: NTP servers passed to metal-hammer.
+      pixiecore_additional_volume_mounts:
+        type: list
+        elements: str
+        description: Additional volumes to mount into the pixiecore container.
+      pixiecore_ipxe_type:
+        type: str
+        description: The type of iPXE boot used.
+      pixiecore_etc_dir:
+        type: str
+        description: Host directory for pixiecore configuration.
+      pixiecore_metal_hammer_tenant:
+        type: str
+        description: The tenant name for metal-hammer.
+      pixiecore_metal_apiserver_url:
+        type: str
+        description: URL of the metal-api server.
+      pixiecore_metal_apiserver_token_filename:
+        type: str
+        description: Filename containing the metal-api token.
+      pixiecore_deployment_admin_token:
+        type: str
+        no_log: true
+        description: Admin token for the metal-api server.
+      pixiecore_token_expiration:
+        type: str
+        description: Token expiration period for the admin token.
+      pixiecore_permissions:
+        type: dict
+        description: Permissions assigned to the admin token.
+      pixiecore_infra_role:
+        type: str
+        description: The role assigned to the infrastructure component.
+      pixiecore_machine_roles:
+        type: list
+        elements: dict
+        description: Roles assigned to the machines.
+

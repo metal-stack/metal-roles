@@ -4,7 +4,9 @@ Deploys a dhcp-relay on a switch.
 
 ## Variables
 
-| Name                 | Mandatory | Description                           |
-| -------------------- | --------- | ------------------------------------- |
-| dhcp_relay_interface |           | The relay interface                   |
-| dhcp_relay_server    | yes       | The relay server (can also be a list) |
+```yaml
+# The interface to relay DHCP requests from.
+dhcp_relay_interface: vlan4000
+# REQUIRED: The DHCP server (string) or servers (list of strings) to relay requests to.
+dhcp_relay_server: null
+```
