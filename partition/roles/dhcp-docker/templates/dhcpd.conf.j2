@@ -1,0 +1,39 @@
+# indicate that the DHCP server should send DHCPNAK messages to misconfigured client
+authoritative;
+
+default-lease-time {{ dhcp_docker_default_lease_time }};
+max-lease-time {{ dhcp_docker_max_lease_time }};
+
+{% if dhcp_docker_use_host_decl_names %}
+use-host-decl-names on;
+{% endif -%}
+
+log-facility local7;
+
+{% for option in dhcp_docker_global_options %}
+option {{ option }};
+{% endfor %}
+{% for deny in dhcp_docker_global_deny_list %}
+  deny {{ deny }};
+{% endfor -%}
+
+{% for subnet in dhcp_docker_subnets %}
+{% if subnet.comment | default("") %}
+# {{ subnet.comment }}
+{% endif %}
+subnet {{ subnet.network }} netmask {{ subnet.netmask }} {
+{% if subnet.range is defined %}
+  range {{ subnet.range.begin }} {{ subnet.range.end }};
+{% endif %}
+{% for option in subnet.options | default([]) %}
+  option {{ option }};
+{% endfor %}
+{% for deny in subnet.deny_list | default([]) %}
+  deny {{ deny }};
+{% endfor %}
+}
+{% endfor -%}
+
+{% if dhcp_docker_static_hosts %}
+include "/etc/dhcp/dhcpd.hosts";
+{% endif %}
