@@ -12,6 +12,10 @@
 - /etc/nsswitch.conf:/etc/nsswitch.conf
 {% endif %}
 - "{{ metal_core_grpc_cert_dir }}:/certs/grpc:ro"
+{# RW Cgroup mount or privileged container is required for running bound to a different VRF #}
+{% if metal_core_vrf != 'default' %}
+- /sys/fs/cgroup:/sys/fs/cgroup:rw
+{% endif %}
 {% for volume_mount in metal_core_additional_volume_mounts %}
 - {{ volume_mount }}
 {% endfor %}

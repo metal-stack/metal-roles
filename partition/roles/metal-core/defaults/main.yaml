@@ -26,3 +26,4 @@ metal_core_frr_tpl_file: ""
 metal_core_pxe_vlan_id: 4000
 
 metal_core_quirk_profile: ""
+metal_core_vrf: default
