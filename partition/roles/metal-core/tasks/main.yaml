@@ -94,7 +94,8 @@
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_wantedby: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
-
+    systemd_docker_entrypoint: "{{ 'ip' if metal_core_vrf != 'default' else omit }}"
+    systemd_docker_command: "{{ ['vrf', 'exec', metal_core_vrf, '/metal-core'] if metal_core_vrf != 'default' }}"
 - name: Wait for metal-core to listen on metrics port
   ansible.builtin.wait_for:
     port: 2112
