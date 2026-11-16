@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: sflow-collector
   author: metal-stack
   description: Deploys an sFlow collection and enrichment pipeline.
   license: MIT
