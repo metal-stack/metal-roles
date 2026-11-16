@@ -177,8 +177,8 @@ isolated_clusters_registry_oci_mirror_config:
       destination: http://registry:5000/cilium/cilium
       match:
         semver: ">= 1.17.12"
-    - source: quay.io/cilium/cilium-operator
-      destination: http://registry:5000/cilium/cilium-operator
+    - source: quay.io/cilium/operator
+      destination: http://registry:5000/cilium/operator
       match:
         semver: ">= 1.17.12"
     - source: quay.io/cilium/cilium-envoy

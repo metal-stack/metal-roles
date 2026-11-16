@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: promtail
   author: metal-stack
   description: "DEPRECATED: Deploys promtail. Use metal-roles/partition/roles/alloy instead."
   license: MIT

@@ -28,10 +28,12 @@
 
 - name: Save iptables v4 rules
   ansible.builtin.shell: iptables-save > /etc/iptables/rules.v4
+  changed_when: true
   listen: Persist iptables
 
 - name: Save iptables v6 rules
   ansible.builtin.shell: ip6tables-save > /etc/iptables/rules.v6
+  changed_when: true
   listen: Persist iptables
 
 - name: Restart sshd

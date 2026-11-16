@@ -1,0 +1,144 @@
+---
+- name: Check mandatory variables for this role are set
+  ansible.builtin.assert:
+    fail_msg: "set mgmt_firewall_rutos_upgrade_firmware and mgmt_firewall_rutos_upgrade_sha256 for {{ inventory_hostname }}, see the role README"
+    quiet: true
+    that:
+      - mgmt_firewall_rutos_upgrade_firmware is not none
+      - mgmt_firewall_rutos_upgrade_sha256 is not none
+      - mgmt_firewall_rutos_upgrade_sha256 is match('^[0-9a-f]{64}$')
+
+- name: Read the installed firmware version
+  ansible.builtin.raw: cat /etc/version
+  register: _mgmt_firewall_rutos_upgrade_installed
+  changed_when: false
+  check_mode: false
+
+- name: Show the firmware change
+  ansible.builtin.debug:
+    msg: "{{ _mgmt_firewall_rutos_upgrade_installed.stdout | trim }} -> {{ mgmt_firewall_rutos_upgrade_firmware }}"
+  changed_when: _mgmt_firewall_rutos_upgrade_installed.stdout | trim != mgmt_firewall_rutos_upgrade_firmware
+
+- name: Upgrade the firmware
+  when: _mgmt_firewall_rutos_upgrade_installed.stdout | trim != mgmt_firewall_rutos_upgrade_firmware
+  block:
+    - name: Read uncommitted uci changes and a running deployment
+      ansible.builtin.raw: >-
+        uci changes;
+        if [ -f {{ mgmt_firewall_rutos_upgrade_state_dir }}/apply.sh ] && [ ! -f {{ mgmt_firewall_rutos_upgrade_state_dir }}/done ]
+        && [ ! -f {{ mgmt_firewall_rutos_upgrade_state_dir }}/rolled_back ]; then echo "deployment in progress"; fi
+      register: _mgmt_firewall_rutos_upgrade_pending
+      changed_when: false
+      check_mode: false
+
+    - name: Require a clean uci staging area and no running deployment
+      ansible.builtin.assert:
+        fail_msg: >-
+          {{ inventory_hostname }} has uncommitted uci changes or an unfinished mgmt-firewall-rutos deployment:
+          {{ _mgmt_firewall_rutos_upgrade_pending.stdout | trim }}. A firmware upgrade keeps only committed settings;
+          commit or revert them in the WebUI or with 'uci revert <package>' and let the deployment finish first
+        quiet: true
+        that:
+          - _mgmt_firewall_rutos_upgrade_pending.stdout | trim | length == 0
+
+    - name: Verify the image on the controller
+      block:
+        - name: Create a download directory on the controller
+          ansible.builtin.tempfile:
+            state: directory
+          register: _mgmt_firewall_rutos_upgrade_tmp
+          changed_when: false
+          delegate_to: localhost
+          vars:
+            ansible_become: false
+          check_mode: false
+
+        - name: Download the image on the controller and verify its checksum
+          ansible.builtin.get_url:
+            url: "{{ mgmt_firewall_rutos_upgrade_url }}"
+            dest: "{{ _mgmt_firewall_rutos_upgrade_tmp.path }}/image.bin"
+            checksum: "sha256:{{ mgmt_firewall_rutos_upgrade_sha256 }}"
+            mode: "0600"
+          changed_when: false
+          delegate_to: localhost
+          vars:
+            ansible_become: false
+          check_mode: false
+      always:
+        - name: Remove the download directory on the controller
+          ansible.builtin.file:
+            path: "{{ _mgmt_firewall_rutos_upgrade_tmp.path }}"
+            state: absent
+          changed_when: false
+          delegate_to: localhost
+          vars:
+            ansible_become: false
+          check_mode: false
+          when: _mgmt_firewall_rutos_upgrade_tmp.path is defined
+
+    - name: Flash the image and wait for the device to come back
+      when:
+        - mgmt_firewall_rutos_upgrade_apply | bool
+        - not ansible_check_mode
+      block:
+        - name: Download the image on the device and verify its checksum
+          ansible.builtin.raw: >-
+            rm -f {{ mgmt_firewall_rutos_upgrade_image }} &&
+            wget -q -O {{ mgmt_firewall_rutos_upgrade_image }} '{{ mgmt_firewall_rutos_upgrade_url }}' &&
+            echo '{{ mgmt_firewall_rutos_upgrade_sha256 }}  {{ mgmt_firewall_rutos_upgrade_image }}' | sha256sum -c -
+          changed_when: true
+
+        - name: Let sysupgrade verify the image without flashing it
+          ansible.builtin.raw: sysupgrade -T {{ mgmt_firewall_rutos_upgrade_image }}
+          changed_when: false
+
+        - name: Start sysupgrade in the background, keeping the configuration
+          ansible.builtin.raw: |
+            trap '' HUP
+            (sleep 2; sysupgrade {{ mgmt_firewall_rutos_upgrade_image }}) < /dev/null > /dev/null 2>&1 &
+          changed_when: true
+          vars:
+            ansible_ssh_use_tty: false
+
+        - name: Wait until the device goes down for the flash
+          ansible.builtin.wait_for:
+            host: "{{ ansible_host | default(inventory_hostname) }}"
+            port: 22
+            state: stopped
+            timeout: "{{ mgmt_firewall_rutos_upgrade_down_timeout }}"
+            msg: >-
+              {{ inventory_hostname }} kept running after sysupgrade was started; log in and run
+              'sysupgrade -v {{ mgmt_firewall_rutos_upgrade_image }}' by hand to see why the image was refused
+          delegate_to: localhost
+          vars:
+            ansible_become: false
+
+        - name: Wait until the device answers on SSH again
+          ansible.builtin.wait_for:
+            host: "{{ ansible_host | default(inventory_hostname) }}"
+            port: 22
+            state: started
+            timeout: "{{ mgmt_firewall_rutos_upgrade_up_timeout }}"
+            msg: >-
+              {{ inventory_hostname }} did not come back within {{ mgmt_firewall_rutos_upgrade_up_timeout }}s after the flash;
+              check it on the console or through the management server behind the other firewall
+          delegate_to: localhost
+          vars:
+            ansible_become: false
+
+        - name: Read the firmware version after the upgrade
+          ansible.builtin.raw: cat /etc/version
+          register: _mgmt_firewall_rutos_upgrade_result
+          changed_when: false
+          retries: 12
+          delay: 10
+          until: _mgmt_firewall_rutos_upgrade_result.rc == 0
+
+        - name: Require the device to run the new firmware
+          ansible.builtin.assert:
+            fail_msg: >-
+              {{ inventory_hostname }} runs {{ _mgmt_firewall_rutos_upgrade_result.stdout | trim }} after the upgrade instead of
+              {{ mgmt_firewall_rutos_upgrade_firmware }}; check the device console or the WebUI, the image was not taken
+            quiet: true
+            that:
+              - _mgmt_firewall_rutos_upgrade_result.stdout | trim == mgmt_firewall_rutos_upgrade_firmware

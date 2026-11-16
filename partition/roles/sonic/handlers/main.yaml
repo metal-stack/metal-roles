@@ -6,9 +6,11 @@
 
 - name: Config load
   ansible.builtin.command: config load --yes
+  changed_when: true
 
 - name: Config reload
   ansible.builtin.command: config reload --yes
+  changed_when: true
   async: 120
   poll: 0
   notify: Wait for new connection

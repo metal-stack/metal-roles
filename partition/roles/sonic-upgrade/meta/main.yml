@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: sonic
   author: metal-stack
   description: "DEPRECATED: Deploys a SONiC switch."
   license: MIT

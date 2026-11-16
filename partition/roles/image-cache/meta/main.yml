@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: image-cache
   author: metal-stack
   description: Deploys an image cache to a partition.
   license: MIT

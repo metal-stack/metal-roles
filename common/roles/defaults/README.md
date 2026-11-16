@@ -6,11 +6,226 @@ It also contains the mapping of our [release vector](https://github.com/metal-st
 
 ## Variables
 
-There are [global defaults](./defaults/main.yaml) for all roles of this project defined.
-
-| Name                         | Mandatory | Description                                    |
-| ---------------------------- | --------- | ---------------------------------------------- |
-| metal_registry_auth_enabled  |           | Enables deployment of image pull secrets       |
-| metal_registry_auth_user     |           | The default auth user for the registry         |
-| metal_registry_auth_password |           | The password for the user of the registry      |
-| metal_registry_url           |           | The Container-registry url, default is docker. |
+```yaml
+# Whether to enable registry authentication.
+metal_registry_auth_enabled: false
+# Registry authentication password.
+metal_registry_auth_password: ''
+# Registry authentication user.
+metal_registry_auth_user: ''
+# URL of the container registry.
+metal_registry_url: https://index.docker.io/v1/
+# Mapping of release tags and names for metal-stack images and charts.
+metal_stack_release:
+  mapping:
+    alloy_image_name: docker-images.third-party.partition.alloy.name
+    alloy_image_tag: docker-images.third-party.partition.alloy.tag
+    audit_forwarder_image_name: docker-images.metal-stack.kubernetes.audit-forwarder.name
+    audit_forwarder_image_tag: docker-images.metal-stack.kubernetes.audit-forwarder.tag
+    auditing_timescaledb_backup_restore_sidecar_image_name: docker-images.metal-stack.generic.backup-restore-sidecar.name
+    auditing_timescaledb_backup_restore_sidecar_image_tag: docker-images.metal-stack.generic.backup-restore-sidecar.tag
+    auditing_timescaledb_image_name: docker-images.third-party.control-plane.timescaledb.name
+    auditing_timescaledb_image_tag: docker-images.third-party.control-plane.timescaledb.tag
+    capms_controller_name: docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.name
+    capms_controller_tag: docker-images.metal-stack.kubernetes.cluster-api-provider-metal-stack-controller.tag
+    csi_lvm_controller_image_name: docker-images.metal-stack.kubernetes.csi-lvm-controller.name
+    csi_lvm_controller_image_tag: docker-images.metal-stack.kubernetes.csi-lvm-controller.tag
+    csi_lvm_provisioner_image_name: docker-images.metal-stack.kubernetes.csi-lvm-provisioner.name
+    csi_lvm_provisioner_image_tag: docker-images.metal-stack.kubernetes.csi-lvm-provisioner.tag
+    droptailer_image_name: docker-images.metal-stack.kubernetes.droptailer.name
+    droptailer_image_tag: docker-images.metal-stack.kubernetes.droptailer.tag
+    duros_controller_image_name: docker-images.metal-stack.kubernetes.duros-controller.name
+    duros_controller_image_tag: docker-images.metal-stack.kubernetes.duros-controller.tag
+    event_exporter_name: docker-images.third-party.control-plane.event-exporter.name
+    event_exporter_tag: docker-images.third-party.control-plane.event-exporter.tag
+    firewall_controller_manager_image_name: docker-images.metal-stack.gardener.firewall-controller-manager.name
+    firewall_controller_manager_image_tag: docker-images.metal-stack.gardener.firewall-controller-manager.tag
+    gardener_admission_controller_image_name: docker-images.third-party.gardener.admission-controller.name
+    gardener_admission_controller_image_tag: docker-images.third-party.gardener.admission-controller.tag
+    gardener_apiserver_image_name: docker-images.third-party.gardener.api-server.name
+    gardener_apiserver_image_tag: docker-images.third-party.gardener.api-server.tag
+    gardener_controller_manager_image_name: docker-images.third-party.gardener.controller-manager.name
+    gardener_controller_manager_image_tag: docker-images.third-party.gardener.controller-manager.tag
+    gardener_extension_acl_helm_chart: docker-images.third-party.gardener.acl-extension.charts.extension
+    gardener_extension_acl_image_name: docker-images.third-party.gardener.acl-extension.name
+    gardener_extension_acl_image_tag: docker-images.third-party.gardener.acl-extension.tag
+    gardener_extension_admission_acl_helm_chart_application: docker-images.third-party.gardener.acl-extension.charts.application
+    gardener_extension_admission_acl_helm_chart_runtime: docker-images.third-party.gardener.acl-extension.charts.runtime
+    gardener_extension_admission_calico_helm_chart_application: docker-images.third-party.gardener.networking-calico.charts.application
+    gardener_extension_admission_calico_helm_chart_runtime: docker-images.third-party.gardener.networking-calico.charts.runtime
+    gardener_extension_admission_cilium_helm_chart_application: docker-images.third-party.gardener.networking-cilium.charts.application
+    gardener_extension_admission_cilium_helm_chart_runtime: docker-images.third-party.gardener.networking-cilium.charts.runtime
+    gardener_extension_admission_gcp_helm_chart_application: docker-images.third-party.gardener.extension-admission-gcp.charts.application
+    gardener_extension_admission_gcp_helm_chart_runtime: docker-images.third-party.gardener.extension-admission-gcp.charts.runtime
+    gardener_extension_admission_gcp_image_name: docker-images.third-party.gardener.extension-admission-gcp.name
+    gardener_extension_admission_gcp_image_tag: docker-images.third-party.gardener.extension-admission-gcp.tag
+    gardener_extension_admission_metal_helm_chart_application: docker-images.metal-stack.gardener.gardener-extension-provider-metal.charts.application
+    gardener_extension_admission_metal_helm_chart_runtime: docker-images.metal-stack.gardener.gardener-extension-provider-metal.charts.runtime
+    gardener_extension_admission_shoot_dns_service_helm_chart_application: docker-images.third-party.gardener.shoot-dns-service.charts.application
+    gardener_extension_admission_shoot_dns_service_helm_chart_runtime: docker-images.third-party.gardener.shoot-dns-service.charts.runtime
+    gardener_extension_audit_helm_chart: docker-images.metal-stack.gardener.gardener-extension-audit.charts.extension
+    gardener_extension_audit_image_name: docker-images.metal-stack.gardener.gardener-extension-audit.name
+    gardener_extension_audit_image_tag: docker-images.metal-stack.gardener.gardener-extension-audit.tag
+    gardener_extension_backup_s3_helm_chart: docker-images.metal-stack.gardener.gardener-extension-backup-s3.charts.extension
+    gardener_extension_backup_s3_image_name: docker-images.metal-stack.gardener.gardener-extension-backup-s3.name
+    gardener_extension_backup_s3_image_tag: docker-images.metal-stack.gardener.gardener-extension-backup-s3.tag
+    gardener_extension_csi_driver_lvm_helm_chart: docker-images.metal-stack.gardener.gardener-extension-csi-driver-lvm.charts.extension
+    gardener_extension_csi_driver_lvm_image_name: docker-images.metal-stack.gardener.gardener-extension-csi-driver-lvm.name
+    gardener_extension_csi_driver_lvm_image_tag: docker-images.metal-stack.gardener.gardener-extension-csi-driver-lvm.tag
+    gardener_extension_dns_powerdns_helm_chart: docker-images.metal-stack.gardener.gardener-extension-dns-powerdns.charts.extension
+    gardener_extension_dns_powerdns_image_name: docker-images.metal-stack.gardener.gardener-extension-dns-powerdns.name
+    gardener_extension_dns_powerdns_image_tag: docker-images.metal-stack.gardener.gardener-extension-dns-powerdns.tag
+    gardener_extension_networking_calico_helm_chart: docker-images.third-party.gardener.networking-calico.charts.extension
+    gardener_extension_networking_calico_image_name: docker-images.third-party.gardener.networking-calico.name
+    gardener_extension_networking_calico_image_tag: docker-images.third-party.gardener.networking-calico.tag
+    gardener_extension_networking_cilium_helm_chart: docker-images.third-party.gardener.networking-cilium.charts.extension
+    gardener_extension_networking_cilium_image_name: docker-images.third-party.gardener.networking-cilium.name
+    gardener_extension_networking_cilium_image_tag: docker-images.third-party.gardener.networking-cilium.tag
+    gardener_extension_ontap_helm_chart: docker-images.metal-stack.gardener.gardener-extension-ontap.charts.extension
+    gardener_extension_ontap_image_name: docker-images.metal-stack.gardener.gardener-extension-ontap.name
+    gardener_extension_ontap_image_tag: docker-images.metal-stack.gardener.gardener-extension-ontap.tag
+    gardener_extension_os_metal_helm_chart: docker-images.metal-stack.gardener.os-metal-extension.charts.extension
+    gardener_extension_provider_gcp_helm_chart: docker-images.third-party.gardener.extension-provider-gcp.charts.extension
+    gardener_extension_provider_gcp_image_name: docker-images.third-party.gardener.extension-provider-gcp.name
+    gardener_extension_provider_gcp_image_tag: docker-images.third-party.gardener.extension-provider-gcp.tag
+    gardener_extension_provider_metal_helm_chart: docker-images.metal-stack.gardener.gardener-extension-provider-metal.charts.extension
+    gardener_extension_provider_metal_image_name: docker-images.metal-stack.gardener.gardener-extension-provider-metal.name
+    gardener_extension_provider_metal_image_tag: docker-images.metal-stack.gardener.gardener-extension-provider-metal.tag
+    gardener_extension_provider_metal_repo_url: docker-images.metal-stack.gardener.gardener-extension-provider-metal.repository
+    gardener_extension_shoot_cert_service_helm_chart: docker-images.third-party.gardener.shoot-cert-service.charts.extension
+    gardener_extension_shoot_cert_service_image_name: docker-images.third-party.gardener.shoot-cert-service.name
+    gardener_extension_shoot_cert_service_image_tag: docker-images.third-party.gardener.shoot-cert-service.tag
+    gardener_extension_shoot_dns_service_helm_chart: docker-images.third-party.gardener.shoot-dns-service.charts.extension
+    gardener_extension_shoot_dns_service_image_name: docker-images.third-party.gardener.shoot-dns-service.name
+    gardener_extension_shoot_dns_service_image_tag: docker-images.third-party.gardener.shoot-dns-service.tag
+    gardener_gardenlet_helm_chart: docker-images.third-party.gardener.gardenlet.charts.ref
+    gardener_gardenlet_image_name: docker-images.third-party.gardener.gardenlet.name
+    gardener_gardenlet_image_tag: docker-images.third-party.gardener.gardenlet.tag
+    gardener_logging_alloy_chart_repo: helm-charts.logging.alloy.repository
+    gardener_logging_alloy_chart_version: helm-charts.logging.alloy.version
+    gardener_logging_promtail_chart_repo: helm-charts.logging.promtail.repository
+    gardener_logging_promtail_chart_version: helm-charts.logging.promtail.version
+    gardener_mcm_provider_metal_image_name: docker-images.metal-stack.gardener.machine-controller-manager-provider-metal.name
+    gardener_mcm_provider_metal_image_tag: docker-images.metal-stack.gardener.machine-controller-manager-provider-metal.tag
+    gardener_metrics_exporter_image_name: docker-images.third-party.gardener.metrics-exporter.name
+    gardener_metrics_exporter_image_tag: docker-images.third-party.gardener.metrics-exporter.tag
+    gardener_operator_helm_chart: docker-images.third-party.gardener.operator.charts.ref
+    gardener_operator_image_name: docker-images.third-party.gardener.operator.name
+    gardener_operator_image_tag: docker-images.third-party.gardener.operator.tag
+    gardener_os_controller_image_name: docker-images.metal-stack.gardener.os-metal-extension.name
+    gardener_os_controller_image_tag: docker-images.metal-stack.gardener.os-metal-extension.tag
+    gardener_repo_ref: repositories.third-party.gardener.gardener.ref
+    gardener_repo_url: repositories.third-party.gardener.gardener.url
+    gardener_scheduler_image_name: docker-images.third-party.gardener.scheduler.name
+    gardener_scheduler_image_tag: docker-images.third-party.gardener.scheduler.tag
+    gardener_virtual_garden_api_server_version: docker-images.third-party.gardener.virtual-garden-apiserver.tag
+    headscale_db_backup_restore_sidecar_image_name: docker-images.metal-stack.generic.backup-restore-sidecar.name
+    headscale_db_backup_restore_sidecar_image_tag: docker-images.metal-stack.generic.backup-restore-sidecar.tag
+    headscale_db_image_name: docker-images.third-party.control-plane.headscale-db.name
+    headscale_db_image_tag: docker-images.third-party.control-plane.headscale-db.tag
+    headscale_image_name: docker-images.third-party.control-plane.headscale.name
+    headscale_image_tag: docker-images.third-party.control-plane.headscale.tag
+    image_cache_coredns_image_name: docker-images.third-party.partition.image-cache-coredns.name
+    image_cache_coredns_image_tag: docker-images.third-party.partition.image-cache-coredns.tag
+    image_cache_haproxy_image_name: docker-images.third-party.partition.image-cache-haproxy.name
+    image_cache_haproxy_image_tag: docker-images.third-party.partition.image-cache-haproxy.tag
+    image_cache_sync_image_name: docker-images.metal-stack.partition.metal-image-cache-sync.name
+    image_cache_sync_image_tag: docker-images.metal-stack.partition.metal-image-cache-sync.tag
+    ipam_db_backup_restore_sidecar_image_name: docker-images.metal-stack.generic.backup-restore-sidecar.name
+    ipam_db_backup_restore_sidecar_image_tag: docker-images.metal-stack.generic.backup-restore-sidecar.tag
+    ipam_db_image_name: docker-images.third-party.control-plane.ipam-db.name
+    ipam_db_image_tag: docker-images.third-party.control-plane.ipam-db.tag
+    isolated_clusters_registry_oci_mirror_image_name: docker-images.metal-stack.generic.oci-mirror.name
+    isolated_clusters_registry_oci_mirror_image_tag: docker-images.metal-stack.generic.oci-mirror.tag
+    logging_alloy_chart_repo: helm-charts.logging.alloy.repository
+    logging_alloy_chart_version: helm-charts.logging.alloy.version
+    logging_chart_repo: helm-charts.logging.loki.repository
+    logging_chart_version: helm-charts.logging.loki.version
+    logging_promtail_chart_repo: helm-charts.logging.promtail.repository
+    logging_promtail_chart_version: helm-charts.logging.promtail.version
+    masterdata_db_backup_restore_sidecar_image_name: docker-images.metal-stack.generic.backup-restore-sidecar.name
+    masterdata_db_backup_restore_sidecar_image_tag: docker-images.metal-stack.generic.backup-restore-sidecar.tag
+    masterdata_db_image_name: docker-images.third-party.control-plane.masterdata-db.name
+    masterdata_db_image_tag: docker-images.third-party.control-plane.masterdata-db.tag
+    metal_api_image_name: docker-images.metal-stack.control-plane.metal-api.name
+    metal_api_image_tag: docker-images.metal-stack.control-plane.metal-api.tag
+    metal_api_version: projects.metal-stack.api.version
+    metal_apiserver_image_name: docker-images.metal-stack.control-plane.metal-apiserver.name
+    metal_apiserver_image_tag: docker-images.metal-stack.control-plane.metal-apiserver.tag
+    metal_bmc_image_name: docker-images.metal-stack.partition.metal-bmc.name
+    metal_bmc_image_tag: docker-images.metal-stack.partition.metal-bmc.tag
+    metal_cloud_controller_manager_image_name: docker-images.metal-stack.kubernetes.metal-ccm.name
+    metal_cloud_controller_manager_image_tag: docker-images.metal-stack.kubernetes.metal-ccm.tag
+    metal_console_image_name: docker-images.metal-stack.control-plane.metal-console.name
+    metal_console_image_tag: docker-images.metal-stack.control-plane.metal-console.tag
+    metal_core_image_name: docker-images.metal-stack.partition.metal-core.name
+    metal_core_image_tag: docker-images.metal-stack.partition.metal-core.tag
+    metal_db_backup_restore_sidecar_image_name: docker-images.metal-stack.generic.backup-restore-sidecar.name
+    metal_db_backup_restore_sidecar_image_tag: docker-images.metal-stack.generic.backup-restore-sidecar.tag
+    metal_db_image_name: docker-images.third-party.control-plane.metal-db.name
+    metal_db_image_tag: docker-images.third-party.control-plane.metal-db.tag
+    metal_hammer_image_tag: binaries.metal-stack.metal-hammer.version
+    metal_hammer_image_url: binaries.metal-stack.metal-hammer.url
+    metal_helm_chart: helm-charts.metal-stack.metal-control-plane.oci
+    metal_helm_chart_repo: helm-charts.metal-stack.metal-control-plane.repository
+    metal_helm_chart_tag: helm-charts.metal-stack.metal-control-plane.tag
+    metal_helm_chart_version: helm-charts.metal-stack.metal-control-plane.version
+    metal_ipam_image_name: docker-images.metal-stack.control-plane.ipam.name
+    metal_ipam_image_tag: docker-images.metal-stack.control-plane.ipam.tag
+    metal_kernel_tag: binaries.metal-stack.kernel.version
+    metal_kernel_url: binaries.metal-stack.kernel.url
+    metal_masterdata_api_image_name: docker-images.metal-stack.control-plane.masterdata-api.name
+    metal_masterdata_api_image_tag: docker-images.metal-stack.control-plane.masterdata-api.tag
+    metal_metalctl_image_name: docker-images.metal-stack.control-plane.metalctl.name
+    metal_metalctl_image_tag: docker-images.metal-stack.control-plane.metalctl.tag
+    metal_metalctlv2_image_name: docker-images.metal-stack.control-plane.metalctlv2.name
+    metal_metalctlv2_image_tag: docker-images.metal-stack.control-plane.metalctlv2.tag
+    metal_metrics_exporter_image_name: docker-images.metal-stack.control-plane.metal-metrics-exporter.name
+    metal_metrics_exporter_image_tag: docker-images.metal-stack.control-plane.metal-metrics-exporter.tag
+    metal_tenant_apiserver_image_name: docker-images.metal-stack.control-plane.tenant-apiserver.name
+    metal_tenant_apiserver_image_tag: docker-images.metal-stack.control-plane.tenant-apiserver.tag
+    metal_token_refresher_image_name: docker-images.metal-stack.kubernetes.metal-token-refresher.name
+    metal_token_refresher_image_tag: docker-images.metal-stack.kubernetes.metal-token-refresher.tag
+    metalctl_version: binaries.metal-stack.metalctl.version
+    metalctlv2_version: binaries.metal-stack.metalctlv2.version
+    monitoring_gnmic_image_name: docker-images.third-party.partition.gnmic.name
+    monitoring_gnmic_image_tag: docker-images.third-party.partition.gnmic.tag
+    node_init_image_name: docker-images.metal-stack.kubernetes.node-init.name
+    node_init_image_tag: docker-images.metal-stack.kubernetes.node-init.tag
+    nsq_image_name: docker-images.third-party.control-plane.nsq.name
+    nsq_image_tag: docker-images.third-party.control-plane.nsq.tag
+    pixiecore_image_name: docker-images.metal-stack.partition.pixiecore.name
+    pixiecore_image_tag: docker-images.metal-stack.partition.pixiecore.tag
+    prometheus_chart_version: helm-charts.monitoring.kube-prometheus-stack.version
+    prometheus_image_name: docker-images.third-party.partition.prometheus.name
+    prometheus_image_tag: docker-images.third-party.partition.prometheus.tag
+    prometheus_stack_repo: helm-charts.monitoring.kube-prometheus-stack.repository
+    promtail_image_name: docker-images.third-party.partition.promtail.name
+    promtail_image_tag: docker-images.third-party.partition.promtail.tag
+    rethinkdb_exporter_name: docker-images.metal-stack.control-plane.rethinkdb-exporter.name
+    rethinkdb_exporter_tag: docker-images.metal-stack.control-plane.rethinkdb-exporter.tag
+    sonic_configdb_utils_image_name: docker-images.metal-stack.partition.sonic-configdb-utils.name
+    sonic_configdb_utils_image_tag: docker-images.metal-stack.partition.sonic-configdb-utils.tag
+    thanos_chart_repo: helm-charts.monitoring.thanos.repository
+    thanos_chart_version: helm-charts.monitoring.thanos.version
+    thanos_image_name: docker-images.third-party.control-plane.thanos.name
+    thanos_image_tag: docker-images.third-party.control-plane.thanos.tag
+    valkey_backup_restore_sidecar_image_name: docker-images.metal-stack.generic.backup-restore-sidecar.name
+    valkey_backup_restore_sidecar_image_tag: docker-images.metal-stack.generic.backup-restore-sidecar.tag
+    valkey_image_name: docker-images.third-party.control-plane.valkey.name
+    valkey_image_tag: docker-images.third-party.control-plane.valkey.tag
+    virtual_garden_kubeconfig_refresher_image_name: docker-images.metal-stack.gardener.virtual-garden-kubeconfig-refresher.name
+    virtual_garden_kubeconfig_refresher_image_tag: docker-images.metal-stack.gardener.virtual-garden-kubeconfig-refresher.tag
+    webhook_logger_image_name: docker-images.third-party.control-plane.webhook-logger.name
+    webhook_logger_image_tag: docker-images.third-party.control-plane.webhook-logger.tag
+    zitadel_chart_repo: helm-charts.oidc.zitadel.repository
+    zitadel_chart_version: helm-charts.oidc.zitadel.version
+    zitadel_db_backup_restore_sidecar_image_name: docker-images.metal-stack.generic.backup-restore-sidecar.name
+    zitadel_db_backup_restore_sidecar_image_tag: docker-images.metal-stack.generic.backup-restore-sidecar.tag
+    zitadel_db_image_name: docker-images.third-party.control-plane.zitadel-db.name
+    zitadel_db_image_tag: docker-images.third-party.control-plane.zitadel-db.tag
+    zitadel_init_image_name: docker-images.metal-stack.generic.zitadel-init.name
+    zitadel_init_image_tag: docker-images.metal-stack.generic.zitadel-init.tag
+    ztp_nginx_image_name: docker-images.third-party.partition.ztp-nginx.name
+    ztp_nginx_image_tag: docker-images.third-party.partition.ztp-nginx.tag
+```
