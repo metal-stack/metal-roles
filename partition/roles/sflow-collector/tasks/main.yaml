@@ -8,7 +8,9 @@
     quiet: true
     that:
       - sflow_collector_loki_endpoint is defined and sflow_collector_loki_endpoint | length > 0
+      - sflow_collector_image_name is defined
       - sflow_collector_image_tag is defined
+      - sflow_collector_vector_image_name is defined
       - sflow_collector_vector_image_tag is defined
       - sflow_collector_profile in ['fabric', 'edge', 'combined']
 

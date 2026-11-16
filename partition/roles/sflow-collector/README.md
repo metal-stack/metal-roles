@@ -48,10 +48,10 @@ Defaults are defined in [defaults/main.yaml](defaults/main.yaml).
 | sflow_collector_port                     |           | UDP port receiving sFlow datagrams; default `6343`                                                                                            |
 | sflow_collector_metrics_port             |           | goflow2 HTTP metrics port; default `9099`                                                                                                     |
 | sflow_collector_internal_port            |           | Vector's HTTP port on `127.0.0.1` for interface mapping updates in fabric profiles; default `9001`                                            |
-| sflow_collector_image_name               |           | goflow2 container image; default `netsampler/goflow2`                                                                                         |
-| sflow_collector_image_tag                |           | goflow2 image tag; default `latest`                                                                                                           |
-| sflow_collector_vector_image_name        |           | Vector container image; default `timberio/vector`                                                                                             |
-| sflow_collector_vector_image_tag         |           | Vector image tag; default `0.55.0-distroless-libc`                                                                                            |
+| sflow_collector_image_name               | yes       | goflow2 container image name; resolved from the release vector                                                                                |
+| sflow_collector_image_tag                | yes       | goflow2 image tag; resolved from the release vector                                                                                           |
+| sflow_collector_vector_image_name        | yes       | Vector container image name; resolved from the release vector                                                                                 |
+| sflow_collector_vector_image_tag         | yes       | Vector image tag; resolved from the release vector                                                                                            |
 | sflow_collector_vector_geo_sample_rate   |           | Additional sampling for geographic records, one in N flow events; default `10`                                                                |
 | sflow_collector_config_host_dir          |           | Host directory for Vector and logrotate configuration; default `/etc/sflow-collector`                                                         |
 | sflow_collector_data_host_dir            |           | Host directory for spool, enrichment databases, and Vector state; default `/var/lib/sflow-collector`; see the refresh script limitation below |
