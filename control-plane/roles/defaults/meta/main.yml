@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  author: metal-stack
+  description: Specifies common defaults for the metal-stack deployment.
+  license: MIT
+  min_ansible_version: "2.18"
+  galaxy_tags: []
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+
+dependencies: []

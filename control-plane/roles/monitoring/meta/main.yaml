@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: monitoring
   author: metal-stack
   description: Deploys a monitoring stack for the metal-stack control plane.
   license: MIT

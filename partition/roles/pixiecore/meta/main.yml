@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: pixiecore
   author: metal-stack
   description: Deploys the pixecore.
   license: MIT

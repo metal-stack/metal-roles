@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: sonic-upgrade
   author: metal-stack
   description: Performs an upgrade of the SONiC OS on a device and reboots it to complete the installation.
   license: MIT

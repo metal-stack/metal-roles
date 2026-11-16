@@ -19,7 +19,7 @@ spec:
 {% endfor %}
 {% if gardener_cloud_profile_firewall_images_from_machine_images %}
 {% for image in gardener_cloud_profile_machine_images %}
-{% if 'firewall' in image.features %}
+{% if 'firewall' in image.features or 'IMAGE_FEATURE_FIREWALL' in image.features %}
           - "{{ image.id }}"
 {% endif %}
 {% endfor %}

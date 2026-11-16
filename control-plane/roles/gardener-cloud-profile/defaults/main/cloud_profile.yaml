@@ -5,7 +5,7 @@ gardener_cloud_profile_wait_until_available: true
 gardener_cloud_profile_stage_name: "{{ metal_control_plane_stage_name }}"
 gardener_cloud_profile_metal_api_url: "https://api.{{ metal_control_plane_gateway_dns }}"
 
-gardener_cloud_profile_machine_images: "{{ metal_api_images | default([]) }}"
+gardener_cloud_profile_machine_images: "{{ metal_apiserver_static_data_images | default(metal_api_images | default([])) }}"
 gardener_cloud_profile_firewall_images: []
 gardener_cloud_profile_firewall_images_from_machine_images: true
 gardener_cloud_profile_firewall_controller_versions: []
