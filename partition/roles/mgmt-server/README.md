@@ -42,6 +42,11 @@ mgmt_server_vrfs:
     bgp_timers: 1 3
     unnumbered_interfaces:
       - vlan11
+    # FIXME: this is just a quick fix. Think of a more flexible solution.
+    evpn_neighbors:
+      # unnumbered neighbors must include the `interface` suffix
+      - lan1 interface
+      - 10.100.100.1
     announcements:
       - redistribute connected
     routemap_out:

@@ -60,6 +60,9 @@ router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
  {% for iface in vrf.unnumbered_interfaces | default([]) %}
  neighbor {{ iface }} interface peer-group FABRIC
  {% endfor %}
+ {% for neigh in vrf.evpn_neighbors | default([]) %}
+ neighbor {{ neigh }} peer-group FABRIC
+ {% endfor %}
  !
  address-family ipv4 unicast
   {% for a in vrf.announcements | default(['redistribute connected']) %}
@@ -68,6 +71,13 @@ router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
   {% if vrf.routemap_out is defined %}
   neighbor FABRIC route-map {{ vrf.routemap_out.name }} out
   {% endif %}
+ exit-address-family
+ !
+ address-family l2vpn evpn
+ advertise-all-vni
+ {% for neigh in vrf.evpn_neighbors | default([]) %}
+ neighbor {{ neigh }} activate
+ {% endfor %}
  exit-address-family
 !
 {% endfor %}
