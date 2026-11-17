@@ -4,48 +4,109 @@ Deploys a rethinkdb together with a [backup-restore-sidecar](https://github.com/
 
 ## Variables
 
-This role uses variables from [control-plane-defaults](/control-plane). So, make sure you define them adequately as well.
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
 
-You can look up all the default values of this role [here](defaults/main.yaml).
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/metal-roles/control-plane/roles/defaults).
 
-| Name                                                             | Mandatory | Description                                                                                                            |
-| ---------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| rethinkdb_image_name                                             | yes       | Image version of the rethinkdb                                                                                         |
-| rethinkdb_image_tag                                              | yes       | Image tag of the rethinkdb                                                                                             |
-| rethinkdb_registry_auth_enabled                                  |           | Enables registry authentication                                                                                        |
-| rethinkdb_registry_auth                                          |           | The dockerconfigjson content used for registry authentication                                                          |
-| rethinkdb_image_pull_policy                                      | yes       | Image pull policy (defaults to IfNotPresent)                                                                           |
-| rethinkdb_name                                                   |           | The name of the rethinkdb instance                                                                                     |
-| rethinkdb_namespace                                              |           | The deployment's target namespace                                                                                      |
-| rethinkdb_storage_size                                           |           | The size of the PVC                                                                                                    |
-| rethinkdb_storage_class                                          |           | The storage class of the PVC                                                                                           |
-| rethinkdb_password                                               |           | The password of the rethinkdb                                                                                          |
-| rethinkdb_backup_restore_sidecar_image_name                      | yes       | Image version of the backup-restore-sidecar                                                                            |
-| rethinkdb_backup_restore_sidecar_image_tag                       | yes       | Image tag of the backup-restore-sidecar                                                                                |
-| rethinkdb_backup_restore_sidecar_provider                        |           | The backup provider. One of `local`, `gcp` or `s3`                                                                     |
-| rethinkdb_backup_restore_sidecar_backup_cron_schedule            |           | The backup cron schedule                                                                                               |
-| rethinkdb_backup_restore_sidecar_log_level                       |           | The log level of the sidecar                                                                                           |
-| rethinkdb_backup_restore_sidecar_gcp_bucket_name                 |           | Bucket name of the GCP bucket                                                                                          |
-| rethinkdb_backup_restore_sidecar_gcp_backup_location             |           | Location of the GCP bucket                                                                                             |
-| rethinkdb_backup_restore_sidecar_gcp_project_id                  |           | GCP project name                                                                                                       |
-| rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json         |           | GCP Serviceaccount JSON string (service account requires bucket access)                                                |
-| rethinkdb_backup_restore_sidecar_s3_bucket_name                  |           | The name of the S3 bucket                                                                                              |
-| rethinkdb_backup_restore_sidecar_s3_region                       |           | The region where the S3 bucket is located                                                                              |
-| rethinkdb_backup_restore_sidecar_s3_endpoint                     |           | The endpoint URL for the S3 storage service                                                                            |
-| rethinkdb_backup_restore_sidecar_s3_access_key                   |           | The access key for authenticating with S3                                                                              |
-| rethinkdb_backup_restore_sidecar_s3_secret_key                   |           | The secret key for authenticating with S3                                                                              |
-| rethinkdb_backup_restore_sidecar_s3_insecure_skip_verify         |           | Skip certificate check of S3 storage service                                                                           |
-| rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert              |           | The trusted certificate authority for the S3 storage service                                                           |
-| rethinkdb_expose_frontend                                        |           | Exposes the rethinkdb over ingress (only use for dev environments)                                                     |
-| rethinkdb_ingress_dns                                            |           | The virtual host to reach the rethinkdb frontend when exposed via ingress                                              |
-| rethinkdb_resources                                              |           | The kubernetes resources for the actual rethinkdb container                                                            |
-| rethinkdb_init_resources                                         |           | The kubernetes resources for the rethinkdb init container                                                              |
-| rethinkdb_backup_restore_sidecar_resources                       |           | The kubernetes resources for the rethinkdb backup-restore-sidecars container                                           |
-| rethinkdb_backup_restore_sidecar_image_pull_policy               |           | Image pull policy (defaults to IfNotPresent)                                                                           |
-| rethinkdb_backup_restore_sidecar_object_max_keep                 |           | The number of objects to keep at the cloud provider bucket                                                             |
-| rethinkdb_backup_restore_sidecar_object_days_max_keep            |           | The number of days to keep and object at the cloud provider bucket                                                     |
-| rethinkdb_backup_restore_sidecar_s3_request_checksum_calculation |           | Controls the environment variable RequestChecksumCalculation. Possible values are `when_required` and `when_supported` |
-| rethinkdb_backup_restore_sidecar_encryption_key                  |           | An optional encryption key to AES-encrypt the backups before uploading them to the backup provider (length == 32)      |
-| rethinkdb_enable_security_context                                |           | Enables SecurityContext for the rethinkdb StatefulSet and containers                                                   |
-| rethinkdb_sts_security_context                                   |           | The SecurityContext for the rethinkdb StatefulSet                                                                      |
-| rethinkdb_container_security_context                             |           | The SecurityContext for the rethinkdb Containers                                                                       |
+```yaml
+# Cron schedule for creating backups.
+rethinkdb_backup_restore_sidecar_backup_cron_schedule: '*/3 * * * *'
+# Encryption key (32 characters) for encrypting backups.
+rethinkdb_backup_restore_sidecar_encryption_key: null
+# GCP bucket location for storing backups.
+rethinkdb_backup_restore_sidecar_gcp_backup_location: null
+# GCP bucket name for storing backups.
+rethinkdb_backup_restore_sidecar_gcp_bucket_name: null
+# GCP project id of the backup bucket.
+rethinkdb_backup_restore_sidecar_gcp_project_id: null
+# GCP service account JSON used for accessing the backup bucket.
+rethinkdb_backup_restore_sidecar_gcp_serviceaccount_json: null
+# Image name of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+rethinkdb_backup_restore_sidecar_image_name: null
+# Image pull policy for the backup-restore-sidecar container.
+rethinkdb_backup_restore_sidecar_image_pull_policy: '{{ metal_control_plane_image_pull_policy }}'
+# Image tag of the backup-restore-sidecar. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+rethinkdb_backup_restore_sidecar_image_tag: null
+# Log level of the backup-restore-sidecar.
+rethinkdb_backup_restore_sidecar_log_level: debug
+# Maximum age in days of backup objects to keep.
+rethinkdb_backup_restore_sidecar_object_days_max_keep: 14
+# Maximum amount of backup objects to keep.
+rethinkdb_backup_restore_sidecar_object_max_keep: 480
+# Backup provider used by the backup-restore-sidecar (local, gcp or s3).
+rethinkdb_backup_restore_sidecar_provider: local
+# Resource requests and limits for the backup-restore-sidecar container.
+rethinkdb_backup_restore_sidecar_resources: null
+# S3 access key for the backup bucket.
+rethinkdb_backup_restore_sidecar_s3_access_key: null
+# S3 bucket name for storing backups.
+rethinkdb_backup_restore_sidecar_s3_bucket_name: null
+# S3 endpoint of the backup bucket.
+rethinkdb_backup_restore_sidecar_s3_endpoint: null
+# Whether to skip TLS certificate verification for the S3 endpoint.
+rethinkdb_backup_restore_sidecar_s3_insecure_skip_verify: null
+# S3 region of the backup bucket.
+rethinkdb_backup_restore_sidecar_s3_region: null
+# S3 request checksum calculation setting (e.g. when_required for non-AWS S3 endpoints).
+rethinkdb_backup_restore_sidecar_s3_request_checksum_calculation: null
+# S3 secret key for the backup bucket.
+rethinkdb_backup_restore_sidecar_s3_secret_key: null
+# Trusted CA certificate for the S3 endpoint.
+rethinkdb_backup_restore_sidecar_s3_trusted_ca_cert: null
+# Security context for the containers.
+rethinkdb_container_security_context:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+# Whether to render the pod and container security contexts.
+rethinkdb_enable_security_context: false
+# Whether to expose the RethinkDB web frontend through an ingress.
+rethinkdb_expose_frontend: false
+# Image name of rethinkdb. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+rethinkdb_image_name: null
+# Image pull policy for the rethinkdb container.
+rethinkdb_image_pull_policy: '{{ metal_control_plane_image_pull_policy }}'
+# Image tag of rethinkdb. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+rethinkdb_image_tag: null
+# Ingress DNS name for the RethinkDB web frontend.
+rethinkdb_ingress_dns: rethinkdb.{{ metal_control_plane_gateway_dns }}
+# Resource requests and limits for the init container.
+rethinkdb_init_resources: null
+# Name of the rethinkdb deployment.
+rethinkdb_name: rethinkdb
+# The namespace to deploy rethinkdb to.
+rethinkdb_namespace: '{{ metal_control_plane_namespace }}'
+# Password of the rethinkdb database.
+rethinkdb_password: change-me
+# Docker auth configuration for the image pull secret.
+rethinkdb_registry_auth:
+  auths:
+    '{{ metal_registry_url }}':
+      auth: '{{ (metal_registry_auth_user + '':'' + metal_registry_auth_password) | b64encode }}'
+      password: '{{ metal_registry_auth_password }}'
+      username: '{{ metal_registry_auth_user }}'
+# Whether to deploy an image pull secret for the registry.
+rethinkdb_registry_auth_enabled: '{{ metal_registry_auth_enabled }}'
+# Resource requests and limits for the rethinkdb container.
+rethinkdb_resources:
+  limits:
+    cpu: 500m
+    memory: 4Gi
+  requests:
+    cpu: 200m
+    memory: 2Gi
+# Storage class of the persistent volume.
+rethinkdb_storage_class: null
+# Size of the persistent volume.
+rethinkdb_storage_size: 5Gi
+# Pod security context for the statefulset.
+rethinkdb_sts_security_context:
+  fsGroup: 2000
+  fsGroupChangePolicy: OnRootMismatch
+  runAsGroup: 2000
+  runAsNonRoot: true
+  runAsUser: 1001
+  seccompProfile:
+    type: RuntimeDefault
+```
