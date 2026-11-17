@@ -57,6 +57,7 @@ router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
  neighbor FABRIC peer-group
  neighbor FABRIC remote-as external
  neighbor FABRIC timers {{ vrf.bgp_timers | default('1 3') }}
+ neighbor FABRIC ebgp-multihop 2
  {% for iface in vrf.unnumbered_interfaces | default([]) %}
  neighbor {{ iface }} interface peer-group FABRIC
  {% endfor %}
