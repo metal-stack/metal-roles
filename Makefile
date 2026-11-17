@@ -16,7 +16,7 @@ lint:
 .PHONY: docs
 docs:
 	docker pull ghcr.io/metal-stack/metal-deployment-base:latest
-	docker run --rm -it \
+	docker run --rm \
 		-v $(PWD):/metal-roles \
 		-w /metal-roles \
 		ghcr.io/metal-stack/metal-deployment-base:latest /bin/bash -ce "python3 gen_docs.py"
