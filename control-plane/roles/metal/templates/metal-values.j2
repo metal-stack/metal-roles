@@ -271,6 +271,7 @@ ingress: {{ metal_ingress | to_json }}
 
 metal_apiserver:
   enabled: {{ 'true' if metal_apiserver_enabled else 'false' }}
+  housekeeping_cronjobs_enabled: {{ 'true' if metal_apiserver_housekeeping_cronjobs_enabled else 'false' }}
   replicas: {{ metal_apiserver_replicas }}
   url: {{ metal_apiserver_url }}
   provider_tenant: {{ metal_apiserver_provider_tenant }}
