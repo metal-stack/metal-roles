@@ -34,10 +34,10 @@ argument_specs:
         type: str
         description: Log level of the backup-restore-sidecar.
       metal_db_backup_restore_sidecar_object_max_keep:
-        type: raw
+        type: int
         description: Maximum amount of backup objects to keep.
       metal_db_backup_restore_sidecar_object_days_max_keep:
-        type: raw
+        type: int
         description: Maximum age in days of backup objects to keep.
       metal_db_backup_restore_sidecar_s3_request_checksum_calculation:
         type: str
@@ -73,7 +73,7 @@ argument_specs:
         type: str
         description: S3 secret key for the backup bucket.
       metal_db_backup_restore_sidecar_s3_insecure_skip_verify:
-        type: raw
+        type: bool
         description: Whether to skip TLS certificate verification for the S3 endpoint.
       metal_db_backup_restore_sidecar_s3_trusted_ca_cert:
         type: str
@@ -88,7 +88,7 @@ argument_specs:
         type: dict
         description: Resource requests and limits for the the metal db container.
       metal_db_registry_auth_enabled:
-        type: raw
+        type: bool
         description: Whether to deploy an image pull secret for the registry.
       metal_db_registry_auth:
         type: dict
