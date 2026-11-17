@@ -41,8 +41,22 @@ auditing_timescaledb_backup_restore_sidecar_object_max_keep: 480
 auditing_timescaledb_backup_restore_sidecar_object_prefix: '{{ auditing_timescaledb_name }}-{{ metal_control_plane_stage_name }}'
 # Backup provider used by the backup-restore-sidecar (local, gcp or s3).
 auditing_timescaledb_backup_restore_sidecar_provider: local
+# S3 access key for the backup bucket.
+auditing_timescaledb_backup_restore_sidecar_s3_access_key: null
+# S3 bucket name for storing backups.
+auditing_timescaledb_backup_restore_sidecar_s3_bucket_name: null
+# S3 endpoint of the backup bucket.
+auditing_timescaledb_backup_restore_sidecar_s3_endpoint: null
+# Whether to skip TLS certificate verification for the S3 endpoint.
+auditing_timescaledb_backup_restore_sidecar_s3_insecure_skip_verify: null
+# S3 region of the backup bucket.
+auditing_timescaledb_backup_restore_sidecar_s3_region: null
 # S3 request checksum calculation setting (e.g. when_required for non-AWS S3 endpoints).
 auditing_timescaledb_backup_restore_sidecar_s3_request_checksum_calculation: null
+# S3 secret key for the backup bucket.
+auditing_timescaledb_backup_restore_sidecar_s3_secret_key: null
+# Trusted CA certificate for the S3 endpoint.
+auditing_timescaledb_backup_restore_sidecar_s3_trusted_ca_cert: null
 # Name of the database to create.
 auditing_timescaledb_db: auditing
 # Image name of the auditing timescaledb. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
