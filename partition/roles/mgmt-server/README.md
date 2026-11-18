@@ -39,6 +39,7 @@ that must stay separate from the default VRF.
 ```yaml
 mgmt_server_vrfs:
   - name: vrfACPmgmt
+    vni: 300 # optional
     bgp_timers: 1 3
     unnumbered_interfaces:
       - vlan11
