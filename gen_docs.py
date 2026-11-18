@@ -55,12 +55,12 @@ def update_readme(role_path, yaml_block, dependencies):
 
     var_section_match = re.search(r"(## Variables.*)", content, re.DOTALL)
     if not var_section_match:
-        var_section = "## Variables\n\n"
+        original_var_section = "## Variables\n\n"
     else:
-        var_section = var_section_match.group(1)
+        original_var_section = var_section_match.group(1)
 
     var_section = re.sub(
-        r"^This role depends on default values of.*(?:\n|$)", "", var_section, flags=re.MULTILINE)
+        r"^This role depends on default values of.*(?:\n|$)", "", original_var_section, flags=re.MULTILINE)
 
     dep_sentences = []
     for dep in dependencies:
@@ -91,7 +91,7 @@ def update_readme(role_path, yaml_block, dependencies):
         else:
             new_var_section = f"{var_section}\n\n{yaml_block}".strip()
 
-    new_content = content.replace(var_section, new_var_section).rstrip()
+    new_content = content.replace(original_var_section, new_var_section).rstrip()
 
     with open(readme_path, 'w', encoding='utf-8') as f:
         f.write(new_content + "\n")

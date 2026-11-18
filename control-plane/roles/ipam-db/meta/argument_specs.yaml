@@ -26,7 +26,6 @@ argument_specs:
         description: User of the the ipam db database.
       ipam_db_password:
         type: str
-        no_log: true
         description: Password of the the ipam db database.
       ipam_db_max_connections:
         type: int
@@ -57,7 +56,6 @@ argument_specs:
         description: S3 request checksum calculation setting (e.g. when_required for non-AWS S3 endpoints).
       ipam_db_backup_restore_sidecar_encryption_key:
         type: str
-        no_log: true
         description: Encryption key (32 characters) for encrypting backups.
       ipam_db_backup_restore_sidecar_gcp_bucket_name:
         type: str
@@ -70,7 +68,6 @@ argument_specs:
         description: GCP project id of the backup bucket.
       ipam_db_backup_restore_sidecar_gcp_serviceaccount_json:
         type: str
-        no_log: true
         description: GCP service account JSON used for accessing the backup bucket.
       ipam_db_backup_restore_sidecar_s3_bucket_name:
         type: str
@@ -86,7 +83,6 @@ argument_specs:
         description: S3 access key for the backup bucket.
       ipam_db_backup_restore_sidecar_s3_secret_key:
         type: str
-        no_log: true
         description: S3 secret key for the backup bucket.
       ipam_db_backup_restore_sidecar_s3_insecure_skip_verify:
         type: bool
@@ -102,7 +98,6 @@ argument_specs:
         description: Whether to deploy an image pull secret for the registry.
       ipam_db_registry_auth:
         type: dict
-        no_log: true
         description: Docker auth configuration for the image pull secret.
       ipam_db_image_name:
         type: str

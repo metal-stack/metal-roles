@@ -23,11 +23,9 @@ argument_specs:
         description: Base path of the metal API.
       metal_partition_metal_api_hmac_edit_key:
         type: str
-        no_log: true
         description: HMAC edit key for the metal API.
       metal_partition_metal_api_hmac_view_key:
         type: str
-        no_log: true
         description: HMAC view key for the metal API.
       metal_partition_metal_api_grpc_address:
         type: str
@@ -43,7 +41,6 @@ argument_specs:
         description: Client certificate for gRPC.
       metal_partition_metal_api_grpc_client_key:
         type: str
-        no_log: true
         description: Client key for gRPC.
       metal_partition_mgmt_gateway:
         type: str
@@ -53,5 +50,4 @@ argument_specs:
         description: Default URL for the metal API server.
       defaults_partition_metal_apiserver_admin_token:
         type: str
-        no_log: true
         description: Default admin token for the metal API server.

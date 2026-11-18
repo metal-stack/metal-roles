@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Test
         run: |
-          make docs
+          python3 gen_docs.py
           git diff --exit-code common control-plane partition || { echo 'you forgot to run "make docs"'; exit 1; }
           make test
 

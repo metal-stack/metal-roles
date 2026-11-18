@@ -14,5 +14,4 @@ argument_specs:
         description: Key within the secret data that contains the token.
       metal_deployment_admin_token:
         type: str
-        no_log: true
         description: The admin token to use for deployment. When unset, it is read from the referenced secret.

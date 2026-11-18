@@ -44,7 +44,6 @@ argument_specs:
         description: The nsqd tls-required setting.
       nsq_certs_client_key:
         type: str
-        no_log: true
         description: The nsq client certificate key content.
       nsq_certs_client_cert:
         type: str
@@ -53,11 +52,10 @@ argument_specs:
         type: str
         description: The nsq CA certificate content.
       nsq_registry_auth_enabled:
-        type: raw
+        type: bool
         description: Whether to deploy an image pull secret for the registry.
       nsq_registry_auth:
         type: dict
-        no_log: true
         description: Docker auth configuration for the image pull secret.
       nsq_tcproute_enabled:
         type: bool

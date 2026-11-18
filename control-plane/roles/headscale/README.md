@@ -105,6 +105,8 @@ headscale_ipv6_prefix: fd7a:115c:a1e0::/48
 headscale_namespace: '{{ metal_control_plane_namespace }}'
 # REQUIRED: The headscale noise protocol private key.
 headscale_noise_private_key: null
+# REQUIRED: The headscale private key.
+headscale_private_key: null
 # Resource requests and limits for the headscale container.
 headscale_resources:
   limits:

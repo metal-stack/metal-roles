@@ -27,10 +27,13 @@ argument_specs:
       headscale_resources:
         type: dict
         description: Resource requests and limits for the headscale container.
+      headscale_private_key:
+        type: str
+        required: true
+        description: The headscale private key.
       headscale_noise_private_key:
         type: str
         required: true
-        no_log: true
         description: The headscale noise protocol private key.
       headscale_api_key_expiration:
         type: str
@@ -78,10 +81,9 @@ argument_specs:
         description: User of the headscale database.
       headscale_db_password:
         type: str
-        no_log: true
         description: Password of the headscale database.
       headscale_db_max_connections:
-        type: raw
+        type: int
         description: Maximum amount of database connections.
       headscale_db_backup_restore_sidecar_image_name:
         type: str
@@ -103,7 +105,6 @@ argument_specs:
         description: Object prefix used for backups in the object store.
       headscale_db_backup_restore_sidecar_encryption_key:
         type: str
-        no_log: true
         description: Encryption key (32 characters) for encrypting backups.
       headscale_db_backup_restore_sidecar_gcp_bucket_name:
         type: str
@@ -116,7 +117,6 @@ argument_specs:
         description: GCP project id of the backup bucket.
       headscale_db_backup_restore_sidecar_gcp_serviceaccount_json:
         type: str
-        no_log: true
         description: GCP service account JSON used for accessing the backup bucket.
       headscale_db_backup_restore_sidecar_s3_bucket_name:
         type: str
@@ -132,10 +132,9 @@ argument_specs:
         description: S3 access key for the backup bucket.
       headscale_db_backup_restore_sidecar_s3_secret_key:
         type: str
-        no_log: true
         description: S3 secret key for the backup bucket.
       headscale_db_backup_restore_sidecar_s3_insecure_skip_verify:
-        type: raw
+        type: bool
         description: Whether to skip TLS certificate verification for the S3 endpoint.
       headscale_db_backup_restore_sidecar_s3_trusted_ca_cert:
         type: str

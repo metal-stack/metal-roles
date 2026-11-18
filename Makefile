@@ -12,8 +12,8 @@ test:
 
 .PHONY: test-local
 test-local:
-	docker pull metalstack/metal-deployment-base:latest
-	docker run --rm -it -v $(PWD):/work -w /work metalstack/metal-deployment-base:latest make test
+	docker pull ghcr.io/metal-stack/metal-deployment-base:latest
+	docker run --rm -it -v $(PWD):/work -w /work ghcr.io/metal-stack/metal-deployment-base:latest make test
 
 .PHONY: lint
 lint:
@@ -22,8 +22,8 @@ lint:
 
 .PHONY: docs
 docs:
-	docker pull metalstack/metal-deployment-base:latest
-	docker run --rm $(DOCKER_RUN_ARG) \
+	docker pull ghcr.io/metal-stack/metal-deployment-base:latest
+	docker run --rm \
 		-v $(PWD):/metal-roles \
 		-w /metal-roles \
-		metalstack/metal-deployment-base:latest /bin/bash -ce "python3 gen_docs.py"
+		ghcr.io/metal-stack/metal-deployment-base:latest /bin/bash -ce "python3 gen_docs.py"
