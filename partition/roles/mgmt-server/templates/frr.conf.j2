@@ -54,7 +54,7 @@ router bgp {{ mgmt_server_asn }}
  neighbor {{ mgmt_server_firewall_ip }} disable-connected-check
  {% endif %}
  {% for neigh in mgmt_server_evpn.neighbors | default([]) %}
- neighbor {{ neigh }} peer-group {{ mgmt_server_evpn.peer_group | defautl('FABRIC') }}
+ neighbor {{ neigh }} peer-group {{ mgmt_server_evpn.peer_group | default('FABRIC') }}
  {% endfor %}
  !
  address-family ipv4 unicast
