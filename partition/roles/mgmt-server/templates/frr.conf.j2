@@ -42,11 +42,20 @@ router bgp {{ mgmt_server_asn }}
  neighbor FABRIC peer-group
  neighbor FABRIC remote-as external
  neighbor FABRIC timers 1 3
+ {% if mgmt_server_evpn.peer_group is defined %}
+ neighbor {{ mgmt_server_evpn.peer_group }} peer-group
+ neighbor {{ mgmt_server_evpn.peer_group }} remote-as external
+ neighbor {{ mgmt_server_evpn.peer_group }} timers 1 3
+ neighbor {{ mgmt_server_evpn.peer_group }} ebgp-multihop 2
+ {% endif %}
  neighbor {{ mgmt_server_spine_facing_interface }} interface peer-group FABRIC
  {% if mgmt_server_firewall_ip is defined %}
  neighbor {{ mgmt_server_firewall_ip }} peer-group FABRIC
  neighbor {{ mgmt_server_firewall_ip }} disable-connected-check
  {% endif %}
+ {% for neigh in mgmt_server_evpn.neighbors | default([]) %}
+ neighbor {{ neigh }} peer-group {{ mgmt_server_evpn.peer_group | defautl('FABRIC') }}
+ {% endfor %}
  !
  address-family ipv4 unicast
   redistribute connected route-map LOCAL_INTERFACES
@@ -55,6 +64,13 @@ router bgp {{ mgmt_server_asn }}
 {% endif %}
   {% if mgmt_server_provide_default_route %}
   network 0.0.0.0/0
+  {% endif %}
+ exit-address-family
+ !
+ address-family l2vpn evpn
+  advertise-all-vni
+  {% if mgmt_server_evpn.peer_group is defined %}
+  neighbor {{ mgmt_server_evpn.peer_group }} activate
   {% endif %}
  exit-address-family
 !
@@ -80,13 +96,6 @@ router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
   {% if vrf.routemap_out is defined %}
   neighbor FABRIC route-map {{ vrf.routemap_out.name }} out
   {% endif %}
- exit-address-family
- !
- address-family l2vpn evpn
- advertise-all-vni
- {% for neigh in vrf.evpn_neighbors | default([]) %}
- neighbor {{ neigh }} activate
- {% endfor %}
  exit-address-family
 !
 {% endfor %}

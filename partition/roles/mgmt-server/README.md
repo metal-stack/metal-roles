@@ -27,8 +27,19 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_provide_default_route           | no        | provide the default route with bgp (`network 0.0.0.0/0`)                                                            |
 | mgmt_server_announce_static_prefixes        | no        | announce exactly these static routes over BGP, e.g. `["10.4.0.0/24"]`.                                              |
 | mgmt_server_vrfs                            | no        | additional BGP instances in VRFs, see [VRFs](#vrfs).                                                                |
+| mgmt_server_evpn                            | no        | activate EVPN for the specified peers.                                                                              |
 | mgmt_server_masquerade_interfaces           | no        | the interfaces on which egressing traffic is masqueraded.                                                           |
 | mgmt_server_masquerade_exclude_destinations | no        | what is exempted from masquerading, see [Masquerading](#masquerading).                                              |
+
+## EVPN
+
+```yaml
+mgmt_server_evpn:
+  peer_group: REMOTE
+  neighbors:
+    - 100.1.1.1
+    - lan1 interface # unnumbered peers must include the `interface` suffix.
+```
 
 ## VRFs
 
