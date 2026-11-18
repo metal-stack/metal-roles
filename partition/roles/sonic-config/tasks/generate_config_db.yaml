@@ -22,13 +22,20 @@
   changed_when: true
   when: "'unsynchronised' in ntp_status.stdout"
 
+- name: Upload sonic-configdb-utils docker image
+  ansible.builtin.include_role:
+    name: ansible-common/roles/push-oci-image
+  vars:
+    push_oci_image_name: "{{ sonic_configdb_utils_image_name }}"
+    push_oci_image_tag: "{{ sonic_configdb_utils_image_tag }}"
+
 - name: Run sonic-configdb-utils
   community.docker.docker_container:
     name: sonic-configdb-utils
     image: "{{ sonic_configdb_utils_image_name }}:{{ sonic_configdb_utils_image_tag }}"
     detach: false
     cleanup: true
-    pull: true
+    pull: false
     network_mode: host
     command: generate
     volumes:
