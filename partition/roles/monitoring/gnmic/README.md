@@ -2,35 +2,6 @@
 
 Deploys [gnmic](https://gnmic.openconfig.net/) in a systemd-managed Docker container. It subscribes to the SONiC gNMI server and exposes switch telemetry as Prometheus metrics. Replaces the sonic-exporter.
 
-## Variables
-
-| Name                                      | Mandatory | Description                                         |
-| ----------------------------------------- | --------- | --------------------------------------------------- |
-| monitoring_gnmic_image_name               | yes       | Image name of gnmic                                 |
-| monitoring_gnmic_image_tag                | yes       | Image tag of gnmic                                  |
-| monitoring_gnmic_etc_host_dir             |           | Host directory for the gnmic configuration          |
-| monitoring_gnmic_docker_log_driver        |           | Indicates where to write the docker logs to         |
-| monitoring_gnmic_gnmi_address             |           | Address of the SONiC gNMI server                    |
-| monitoring_gnmic_gnmi_port                |           | Port of the SONiC gNMI server                       |
-| monitoring_gnmic_gnmi_username            |           | Username for the gNMI server                        |
-| monitoring_gnmic_gnmi_password            |           | Password for the gNMI server                        |
-| monitoring_gnmic_gnmi_insecure            |           | Use a plaintext gNMI connection                     |
-| monitoring_gnmic_gnmi_skip_verify         |           | Skip TLS certificate verification                   |
-| monitoring_gnmic_prometheus_port          |           | Port of the Prometheus metrics endpoint             |
-| monitoring_gnmic_ports                    |           | Ports to collect counters for, discovered if empty  |
-| monitoring_gnmic_queues                   |           | Queue name to counter OID map, discovered if empty  |
-| monitoring_gnmic_port_counters            |           | SAI_PORT_STAT counters to collect per port          |
-| monitoring_gnmic_temperature_sensors      |           | Temperature sensors to collect, discovered if empty |
-| monitoring_gnmic_fans                     |           | Fans to collect, discovered if empty                |
-| monitoring_gnmic_crm_acl_tables           |           | CRM ACL tables to collect, discovered if empty      |
-| monitoring_gnmic_transceiver_tables       |           | Transceiver tables to collect, discovered if empty  |
-| monitoring_gnmic_disabled_subscriptions   |           | Subscriptions to disable                            |
-| monitoring_gnmic_sonic_distribution       |           | SONiC distribution (broadcom/edgecore)              |
-| monitoring_gnmic_sample_interval_counters |           | Sample interval for port and queue counters         |
-| monitoring_gnmic_sample_interval_state    |           | Sample interval for state tables                    |
-| monitoring_gnmic_sample_interval_config   |           | Sample interval for config tables                   |
-| monitoring_gnmic_heartbeat_interval       |           | Heartbeat interval for on-change subscriptions      |
-
 ## Redis load
 
 The SONiC gNMI server serves table and key paths through redis keyspace notifications, in `sample` mode as well as `on-change`. Every subscribed key adds a `PSUBSCRIBE` pattern that redis matches against every write in every database, so per-queue subscriptions (`/COUNTERS/<port>/Queues`) cost tens of percent of redis CPU on a busy switch. Field paths (`/COUNTERS/<port>/SAI_PORT_STAT_<counter>`, `/COUNTERS/<oid>/SAI_QUEUE_STAT_<counter>`) are polled at the sample interval with plain `HGET` instead, which is why port and queue counters are subscribed per field. Field paths must stay in `sample` mode, `on-change` polls them every 200 ms.
@@ -82,31 +53,53 @@ results without erroring.
 
 Below is an example playbook that can be used to roll out gnmic and the bgp-metrics role and remove the sonic-exporter. The removal step may be omitted for validation as the two services don't conflict.
 
-```yaml
----
-- name: deploy gnmic
-  hosts: <SWITCHES>
-  gather_facts: false
-  become: true
-  roles:
-    - name: ansible-common
-    - name: metal-roles/partition/roles/monitoring/gnmic
-    - name: metal-roles/partition/roles/monitoring/node-exporter
-    - name: metal-roles/partition/roles/monitoring/bgp-metrics
-  tasks:
-    - name: Stop and disable sonic-exporter
-      ansible.builtin.systemd:
-        name: sonic_exporter
-        state: stopped
-        enabled: false
-      register: sonic_exporter_stop
-      failed_when: false
+## Variables
 
-- name: update prometheus scrape config
-  hosts: <PROMETHEUS-HOST>
-  gather_facts: false
-  become: true
-  roles:
-    - name: ansible-common
-    - name: metal-roles/partition/roles/monitoring/prometheus
+This role depends on default values of [metal-roles/common/roles/defaults](../../../../common/roles/defaults/README.md).
+
+This role depends on default values of [metal-roles/partition/roles/defaults](../../defaults/README.md).
+
+```yaml
+# CRM ACL tables to subscribe to. Discovered from the switch at deploy time when left empty.
+monitoring_gnmic_crm_acl_tables: []
+# Subscription names (as defined in gnmic.yaml.j2) to disable.
+monitoring_gnmic_disabled_subscriptions: []
+# Docker log driver for the gnmic container.
+monitoring_gnmic_docker_log_driver: json-file
+# Host directory for the gnmic configuration.
+monitoring_gnmic_etc_host_dir: /etc/gnmic
+# Fans to subscribe to. Discovered from the switch at deploy time when left empty.
+monitoring_gnmic_fans: []
+# Address of the gNMI server on the switch.
+monitoring_gnmic_gnmi_address: 127.0.0.1
+# Whether to connect to the gNMI server without TLS.
+monitoring_gnmic_gnmi_insecure: false
+# Password for the gNMI server.
+monitoring_gnmic_gnmi_password: admin
+# Port of the gNMI server on the switch.
+monitoring_gnmic_gnmi_port: 8080
+# Whether to skip TLS certificate verification for the gNMI server.
+monitoring_gnmic_gnmi_skip_verify: true
+# Username for the gNMI server.
+monitoring_gnmic_gnmi_username: admin
+# Heartbeat interval for on-change subscriptions.
+monitoring_gnmic_heartbeat_interval: 120s
+# Image name of gnmic. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+monitoring_gnmic_image_name: null
+# Image tag of gnmic. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+monitoring_gnmic_image_tag: null
+# Ports to subscribe to. Discovered from the switch at deploy time when left empty.
+monitoring_gnmic_ports: []
+# Port on which gnmic exposes prometheus metrics.
+monitoring_gnmic_prometheus_port: 9102
+# Sample interval for config subscriptions.
+monitoring_gnmic_sample_interval_config: 60s
+# Sample interval for counter subscriptions.
+monitoring_gnmic_sample_interval_counters: 30s
+# Sample interval for state subscriptions.
+monitoring_gnmic_sample_interval_state: 60s
+# The SONiC distribution running on the switch.
+monitoring_gnmic_sonic_distribution: broadcom
+# Temperature sensors to subscribe to. Discovered from the switch at deploy time when left empty.
+monitoring_gnmic_temperature_sensors: []
 ```

@@ -33,40 +33,6 @@ Alloy can optionally push its own self-metrics to a remote Prometheus endpoint (
 
 Seed workload metrics are Gardener's responsibility: gardenlet manages Cache, Seed, and Aggregate Prometheus instances on each seed. Those Prometheus instances use annotation-based discovery restricted to known namespaces and do not reach the `monitoring` namespace where Alloy runs — pull-based metric collection from Alloy is not supported. Use push via `logging_alloy_prometheus_write_endpoints` instead.
 
-## Variables
-
-You can look up all the default values of this role [here](defaults/main.yaml).
-
-### General
-
-| Name                                              | Mandatory | Default                                      | Description                                                                                                                                                                    |
-| ------------------------------------------------- | --------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| gardener_logging_alloy_enabled                    |           | `true`                                       | Deploy Alloy. Requires `gardener_logging_alloy_chart_version` and `gardener_logging_alloy_chart_repo`.                                                                         |
-| gardener_logging_alloy_chart_version              |           |                                              | Helm chart version for alloy (release vector)                                                                                                                                  |
-| gardener_logging_alloy_chart_repo                 |           |                                              | Repository for alloy (release vector)                                                                                                                                          |
-| gardener_logging_promtail_enabled                 |           | `false`                                      | Deploy Promtail (**deprecated**). When `false`, any existing Promtail release is removed automatically from the garden cluster and all seeds. Requires chart vars when `true`. |
-| gardener_logging_promtail_chart_version           |           |                                              | Helm chart version for promtail (release vector)                                                                                                                               |
-| gardener_logging_promtail_chart_repo              |           |                                              | Repository for promtail (release vector)                                                                                                                                       |
-| gardener_logging_namespace                        |           | `monitoring`                                 | Target namespace                                                                                                                                                               |
-| gardener_logging_garden_name                      |           | `{{ gardener_defaults_garden_name }}`        | Name of the garden cluster (used as `cluster=` label for the garden cluster Alloy deployment)                                                                                  |
-| gardener_logging_deploy_to_garden_cluster         |           | `true`                                       | Deploy Alloy also into the garden cluster                                                                                                                                      |
-| gardener_logging_shooted_seeds                    |           | `[]`                                         | List of shooted seeds to deploy Alloy into. Each entry: `{name: <seed-name>}`                                                                                                  |
-| gardener_logging_ingress_dns                      |           | `loki.{{ metal_control_plane_gateway_dns }}` | DNS for the loki ingress (used in `gardener_logging_alloy_loki_write_endpoints` examples and in the deprecated Promtail template)                                              |
-| gardener_logging_ingress_loki_basic_auth_user     |           | `promtail`                                   | Basic auth user for the external loki ingress (used in `gardener_logging_alloy_loki_write_endpoints` examples and in the deprecated Promtail template)                         |
-| gardener_logging_ingress_loki_basic_auth_password |           |                                              | Basic auth password for the external loki ingress. Used by the deprecated Promtail template and for configuring `gardener_logging_alloy_loki_write_endpoints`.                 |
-
-### Alloy
-
-| Name                                                     | Mandatory | Default | Description                                                                                                                                                                        |
-| -------------------------------------------------------- | --------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| gardener_logging_alloy_loki_write_endpoints              | yes\*     | `[]`    | List of Loki push endpoints. Required when `gardener_logging_alloy_enabled: true`. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}`               |
-| gardener_logging_alloy_prometheus_write_endpoints        |           | `[]`    | Prometheus remote_write endpoints for Alloy self-metrics. When empty, self-metrics are disabled. Each entry: `{url, remote_timeout?: duration, basic_auth?: {username, password}}` |
-| gardener_logging_alloy_prometheus_wal_truncate_frequency |           | `2h`    | How often the WAL is compacted                                                                                                                                                     |
-| gardener_logging_alloy_prometheus_wal_max_keepalive_time |           | `8h`    | Maximum time undelivered samples are kept in the WAL before being dropped                                                                                                          |
-| gardener_logging_alloy_config_raw                        |           |         | Full Alloy River config override for all targets. Bypasses all structured vars and the template.                                                                                   |
-
-All `gardener_logging_alloy_*` variables are explicitly mapped to their `logging_common_alloy_*` counterparts when calling [logging-common](../logging-common/). This is necessary because the two roles use different variable prefixes — the [logging role](../logging/) similarly maps its `logging_alloy_*` variables to `logging_common_alloy_*`.
-
 ## Migration from Promtail
 
 See the [logging-common migration guide](../logging-common/README.md#migration-from-promtail) for general guidance.
@@ -78,3 +44,48 @@ Alloy is deployed by default. Existing Promtail installations are automatically 
 | **Default**                | `true`                           | `false`                             | Alloy is deployed; existing Promtail releases are removed automatically from all targets.              |
 | **Parallel run**           | `true`                           | `true`                              | Both collectors ship logs. Loki receives duplicate entries. Deprecated — emits a warning on every run. |
 | **Promtail only** (legacy) | `false`                          | `true`                              | Deprecated — emits a warning on every run.                                                             |
+
+## Variables
+
+All `gardener_logging_alloy_*` variables are explicitly mapped to their `logging_common_alloy_*` counterparts when calling [logging-common](../logging-common/). This is necessary because the two roles use different variable prefixes — the [logging role](../logging/) similarly maps its `logging_alloy_*` variables to `logging_common_alloy_*`.
+
+This role depends on default values of [metal-roles/common/roles/defaults](https://github.com/metal-stack/metal-roles/common/roles/defaults).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](https://github.com/metal-stack/metal-roles/control-plane/roles/defaults).
+
+```yaml
+# Repository URL of the alloy helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+gardener_logging_alloy_chart_repo: null
+# Version of the alloy helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+gardener_logging_alloy_chart_version: null
+# Whether to deploy Alloy.
+gardener_logging_alloy_enabled: true
+# Loki push endpoints for Alloy. Each entry supports url, remote_timeout and basic_auth (username, password).
+gardener_logging_alloy_loki_write_endpoints: []
+# Maximum age of undelivered WAL samples before they are dropped.
+gardener_logging_alloy_prometheus_wal_max_keepalive_time: 8h
+# How often the Alloy remote_write WAL is compacted.
+gardener_logging_alloy_prometheus_wal_truncate_frequency: 2h
+# Prometheus remote_write endpoints for Alloy self-metrics.
+gardener_logging_alloy_prometheus_write_endpoints: []
+# Whether to deploy Alloy to the garden cluster.
+gardener_logging_deploy_to_garden_cluster: true
+# Name of the garden.
+gardener_logging_garden_name: '{{ gardener_defaults_garden_name }}'
+# Ingress DNS name of loki.
+gardener_logging_ingress_dns: loki.{{ metal_control_plane_gateway_dns }}
+# Basic auth password of the loki ingress.
+gardener_logging_ingress_loki_basic_auth_password: null
+# Basic auth user of the loki ingress.
+gardener_logging_ingress_loki_basic_auth_user: promtail
+# The namespace to deploy the logging components to.
+gardener_logging_namespace: monitoring
+# Repository URL of the promtail helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+gardener_logging_promtail_chart_repo: null
+# Version of the promtail helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+gardener_logging_promtail_chart_version: null
+# Whether to deploy Promtail (deprecated). Requires gardener_logging_promtail_chart_version and gardener_logging_promtail_chart_repo when enabled.
+gardener_logging_promtail_enabled: false
+# The shooted seeds to deploy the logging components to.
+gardener_logging_shooted_seeds: []
+```

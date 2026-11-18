@@ -9,15 +9,36 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 
 ## Variables
 
-| Name                                       | Mandatory | Description                                                                                  |
-| ------------------------------------------ | --------- | -------------------------------------------------------------------------------------------- |
-| gardener_gardenlet_garden_name             |           | The name of operator garden resource to derive the access kubeconfig for the virtual garden  |
-| gardener_gardenlet_helm_chart              |           | The ref to the helm oci artifact to deploy the gardenlet                                     |
-| gardener_gardenlet_helm_chart_tag          |           | The tag of the helm oci artifact to deploy the gardenlet                                     |
-| gardener_gardenlet_image_name              |           | The gardenlet container image name                                                           |
-| gardener_gardenlet_image_tag               |           | The gardenlet container image tag                                                            |
-| gardener_gardenlet_default_dns_domain      | true      | The dns of the default domain (and internal domain)                                          |
-| gardener_gardenlet_default_dns_provider    | true      | The dns provider of the default domain (and internal domain)                                 |
-| gardener_gardenlet_default_dns_credentials | true      | The dns provider credentials of the default domain (and internal domain)                     |
-| gardener_gardenlets                        |           | The configuration for the Gardenlets deployed into the Garden cluster                        |
-| gardener_gardenlet_defaults                |           | Defaults configuration for the Gardenlets (specific configuration overwrites these defaults) |
+This role depends on default values of [metal-roles/common/roles/defaults](../../../common/roles/defaults/README.md).
+
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../defaults/README.md).
+
+```yaml
+# REQUIRED: The credentials for the default DNS provider.
+gardener_gardenlet_default_dns_credentials: null
+# REQUIRED: The default DNS domain used for the seed DNS entries.
+gardener_gardenlet_default_dns_domain: null
+# REQUIRED: The default DNS provider used for the seed DNS entries.
+gardener_gardenlet_default_dns_provider: null
+# Default configuration merged into every gardenlet entry.
+gardener_gardenlet_defaults:
+  backup_entry_deletion_grace_period_hours: 72
+  component_image_vector_overwrite: []
+  feature_gates: {}
+  garden_client_connection: null
+  image_vector_overwrite: []
+  kubeconfigSecretRef: null
+  logging_enabled: false
+  logging_vali_enabled: false
+  logging_vali_storage: 100Gi
+  shoot_concurrent_syncs: 20
+  shoot_reconcile_in_maintenance_only: true
+  shoot_respect_sync_period_overwrite: true
+  vertical_pod_autoscaler_enabled: true
+# Name of the garden to deploy the gardenlets to.
+gardener_gardenlet_garden_name: '{{ gardener_defaults_garden_name }}'
+# Tag of the gardenlet helm chart. Derived from the gardenlet image tag of the release vector by default.
+gardener_gardenlet_helm_chart_tag: '{{ gardener_gardenlet_image_tag }}'
+# The gardenlets to deploy.
+gardener_gardenlets: []
+```

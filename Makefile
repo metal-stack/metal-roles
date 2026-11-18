@@ -1,3 +1,10 @@
+ifeq ($(CI),true)
+  DOCKER_RUN_ARG=-i
+else
+  DOCKER_RUN_ARG=-it
+endif
+
+
 .PHONY: test
 test:
 	python3 -m pip install mock

@@ -1,0 +1,23 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys the prometheus node-exporter in a systemd-managed Docker container
+    options:
+      monitoring_node_exporter_image_name:
+        type: str
+        description: Image name of the node-exporter.
+      monitoring_node_exporter_image_tag:
+        type: str
+        description: Image tag of the node-exporter.
+      monitoring_node_exporter_port:
+        type: int
+        description: Port the node-exporter listens on.
+      monitoring_node_exporter_dir:
+        type: str
+        description: Host directory used by the node-exporter.
+      monitoring_node_exporter_docker_log_driver:
+        type: str
+        description: Docker log driver for the node-exporter container.
+      monitoring_node_exporter_textfile_directory:
+        type: str
+        description: The textfile collector directory on the host.

@@ -1,0 +1,88 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys Zitadel as OIDC provider for the metal-stack control plane
+    options:
+      zitadel_chart_version:
+        type: str
+        description: Version of the zitadel helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      zitadel_chart_repo:
+        type: str
+        description: Repository URL of the zitadel helm chart. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      zitadel_image_tag:
+        type: str
+        description: Image tag of zitadel. Uses the chart default when unset.
+      zitadel_init_image_name:
+        type: str
+        description: Image name of the zitadel-metal-init job. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      zitadel_init_image_tag:
+        type: str
+        description: Image tag of the zitadel-metal-init job. Resolved from the metal-stack release vector via setup_yaml when not set explicitly.
+      zitadel_tools_kubectl_tag:
+        type: str
+        description: Image tag of the kubectl image used by the init job.
+      zitadel_endpoint:
+        type: str
+        description: The zitadel endpoint host name.
+      zitadel_namespace:
+        type: str
+        description: The namespace to deploy zitadel to.
+      zitadel_external_domain:
+        type: str
+        required: true
+        description: The external domain configured for the zitadel instance.
+      zitadel_ingress_dns:
+        type: str
+        description: The external URL of the zitadel ingress.
+      zitadel_ingress_annotations:
+        type: dict
+        description: Additional annotations for the zitadel ingress.
+      zitadel_port:
+        type: int
+        description: The port of the zitadel service.
+      zitadel_skip_verify_tls:
+        type: bool
+        description: Whether the init job skips TLS certificate verification.
+      zitadel_insecure:
+        type: bool
+        description: Whether zitadel runs in insecure (http) mode.
+      zitadel_tls_enabled:
+        type: bool
+        description: Whether TLS is enabled on the zitadel ingress.
+      zitadel_initial_instance:
+        type: str
+        description: Name of the initial zitadel instance.
+      zitadel_initial_org:
+        type: str
+        description: Name of the initial zitadel organization.
+      zitadel_admin_password:
+        type: str
+        no_log: true
+        description: Password of the initial zitadel admin user.
+      zitadel_master_key:
+        type: str
+        no_log: true
+        description: The zitadel master key (32 characters).
+      zitadel_db_address:
+        type: str
+        description: Address of the zitadel database.
+      zitadel_db_password:
+        type: str
+        no_log: true
+        description: Password of the zitadel database.
+      zitadel_enabled_ingress:
+        type: bool
+        description: Whether to create an ingress for zitadel.
+      zitadel_httproute_enabled:
+        type: bool
+        description: Whether to expose zitadel through a GatewayAPI HTTPRoute instead of an ingress.
+      zitadel_httproute_parent_refs:
+        type: list
+        elements: dict
+        description: Parent references for the zitadel HTTPRoute.
+      zitadel_init_config:
+        type: dict
+        description: Configuration for the zitadel-metal-init job (static users, project, application, generic OIDC providers).
+      zitadel_image_pull_policy:
+        type: str
+        description: Image pull policy for the zitadel containers.

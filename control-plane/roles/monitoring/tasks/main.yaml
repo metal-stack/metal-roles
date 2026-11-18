@@ -7,6 +7,8 @@
     fail_msg: "not all mandatory variables given, check role documentation"
     quiet: true
     that:
+      - metal_metrics_exporter_image_name is defined
+      - metal_metrics_exporter_image_tag is defined
       - rethinkdb_exporter_name is defined
       - rethinkdb_exporter_tag is defined
       - gardener_metrics_exporter_image_name is defined

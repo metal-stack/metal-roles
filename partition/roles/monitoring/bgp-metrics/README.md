@@ -8,7 +8,9 @@ metal-core configures FRR directly, bypassing the SONiC management framework, so
 
 ## Variables
 
-| Name                                       | Mandatory | Description                                |
-| ------------------------------------------ | --------- | ------------------------------------------ |
-| monitoring_bgp_metrics_textfile_directory  |           | node-exporter textfile collector directory |
-| monitoring_bgp_metrics_interval            |           | Interval of the bgp-metrics timer          |
+```yaml
+# The interval in which the BGP metrics are collected.
+monitoring_bgp_metrics_interval: 10s
+# The node-exporter textfile collector directory the metrics are written to.
+monitoring_bgp_metrics_textfile_directory: /var/lib/node_exporter/textfile
+```

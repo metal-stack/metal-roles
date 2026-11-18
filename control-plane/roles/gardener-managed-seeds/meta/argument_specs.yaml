@@ -1,0 +1,22 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys managed seeds into the garden
+    options:
+      gardener_managed_seeds_garden_name:
+        type: str
+        description: Name of the garden to deploy the managed seeds to.
+      gardener_managed_seed_default_dns_provider:
+        type: str
+        description: The default DNS provider used for the seed DNS entries.
+      gardener_managed_seed_default_dns_domain:
+        type: str
+        required: true
+        description: The default DNS domain used for the internal seed DNS entries.
+      gardener_managed_seeds:
+        type: list
+        elements: dict
+        description: The managed seeds to deploy.
+      gardener_managed_seed_defaults:
+        type: dict
+        description: Default configuration merged into every managed seed entry.

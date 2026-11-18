@@ -6,11 +6,17 @@ It depends on the `switch_facts` module from `ansible-common`, so make sure modu
 
 ## Variables
 
-| Name                     | Mandatory | Description                                                                                                         |
-| ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------- |
-| sonic_upgrade_host       | yes       | The host from which to download the image.                                                                          |
-| sonic_upgrade_image_path |           | The path to the image. If this is given and not `sonic_upgrade_host`, the image is pushed to the device by ansible. |
-| sonic_upgrade_vrf        |           | The vrf used for pulling the upgrade image.                                                                         |
-| sonic_upgrade_protocol   |           | The protocol (http or https) to use when downloading the sonic image.                                               |
-| sonic_upgrade_port       |           | The port on which the image server listens.                                                                         |
-| sonic_upgrade_image      | yes       | The file name of the sonic image.                                                                                   |
+```yaml
+# The host serving the SONiC image over HTTP. Mutually exclusive with sonic_upgrade_image_path (exactly one must be set).
+sonic_upgrade_host: null
+# REQUIRED: The filename of the SONiC image to install.
+sonic_upgrade_image: null
+# The directory on the switch containing the SONiC image. Mutually exclusive with sonic_upgrade_host (exactly one must be set).
+sonic_upgrade_image_path: null
+# The port used for downloading the image.
+sonic_upgrade_port: 8080
+# The protocol used for downloading the image.
+sonic_upgrade_protocol: http
+# The VRF in which the image download is executed.
+sonic_upgrade_vrf: mgmt
+```
