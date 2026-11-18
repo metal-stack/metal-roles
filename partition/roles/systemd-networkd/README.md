@@ -47,37 +47,39 @@ This role can deploy on bare metal machines with Debian or Almalinux. It depends
 | systemd_networkd_vlans.vrf                  |           | The VRF to bind this VLAN to.                                                                       |
 | systemd_networkd_dummies                    |           | An array of dummy interfaces to be configured.                                                      |
 | systemd_networkd_dummies.name               |           | The name of this dummy interface.                                                                   |
-| systemd_networkd_dummies.addresses          |           | array of IP addresses for this dummy interface in CIDR notation.                                    |
+| systemd_networkd_dummies.vrf                |           | The VRF to bind this interface to.                                                                  |
+| systemd_networkd_dummies.addresses          |           | Array of IP addresses for this dummy interface in CIDR notation.                                    |
 
 ## Examples
 
 ```yaml
 systemd_network_nics:
-- name: lo
-  addresses:
-  - 127.0.0.1/8
-  - 10.1.253.61/32
-- name: mgmt
-  mac: 3c:ec:ef:fe:93:88
-  dhcp: true
-  vrf: vrfManagement
-- name: prod01
-  mac: 6c:fe:54:40:59:70
-  vxlans:
-  - vni104000
-- name: prod02
-  mac: 6c:fe:54:40:59:71
-  vxlans:
-  - vni104000
+  - name: lo
+    addresses:
+      - 127.0.0.1/8
+      - 10.1.253.61/32
+  - name: mgmt
+    mac: 3c:ec:ef:fe:93:88
+    dhcp: true
+    vrf: vrfManagement
+  - name: prod01
+    mac: 6c:fe:54:40:59:70
+    vxlans:
+      - vni104000
+  - name: prod02
+    mac: 6c:fe:54:40:59:71
+    vxlans:
+      - vni104000
 
 systemd_network_vrfs:
-- name: vrfManagement
-  table: 1000
+  - name: vrfManagement
+    table: 1000
 
 systemd_networkd_dummies:
-- name: metallb
-  addresses:
-  - 169.254.254.1/30
-  - 169.254.254.2/30
-- name: k3s-vip
+  - name: metallb
+    addresses:
+      - 169.254.254.1/30
+      - 169.254.254.2/30
+  - name: k3s-vip
+    vrf: vrfK3s
 ```
