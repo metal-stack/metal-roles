@@ -66,6 +66,13 @@
     path: "/etc/systemd/system/multi-user.target.wants/{{ dhcp_docker_service_name }}.service"
     state: absent
 
+- name: Upload dhcpd docker image
+  ansible.builtin.include_role:
+    name: ansible-common/roles/push-oci-image
+  vars:
+    push_oci_image_name: "{{ dhcp_docker_image_name }}"
+    push_oci_image_tag: "{{ dhcp_docker_image_tag }}"
+
 - name: Deploy dhcpd
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -81,6 +88,7 @@
     systemd_docker_image_tag: "{{ dhcp_docker_image_tag }}"
     systemd_service_timeout_start_sec: 60
     systemd_docker_memory: 256m
+    systemd_docker_pre_pull: false
     # dhcp requires access to the host's networking stack to receive broadcasts on the listening interfaces
     systemd_docker_network: host
     systemd_docker_volumes:
