@@ -85,6 +85,26 @@
   loop_control:
     index_var: i
 
+- name: Render systemd-networkd dummy netdev config
+  ansible.builtin.template:
+    src: dummy.netdev.j2
+    dest: "/etc/systemd/network/{{ i + 81 }}-{{ item.name }}.netdev"
+    mode: "0644"
+  notify: Restart systemd-networkd
+  loop: "{{ systemd_networkd_dummies }}"
+  loop_control:
+    index_var: i
+
+- name: Render systemd-networkd dummy network config
+  ansible.builtin.template:
+    src: network.j2
+    dest: "/etc/systemd/network/{{ i + 81 }}-{{ item.name }}.network"
+    mode: "0644"
+  notify: Restart systemd-networkd
+  loop: "{{ systemd_networkd_dummies }}"
+  loop_control:
+    index_var: i
+
 - name: Import tasks for VXLANs
   ansible.builtin.import_tasks: vxlans.yaml
   when: systemd_networkd_vxlans
