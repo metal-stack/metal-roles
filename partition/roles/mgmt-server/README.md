@@ -30,6 +30,7 @@ Configures a server to act as management server for a metal-stack partition.
 | mgmt_server_evpn                            | no        | activate EVPN for the specified peers.                                                                              |
 | mgmt_server_masquerade_interfaces           | no        | the interfaces on which egressing traffic is masqueraded.                                                           |
 | mgmt_server_masquerade_exclude_destinations | no        | what is exempted from masquerading, see [Masquerading](#masquerading).                                              |
+| mgmt_server_import_vrfs                     | no        | VRFs to import into default VRF.                                                                                    |
 
 ## EVPN
 
@@ -54,13 +55,10 @@ mgmt_server_vrfs:
     bgp_timers: 1 3
     unnumbered_interfaces:
       - vlan11
-    # FIXME: this is just a quick fix. Think of a more flexible solution.
-    evpn_neighbors:
-      # unnumbered neighbors must include the `interface` suffix
-      - lan1 interface
-      - 10.100.100.1
     announcements:
       - redistribute connected
+    import_vrfs:
+      - default
     routemap_out:
       name: RM_ACP_OUT
       entries:

@@ -65,6 +65,9 @@ router bgp {{ mgmt_server_asn }}
   {% if mgmt_server_provide_default_route %}
   network 0.0.0.0/0
   {% endif %}
+  {% for vrf in mgmt_server_import_vrfs | default([]) %}
+  import vrf {{ vrf }}
+  {% endfor %}
  exit-address-family
  !
  address-family l2vpn evpn
@@ -85,13 +88,13 @@ router bgp {{ mgmt_server_asn }} vrf {{ vrf.name }}
  {% for iface in vrf.unnumbered_interfaces | default([]) %}
  neighbor {{ iface }} interface peer-group FABRIC
  {% endfor %}
- {% for neigh in vrf.evpn_neighbors | default([]) %}
- neighbor {{ neigh }} peer-group FABRIC
- {% endfor %}
  !
  address-family ipv4 unicast
   {% for a in vrf.announcements | default(['redistribute connected']) %}
   {{ a }}
+  {% endfor %}
+  {% for v in vrf.import_vrfs | default([]) %}
+  import vrf {{ v }}
   {% endfor %}
   {% if vrf.routemap_out is defined %}
   neighbor FABRIC route-map {{ vrf.routemap_out.name }} out
