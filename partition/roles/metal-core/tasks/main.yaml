@@ -105,7 +105,9 @@
     systemd_docker_command: "{{ ['vrf', 'exec', metal_core_vrf, '/metal-core'] if metal_core_vrf != 'default' }}"
     systemd_docker_pre_pull: false
 - name: Wait for metal-core to listen on metrics port
-  ansible.builtin.wait_for:
-    port: 2112
-    timeout: 300
-    msg: "metal-core did not come up"
+  ansible.builtin.command: ss -Hltn sport = :2112
+  register: _metal_core_metrics_listener
+  until: _metal_core_metrics_listener.stdout | length > 0
+  retries: 60
+  delay: 5
+  changed_when: false
