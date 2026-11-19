@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart dhcpd if it lost the socket of a listening interface
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/dhcpd-socket-check.sh
