@@ -50,3 +50,6 @@ gardener_extension_provider_metal_firewall_internal_prefixes: []
 gardener_extension_provider_metal_additional_network_policies:
   # ingress_controller:
   #     enabled: true
+  #     namespace: ingress-nginx
+  #     pod_selector:
+  #       app.kubernetes.io/name: ingress-nginx
