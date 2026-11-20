@@ -6,7 +6,8 @@
   ansible.builtin.assert:
     quiet: true
     that:
-      - sonic_config_loopback_address
+      - sonic_config_loopback_address is defined
+      - sonic_config_loopback_address | length > 0
 
 - name: Check mandatory variables for frr.conf are set
   ansible.builtin.assert:
