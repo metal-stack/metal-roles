@@ -137,6 +137,10 @@ metal_stack_release:
     prometheus_image_name: "docker-images.third-party.partition.prometheus.name"
     promtail_image_tag: "docker-images.third-party.partition.promtail.tag"
     promtail_image_name: "docker-images.third-party.partition.promtail.name"
+    sflow_collector_image_tag: "docker-images.third-party.partition.goflow2.tag"
+    sflow_collector_image_name: "docker-images.third-party.partition.goflow2.name"
+    sflow_collector_vector_image_tag: "docker-images.third-party.partition.vector.tag"
+    sflow_collector_vector_image_name: "docker-images.third-party.partition.vector.name"
     ztp_nginx_image_tag: "docker-images.third-party.partition.ztp-nginx.tag"
     ztp_nginx_image_name: "docker-images.third-party.partition.ztp-nginx.name"
     # third-party gardener

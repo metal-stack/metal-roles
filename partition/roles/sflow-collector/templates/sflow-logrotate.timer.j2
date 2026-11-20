@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodic rotation of the goflow2 sFlow spool
+
+[Timer]
+OnBootSec={{ sflow_collector_logrotate_interval }}
+OnUnitActiveSec={{ sflow_collector_logrotate_interval }}
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target
