@@ -10,6 +10,7 @@ on:
   push:
     branches:
       - master
+      - feat/dhcp-docker-role
 
 env:
   REGISTRY: ghcr.io
