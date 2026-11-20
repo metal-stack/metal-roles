@@ -45,6 +45,106 @@
   loop_control:
     label: "{{ item.name }}"
 
+- name: Create BISDN switch directories
+  ansible.builtin.file:
+    path: "{{ ztp_host_dir_path }}/config/bisdn/{{ item }}"
+    mode: "0755"
+    state: directory
+  loop: "{{ ztp_bisdn_switches | list }}"
+
+# same breakout.conf as the bisdn-config role renders; FEC needs the port
+# speeds of the generated config.bcm and is left to bisdn-config
+- name: Render BISDN breakout configurations
+  ansible.builtin.template:
+    src: "{{ role_path }}/../bisdn-config/templates/breakout.conf.j2"
+    dest: "{{ ztp_host_dir_path }}/config/bisdn/{{ item.key }}/breakout.conf"
+    mode: "0644"
+  vars:
+    # bisdn_breakouts: filter_plugins/bisdn_ports.py, a link to bisdn-config's
+    _bisdn_config_breakouts: "{{ item.value.breakouts | default({}) | bisdn_breakouts }}"
+  loop: "{{ ztp_bisdn_switches | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Serve ofdpa-breakout
+  ansible.builtin.copy:
+    src: "{{ role_path }}/../bisdn-config/files/ofdpa-breakout"
+    dest: "{{ ztp_host_dir_path }}/config/bisdn/ofdpa-breakout"
+    mode: "0644"
+  when: ztp_bisdn_switches | length > 0
+
+- name: Render BISDN first-boot script
+  ansible.builtin.template:
+    src: bisdn-ztp.sh.j2
+    dest: "{{ ztp_host_dir_path }}/config/bisdn-ztp.sh"
+    mode: "0644"
+  when: ztp_bisdn_switches | length > 0
+
+- name: Build BISDN Linux ONIE installer with integrated install config
+  when: ztp_bisdn_installer_url
+  block:
+    - name: Check mandatory variables for the BISDN installer are set
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - ztp_bisdn_installer_checksum
+          - ztp_authorized_keys | length > 0
+
+    # BISDN's parser cuts the variable name at the last "=" of a line, so a
+    # hash with "=" (e.g. sha512 with rounds=) would be ignored silently.
+    - name: Check that the basebox password hash has no "="
+      ansible.builtin.assert:
+        quiet: true
+        fail_msg: "ztp_bisdn_password_hash must not contain '=' (BISDN's install config parser cuts at it); create it without rounds=, e.g. mkpasswd -m sha-512"
+        that:
+          - "'=' not in (ztp_bisdn_password_hash | default('', true))"
+
+    - name: Create BISDN installer directory
+      ansible.builtin.file:
+        path: "{{ ztp_host_dir_path }}/bisdn"
+        mode: "0755"
+        state: directory
+
+    - name: Download BISDN Linux ONIE installer
+      ansible.builtin.get_url:
+        url: "{{ ztp_bisdn_installer_url }}"
+        dest: "{{ ztp_host_dir_path }}/bisdn/vendor.bin"
+        checksum: "{{ ztp_bisdn_installer_checksum }}"
+        mode: "0644"
+      register: ztp_bisdn_vendor_installer_result
+
+    # The installer reads everything after its last conf_marker line as
+    # integrated install config; its checksum only covers the payload before.
+    - name: Check that the BISDN installer ends with a conf_marker line
+      ansible.builtin.command: tail -c 12 "{{ ztp_host_dir_path }}/bisdn/vendor.bin"
+      register: ztp_bisdn_installer_tail_result
+      changed_when: false
+      failed_when: ztp_bisdn_installer_tail_result.stdout != "conf_marker"
+
+    - name: Render BISDN install config
+      ansible.builtin.template:
+        src: bisdn-install.conf.j2
+        dest: "{{ ztp_host_dir_path }}/bisdn/install.conf"
+        mode: "0644"
+      register: ztp_bisdn_install_conf_result
+
+    - name: Check whether the BISDN installer was built before
+      ansible.builtin.stat:
+        path: "{{ ztp_host_dir_path }}/config/{{ ztp_bisdn_installer_name }}"
+      register: ztp_bisdn_installer_result
+
+    - name: Append the install config to the BISDN installer
+      ansible.builtin.shell: >-
+        set -o pipefail &&
+        cat "{{ ztp_host_dir_path }}/bisdn/vendor.bin" "{{ ztp_host_dir_path }}/bisdn/install.conf"
+        > "{{ ztp_host_dir_path }}/config/{{ ztp_bisdn_installer_name }}.tmp" &&
+        chmod 0644 "{{ ztp_host_dir_path }}/config/{{ ztp_bisdn_installer_name }}.tmp" &&
+        mv "{{ ztp_host_dir_path }}/config/{{ ztp_bisdn_installer_name }}.tmp" "{{ ztp_host_dir_path }}/config/{{ ztp_bisdn_installer_name }}"
+      args:
+        executable: /bin/bash
+      changed_when: true
+      when: ztp_bisdn_vendor_installer_result is changed or ztp_bisdn_install_conf_result is changed or not ztp_bisdn_installer_result.stat.exists
+
 - name: Deploy server for serving ztp files
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service

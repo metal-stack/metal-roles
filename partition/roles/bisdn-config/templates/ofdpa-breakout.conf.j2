@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# Applies /etc/ofdpa/breakout.conf to the platform config.bcm before every
+# ofdpa start, also after a BISDN upgrade replaced it. "-": an error (logged in
+# the journal) never keeps ofdpa from starting; it then uses the last config.bcm.
+[Service]
+ExecStartPre=-/usr/sbin/ofdpa-breakout apply

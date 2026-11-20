@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+# OF-DPA user configuration, loaded by /usr/share/ofdpa/rc.soc when ofdpa starts.
+# FEC per port; "phy control <n>" takes the front panel number n of port<n>.
+{% for f in _bisdn_config_fec %}
+# {{ f.port }}: {{ f.fec }} at {{ f.speed }}G
+phy control {{ f.panel }} {{ f.clause }}=true
+{% endfor %}
+# last command needs to be exit
+exit

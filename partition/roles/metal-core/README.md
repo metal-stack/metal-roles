@@ -2,7 +2,9 @@
 
 Deploys metal-core in a systemd-managed Docker container.
 
-This role can deploy on switches running Cumulus Linux or SONiC. It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
+This role can deploy on switches running Cumulus Linux, SONiC or BISDN Linux. It depends on the `switch_facts` module from `ansible-common`, so make sure modules from `ansible-common` are included before executing this role.
+
+On BISDN Linux, metal-core renders systemd-networkd files and `frr.conf` (validated by the `frr-validation@` unit this role installs, reloaded via `frr.service`), uses `enp0` as management interface and sends LLDP for metal-hammer itself (`METAL_CORE_LLDP_SEND`). Run the [bisdn-config](../bisdn-config) role first; set `metal_core_spine_uplinks` to the fabric ports (e.g. `port31,port32`), since metal-core's default is Cumulus' `swp31,swp32`.
 
 ## Variables
 
@@ -40,4 +42,5 @@ You can look up all the default values of this role [here](defaults/main.yaml).
 | metal_core_frr_tpl_file                   |           | The golang template file to use for rendering `/etc/frr/frr.conf`. If this is left blank the default template shipped with metal-core will be used.                                                          |
 | metal_core_pxe_vlan_id                    |           | The VLAN ID for the PXE machines. Defaults to `4000`.                                                                                                                                                        |
 | metal_core_additional_volume_mounts       |           | Volumes to mount into the metal-core, besides the default ones                                                                                                                                               |
+| metal_core_management_interface           |           | The management interface. Empty for the NOS default: `eth0`, on BISDN Linux `enp0`.                                                                                                                          |
 | metal_core_interface_naming_schema        |           | Naming schema defines how metal-core should report its NIC names and aliases. One of `default\|swap\|name\|alias`. Read more about it in the [metal-core README](https://github.com/metal-stack/metal-core). |

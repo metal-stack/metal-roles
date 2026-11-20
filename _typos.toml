@@ -12,6 +12,9 @@ cacl = "cacl"
 CLOS = "CLOS"
 Sover = "Sover"
 syncd = "syncd"
+# Open Network Linux, the platform layer of BISDN Linux (/etc/onl/platform)
+onl = "onl"
+ONL = "ONL"
 
 [files]
 extend-exclude = []

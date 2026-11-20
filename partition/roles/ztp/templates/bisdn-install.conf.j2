@@ -1,0 +1,14 @@
+# install-config 1.0
+# {{ ansible_managed }}
+# Integrated install config of the BISDN Linux ONIE installer
+# (installer/install.sh, parse_config), applied on fresh installs only.
+KEEP_CONFIG={{ 'true' if ztp_bisdn_keep_config else 'false' }}
+{% if ztp_bisdn_password_hash %}
+DEFAULT_PASSWORD="{{ ztp_bisdn_password_hash }}"
+{% endif %}
+{# The parser takes the variable name up to the last "=" of a line, so keys
+   (base64 may end in "=") start on the line after the name. #}
+AUTHORIZED_SSH_KEYS="\
+{% for key in ztp_authorized_keys %}
+{{ key }}{{ '"' if loop.last else '\\' }}
+{% endfor %}
