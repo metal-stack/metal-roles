@@ -149,7 +149,7 @@ Check out the Gardener project for further documentation on [gardener.cloud](htt
 | gardener_extension_provider_metal_firewall_internal_prefixes      |           | Configures the firewall deployment with these prefixes counted as internal prefixes (e.g. for accounting)                                            |
 | gardener_extension_provider_metal_admission_default_pods_cidr     |           | Configures the default pod CIDR of a shoot                                                                                                           |
 | gardener_extension_provider_metal_admission_default_services_cidr |           | Configures the default service CIDR of a shoot                                                                                                       |
-| gardener_extension_provider_metal_additional_network_policies     |           | Adds extra network policies when the metal-stack control plane (exposed through ingress-nginx) is running in the same cluster as the Garden cluster. |
+| gardener_extension_provider_metal_additional_network_policies     |           | Adds extra network policies when the metal-stack control plane (exposed through ingress-nginx) is running in the same cluster as the Garden cluster. The `ingress_controller` key takes `enabled`, plus optional `namespace` and `pod_selector` to select the ingress controller pods (defaults from the chart: `ingress-nginx` / `app.kubernetes.io/name: ingress-nginx`). This also works for a Gateway API implementation (e.g. Envoy Gateway) by pointing `namespace` and `pod_selector` at the gateway pods. |
 
 ### shoot-cert-service
 
