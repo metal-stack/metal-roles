@@ -26,6 +26,7 @@ This role can deploy on bare metal machines with Debian or Almalinux. It depends
 | systemd_networkd_nics.ipv6_send_ra          |           | Whether or not to send IPv6 router advertisement on a link.                                         |
 | systemd_networkd_nics.addresses             |           | array of IP addresses for the interfaces in CIDR notation.                                          |
 | systemd_networkd_nics.gateways              |           | array of Gateways IPs for the interfaces.                                                           |
+| systemd_networkd_nics.gateway_metric        |           | The metric to apply to the routes via `gateways`.                                                   |
 | systemd_networkd_nics.vrf                   |           | The VRF to bind this interface to.                                                                  |
 | systemd_networkd_nics.vxlans                |           | array of VXLANs to terminate on a physical interface.                                               |
 | systemd_networkd_nics.vlans                 |           | array of VLANs to attach to a network.                                                              |
