@@ -87,7 +87,7 @@
 
 - name: Import tasks for VXLANs
   ansible.builtin.import_tasks: vxlans.yaml
-  when: systemd_networkd_vxlans
+  when: systemd_networkd_vxlans | length > 0
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
