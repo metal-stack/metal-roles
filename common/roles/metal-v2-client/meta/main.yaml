@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal-v2-client
   author: metal-stack
   description: Installs the metal-stack v2 client library.
   license: MIT

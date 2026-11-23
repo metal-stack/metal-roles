@@ -10,9 +10,11 @@
 
 - name: Add dhcp relay interface
   ansible.builtin.command: net add dhcp relay interface {{ dhcp_relay_interface }}
+  changed_when: true
 
 - name: Remove priorly configured dhcp relay servers
   ansible.builtin.command: net del dhcp relay server
+  changed_when: true
 
 - name: Listify dhcp relays servers
   ansible.builtin.set_fact:
@@ -20,7 +22,9 @@
 
 - name: Add dhcp relay server
   ansible.builtin.command: net add dhcp relay server {{ item }}
+  changed_when: true
   loop: "{{ _dhcp_relay_servers }}"
 
 - name: Commit configuration
   ansible.builtin.command: net commit
+  changed_when: true

@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: image-cache
   author: metal-stack
   description: Deploys an image cache to a partition.
   license: MIT
@@ -12,6 +11,7 @@ galaxy_info:
         - all
 
 dependencies:
+  - role: metal-ansible-modules
   - role: ansible-common
   - role: metal-roles/common/roles/defaults
   - role: metal-roles/partition/roles/defaults

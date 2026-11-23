@@ -13,12 +13,17 @@
       - image_cache_haproxy_image_name is defined
       - image_cache_sync_image_tag is defined
       - image_cache_sync_image_name is defined
-      - image_cache_sync_metal_api_endpoint is not none
-      - image_cache_sync_metal_api_view_hmac is not none
+      - image_cache_sync_metal_apiserver_url is not none
+      - image_cache_sync_metal_apiserver_token is not none
+
+- name: Create metal-apiserver tokens
+  ansible.builtin.import_tasks: token.yaml
 
 - name: Setup CoreDNS
   ansible.builtin.import_tasks: coredns.yaml
+
 - name: Setup image-sync
   ansible.builtin.import_tasks: image-sync.yaml
+
 - name: Setup haproxy
   ansible.builtin.import_tasks: haproxy.yaml

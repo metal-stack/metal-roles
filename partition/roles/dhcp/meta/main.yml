@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: dhcp
   author: metal-stack
   description: Configures and starts dhcpd.
   license: MIT

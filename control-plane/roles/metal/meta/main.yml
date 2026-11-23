@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal
   author: metal-stack
   description: This role basically deploys the metal-control-plane.
   license: MIT
@@ -13,5 +12,6 @@ galaxy_info:
 
 dependencies:
   - role: ansible-common
+  - role: metal-ansible-modules
   - role: metal-roles/common/roles/defaults
   - role: metal-roles/control-plane/roles/defaults

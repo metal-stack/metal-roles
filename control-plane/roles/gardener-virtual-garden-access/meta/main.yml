@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: gardener-virtual-garden-access
   author: metal-stack
   description: Deploys a managed resource for accessing the virtual garden.
   license: MIT

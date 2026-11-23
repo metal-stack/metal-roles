@@ -14,10 +14,17 @@ Please note that the created token has admin privileges by nature and expires af
 
 ## Variables
 
-You can look up all the default values of this role [here](defaults/main.yaml).
+This role depends on default values of [metal-roles/common/roles/defaults](../defaults/README.md).
 
-| Name                                    | Mandatory | Description                                               |
-| --------------------------------------- | --------- | --------------------------------------------------------- |
-| metal_deployment_token_secret_name      |           | The secret name in which the admin token gets stored      |
-| metal_deployment_token_secret_namespace |           | The secret namespace in which the admin token gets stored |
-| metal_deployment_token_secret_key       |           | The secret key under which the admin token gets stored    |
+This role depends on default values of [metal-roles/control-plane/roles/defaults](../../../control-plane/roles/defaults/README.md).
+
+```yaml
+# The admin token to use for deployment. When unset, it is read from the referenced secret.
+metal_deployment_admin_token: null
+# Key within the secret data that contains the token.
+metal_deployment_token_secret_key: admin_editor_token
+# Name of the secret containing the metal-apiserver admin token.
+metal_deployment_token_secret_name: metal-apiserver-admin-token
+# Namespace of the secret containing the metal-apiserver admin token.
+metal_deployment_token_secret_namespace: '{{ metal_control_plane_namespace }}'
+```

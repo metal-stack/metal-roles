@@ -15,11 +15,59 @@ monitoring_gnmic_prometheus_port: 9102
 # monitoring_gnmic_ports: [Ethernet0, Ethernet4]
 # monitoring_gnmic_temperature_sensors: ["CPU On-board", "ASIC On-board"]
 # monitoring_gnmic_fans: [fan1, fan2]
+# monitoring_gnmic_psus: ["PSU 1", "PSU 2"]
 # monitoring_gnmic_crm_acl_tables: ["INGRESS:PORT", "EGRESS:LAG"]
+# monitoring_gnmic_transceiver_tables: [TRANSCEIVER_INFO, TRANSCEIVER_DOM_SENSOR, TRANSCEIVER_DOM_THRESHOLD]
 monitoring_gnmic_ports: []
 monitoring_gnmic_temperature_sensors: []
 monitoring_gnmic_fans: []
+monitoring_gnmic_psus: []
 monitoring_gnmic_crm_acl_tables: []
+monitoring_gnmic_transceiver_tables: []
+# Queue name to counter OID map, e.g.:
+# monitoring_gnmic_queues: {"Ethernet0:0": "oid:0x15000000000123"}
+monitoring_gnmic_queues: {}
+
+monitoring_gnmic_port_counters:
+  - IF_IN_OCTETS
+  - IF_OUT_OCTETS
+  - ETHER_STATS_CRC_ALIGN_ERRORS
+  - IF_IN_ERRORS
+  - IF_IN_DISCARDS
+  - IN_DROPPED_PKTS
+  - PAUSE_RX_PKTS
+  - IF_OUT_ERRORS
+  - IF_OUT_DISCARDS
+  - PAUSE_TX_PKTS
+  - IF_IN_UCAST_PKTS
+  - IF_IN_BROADCAST_PKTS
+  - IF_IN_MULTICAST_PKTS
+  - IF_OUT_UCAST_PKTS
+  - IF_OUT_BROADCAST_PKTS
+  - IF_OUT_MULTICAST_PKTS
+  - ETHER_IN_PKTS_64_OCTETS
+  - ETHER_IN_PKTS_65_TO_127_OCTETS
+  - ETHER_IN_PKTS_128_TO_255_OCTETS
+  - ETHER_IN_PKTS_256_TO_511_OCTETS
+  - ETHER_IN_PKTS_512_TO_1023_OCTETS
+  - ETHER_IN_PKTS_1024_TO_1518_OCTETS
+  - ETHER_IN_PKTS_1519_TO_2047_OCTETS
+  - ETHER_IN_PKTS_2048_TO_4095_OCTETS
+  - ETHER_IN_PKTS_4096_TO_9216_OCTETS
+  - ETHER_IN_PKTS_9217_TO_16383_OCTETS
+  - ETHER_OUT_PKTS_64_OCTETS
+  - ETHER_OUT_PKTS_65_TO_127_OCTETS
+  - ETHER_OUT_PKTS_128_TO_255_OCTETS
+  - ETHER_OUT_PKTS_256_TO_511_OCTETS
+  - ETHER_OUT_PKTS_512_TO_1023_OCTETS
+  - ETHER_OUT_PKTS_1024_TO_1518_OCTETS
+  - ETHER_OUT_PKTS_1519_TO_2047_OCTETS
+  - ETHER_OUT_PKTS_2048_TO_4095_OCTETS
+  - ETHER_OUT_PKTS_4096_TO_9216_OCTETS
+  - ETHER_OUT_PKTS_9217_TO_16383_OCTETS
+
+# Not every SONiC distribution populates STATE_DB SYSTEM_READY, discovered when left unset
+monitoring_gnmic_system_ready: null
 
 # Subscription names as defined in gnmic.yaml.j2, e.g.:
 # monitoring_gnmic_disabled_subscriptions: [state-vxlan, counters-crm-acl]
@@ -31,4 +79,4 @@ monitoring_gnmic_sample_interval_counters: 30s
 monitoring_gnmic_sample_interval_state: 60s
 monitoring_gnmic_sample_interval_config: 60s
 
-monitoring_gnmic_heartbeat_interval: 300s
+monitoring_gnmic_heartbeat_interval: 120s

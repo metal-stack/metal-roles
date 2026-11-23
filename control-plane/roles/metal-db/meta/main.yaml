@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: metal-db
   author: metal-stack
   description: Deploys a database for the metal-api.
   license: MIT

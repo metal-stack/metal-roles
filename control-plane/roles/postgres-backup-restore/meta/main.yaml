@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: postgres-backup-restore
   author: metal-stack
   description: Deploys a postgres database including the backup-restore-sidecar container.
   license: MIT

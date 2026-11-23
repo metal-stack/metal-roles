@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: alloy
   author: metal-stack
   description: Deploys alloy.
   license: MIT

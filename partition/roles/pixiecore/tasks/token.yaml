@@ -1,0 +1,53 @@
+---
+- name: Create api token for pixiecore
+  delegate_to: localhost
+  environment:
+    METAL_APIV2_URL: "{{ pixiecore_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ pixiecore_deployment_admin_token }}"
+  block:
+    - name: Create metal-hammer tenant
+      run_once: true
+      metal_v2_admin_tenant:
+        identifier: "{{ pixiecore_metal_hammer_tenant }}"
+        name: metal-hammer
+        description: tenant used by the metal-hammer service during machine provisioning
+        labels:
+          tenant.metal-stack.io/machine-bootstrapper: ""
+      register: _metal_hammer_tenant
+
+    - name: Create pixiecore tenant
+      run_once: true
+      metal_v2_admin_tenant:
+        identifier: pixiecore
+        name: pixiecore
+        description: tenant used by the pixiecore service in the metal-stack partitions
+      register: _tenant
+
+    - name: Create token
+      metal_v2_admin_token:
+        identifier: pixiecore-{{ inventory_hostname }}
+        use_latest_identifier: true
+        user: "{{ _tenant.id }}"
+        description: "pixiecore token {{ inventory_hostname }} in partition {{ metal_partition_id }}"
+        expires: "{{ pixiecore_token_expiration }}"
+        permissions: "{{ pixiecore_permissions }}"
+        infra_role: "{{ pixiecore_infra_role }}"
+        machine_roles: "{{ pixiecore_machine_roles }}"
+      register: _token
+
+- name: Write token to file
+  when: '"secret" in _token'
+  block:
+    - name: Create pixiecore directory
+      ansible.builtin.file:
+        path: "{{ pixiecore_etc_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Write token to filesystem
+      ansible.builtin.copy:
+        content: "{{ _token.secret }}"
+        dest: "{{ pixiecore_etc_dir }}/{{ pixiecore_metal_apiserver_token_filename }}"
+        mode: "0600"

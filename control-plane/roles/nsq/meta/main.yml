@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: nsq
   author: metal-stack
   description: Deploys nsq in a standalone configuration.
   license: MIT

@@ -15,6 +15,13 @@ prometheus:
 {% endfor %}
 {% endif %}
 
+  route:
+    main:
+      enabled: {{ monitoring_prometheus_httproute_enabled | lower }}
+      hostnames:
+        - {{ monitoring_prometheus_gateway_dns }}
+      parentRefs: {{ monitoring_prometheus_httproute_parent_refs | to_json }}
+
   prometheusSpec:
 
     ruleSelectorNilUsesHelmValues: false
@@ -90,7 +97,7 @@ grafana:
       url: http://thanos-query-frontend:9090
 {% endif %}
   ingress:
-    enabled: true
+    enabled: {{ monitoring_grafana_ingress_enabled | lower }}
     ingressClassName: nginx
     hosts:
       - {{ monitoring_grafana_ingress_dns }}
@@ -120,6 +127,13 @@ grafana:
   plugins:
     - camptocamp-prometheus-alertmanager-datasource
 {% endif %}
+
+  route:
+    main:
+      enabled: {{ monitoring_grafana_httproute_enabled | lower }}
+      hostnames:
+        - {{ monitoring_grafana_gateway_dns }}
+      parentRefs: {{ monitoring_grafana_httproute_parent_refs | to_json }}
 
 prometheusOperator:
   enabled: {{ monitoring_prometheus_operator_enabled }}
@@ -163,13 +177,26 @@ alertmanager:
 {% if monitoring_alertmanager_ingress_basic_auth_password %}
       nginx.ingress.kubernetes.io/auth-type: basic
       nginx.ingress.kubernetes.io/auth-secret: alertmanager-basic-auth
+{% endif %}
 
+{% if monitoring_alertmanager_ingress_basic_auth_password %}
   extraSecret:
     name: alertmanager-basic-auth
     data:
+      # for envoy gateway, only supports sha1
+      .htpasswd: |
+        {{ monitoring_alertmanager_ingress_basic_auth_user }}:{SHA}{{ lookup('pipe', 'printf %s ' ~ (monitoring_alertmanager_ingress_basic_auth_password | quote) ~ ' | openssl dgst -sha1 -binary | base64') }}
+      # for ingress-nginx
       auth: |
         {{ monitoring_alertmanager_ingress_basic_auth_user }}:{{ monitoring_alertmanager_ingress_basic_auth_password | string | password_hash('bcrypt', salt=monitoring_alertmanager_ingress_basic_auth_password_salt) }}
 {% endif %}
+
+  route:
+    main:
+      enabled: {{ monitoring_alertmanager_httproute_enabled | lower }}
+      hostnames:
+        - {{ monitoring_alertmanager_gateway_dns }}
+      parentRefs: {{ monitoring_alertmanager_httproute_parent_refs | to_json }}
 
   alertmanagerSpec:
     logLevel: debug

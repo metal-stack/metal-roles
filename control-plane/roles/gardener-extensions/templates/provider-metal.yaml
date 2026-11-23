@@ -56,6 +56,15 @@ spec:
 {% if 'ingress_controller' in gardener_extension_provider_metal_additional_network_policies %}
           networkPolicies:
             enabled: {{ gardener_extension_provider_metal_additional_network_policies.ingress_controller.enabled | lower }}
+{% if gardener_extension_provider_metal_additional_network_policies.ingress_controller.namespace is defined or gardener_extension_provider_metal_additional_network_policies.ingress_controller.pod_selector is defined %}
+            ingressController:
+{% if gardener_extension_provider_metal_additional_network_policies.ingress_controller.namespace is defined %}
+              namespace: {{ gardener_extension_provider_metal_additional_network_policies.ingress_controller.namespace }}
+{% endif %}
+{% if gardener_extension_provider_metal_additional_network_policies.ingress_controller.pod_selector is defined %}
+              podSelector: {{ gardener_extension_provider_metal_additional_network_policies.ingress_controller.pod_selector | to_json }}
+{% endif %}
+{% endif %}
 {% endif %}
 {% endif %}
 
