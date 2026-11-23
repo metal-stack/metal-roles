@@ -41,3 +41,15 @@ class TestSonicConfigRoleTemplates(unittest.TestCase):
                 iptables_exp = read_json(f'./data/{tc}/iptables.json')
                 iptables_res = templar.template(iptables_t)
                 self.assertEqual(iptables_exp, iptables_res, 'iptables.json differs from the expected result')
+
+    def test_sonic_config_yaml_interfaces_only_when_set(self):
+        defaults = read_yaml('../defaults/main.yaml')
+        sonic_config_t = read_template_file('sonic-config.yaml.j2')
+        vars = defaults | read_yaml('./data/leaf/input.yaml') | {'inventory_hostname': 'leaf01'}
+
+        res = yaml.safe_load(Templar(loader=None, variables=vars).template(sonic_config_t))
+        self.assertNotIn('interfaces', res, 'interfaces must be left out when sonic_config_interfaces is empty')
+
+        vars['sonic_config_interfaces'] = {'Ethernet0': {'vrf': 'Vrf46'}}
+        res = yaml.safe_load(Templar(loader=None, variables=vars).template(sonic_config_t))
+        self.assertEqual({'Ethernet0': {'vrf': 'Vrf46'}}, res['interfaces'])

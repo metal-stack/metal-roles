@@ -1,0 +1,21 @@
+---
+- name: Deploy the api vip script
+  ansible.builtin.template:
+    src: k3s-api-vip.sh.j2
+    dest: "{{ k3s_server_api_vip_script_path }}"
+    mode: "0755"
+  notify: Restart the api vip
+
+- name: Deploy the api vip unit
+  ansible.builtin.template:
+    src: k3s-api-vip.service.j2
+    dest: /etc/systemd/system/k3s-api-vip.service
+    mode: "0644"
+  notify: Restart the api vip
+
+- name: Ensure the api vip follows k3s
+  ansible.builtin.systemd:
+    name: k3s-api-vip.service
+    daemon_reload: true
+    enabled: true
+    state: started

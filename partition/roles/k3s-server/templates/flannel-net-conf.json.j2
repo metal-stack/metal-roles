@@ -1,0 +1,10 @@
+{
+  "Network": "{{ k3s_server_cluster_cidr }}",
+  "EnableIPv4": true,
+  "EnableIPv6": false,
+  "IPv6Network": "::/0",
+  "Backend": {
+    "Type": "vxlan",
+    "MTU": {{ k3s_server_flannel_mtu }}
+  }
+}
