@@ -27,6 +27,18 @@
     - bgp-validation@.service
   when: metal_stack_switch_os_is_sonic
 
+# metal-core's bisdn switcher validates frr.conf with frr-validation@ before it
+# reloads frr.service
+- name: Install services for BISDN Linux
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    mode: "0644"
+  notify: Reload systemd daemon
+  loop:
+    - frr-validation@.service
+  when: metal_stack_switch_os_is_bisdn | default(false)
+
 - name: Create bgp-neighbor-stats directory
   ansible.builtin.file:
     path: /var/run/bgp-neighbors
@@ -90,7 +102,7 @@
       - net_admin
     systemd_service_environment: "{{ lookup('template', 'metal-core-env.j2') | from_yaml }}"
     systemd_external_config_changed: "{{ _token is changed }}"
-    systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
+    systemd_service_after: "{{ 'bgp.service database.service sonic.target syncd.service' if metal_stack_switch_os_is_sonic else ('docker.service baseboxd.service frr.service systemd-networkd.service' if metal_stack_switch_os_is_bisdn | default(false) else 'docker.service') }}"
     systemd_service_bindsto: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"
     systemd_service_wants: "{{ 'database.service' if metal_stack_switch_os_is_sonic else 'docker.service' }}"
     systemd_service_wantedby: "{{ 'sonic.target' if metal_stack_switch_os_is_sonic }}"

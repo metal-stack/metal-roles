@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+# Sorts before BISDN's 80-wired.network (DHCP on en*) and wins.
+[Match]
+Name={{ bisdn_config_mgmt_interface }}
+
+[Network]
+{% if bisdn_config_mgmt_vrf %}
+VRF=mgmt
+{% endif %}
+Address={{ bisdn_config_mgmt_address }}
+{% if bisdn_config_mgmt_gateway %}
+Gateway={{ bisdn_config_mgmt_gateway }}
+{% endif %}
+IPv6AcceptRA=no
+LinkLocalAddressing=no
+LLDP=no
+EmitLLDP=no

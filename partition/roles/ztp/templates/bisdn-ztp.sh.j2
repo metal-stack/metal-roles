@@ -1,0 +1,36 @@
+#!/bin/sh
+# {{ ansible_managed }}
+#
+# First-boot port breakouts for BISDN Linux switches:
+#   curl -fsS http://{{ ztp_listen_address }}:{{ ztp_port }}/bisdn-ztp.sh | sh -s <switch name>
+# BISDN Linux has no ZTP client; run it from the console or a first-boot hook.
+# The bisdn-config role performs the same steps on its first run, plus FEC.
+# A changed breakout takes effect with a reboot, which this script triggers.
+set -eu
+
+name="${1:-$(hostname)}"
+base="http://{{ ztp_listen_address }}:{{ ztp_port }}"
+
+mkdir -p /etc/ofdpa /etc/systemd/system/ofdpa.service.d
+curl -fsS -o /etc/ofdpa/breakout.conf "${base}/bisdn/${name}/breakout.conf"
+curl -fsS -o /usr/sbin/ofdpa-breakout.tmp "${base}/bisdn/ofdpa-breakout"
+chmod 0755 /usr/sbin/ofdpa-breakout.tmp
+mv /usr/sbin/ofdpa-breakout.tmp /usr/sbin/ofdpa-breakout
+
+cat > /etc/systemd/system/ofdpa.service.d/10-ofdpa-breakout.conf <<'UNIT'
+[Service]
+ExecStartPre=-/usr/sbin/ofdpa-breakout apply
+UNIT
+
+for path in /etc/ofdpa/ /etc/systemd/system/ofdpa.service.d/ /usr/sbin/ofdpa-breakout; do
+  grep -qxF "$path" /etc/default/user-backup.txt || echo "$path" >> /etc/default/user-backup.txt
+done
+
+config="/usr/share/ofdpa/platform/$(cat /etc/onl/platform)/config.bcm"
+if /usr/sbin/ofdpa-breakout show | cmp -s - "$config"; then
+  echo "port breakouts unchanged"
+else
+  echo "port breakouts changed, rebooting to apply them"
+  systemctl daemon-reload
+  systemctl reboot
+fi

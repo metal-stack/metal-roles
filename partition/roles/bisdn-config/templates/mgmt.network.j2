@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+# 127.0.0.1/8 on the VRF device lets processes in mgmt reach local services
+[Match]
+Name=mgmt
+
+[Network]
+Address=127.0.0.1/8

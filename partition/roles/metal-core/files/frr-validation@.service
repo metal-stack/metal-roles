@@ -1,0 +1,10 @@
+[Unit]
+Description=Trigger a validation run of a frr configuration file %f
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/vtysh --dryrun --inputfile %f
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
