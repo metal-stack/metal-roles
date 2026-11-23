@@ -1,0 +1,19 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart goflow2
+  ansible.builtin.systemd:
+    name: goflow2
+    state: restarted
+
+- name: Restart vector
+  ansible.builtin.systemd:
+    name: vector
+    state: restarted
+
+- name: Restart vrf-port-export
+  ansible.builtin.systemd:
+    name: vrf-port-export
+    state: restarted

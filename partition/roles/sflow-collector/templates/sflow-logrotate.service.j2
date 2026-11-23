@@ -1,0 +1,21 @@
+[Unit]
+Description=Rotate the goflow2 sFlow spool
+After=goflow2.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/logrotate --state {{ sflow_collector_data_host_dir }}/logrotate.status {{ sflow_collector_config_host_dir }}/flows.logrotate
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths={{ sflow_collector_data_host_dir }} {{ sflow_collector_data_host_dir }}/spool
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
