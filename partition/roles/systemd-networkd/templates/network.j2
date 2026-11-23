@@ -44,4 +44,7 @@ Address={{ address }}
 
 [Route]
 Gateway={{ gateway}}
+{% if item.gateway_metric is defined %}
+Metric={{ item.gateway_metric }}
+{% endif %}
 {% endfor %}

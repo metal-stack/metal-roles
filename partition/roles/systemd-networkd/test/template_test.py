@@ -84,3 +84,40 @@ MTUBytes=9000
 [Network]
 Address=1.1.1.0/29
 """.strip(), res.strip())
+
+    def test_template_static_address_with_gateway_metric(self):
+        self.maxDiff = None
+
+        vars = defaults.copy()
+
+        vars.update(item=dict(
+            name="mgmtfw",
+            mac="aa:aa:aa:aa:aa:aa",
+            addresses=["192.0.2.2/30"],
+            gateways=["192.0.2.1"],
+            gateway_metric="4278198272",
+        ),)
+
+        templar = Templar(loader=None, variables=vars)
+        res = templar.template(read_template_file('network.j2'))
+
+        self.assertIn("[Address]\nAddress=192.0.2.2/30", res)
+        self.assertIn("[Route]\nGateway=192.0.2.1\nMetric=4278198272", res)
+        self.assertNotIn("DHCP=", res)
+
+    def test_template_gateway_without_metric(self):
+        self.maxDiff = None
+
+        vars = defaults.copy()
+
+        vars.update(item=dict(
+            name="mgmt",
+            addresses=["10.0.0.2/24"],
+            gateways=["10.0.0.1"],
+        ),)
+
+        templar = Templar(loader=None, variables=vars)
+        res = templar.template(read_template_file('network.j2'))
+
+        self.assertTrue(res.strip().endswith("[Route]\nGateway=10.0.0.1"))
+        self.assertNotIn("Metric=", res)
