@@ -350,9 +350,9 @@ metal_apiserver:
 auditing:
   enabled: {{ 'true' if metal_auditing_timescaledb_enabled else 'false' }}
   search_backend: {{ metal_auditing_search_backend if metal_auditing_search_backend else '' }}
-{% if metal_auditing_timescaledb_enabled %}
   timescaledb:
-    enabled: true
+    enabled: {{ metal_auditing_timescaledb_enabled }}
+{% if metal_auditing_timescaledb_enabled %}
     host: "{{ metal_auditing_timescaledb_host }}"
     port: "{{ metal_auditing_timescaledb_port }}"
     db: "{{ metal_auditing_timescaledb_db }}"
@@ -360,9 +360,9 @@ auditing:
     password: "{{ metal_auditing_timescaledb_password }}"
     retention: "{{ metal_auditing_timescaledb_retention }}"
 {% endif %}
-{% if metal_auditing_splunk_enabled %}
   splunk:
-    enabled: true
+    enabled: {{ metal_auditing_splunk_enabled }}
+{% if metal_auditing_splunk_enabled %}
     endpoint: "{{ metal_auditing_splunk_endpoint }}"
     hec: "{{ metal_auditing_splunk_hec_token }}"
     source: "{{ metal_auditing_splunk_source | default('', true) }}"
