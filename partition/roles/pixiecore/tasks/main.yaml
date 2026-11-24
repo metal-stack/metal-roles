@@ -58,6 +58,13 @@
 - name: Create metal-apiserver token for pixiecore
   ansible.builtin.import_tasks: token.yaml
 
+- name: Upload pixiecore docker image
+  ansible.builtin.include_role:
+    name: ansible-common/roles/push-oci-image
+  vars:
+    push_oci_image_name: "{{ pixiecore_image_name }}"
+    push_oci_image_tag: "{{ pixiecore_image_tag }}"
+
 - name: Deploy pixiecore
   ansible.builtin.include_role:
     name: ansible-common/roles/systemd-docker-service
@@ -69,6 +76,7 @@
     systemd_docker_cpu_period: 50000
     systemd_docker_cpu_quota: 10000
     systemd_docker_memory: 256m
+    systemd_docker_pre_pull: false
     systemd_docker_dns: "{{ pixiecore_dns_servers }}"
     systemd_docker_volumes: "{{ lookup('template', 'pixie-volumes.j2') | from_yaml }}"
     systemd_docker_hostname: "pixiecore-{{ inventory_hostname }}"
