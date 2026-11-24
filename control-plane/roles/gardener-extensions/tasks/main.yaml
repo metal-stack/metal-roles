@@ -54,7 +54,7 @@
 
 - name: Register gardener extension
   kubernetes.core.k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml', split_lines=False) }}"
+    definition: "{{ lookup('template', item + '.yaml', split_lines=False) }}"
     apply: true
   when: lookup('vars', 'gardener_extension_' + item  | regex_replace('-', '_') + '_enabled')
   loop:

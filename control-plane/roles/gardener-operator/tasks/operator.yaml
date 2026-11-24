@@ -41,7 +41,7 @@
         config.yaml: |-
           {{ gardener_operator_virtual_garden_api_server_structured_authentication }}
     apply: true
-  when: gardener_operator_virtual_garden_api_server_structured_authentication
+  when: gardener_operator_virtual_garden_api_server_structured_authentication | default('', true) | length > 0
   no_log: true
 
 - name: Create gardener dashboard oidc secret
@@ -73,7 +73,7 @@
     apply: true
   when:
     - gardener_operator_dashboard_enabled
-    - gardener_operator_dashboard_config_frontend
+    - gardener_operator_dashboard_config_frontend | default({}, true) | length > 0
 
 - name: Create gardener dashboard assets configmap
   kubernetes.core.k8s:
@@ -92,7 +92,7 @@
     apply: true
   when:
     - gardener_operator_dashboard_enabled
-    - gardener_operator_dashboard_config_assets
+    - gardener_operator_dashboard_config_assets | default({}, true) | length > 0
 
 - name: Deploy Gardener Operator
   ansible.builtin.include_role:
