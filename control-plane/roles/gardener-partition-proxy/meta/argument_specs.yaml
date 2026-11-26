@@ -1,0 +1,86 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys an HAProxy into Gardener shooted seeds to expose partition services
+    options:
+      gardener_partition_proxy_garden_name:
+        type: str
+        description: The name of operator garden resource to derive the access kubeconfig for the virtual garden.
+      gardener_partition_proxy_image_name:
+        type: str
+        description: The image name of the partition-proxy.
+      gardener_partition_proxy_image_tag:
+        type: str
+        description: The image tag of the partition-proxy.
+      gardener_partition_proxy_ip_address:
+        type: str
+        description: The IP for the proxy. If not specified it will be automatically allocated in the metal-apiserver.
+      gardener_partition_proxy_metal_apiserver_url:
+        type: str
+        description: The URL of the metal-apiserver used to allocate an IP address for the proxy in case a specific IP was not specified.
+      gardener_partition_proxy_deployment_admin_token:
+        type: str
+        description: The admin token used to communicate with the metal-apiserver.
+      gardener_partition_proxy_dns_credentials:
+        type: dict
+        description: DNS credentials used for creating a DNS record for the proxy (base64 encoded secret data).
+      gardener_partition_proxy_dns_provider:
+        type: str
+        description: The name of the DNS provider used for record creation.
+      gardener_partition_proxy_shooted_seeds:
+        type: list
+        elements: dict
+        description: A list of shooted seeds in which to deploy a proxy.
+        options:
+          name:
+            type: str
+            required: true
+            description: The name of the shooted seed.
+          metal_project_id:
+            type: str
+            description: The project used for allocating the proxy IP address in the metal-apiserver.
+          metal_network_id:
+            type: str
+            description: The network used for allocating the proxy IP address in the metal-apiserver.
+          proxy_servers:
+            type: list
+            elements: dict
+            required: true
+            description: The services to expose through the proxy. Clients always have to authenticate with a client certificate (mTLS).
+            options:
+              name:
+                type: str
+                required: true
+                description: The name of the proxy server.
+              ingress_domain:
+                type: str
+                required: true
+                description: The domain under which the service is exposed, used for SNI based routing and the DNS record.
+              ca:
+                type: str
+                required: true
+                description: The CA certificate used for verifying client certificates.
+              cert:
+                type: str
+                required: true
+                description: The server certificate of the proxy.
+              cert_key:
+                type: str
+                required: true
+                description: The private key of the server certificate.
+              addresses:
+                type: list
+                elements: str
+                required: true
+                description: The backend addresses in the form host:port. Every address is health checked.
+              type:
+                type: str
+                required: true
+                choices:
+                  - grpcs
+                  - http
+                  - https
+                description: The protocol used for connecting to the backends.
+              health_check_path:
+                type: str
+                description: Enables HTTP health checks against this path for http and https backends. By default, TCP (http) or TLS handshake (https, grpcs) checks are used.
