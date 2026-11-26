@@ -34,7 +34,7 @@
 
   notify:
     - Restart systemd-resolved
-  when: "'systemd-resolved.service' in services"
+  when: "'systemd-resolved.service' in ansible_facts['services']"
 
 - name: Install required packages to have the network stack in place
   ansible.builtin.apt:
@@ -46,7 +46,7 @@
     force_apt_get: true
 
 - name: Install docker
-  when: "'docker.service' not in services"
+  when: "'docker.service' not in ansible_facts['services']"
 
   block:
     - name: Add docker gpg key
