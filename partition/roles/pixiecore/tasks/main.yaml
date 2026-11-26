@@ -52,8 +52,8 @@
     label: "{{ item.filename }}"
   register: loki_certs
   when:
-    - pixiecore_metal_hammer_logging_cert
-    - pixiecore_metal_hammer_logging_key
+    - pixiecore_metal_hammer_logging_cert is not none
+    - pixiecore_metal_hammer_logging_key is not none
 
 - name: Create metal-apiserver token for pixiecore
   ansible.builtin.import_tasks: token.yaml
