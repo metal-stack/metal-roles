@@ -1,14 +1,14 @@
 ---
 gardener_partition_proxy_garden_name: "{{ gardener_defaults_garden_name }}"
 
-gardener_partition_proxy_metal_api_url:
-gardener_partition_proxy_metal_api_edit_hmac:
+gardener_partition_proxy_metal_apiserver_url: "{{ metal_apiserver_url | default(lookup('env', 'METAL_APIV2_URL'), true) | default(None) }}"
+gardener_partition_proxy_deployment_admin_token: "{{ metal_deployment_admin_token | default(lookup('env', 'METAL_APIV2_TOKEN'), true) | default(None) }}"
 gardener_partition_proxy_dns_credentials:
 gardener_partition_proxy_dns_provider:
 gardener_partition_proxy_ip_address:
 # TODO: move to release vector?
-gardener_partition_proxy_image_name: nginx
-gardener_partition_proxy_image_tag: 1.31-alpine
+gardener_partition_proxy_image_name: haproxy
+gardener_partition_proxy_image_tag: 3.4-alpine
 
 gardener_partition_proxy_shooted_seeds: []
   # - name: seed-a
@@ -17,7 +17,6 @@ gardener_partition_proxy_shooted_seeds: []
   #   proxy_servers:
   #     - name: duros
   #       ingress_domain: duros.fra-equ01.proxy.metal-stack.dev
-  #       mtls: true           # optional, defaults to true
   #       ca:
   #       cert:
   #       cert_key:
@@ -26,9 +25,10 @@ gardener_partition_proxy_shooted_seeds: []
   #       type: grpcs
   #     - name: ontap
   #       ingress_domain: ontap.fra-equ01.proxy.metal-stack.dev
-  #       mtls: false
+  #       ca:
   #       cert:
   #       cert_key:
   #       addresses:
   #         - <address>:443
   #       type: https
+  #       health_check_path: /api/health  # optional, enables HTTP health checks for http and https backends (default: TCP/TLS checks)

@@ -8,9 +8,11 @@
     _shoot_kubeconfig: "{{ virtual_garden_kubeconfig | string | shoot_admin_kubeconfig('garden', gardener_shooted_seed.name) | from_yaml }}"
 
 - name: Allocate IP address for the proxy in {{ gardener_shooted_seed.name }}
-  metal_ip:
-    api_url: "{{ gardener_partition_proxy_metal_api_url }}"
-    api_hmac: "{{ gardener_partition_proxy_metal_api_edit_hmac }}"
+  environment:
+    METAL_APIV2_URL: "{{ gardener_partition_proxy_metal_apiserver_url }}"
+    METAL_APIV2_TOKEN: "{{ gardener_partition_proxy_deployment_admin_token }}"
+  metal_v2_ip:
+    identifier: partition-proxy-{{ gardener_shooted_seed.name }}
     name: partition-proxy-{{ gardener_shooted_seed.name }}
     description: For partition proxy in {{ gardener_shooted_seed.name }}
     project: "{{ gardener_shooted_seed.metal_project_id }}"
@@ -21,7 +23,7 @@
 
 - name: Set IP address to use
   ansible.builtin.set_fact:
-    _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else _ip.ip }}"
+    _proxy_ip: "{{ gardener_partition_proxy_ip_address if gardener_partition_proxy_ip_address else _ip.address }}"
 
 - name: Check if old DNS record exists
   kubernetes.core.k8s_info:

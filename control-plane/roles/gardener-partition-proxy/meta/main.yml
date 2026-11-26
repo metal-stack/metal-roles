@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: metal-stack
-  description: Deploys an nginx into a Gardener shooted seed to expose partition services.
+  description: Deploys an HAProxy into a Gardener shooted seed to expose partition services.
   license: MIT
   min_ansible_version: "2.10"
   galaxy_tags: []
