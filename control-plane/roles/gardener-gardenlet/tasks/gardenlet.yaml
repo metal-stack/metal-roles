@@ -20,7 +20,7 @@
       data: "{{ _gardenlet.backup_infrastructure_secret }}"
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
     apply: true
-  when: _gardenlet.backup_infrastructure_secret
+  when: _gardenlet.backup_infrastructure_secret | default({}, true) | length > 0
 
 - name: Deploy Gardenlet
   kubernetes.core.k8s:

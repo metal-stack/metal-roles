@@ -43,8 +43,8 @@
 
 - name: Use pre-generated keys if defined
   when:
-    - wireguard_public_key
-    - wireguard_private_key
+    - wireguard_public_key is not none
+    - wireguard_private_key is not none
 
   block:
     - name: Store public key file

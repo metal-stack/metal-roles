@@ -14,7 +14,7 @@
 
 - name: Add mainline FRR repository to install FRR
   ansible.builtin.apt_repository:
-    repo: deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_distribution_release }} {{ mgmt_server_frr_repo }}
+    repo: deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_facts['distribution_release'] }} {{ mgmt_server_frr_repo }}
     state: present
     filename: frr.list
 

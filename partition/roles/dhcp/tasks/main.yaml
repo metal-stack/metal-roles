@@ -10,9 +10,8 @@
       - dhcp_listening_interfaces | type_debug == "list"
       - item.network is defined
       - item.netmask is not none
-      - item.range is not none
-      - item.range.begin is not none
-      - item.range.end is not none
+      # a subnet range is optional, e.g. for dummy subnets that only activate an interface
+      - item.range is not defined or (item.range is not none and item.range.begin | default(none) is not none and item.range.end | default(none) is not none)
   loop: "{{ dhcp_subnets }}"
   loop_control:
     label: "{{ item.network }}"

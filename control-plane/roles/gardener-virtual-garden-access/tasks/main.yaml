@@ -5,7 +5,7 @@
     api_version: resources.gardener.cloud/v1alpha1
     kind: ManagedResource
   register: result
-  until: result.result
+  until: result.result | default({}, true) | length > 0
   retries: 12
   delay: 5
 

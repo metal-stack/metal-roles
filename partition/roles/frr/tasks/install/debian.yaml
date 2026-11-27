@@ -9,7 +9,7 @@
   ansible.builtin.copy:
     dest: /etc/apt/sources.list.d/frr.list
     content: |
-      deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_distribution_release }} {{ frr_repo }}
+      deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_facts['distribution_release'] }} {{ frr_repo }}
     mode: "0644"
 
 - name: Install required packages to have the network stack in place

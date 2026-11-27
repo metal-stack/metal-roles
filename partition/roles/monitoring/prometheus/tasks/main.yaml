@@ -19,7 +19,7 @@
     content: "{{ prometheus_hosts_content }}"
     dest: "{{ prometheus_config_host_dir }}/hosts"
     mode: "0644"
-  when: prometheus_hosts_content
+  when: prometheus_hosts_content | default('', true) | length > 0
 
 - name: Generate prometheus.yaml
   ansible.builtin.template:
@@ -80,7 +80,7 @@
     dest: "{{ prometheus_config_host_dir }}/file_sd/ipmi.yaml"
     mode: "0644"
   notify: Restart prometheus
-  when: prometheus_ipmi_exporter_targets
+  when: prometheus_ipmi_exporter_targets | length > 0
 
 - name: Write systemd timer to dynamically write ipmi-exporter-targets file
   ansible.builtin.template:
@@ -120,7 +120,7 @@
     - service
     - timer
   register: _result
-  when: prometheus_ipmi_exporter_targets
+  when: prometheus_ipmi_exporter_targets | length > 0
 
 - name: Generate prometheus_promtail_sd
   ansible.builtin.set_fact:

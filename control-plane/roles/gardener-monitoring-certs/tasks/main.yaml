@@ -24,7 +24,7 @@
   retries: 60
   delay: 10
   until:
-    - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='seed-ingress-certificate')
+    - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='seed-ingress-certificate') | default({}, true) | length > 0
 
 - name: Prepare seed ingress certificate secret for shooted seeds
   kubernetes.core.k8s:

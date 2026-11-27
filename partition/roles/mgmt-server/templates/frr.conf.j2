@@ -1,5 +1,5 @@
 frr defaults datacenter
-hostname {{ ansible_hostname }}
+hostname {{ ansible_facts['hostname'] }}
 !
 service integrated-vtysh-config
 !

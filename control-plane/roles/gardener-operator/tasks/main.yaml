@@ -56,7 +56,7 @@
   retries: 60
   delay: 10
   until:
-    - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='wildcard-garden-ingress-certificate')
+    - lookup('k8s', api_version='v1', namespace='garden', kind='Secret', resource_name='wildcard-garden-ingress-certificate') | default({}, true) | length > 0
   when: gardener_operator_dashboard_enabled
 
 - name: Prepare certificate secret

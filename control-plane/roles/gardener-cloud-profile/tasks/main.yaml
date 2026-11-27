@@ -30,7 +30,7 @@
     kind: CloudProfile
     kubeconfig: "{{ virtual_garden_kubeconfig }}"
   register: result
-  until: result.result
+  until: result.result | default({}, true) | length > 0
   retries: 60
   delay: 5
   when: gardener_cloud_profile_wait_until_available
